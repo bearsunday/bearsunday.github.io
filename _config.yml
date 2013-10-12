@@ -2,8 +2,7 @@ name: BEAR.Sunday
 safe: true
 lsi: false
 
-url: http://BEARSunday.github.io/docs
-
+url: http://bearsunday.github.io/
 
 markdown: redcarpet
 redcarpet:
