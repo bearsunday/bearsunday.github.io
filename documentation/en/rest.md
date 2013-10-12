@@ -462,11 +462,3 @@ class News extends ResourceObject
 }
 ```
 In this way the variables in the resource are not `eager`, even when resource contains a request, the resource request made inside the the resource is lazily loaded.
-
-
-A Resource Oriented Framework
------------------------------
-
-__BEAR.Sunday__ is a Resource Oriented Framework. In BEAR.Sunday on top of the web behavior in BEAR.Resource also has the added Google guice style DI/AOP System [Ray](https://github.com/koriym/Ray.Di) and is a full stack web application framework.
-
-Please check out [BEAR.Sunday on GitHub](https://github.com/koriym/BEAR.Sunday).
