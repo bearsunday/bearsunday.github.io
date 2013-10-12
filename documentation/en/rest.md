@@ -1,15 +1,12 @@
 ---
 layout: default
-title: BEAR.Sunday | Dependency Injection 
+title: BEAR.Sunday | Hypermedia
 category: Getting Started
 subcategory: REST
 ---
 
 Hypermedia framework for object as a service
 --------------------------------------------
-
-[![Latest Stable Version](https://poser.pugx.org/bear/resource/v/stable.png)](https://packagist.org/packages/bear/resource)
-[![Build Status](https://secure.travis-ci.org/koriym/BEAR.Resource.png?branch=master)](http://travis-ci.org/koriym/BEAR.git@github.com:koriym/BEAR.Resource.git)
 
 **BEAR.Resource** Is a Hypermedia framework that allows resources to behave as objects. It allows objects to have RESTful web service benefits such as client-server, uniform interface, statelessness, resource expression with mutual connectivity and layered components.
 
@@ -66,28 +63,6 @@ class Author extends ResourceObject
         //...
     }
 ```
-### Instance retreival
-
-The resource client is the resource object client. In order to retrieve an instance `require` the [instance script](https://github.com/koriym/BEAR.Resource/blob/master/scripts/instance.php), map your class to a URI schema, then the resource client can access the object as a 'URI'.
-
-```php
-$resource = require '/path/to/BEAR.Resource/scripts/instance.php';
-$resource->setSchemeCollection(
-  (new SchemeCollection)
-    ->scheme('app')
-    ->host('self')
-    ->toAdapter(new Adapter\App($injector, 'Sandbox', 'Resource\App'));
-);
-```
-
-You can also retrieve a client instance by using an injector that resolves depenencies.
-
-```php
-$injector = Injector::create([new ResourceModule('Sandbox')])
-$resource = $injector->getInstance('BEAR\Resource\ResourceInterface');
-```
-
-By either method the resource client that resolves a URI such as **app://self/user** to the mapped **Sandbox\Resource\App\User** can be provisioned.
 
 ### Resource request
 
