@@ -1,8 +1,7 @@
 ---
 layout: default
 title: BEAR.Sunday | Dependency Injection 
-category: Getting Started
-subcategory: DI
+category: DI
 ---
 
 

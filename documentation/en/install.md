@@ -1,6 +1,6 @@
 ---
 layout: default
-title: BEAR.Sunday | BEAR.Sunday Ubuntu 12LTS setup form ZERO
+title: BEAR.Sunday | BEAR.Sunday Installation
 category: Getting Started
 subcategory: Installation
 ---

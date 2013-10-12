@@ -1,8 +1,7 @@
 ---
 layout: default
 title: BEAR.Sunday | Aspect Orientated Programming 
-category: Getting Started
-subcategory: AOP
+category: AOP
 ---
 
 Aspect Oriented Framework
