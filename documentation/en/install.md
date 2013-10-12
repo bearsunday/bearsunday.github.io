@@ -8,8 +8,7 @@ subcategory: Installation
 # Installation 
 
 ```
-$ curl -s http://getcomposer.org/installer | php
-$ php composer.phar create-project -s dev --dev bear/package ./bear
+composer create-project bear/package {$PROJECT_PATH}
 ```
 
 ## Prerequisites 
