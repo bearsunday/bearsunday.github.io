@@ -14,8 +14,9 @@ Let's test the greeting resource that we made in [my_first_resource My First Res
 
 Lets create the test file structure. In relation to the greeting file it will look like the following.
 
-|| Resource File || `apps/Sandbox/Resource/App/First/Greeting.php` ||
-|| Test File　|| `apps/Sandbox/tests/Resource/App/First/GreetingTest.php` ||
+| Resource File | `apps/Sandbox/Resource/App/First/Greeting.php` |
+|---------------|------------------------------------------------|
+| Test File　| `apps/Sandbox/tests/Resource/App/First/GreetingTest.php` |
 
 ## Creating The Test Class File 
 

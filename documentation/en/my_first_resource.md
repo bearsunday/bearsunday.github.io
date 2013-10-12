@@ -22,8 +22,9 @@ In order to create the resource object class the following is needed.
 
 The pattern is as follows.
 
-|| URI || Method || Query ||
-|| app://self/first/greeting || get || ?name=Name ||
+| URI | Method | Query |
+|-----|--------|-------|
+| app://self/first/greeting | get | ?name=Name |
 
 The expected greeting resource is as below.
 
@@ -41,8 +42,9 @@ Hello, BEAR.
 Lets run the Sandbox application. The URI, PHP class and file layout is as follows. 
 
 
-|| URI || Class || File ||
-|| `app://self/first/greeting` || `Sandbox\Resource\App\First\Greeting` || `apps/Sandbox/Resource/App/First/Greeting.php` ||
+| URI | Class | File |
+|-----|--------|-------|
+| `app://self/first/greeting` | `Sandbox\Resource\App\First\Greeting` | `apps/Sandbox/Resource/App/First/Greeting.php` |
 
 Implementing the request interface (method).
 ```

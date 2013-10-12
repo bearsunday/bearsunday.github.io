@@ -10,7 +10,7 @@ Lets use the resource we made in [my_first_resource My First Resource] as a Web 
 Start the built in web server for the API.
 
 ```
-$ cd apps/Sandbox/htdocs
+$ cd apps/Sandbox/var/www
 $ php -S localhost:8099 api.php
 ```
 

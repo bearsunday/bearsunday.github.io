@@ -19,8 +19,8 @@ Dependency Injection framework
 _Not all features of Guice have been implemented._
 
 
-Getting Stated
---------------
+Overview
+--------
 
 Here is a basic example of dependency injection using Ray.Di.
 

@@ -22,9 +22,11 @@ Let's think in terms of a `REST API` for example when you order a coffee at a co
 
 When you order a coffee, the `REST API` is provided with the following.
 
-|| METHOD || POST ||
-|| URI || `http://restbucks.com/order/{?drink}` ||
-|| Query || drink=Drink Name ||
+| type | value |
+|------|-------|
+| METHOD | POST |
+| URI | `http://restbucks.com/order/{?drink}` |
+| Query | drink=Drink Name |
 
 You use this `API` when ordering a drink. When using this API you create a (POST) `Order Resource`.
 
@@ -168,6 +170,7 @@ The `payment` link now appears.
 
 In order to use links in your code, inject the `A` object using the trait `AInject` and use the `href` method to retrieve links.
 The resource body can retrieve the link composed by the URI template.
+
 ```
 <?php
 namespace Sandbox\Resource\App\First\HyperMedia;

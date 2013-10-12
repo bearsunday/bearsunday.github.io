@@ -133,7 +133,7 @@ The primary concern of the original method is its *(core concern)*, this is comp
 
 ## Matcher Binding 
 
-The interceptor you made operates by being bound to the method. You use the *matcher* to decides what method it will be bound to. The object below binds all methods that begin with `on` in classes that inherit from `BEAR\Resource\Object` to the injected log object.
+The interceptor you made operates by being bound to the method. You use the *matcher* to decides what method it will be bound to. The object below binds all methods that begin with `on` in classes that inherit from `BEAR\Resource\ResourceObject` to the injected log object.
 
 ```
 $logger = $this->requestInjection('BEAR\Framework\Interceptor\Logger');
