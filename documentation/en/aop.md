@@ -138,7 +138,7 @@ The interceptor you made operates by being bound to the method. You use the *mat
 ```
 $logger = $this->requestInjection('BEAR\Framework\Interceptor\Logger');
 $this->bindInterceptor(
-    $this->matcher->subclassesOf('BEAR\Resource\Object'),
+    $this->matcher->subclassesOf('BEAR\Resource\ResourceObject'),
     $this->matcher->startWith('on'),
     [$logger]
 );
@@ -146,26 +146,28 @@ $this->bindInterceptor(
 
 `bindInterceptor` takes 3 parameters, the first is a class match, the second is a method match and the 3rd in an interceptor.
 
-|| Method Signature ||　Function ||
-|| bool subclassesOf($class) || Specifies the subclass. Cannot be specified in multi-dimensional arrays.  ||
-|| bool any() || Matches anything||
-|| bool annotatedWith($annotation) || $annotation is the annotations full path. Matches whatever is marked with this annotation. ||
-|| bool startWith($prefix) || Matches whatever class/method begins with this string||
+| Method Signature |　Function |
+|----------------- | ----------|
+| bool subclassesOf($class) | Specifies the subclass. Cannot be specified in multi-dimensional arrays.  |
+| bool any() | Matches anything|
+| bool annotatedWith($annotation) | $annotation is the annotations full path. Matches whatever is marked with this annotation. |
+| bool startWith($prefix) | Matches whatever class/method begins with this string|
 
 For example when you specify the following method matching, methods that are named setXX are matched.
 ```
 $this->matcher->startWith('set')
 ```
 
-## `MethodInvocation` 
+## MethodInvocation
 
 The interceptor receives the MethodInvocation model variables, wraps the method runtime before and after processing and uses the variables to invoke the original method.
 The `MethodInvocation` main methods are as below.
 
-|| Method Signature ||　Function ||
-|| void proceed() || Run the target method ||
-|| Reflectionmethod getMethod() || Retrieve the target method reflection ||
-|| Object getThis() || Retrieve the target object ||
-|| array getArguments() (|| Retrieve the argument array  || 
-|| array getAnnotations() || Retrieve the target methods annotations ||
+| Method Signature |　Function |
+|----------------- | ----------|
+| `void proceed()` | Run the target method |
+| `Reflectionmethod getMethod()` | Retrieve the target method reflection |
+| `Object getThis()` | Retrieve the target object |
+| `array getArguments()` (| Retrieve the argument array  |
+| `array getAnnotations()` | Retrieve the target methods annotations |
 
