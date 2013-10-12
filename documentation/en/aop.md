@@ -5,19 +5,14 @@ category: Getting Started
 subcategory: AOP
 ---
 
-Aspect Oriented Framework for PHP
-=======
-
-[![Latest Stable Version](https://poser.pugx.org/ray/aop/v/stable.png)](https://packagist.org/packages/ray/aop)
-[![Build Status](https://secure.travis-ci.org/koriym/Ray.Aop.png)](http://travis-ci.org/koriym/Ray.Aop)
+Aspect Oriented Framework
+=========================
 
 **Ray.Aop** package provides method interception. This feature enables you to write code that is executed each time a matching method is invoked. It's suited for cross cutting concerns ("aspects"), such as transactions, security and logging. Because interceptors divide a problem into aspects rather than objects, their use is called Aspect Oriented Programming (AOP).
 
 A [Matcher](http://koriym.github.io/Ray.Aop/api/interfaces/Ray_Aop_Matchable.html) is a simple interface that either accepts or rejects a value. For Ray.AOP, you need two matchers: one that defines which classes participate, and another for the methods of those classes. To make this easy, there's factory class to satisfy the common scenarios.
 
 [MethodInterceptors](http://koriym.github.io/Ray.Aop/api/interfaces/Ray_Aop_MethodInterceptor.html) are executed whenever a matching method is invoked. They have the opportunity to inspect the call: the method, its arguments, and the receiving instance. They can perform their cross-cutting logic and then delegate to the underlying method. Finally, they may inspect the return value or exception and return. Since interceptors may be applied to many methods and will receive many calls, their implementation should be efficient and unintrusive.
-
-
 
 Example: Forbidding method calls on weekends
 --------------------------------------------
@@ -75,57 +70,15 @@ class WeekendBlocker implements MethodInterceptor
 Finally, we configure everything. In this case we match any class, but only the methods with our @NotOnWeekends annotation:
 
 ```php
-<?php
-$bind = new Bind;
-$matcher = new Matcher(new Reader);
-$interceptors = [new WeekendBlocker];
-$pointcut = new Pointcut(
-        $matcher->any(),
-        $matcher->annotatedWith('Ray\Aop\Sample\Annotation\NotOnWeekends'),
-        $interceptors
+$this->bindInterceptor(
+    $this->matcher->any(),                          // any class
+    $this->matcher->annotatedWith('NotOnWeekends'), // @NotOnWeekends method
+    [$logger]
 );
-$bind->bind('Ray\Aop\Sample\AnnotationRealBillingService', [$pointcut]);
 
-$compiler = require dirname(__DIR__) . '/scripts/instance.php';
-$billing = $compiler->newInstance('RealBillingService', [], $bind);
-try {
-    echo $billing->chargeOrder();
-} catch (\RuntimeException $e) {
-    echo $e->getMessage() . "\n";
-    exit(1);
-}
+
 ```
 Putting it all together, (and waiting until Saturday), we see the method is intercepted and our order is rejected:
-
-```php
-<?php
-RuntimeException: chargeOrder not allowed on weekends! in /apps/pizza/WeekendBlocker.php on line 14
-
-Call Stack:
-    0.0022     228296   1. {main}() /apps/pizza/main.php:0
-    0.0054     317424   2. Ray\Aop\Weaver->chargeOrder() /apps/pizza/main.php:14
-    0.0054     317608   3. Ray\Aop\Weaver->__call() /libs/Ray.Aop/src/Weaver.php:14
-    0.0055     318384   4. Ray\Aop\ReflectiveMethodInvocation->proceed() /libs/Ray.Aop/src/Weaver.php:68
-    0.0056     318784   5. Ray\Aop\Sample\WeekendBlocker->invoke() /libs/Ray.Aop/src/ReflectiveMethodInvocation.php:65
-```
-
-Explicit method name match
----------------------------
-
-```php
-<?php
-    $bind = new Bind;
-    $bind->bindInterceptors('chargeOrder', [new WeekendBlocker]);
-
-    $compiler = require dirname(__DIR__) . '/scripts/instance.php';
-    $billing = $compiler->newInstance('RealBillingService', [], $bind);
-    try {
-       echo $billing->chargeOrder();
-    } catch (\RuntimeException $e) {
-       echo $e->getMessage() . "\n";
-       exit(1);
-    }
-```
 
 Limitations
 -----------
@@ -142,49 +95,7 @@ AOP Alliance
 ------------
 The method interceptor API implemented by Ray.Aop is a part of a public specification called [AOP Alliance](http://aopalliance.sourceforge.net/doc/org/aopalliance/intercept/MethodInterceptor.html). 
 
-Testing Ray.Aop Stand-Alone
-===============
-
-Here's how to install Ray.Aop from source to run the unit tests and sample:
-
-```
-$ git clone git://github.com/koriym/Ray.Aop.git
-$ cd Ray.Aop
-$ wget http://getcomposer.org/composer.phar
-$ php composer.phar install
-$ php doc/sample-01-quick-weave/main.php
-// Charged. | chargeOrder not allowed on weekends!
-```
-
-Requirements
--------------
-
- * PHP 5.4+
-
-### ini_set
-
-You may want to set the `xdebug.max_nesting_level` ini option to a higher value:
-
-```php
-ini_set('xdebug.max_nesting_level', 2000);
-```
-
-* This documentation for the most part is taken from [Guice/AOP](https://code.google.com/p/google-guice/wiki/AOP).
-=======
-title: BEAR.Sunday | Aspect Orientated Programming (AOP)
-category: DI & AOP
----
-# Aspect Orientated Programming (AOP)
-
-With BEAR.Sunday's [http://en.wikipedia.org/wiki/Aspect-oriented_programming Aspect Orientated Programming(AOP)], you can for example with a `method annotated with *@Log* log the result` and you can do that *without changing the original method being called*.
-
-AOP class does not directly affect the class, it is a way of each module to independently separate process logic that is shared between modules. For processing where many classes in which normally code duplication may creep in, we can use a technique where as an aspect (cross-cutting concerns) we can add this to a different module.
-
-In the BEAR.Sunday framework there are many functions which the thinking is to gather aspects and implement cross-cutting functionality in AOP. When the object is created the `Injector` depending on conditions set in the module weaves the aspect to the respective method.
-
-BEAR.Sunday uses an AOP framework called Ray.Aop which implements the [http://aopalliance.sourceforge.net/doc/org/aopalliance/intercept/MethodInvocation.html#getMethod%28%29 MethodInterceptor Interface] set out in the AOP Alliance which is similar to Google Guice or Springs implementation of AOP.
-
-## Interceptor 
+## Interceptor
 
 The interceptor takes hold of the method being called and performs cross-cutting processing on it. The interceptor implements the ```invoke``` method, inside that method the original method is called and the cross-cutting operations are performed.
 
@@ -199,10 +110,6 @@ class Logger implements MethodInterceptor
 {
     use LogInject;
 
-    /**
-     * (non-PHPdoc)
-     * @see Ray\Aop.MethodInterceptor::invoke()
-     */
     public function invoke(MethodInvocation $invocation)
     {
         $result = $invocation->proceed();
@@ -262,5 +169,3 @@ The `MethodInvocation` main methods are as below.
 || array getArguments() (|| Retrieve the argument array  || 
 || array getAnnotations() || Retrieve the target methods annotations ||
 
-## Ray.Aop 
-Please see the [Ray.Aop](http://code.google.com/p/rayphp/wiki/AOP) manual for more info on the framework BEAR.Sunday uses.
