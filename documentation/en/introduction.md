@@ -12,7 +12,7 @@ subcategory: Installation
 BEAR.Sunday offers no libraries of its own.
 PHP namespaces, PSR, a new coding github culture, unit testing, a new trend of library oriented frameworks... these have all happened recently and push us to a more library oriented way of thinking.
 So BEAR.Sunday chooses not to have it’s own components,
-it uses others from aura, symfony and zend etc.
+it uses others from Aura, Symfony and Zend framework etc.
 
 ## Three object frameworks for connect
 
