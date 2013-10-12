@@ -13,12 +13,10 @@ composer create-project bear/package {$PROJECT_PATH}
 
 ## Prerequisites 
  * PHP 5.4
+
+## Optional 
  * [APC](http://php.net/manual/ja/book.apc.php)
  * [curl](http://php.net/manual/ja/book.curl.php)
-
- For APC PHP5.4 support please [http://jp.php.net/manual/ja/apc.setup.php install > v3.1.10]
- 
-## Optional 
  * Profiler　[xhprof](http://jp.php.net/manual/en/book.xhprof.php)
  * Graph Visualization [graphviz](http://www.graphviz.org/)
 
