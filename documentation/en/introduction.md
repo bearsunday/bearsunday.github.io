@@ -34,7 +34,7 @@ BEAR.Sunday is abstraction framework.
 `DSL`, `Annotation`, `URI`, `Interface`, `Aspects` and `Hypermedia`.
 These abstraction technology encourage intentional-oriented code.
 
-## Clean architecture
+## Clean architecture with performance
 
  * Dependency inversion principle.
  * Distinction between compilation and runtime.
@@ -46,3 +46,4 @@ These abstraction technology encourage intentional-oriented code.
  * Contextual runtime injection by aspect.
  * AOP Standard.
  * Code intention, then bind implementation.
+ * Decouple everything.
