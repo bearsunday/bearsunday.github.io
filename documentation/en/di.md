@@ -6,11 +6,8 @@ subcategory: DI
 ---
 
 
-Dependency Injection framework for PHP
-======================================
-
-[![Latest Stable Version](https://poser.pugx.org/ray/di/v/stable.png)](https://packagist.org/packages/ray/di)
-[![Build Status](https://secure.travis-ci.org/koriym/Ray.Di.png?branch=master)](http://travis-ci.org/koriym/Ray.Di)
+Dependency Injection framework
+==============================
 
 **Ray.Di** was created in order to get Guice style dependency injection in PHP projects. It tries to mirror Guice's behavior and style. [Guice]((http://code.google.com/p/google-guice/wiki/Motivation?tm=6) is a Java dependency injection framework developed by Google.
 
@@ -225,121 +222,6 @@ Ray.Di automatically injects all of the following:
 
 The objects will be injected while the injector itself is being created. If they're needed to satisfy other startup injections, Ray.Di will inject them before they're used.
 
-## Aspect Oriented Programing
-
-To mark select methods as weekdays-only, we define an annotation .
-
-```php
-/**
- * NotOnWeekends
- *
- * @Annotation
- * @Target("METHOD")
- */
-final class NotOnWeekends
-{
-}
-```
-
-...and apply it to the methods that need to be intercepted:
-
-```php
-class BillingService
-{
-    /**
-     * @NotOnWeekends
-     */
-    chargeOrder(PizzaOrder $order, CreditCard $creditCard)
-    {
-```
-
-Next, we define the interceptor by implementing the org.aopalliance.intercept.MethodInterceptor interface. When we need to call through to the underlying method, we do so by calling `$invocation->proceed()`:
-
-```php
-class WeekendBlocker implements MethodInterceptor
-{
-    public function invoke(MethodInvocation $invocation)
-    {
-        $today = getdate();
-        if ($today['weekday'][0] === 'S') {
-            throw new \RuntimeException(
-              $invocation->getMethod()->getName() . " not allowed on weekends!"
-            );
-        }
-        return $invocation->proceed();
-    }
-}
-```
-
-Finally, we configure everything. In this case we match any class, but only the methods with our `@NotOnWeekends` annotation:
-
-```php
-class WeekendModule extends AbstractModule
-{
-    public function configure()
-    {
-    protected function configure()
-    {
-        $this->bindInterceptor(
-            $this->matcher->any(),
-            $this->matcher->annotatedWith('NotOnWeekends'),
-            [new WeekendBlocker]
-        );
-    }
-}
-
-$injector = Injector::create([new WeekendModule]);
-$billing = $injector->getInstance('BillingService');
-try {
-    echo $billing->chargeOrder();
-} catch (\RuntimeException $e) {
-    echo $e->getMessage() . "\n";
-    exit(1);
-}
-```
-Putting it all together, (and waiting until Saturday), we see the method is intercepted and our order is rejected:
-
-```php
-RuntimeException: chargeOrder not allowed on weekends! in /apps/pizza/WeekendBlocker.php on line 14
-
-Call Stack:
-    0.0022     228296   1. {main}() /apps/pizza/main.php:0
-    0.0054     317424   2. Ray\Aop\Weaver->chargeOrder() /apps/pizza/main.php:14
-    0.0054     317608   3. Ray\Aop\Weaver->__call() /libs/Ray.Aop/src/Weaver.php:14
-    0.0055     318384   4. Ray\Aop\ReflectiveMethodInvocation->proceed() /libs/Ray.Aop/src/Weaver.php:68
-    0.0056     318784   5. Ray\Aop\Sample\WeekendBlocker->invoke() /libs/Ray.Aop/src/ReflectiveMethodInvocation.php:65
-```
-
-You can bind interceptors in variouas ways as follows.
-
-```php
-class TaxModule extends AbstractModule
-{
-    protected function configure()
-    {
-        $this->bindInterceptor(
-            $this->matcher->annotatedWith('Tax'),
-            $this->matcher->any(),
-            [new TaxCharger]
-        );
-    }
-}
-```
-
-```php
-class AopMatcherModule extends AbstractModule
-{
-    pro
-    protected function configure()
-    {
-        $this->bindInterceptor(
-            $this->matcher->any(),                 // In any class and
-            $this->matcher->startWith('delete'), // ..the method start with "delete"
-            [new Logger]
-        );
-    }
-}
-```
 
 ## Installation
 
@@ -368,11 +250,6 @@ protected function configure()
 }
 ```
 
-Best practice
--------------
-Your code should deal directly with the Injector as little as possible. Instead, you want to bootstrap your application by injecting one root object.
-The class of this object should use injection to obtain references to other objects on which it depends. The classes of those objects should do the same.
-
 Caching dependency-injected objects
 -----------------------------------
 
@@ -389,25 +266,4 @@ $initialization = function() {
 $injector = new CacheInjector($injector, $initialization, 'cache-namespace', new ApcCache);
 $app = $injector->getInsntance('ApplicationInterface');
 $app->run();
-```
-
-Requirements
-------------
-
-* PHP 5.4+
-
-Testing Ray.Di Stand-Alone
---------------
-
-Here's how to install Ray.Di from source and run the unit tests and samples.
-
-```bash
-$ git clone git://github.com/koriym/Ray.Di.git
-$ cd Ray.Di
-$ composer install
-$ phpunit
-$ php doc/sample/00-newsletter.php
-$ php doc/sample/01-db/main.php
-$ cd doc/zf2-di-tests-clone/
-$ php runall.php
 ```
