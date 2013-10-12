@@ -1,8 +1,7 @@
 ---
 layout: default
-title: BEAR.Sunday | Hypermedia
-category: Getting Started
-subcategory: REST
+title: BEAR.Sunday | Resource
+category: Resource
 ---
 
 Hypermedia framework for object as a service

@@ -63,9 +63,9 @@ app://self/blog/posts
 
 The schema's page/app correspond to the following files, classes.
 
-|| URI || Class || File ||
-|| page://self/index || Sandbox\Resource\Page\Index ||Sandbox/Resource/Page/Index.php ||
-|| app://self/blog/posts || Sandbox\Resource\App\Blog\Posts || Sandbox/Resource/App/Blog/Posts.php ||
+| URI | Class | File |
+| page://self/index | Sandbox\Resource\Page\Index |Sandbox/Resource/Page/Index.php |
+| app://self/blog/posts | Sandbox\Resource\App\Blog\Posts | Sandbox/Resource/App/Blog/Posts.php |
 
 It is possible to implement an original schema as an resource adapter on the application side. For example a pre-existing "office" service service is running in some shape or form. Create the office schema, then wrap that service with an adapter and then access it using `office://{service-path}`.
 
@@ -134,8 +134,9 @@ echo $user;
 
 ## Template Representation  
 
-|| String || {$posts} || The string of the result that has been rendered by the template engine || 
-|| Array || {$posts['id']} || Accessing the associative array result  ||
-|| Object || {$posts->header} || Accessing the object result ||
+| String | {$posts} | The string of the result that has been rendered by the template engine |
+|--------|----------|----------------------------------------------|
+| Array | {$posts['id']} | Accessing the associative array result  |
+| Object | {$posts->header} | Accessing the object result |
 
 ※No matter whether eager or lazy there is no difference in template rendering.
