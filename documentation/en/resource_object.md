@@ -20,9 +20,10 @@ Resource objects are made distinct by their schema. In the current sandbox appli
 
 This hold the resource status and the request interface. Except for the query 1 URI corresponds to 1 class.
 
-|| URI || Class || File ||
-|| page://self/index || Sandbox\Resource\Page\Index ||Sandbox/Resource/Page/Index.php ||
-|| app://self/blog/posts || Sandbox\Resource\App\Blog\Posts || Sandbox/Resource/App/Blog/Posts.php ||
+| URI | Class | File |
+|-----|-------|------|
+| page://self/index | Sandbox\Resource\Page\Index |Sandbox/Resource/Page/Index.php |
+| app://self/blog/posts | Sandbox\Resource\App\Blog\Posts | Sandbox/Resource/App/Blog/Posts.php |
 
 The resources request resource interface is mapped to a PHP class.
 
@@ -31,12 +32,13 @@ The resources request resource interface is mapped to a PHP class.
 # Resource Property 
 A resource has 5 public properties.
 
-|| Property || Name || Meaning　|| Type ||
-|| code || Code　|| Status || int ||
-|| headers  || Header || Meta Data || array<$name => $value> ||
-|| links || Link || Resource Link || array<$rel => $uri>  ||
-|| body || Body || Resource Status || mixed ||
-|| view || View || Resource View || string||
+| Property | Name | Meaning　| Type |
+|----------|------|----------|------|
+| code | Code　| Status | int |
+| headers  | Header | Meta Data | array<$name => $value> |
+| links | Link | Resource Link | array<$rel => $uri>  |
+| body | Body | Resource Status | mixed |
+| view | View | Resource View | string|
 
 ### Code 
 Displays the resource status. When it is a page resource this is the HTTP status. The default is 200(OK). 
@@ -86,7 +88,7 @@ public function onGet($id, $body, $title = 'untitled')
 This is different to BEAR.Saturday which has the notation of a a regular PHP method. When using this you call it using named parameters the ordering is not important.
 
  Note: If you change the ordering there is no need to edit the calling side.
- Note: Where possible only receive scaler variables.
+ Note: Where possible only receive scalar variables.
  
 
 ## Self Building 

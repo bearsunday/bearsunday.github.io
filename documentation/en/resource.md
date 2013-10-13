@@ -46,11 +46,13 @@ Let's think of it as an HTTP Application. A resource can be requested from an HT
 
 BEAR.Sunday resources also have 4 interfaces conforming to the 4 HTTP methods.
 
-|| GET || Resource retrieval ||
-|| PUT || Resource update and creation ||
-|| POST || Resource creation ||
-|| DELETE || Resource delete ||
-|| OPTIONS || Resource access method query ||
+| **method** | **description**|
+|--------|------------|
+| GET | Resource retrieval |
+| PUT | Resource update and creation |
+| POST | Resource creation |
+| DELETE | Resource delete |
+| OPTIONS | Resource access method query |
 
 #### GET 
 Resource reading. This method does not provide any changing of the resource state. A safe method with no side affects.

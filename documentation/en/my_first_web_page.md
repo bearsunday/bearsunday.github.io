@@ -66,9 +66,11 @@ We save this in the same place as the resource and just change the suffix.
 
 ### File Path 
 
-|| URI || `page://self/first/greeting` ||
-|| Resource Class || `apps/Sandbox/Resource/Page/First/Greeting.php` ||
-|| Resource Template || `apps/Sandbox/Resource/Page/First/Greeting.tpl` ||
+|type|value|
+|-----|--------------|
+| URI | `page://self/first/greeting` |
+| Resource Class | `apps/Sandbox/Resource/Page/First/Greeting.php` |
+| Resource Template | `apps/Sandbox/Resource/Page/First/Greeting.tpl` |
 
 
 ### Template 
