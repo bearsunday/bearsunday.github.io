@@ -4,30 +4,32 @@ title: BEAR.Sunday | My First Web Page
 category: My First - Tutorial
 ---
 
-# Lets Create A Web Page 
+# My First Web Page
+
+## Lets Create A Web Page
 
 ## Page Resource 
 
 First without using an application resource, we will make the most basic page class possible.
-(without using a model and only using a controller to create a 'Hello World' page)
+(without using a model and only using a controller to create a **Hello World** page)
 
 ## Starting from the Most Basic of Pages 
 
 Just like application resource creates the instance of a resource, 
 a page resource can also create an instance of a page resource.
 
-The greeting 'Hello' is fixed in a static page.
+The greeting **Hello** is fixed in a static page.
 
 ```
 <?php
 namespace Sandbox\Resource\Page\First;
 
-use BEAR\Resource\AbstractPage as Page;
+use BEAR\Resource\ResourceObject;
 
 /**
  * Greeting page
  */
-class Greeting extends Page
+class Greeting extends ResourceObject
 {    
     public $body = [
         'greeting' => 'Hello.'
@@ -48,7 +50,7 @@ When the get request is called it does nothing but return itself.
 Lets check this resource from the command line.
 
 ```
-$ cd apps/Sandbox/htdocs/
+$ cd  {$PROJECT_PATH}/apps/Sandbox/bootstrap/contexts/
 $ php api.php get page://self/first/greeting
 
 200 OK
@@ -66,12 +68,9 @@ We save this in the same place as the resource and just change the suffix.
 
 ### File Path 
 
-|type|value|
-|-----|--------------|
-| URI | page://self/first/greeting |
-| Resource Class | apps/Sandbox/Resource/Page/First/Greeting.php |
-| Resource Template | apps/Sandbox/Resource/Page/First/Greeting.tpl |
-
+|URI|Resource Class| Resource Template |
+|---|--------------|-------------------|
+|page://self/first/greeting | apps/Sandbox/Resource/Page/First/Greeting.php | apps/Sandbox/Resource/Page/First/Greeting.tpl |
 
 ### Template 
 ```
@@ -90,7 +89,7 @@ This is a HTML page and can also be checked via the command line.
 Lets check.
 
 ```
-$ php web.php get /first/greeting
+$ php dev.php get /first/greeting
 ```
 ```
 200 OK

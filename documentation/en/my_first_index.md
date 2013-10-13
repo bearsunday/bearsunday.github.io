@@ -8,7 +8,7 @@ category: My First - Tutorial
 
 Whilst implementing a Sample, we will get started by learning how to consume and create BEAR.Sunday resources and related software technologies.
 
-  * [my_first_resource My First Web Resource]
+  * [my_first_resource My First Resource Object]
   * [my_first_web_api My First Web API]
   * [my_first_test My First Test]
   * [my_first_web_page My First Web Page]

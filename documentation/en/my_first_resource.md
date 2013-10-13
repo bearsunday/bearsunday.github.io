@@ -2,14 +2,11 @@
 layout: default
 title: BEAR.Sunday | My First Resource
 category: My First - Tutorial
---- 
+---
 
-> *Caution: My First - Tutorial needs proofreading*
+# My First Resource Object
 
-****
-
-# My First Resource
-# Application Resource 
+## Application Resource
 
 Here we will pass in a `name` and create a `greeting` resource which the greeting will return.
 In terms of MVC the `Model` in BEAR.Sunday is called an `Application Resource`. 
@@ -26,9 +23,9 @@ In order to create the resource object class the following is needed.
 
 The pattern is as follows.
 
-| URI | Method | Query |
-|-----|--------|-------|
-| app://self/first/greeting | get | ?name=Name |
+| Method | URI                         | Query      |
+|--------|-----------------------------|------------|
+| get    | app://self/first/greeting   |?name=Name  |
 
 The expected greeting resource is as below.
 
@@ -47,29 +44,18 @@ Lets run the Sandbox application. The URI, PHP class and file layout is as follo
 
 
 | URI | Class | File |
-|-----|--------|-------|
-| app://self/first/greeting | Sandbox\Resource\App\First\Greeting | apps/Sandbox/Resource/App/First/Greeting.php |
+|-----|--------|-----|
+| app://self/first/greeting | Sandbox\Resource\App\First\Greeting | apps/Sandbox/src/Sandbox/Resource/App/First/Greeting.php |
 
 Implementing the request interface (method).
 
 ```
 namespace Sandbox\Resource\App\First;
 
-use BEAR\Resource\AbstractObject;
+use BEAR\Resource\ResourceObject;
 
-/**
- * Greeting resource
- */
-class Greeting extends AbstractObject
+class Greeting extends ResourceObject
 {
-    /**
-     * Get
-     *
-     * @param  string $name
-     * 
-     * @return string
-     *
-     */
     public function onGet($name)
     {
         return "Hello, {$name}";
@@ -91,7 +77,7 @@ php api.php get app://self/first/greeting
 400 Bad Request
 ...
 [BODY]
-Internal error occured (e613b4)
+Internal error occurred (e613b4)
 ```
 As you can see in the header information that an exception has been raised, 
 you can decipher that in the query a `name` is required. 
@@ -104,7 +90,7 @@ php api.php options app://self/first/greeting?name=BEAR
 ```
 200 OK
 allow: ["get"]
-param-get: name
+param-get: ["name"]
 ```
 
 This tells us that the resource has the `GET` method enabled and requires 1 parameter `name`.
@@ -117,11 +103,9 @@ php api.php get app://self/first/greeting?name=BEAR
 ```
 ```
 200 OK
-cache-control: no-cache
-date: Tue, 10 Jul 2012 23:55:16 GMT
-content-type: text/html; charset=UTF-8
+...
 [BODY]
-"Hello, BEAR"
+Hello, BEAR
 ```
 Now the correct response is returned. Success!
 

@@ -4,17 +4,17 @@ title: BEAR.Sunday | My First Hypermedia
 category: My First - Tutorial
 --- 
 
-# Hypermedia 
+# My First Hypermedia
 
 ## What is Hypermedia? 
 
-In 1962 Ted Nelson proposed [Hypertext](http://en.wikipedia.org/wiki/Hypertext)`.
+In 1962 Ted Nelson proposed [**Hypertext**](http://en.wikipedia.org/wiki/Hypertext).
 This is when in order to refer some text other text referral links are embedded in the text itself, the referrals that joins the text are called Hyperlinks.
 
 The most famous and successful implementation of Hypertext is the Worldwide Web.
 
 (The href in a property of the `<a>` tag is an abbreviation for hyper-reference).
-Also to note is that PHP is an acronym of *PHP: Hypertext Preprocessor* ([http://www.php.net/manual/en/faq.general.php#faq.general.acronym PHP an acronym for what?])
+Also to note is that PHP is an acronym of *PHP: Hypertext Preprocessor* [PHP an acronym for what?](http://www.php.net/manual/en/faq.general.php#faq.general.acronym))
 
 ## Non Existent Hypermedia 
 
@@ -25,7 +25,7 @@ When you order a coffee, the `REST API` is provided with the following.
 | type | value |
 |------|-------|
 | METHOD | POST |
-| URI | `http://restbucks.com/order/{?drink}` |
+| URI | http://restbucks.com/order/{?drink} |
 | Query | drink=Drink Name |
 
 You use this `API` when ordering a drink. When using this API you create a (POST) `Order Resource`.
@@ -92,6 +92,7 @@ You declare your resource object's `links` property like this.
 ## Using a URI Template for your Query 
 
 When the URI to dynamically decided you can for example you can create a query in the onPost method like this.
+
 ```
 $this->links['friend'] # [Link::HREF => "app://self/sns/friend?id{$id}"];
 ```
@@ -134,6 +135,7 @@ class Order extends AbstractObject
 ```
 
 In order to add hyperlinks setup the `links` property.
+
 ```
     public $links = [
         'payment' # > [Link::HREF => 'app:/self/first/hypermedia/payment{?id}', Link::TEMPLATED > true]

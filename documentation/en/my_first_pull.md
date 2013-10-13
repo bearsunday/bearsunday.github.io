@@ -12,8 +12,15 @@ When you directly use the greeting resource that we made before from HTML you do
 
 ```
 <?php
-$app = require dirname(dirname(__DIR__)) . '/scripts/instance.php';
-$message # $app->resource->get->uri('app://self/first/greeting')->withQuery(['name' > 'BEAR'])->eager->request()->body;
+$app = require '{$APP_PATH}/bootstrap/instance.php';
+$message = $app
+    ->resource
+    ->get
+    ->uri('app://self/first/greeting')
+    ->withQuery(['name' > 'BEAR'])
+    ->eager
+    ->request()
+    ->body;
 ?>
 <html>
     <body><?php echo $message;?></body>
@@ -45,13 +52,13 @@ Is the sequence not opposite? Is this right? The design and logic mixed, can't y
 
 ## Pull Based Architecture 
 
-When from the view layer you trigger any processing, according to your needs you 'pull' the result it is called [http://en.wikipedia.org/wiki/Web_application_framework#Push-based_vs._pull-based Pull Based Architecture].
+When from the view layer you trigger any processing, according to your needs you 'pull' the result it is called [Pull Based Architecture](http://en.wikipedia.org/wiki/Web_application_framework#Push-based_vs._pull-based ).
 
 Many web MVC frameworks use the opposite 'Push' .
 Execute the action which requests a process, next 'Pushing' the result to the view layer so that the data can be output. 
 'Pull' is the opposite.
 
- Note: In [http://en.wikipedia.org/wiki/Comparison_of_web_application_frameworks Comparison of web application frameworks] we can see many different frameworks and whether they use PUSH/PULL.
+ Note: In [Comparison of web application frameworks](http://en.wikipedia.org/wiki/Comparison_of_web_application_frameworks) we can see many different frameworks and whether they use PUSH/PULL.
 
 Again BEAR.Sunday's 'resource pull' pulls resources using PHP code, however logic like domain logic or controller logic is not mixed up in the view.
 In reality the resource is only being bound to the resource placeholder (`<?php echo $message;?>`).

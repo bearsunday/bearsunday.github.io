@@ -102,10 +102,6 @@ First of all a crosscutting process interceptor that does nothing.
 ```
 class TimeMessage implements MethodInterceptor
 {
-    /**
-     * (non-PHPdoc)
-     * @see Ray\Aop.MethodInterceptor::invoke()
-     */
     public function invoke(MethodInvocation $invocation)
     {
         $result = $invocation->proceed();
@@ -139,8 +135,8 @@ Add this to the `configure` method in `sandbox/Module/AppModule.php`.
 ```
         // time message binding
         $this->bindInterceptor(
-            $this->matcher->subclassesOf('Sandbox\Resource\App\First\Greeting\Aop'),
-            $this->matcher->any(),
+            $this->matcher->subclassesOf('Sandbox\Resource\App\First\Greeting\Aop'), // class match
+            $this->matcher->any(),                                                   // method match
             [new TimeMessage]
         );
 ```

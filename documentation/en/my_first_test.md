@@ -14,9 +14,10 @@ Let's test the greeting resource that we made in [my_first_resource My First Res
 
 Lets create the test file structure. In relation to the greeting file it will look like the following.
 
-| Resource File | `apps/Sandbox/Resource/App/First/Greeting.php` |
-|---------------|------------------------------------------------|
-| Test File　| apps/Sandbox/tests/Sandbox/Resource/App/First/GreetingTest.php` |
+| type          | file path |
+|---------------|----------------------------------------------------------------|
+| Resource File | apps/Sandbox/src/Sandbox/Resource/App/First/GreetingTest.php   |
+| Test File   　| apps/Sandbox/tests/Sandbox/Resource/App/First/GreetingTest.php |
 
 ## Creating The Test Class File 
 
@@ -32,8 +33,6 @@ use Ray\Di\Injector;
 class GreetingTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * Resource client
-     *
      * @var BEAR\Resource\ResourceInterface
      */
     private $resource;
@@ -41,9 +40,7 @@ class GreetingTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         parent::setUp();
-        if (! $this->resource) {
-            $injector = Injector::create([new TestModule]);
-            $this->resource = $injector->getInstance('BEAR\Resource\ResourceInterface');
+        $this->resource = Injector::create([new TestModule])->getInstance('BEAR\Resource\ResourceInterface');
         }
     }
 
@@ -140,7 +137,13 @@ In the test the application object uses the resource client stored in a property
 
 ### resource() 
 ```
-$resource # $this->resource->get->uri('app://self/first/greeting')->withQuery(['name' > 'BEAR'])->eager->request();
+$this
+    ->resource
+    ->get
+    ->uri('app://self/first/greeting')
+    ->withQuery(['name' > 'BEAR'])
+    ->eager
+    ->request();
 
 ```
 We use the resource client inside the resource() method to access the resource.

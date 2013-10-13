@@ -9,7 +9,7 @@ category: My First - Tutorial
 ## Dependencies on Greeting that Enables a Whole Range of Greetings 
 
 In the greeting resource in [my_first_resource My First Resource] the word "Hello" is fixed.
-Here using ([http://ja.wikipedia.org/wiki/%E4%BE%9D%E5%AD%98%E6%80%A7%E3%81%AE%E6%B3%A8%E5%85%A5 Dependency Injection]）
+Here using [Dependency Injection](http://ja.wikipedia.org/wiki/%E4%BE%9D%E5%AD%98%E6%80%A7%E3%81%AE%E6%B3%A8%E5%85%A5)
 we can make all sorts of greeting respond to this. 
 
 ## Dependency 
@@ -88,11 +88,16 @@ A DI configuration is needed to be bound to the named `greeting_msg` method.
 
 ### Injector DSL 
 
-We can add the following to the [AppModule](https://github.com/koriym/BEAR.Sunday/blob/master/apps/Sandbox/Module/AppModule.php) configure method, which is good enough for our purposes.
+We can add the following to the [{$APP_PATH}\Module\App\Dependency](https://github.com/koriym/BEAR.Package/blob/master/apps/Sandbox/src/Sandbox/Module/AppModule.php) or [{$APP}\Module\AppModule](https://github.com/koriym/BEAR.Package/blob/master/apps/Sandbox/src/Sandbox/Module/AppModule.php) configure method, which is good enough for our purposes.
 The DI configuration (Injector Config) takes place in the `configure` method of the module. 
 
 ```
-$this->bind()->annotatedWith('greeting_msg')->toInstance('Hola');
+protected function configure()
+{
+    // ...
+    $this->bind()->annotatedWith('greeting_msg')->toInstance('Hola');
+}
+
 ```
 
 Here we pass 'Hola' into the method we annotated with `@Inject`and`@Named("greeting_msg")` (or even a contstructor).

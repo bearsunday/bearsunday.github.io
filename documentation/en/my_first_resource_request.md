@@ -10,7 +10,7 @@ category: My First - Tutorial
 
 Until not in the tutorial we have been using the console or web browser to request resources, in this tutorial we will make a resource request from another resource.
 
-We will change the page we made in [my_first_web_page My First Web Page] to use the resource we made in [my_first_resource My First Resource].
+We will change the page we made in <a href="my_first_web_page.html">My First Web Page</a> to use the resource we made in [my_first_resource My First Resource].
 The page resource will request an application resource.
 The page resource is a resource primarily concerned with a page.
 Normally a page resource will request all of the necessary application resources in order to compose them together within itself.
@@ -21,7 +21,7 @@ Normally a page resource will request all of the necessary application resources
 
 In BEAR.Sunday the necessary services (object) fundamentally expects everything to be injected externally. 
 In a resource request we need a resource client.
-Using the type hinted Resource client interface （`BEAR\Resource\ResourceInterface`） and mark using the @Inject annotation we can have it injected for us (external assignment).
+Using the type hinted Resource client interface （`BEAR\Resource\ResourceInterface`） and mark using the`@Inject` annotation we can have it injected for us (external assignment).
 
 ```
 use BEAR\Resource\ResourceInterface;
@@ -40,6 +40,7 @@ class User
 
 ## Using the Trait Setter 
 This setter can be used via a trait as in the example below.
+
 ```
 use BEAR\Sunday\Inject\ResourceInject;
 
@@ -49,27 +50,28 @@ class User
 }
 ```
 
-## GET Request 
+## GET Request
 
 A method that makes a resource request to an application resource with a URI `app://self/first/greeting` and appended query string '?name=$name' looks like this.
 
 ```
     /**
-     * Get
-     *
      * @param  string $name
      */
     public function onGet($name = 'anonymous')
     {
         $this['greeting'] = $this->resource
-        ->get
-        ->uri('app://self/first/greeting')
-        ->withQuery(['name' => $name])
-        ->request();
+            ->get
+            ->uri('app://self/first/greeting')
+            ->withQuery(['name' => $name])
+            ->request();
         
         return $this;
     }
 ```
+
+Here we assign `request` to `greeting` slot, not a value. If we add `eager` clause,
+Then that request was evaluate and assign as value.
 
 ## **$_GET** Query
 
@@ -96,7 +98,7 @@ content-type: text/html; charset=UTF-8
 greeting:Hello, BEAR
 ```
 
-'Hello, BEAR' is passed into the greeting slot. If we remove the query what happens ?
+**Hello, BEAR** is passed into the greeting slot. If we remove the query what happens ?
 
 ```
 $ php api.php get 'page://self/first/greeting'
@@ -135,13 +137,18 @@ The template for the page resource is also the same.
 ## Check the HTML through the Command Line 
 
 ```
-$ php web.php get '/first/greeting?name=Sunday'
+$ cd {$PROJECT_ROOT}/apps/Sandbox/var/www
+$ php dev.php get '/first/greeting?name=Sunday'
 ```
 ```
 200 OK
+...
 cache-control: ["no-cache"]
-date: ["Fri, 01 Feb 2013 14:27:46 GMT"]
+date: ["Sun, 13 Oct 2013 19:50:11 GMT"]
 [BODY]
+greeting app://self/first/greeting?name=Sunday
+
+[VIEW]
 <!DOCTYPE html>
 <html lang="en">
 <body>
@@ -151,5 +158,9 @@ date: ["Fri, 01 Feb 2013 14:27:46 GMT"]
 
 ```
 
+We can see the resource view as well as resource value. We can confirm `greeting` slot has request with underlined URI.
+This request was evaluated on appearance in view. In this case both has no difference,
+but you may want to have a lazy request because the resource appearance will be changed in condition.
+
 ## Testing The Page 
-The page is also a resource. The method of testing these is the same as testing page resources covered in [my_first_test My First Test] 
+The page is also a resource. The method of testing these is the same as testing page resources covered in <a href="my_first_test.html">My First Test</a>
