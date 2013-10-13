@@ -33,6 +33,7 @@ final class Form
 ```
 
 Interceptor binding
+
 ```
     /**
      * @Form - bind form validator
@@ -51,7 +52,8 @@ In this case the `PostsFormValidator` is bound to methods annotated with `@Form`
 
 ## @Form Validation Interceptor 
 
-In the interceptor that is　wedged between the request and the method, after the tag removal process is when the validation happens. 
+In the interceptor that is　wedged between the request and the method, after the tag removal process is when the validation happens.
+
 ```
 return $invocation->proceed();
 ```
@@ -62,6 +64,7 @@ return $page->onGet();
 ```
 
 When this is all wrapped up in the `PostsFormValidator` it looks like this.
+
 ```
 /**
  * Log Interceptor

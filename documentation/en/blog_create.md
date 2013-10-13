@@ -10,6 +10,7 @@ In steps up until now we have been able to show posts that have been saved in ou
 ## Create a Posts Resource POST Interface 
 
 Adding a POST interface to allow you to add posts to a posts resource that only has a GET interface method.
+
 ```
 public function onPost($title, $body, $created # null, $modified  null)
 {
@@ -18,6 +19,7 @@ public function onPost($title, $body, $created # null, $modified  null)
 ```
 
 First let try a POST even in this bare state.
+
 ```
 $ php api.php post 'app://self/blog/posts'
 
@@ -42,14 +44,17 @@ param-put: id,title,body
 param-delete: id
 content-type: application/hal+json; charset=UTF-8
 ```
+
 The possible methods are shown in the `allow` header, then each of the possible parameters are shown. Parameters shown in parenthesis are optional.
 
 For example a GET method can be requested with either no parameters or by using the `id` parameter. The POST method however *must* contain a `title` and `body` parameter.
 
 The required fields have now become clear. We can now add a query to make our request.
+
 ```
 php api.php post 'app://self/posts?title# hello&body"this is first post"'
 ```
+
 ```
 200 OK
 [BODY]
@@ -57,6 +62,7 @@ NULL
 ```
 A status 200 OK with contents NULL has been returned.
 There is no problem, however lets change this to use the *more* accurate 204(No Content) status code.
+
 ```
 public function onPost($title, $body, $created # null, $modified  null)
 {
@@ -175,6 +181,7 @@ Add a form to a template.
     Note: When specifying a `$_GET` query you set this with `$_GET['_method']`.
 
 Implementing the page resource POST interface.
+
 ```
     /**
      * Post

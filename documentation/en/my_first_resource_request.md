@@ -22,11 +22,11 @@ Normally a page resource will request all of the necessary application resources
 In BEAR.Sunday the necessary services (object) fundamentally expects everything to be injected externally. 
 In a resource request we need a resource client.
 Using the type hinted Resource client interface （`BEAR\Resource\ResourceInterface`） and mark using the @Inject annotation we can have it injected for us (external assignment).
+
 ```
 use BEAR\Resource\ResourceInterface;
 use Ray\Di\Di\Inject;
-```
-```
+
 class User
 {
     /**
@@ -71,7 +71,7 @@ A method that makes a resource request to an application resource with a URI `ap
     }
 ```
 
-## `$_GET` Query 
+## **$_GET** Query
 
 The contents of `$_GET['name']` is passed to the variable `$name`.
 When `$_GET['name']` doesn't exist 'anonymous' is passed in.
@@ -122,6 +122,7 @@ We have been able to check that the default value has been injected.
 ## Page Template Preparation 
 
 The template for the page resource is also the same.
+
 ```
 <!DOCTYPE html>
 <html lang="en">

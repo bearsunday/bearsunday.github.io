@@ -16,8 +16,10 @@ A resource each internally contain their own renderer. In the sandbox applicatio
 
   Note: A controller does not retrieve data from the model and pass strings for output to a template engine. In BEAR.Sunday all resources include an view renderer. The responsibility for the output of the model is held by each of the resources themselves.
 
-## Posts Resource Template 
-_Sandbox/Resource/App/Posts.tpl_
+## Posts Resource Template
+
+*Sandbox/Resource/App/Posts.tpl*
+
 ```
 <table class="table table-bordered table-striped">
     <tr>
@@ -39,7 +41,8 @@ _Sandbox/Resource/App/Posts.tpl_
 We are unfolding the contents (body property) of the posts resource ($posts).
 
 ## Posts Display Page Template 
-_Sandbox/Resource/Resource/Posts.tpl_
+
+*Sandbox/Resource/Resource/Posts.tpl*
 
 ```
 <html>

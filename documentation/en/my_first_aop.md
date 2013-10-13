@@ -98,6 +98,7 @@ Lets take a look at the code.
 Lets first take the original methods crosscutting process, this is an interceptor.
 
 First of all a crosscutting process interceptor that does nothing.
+
 ```
 class TimeMessage implements MethodInterceptor
 {
@@ -116,6 +117,7 @@ class TimeMessage implements MethodInterceptor
 Run the original method（`$invocation->proceed()`）, and return its response.
 
 Using `$invocation->proceed()` when we run the original method the time message is added at the end of it.
+
 ```
     public function invoke(MethodInvocation $invocation)
     {

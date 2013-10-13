@@ -43,7 +43,8 @@ When testing the you simply use the constructor or specified setter to pass in t
 In [my_first_web_page_2 My First Resource Request] we used a trait for injection, but here we use a constructor to receive the dependency.
 
 The constructor looks like this.
-`In the constructor wanting external assignment(injection) we add the `@Inject` annotation.
+
+In the constructor wanting external assignment(injection) we add the `@Inject` annotation.
 In which case in order to set the specified injection, we add the annotation `@Named` to the injection point.
 
 ```

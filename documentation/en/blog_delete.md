@@ -65,6 +65,7 @@ $ php api.php delete app://self/posts?id=1
 ## Unit Test 
 
 If we access with DELETE the records should be reduced by 1. The test will look something like this.
+
 ```
     /**
      * @test

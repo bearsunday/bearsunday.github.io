@@ -16,7 +16,7 @@ Lets create the test file structure. In relation to the greeting file it will lo
 
 | Resource File | `apps/Sandbox/Resource/App/First/Greeting.php` |
 |---------------|------------------------------------------------|
-| Test File　| `apps/Sandbox/tests/Resource/App/First/GreetingTest.php` |
+| Test File　| apps/Sandbox/tests/Sandbox/Resource/App/First/GreetingTest.php` |
 
 ## Creating The Test Class File 
 

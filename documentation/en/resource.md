@@ -119,16 +119,16 @@ the resource object retrieved using a URI is processed through a request interfa
 
 | noun| verb |
 |-----|:----:|
-| `cart` | show, addItem, remoteItem, addCoupon, removeCoupon, increaseQuantity, decreaseQuantity |
+| cart | show, addItem, remoteItem, addCoupon, removeCoupon, increaseQuantity, decreaseQuantity |
 
 
 #### REST
 
 | noun | verb |
 |------|------|
-| *`cart`* | get, post, put, delete |
-| *`cart/item`* | get, post, put, delete |
-| *`cart/coupon`* | get, post, put, delete |
+| cart | get, post, put, delete |
+| cart/item | get, post, put, delete |
+| cart/coupon | get, post, put, delete |
 
 
 ### REST Reference Links

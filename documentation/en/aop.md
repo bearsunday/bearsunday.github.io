@@ -164,9 +164,9 @@ The `MethodInvocation` main methods are as below.
 
 | Method Signature |　Function |
 |----------------- | ----------|
-| `void proceed()` | Run the target method |
-| `Reflectionmethod getMethod()` | Retrieve the target method reflection |
-| `Object getThis()` | Retrieve the target object |
-| `array getArguments()` (| Retrieve the argument array  |
-| `array getAnnotations()` | Retrieve the target methods annotations |
+| void proceed() | Run the target method |
+| Reflectionmethod getMethod() | Retrieve the target method reflection |
+| Object getThis() | Retrieve the target object |
+| array getArguments() (| Retrieve the argument array  |
+| array getAnnotations() | Retrieve the target methods annotations |
 

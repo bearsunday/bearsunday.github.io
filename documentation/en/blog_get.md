@@ -57,7 +57,8 @@ $app = require '/path/to/script/instance.php';
 
 Lets prepare some stub data.
 
-`apps/Sandbox/stub/resource.php`
+*apps/Sandbox/stub/resource.php*
+
 ```
 return [
     'Sandbox\Resource\App\Posts' =>
@@ -117,7 +118,8 @@ It has become clear what kind of request result you are looking for using dummy 
 The resource returns stub data by the resource method name being bound to the stub interceptor 
 and implemented through aspect orientated programming.
 
-apps/Sandbox/Module/StabModule.php
+*apps/Sandbox/Module/StabModule.php*
+
 ```
 foreach ($stub as $class => $value) {
     $this->bindInterceptor(
@@ -136,7 +138,8 @@ Next we will actually access a db and extract data to be used in an `onGet` meth
 
 BEAR.Sunday doesn't have its own database usage library or database abstraction library. Inside the application resource by using other libraries you can directly use SQL or using an ORM. Inside the sandbox application [http://www.doctrine-project.org/projects/dbal.html Docrine DBAL] is used.
 
-_Sandbox/Resource/App/Blog/Posts.php_
+*Sandbox/Resource/App/Blog/Posts.php*
+
 ```
 <?php
 /**

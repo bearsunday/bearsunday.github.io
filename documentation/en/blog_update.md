@@ -9,6 +9,7 @@ category: Blog Tutorial
 ## Creating an Edit Page 
 
 This is pretty much the same as posts create page. What is different is only that in the display (GET Request) is that the post data pre-populates the fields.
+
 ```
     /**
      * Get

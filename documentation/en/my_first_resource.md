@@ -44,9 +44,10 @@ Lets run the Sandbox application. The URI, PHP class and file layout is as follo
 
 | URI | Class | File |
 |-----|--------|-------|
-| `app://self/first/greeting` | `Sandbox\Resource\App\First\Greeting` | `apps/Sandbox/Resource/App/First/Greeting.php` |
+| app://self/first/greeting | Sandbox\Resource\App\First\Greeting | apps/Sandbox/Resource/App/First/Greeting.php |
 
 Implementing the request interface (method).
+
 ```
 namespace Sandbox\Resource\App\First;
 
