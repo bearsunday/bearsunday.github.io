@@ -4,6 +4,10 @@ title: BEAR.Sunday | My First Resource
 category: My First - Tutorial
 --- 
 
+> *Caution: My First - Tutorial needs proofreading*
+
+****
+
 # My First Resource
 # Application Resource 
 
