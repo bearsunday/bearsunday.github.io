@@ -22,7 +22,7 @@ The resource object is an object that has resource behavior.
 
 
 ```php
-
+<?php
 namespace Sandbox\Blog;
 
 class Author extends ResourceObject
@@ -68,18 +68,20 @@ class Author extends ResourceObject
 Using the URI and a query the resource is requested.
 
 ```php
+<?php
 $user = $resource
-  ->get
-  ->uri('app://self/user')
-  ->withQuery(['id' => 1])
-  ->eager
-  ->request();
+    ->get
+    ->uri('app://self/user')
+    ->withQuery(['id' => 1])
+    ->eager
+    ->request();
 ```
 
  * This request passes 1 to the **onGet($id)** method in the **Sandbox\Resource\App\User** class that conforms to [PSR0](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-0.md).
  * The retrieved resource has 3 properties **code**, **headers** and **body**.
 
 ```php
+<?php
 var_dump($user->body);
 
 // Array
@@ -97,7 +99,7 @@ A resource can contain [hyperlinks](http://en.wikipedia.org/wiki/Hyperlink) to o
 Hyperlinks are shown by methods annotated with **@Link**.
 
 ```php
-
+<?php
 use BEAR\Resource\Annotation\Link;
 
 /**
@@ -116,6 +118,7 @@ Within a link their are several types **self**, **new**, **crawl** which can be 
 `linkSelf` retrieves the linked resource.
 
 ```php
+<?php
 $blog = $resource
     ->get
     ->uri('app://self/user')
@@ -132,6 +135,7 @@ Just like clicking a link a the webpage it is replaced by the next resource.
 `linkNew` adds the linked resource to the response.
 
 ```php
+<?php
 $user = $resource
     ->get
     ->uri('app://self/user')
@@ -154,6 +158,7 @@ Each resource has a hyperlink. In ths resource graph add the name **post-tree**,
 In the author resource there is a hyperlink to the post resource. This is a 1:n relationship.
 
 ```php
+<?php
 /**
  * @Link(crawl="post-tree", rel="post", href="app://self/post?author_id={id}")
  */
@@ -162,6 +167,7 @@ public function onGet($id = null)
 In the post resource there is a hyperlink to meta and tag resources. This is also a 1:n relationship.
 
 ```php
+<?php
 /**
  * @Link(crawl="post-tree", rel="meta", href="app://self/meta?post_id={id}")
  * @Link(crawl="post-tree", rel="tag",  href="app://self/tag?post_id={id}")
@@ -173,6 +179,7 @@ public function onGet($author_id)
 There is a hyperlink in the tag resource with only an ID for the tag/name resource that corresponds to that ID. It is a 1:1 relationship.
 
 ```php
+<?php
 /**
  * @Link(crawl="post-tree", rel="tag_name",  href="app://self/tag/name?tag_id={tag_id}")
  */
@@ -182,6 +189,7 @@ public function onGet($post_id)
 Set the crawl name and make the request.
 
 ```php
+<?php
 $graph = $resource
   ->get
   ->uri('app://self/marshal/author')
@@ -235,6 +243,7 @@ For example in an order resource by using **POST** the order is created, from th
 Order resource
 
 ```php
+<?php
 /**
  * @Link(rel="payment", href="app://self/payment{?order_id, credit_card_number, expires, name, amount}", method="put")
  */
@@ -244,6 +253,7 @@ public function onPost($drink)
 Client code
 
 ```php
+<?php
     $order = $resource
         ->post
         ->uri('app://self/order')
@@ -275,6 +285,7 @@ Apart from `JsonModule`you can also use the `HalModule` which uses a [HAL (Hyper
 
 
 ```php
+<?php
 $modules = [new ResourceModule('Sandbox'), new JsonModule]:
 $resource = Injector::create(modules)
   ->getInstance('BEAR\Resource\ResourceInterface');
@@ -283,6 +294,7 @@ $resource = Injector::create(modules)
 When the resource is output as a string the injected resource renderer is used then displayed as the resource representation.
 
 ```php
+<?php
 echo $user;
 
 // {
@@ -296,6 +308,7 @@ In this case `$user` is the renderers internal `ResourceObject`.
 This is not a string so is treated as either an array or an object.
 
 ```php
+<?php
 
 echo $user['name'];
 
@@ -312,6 +325,7 @@ echo $user->onGet(2);
 ### Lazy Loading
 
 ```php
+<?php
 $user = $resource
   ->get
   ->uri('app://self/user')
@@ -353,6 +367,7 @@ In this case the when the parameter that has the variable name `$user_id` is nee
 ### Parameter Provider Implementation
 
 ```php
+<?php
 class SessionIdParam implements ParamProviderInterface
 {
     /**
@@ -380,6 +395,7 @@ The parameter provider can register multiple parameters with a matching variable
 By not setting a variable name and assigning `OnProvidesParam` to '*' then setting up a provided is not needed, it is possible to inject parameters into a class method following a single pattern.
 
 ```php
+<?php
 class Post
 {
     public function onPost($date)
@@ -399,6 +415,7 @@ In the `onPost` method only the values passed to it are used, which has a clear 
 To use the `onProvides` method functionality simply register the `OnProvidesParam` parameter provider.
 
 ```php
+<?php
 $resource->attachParamProvider('*', new OnProvidesParam);
 ```
 
@@ -407,6 +424,7 @@ $resource->attachParamProvider('*', new OnProvidesParam);
 A resource is built up from other resources. Although a resource is a service, a layered architecture can be acheived by the resource also becoming a resource client. A resource is handled with injection and aspect wrapping from the Ray.Di injector, meaning a resource can be built as a clean object with a separation of concerns.
 
 ```php
+<?php
 
 class News extends ResourceObject
 {

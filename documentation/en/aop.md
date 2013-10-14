@@ -69,6 +69,7 @@ class WeekendBlocker implements MethodInterceptor
 Finally, we configure everything. In this case we match any class, but only the methods with our @NotOnWeekends annotation:
 
 ```php
+<?php
 $this->bindInterceptor(
     $this->matcher->any(),                          // any class
     $this->matcher->annotatedWith('NotOnWeekends'), // @NotOnWeekends method
@@ -98,13 +99,15 @@ The method interceptor API implemented by Ray.Aop is a part of a public specific
 
 The interceptor takes hold of the method being called and performs cross-cutting processing on it. The interceptor implements the ```invoke``` method, inside that method the original method is called and the cross-cutting operations are performed.
 
-```
+```php
+<?php
 public function invoke(MethodInvocation $invocation);
 ```
 
 Below is a logger interceptor which logs the the parameters from the operation output.
 
-```
+```php
+<?php
 class Logger implements MethodInterceptor
 {
     use LogInject;
@@ -134,7 +137,8 @@ The primary concern of the original method is its *(core concern)*, this is comp
 
 The interceptor you made operates by being bound to the method. You use the *matcher* to decides what method it will be bound to. The object below binds all methods that begin with `on` in classes that inherit from `BEAR\Resource\ResourceObject` to the injected log object.
 
-```
+```php
+<?php
 $logger = $this->requestInjection('BEAR\Framework\Interceptor\Logger');
 $this->bindInterceptor(
     $this->matcher->subclassesOf('BEAR\Resource\ResourceObject'),
@@ -154,6 +158,7 @@ $this->bindInterceptor(
 
 For example when you specify the following method matching, methods that are named setXX are matched.
 ```
+<?php
 $this->matcher->startWith('set')
 ```
 

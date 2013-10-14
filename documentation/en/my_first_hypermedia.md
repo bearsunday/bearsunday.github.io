@@ -30,13 +30,13 @@ When you order a coffee, the `REST API` is provided with the following.
 
 You use this `API` when ordering a drink. When using this API you create a (POST) `Order Resource`.
 
-```
+```php
 post http://restbucks.com/order/?drink=latte
 ```
 
 The order resource has been created and the order contents are returned.
 
-```
+```php
 {
     "drink": "latte",
     "cost": 2.5,
@@ -55,7 +55,7 @@ is used to provide `JSON+HAL` hyper-media.
 
 In BEAR.Sunday when you set your resource rendering to `HalRenderer` you can output in HAL format.
 
-```
+```php
 {
     "drink": "latte",
     "cost": 2.5,
@@ -83,7 +83,7 @@ By having links you transform your service from just another data format to a se
 
 You declare your resource object's `links` property like this. 
 
-```
+```php
     public $links = [
         'news' # > [Link::HREF > 'page://self/news/today']
     ];
@@ -93,13 +93,13 @@ You declare your resource object's `links` property like this.
 
 When the URI to dynamically decided you can for example you can create a query in the onPost method like this.
 
-```
+```php
 $this->links['friend'] # [Link::HREF => "app://self/sns/friend?id{$id}"];
 ```
 
 In the `links` property you can set the URI template like this.
 
-```
+```php
     public $links => [
         'friend' # > [Link::HREF => 'app://self/sns/friend{?id}', Link::TEMPLATED > true]
     ];
@@ -111,7 +111,7 @@ Here the necessary variable `{id}` is retrieved from the resource `body`.
 
 Here is the class that assigns `$item` and creates the order resource.
 
-```
+```php
 <?php
 namespace Sandbox\Resource\App\First\HyperMedia;
 
@@ -131,12 +131,11 @@ class Order extends AbstractObject
         return $this;
     }
 }
-
 ```
 
 In order to add hyperlinks setup the `links` property.
 
-```
+```php
     public $links = [
         'payment' # > [Link::HREF => 'app:/self/first/hypermedia/payment{?id}', Link::TEMPLATED > true]
     ];
@@ -144,10 +143,11 @@ In order to add hyperlinks setup the `links` property.
 
 ## Make API Request From the Console  
 
-```
+```php
 $ api get app://self/first/hypermedia/user?id=1
 ```
-```
+
+```php
 200 OK
 content-type: application/hal+json; charset=UTF-8
 [BODY]
@@ -173,7 +173,7 @@ The `payment` link now appears.
 In order to use links in your code, inject the `A` object using the trait `AInject` and use the `href` method to retrieve links.
 The resource body can retrieve the link composed by the URI template.
 
-```
+```php
 <?php
 namespace Sandbox\Resource\App\First\HyperMedia;
 

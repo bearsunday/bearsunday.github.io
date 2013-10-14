@@ -23,7 +23,7 @@ Lets create the test file structure. In relation to the greeting file it will lo
 
 We will save the class as `apps/Sandbox/tests/Resource/App/First/GreetingTest.php`.
 
-```
+```php
 <?php
 namespace Sandbox\tests\Resource\App\Blog;
 
@@ -126,7 +126,8 @@ In `build/coverage/index.html` we can see the scope of the tests covered.
 ## Let's Look At The Test Code 
 
 ### setup() 
-```
+```php
+<?php
 $injector = Injector::create([new TestModule]);
 $app = $injector->getInstance('BEAR\Sunday\Extension\Application\AppInterface');
 $this->resource = $app->resource;
@@ -135,8 +136,10 @@ $this->resource = $app->resource;
 We create an injector in the test class setup method, with that interceptor we grab the application object.
 In the test the application object uses the resource client stored in a property.
 
-### resource() 
-```
+### resource()
+
+```php
+<?php
 $this
     ->resource
     ->get

@@ -17,14 +17,17 @@ The renderer is injected using `Dependency Injection`. In the application module
 When creating a Web API for example a `JsonRenderer` which renders JSON or a format renderer that outputs JSON and link information [HAL](http://stateless.co/hal_specification.html) (JSON+HAL) can be setup in the DI Settings.
 
 In the `DevModule` which is used for development the resource renderer interface is bound to the `DevRenderer` for development use. By changing this binding you can change every resource to output JSON data for a Web API.
-```
+
+```php
+<?php
 $this->bind('BEAR\Resource\Renderable')->to('BEAR\Framework\Resource\View\DevRenderer');
 ```
 
 ## Rendering 
 The renderer grabs hold of the resource state as a `ResourceObject`, then uses the injected template engine to turn this into a string.
 
-```
+```php
+<?php
 public function render(ResourceObject $ro)
 {
  ....

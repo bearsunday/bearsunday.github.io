@@ -47,7 +47,8 @@ The constructor looks like this.
 In the constructor wanting external assignment(injection) we add the `@Inject` annotation.
 In which case in order to set the specified injection, we add the annotation `@Named` to the injection point.
 
-```
+```php
+<?php
     /**
      * Constructor
      * 
@@ -72,6 +73,7 @@ So the injector cannot carry out the injection. Lets try this bad injection exec
 ```
 $ php api.php get 'app://self/first/greeting/di'
 ```
+
 ```
 500 Internal Server Error
 X-EXCEPTION-CLASS: Ray\Di\Exception\NotBound
@@ -91,7 +93,8 @@ A DI configuration is needed to be bound to the named `greeting_msg` method.
 We can add the following to the [{$APP_PATH}\Module\App\Dependency](https://github.com/koriym/BEAR.Package/blob/master/apps/Sandbox/src/Sandbox/Module/AppModule.php) or [{$APP}\Module\AppModule](https://github.com/koriym/BEAR.Package/blob/master/apps/Sandbox/src/Sandbox/Module/AppModule.php) configure method, which is good enough for our purposes.
 The DI configuration (Injector Config) takes place in the `configure` method of the module. 
 
-```
+```php
+<?php
 protected function configure()
 {
     // ...
@@ -106,7 +109,8 @@ Here we are directing an object (instance), but we can also can also set a class
 Using a factory is is possible to generate a more complex instance. * Even if you change the generation method, the retrieval descriptor method will not change. 
 
 
-```
+```php
+<?php
     /**
      * @Inject
      * @Named("greeting_msg")
@@ -116,10 +120,12 @@ Using a factory is is possible to generate a more complex instance. * Even if yo
         $this->message = $message;
     }
 ```
+
 ## Let's Check 
 ```
 $ php api.php get 'app://self/first/greeting/di?name=BEAR'
 ```
+
 ```
 200 OK
 ...

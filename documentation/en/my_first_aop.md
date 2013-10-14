@@ -10,13 +10,14 @@ category: My First - Tutorial
 
 Add the current time to the greeting resource. The final outcome is like this.
 
-```
+```php
 "Hello, BEAR. It is 10:22."
 ```
 
 Placing the time after the message like this example is an easy way of implementing this.
 
-```
+```php
+<?php
     public function onGet($name = 'anonymous')
     {
         $time = date('g:i');
@@ -28,7 +29,8 @@ How about if you had to add the current time like this to another 10 resources?
 Carry out on another 10 resources an 'Add the time info to the end of some message' process.  
 We need to do the same process over and over again so lets make it a method.
 
-```
+```php
+<?php
     public function onGet($name = 'anonymous')
     {
         return "{$this->message}, {$name}". timeMessage();
@@ -39,7 +41,8 @@ This brings consolidation and increases re-usability.
 
 But we could do the same using a trait.
 
-```
+```php
+<?php
     use TimeMessageTrait;
 
     public function onGet($name = 'anonymous')
@@ -99,7 +102,8 @@ Lets first take the original methods crosscutting process, this is an intercepto
 
 First of all a crosscutting process interceptor that does nothing.
 
-```
+```php
+<?php
 class TimeMessage implements MethodInterceptor
 {
     public function invoke(MethodInvocation $invocation)
@@ -114,13 +118,14 @@ Run the original method（`$invocation->proceed()`）, and return its response.
 
 Using `$invocation->proceed()` when we run the original method the time message is added at the end of it.
 
-```
-    public function invoke(MethodInvocation $invocation)
-    {
-        $time = date('g:i');
-        $result = $invocation->proceed();
-        return $result . " It is {$time} now";
-    }
+```php
+<?php
+public function invoke(MethodInvocation $invocation)
+{
+    $time = date('g:i');
+    $result = $invocation->proceed();
+    return $result . " It is {$time} now";
+}
 ```
 
 ## Bind this interceptor to a specific method. 
@@ -132,22 +137,25 @@ Using annotations is the general way, not using them here can also be done easil
 
 Add this to the `configure` method in `sandbox/Module/AppModule.php`.
 
-```
-        // time message binding
-        $this->bindInterceptor(
-            $this->matcher->subclassesOf('Sandbox\Resource\App\First\Greeting\Aop'), // class match
-            $this->matcher->any(),                                                   // method match
-            [new TimeMessage]
-        );
+```php
+<?php
+// time message binding
+$this->bindInterceptor(
+    $this->matcher->subclassesOf('Sandbox\Resource\App\First\Greeting\Aop'), // class match
+    $this->matcher->any(),                                                   // method match
+    [new TimeMessage]
+);
 ```
 
 In this way the `TimeMessage` interceptor is bound to any method in the `'Sandbox\Resource\App\First\Greeting\Aop'` class or sub-class.
 
-### Lets run it 
+### Lets run it
+
 ```
 get app://self/first/greeting/aop?name=BEAR
 ```
-```
+
+```php
 200 OK
 ...
 [BODY]

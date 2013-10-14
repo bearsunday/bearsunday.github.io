@@ -53,12 +53,14 @@ The resource link functionality encapsulates the link relationships between reso
 The resources true value is in the body that displays the resource content.
 
 Example) Car speed resource
+
 ```
 (int) 60
 ```
 
 Example) Car journey resource
-```
+
+```php
 [
  'speed' => 60,
  'passenger' => 1,
@@ -79,7 +81,9 @@ Resource expression: 'Weather: <img src="sky.gif">Sunny'
 A resource can contain an interface that responds to the request. For example a resource that only responds to a GET request will have an `onGet` method.
 
 Example  a GET interface that responds to $id, $body, $title　as a query (parameters).
-```
+
+```php
+<?php
 public function onGet($id, $body, $title = 'untitled') 
 {
 }
@@ -94,7 +98,9 @@ This is different to BEAR.Saturday which has the notation of a a regular PHP met
 ## Self Building 
 
 The method that receives the request (Request Interface) can be change the resource status by means of a database, external web API or through business logic. (hence changing properties of the $body property, $headers or $code).
-```
+
+```php
+<?php
 return $this
 ```
 

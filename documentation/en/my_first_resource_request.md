@@ -23,7 +23,8 @@ In BEAR.Sunday the necessary services (object) fundamentally expects everything 
 In a resource request we need a resource client.
 Using the type hinted Resource client interface （`BEAR\Resource\ResourceInterface`） and mark using the`@Inject` annotation we can have it injected for us (external assignment).
 
-```
+```php
+<?php
 use BEAR\Resource\ResourceInterface;
 use Ray\Di\Di\Inject;
 
@@ -41,7 +42,8 @@ class User
 ## Using the Trait Setter 
 This setter can be used via a trait as in the example below.
 
-```
+```php
+<?php
 use BEAR\Sunday\Inject\ResourceInject;
 
 class User
@@ -54,7 +56,8 @@ class User
 
 A method that makes a resource request to an application resource with a URI `app://self/first/greeting` and appended query string '?name=$name' looks like this.
 
-```
+```php
+<?php
     /**
      * @param  string $name
      */
@@ -89,6 +92,7 @@ Lets check the page resource as an API.
 ```
 $ php api.php get 'page://self/first/greeting?name=BEAR'
 ```
+
 ```
 200 OK
 cache-control: no-cache
@@ -103,6 +107,7 @@ greeting:Hello, BEAR
 ```
 $ php api.php get 'page://self/first/greeting'
 ```
+
 ```
 200 OK
 content-type: ["application\/hal+json; charset=UTF-8"]
@@ -125,7 +130,7 @@ We have been able to check that the default value has been injected.
 
 The template for the page resource is also the same.
 
-```
+```html
 <!DOCTYPE html>
 <html lang="en">
   <body>
@@ -140,6 +145,7 @@ The template for the page resource is also the same.
 $ cd {$PROJECT_ROOT}/apps/Sandbox/var/www
 $ php dev.php get '/first/greeting?name=Sunday'
 ```
+
 ```
 200 OK
 ...

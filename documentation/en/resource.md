@@ -75,15 +75,16 @@ This means that there is no state involved in the resource request.
 
 For example there is a state in the request when accessing a model object.
 
-```
-$user = new User;
-$user->setUserId($id); 
+```php
+<?php
+$user = new User($id);
 $name = $user->getName(); // Follows the premise that there is state through the setting of $id
 ```
 
 In a resource request there is no state.
 
-```
+```php
+<?php
 $name = $resource
   ->get
   ->uri('app://self/user')

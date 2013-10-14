@@ -11,7 +11,8 @@ BEAR.Sunday makes requests to each type of resource using the resource client. I
 ## Preperation 
 In order to inject the resource client object in the class wanting to the use the resource client from the injector, the resource client setter method is used. Using a trait is handy.
 
-```
+```php
+<?php
 use BEAR\Sunday\Inject\ResourceInject;
 
 class Edit extends Page
@@ -23,14 +24,15 @@ With this the the resource client is assigned to the resource property, using `$
 
 ## Request DSL 
 
-```
+```php
+<?php
 $this
-->resource
-->get
-->uri('app://self/blog/posts')
-->withQuery(['id' => 1])
-->eager
-->request();
+    ->resource
+    ->get
+    ->uri('app://self/blog/posts')
+    ->withQuery(['id' => 1])
+    ->eager
+    ->request();
 ```
 
 In this example the resource *`app://self/blog/posts`* with request `?id=1` is immediately made (eager).
@@ -52,11 +54,13 @@ A BEAR.Sunday resource has the same kind of structure as a www URI.
 {schema} shows the resource type, {application} is itself which points to `self`. In BEAR.Sunday page controller is also handled as a page resource. The application resource schema that matches the model is `app`.
 
 A top page with have the following expression. (a `page` resource in ones own application `self` with the `index` path)
+
 ```
 page://self/index
 ```
 
 The blog post application resource in the sandbox application has the following expression.
+
 ```
 app://self/blog/posts
 ```
@@ -77,7 +81,8 @@ In a request query you can pass named parameters. These are not standard php ord
 
 A query set as ['id' => 1] will correspond with the following resource request method. Set the parameter names. Any ordering of them is ignored.
 
-```
+```php
+<?php
 public function onGet($id)
 {
 }
@@ -90,12 +95,16 @@ A request object is an object that contains all of the needed logic for the requ
 A resource request has `lazy` and `eager` options. Any request that is not assigned `lazy` will default to an `eager` request.
 
 #### Lazy Request 
-```
+
+```php
+<?php
 $this['posts'] = $this->resource->get->uri('app://self/posts')->request();
 ```
 
 #### Eager Request 
-```
+
+```php
+<?php
 $this['posts'] = $this->resource->get->uri('app://self/posts')->eager->request();
 ```
 
@@ -127,7 +136,8 @@ The renderer is injected through dependency injection. You can change the render
 
 The resource does contain a specific method for rendering. When evaluated as as string and when a string is returned from as a result from the renderers rendering. Below is an example. 
 
-```
+```php
+<?php
 $userHtml = (string) $user; // Type conversion
 echo $user;
 ```

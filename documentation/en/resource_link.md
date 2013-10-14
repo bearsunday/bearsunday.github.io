@@ -18,7 +18,7 @@ The resource object contains a `links` property to which an array or a link obje
 
 For example the `sandbox top page resource` has link data to each page similar to the following.
 
-```
+```php
 use BEAR\Framework\Resource\Link;
 
 class Index extends Page
@@ -38,7 +38,7 @@ class Index extends Page
 
 The key shows the relationship (rel), the value shows the link URI. This connection data is used by the view template as follows.
 
-```
+```html
 <a href# "{href rel"helloworld"}">Hello World</a>
 <a href# "{href rel"blog"}">Blog tutorial</a>
 ```
@@ -53,7 +53,7 @@ When URI Templates are used the `templated` option is set to true. $rel` # > ['h
 
 `Blog Article Application Resources` will each be linked to the articles edit, delete etc page resources.
 
-```
+```php
     /**
      * Links
      *
@@ -69,7 +69,7 @@ When URI Templates are used the `templated` option is set to true. $rel` # > ['h
 With this how is each `id` (Article ID) set?
 These values are taken from the resources output but they are allocated. For example if you take the following output `id=2` is assigned.
 
-```
+```php
     public function onGet($id = null)
     {
          return ['name' # > 'BEAR', 'id' > 2];
@@ -78,7 +78,7 @@ These values are taken from the resources output but they are allocated. For exa
 
 If you take the next DB query the value is the select's id column value.
 
-```
+```php
     public function onGet($id)
     {
         $sql = "SELECT id, title, body, created, modified FROM {$this->table}";
@@ -98,7 +98,7 @@ Adding a linking method to the resource object. Using `on` + the links name beco
 
 For example in the following a `blog article`'s `coment resource` is connected with a link method.
 
-```
+```php
     public function onLinkComment(array $body)
     {
         $request = $this
@@ -119,15 +119,16 @@ Inside the link method the entity (the actual value) is returned, or like in thi
 
 The resource client  accesses link methods like this:
 
-```
+```php
 $blog = $this
-->resource
-->get
-->uri('app://self/User')
-->withQuery(['id' => 1])
-->linkSelf("blog")
-->eager
-->request()->body;
+    ->resource
+    ->get
+    ->uri('app://self/User')
+    ->withQuery(['id' => 1])
+    ->linkSelf("blog")
+    ->eager
+    ->request()
+    ->body;
 ```
 
 In this example the user with ID=1 retrieves a linked resource with the name `blog`.

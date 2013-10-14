@@ -20,7 +20,7 @@ GET http://localhost:8081/first/greeting?name=BEAR
 ```
 Did the greeting come back as JSON data like this ?
 
-```
+```json
 {
     "value": "Hello, BEAR1",
     "_links": {

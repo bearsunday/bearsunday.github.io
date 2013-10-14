@@ -20,7 +20,7 @@ a page resource can also create an instance of a page resource.
 
 The greeting **Hello** is fixed in a static page.
 
-```
+```php
 <?php
 namespace Sandbox\Resource\Page\First;
 
@@ -72,8 +72,9 @@ We save this in the same place as the resource and just change the suffix.
 |---|--------------|-------------------|
 |page://self/first/greeting | apps/Sandbox/Resource/Page/First/Greeting.php | apps/Sandbox/Resource/Page/First/Greeting.tpl |
 
-### Template 
-```
+### Template
+
+```html
 <!DOCTYPE html>
 <html lang="en">
   <body>
@@ -81,6 +82,7 @@ We save this in the same place as the resource and just change the suffix.
   </body>
 </html>
 ```
+
 ## Check the HTML from the Command Line 
 
 We assign the resource state to the template and the resource renders as HTML.
@@ -91,7 +93,8 @@ Lets check.
 ```
 $ php dev.php get /first/greeting
 ```
-```
+
+```html
 200 OK
 cache-control: ["no-cache"]
 date: ["Fri, 01 Feb 2013 14:21:45 GMT"]
@@ -103,6 +106,7 @@ date: ["Fri, 01 Feb 2013 14:21:45 GMT"]
 </body>
 </html>
 ```
+
 HTML all checked!
 
  Note: Because we are running the development environment, there are many headers prepended by `x-` that contain useful development information. 
