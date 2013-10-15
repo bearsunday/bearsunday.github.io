@@ -7,41 +7,7 @@ category: Application
 
 The application object is an object that holds all of the service objects used by the application script to regulate the application runtime.
 
-
 # Application Class 
-
-Below an application class with minimal configuration.
-
-```
-use BEAR\Sunday\Extension\Application\AppInterface;
-
-final class App implements Context
-{
-    public $resource;
-    public $response;
-    public $logger;
-
-    /**
-     * Constructor
-     *
-     * @param ResourceInterface $resource Resource client
-     * @param ResponseInterface $response Web / Console response
-     * @param ApplicationLogger $logger   Application logger
-     *
-     * @Inject
-     */
-    public function __construct
-        ResourceInterface $resource,
-        ResponseInterface $response,
-        ApplicationLogger $logger
-    ) {
-        $this->resource = $resource;
-        $this->response = $response;
-        $this->logger = $logger;
-        $resource->attachParamProvider('Provides', new Provides);
-    }
-}
-```
 
 The resource client, response and logger needed by the application script is passed to the constructor and is stored into their respective properties.
 

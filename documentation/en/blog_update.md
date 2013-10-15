@@ -60,7 +60,7 @@ In order to update the record we use the `PUT` interface.
 In order to make a `PUT` request we need to insert the `X-HTTP-Method-Override` field.
 
 ```html
-<input name# "X-HTTP-Method-Override" type="hidden" value"PUT" />
+<input name="X-HTTP-Method-Override" type="hidden" value"PUT" />
 ```
 
  Note: In this tutorial we have handles `POST` posts creation and `PUT` posts update. The difference between POST/PUT is *[Idempotence](http://en.wikipedia.org/wiki/Idempotence)*. If the same `POST` request is made multiple times to the posts resource the amount of post records will increase and increase, in an `PUT` update no matter whether the request is made once or multiple times has the same affect. Generally basing your choice of method upon indempotence is a good idea.

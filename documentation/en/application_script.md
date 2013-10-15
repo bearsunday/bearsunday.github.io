@@ -13,10 +13,11 @@ In order to change this flow directly edit the application script.
 
 Below is a production script for the `Sandbox` application.
 
-```
+```php
+<?php
 // Application instance with loader
-$mode = 'Prod';
-$app = require dirname(__DIR__) . '/scripts/instance.php';
+$context = 'prod';
+$app = require dirname(__DIR__) . '/bootstrap/instance.php';
 
 // Dispatch
 list($method, $pagePath, $query) = $app->router->match($GLOBALS);
@@ -54,15 +55,19 @@ The application object is retrieved from the the application instance script. Th
 
 ## About the Script 
 
-### Retrieve the application instance 
-```
-$mode = 'Prod';
-$app = require dirname(__DIR__) . '/scripts/instance.php';
+### Retrieve the application instance
+
+```php
+<?php
+$context = 'prod';
+$app = require dirname(__DIR__) . '/bootstrap/instance.php';
 ```
 Retrieve the application object from the application instance script. In this script the class loading settings are run.
 
-### Dispatch 
-```
+### Dispatch
+
+```php
+<?php
 // Dispatch
 list($method, $pagePath, $query) = $app->router->match($GLOBALS);
 ```

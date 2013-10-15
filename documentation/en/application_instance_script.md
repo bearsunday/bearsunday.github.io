@@ -12,11 +12,11 @@ The instance script is a script that creates the application instance. It also r
 The section of code that applies to the instance script is below.
 
 ```
-$injector = Injector::create([new ProdModule]);
+$injector = Injector::create([new AppModule($context)]);
 $app = $injector->getInstance('BEAR\Sunday\Extension\Application\AppInterface');
 ```
 
-The `ProdModule` is a type of [module module], for each application mode there is specific build information (DI and AOP settings).
+The `AppModule` take `$context` for each application context there is specific build information (DI and AOP settings).
 
 It is then built up with application class names and with modules. The injector retrieves the application object set by the application context interface bound by the application class.
 

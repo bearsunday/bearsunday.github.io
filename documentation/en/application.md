@@ -38,9 +38,10 @@ The configuration that uses the module decides how the object is built, but does
 
 For example it is not recommended to look at the configuration to change behavior at runtime.
 
-```
+```php
+<?php
 // Not recommended
-if ($config['debug'] # = true) {
+if ($config['debug'] === true) {
     //For use in debugging
 }
 ```
