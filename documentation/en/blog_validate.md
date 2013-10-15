@@ -16,9 +16,9 @@ Next we will add to the POST interface validation, folder, pre populated fields 
 
 We will implement a form interceptor that doesn't depend on a specific library. First we will bind the form validation interceptor and the `@Form` annotation.
 
-Annotation sandbox\Annotation\Form
-
-```
+*\BEAR\Sunday\Annotation\Form*
+```php
+<?php
 namespace Sandbox\Annotation;
 
 /**
@@ -32,9 +32,11 @@ final class Form
 }
 ```
 
+_\BEAR\Sunday\Annotation\Form
 Interceptor binding
 
-```
+```php
+<?php
     /**
      * @Form - bind form validator
      */
@@ -54,18 +56,22 @@ In this case the `PostsFormValidator` is bound to methods annotated with `@Form`
 
 In the interceptor that is　wedged between the request and the method, after the tag removal process is when the validation happens.
 
-```
+```php
+<?php
 return $invocation->proceed();
 ```
+
 If the validation fails then the *processing GET request page* that shows an error message and preset values etc is output. The POST interface method will not be called.
 
-```
+```php
+<?php
 return $page->onGet();
 ```
 
 When this is all wrapped up in the `PostsFormValidator` it looks like this.
 
-```
+```php
+<?php
 /**
  * Log Interceptor
  */
@@ -84,10 +90,6 @@ class PostsFormValidator implements MethodInterceptor
 		'body' => ''
 	];
 	
-    /**
-     * (non-PHPdoc)
-     * @see Ray\Aop.MethodInterceptor::invoke()
-     */
     public function invoke(MethodInvocation $invocation)
     {
         // retrieve page and query

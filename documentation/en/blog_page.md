@@ -20,7 +20,7 @@ The equivalent of an MVC controller in BEAR.Sunday is a page resource. The page 
 
  Note: In BEAR.Sunday you can also use a router, however in this blog application we won't be using one.
 
- Note: In a BEAR.Sunday site 1 page has 1 page resource class which conforms to the  _[http://www.martinfowler.com/eaaCatalog/pageController.html Page Controller]_ principle. 
+ Note: In a BEAR.Sunday site 1 page has 1 page resource class which conforms to the  [Page Controller](http://www.martinfowler.com/eaaCatalog/pageController.html) principle.
 
 ## Page Class 
 
@@ -29,18 +29,23 @@ The role of this posts index page is to *retrieve through a GET request the appl
 In the [Application resource app_resource] section we ran the application resource from the console, however when requesting a resource in PHP we need to use a resource client. The resource client can be injected by using a trait.
 
 Through the `use` keyword descriptor we can use a trait as below, and then the resource client will be injected into the `$resource` property.
-```
+
+```php
+<?php
     use ResourceInject;
 ```
 
 In order to make a resource request using the injected resource client you do something like below.
-```
+
+```php
+<?php
 $this->resource->get->uri('app://self/posts')->request()
 ```
 
 When this is put together you can do the following.
 
-```
+```php
+
 <?php
 namespace Sandbox\Resource\Page\Blog;
 
@@ -97,10 +102,9 @@ As the page resource plays the role of a page controller it also plays the role 
 
 Where the page resource it is annotated with `@Cache`, in the sandbox application a method annotated as such is bound to the cache interceptor.
 
-```
+```php
+<php
 use BEAR\Sunday\Annotation\Cache;
-
-...
 
 /**
  * @Cache(30)

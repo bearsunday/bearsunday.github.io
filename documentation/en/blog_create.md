@@ -11,8 +11,9 @@ In steps up until now we have been able to show posts that have been saved in ou
 
 Adding a POST interface to allow you to add posts to a posts resource that only has a GET interface method.
 
-```
-public function onPost($title, $body, $created # null, $modified  null)
+```php
+<?php
+public function onPost($title, $body, $created = null, $modified = null)
 {
     return $this;
 }
@@ -34,7 +35,8 @@ You have not specified the required parameters, a *400 Bad Request* response is 
 
 We can check what the required parameters are by using the `options` method.
 
-```
+```php
+<?php
 $php api.php options 'app://self/blog/posts'
 200 OK
 allow: ["get","post","put","delete"]
@@ -63,8 +65,9 @@ NULL
 A status 200 OK with contents NULL has been returned.
 There is no problem, however lets change this to use the *more* accurate 204(No Content) status code.
 
-```
-public function onPost($title, $body, $created # null, $modified  null)
+```php
+<?php
+public function onPost($title, $body, $created = null, $modified = null)
 {
     $this->code = 204;
     return $this;
@@ -82,10 +85,11 @@ NULL
 
 Implementing the POST interface.
 
-```
-public function onPost($title, $body, $created # null, $modified  null)
+```php
+<?php
+public function onPost($title, $body, $created = null, $modified = null)
 {
-    $this->db->insert($this->table, ['title' # > $title, 'body' > $body]);
+    $this->db->insert($this->table, ['title',  $title, 'body', $body]);
     $this->code = 204;
     return $this;
 }
@@ -100,7 +104,8 @@ Please remember that the DB object is bound by the injecting interceptor to all 
 ## Post Resource Test 
 The post has been added, lets make a test to check the added content. When a resource unit test contains a DB test you write code like the following.
 
-```
+```php
+<?php
 class AppPostsTest extends \PHPUnit_Extensions_Database_TestCase
 {
     public function getConnection()
@@ -110,7 +115,7 @@ class AppPostsTest extends \PHPUnit_Extensions_Database_TestCase
 
     public function getDataSet()
     {
-        // Initial dataset
+        // Initial data set
     }
 
     /**
@@ -156,7 +161,8 @@ We have created the app resource that adds a post, we will now create a page res
 
 Add a form to a template.
 
-```
+```php
+<?php
 <h1>New Post</h1>
 <form action# "/blog/posts/newpost" method"POST">
 	<input name# "X-HTTP-Method-Override" type="hidden" value"POST" />
@@ -182,7 +188,8 @@ Add a form to a template.
 
 Implementing the page resource POST interface.
 
-```
+```php
+<?php
     /**
      * Post
      *
@@ -207,7 +214,7 @@ Implementing the page resource POST interface.
 
 Unlike with the GET interface with the `withQuery()` the parameters for the resource request are set. Note that unlike a regular PHP method there is no order values are set using named parameters. Like a web request it has been set up for the method request to be made with a `key=value` style query. (The key is the parameter name)
 
-An `*eager*->request();` shows that the resource request will be made *immediately*.
+An **eager->request();** shows that the resource request will be made *immediately*.
 
 From the console lets try a `POST` via a posts page resource request.
 

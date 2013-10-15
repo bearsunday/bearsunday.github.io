@@ -9,10 +9,9 @@ category: Blog Tutorial
 
 So that you can delete a post that has is identified with an `id` from our posts page, we will create an `onDelete()` method in the posts page resource, this will respond to a DELETE request.
 
-```
+```php
+<?php
     /**
-     * Delte
-     * 
      * @param int $id
      */
     public function onDelete($id)
@@ -41,7 +40,9 @@ This link to the posts page resource will be available on the posts resource tem
 
 Receive a request post from a posts page and through accessing the DB delete the post. 
 
-```
+
+```php
+<?php
     public function onDelete($id)
     {
         $this->db->delete($this->table, ['id' => $id]);
@@ -66,7 +67,8 @@ $ php api.php delete app://self/posts?id=1
 
 If we access with DELETE the records should be reduced by 1. The test will look something like this.
 
-```
+```php
+<?php
     /**
      * @test
      */
@@ -88,6 +90,6 @@ If we access with DELETE the records should be reduced by 1. The test will look 
 
 In order to add a confirmation to a delete action the we use the JS library that is included with the sandbox application.
 
-```
+```html
 <a title# "Delete post" class="btn" href="#" onclick="return MyDialogs.loadConfirmationModal('my_dialog', '/blog/posts?_method=delete&id={$post.id}', 'Are you sure ?', 'The entry will be deleted permanently.');"><span class"icon-trash"></span></a>
 ```

@@ -10,22 +10,27 @@ category: Blog Tutorial
 
 This is pretty much the same as posts create page. What is different is only that in the display (GET Request) is that the post data pre-populates the fields.
 
-```
+```php
+<?php
     /**
-     * Get
-     * 
      * @param int $id
      */
     public function onGet($id)
     {
-        $this['submit'] # $this->resource->get->uri('app://self/posts')->withQuery(['id' > $id])->eager->request()->body;
+        $this['submit'] = $this
+            ->resource
+            ->get
+            ->uri('app://self/posts')
+            ->withQuery(['id' => $id])
+            ->eager
+            ->request()
+            ->body;
         $this['id'] = $id;
+
         return $this;
     }
 
     /**
-     * Put
-     *
      * @param int    $id
      * @param string $title
      * @param string $body
@@ -36,25 +41,25 @@ This is pretty much the same as posts create page. What is different is only tha
     {
         // create post
         $this->resource
-        ->put
-        ->uri('app://self/posts')
-        ->withQuery(['id' # > $id, 'title' => $title, 'body' > $body])
-        ->eager->request();
+            ->put
+            ->uri('app://self/posts')
+            ->withQuery(['id' => $id, 'title' => $title, 'body' => $body])
+            ->eager->request();
 
         // redirect
         $this->code = 303;
-        $this->headers # ['Location' > '/blog/posts'];
+        $this->headers = ['Location' => '/blog/posts'];
+
         return $this;
     }
 ```
-
 ## PUT Request
 
 In order to update the record we use the `PUT` interface.
 
 In order to make a `PUT` request we need to insert the `X-HTTP-Method-Override` field.
 
-```
+```html
 <input name# "X-HTTP-Method-Override" type="hidden" value"PUT" />
 ```
 

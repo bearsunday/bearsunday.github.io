@@ -19,22 +19,15 @@ In the post resource in order to browse posts we need to implement an `onGet` me
 
 It is implemented in this kind of example resource class.
 
-```
+```php
 <?php
 namespace Sandbox\Resource\App;
 
-/**
- * Posts
- *
- */
 class Posts extends ResourceObject
 {
-    /**
-     * Get
-     */
     public function onGet($id = null)
     {
-        $this->body = _Data that has been read from a database_
+        $this->body = '_Data that has been read from a database_';
         return $this;
     }
 }
@@ -46,20 +39,22 @@ The inside the method that corresponds to the request (request interface) data i
 
 ## Resource Stub 
 
+* **You can skip this section to Implement the Request Interface** *
+
 Before we call the `onGet` method, lets try using some dummy data in the resource. A resource that uses stub data (dummy data) is handy for prototyping or testing an application. The sandbox application runs in a custom `STUB mode` which is set when creating the application object.
 
-`apps/Sandbox/htdocs/api.php`(API access) and `apps/Sandbox/htdocs/web.php`(web access)
+`apps/Sandbox/bootstrap/context/api.php`(API access) and `apps/Sandbox/bootstrap/context/dev.php`(web access)
 
 ```
-$mode = 'Stub";
-$app = require '/path/to/script/instance.php';
+$context = 'stub';
 ```
 
 Lets prepare some stub data.
 
-*apps/Sandbox/stub/resource.php*
+*apps/Sandbox/config/stub/resource.php*
 
-```
+```php
+<?php
 return [
     'Sandbox\Resource\App\Posts' =>
         [
@@ -87,11 +82,13 @@ return [
 
 Lets check the app we resource we made through via the console.
 
-```
+```php
+<?php
 $ php apps/Sandbox/htdocs/api.php get app://self/posts
 200 OK
 [BODY]
-0:array (
+0:array (namespace Sandbox\Resource\App\Blog;
+
   'id' => 0,
   'title' => 'Alan Kay 1',
   'body' => 'People who are really serious about software should make their own hardware.',
@@ -113,24 +110,54 @@ $ php apps/Sandbox/htdocs/api.php get app://self/posts
 
 It has become clear what kind of request result you are looking for using dummy data.
 
+
 ## Stub Module 
 
 The resource returns stub data by the resource method name being bound to the stub interceptor 
 and implemented through aspect orientated programming.
 
-*apps/Sandbox/Module/StabModule.php*
+*BEAR\Package\Module\Stub\StubModule.php*
 
-```
-foreach ($stub as $class => $value) {
-    $this->bindInterceptor(
-        $this->matcher->subclassesOf($class),
-        $this->matcher->startWith('on'),
-        [new Stab($value)]
-    );
+```php
+<?php
+class StubModule extends AbstractModule
+{
+    /**
+     * @var array
+     */
+    private $stub;
+
+    /**
+     * @param array $stub
+     */
+    public function __construct(array $stub)
+    {
+        parent::__construct();
+        $this->stub = $stub;
+    }
+
+    protected function configure()
+    {
+        foreach ($this->stub as $class => $value) {
+            $this->bindInterceptor(
+                $this->matcher->subclassesOf($class),
+                $this->matcher->any(),
+                [new Stub($value)]
+            );
+        }
+    }
 }
 ```
 　
  Note:Even though the client intends to request a resource, in reality the stub data interceptor that is wedged (intercepted) between the client and the resource returns the dummy data.
+
+
+You can install StubModule from other module like belows..
+
+```php
+<?php
+$this->install(new StubModule($stubData));
+```
 
 ## Implement the Request Interface 
 
@@ -140,16 +167,13 @@ BEAR.Sunday doesn't have its own database usage library or database abstraction 
 
 *Sandbox/Resource/App/Blog/Posts.php*
 
-```
+```php
 <?php
-/**
- * @package    Sandbox
- * @subpackage Resource
- */
+
 namespace Sandbox\Resource\App\Blog;
 
 use BEAR\Package\Module\Database\Dbal\Setter\DbSetterTrait;
-use BEAR\Resource\AbstractObject as ResourceObject;
+use BEAR\Resource\ResourceObject;
 use BEAR\Resource\Link;
 use BEAR\Resource\Code;
 use PDO;
@@ -161,11 +185,6 @@ use BEAR\Sunday\Annotation\Cache;
 use BEAR\Sunday\Annotation\CacheUpdate;
 
 /**
- * Posts
- *
- * @package    Sandbox
- * @subpackage Resource
- *
  * @Db
  */
 class Posts extends ResourceObject
@@ -274,11 +293,9 @@ class Posts extends ResourceObject
     }
 }
 ```
-
-In the resource class a method that responds to the request interface is provided. In this resource if an $id is specified 1 post and if not set all posts are returned;
+In the resource class a method that responds to therequest interface is provided. In this resource if an $id is specified 1 post and if not set all posts are returned;
 
 ## Use the Resource from the Command Line 
-
 
 _Sandbox/Resource/App/Posts.php_
 The URI `app://self/posts` is given to the app resource specified in the `Sandbox/Resource/App/Posts` class.
@@ -344,6 +361,7 @@ $ php apps/Sandbox/htdocs/api.php get 'app://self/posts?id=1'
 It is handy to create an alias to the full path in your shell. 
 
 _~/.bash_profile_
+
 ```
 alias api='php /path/to/apps/Sandbox/htdocs/api.php'
 alias web='php /path/to/apps/Sandbox/htdocs/web.php'
@@ -371,4 +389,4 @@ Each time this app resource is accessed by a get request, the setDb() get previo
 
 This is referred to as runtime injection. Binding between the particular method (in this case onGet) and the intercepter that is called before that method is executed (in this case DB object injector) are then acheived.
 
-This architecture of the DB object being injected at runtime is not a BEAR.Sunday fixed structure is is the work of `DotrineDbalModule` which you install in `appModule`. In  `DotrineDbalModule` class methods annotated with *@Db* binds the DB injector, that DB injector looks at the request method, decides whether master or slave should be used and sets the DB object.
+This architecture of the DB object being injected at runtime is not a BEAR.Sunday fixed structure is is the work of `DotrineDbalModule` which you install in `AppModule`. In  `DotrineDbalModule` class methods annotated with *@Db* binds the DB injector, that DB injector looks at the request method, decides whether master or slave should be used and sets the DB object.
