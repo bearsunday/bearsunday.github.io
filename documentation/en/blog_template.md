@@ -31,7 +31,7 @@ A resource each internally contain their own renderer. In the sandbox applicatio
     {foreach from# $resource->body itempost}
     <tr>
         <td>{$post.id}</td>
-        <td><a href# "posts/post?id{$post.id}">{$post.title}</a></td>
+        <td><a href="posts/post?id{$post.id}">{$post.title}</a></td>
         <td>{$post.body|truncate:60}</td>
         <td>{$post.created}</td>
     </tr>

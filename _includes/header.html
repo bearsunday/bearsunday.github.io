@@ -6,19 +6,45 @@
         <title>{{ page.title }}</title>
 
         <!-- syntax highlighting CSS -->
+
         <link rel="stylesheet" href="{{ site.url }}/css/bootstrap.min.css">
-        <link rel="stylesheet" href="{{ site.url }}/css/github.css">
         <link rel="stylesheet" href="{{ site.url }}/css/syntax.css">
         <link rel="stylesheet" href="{{ site.url }}/css/main.css">
+        <link rel="stylesheet" href="{{ site.url }}/css/github.css">
+        <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
 
     </head>
     <body>
     <div id="wrap">
-      <div class="container">
-        <a href="{{ site.url }}">
-            <img src="{{ site.url }}/img/logo.png" />
-        </a>
 
 
+        <!-- Docs master nav -->
+        <div class="navbar navbar-default">
+            <div class="container">
+                <div class="navbar-header">
+                    <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".bs-navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a href="{{ site.url }}/index.html" class="navbar-brand">BEAR.Sunday</a>
+                </div>
+                <nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
+                    <ul class="nav navbar-nav">
+                        <li{% if page.subcategory == "Installation" %} class="active"{% endif %}>
+                            <a href="{{ site.url }}/documentation/en/introduction.html">Getting started</a>
+                        </li>
+                        <li{% if page.subcategory == "Installation" %} class="active"{% endif %}>
+                            <a href="{{ site.url }}/documentation/en/index.html">Manual</a>
+                        </li>
+                        <li{% if page.subcategory == "Installation" %} class="active"{% endif %}>
+                            <a href="{{ site.url }}/documentation/en/tutorial.html">Tutorial</a>
+                        </li>
+                        <li{% if page.subcategory == "Installation" %} class="active"{% endif %}>
+                            <a href="{{ site.url }}/documentation/en/faq.html">FAQ</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
         </div>
-
