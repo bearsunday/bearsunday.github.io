@@ -1,0 +1,159 @@
+---
+title: BEAR.Sunday
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="shortcut icon" href="../../assets/ico/favicon.png">
+
+    <title>Carousel Template for Bootstrap</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="js/html5shiv.js"></script>
+    <script src="js/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Custom styles for this template -->
+    <link href="css/carousel.css" rel="stylesheet">
+</head>
+
+<!-- Carousel
+================================================== -->
+<div id="myCarousel" class="carousel slide">
+    <!-- Indicators -->
+    <ol class="carousel-indicators">
+        <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+        <li data-target="#myCarousel" data-slide-to="1"></li>
+        <li data-target="#myCarousel" data-slide-to="2"></li>
+    </ol>
+    <div class="carousel-inner">
+        <div class="item active">
+            <img src="data:image/png;base64," data-src="holder.js/100%x500/auto/#777:#7a7a7a/text:First slide" alt="First slide">
+            <div class="container">
+                <div class="carousel-caption">
+                    <p style="font-size: 24px;">A resource orientated framework with a <strong>REST Hypermedia</strong> centered architecture, implementing
+                        <strong>Dependency Injection</strong> and <strong>Aspect Orientated</strong> Programming' at it's core.</p>
+                    <p>
+                    <p><a class="btn btn-large btn-primary" href="#">Learn More</a></p>
+                </div>
+            </div>
+        </div>
+        <div class="item">
+            <img src="data:image/png;base64," data-src="holder.js/100%x500/auto/#777:#7a7a7a/text:Second slide" alt="Second slide">
+            <div class="container">
+                <div class="carousel-caption">
+                    <h1>Another example headline.</h1>
+                    <p>Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
+                    <p><a class="btn btn-large btn-primary" href="#">Learn more</a></p>
+                </div>
+            </div>
+        </div>
+        <div class="item">
+            <img src="data:image/png;base64," data-src="holder.js/100%x500/auto/#777:#7a7a7a/text:Third slide" alt="Third slide">
+            <div class="container">
+                <div class="carousel-caption">
+                    <h1>One more for good measure.</h1>
+                    <p>Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
+                    <p><a class="btn btn-large btn-primary" href="#">Browse gallery</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <a class="left carousel-control" href="#myCarousel" data-slide="prev"><span class="glyphicon glyphicon-chevron-left"></span></a>
+    <a class="right carousel-control" href="#myCarousel" data-slide="next"><span class="glyphicon glyphicon-chevron-right"></span></a>
+</div><!-- /.carousel -->
+
+
+
+<!-- Marketing messaging and featurettes
+================================================== -->
+<!-- Wrap the rest of the page in another container to center all the content. -->
+
+<div class="container marketing">
+
+    <!-- Three columns of text below the carousel -->
+    <div class="row">
+        <div class="col-lg-4">
+            <img class="img-circle " src="images/screen/bear_chalk.png" alt="DI">
+            <h2>Resource Orientated Framework </h2>
+            <p>In BEAR.Sunday `everything` is a REST resource which leads to far simpler design and extensibility. Interactions with your database, services and even pages and sections of your app all sit comfortably in a resource which can be consumed or rendered at will. </p>
+            <p><a class="btn btn-default" href="https://github.com/koriym/BEAR.Resource">View on GutHub &raquo;</a></p>
+        </div><!-- /.col-lg-4 -->
+        <div class="col-lg-4">
+            <img class="img-circle " src="images/screen/bear_crayon.png" alt="DI">
+            <h2>Injected Dependency Framework</h2>
+            <p>In BEAR.Sunday DI is not just a bolt on or handy tool. Everything you code in your application is coded against an interface or abstract class, this means that you are never creating a hard dependency on libraries or components that might change in the future. This means you can upgrade with new libraries without changing your core application whatsoever. </p>
+            <p><a class="btn btn-default" href="https://github.com/koriym/Ray.Di">View on GutHub &raquo;</a></p>
+        </div><!-- /.col-lg-4 -->
+        <div class="col-lg-4">
+            <img class="img-circle " src="images/screen/bear_pen.png" alt="DI">
+            <h2>Aspect Wrapped Framework </h2>
+            <p>In BEAR.Sunday we recognize that crucial per request flexibility is key to the business of web applications. With AOP included in BEAR testable aspects that are not part of your business logic can wrap your core concerns without them even knowing about it. This means you can write clean domain logic without cluttering it with the likes of caching, logging and authentication code. These will instead be applied elegantly. </p>
+            <p><a class="btn btn-default" href="https://github.com/koriym/Ray.Aop">View on GutHub &raquo;</a></p>
+        </div><!-- /.col-lg-4 -->
+    </div><!-- /.row -->
+
+
+    <!-- START THE FEATURETTES -->
+
+    <hr class="featurette-divider">
+
+    <div class="row featurette">
+        <div class="col-md-7">
+            <h2 class="featurette-heading">No components. <span class="text-muted">Chosen from the best.</span></h2>
+            <p class="lead">BEAR.Sunday offers no libraries of its own. PHP namespaces, PSR, a new coding github culture, unit testing, a new trend of library oriented frameworks... these have all happened recently and push us to a more library oriented way of thinking. So BEAR.Sunday chooses not to have it’s own components, it uses others from Aura, Symfony and Zend framework etc.</p>
+        </div>
+        <div class="col-md-5">
+            <img class="featurette-image img-responsive" src="images/screen/packagist.png"  alt="Use Package">
+        </div>
+    </div>
+
+    <hr class="featurette-divider">
+
+    <div class="row featurette">
+        <div class="col-md-5">
+            <img class="featurette-image img-responsive" src="images/screen/hateoas.png"  alt="HATEOAS">
+        </div>
+        <div class="col-md-7">
+            <h2 class="featurette-heading">Everything is a resource. <span class="text-muted">API is core, REST is centered.</span></h2>
+            <p class="lead">In BEAR.Sunday everything is a REST resource which leads to far simpler design and extensibility. Interactions with your database, services and even pages and sections of your app all sit comfortably in a resource which can be consumed or rendered at will.</p>
+        </div>
+    </div>
+
+    <hr class="featurette-divider">
+
+    <div class="row featurette">
+        <div class="col-md-7">
+            <h2 class="featurette-heading">Decouple everything. <span class="text-muted">Code intention, then bind implementation. </span></h2>
+            <p class="lead">BEAR.Sunday is abstraction framework. <i>DSL, Annotation, URI, Interface, Aspects and Hypermedia.</i> These abstraction technology encourage intentional-oriented code.</p>
+        </div>
+        <div class="col-md-5">
+            <img class="featurette-image img-responsive" src="images/screen/intention.png" alt="Generic placeholder image">
+        </div>
+    </div>
+
+    <hr class="featurette-divider">
+
+    <!-- /END THE FEATURETTES -->
+
+
+    <!-- FOOTER -->
+    <footer>
+        <p class="pull-right"><a href="#">Back to top</a></p>
+        <p><a href="https://www.facebook.com/pages/BEARSunday/110116939178462?ref=hl">Facebook</a> &middot; <a href="https://twitter.com/BEARSunday">Twitter</a></p>
+    </footer>
+
+</div><!-- /.container -->
+
+<script src="js/holder.js"></script>
+</body>
+</html>
