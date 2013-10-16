@@ -46,3 +46,12 @@ body {
 .container .credit {
   margin: 20px 0;
 }
+
+.bear-icon-32 {
+    float: left;
+    height: 32px;
+    width: 32px;
+    display: inline-block;
+    text-decoration: none;
+    background-image: url("../images/screen/BEAR_icon32.png");
+}

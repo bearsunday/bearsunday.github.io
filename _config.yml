@@ -2,7 +2,7 @@ name: BEAR.Sunday
 safe: true
 lsi: false
 
-url: http://bearsunday.github.io/
+url: http://koriym.github.io/
 
 markdown: redcarpet
 redcarpet:
