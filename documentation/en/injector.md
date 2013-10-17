@@ -35,7 +35,7 @@ The injector uses the module and builds as follows.
 $injector = Inject::create([new AppModule]);
 ```
 
-The above script is a simplification of the following. So that the injector can manually inject it's own dependencies the injector dependencies are passed to the constructor.
+The above script is a simplification of the following. So that the injector can manually inject its own dependencies the injector dependencies are passed to the constructor.
 They are both dependent on the interface and can be interchanged.
 
 ```

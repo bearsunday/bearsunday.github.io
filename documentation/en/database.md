@@ -5,7 +5,7 @@ category: Others
 ---
 # Database 
 
-BEAR.Sunday does not have it's own DB / ORM library but has all the underpinnings needed for you to be able to use a number of DB setups.
+BEAR.Sunday does not have its own DB / ORM library but has all the underpinnings needed for you to be able to use a number of DB setups.
 
 Choose from `Doctrine DBAL, ORM`,`ZF2\Db`, `PDO` etc as a library and inject them into the resource object or
 intercept it and use a database.
