@@ -43,6 +43,14 @@ body {
   background-color: #f5f5f5;
 }
 
+.framework {
+    padding-top: 0px;
+    background-image: url("../images/screen/BEAR_kage.png");
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+
 .container .credit {
   margin: 20px 0;
 }
