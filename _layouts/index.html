@@ -4,11 +4,11 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ page.title }}</title>
-    <link rel="stylesheet" href="{{ site.url }}/css/bootstrap.min.css">
-    <link rel="stylesheet" href="{{ site.url }}/css/index.css">
-    <link rel="stylesheet" href="{{ site.url }}/css/main.css">
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/index.css">
+    <link rel="stylesheet" href="/css/main.css">
     <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
-    <link rel="stylesheet" href="{{ site.url }}/css/carousel.css">
+    <link rel="stylesheet" href="/css/carousel.css">
     <link rel="icon" sizes="16x16 32x32 48x48 64x64" href="/images/icon/favicon.ico">
 
     <!--[if IE]><link rel="shortcut icon" href="/images/icon/favicon.ico"><![endif]-->
@@ -50,23 +50,23 @@
                 <span class="icon-bar"></span>
             </button>
 
-            <a href="{{ site.url }}/index.html" class="navbar-brand">
+            <a href="/index.html" class="navbar-brand">
                 <span class="bear-icon-32"></span>
             </a>
         </div>
         <nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
             <ul class="nav navbar-nav">
                 <li {% if page.category == "Getting Started" %} class="active"{% endif %}>
-                <a href="{{ site.url }}/manual/en/introduction.html">Getting started</a>
+                <a href="/manual/en/introduction.html">Getting started</a>
                 </li>
                 <li {% if page.category == "Manual" %} class="active"{% endif %}>
-                <a href="{{ site.url }}/manual/en/index.html">Manual</a>
+                <a href="/manual/en/index.html">Manual</a>
                 </li>
                 <li {% if page.category == "Tutorial" %} class="active"{% endif %}>
-                <a href="{{ site.url }}/manual/en/tutorial.html">Tutorial</a>
+                <a href="/manual/en/tutorial.html">Tutorial</a>
                 </li>
                 <li {% if page.category == "Others" %} class="active"{% endif %}>
-                <a href="{{ site.url }}/manual/en/faq.html">FAQ</a>
+                <a href="/manual/en/faq.html">FAQ</a>
                 </li>
             </ul>
         </nav>
