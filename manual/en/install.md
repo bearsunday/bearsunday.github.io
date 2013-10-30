@@ -1,8 +1,7 @@
 ---
 layout: default
-title: BEAR.Sunday | BEAR.Sunday Installation
-category: Getting Started
-subcategory: Installation
+title: BEAR.Sunday | Installation
+category: Manual
 ---
 
 # Installation 
@@ -42,3 +41,31 @@ php -S 0.0.0.0:8080 dev.php
 
 Please see https://github.com/koriym/BEAR.package#buil-in-web-server-for-development.
 
+
+## Create New Application
+
+```
+$ composer create-project bear/skeleton {$PACKAGE_DIR}/apps/{$APPLICATION_NAME} {$SKELETON_VERSION}
+```
+
+## Create New Resource
+
+```
+$ php {$PACKAGE_DIR}/bin/new_res.php {$APP_NAME} {$NEW_RESOURCE_URI}
+```
+## Try it out
+
+Let's create new application 'Hello' and see how does it works.
+
+```
+// create BEAR.Package framework files
+$ composer create-project bear/package ./bear
+$ cd bear/apps
+// create 'Hello' application files
+$ composer create-project bear/skeleton Hello
+$ cd Hello/var/www/
+// run built-in web server
+$ php -S 0.0.0.0:8088 dev.php
+```
+
+Browse `http://0.0.0.0:8088` URL and see the message from BEAR.Sunday.

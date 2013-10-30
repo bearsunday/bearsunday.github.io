@@ -6,8 +6,16 @@ category: Manual
 
 # BEAR.Sunday Manual
 
-## Overview
- * [What is BEAR.Sunday ?](/manual/en/overview.html)
+
+## Getting started
+
+ * [Introduction](/manual/en/introduction.html)
+   * What is BEAR.Sunday ?
+   * Package organization
+
+ * [Install](/manual/en/install.html)
+   * new application
+   * new resource
 
 ## Frameworks
 
