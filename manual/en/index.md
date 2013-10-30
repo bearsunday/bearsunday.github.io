@@ -7,7 +7,7 @@ category: Manual
 # BEAR.Sunday Manual
 
 ## Overview
- * [What is BEAR.Package ?](/manual/en/overview.html)
+ * [What is BEAR.Sunday ?](/manual/en/overview.html)
 
 ## Frameworks
 

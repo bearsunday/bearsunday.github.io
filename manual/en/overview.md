@@ -4,19 +4,36 @@ title: BEAR.Sunday | Overview
 category: Manual
 ---
 
-# BEAR.Package
+# Overview
 
-## What is BEAR.Package ?
+BEAR.Sunday application framework consists packages of three type. **Independent packages** which are available in [Packagist](https://packagist.org/)
+. **Ray packages** are DI and AOP object framework. **BEAR.* packages** organize as a application framework with former two packages.
 
-BEAR.Sunday is a collection of ...
+## BEAR.* packages
 
-BEAR.Package is a collection of ...
+### BEAR.Resource ⊂ BEAR.Sunday ⊂ BEAR.Package
 
-TBD
+[BEAR.Resource](https://github.com/koriym/BEAR.Sunday) is a **hypermedia framework** that allows resources to behave as objects.
+It allows objects to have RESTful web service benefits such as client-server, uniform interface, statelessness, resource expression with mutual connectivity and layered components.
 
-## Package Organization
+[BEAR.Sunday](https://github.com/koriym/BEAR.Sunday) is a collections of abstractions to form BEAR.Resource as an application framework.
+Such as annotations, exceptions or interfaces. It has almost no actual implementations.
 
-The framework package directory structure looks like this:
+[BEAR.Package](https://github.com/koriym/BEAR.Package) supply bindings for BEAR.Sunday abstractions to actual implementations, such as Aura libraries or Symfony components.
+It organizes a web application framework with application scripts and development tools.
+
+## Ray DI/AOP packages
+
+All dependencies for application and framework are resolved  [Ray.Di](https://github.com/koriym/Ray.Di) framework.
+Ray.Di is google guice clone. It creates one root object in bootstrap.
+
+[Ray.Aop](https://github.com/koriym/Ray.Aop) framework enable to separate domain logic and application logic, increased testability and reusability
+
+Once all dependencies are injected and also all cross cutting concerns are bound to specified method **by context**, Its object graph are cached and re-used beyond request.
+
+## Framework Organization
+
+The framework package (BEAR.Package) directory structure looks like this:
 
 ```
 {$PACKAGE_DIR}
