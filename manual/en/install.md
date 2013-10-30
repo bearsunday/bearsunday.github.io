@@ -7,7 +7,7 @@ category: Manual
 # Installation 
 
 ```
-composer create-project bear/package {$PROJECT_PATH}
+$ composer create-project bear/package {$PROJECT_PATH}
 ```
 
 ## Prerequisites 
@@ -29,8 +29,8 @@ BEAR.Sunday application can be accessed via the web or CLI.
 
 ### Helloworld application
 ```
-cd {$PROJECT_PATH}/apps/Helloworld/var/www/
-php -S 0.0.0.0:8080 index.php
+$ cd {$PROJECT_PATH}/apps/Helloworld/var/www/
+$ php -S 0.0.0.0:8080 index.php
 ```
 
 ### Sandbox application
