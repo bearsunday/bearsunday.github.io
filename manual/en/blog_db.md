@@ -14,5 +14,5 @@ Follow the [install#DB Installation] DB section and enable your DB, then run the
 With the following code you can check the database connection is reading records.
 
 ```
-php -r '$pdo# new PDO("mysql:host=localhost;dbnameblogbear", "root", "");foreach($pdo->query("SELECT * from posts") as $row){print_r($row);}'
+php -r '$pdo = new PDO("mysql:host=localhost;dbname=blogbear", "root", ""); foreach($pdo->query("SELECT * from posts") as $row){print_r($row);}'
 ```
