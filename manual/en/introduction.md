@@ -20,7 +20,7 @@ In BEAR.Sunday everything is a REST resource which leads to far simpler design a
 
 <img src="/images/screen/diagram.png" style="max-width: 100%;height: auto;"/>
 
-The above diagram illustrates how resource object works.
+The above diagram illustrates how the resource object works.
 
 TBD.
 
@@ -44,12 +44,12 @@ It organizes a web application framework with application scripts and developmen
 
 ## Ray DI/AOP packages
 
-All dependencies for application and framework are resolved  [Ray.Di](https://github.com/koriym/Ray.Di) framework.
+All dependencies for an application and framework are resolved  [Ray.Di](https://github.com/koriym/Ray.Di) framework.
 Ray.Di is google guice clone. It creates one root object in bootstrap.
 
-[Ray.Aop](https://github.com/koriym/Ray.Aop) framework enable to separate domain logic and application logic, increased testability and reusability
+[Ray.Aop](https://github.com/koriym/Ray.Aop) framework enables to separate domain logic and application logic, increased testability and reusability
 
-Once all dependencies are injected and also all cross cutting concerns are bound to specified method **by context**, Its object graph are cached and re-used beyond request.
+Once all dependencies are injected and also all cross cutting concerns are bound to specified method **by context**, Its object graph is cached and re-used beyond request.
 
 ## Framework Organization
 
