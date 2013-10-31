@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BEAR.Sunday | Blog Tutorial(5) Creating templates</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/index.css">
+    <link rel="stylesheet" href="/css/syntax.css">
+    <link rel="stylesheet" href="/css/github.css">
+    <link rel="stylesheet" href="/css/main.css">
+    <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/carousel.css">
+    <link rel="icon" sizes="16x16 32x32 48x48 64x64" href="/images/icon/favicon.ico">
+
+    <!--[if IE]><link rel="shortcut icon" href="/images/icon/favicon.ico"><![endif]-->
+
+    <!-- The below are optional but encouraged -->
+
+    <!-- Touch icon for iOS 2.0+ and Android 2.1+: -->
+    <link rel="apple-touch-icon-precomposed" href="/images/icon/favicon-152.png">
+
+    <!-- The below are optional -->
+
+    <!-- IE 10 Metro tile icon (Metro equivalent of apple-touch-icon): -->
+    <meta name="msapplication-TileColor" content="#FFFFFF">
+    <meta name="msapplication-TileImage" content="/images/icon/favicon-144.png">
+    <!-- For iPad with high-resolution Retina display running iOS ≥ 7: -->
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="/images/icon/favicon-152.png">
+    <!-- For iPad with high-resolution Retina display running iOS ≤ 6: -->
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/images/icon/favicon-144.png">
+    <!-- For iPhone with high-resolution Retina display running iOS ≥ 7: -->
+    <link rel="apple-touch-icon-precomposed" sizes="120x120" href="/images/icon/favicon-120.png">
+    <!-- For iPhone with high-resolution Retina display running iOS ≤ 6: -->
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/images/icon/favicon-114.png">
+    <!-- For first- and second-generation iPad: -->
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/images/icon/favicon-72.png">
+    <!-- For non-Retina iPhone, iPod Touch, and Android 2.1+ devices: -->
+    <link rel="apple-touch-icon-precomposed" href="/images/icon/favicon-57.png">
+</head>
+<body>
+<!--<div id="wrap">-->
+
+    <!-- Docs master nav -->
+    <div class="navbar navbar-default">
+        <div class="container">
+            <div class="navbar-header">
+                <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".bs-navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+
+                <a href="/index.html" class="navbar-brand">
+                    <span class="bear-icon-32"></span>
+                </a>
+            </div>
+            <nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
+                <ul class="nav navbar-nav">
+                    <li >
+                        <a href="/manual/en/index.html">Manual</a>
+                    </li>
+                    <li >
+                        <a href="/manual/en/tutorial.html">Tutorial</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+<div class="container">
+
+    <div class="row">
+        <div class="col-md-3">
+            <div class="panel panel-default">
+    <div class="panel-heading"><strong>Blog Tutorial</strong></div>
+    <div class="panel-body">
+
+        <ul class="nav nav-pills nav-stacked">
+            
+                <li><a href="blog.html">Getting Started</a></li>
+<li><a href="blog_get.html">Creating a Post Resource</a></li>
+<li><a href="blog_page.html">Creating a Post Detail Page</a></li>
+<li><a href="blog_template.html">Creating a Template</a></li>
+<li><a href="blog_create.html">Adding a Post</a></li>
+<li><a href="blog_validate.html">Validation</a></li>
+<li><a href="blog_delete.html">Removing a Post</a></li>
+<li><a href="blog_update.html">Editing a Post</a></li>
+
+            
+
+            
+
+            
+
+            
+
+            
+
+            
+
+            
+
+            
+
+            
+
+            
+
+        </ul>
+    </div>
+</div>
+        </div>
+        <div class="col-md-9">
+            <h1 id="toc_0">Resource Rendering</h1>
+
+<p>Blog Tutorial(5) Creating templates </p>
+
+<h2 id="toc_1">Resource Renderer Displaying the Resource State</h2>
+
+<p>In the steps up until last time in the posts resource the posts data was set in the page resource by a request to the posts resource. In order to <em>display</em> this <em>resource state</em> we need to use some HTML rendering.</p>
+
+<p>A resource each internally contain their own renderer. In the sandbox application in order to output HTML a Smarty 3 template engine is injected into all of the resources.</p>
+
+<p>Note: A controller does not retrieve data from the model and pass strings for output to a template engine. In BEAR.Sunday all resources include an view renderer. The responsibility for the output of the model is held by each of the resources themselves.</p>
+
+<h2 id="toc_2">Posts Resource Template</h2>
+
+<p><em>Sandbox/Resource/App/Posts.tpl</em></p>
+<div class="highlight"><pre><code class="text">&lt;table class=&quot;table table-bordered table-striped&quot;&gt;
+    &lt;tr&gt;
+        &lt;th class=&quot;span1&quot;&gt;Id&lt;/th&gt;
+        &lt;th&gt;Title&lt;/th&gt;
+        &lt;th&gt;Body&lt;/th&gt;
+        &lt;th&gt;CreatedAt&lt;/th&gt;
+    &lt;/tr&gt;
+    {foreach from# $resource-&gt;body itempost}
+    &lt;tr&gt;
+        &lt;td&gt;{$post.id}&lt;/td&gt;
+        &lt;td&gt;&lt;a href=&quot;posts/post?id{$post.id}&quot;&gt;{$post.title}&lt;/a&gt;&lt;/td&gt;
+        &lt;td&gt;{$post.body|truncate:60}&lt;/td&gt;
+        &lt;td&gt;{$post.created}&lt;/td&gt;
+    &lt;/tr&gt;
+    {/foreach}    
+&lt;/table&gt;    
+</code></pre></div>
+<p>We are unfolding the contents (body property) of the posts resource ($posts).</p>
+
+<h2 id="toc_3">Posts Display Page Template</h2>
+
+<p><em>Sandbox/Resource/Resource/Posts.tpl</em></p>
+<div class="highlight"><pre><code class="text">&lt;html&gt;
+    &lt;body&gt;
+    &lt;h1&gt;Posts&lt;/h1&gt;
+    {$posts}
+    &lt;/body&gt;
+&lt;/html&gt;
+</code></pre></div>
+<p>Please notice that the data details held by the posts resource is not shown in the page template. There is only a posts resource place holder, the page, page resource and page template take no notice that posts contain a &#39;title&#39; or &#39;body&#39; property etc.</p>
+
+<p>What decides how the post resource should be displayed is the template that the post resource itself contains.</p>
+
+<p>Note: The class that contains the needed information for accomplishment of the &#39;general principle for assignment of object responsibility&#39; follows the [<a href="http://en.wikipedia.org/wiki/GRASP_(object-oriented_design)#Information_Expert">http://en.wikipedia.org/wiki/GRASP_(object-oriented_design)#Information_Expert</a> Information Expert Pattern]. In this case only the posts resource has anything to do with the template, the posts index page is not concerned posts resource template or the construction of the posts resource. </p>
+
+<h2 id="toc_4">Resource Display = Resource State + Resource Template</h2>
+
+<p>Just like we have seen up to here the resource state is combined with the resource template, the rendered result is sent to the client as a resource representation.</p>
+
+<p>Lets check this through the command line. This time we won&#39;t use api.php, we will use web.php and request the web view.</p>
+
+<p>$ php web.php get page://self/blog/posts</p>
+<div class="highlight"><pre><code class="text">200 OK
+...
+x-interceptors: [&quot;{\&quot;onGet\&quot;:[\&quot;BEAR\\\\Sunday\\\\Interceptor\\\\CacheLoader\&quot;]}&quot;]
+x-query: [&quot;[]&quot;]
+x-params: [&quot;[]&quot;]
+x-cache: [&quot;{\&quot;mode\&quot;:\&quot;W\&quot;,\&quot;date\&quot;:\&quot;Tue, 13 Nov 2012 10:49:19 +0100\&quot;,\&quot;life\&quot;:false}&quot;]
+x-execution-time: [0.10759687423706]
+x-memory-usage: [416528]
+x-profile-id: [&quot;50a2179f66680&quot;]
+cache-control: [&quot;no-cache&quot;]
+date: [&quot;Tue, 13 Nov 2012 09:49:19 GMT&quot;]
+content-type: [&quot;text\/html; charset=UTF-8&quot;]
+[BODY]
+&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;ja&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;utf-8&quot;&gt;
+    &lt;title&gt;Posts &amp;laquo; BEAR.Sunday Blog&lt;/title&gt;
+</code></pre></div>
+<p>Header information that is helpful in development is output, in the [BODY] we can check the HTML of the final output.</p>
+
+<p>The request to the posts resource is made the resource request result is assigned to the posts slot.</p>
+
+<h2 id="toc_5">Lazy Request</h2>
+
+<p>In a page resource the posts resource request are set in {$posts}. This request is made at the point that the {$posts} placeholder is called inside the template.</p>
+
+<p>So if there is no call this request will never be made, it is up to template to decide whether or not this request is actually made.</p>
+
+<h2 id="toc_6">Resource Object</h2>
+
+<p>Not only are you able to handle the set resource representation you can also directly use the item component itself.</p>
+<div class="highlight"><pre><code class="text">{$posts.0.title}
+</code></pre></div>
+<p>If you need it a method or property can be used an in an object.</p>
+<div class="highlight"><pre><code class="text">{$posts-&gt;owner}
+{$posts-&gt;isPublic()}
+</code></pre></div>
+<ul>
+<li>Having a custom method in this way is not considered resource orientated design. </li>
+</ul>
+
+<p>The behavior of the resource assigned to the template changes depending on how it is handled. Not Whether pages need to be accessed or not, how these are assigned, are both decided in the view according to the context and not in the controller.</p>
+
+<p>This is one of the many features of BEAR.Sunday</p>
+
+        </div>
+    </div>
+
+</div>
+
+</div>
+</div>
+<div id="footer">
+    <div class="container">
+        <p class="text-muted credit">
+            © 2013 <a href="https://github.com/koriym/BEAR.Sunday">BEAR.Sunday</a>
+        </p>
+    </div>
+</div>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script type="text/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+
+<!-- GoogleAnalytics -->
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-6074569-8', 'bearsunday.github.io');
+    ga('send', 'pageview');
+
+</script>
+</body>
+</html>

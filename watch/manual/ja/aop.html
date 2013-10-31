@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BEAR.Sunday | Aspect Orientated Programming</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/index.css">
+    <link rel="stylesheet" href="/css/syntax.css">
+    <link rel="stylesheet" href="/css/github.css">
+    <link rel="stylesheet" href="/css/main.css">
+    <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/carousel.css">
+    <link rel="icon" sizes="16x16 32x32 48x48 64x64" href="/images/icon/favicon.ico">
+
+    <!--[if IE]><link rel="shortcut icon" href="/images/icon/favicon.ico"><![endif]-->
+
+    <!-- The below are optional but encouraged -->
+
+    <!-- Touch icon for iOS 2.0+ and Android 2.1+: -->
+    <link rel="apple-touch-icon-precomposed" href="/images/icon/favicon-152.png">
+
+    <!-- The below are optional -->
+
+    <!-- IE 10 Metro tile icon (Metro equivalent of apple-touch-icon): -->
+    <meta name="msapplication-TileColor" content="#FFFFFF">
+    <meta name="msapplication-TileImage" content="/images/icon/favicon-144.png">
+    <!-- For iPad with high-resolution Retina display running iOS ≥ 7: -->
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="/images/icon/favicon-152.png">
+    <!-- For iPad with high-resolution Retina display running iOS ≤ 6: -->
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/images/icon/favicon-144.png">
+    <!-- For iPhone with high-resolution Retina display running iOS ≥ 7: -->
+    <link rel="apple-touch-icon-precomposed" sizes="120x120" href="/images/icon/favicon-120.png">
+    <!-- For iPhone with high-resolution Retina display running iOS ≤ 6: -->
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/images/icon/favicon-114.png">
+    <!-- For first- and second-generation iPad: -->
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/images/icon/favicon-72.png">
+    <!-- For non-Retina iPhone, iPod Touch, and Android 2.1+ devices: -->
+    <link rel="apple-touch-icon-precomposed" href="/images/icon/favicon-57.png">
+</head>
+<body>
+<!--<div id="wrap">-->
+
+    <!-- Docs master nav -->
+    <div class="navbar navbar-default">
+        <div class="container">
+            <div class="navbar-header">
+                <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".bs-navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+
+                <a href="/index.html" class="navbar-brand">
+                    <span class="bear-icon-32"></span>
+                </a>
+            </div>
+            <nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
+                <ul class="nav navbar-nav">
+                    <li  class="active">
+                        <a href="/manual/en/index.html">Manual</a>
+                    </li>
+                    <li >
+                        <a href="/manual/en/tutorial.html">Tutorial</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+<div class="container">
+
+    <div class="row">
+        <div class="col-md-3">
+            <div class="panel panel-default">
+    <div class="panel-heading"><strong>Manual</strong></div>
+    <div class="panel-body">
+
+        <ul class="nav nav-pills nav-stacked">
+            
+
+            
+
+            
+
+            
+
+            
+
+            
+
+            
+
+            
+
+            
+                <aside>
+    <ul class="nav nav-list">
+        <li><a href="introduction.html">Introduction</a></li>
+        <li><a href="install.html">Install</a></li>
+        <li><a href="di.html">DI</a></li>
+        <li><a href="aop.html">AOP</a></li>
+        <li><a href="resource.html">REST - Hypermedia</a></li>
+        <li><a href="application.html">Application</a></li>
+    </ul>
+            
+
+            
+
+        </ul>
+    </div>
+</div>
+        </div>
+        <div class="col-md-9">
+            <h1 id="toc_0">Aspect Oriented Framework</h1>
+
+<p><strong>Ray.Aop</strong> package provides method interception. This feature enables you to write code that is executed each time a matching method is invoked. It&#39;s suited for cross cutting concerns (&quot;aspects&quot;), such as transactions, security and logging. Because interceptors divide a problem into aspects rather than objects, their use is called Aspect Oriented Programming (AOP).</p>
+
+<p>A <a href="http://koriym.github.io/Ray.Aop/api/interfaces/Ray_Aop_Matchable.html">Matcher</a> is a simple interface that either accepts or rejects a value. For Ray.AOP, you need two matchers: one that defines which classes participate, and another for the methods of those classes. To make this easy, there&#39;s factory class to satisfy the common scenarios.</p>
+
+<p><a href="http://koriym.github.io/Ray.Aop/api/interfaces/Ray_Aop_MethodInterceptor.html">MethodInterceptors</a> are executed whenever a matching method is invoked. They have the opportunity to inspect the call: the method, its arguments, and the receiving instance. They can perform their cross-cutting logic and then delegate to the underlying method. Finally, they may inspect the return value or exception and return. Since interceptors may be applied to many methods and will receive many calls, their implementation should be efficient and unintrusive.</p>
+
+<h2 id="toc_1">Example: Forbidding method calls on weekends</h2>
+
+<p>To illustrate how method interceptors work with Ray.Aop, we&#39;ll forbid calls to our pizza billing system on weekends. The delivery guys only work Monday thru Friday so we&#39;ll prevent pizza from being ordered when it can&#39;t be delivered! This example is structurally similar to use of AOP for authorization.</p>
+
+<p>To mark select methods as weekdays-only, we define an annotation.
+(Ray.Aop uses Doctrine Annotations)</p>
+<div class="highlight"><pre><code class="php"><span class="cp">&lt;?php</span>
+<span class="sd">/**</span>
+<span class="sd"> * NotOnWeekends</span>
+<span class="sd"> *</span>
+<span class="sd"> * @Annotation</span>
+<span class="sd"> * @Target(&quot;METHOD&quot;)</span>
+<span class="sd"> */</span>
+<span class="k">final</span> <span class="k">class</span> <span class="nc">NotOnWeekends</span>
+<span class="p">{</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>...and apply it to the methods that need to be intercepted:</p>
+<div class="highlight"><pre><code class="php"><span class="cp">&lt;?php</span>
+<span class="k">class</span> <span class="nc">RealBillingService</span>
+<span class="p">{</span>
+    <span class="sd">/**</span>
+<span class="sd">     * @NotOnWeekends</span>
+<span class="sd">     */</span>
+    <span class="nx">chargeOrder</span><span class="p">(</span><span class="nx">PizzaOrder</span> <span class="nv">$order</span><span class="p">,</span> <span class="nx">CreditCard</span> <span class="nv">$creditCard</span><span class="p">)</span>
+    <span class="p">{</span>
+</code></pre></div>
+<p>Next, we define the interceptor by implementing the org.aopalliance.intercept.MethodInterceptor interface. When we need to call through to the underlying method, we do so by calling $invocation->proceed():</p>
+<div class="highlight"><pre><code class="php"><span class="cp">&lt;?php</span>
+<span class="k">class</span> <span class="nc">WeekendBlocker</span> <span class="k">implements</span> <span class="nx">MethodInterceptor</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">invoke</span><span class="p">(</span><span class="nx">MethodInvocation</span> <span class="nv">$invocation</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nv">$today</span> <span class="o">=</span> <span class="nb">getdate</span><span class="p">();</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nv">$today</span><span class="p">[</span><span class="s1">&#39;weekday&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">===</span> <span class="s1">&#39;S&#39;</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">throw</span> <span class="k">new</span> <span class="nx">\RuntimeException</span><span class="p">(</span>
+                <span class="nv">$invocation</span><span class="o">-&gt;</span><span class="na">getMethod</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">getName</span><span class="p">()</span> <span class="o">.</span> <span class="s2">&quot; not allowed on weekends!&quot;</span>
+            <span class="p">);</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="nv">$invocation</span><span class="o">-&gt;</span><span class="na">proceed</span><span class="p">();</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Finally, we configure everything. In this case we match any class, but only the methods with our @NotOnWeekends annotation:</p>
+<div class="highlight"><pre><code class="php"><span class="cp">&lt;?php</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="na">bindInterceptor</span><span class="p">(</span>
+    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">matcher</span><span class="o">-&gt;</span><span class="na">any</span><span class="p">(),</span>                          <span class="c1">// any class</span>
+    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">matcher</span><span class="o">-&gt;</span><span class="na">annotatedWith</span><span class="p">(</span><span class="s1">&#39;NotOnWeekends&#39;</span><span class="p">),</span> <span class="c1">// @NotOnWeekends method</span>
+    <span class="p">[</span><span class="nv">$logger</span><span class="p">]</span>
+<span class="p">);</span>
+</code></pre></div>
+<p>Putting it all together, (and waiting until Saturday), we see the method is intercepted and our order is rejected:</p>
+
+<h2 id="toc_2">Limitations</h2>
+
+<p>Behind the scenes, method interception is implemented by generating code at runtime. Ray.Aop dynamically creates a subclass that applies interceptors by overriding methods.</p>
+
+<p>This approach imposes limits on what classes and methods can be intercepted:</p>
+
+<ul>
+<li>Classes must be <em>non-final</em></li>
+<li>Methods must be <em>public</em></li>
+<li>Methods must be <em>non-final</em></li>
+</ul>
+
+<h2 id="toc_3">AOP Alliance</h2>
+
+<p>The method interceptor API implemented by Ray.Aop is a part of a public specification called <a href="http://aopalliance.sourceforge.net/doc/org/aopalliance/intercept/MethodInterceptor.html">AOP Alliance</a>. </p>
+
+<h2 id="toc_4">Interceptor</h2>
+
+<p>The interceptor takes hold of the method being called and performs cross-cutting processing on it. The interceptor implements the <code>invoke</code> method, inside that method the original method is called and the cross-cutting operations are performed.</p>
+<div class="highlight"><pre><code class="php"><span class="cp">&lt;?php</span>
+<span class="k">public</span> <span class="k">function</span> <span class="nf">invoke</span><span class="p">(</span><span class="nx">MethodInvocation</span> <span class="nv">$invocation</span><span class="p">);</span>
+</code></pre></div>
+<p>Below is a logger interceptor which logs the the parameters from the operation output.</p>
+<div class="highlight"><pre><code class="php"><span class="cp">&lt;?php</span>
+<span class="k">class</span> <span class="nc">Logger</span> <span class="k">implements</span> <span class="nx">MethodInterceptor</span>
+<span class="p">{</span>
+    <span class="k">use</span> <span class="nx">LogInject</span><span class="p">;</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">invoke</span><span class="p">(</span><span class="nx">MethodInvocation</span> <span class="nv">$invocation</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nv">$result</span> <span class="o">=</span> <span class="nv">$invocation</span><span class="o">-&gt;</span><span class="na">proceed</span><span class="p">();</span>
+        <span class="nv">$class</span> <span class="o">=</span> <span class="nb">get_class</span><span class="p">(</span><span class="nv">$invocation</span><span class="o">-&gt;</span><span class="na">getThis</span><span class="p">());</span>
+        <span class="nv">$args</span> <span class="o">=</span> <span class="nv">$invocation</span><span class="o">-&gt;</span><span class="na">getArguments</span><span class="p">();</span>
+        <span class="nv">$input</span> <span class="o">=</span> <span class="nb">json_encode</span><span class="p">(</span><span class="nv">$args</span><span class="p">);</span>
+        <span class="nv">$output</span> <span class="o">=</span> <span class="nb">json_encode</span><span class="p">(</span><span class="nv">$result</span><span class="p">);</span>
+        <span class="nv">$log</span> <span class="c1"># &quot;target = [{$class}], input = [{$input}], result  [{$output}]&quot;;</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">log</span><span class="o">-&gt;</span><span class="na">log</span><span class="p">(</span><span class="nv">$log</span><span class="p">);</span>
+        <span class="k">return</span> <span class="nv">$result</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>In this interceptor it uses the injected Log object, the called parameters and the result are logged in JSON format. This interceptor is bound to all resources in the sandbox application&#39;s DEV mode allowing you to easily debug your app.</p>
+
+<p>This method the logger is bound to has no changes at all, yet logging functionality has been added.
+The original method doesn&#39;t care if the logger changes or if it is added or removed.</p>
+
+<p>The primary concern of the original method is its <em>(core concern)</em>, this is completely separated from the method that takes the logs the <em>(cross-cutting concern)</em>.</p>
+
+<h2 id="toc_5">Matcher Binding</h2>
+
+<p>The interceptor you made operates by being bound to the method. You use the <em>matcher</em> to decides what method it will be bound to. The object below binds all methods that begin with <code>on</code> in classes that inherit from <code>BEAR\Resource\ResourceObject</code> to the injected log object.</p>
+<div class="highlight"><pre><code class="php"><span class="cp">&lt;?php</span>
+<span class="nv">$logger</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">requestInjection</span><span class="p">(</span><span class="s1">&#39;BEAR\Framework\Interceptor\Logger&#39;</span><span class="p">);</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="na">bindInterceptor</span><span class="p">(</span>
+    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">matcher</span><span class="o">-&gt;</span><span class="na">subclassesOf</span><span class="p">(</span><span class="s1">&#39;BEAR\Resource\ResourceObject&#39;</span><span class="p">),</span>
+    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">matcher</span><span class="o">-&gt;</span><span class="na">startWith</span><span class="p">(</span><span class="s1">&#39;on&#39;</span><span class="p">),</span>
+    <span class="p">[</span><span class="nv">$logger</span><span class="p">]</span>
+<span class="p">);</span>
+</code></pre></div>
+<p><code>bindInterceptor</code> takes 3 parameters, the first is a class match, the second is a method match and the 3rd in an interceptor.</p>
+
+<table><thead>
+<tr>
+<th>Method Signature</th>
+<th>　Function</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>bool subclassesOf($class)</td>
+<td>Specifies the subclass. Cannot be specified in multi-dimensional arrays.</td>
+</tr>
+<tr>
+<td>bool any()</td>
+<td>Matches anything</td>
+</tr>
+<tr>
+<td>bool annotatedWith($annotation)</td>
+<td>$annotation is the annotations full path. Matches whatever is marked with this annotation.</td>
+</tr>
+<tr>
+<td>bool startWith($prefix)</td>
+<td>Matches whatever class/method begins with this string</td>
+</tr>
+</tbody></table>
+
+<p>For example when you specify the following method matching, methods that are named setXX are matched.
+<code>
+&lt;?php
+$this->matcher->startWith(&#39;set&#39;)
+</code></p>
+
+<h2 id="toc_6">MethodInvocation</h2>
+
+<p>The interceptor receives the MethodInvocation model variables, wraps the method runtime before and after processing and uses the variables to invoke the original method.
+The <code>MethodInvocation</code> main methods are as below.</p>
+
+<table><thead>
+<tr>
+<th>Method Signature</th>
+<th>　Function</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>void proceed()</td>
+<td>Run the target method</td>
+</tr>
+<tr>
+<td>Reflectionmethod getMethod()</td>
+<td>Retrieve the target method reflection</td>
+</tr>
+<tr>
+<td>Object getThis()</td>
+<td>Retrieve the target object</td>
+</tr>
+<tr>
+<td>array getArguments() (</td>
+<td>Retrieve the argument array</td>
+</tr>
+<tr>
+<td>array getAnnotations()</td>
+<td>Retrieve the target methods annotations</td>
+</tr>
+</tbody></table>
+
+        </div>
+    </div>
+
+</div>
+
+</div>
+</div>
+<div id="footer">
+    <div class="container">
+        <p class="text-muted credit">
+            © 2013 <a href="https://github.com/koriym/BEAR.Sunday">BEAR.Sunday</a>
+        </p>
+    </div>
+</div>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script type="text/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+
+<!-- GoogleAnalytics -->
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-6074569-8', 'bearsunday.github.io');
+    ga('send', 'pageview');
+
+</script>
+</body>
+</html>

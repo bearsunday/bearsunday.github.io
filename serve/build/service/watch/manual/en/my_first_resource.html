@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BEAR.Sunday | My First Resource</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/index.css">
+    <link rel="stylesheet" href="/css/syntax.css">
+    <link rel="stylesheet" href="/css/github.css">
+    <link rel="stylesheet" href="/css/main.css">
+    <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/carousel.css">
+    <link rel="icon" sizes="16x16 32x32 48x48 64x64" href="/images/icon/favicon.ico">
+
+    <!--[if IE]><link rel="shortcut icon" href="/images/icon/favicon.ico"><![endif]-->
+
+    <!-- The below are optional but encouraged -->
+
+    <!-- Touch icon for iOS 2.0+ and Android 2.1+: -->
+    <link rel="apple-touch-icon-precomposed" href="/images/icon/favicon-152.png">
+
+    <!-- The below are optional -->
+
+    <!-- IE 10 Metro tile icon (Metro equivalent of apple-touch-icon): -->
+    <meta name="msapplication-TileColor" content="#FFFFFF">
+    <meta name="msapplication-TileImage" content="/images/icon/favicon-144.png">
+    <!-- For iPad with high-resolution Retina display running iOS ≥ 7: -->
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="/images/icon/favicon-152.png">
+    <!-- For iPad with high-resolution Retina display running iOS ≤ 6: -->
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/images/icon/favicon-144.png">
+    <!-- For iPhone with high-resolution Retina display running iOS ≥ 7: -->
+    <link rel="apple-touch-icon-precomposed" sizes="120x120" href="/images/icon/favicon-120.png">
+    <!-- For iPhone with high-resolution Retina display running iOS ≤ 6: -->
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/images/icon/favicon-114.png">
+    <!-- For first- and second-generation iPad: -->
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/images/icon/favicon-72.png">
+    <!-- For non-Retina iPhone, iPod Touch, and Android 2.1+ devices: -->
+    <link rel="apple-touch-icon-precomposed" href="/images/icon/favicon-57.png">
+</head>
+<body>
+<!--<div id="wrap">-->
+
+    <!-- Docs master nav -->
+    <div class="navbar navbar-default">
+        <div class="container">
+            <div class="navbar-header">
+                <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".bs-navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+
+                <a href="/index.html" class="navbar-brand">
+                    <span class="bear-icon-32"></span>
+                </a>
+            </div>
+            <nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
+                <ul class="nav navbar-nav">
+                    <li >
+                        <a href="/manual/en/index.html">Manual</a>
+                    </li>
+                    <li >
+                        <a href="/manual/en/tutorial.html">Tutorial</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+<div class="container">
+
+    <div class="row">
+        <div class="col-md-3">
+            <div class="panel panel-default">
+    <div class="panel-heading"><strong>My First - Tutorial</strong></div>
+    <div class="panel-body">
+
+        <ul class="nav nav-pills nav-stacked">
+            
+
+            
+
+            
+
+            
+
+            
+                <li><a href="my_first_resource.html">My First Resource Object</a></li>
+<li><a href="my_first_web_api.html">My First Web API</a></li>
+<li><a href="my_first_test.html">My First Test</a></li>
+<li><a href="my_first_web_page.html">My First Web Page</a></li>
+<li><a href="my_first_resource_request.html">My First Resource Request</a></li>
+<li><a href="my_first_di.html">My First Injection</a></li>
+<li><a href="my_first_aop.html">My First Aspect</a></li>
+<li><a href="my_first_pull.html">My First Pull</a></li>
+<li><a href="my_first_hypermedia.html">My First Hyper Media</a></li>
+            
+
+            
+
+            
+
+            
+
+            
+
+            
+
+        </ul>
+    </div>
+</div>
+        </div>
+        <div class="col-md-9">
+            <h1 id="toc_0">My First Resource Object</h1>
+
+<h2 id="toc_1">Application Resource</h2>
+
+<p>Here we will pass in a <code>name</code> and create a <code>greeting</code> resource which the greeting will return.
+In terms of MVC the <code>Model</code> in BEAR.Sunday is called an <code>Application Resource</code>. 
+An application resource is used as an internal API within the application.</p>
+
+<h2 id="toc_2">Resource Architecture</h2>
+
+<p>A resource is a bundle of information. 
+He we have a greeting (<code>greeting</code>) which is used as a <code>greeting resource</code>.
+In order to create the resource object class the following is needed.</p>
+
+<ul>
+<li>URI</li>
+<li>Request Interface </li>
+</ul>
+
+<p>The pattern is as follows.</p>
+
+<table><thead>
+<tr>
+<th>Method</th>
+<th>URI</th>
+<th>Query</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>get</td>
+<td>app://self/first/greeting</td>
+<td>?name=Name</td>
+</tr>
+</tbody></table>
+
+<p>The expected greeting resource is as below.</p>
+
+<p>Request</p>
+<div class="highlight"><pre><code class="php"><span class="x">get app://self/first/greeting?name=BEAR</span>
+</code></pre></div>
+<p>Response</p>
+<div class="highlight"><pre><code class="php"><span class="x">Hello, BEAR.</span>
+</code></pre></div>
+<h2 id="toc_3">Resource Object</h2>
+
+<p>Lets run the Sandbox application. The URI, PHP class and file layout is as follows. </p>
+
+<table><thead>
+<tr>
+<th>URI</th>
+<th>Class</th>
+<th>File</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>app://self/first/greeting</td>
+<td>Sandbox\Resource\App\First\Greeting</td>
+<td>apps/Sandbox/src/Sandbox/Resource/App/First/Greeting.php</td>
+</tr>
+</tbody></table>
+
+<p>Implementing the request interface (method).</p>
+<div class="highlight"><pre><code class="php"><span class="cp">&lt;?php</span>
+<span class="k">namespace</span> <span class="nx">Sandbox\Resource\App\First</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">BEAR\Resource\ResourceObject</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">Greeting</span> <span class="k">extends</span> <span class="nx">ResourceObject</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">onGet</span><span class="p">(</span><span class="nv">$name</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="s2">&quot;Hello, </span><span class="si">{</span><span class="nv">$name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<h2 id="toc_4">Command Line Testing</h2>
+
+<p>Lets try this out using the Command Line Interface (CLI). 
+In the console we will enter some commands, starting with a <em>failure</em>.</p>
+<div class="highlight"><pre><code class="php"><span class="x">php api.php get app://self/first/greeting</span>
+</code></pre></div>
+<p>400 Bad Request　is returned in the response.</p>
+<div class="highlight"><pre><code class="php"><span class="x">400 Bad Request</span>
+<span class="x">...</span>
+<span class="x">[BODY]</span>
+<span class="x">Internal error occurred (e613b4)</span>
+</code></pre></div>
+<p>As you can see in the header information that an exception has been raised, 
+you can decipher that in the query a <code>name</code> is required. 
+Using the <em><code>OPTIONS</code>Method</em> you can more accurately examine this.</p>
+<div class="highlight"><pre><code class="php"><span class="x">php api.php options app://self/first/greeting?name=BEAR</span>
+</code></pre></div><div class="highlight"><pre><code class="php"><span class="x">200 OK</span>
+<span class="x">allow: [&quot;get&quot;]</span>
+<span class="x">param-get: [&quot;name&quot;]</span>
+</code></pre></div>
+<p>This tells us that the resource has the <code>GET</code> method enabled and requires 1 parameter <code>name</code>.
+If this <code>name</code> parameter was to be optional you would wrap it in parenthesis <code>(name)</code>.
+Now we know about the required parameters via the options method lets try again.</p>
+<div class="highlight"><pre><code class="php"><span class="x">php api.php get app://self/first/greeting?name=BEAR</span>
+</code></pre></div><div class="highlight"><pre><code class="php"><span class="x">200 OK</span>
+<span class="x">...</span>
+<span class="x">[BODY]</span>
+<span class="x">Hello, BEAR</span>
+</code></pre></div>
+<p>Now the correct response is returned. Success!</p>
+
+<h2 id="toc_5">The resource object is returned</h2>
+
+<p>This greeting resource returns a string when run, 
+but if you alter it as below it will be handled in the same way.
+Which ever method is used the request made by the client will return a resource object.</p>
+<div class="highlight"><pre><code class="php"><span class="cp">&lt;?php</span>
+<span class="k">public</span> <span class="k">function</span> <span class="nf">onGet</span><span class="p">(</span><span class="nv">$name</span><span class="p">)</span>
+ <span class="p">{</span>
+    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">body</span> <span class="o">=</span> <span class="s2">&quot;Hello, </span><span class="si">{</span><span class="nv">$name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">;</span>
+    <span class="k">return</span> <span class="nv">$this</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Lets change the <code>onGet</code> method like this and check that the response returned has not changed.</p>
+
+        </div>
+    </div>
+
+</div>
+
+</div>
+</div>
+<div id="footer">
+    <div class="container">
+        <p class="text-muted credit">
+            © 2013 <a href="https://github.com/koriym/BEAR.Sunday">BEAR.Sunday</a>
+        </p>
+    </div>
+</div>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script type="text/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+
+<!-- GoogleAnalytics -->
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-6074569-8', 'bearsunday.github.io');
+    ga('send', 'pageview');
+
+</script>
+</body>
+</html>

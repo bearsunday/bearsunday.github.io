@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BEAR.Sunday | My First Web API</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/index.css">
+    <link rel="stylesheet" href="/css/syntax.css">
+    <link rel="stylesheet" href="/css/github.css">
+    <link rel="stylesheet" href="/css/main.css">
+    <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/carousel.css">
+    <link rel="icon" sizes="16x16 32x32 48x48 64x64" href="/images/icon/favicon.ico">
+
+    <!--[if IE]><link rel="shortcut icon" href="/images/icon/favicon.ico"><![endif]-->
+
+    <!-- The below are optional but encouraged -->
+
+    <!-- Touch icon for iOS 2.0+ and Android 2.1+: -->
+    <link rel="apple-touch-icon-precomposed" href="/images/icon/favicon-152.png">
+
+    <!-- The below are optional -->
+
+    <!-- IE 10 Metro tile icon (Metro equivalent of apple-touch-icon): -->
+    <meta name="msapplication-TileColor" content="#FFFFFF">
+    <meta name="msapplication-TileImage" content="/images/icon/favicon-144.png">
+    <!-- For iPad with high-resolution Retina display running iOS ≥ 7: -->
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="/images/icon/favicon-152.png">
+    <!-- For iPad with high-resolution Retina display running iOS ≤ 6: -->
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/images/icon/favicon-144.png">
+    <!-- For iPhone with high-resolution Retina display running iOS ≥ 7: -->
+    <link rel="apple-touch-icon-precomposed" sizes="120x120" href="/images/icon/favicon-120.png">
+    <!-- For iPhone with high-resolution Retina display running iOS ≤ 6: -->
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/images/icon/favicon-114.png">
+    <!-- For first- and second-generation iPad: -->
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/images/icon/favicon-72.png">
+    <!-- For non-Retina iPhone, iPod Touch, and Android 2.1+ devices: -->
+    <link rel="apple-touch-icon-precomposed" href="/images/icon/favicon-57.png">
+</head>
+<body>
+<!--<div id="wrap">-->
+
+    <!-- Docs master nav -->
+    <div class="navbar navbar-default">
+        <div class="container">
+            <div class="navbar-header">
+                <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".bs-navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+
+                <a href="/index.html" class="navbar-brand">
+                    <span class="bear-icon-32"></span>
+                </a>
+            </div>
+            <nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
+                <ul class="nav navbar-nav">
+                    <li >
+                        <a href="/manual/en/index.html">Manual</a>
+                    </li>
+                    <li >
+                        <a href="/manual/en/tutorial.html">Tutorial</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+<div class="container">
+
+    <div class="row">
+        <div class="col-md-3">
+            <div class="panel panel-default">
+    <div class="panel-heading"><strong>My First - Tutorial</strong></div>
+    <div class="panel-body">
+
+        <ul class="nav nav-pills nav-stacked">
+            
+
+            
+
+            
+
+            
+
+            
+                <li><a href="my_first_resource.html">My First Resource Object</a></li>
+<li><a href="my_first_web_api.html">My First Web API</a></li>
+<li><a href="my_first_test.html">My First Test</a></li>
+<li><a href="my_first_web_page.html">My First Web Page</a></li>
+<li><a href="my_first_resource_request.html">My First Resource Request</a></li>
+<li><a href="my_first_di.html">My First Injection</a></li>
+<li><a href="my_first_aop.html">My First Aspect</a></li>
+<li><a href="my_first_pull.html">My First Pull</a></li>
+<li><a href="my_first_hypermedia.html">My First Hyper Media</a></li>
+            
+
+            
+
+            
+
+            
+
+            
+
+            
+
+        </ul>
+    </div>
+</div>
+        </div>
+        <div class="col-md-9">
+            <h1 id="toc_0">My First Web API</h1>
+
+<p>Lets use the resource we made in [my_first_resource My First Resource] as a Web API.</p>
+
+<p>Start the built in web server for the API.</p>
+<div class="highlight"><pre><code class="text">$ php -S 0.0.0.0:8081 {$PROJECT_PATH}/apps/Sandbox/bootstrap/contexts/api.php
+</code></pre></div>
+<p>We can then access it through a REST client (<a href="https://addons.mozilla.org/ja/firefox/addon/restclient/#id=9780">for FireFox</a>, or <a href="https://chrome.google.com/webstore/detail/advanced-rest-client/hgmloofddffdnphfgcellkdfbfbjeloo">for Chrome</a>)</p>
+<div class="highlight"><pre><code class="text">GET http://localhost:8081/first/greeting?name=BEAR
+</code></pre></div>
+<p>Did the greeting come back as JSON data like this ?</p>
+<div class="highlight"><pre><code class="json"><span class="p">{</span>
+    <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;Hello, BEAR1&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;_links&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;self&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">&quot;href&quot;</span><span class="p">:</span> <span class="s2">&quot;app://self/first/greeting?name=BEAR1&quot;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>In this way the resource you created can be used as a Web API.
+If you run a web server like apache you can have people from across the world use your resource as a web api.</p>
+
+        </div>
+    </div>
+
+</div>
+
+</div>
+</div>
+<div id="footer">
+    <div class="container">
+        <p class="text-muted credit">
+            © 2013 <a href="https://github.com/koriym/BEAR.Sunday">BEAR.Sunday</a>
+        </p>
+    </div>
+</div>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script type="text/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+
+<!-- GoogleAnalytics -->
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-6074569-8', 'bearsunday.github.io');
+    ga('send', 'pageview');
+
+</script>
+</body>
+</html>

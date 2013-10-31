@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: default_ja
 title: BEAR.Sunday | My First Resource
 category: My First - Tutorial
 ---

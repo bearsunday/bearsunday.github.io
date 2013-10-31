@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BEAR.Sunday | My First Test</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/index.css">
+    <link rel="stylesheet" href="/css/syntax.css">
+    <link rel="stylesheet" href="/css/github.css">
+    <link rel="stylesheet" href="/css/main.css">
+    <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/carousel.css">
+    <link rel="icon" sizes="16x16 32x32 48x48 64x64" href="/images/icon/favicon.ico">
+
+    <!--[if IE]><link rel="shortcut icon" href="/images/icon/favicon.ico"><![endif]-->
+
+    <!-- The below are optional but encouraged -->
+
+    <!-- Touch icon for iOS 2.0+ and Android 2.1+: -->
+    <link rel="apple-touch-icon-precomposed" href="/images/icon/favicon-152.png">
+
+    <!-- The below are optional -->
+
+    <!-- IE 10 Metro tile icon (Metro equivalent of apple-touch-icon): -->
+    <meta name="msapplication-TileColor" content="#FFFFFF">
+    <meta name="msapplication-TileImage" content="/images/icon/favicon-144.png">
+    <!-- For iPad with high-resolution Retina display running iOS ≥ 7: -->
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="/images/icon/favicon-152.png">
+    <!-- For iPad with high-resolution Retina display running iOS ≤ 6: -->
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/images/icon/favicon-144.png">
+    <!-- For iPhone with high-resolution Retina display running iOS ≥ 7: -->
+    <link rel="apple-touch-icon-precomposed" sizes="120x120" href="/images/icon/favicon-120.png">
+    <!-- For iPhone with high-resolution Retina display running iOS ≤ 6: -->
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/images/icon/favicon-114.png">
+    <!-- For first- and second-generation iPad: -->
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/images/icon/favicon-72.png">
+    <!-- For non-Retina iPhone, iPod Touch, and Android 2.1+ devices: -->
+    <link rel="apple-touch-icon-precomposed" href="/images/icon/favicon-57.png">
+</head>
+<body>
+<!--<div id="wrap">-->
+
+    <!-- Docs master nav -->
+    <div class="navbar navbar-default">
+        <div class="container">
+            <div class="navbar-header">
+                <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".bs-navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+
+                <a href="/index.html" class="navbar-brand">
+                    <span class="bear-icon-32"></span>
+                </a>
+            </div>
+            <nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
+                <ul class="nav navbar-nav">
+                    <li >
+                        <a href="/manual/en/index.html">Manual</a>
+                    </li>
+                    <li >
+                        <a href="/manual/en/tutorial.html">Tutorial</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+<div class="container">
+
+    <div class="row">
+        <div class="col-md-3">
+            <div class="panel panel-default">
+    <div class="panel-heading"><strong>My First - Tutorial</strong></div>
+    <div class="panel-body">
+
+        <ul class="nav nav-pills nav-stacked">
+            
+
+            
+
+            
+
+            
+
+            
+                <li><a href="my_first_resource.html">My First Resource Object</a></li>
+<li><a href="my_first_web_api.html">My First Web API</a></li>
+<li><a href="my_first_test.html">My First Test</a></li>
+<li><a href="my_first_web_page.html">My First Web Page</a></li>
+<li><a href="my_first_resource_request.html">My First Resource Request</a></li>
+<li><a href="my_first_di.html">My First Injection</a></li>
+<li><a href="my_first_aop.html">My First Aspect</a></li>
+<li><a href="my_first_pull.html">My First Pull</a></li>
+<li><a href="my_first_hypermedia.html">My First Hyper Media</a></li>
+            
+
+            
+
+            
+
+            
+
+            
+
+            
+
+        </ul>
+    </div>
+</div>
+        </div>
+        <div class="col-md-9">
+            <h1 id="toc_0">My First Test</h1>
+
+<h2 id="toc_1">Resource Test</h2>
+
+<p>Let&#39;s test the greeting resource that we made in [my_first_resource My First Resource].</p>
+
+<h2 id="toc_2">Test File Arrangement</h2>
+
+<p>Lets create the test file structure. In relation to the greeting file it will look like the following.</p>
+
+<table><thead>
+<tr>
+<th>type</th>
+<th>file path</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>Resource File</td>
+<td>apps/Sandbox/src/Sandbox/Resource/App/First/GreetingTest.php</td>
+</tr>
+<tr>
+<td>Test File   　</td>
+<td>apps/Sandbox/tests/Sandbox/Resource/App/First/GreetingTest.php</td>
+</tr>
+</tbody></table>
+
+<h2 id="toc_3">Creating The Test Class File</h2>
+
+<p>We will save the class as <code>apps/Sandbox/tests/Resource/App/First/GreetingTest.php</code>.</p>
+<div class="highlight"><pre><code class="php"><span class="cp">&lt;?php</span>
+<span class="k">namespace</span> <span class="nx">Sandbox\tests\Resource\App\Blog</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">Sandbox\Module\TestModule</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Ray\Di\Injector</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">GreetingTest</span> <span class="k">extends</span> <span class="nx">\PHPUnit_Framework_TestCase</span>
+<span class="p">{</span>
+    <span class="sd">/**</span>
+<span class="sd">     * @var BEAR\Resource\ResourceInterface</span>
+<span class="sd">     */</span>
+    <span class="k">private</span> <span class="nv">$resource</span><span class="p">;</span>
+
+    <span class="k">protected</span> <span class="k">function</span> <span class="nf">setUp</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="k">parent</span><span class="o">::</span><span class="na">setUp</span><span class="p">();</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">resource</span> <span class="o">=</span> <span class="nx">Injector</span><span class="o">::</span><span class="na">create</span><span class="p">([</span><span class="k">new</span> <span class="nx">TestModule</span><span class="p">])</span><span class="o">-&gt;</span><span class="na">getInstance</span><span class="p">(</span><span class="s1">&#39;BEAR\Resource\ResourceInterface&#39;</span><span class="p">);</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="sd">/**</span>
+<span class="sd">     * resource</span>
+<span class="sd">     *</span>
+<span class="sd">     * @test</span>
+<span class="sd">     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">resource</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="c1">// resource request</span>
+        <span class="nv">$resource</span> <span class="c1"># $this-&gt;resource-&gt;get-&gt;uri(&#39;app://self/first/greeting&#39;)-&gt;withQuery([&#39;name&#39; &gt; &#39;BEAR&#39;])-&gt;eager-&gt;request();</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertSame</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="nv">$resource</span><span class="o">-&gt;</span><span class="na">code</span><span class="p">);</span>
+
+        <span class="k">return</span> <span class="nv">$resource</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="sd">/**</span>
+<span class="sd">     * Type ?</span>
+<span class="sd">     *</span>
+<span class="sd">     * @depends resource</span>
+<span class="sd">     * @test</span>
+<span class="sd">     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">type</span><span class="p">(</span><span class="nv">$resource</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertInternalType</span><span class="p">(</span><span class="s1">&#39;string&#39;</span><span class="p">,</span> <span class="nv">$resource</span><span class="o">-&gt;</span><span class="na">body</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="sd">/**</span>
+<span class="sd">     * Renderable ?</span>
+<span class="sd">     *</span>
+<span class="sd">     * @depends resource</span>
+<span class="sd">     * test</span>
+<span class="sd">     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">render</span><span class="p">(</span><span class="nv">$resource</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nv">$html</span> <span class="o">=</span> <span class="p">(</span><span class="nx">string</span><span class="p">)</span><span class="nv">$resource</span><span class="p">;</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertInternalType</span><span class="p">(</span><span class="s1">&#39;string&#39;</span><span class="p">,</span> <span class="nv">$html</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="sd">/**</span>
+<span class="sd">     * @depends resource</span>
+<span class="sd">     * @test</span>
+<span class="sd">     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">body</span><span class="p">(</span><span class="nv">$resource</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertSame</span><span class="p">(</span><span class="s1">&#39;Hello, BEAR&#39;</span><span class="p">,</span> <span class="nv">$resource</span><span class="o">-&gt;</span><span class="na">body</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<h2 id="toc_4">Let&#39;s Run the Tests　</h2>
+
+<p>We navigate to the application directory.</p>
+<div class="highlight"><pre><code class="text">cd apps/Sandbox/
+</code></pre></div>
+<p>And run the tests.
+<code>
+phpunit tests/Resource/App/First/GreetingTest.php
+</code></p>
+<div class="highlight"><pre><code class="text">...
+
+Time: 2 seconds, Memory: 10.00Mb
+
+OK (3 tests, 3 assertions)
+
+Generating code coverage report in Clover XML format ... done
+
+Generating code coverage report in HTML format ... done
+</code></pre></div>
+<p>We did it!</p>
+
+<h3 id="toc_5">Coverage Report</h3>
+
+<p>In <code>build/coverage/index.html</code> we can see the scope of the tests covered.</p>
+
+<h2 id="toc_6">Let&#39;s Look At The Test Code</h2>
+
+<h3 id="toc_7">setup()</h3>
+<div class="highlight"><pre><code class="php"><span class="cp">&lt;?php</span>
+<span class="nv">$injector</span> <span class="o">=</span> <span class="nx">Injector</span><span class="o">::</span><span class="na">create</span><span class="p">([</span><span class="k">new</span> <span class="nx">TestModule</span><span class="p">]);</span>
+<span class="nv">$app</span> <span class="o">=</span> <span class="nv">$injector</span><span class="o">-&gt;</span><span class="na">getInstance</span><span class="p">(</span><span class="s1">&#39;BEAR\Sunday\Extension\Application\AppInterface&#39;</span><span class="p">);</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="na">resource</span> <span class="o">=</span> <span class="nv">$app</span><span class="o">-&gt;</span><span class="na">resource</span><span class="p">;</span>
+</code></pre></div>
+<p>We create an injector in the test class setup method, with that interceptor we grab the application object.
+In the test the application object uses the resource client stored in a property.</p>
+
+<h3 id="toc_8">resource()</h3>
+<div class="highlight"><pre><code class="php"><span class="cp">&lt;?php</span>
+<span class="nv">$this</span>
+    <span class="o">-&gt;</span><span class="na">resource</span>
+    <span class="o">-&gt;</span><span class="na">get</span>
+    <span class="o">-&gt;</span><span class="na">uri</span><span class="p">(</span><span class="s1">&#39;app://self/first/greeting&#39;</span><span class="p">)</span>
+    <span class="o">-&gt;</span><span class="na">withQuery</span><span class="p">([</span><span class="s1">&#39;name&#39;</span> <span class="o">&gt;</span> <span class="s1">&#39;BEAR&#39;</span><span class="p">])</span>
+    <span class="o">-&gt;</span><span class="na">eager</span>
+    <span class="o">-&gt;</span><span class="na">request</span><span class="p">();</span>
+</code></pre></div>
+<p>We use the resource client inside the resource() method to access the resource.</p>
+
+<h3 id="toc_9">Other Test Methods</h3>
+
+<p>In other <code>@test</code> annotated methods we check the results received through the resource method.</p>
+
+        </div>
+    </div>
+
+</div>
+
+</div>
+</div>
+<div id="footer">
+    <div class="container">
+        <p class="text-muted credit">
+            © 2013 <a href="https://github.com/koriym/BEAR.Sunday">BEAR.Sunday</a>
+        </p>
+    </div>
+</div>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script type="text/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+
+<!-- GoogleAnalytics -->
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-6074569-8', 'bearsunday.github.io');
+    ga('send', 'pageview');
+
+</script>
+</body>
+</html>

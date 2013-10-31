@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BEAR.Sunday | Introduction</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/index.css">
+    <link rel="stylesheet" href="/css/syntax.css">
+    <link rel="stylesheet" href="/css/github.css">
+    <link rel="stylesheet" href="/css/main.css">
+    <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/carousel.css">
+    <link rel="icon" sizes="16x16 32x32 48x48 64x64" href="/images/icon/favicon.ico">
+
+    <!--[if IE]><link rel="shortcut icon" href="/images/icon/favicon.ico"><![endif]-->
+
+    <!-- The below are optional but encouraged -->
+
+    <!-- Touch icon for iOS 2.0+ and Android 2.1+: -->
+    <link rel="apple-touch-icon-precomposed" href="/images/icon/favicon-152.png">
+
+    <!-- The below are optional -->
+
+    <!-- IE 10 Metro tile icon (Metro equivalent of apple-touch-icon): -->
+    <meta name="msapplication-TileColor" content="#FFFFFF">
+    <meta name="msapplication-TileImage" content="/images/icon/favicon-144.png">
+    <!-- For iPad with high-resolution Retina display running iOS ≥ 7: -->
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="/images/icon/favicon-152.png">
+    <!-- For iPad with high-resolution Retina display running iOS ≤ 6: -->
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/images/icon/favicon-144.png">
+    <!-- For iPhone with high-resolution Retina display running iOS ≥ 7: -->
+    <link rel="apple-touch-icon-precomposed" sizes="120x120" href="/images/icon/favicon-120.png">
+    <!-- For iPhone with high-resolution Retina display running iOS ≤ 6: -->
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/images/icon/favicon-114.png">
+    <!-- For first- and second-generation iPad: -->
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/images/icon/favicon-72.png">
+    <!-- For non-Retina iPhone, iPod Touch, and Android 2.1+ devices: -->
+    <link rel="apple-touch-icon-precomposed" href="/images/icon/favicon-57.png">
+</head>
+<body>
+<!--<div id="wrap">-->
+
+    <!-- Docs master nav -->
+    <div class="navbar navbar-default">
+        <div class="container">
+            <div class="navbar-header">
+                <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".bs-navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+
+                <a href="/index.html" class="navbar-brand">
+                    <span class="bear-icon-32"></span>
+                </a>
+            </div>
+            <nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
+                <ul class="nav navbar-nav">
+                    <li  class="active">
+                        <a href="/manual/en/index.html">Manual</a>
+                    </li>
+                    <li >
+                        <a href="/manual/en/tutorial.html">Tutorial</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+<div class="container">
+
+    <div class="row">
+        <div class="col-md-3">
+            <div class="panel panel-default">
+    <div class="panel-heading"><strong>Manual</strong></div>
+    <div class="panel-body">
+
+        <ul class="nav nav-pills nav-stacked">
+            
+
+            
+
+            
+
+            
+
+            
+
+            
+
+            
+
+            
+
+            
+                <aside>
+    <ul class="nav nav-list">
+        <li><a href="introduction.html">Introduction</a></li>
+        <li><a href="install.html">Install</a></li>
+        <li><a href="di.html">DI</a></li>
+        <li><a href="aop.html">AOP</a></li>
+        <li><a href="resource.html">REST - Hypermedia</a></li>
+        <li><a href="application.html">Application</a></li>
+    </ul>
+            
+
+            
+
+        </ul>
+    </div>
+</div>
+        </div>
+        <div class="col-md-9">
+            <h1 id="toc_0">Introduction</h1>
+
+<h2 id="toc_1">What is BEAR.Sunday ?</h2>
+
+<p>This resource orientated framework has both externally and internally a REST centric architecture, implementing <strong>Dependency Injection</strong> and <strong>Aspect Orientated Programming</strong> heavily to offer you surprising simplicity, order and flexibility in your application.</p>
+
+<p>With very few components of its own, it is a fantastic example of how a framework can be built using existing components and libraries from other frameworks, yet offer even further benefit and beauty.</p>
+
+<h2 id="toc_2">Resource Orientated Framework</h2>
+
+<p>In BEAR.Sunday everything is a REST resource which leads to far simpler design and extensibility. Interactions with your database, services and even pages and sections of your app all sit comfortably in a resource which can be consumed or rendered at will.</p>
+
+<h3 id="toc_3">Everything is a resource</h3>
+
+<p><img src="/images/screen/diagram.png" style="max-width: 100%;height: auto;"/></p>
+
+<p>The above diagram illustrates how the resource object works.</p>
+
+<p>TBD.</p>
+
+<h1 id="toc_4">Packages</h1>
+
+<p>BEAR.Sunday application framework consists packages of three type. <strong>Independent packages</strong> which are available in <a href="https://packagist.org/">Packagist</a>
+. <strong>Ray packages</strong> are DI and AOP object framework. <strong>BEAR.* packages</strong> organize as a application framework with former two packages.</p>
+
+<h2 id="toc_5">BEAR.* packages</h2>
+
+<h3 id="toc_6">BEAR.Resource ⊂ BEAR.Sunday ⊂ BEAR.Package</h3>
+
+<p><a href="https://github.com/koriym/BEAR.Sunday">BEAR.Resource</a> is a <strong>hypermedia framework</strong> that allows resources to behave as objects.
+It allows objects to have RESTful web service benefits such as client-server, uniform interface, statelessness, resource expression with mutual connectivity and layered components.</p>
+
+<p><a href="https://github.com/koriym/BEAR.Sunday">BEAR.Sunday</a> is a collections of abstractions to form BEAR.Resource as an application framework.
+Such as annotations, exceptions or interfaces. It has almost no actual implementations.</p>
+
+<p><a href="https://github.com/koriym/BEAR.Package">BEAR.Package</a> supply bindings for BEAR.Sunday abstractions to actual implementations, such as Aura libraries or Symfony components.
+It organizes a web application framework with application scripts and development tools.</p>
+
+<h2 id="toc_7">Ray DI/AOP packages</h2>
+
+<p>BEAR.Sunday uses universally across the framework the Dependency Injection(DI) pattern and Aspect Orientated Programming (AOP).
+With the benefit of being able to use annotations to inject dependencies it uses the <a href="https://github.com/koriym/Ray.Di">Ray.Di</a><a href="https://github.com/koriym/Ray.Aop">Ray.Aop</a> framework which is a PHP clone of [<a href="http://en.wikipedia.org/wiki/Google_Guice">http://en.wikipedia.org/wiki/Google_Guice</a> Google Guice].
+AOP in BEAR.Sunday uses the interface settled upon by the [<a href="http://aopalliance.sourceforge.net/">http://aopalliance.sourceforge.net/</a> AOP Alliance] implemented in PHP. Being able to bind multiple cross-cutting concerns to a specific method by using annotations or naming conventions.
+In dynamic languages DI/AOP introduction can bring in performance concerns.
+However in BEAR.Sunday with loose coupling and a high level of abstraction, using a created dependencies injected application cached object graph has next to no affect on performance.</p>
+
+<h2 id="toc_8">Framework Organization</h2>
+
+<p>The framework package (BEAR.Package) directory structure looks like this:</p>
+<div class="highlight"><pre><code class="text">{$PACKAGE_DIR}
+├── apps                 # applications
+│   ├── Helloworld
+│   └── Sandbox
+├── bin                  # command-line script invokers
+│   ├── env.php
+│   └── new_res.php
+├── src                  # BEAR.Package source code organized for PSR-0
+│   └── BEAR
+│       └── Package
+├── tests                # test files for phpunit
+├── var
+│   ├── lib              # system script
+│   ├── log              # system log
+│   └── www
+│       ├── admin        # public web folder for system
+│       └── dev          # public web folder for application development (/dev)
+└── vendor
+</code></pre></div>
+<h2 id="toc_9">Application Organization</h2>
+
+<p>The application directory structure looks like this:</p>
+<div class="highlight"><pre><code class="text">├── bin                  # command-line script invokers
+│   ├── api.php
+│   ├── clear.php
+│   ├── compiler.php
+│   └── web.php
+├── bootstrap
+│   ├── autoload.php     # autoloader
+│   ├── contexts         # contextual application scripts
+│   │   ├── api.php
+│   │   ├── dev.php
+│   │   └── prod.php
+│   ├── develop
+│   │   └── instance.php # application script for development
+│   └── instance.php     # application script for production
+├── src
+│   └── {Skeleton}
+│       ├── Annotation   # application annotation
+│       ├── App.php      # application class
+│       ├── Interceptor  # AOP interceptors
+│       ├── Module       # DI binding modules
+│       └── Params       # signal parameter providers
+├── var                  # application variable directories
+│   ├── db               # application data base file
+│   ├── lib              # vendor(packagist) related files
+│   ├── log              # application log directory
+│   ├── tmp              # application tmp files
+│   └── www              # public web folder
+└── vendor
+</code></pre></div>
+        </div>
+    </div>
+
+</div>
+
+</div>
+</div>
+<div id="footer">
+    <div class="container">
+        <p class="text-muted credit">
+            © 2013 <a href="https://github.com/koriym/BEAR.Sunday">BEAR.Sunday</a>
+        </p>
+    </div>
+</div>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script type="text/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+
+<!-- GoogleAnalytics -->
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-6074569-8', 'bearsunday.github.io');
+    ga('send', 'pageview');
+
+</script>
+</body>
+</html>

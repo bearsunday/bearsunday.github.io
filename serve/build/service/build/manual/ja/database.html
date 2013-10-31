@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BEAR.Sunday | Database</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/index.css">
+    <link rel="stylesheet" href="/css/syntax.css">
+    <link rel="stylesheet" href="/css/github.css">
+    <link rel="stylesheet" href="/css/main.css">
+    <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/carousel.css">
+    <link rel="icon" sizes="16x16 32x32 48x48 64x64" href="/images/icon/favicon.ico">
+
+    <!--[if IE]><link rel="shortcut icon" href="/images/icon/favicon.ico"><![endif]-->
+
+    <!-- The below are optional but encouraged -->
+
+    <!-- Touch icon for iOS 2.0+ and Android 2.1+: -->
+    <link rel="apple-touch-icon-precomposed" href="/images/icon/favicon-152.png">
+
+    <!-- The below are optional -->
+
+    <!-- IE 10 Metro tile icon (Metro equivalent of apple-touch-icon): -->
+    <meta name="msapplication-TileColor" content="#FFFFFF">
+    <meta name="msapplication-TileImage" content="/images/icon/favicon-144.png">
+    <!-- For iPad with high-resolution Retina display running iOS ≥ 7: -->
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="/images/icon/favicon-152.png">
+    <!-- For iPad with high-resolution Retina display running iOS ≤ 6: -->
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/images/icon/favicon-144.png">
+    <!-- For iPhone with high-resolution Retina display running iOS ≥ 7: -->
+    <link rel="apple-touch-icon-precomposed" sizes="120x120" href="/images/icon/favicon-120.png">
+    <!-- For iPhone with high-resolution Retina display running iOS ≤ 6: -->
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/images/icon/favicon-114.png">
+    <!-- For first- and second-generation iPad: -->
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/images/icon/favicon-72.png">
+    <!-- For non-Retina iPhone, iPod Touch, and Android 2.1+ devices: -->
+    <link rel="apple-touch-icon-precomposed" href="/images/icon/favicon-57.png">
+</head>
+<body>
+<!--<div id="wrap">-->
+
+    <!-- Docs master nav -->
+    <div class="navbar navbar-default">
+        <div class="container">
+            <div class="navbar-header">
+                <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".bs-navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+
+                <a href="/index.html" class="navbar-brand">
+                    <span class="bear-icon-32"></span>
+                </a>
+            </div>
+            <nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
+                <ul class="nav navbar-nav">
+                    <li >
+                        <a href="/manual/en/index.html">Manual</a>
+                    </li>
+                    <li >
+                        <a href="/manual/en/tutorial.html">Tutorial</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+<div class="container">
+
+    <div class="row">
+        <div class="col-md-3">
+            <div class="panel panel-default">
+    <div class="panel-heading"><strong>Others</strong></div>
+    <div class="panel-body">
+
+        <ul class="nav nav-pills nav-stacked">
+            
+
+            
+
+            
+
+            
+
+            
+
+            
+
+            
+
+            
+                Included file 'docs/en/libraries.html' not found in _includes directory
+            
+
+            
+
+            
+
+        </ul>
+    </div>
+</div>
+        </div>
+        <div class="col-md-9">
+            <h1 id="toc_0">Database</h1>
+
+<p>BEAR.Sunday does not have its own DB / ORM library but has all the underpinnings needed for you to be able to use a number of DB setups.</p>
+
+<p>Choose from <code>Doctrine DBAL, ORM</code>,<code>ZF2\Db</code>, <code>PDO</code> etc as a library and inject them into the resource object or
+intercept it and use a database.</p>
+
+<p>In the <em>sandbox application Doctrine.DBAL is used</em>.</p>
+
+<h2 id="toc_1">@Db</h2>
+
+<p>In the sandbox application, the object injector binds DB object classes annotated with <code>@Db</code> to <code>on</code> methods.
+The DB object is injected at the same time that the class annotated with @Db has its <code>onGet</code> method requested.</p>
+
+<p>The db connection and utilization concerns are separated, the utilized code knows nothing about the connection. </p>
+
+<p>Code for using a database.
+```
+/**
+ * @Db
+ <em>/
+class Posts extends ResourceObject implements DbSetterInterface
+{
+    /</em>*
+     * @var Doctrine\DBAL\Connection
+     */
+    protected $db;</p>
+<div class="highlight"><pre><code class="text">public function setDb(DriverConnection $db = null)
+{
+    $this-&gt;db = $db;
+}
+
+public function onGet($id)
+{
+    $sql = &quot;SELECT id, title, body, created, modified FROM {$this-&gt;table}&quot;;
+    $this-&gt;body = $this-&gt;db-&gt;query($sql)-&gt;fetchAll(PDO::FETCH_ASSOC);
+    return $this;
+}
+</code></pre></div>
+<p>}
+```
+The DB injector holds dependencies on @Named(&quot;master_db&quot;) and @Named(&quot;slave_db&quot;) for master and slave db connection information. 
+In the sandbox application, in ConstantModule their constant dependencies are installed. </p>
+
+<h3 id="toc_2">master/slave Auto selection</h3>
+
+<p>The <code>DbInjector</code> looks at the request method and chooses the DB connection (GET=slave), connects and sets the DB object.</p>
+
+<h3 id="toc_3">Partitioning</h3>
+
+<p>When it is necessary to have the DB partitioned according to ID, you can prepare and bind a separate injector to describe the choice logic.</p>
+
+<h2 id="toc_4">@!DbPager</h2>
+
+<p>When this DB injector has a method annotated with <code>@DbPager</code>, 
+the query is converted to a DB pager query, the pager meta information in stored in a header with the <em>pager</em> key.</p>
+
+<p>|| maxPerPage || Maximum Items per Page ||
+|| current || Current Page Number ||
+|| total || Total Number of Pages ||
+|| hasNext || Next Existence ||
+|| hasPrevious || Previous Existence ||
+|| html || Pager Link(twitter/bootstrap format) ||</p>
+
+<p>For example to specify pagination the template assigned to <code>$posts</code> looks like the following. </p>
+<div class="highlight"><pre><code class="text">{$posts-&gt;headers.pager.html}
+</code></pre></div>
+<p><em>※smarty template engine example</em></p>
+
+<h2 id="toc_5">@Transactional</h2>
+
+<p>Methods annotated with <code>@Transactional</code> are bound to the transaction interceptor.
+```
+    /**
+     * @Time
+     * @Transactional
+     * @CacheUpdate
+     */
+    public function onPost($title, $body)
+    {
+        $values = [
+            &#39;title&#39; =&gt; $title,
+            &#39;body&#39; =&gt; $body,
+            &#39;created&#39; =&gt; $this->time
+        ];
+        $this->db->insert($this->table, $values);</p>
+<div class="highlight"><pre><code class="text">    return $this;
+}
+</code></pre></div><div class="highlight"><pre><code class="text">### @Time 
+### @!CacheUpdate 
+The method uses the current time ($this-&gt;time) bound by `@Time`, 
+using a transaction performs an insert query.
+Not only is this run when committing the cache updater bound with `@CacheUpdate` runs, clearing the old cache replacing it with the new.
+
+## Hint 
+ * As a dependency for SQL and table names lets try using @Inject.
+ * Validations are not run inside the method, they are bound as an interceptor. They may be able to be combined with form validation.
+　* How would it be for example to use analysis data run the query again and have the interceptor just run `execute`.
+</code></pre></div>
+        </div>
+    </div>
+
+</div>
+
+</div>
+</div>
+<div id="footer">
+    <div class="container">
+        <p class="text-muted credit">
+            © 2013 <a href="https://github.com/koriym/BEAR.Sunday">BEAR.Sunday</a>
+        </p>
+    </div>
+</div>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script type="text/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+
+<!-- GoogleAnalytics -->
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-6074569-8', 'bearsunday.github.io');
+    ga('send', 'pageview');
+
+</script>
+</body>
+</html>

@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BEAR.Sunday | Blog Tutorial(3) Creating an posts resource</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/index.css">
+    <link rel="stylesheet" href="/css/syntax.css">
+    <link rel="stylesheet" href="/css/github.css">
+    <link rel="stylesheet" href="/css/main.css">
+    <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/carousel.css">
+    <link rel="icon" sizes="16x16 32x32 48x48 64x64" href="/images/icon/favicon.ico">
+
+    <!--[if IE]><link rel="shortcut icon" href="/images/icon/favicon.ico"><![endif]-->
+
+    <!-- The below are optional but encouraged -->
+
+    <!-- Touch icon for iOS 2.0+ and Android 2.1+: -->
+    <link rel="apple-touch-icon-precomposed" href="/images/icon/favicon-152.png">
+
+    <!-- The below are optional -->
+
+    <!-- IE 10 Metro tile icon (Metro equivalent of apple-touch-icon): -->
+    <meta name="msapplication-TileColor" content="#FFFFFF">
+    <meta name="msapplication-TileImage" content="/images/icon/favicon-144.png">
+    <!-- For iPad with high-resolution Retina display running iOS ≥ 7: -->
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="/images/icon/favicon-152.png">
+    <!-- For iPad with high-resolution Retina display running iOS ≤ 6: -->
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/images/icon/favicon-144.png">
+    <!-- For iPhone with high-resolution Retina display running iOS ≥ 7: -->
+    <link rel="apple-touch-icon-precomposed" sizes="120x120" href="/images/icon/favicon-120.png">
+    <!-- For iPhone with high-resolution Retina display running iOS ≤ 6: -->
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/images/icon/favicon-114.png">
+    <!-- For first- and second-generation iPad: -->
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/images/icon/favicon-72.png">
+    <!-- For non-Retina iPhone, iPod Touch, and Android 2.1+ devices: -->
+    <link rel="apple-touch-icon-precomposed" href="/images/icon/favicon-57.png">
+</head>
+<body>
+<!--<div id="wrap">-->
+
+    <!-- Docs master nav -->
+    <div class="navbar navbar-default">
+        <div class="container">
+            <div class="navbar-header">
+                <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".bs-navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+
+                <a href="/index.html" class="navbar-brand">
+                    <span class="bear-icon-32"></span>
+                </a>
+            </div>
+            <nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
+                <ul class="nav navbar-nav">
+                    <li >
+                        <a href="/manual/en/index.html">Manual</a>
+                    </li>
+                    <li >
+                        <a href="/manual/en/tutorial.html">Tutorial</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+<div class="container">
+
+    <div class="row">
+        <div class="col-md-3">
+            <div class="panel panel-default">
+    <div class="panel-heading"><strong>Blog Tutorial</strong></div>
+    <div class="panel-body">
+
+        <ul class="nav nav-pills nav-stacked">
+            
+                <li><a href="blog.html">Getting Started</a></li>
+<li><a href="blog_get.html">Creating a Post Resource</a></li>
+<li><a href="blog_page.html">Creating a Post Detail Page</a></li>
+<li><a href="blog_template.html">Creating a Template</a></li>
+<li><a href="blog_create.html">Adding a Post</a></li>
+<li><a href="blog_validate.html">Validation</a></li>
+<li><a href="blog_delete.html">Removing a Post</a></li>
+<li><a href="blog_update.html">Editing a Post</a></li>
+
+            
+
+            
+
+            
+
+            
+
+            
+
+            
+
+            
+
+            
+
+            
+
+            
+
+        </ul>
+    </div>
+</div>
+        </div>
+        <div class="col-md-9">
+            <h1 id="toc_0">Resource Object</h1>
+
+<p>BEAR.Sunday is a resource orientated framework. The relevant information is grouped into a resource, given a URI and has a request interface so that it works with GET/POST requests.</p>
+
+<p>In terms of MVC the role of M and C component are taken care of in BEAR.Sunday each by a page resource which acts as a page resource, the model is carried by application (app) resource. These resources are basically mapped as 1 resource to one class, the class name including the namespace responding to a URI the request interface is described as a method.</p>
+
+<p>For example, page for browsing posts is set up as a posts view resource (page://self/blog/posts), the so called state application resource (app://self/posts) shows the article itself.  </p>
+
+<h2 id="toc_1">Post Resource</h2>
+
+<p>The application resource so to speak is an application <em>internal</em> API. In MVC terms this would be as a model. This holds the internal database accessing or business logic and offers an application internal API to the page resource which has the role of a controller.</p>
+
+<p>In the post resource in order to browse posts we need to implement an <code>onGet</code> method that responds to a GET request.</p>
+
+<p>It is implemented in this kind of example resource class.</p>
+<div class="highlight"><pre><code class="php"><span class="cp">&lt;?php</span>
+<span class="k">namespace</span> <span class="nx">Sandbox\Resource\App</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">Posts</span> <span class="k">extends</span> <span class="nx">ResourceObject</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">onGet</span><span class="p">(</span><span class="nv">$id</span> <span class="o">=</span> <span class="k">null</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">body</span> <span class="o">=</span> <span class="s1">&#39;_Data that has been read from a database_&#39;</span><span class="p">;</span>
+        <span class="k">return</span> <span class="nv">$this</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>The inside the method that corresponds to the request (request interface) data is assigned to the <code>body</code> property and <code>$this</code> is returned.</p>
+
+<p>Note: Instead of setting the $body property you can just directly return data. In which case in the receiving side the equivalent of <code>return $this;</code> is returned.</p>
+
+<h2 id="toc_2">Resource Stub</h2>
+
+<ul>
+<li><strong>You can skip this section to Implement the Request Interface</strong> *</li>
+</ul>
+
+<p>Before we call the <code>onGet</code> method, lets try using some dummy data in the resource. A resource that uses stub data (dummy data) is handy for prototyping or testing an application. The sandbox application runs in a custom <code>STUB mode</code> which is set when creating the application object.</p>
+
+<p><code>apps/Sandbox/bootstrap/context/api.php</code>(API access) and <code>apps/Sandbox/bootstrap/context/dev.php</code>(web access)</p>
+<div class="highlight"><pre><code class="text">$context = &#39;stub&#39;;
+</code></pre></div>
+<p>Lets prepare some stub data.</p>
+
+<p><em>apps/Sandbox/config/stub/resource.php</em></p>
+<div class="highlight"><pre><code class="php"><span class="cp">&lt;?php</span>
+<span class="k">return</span> <span class="p">[</span>
+    <span class="s1">&#39;Sandbox\Resource\App\Posts&#39;</span> <span class="o">=&gt;</span>
+        <span class="p">[</span>
+            <span class="p">[</span>
+                <span class="s1">&#39;id&#39;</span> <span class="o">=&gt;</span> <span class="mi">0</span><span class="p">,</span>
+                <span class="s1">&#39;title&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;Alan Kay 1&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;body&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;People who are really serious about software should make their own hardware.&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;created&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;2011-05-07 16:13:11&#39;</span>
+            <span class="p">],</span>
+            <span class="p">[</span>
+                <span class="s1">&#39;id&#39;</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">,</span>
+                <span class="s1">&#39;title&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;Alan Kay 2&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;body&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;Perspective is worth 80 IQ points.&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;created&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;2011-05-07 16:13:22&#39;</span>
+            <span class="p">],</span>
+            <span class="p">[</span>
+                <span class="s1">&#39;id&#39;</span> <span class="o">=&gt;</span> <span class="mi">2</span><span class="p">,</span>
+                <span class="s1">&#39;title&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;Alan Kay 3&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;body&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;The best way to predict the future is to invent it.&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;created&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;2011-05-07 16:13:33&#39;</span>
+            <span class="p">]</span>
+         <span class="p">]</span>
+<span class="p">];</span>
+</code></pre></div>
+<p>Lets check the app we resource we made through via the console.</p>
+<div class="highlight"><pre><code class="php"><span class="cp">&lt;?php</span>
+<span class="err">$</span> <span class="nx">php</span> <span class="nx">apps</span><span class="o">/</span><span class="nx">Sandbox</span><span class="o">/</span><span class="nx">htdocs</span><span class="o">/</span><span class="nx">api</span><span class="o">.</span><span class="nx">php</span> <span class="nx">get</span> <span class="nx">app</span><span class="o">://</span><span class="nx">self</span><span class="o">/</span><span class="nx">posts</span>
+<span class="mi">200</span> <span class="nx">OK</span>
+<span class="p">[</span><span class="nx">BODY</span><span class="p">]</span>
+<span class="mi">0</span><span class="o">:</span><span class="k">array</span> <span class="p">(</span><span class="k">namespace</span> <span class="nx">Sandbox\Resource\App\Blog</span><span class="p">;</span>
+
+  <span class="s1">&#39;id&#39;</span> <span class="o">=&gt;</span> <span class="mi">0</span><span class="p">,</span>
+  <span class="s1">&#39;title&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;Alan Kay 1&#39;</span><span class="p">,</span>
+  <span class="s1">&#39;body&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;People who are really serious about software should make their own hardware.&#39;</span><span class="p">,</span>
+  <span class="s1">&#39;created&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;2011-05-07 16:13:11&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="mi">1</span><span class="o">:</span><span class="k">array</span> <span class="p">(</span>
+  <span class="s1">&#39;id&#39;</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">,</span>
+  <span class="s1">&#39;title&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;Alan Kay 2&#39;</span><span class="p">,</span>
+  <span class="s1">&#39;body&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;Perspective is worth 80 IQ points.&#39;</span><span class="p">,</span>
+  <span class="s1">&#39;created&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;2011-05-07 16:13:22&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="mi">2</span><span class="o">:</span><span class="k">array</span> <span class="p">(</span>
+  <span class="s1">&#39;id&#39;</span> <span class="o">=&gt;</span> <span class="mi">2</span><span class="p">,</span>
+  <span class="s1">&#39;title&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;Alan Kay 3&#39;</span><span class="p">,</span>
+  <span class="s1">&#39;body&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;The best way to predict the future is to invent it.&#39;</span><span class="p">,</span>
+  <span class="s1">&#39;created&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;2011-05-07 16:13:33&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>It has become clear what kind of request result you are looking for using dummy data.</p>
+
+<h2 id="toc_3">Stub Module</h2>
+
+<p>The resource returns stub data by the resource method name being bound to the stub interceptor 
+and implemented through aspect orientated programming.</p>
+
+<p><em>BEAR\Package\Module\Stub\StubModule.php</em></p>
+<div class="highlight"><pre><code class="php"><span class="cp">&lt;?php</span>
+<span class="k">class</span> <span class="nc">StubModule</span> <span class="k">extends</span> <span class="nx">AbstractModule</span>
+<span class="p">{</span>
+    <span class="sd">/**</span>
+<span class="sd">     * @var array</span>
+<span class="sd">     */</span>
+    <span class="k">private</span> <span class="nv">$stub</span><span class="p">;</span>
+
+    <span class="sd">/**</span>
+<span class="sd">     * @param array $stub</span>
+<span class="sd">     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">__construct</span><span class="p">(</span><span class="k">array</span> <span class="nv">$stub</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="k">parent</span><span class="o">::</span><span class="na">__construct</span><span class="p">();</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">stub</span> <span class="o">=</span> <span class="nv">$stub</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">protected</span> <span class="k">function</span> <span class="nf">configure</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="k">foreach</span> <span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">stub</span> <span class="k">as</span> <span class="nv">$class</span> <span class="o">=&gt;</span> <span class="nv">$value</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">bindInterceptor</span><span class="p">(</span>
+                <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">matcher</span><span class="o">-&gt;</span><span class="na">subclassesOf</span><span class="p">(</span><span class="nv">$class</span><span class="p">),</span>
+                <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">matcher</span><span class="o">-&gt;</span><span class="na">any</span><span class="p">(),</span>
+                <span class="p">[</span><span class="k">new</span> <span class="nx">Stub</span><span class="p">(</span><span class="nv">$value</span><span class="p">)]</span>
+            <span class="p">);</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>　
+ Note:Even though the client intends to request a resource, in reality the stub data interceptor that is wedged (intercepted) between the client and the resource returns the dummy data.</p>
+
+<p>You can install StubModule from other module like belows..</p>
+<div class="highlight"><pre><code class="php"><span class="cp">&lt;?php</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="na">install</span><span class="p">(</span><span class="k">new</span> <span class="nx">StubModule</span><span class="p">(</span><span class="nv">$stubData</span><span class="p">));</span>
+</code></pre></div>
+<h2 id="toc_4">Implement the Request Interface</h2>
+
+<p>Next we will actually access a db and extract data to be used in an <code>onGet</code> method to respond to a GET request.</p>
+
+<p>BEAR.Sunday doesn&#39;t have its own database usage library or database abstraction library. Inside the application resource by using other libraries you can directly use SQL or using an ORM. Inside the sandbox application [<a href="http://www.doctrine-project.org/projects/dbal.html">http://www.doctrine-project.org/projects/dbal.html</a> Docrine DBAL] is used.</p>
+
+<p><em>Sandbox/Resource/App/Blog/Posts.php</em></p>
+<div class="highlight"><pre><code class="php"><span class="cp">&lt;?php</span>
+
+<span class="k">namespace</span> <span class="nx">Sandbox\Resource\App\Blog</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">BEAR\Package\Module\Database\Dbal\Setter\DbSetterTrait</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">BEAR\Resource\ResourceObject</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">BEAR\Resource\Link</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">BEAR\Resource\Code</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">PDO</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">BEAR\Sunday\Annotation\Db</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">BEAR\Sunday\Annotation\Time</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">BEAR\Sunday\Annotation\Transactional</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">BEAR\Sunday\Annotation\Cache</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">BEAR\Sunday\Annotation\CacheUpdate</span><span class="p">;</span>
+
+<span class="sd">/**</span>
+<span class="sd"> * @Db</span>
+<span class="sd"> */</span>
+<span class="k">class</span> <span class="nc">Posts</span> <span class="k">extends</span> <span class="nx">ResourceObject</span>
+<span class="p">{</span>
+    <span class="k">use</span> <span class="nx">DbSetter</span><span class="p">;</span>
+
+    <span class="sd">/**</span>
+<span class="sd">     * @var string</span>
+<span class="sd">     */</span>
+    <span class="k">public</span> <span class="nv">$time</span><span class="p">;</span>
+
+    <span class="sd">/**</span>
+<span class="sd">     * @var string</span>
+<span class="sd">     */</span>
+    <span class="k">protected</span> <span class="nv">$table</span> <span class="o">=</span> <span class="s1">&#39;posts&#39;</span><span class="p">;</span>
+
+    <span class="sd">/**</span>
+<span class="sd">     * @var array</span>
+<span class="sd">     */</span>
+    <span class="k">public</span> <span class="nv">$links</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s1">&#39;page_post&#39;</span> <span class="c1"># &gt; [Link::HREF &gt; &#39;page://self/blog/posts/post&#39;],</span>
+        <span class="s1">&#39;page_item&#39;</span> <span class="c1"># &gt; [Link::HREF =&gt; &#39;page://self/blog/posts/post{?id}&#39;, Link::TEMPLATED &gt; true],</span>
+        <span class="s1">&#39;page_edit&#39;</span> <span class="c1"># &gt; [Link::HREF =&gt; &#39;page://self/blog/posts/edit{?id}&#39;, Link::TEMPLATED &gt; true],</span>
+        <span class="s1">&#39;page_delete&#39;</span> <span class="c1"># &gt; [Link::HREF =&gt; &#39;page://self/blog/posts?_method=delete{&amp;id}&#39;, Link::TEMPLATED &gt; true]</span>
+    <span class="p">];</span>
+
+    <span class="sd">/**</span>
+<span class="sd">     * @param int $id</span>
+<span class="sd">     *</span>
+<span class="sd">     * @return Posts</span>
+<span class="sd">     * @Cache(100)</span>
+<span class="sd">     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">onGet</span><span class="p">(</span><span class="nv">$id</span> <span class="o">=</span> <span class="k">null</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nv">$sql</span> <span class="o">=</span> <span class="s2">&quot;SELECT id, title, body, created, modified FROM </span><span class="si">{</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">table</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nb">is_null</span><span class="p">(</span><span class="nv">$id</span><span class="p">))</span> <span class="p">{</span>
+            <span class="nv">$stmt</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">db</span><span class="o">-&gt;</span><span class="na">query</span><span class="p">(</span><span class="nv">$sql</span><span class="p">);</span>
+            <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">body</span> <span class="o">=</span> <span class="nv">$stmt</span><span class="o">-&gt;</span><span class="na">fetchAll</span><span class="p">(</span><span class="nx">PDO</span><span class="o">::</span><span class="na">FETCH_ASSOC</span><span class="p">);</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+            <span class="nv">$sql</span> <span class="o">.</span><span class="c1"># &quot; WHERE id  :id&quot;;</span>
+            <span class="nv">$stmt</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">db</span><span class="o">-&gt;</span><span class="na">prepare</span><span class="p">(</span><span class="nv">$sql</span><span class="p">);</span>
+            <span class="nv">$stmt</span><span class="o">-&gt;</span><span class="na">bindValue</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="nv">$id</span><span class="p">);</span>
+            <span class="nv">$stmt</span><span class="o">-&gt;</span><span class="na">execute</span><span class="p">();</span>
+            <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">body</span> <span class="o">=</span> <span class="nv">$stmt</span><span class="o">-&gt;</span><span class="na">fetch</span><span class="p">(</span><span class="nx">PDO</span><span class="o">::</span><span class="na">FETCH_ASSOC</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="nv">$this</span><span class="p">;</span>
+    <span class="p">}</span>
+
+        <span class="sd">/**</span>
+<span class="sd">         * @param string $title</span>
+<span class="sd">         * @param string $body</span>
+<span class="sd">         *</span>
+<span class="sd">         * @return Posts</span>
+<span class="sd">         * @Time</span>
+<span class="sd">         * @Transactional</span>
+<span class="sd">         * @CacheUpdate</span>
+<span class="sd">         */</span>
+        <span class="k">public</span> <span class="k">function</span> <span class="nf">onPost</span><span class="p">(</span><span class="nv">$title</span><span class="p">,</span> <span class="nv">$body</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="nv">$values</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="s1">&#39;title&#39;</span> <span class="o">=&gt;</span> <span class="nv">$title</span><span class="p">,</span>
+                <span class="s1">&#39;body&#39;</span> <span class="o">=&gt;</span> <span class="nv">$body</span><span class="p">,</span>
+                <span class="s1">&#39;created&#39;</span> <span class="o">=&gt;</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">time</span>
+            <span class="p">];</span>
+            <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">db</span><span class="o">-&gt;</span><span class="na">insert</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">table</span><span class="p">,</span> <span class="nv">$values</span><span class="p">);</span>
+            <span class="c1">//</span>
+            <span class="nv">$lastId</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">db</span><span class="o">-&gt;</span><span class="na">lastInsertId</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">);</span>
+            <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">code</span> <span class="o">=</span> <span class="nx">Code</span><span class="o">::</span><span class="na">CREATED</span><span class="p">;</span>
+            <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">links</span><span class="p">[</span><span class="s1">&#39;new_post&#39;</span><span class="p">]</span> <span class="c1"># [Link::HREF =&gt; &quot;app://self/posts/post?id{$lastId}&quot;];</span>
+            <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">links</span><span class="p">[</span><span class="s1">&#39;page_new_post&#39;</span><span class="p">]</span> <span class="c1"># [Link::HREF =&gt; &quot;page://self/blog/posts/post?id{$lastId}&quot;];</span>
+            <span class="k">return</span> <span class="nv">$this</span><span class="p">;</span>
+        <span class="p">}</span>
+
+    <span class="sd">/**</span>
+<span class="sd">     * @param int    $id</span>
+<span class="sd">     * @param string $title</span>
+<span class="sd">     * @param string $body</span>
+<span class="sd">     *</span>
+<span class="sd">     * @return Posts</span>
+<span class="sd">     * @Time</span>
+<span class="sd">     * @CacheUpdate</span>
+<span class="sd">     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">onPut</span><span class="p">(</span><span class="nv">$id</span><span class="p">,</span> <span class="nv">$title</span><span class="p">,</span> <span class="nv">$body</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nv">$values</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s1">&#39;title&#39;</span> <span class="o">=&gt;</span> <span class="nv">$title</span><span class="p">,</span>
+            <span class="s1">&#39;body&#39;</span> <span class="o">=&gt;</span> <span class="nv">$body</span><span class="p">,</span>
+            <span class="s1">&#39;created&#39;</span> <span class="o">=&gt;</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">time</span>
+        <span class="p">];</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">db</span><span class="o">-&gt;</span><span class="na">update</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">table</span><span class="p">,</span> <span class="nv">$values</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;id&#39;</span> <span class="o">=&gt;</span> <span class="nv">$id</span><span class="p">]);</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">code</span> <span class="o">=</span> <span class="nx">Code</span><span class="o">::</span><span class="na">NO_CONTENT</span><span class="p">;</span>
+        <span class="k">return</span> <span class="nv">$this</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="sd">/**</span>
+<span class="sd">     * @param int $id</span>
+<span class="sd">     *</span>
+<span class="sd">     * @return Posts</span>
+<span class="sd">     * @CacheUpdate</span>
+<span class="sd">     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">onDelete</span><span class="p">(</span><span class="nv">$id</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">db</span><span class="o">-&gt;</span><span class="na">delete</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">table</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;id&#39;</span> <span class="o">=&gt;</span> <span class="nv">$id</span><span class="p">]);</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">code</span> <span class="o">=</span> <span class="nx">Code</span><span class="o">::</span><span class="na">NO_CONTENT</span><span class="p">;</span>
+        <span class="k">return</span> <span class="nv">$this</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>In the resource class a method that responds to therequest interface is provided. In this resource if an $id is specified 1 post and if not set all posts are returned;</p>
+
+<h2 id="toc_5">Use the Resource from the Command Line</h2>
+
+<p><em>Sandbox/Resource/App/Posts.php</em>
+The URI <code>app://self/posts</code> is given to the app resource specified in the <code>Sandbox/Resource/App/Posts</code> class.</p>
+
+<p>Let&#39;s take a look at the resource we made from the command line. Lets first go back to the application mode.</p>
+
+<p>public/api.php
+<code>
+$mode = &#39;Stub&quot;;
+$app = require &#39;/path/to/script/instance.php&#39;;
+</code></p>
+
+<p>Let&#39;s make the call from the console.</p>
+<div class="highlight"><pre><code class="text">$ php api.php get app://self/blog/posts
+
+200 OK
+[BODY]
+array (
+  0 =&gt; 
+  array (
+    &#39;id&#39; =&gt; &#39;1&#39;,
+    &#39;title&#39; =&gt; &#39;Title&#39;,
+    &#39;body&#39; =&gt; &#39;This is the article text&#39;,
+    &#39;created&#39; =&gt; &#39;2011-07-01 22:30:25&#39;,
+    &#39;modified&#39; =&gt; NULL,
+  ),
+  1 =&gt; 
+  array (
+    &#39;id&#39; =&gt; &#39;2&#39;,
+    &#39;title&#39; =&gt; &#39;This is a title&#39;,
+    &#39;body&#39; =&gt; &#39;here the text continues&#39;,
+    &#39;created&#39; =&gt; &#39;2011-07-01 22:30:25&#39;,
+    &#39;modified&#39; =&gt; NULL,
+  ),
+  2 =&gt; 
+  array (
+    &#39;id&#39; =&gt; &#39;3&#39;,
+    &#39;title&#39; =&gt; &#39;Title counter attck&#39;,
+    &#39;body&#39; =&gt; &#39;This is not really very interesting&#39;,
+    &#39;created&#39; =&gt; &#39;2011-07-01 22:30:27&#39;,
+    &#39;modified&#39; =&gt; NULL,
+  ),
+)
+</code></pre></div>
+<p>We have got the same output as to when we called the stub mode.</p>
+
+<p>By switching the mode the dummy data can be displayed anytime.</p>
+<div class="highlight"><pre><code class="text">Note: `self` means a resource of the current application. In BEAR.Sunday it is possible to request a resource from another application or to set up and use resources that cross applications.
+</code></pre></div>
+<p>A query specifying parameters.</p>
+<div class="highlight"><pre><code class="text">$ php apps/Sandbox/htdocs/api.php get &#39;app://self/posts?id=1&#39;
+</code></pre></div>
+<h2 id="toc_6">Alias Settings</h2>
+
+<p>It is handy to create an alias to the full path in your shell. </p>
+
+<p><em>~/.bash_profile</em></p>
+<div class="highlight"><pre><code class="text">alias api=&#39;php /path/to/apps/Sandbox/htdocs/api.php&#39;
+alias web=&#39;php /path/to/apps/Sandbox/htdocs/web.php&#39;
+</code></pre></div>
+<p>Using the resource API above you can make the following web request. This is then a simple notation and you can use resource using the console from any directory. This is handy when using scripts from the OS for batch processing and the like.</p>
+<div class="highlight"><pre><code class="text">// API access
+$ api get app://self/posts
+
+// web access
+$ web get /posts
+</code></pre></div>
+<h2 id="toc_7">API Driven Development</h2>
+
+<p>In this way in BEAR.Sunday internal API development is used as a base to create web applications. A resource functions as a service layer, a name(uri) is provided to access data resource or business logic which is bundled through a RESTful universal interface.</p>
+
+<p>We <em>do not</em> create/provide a web application based external API interface, we build an application as an API collection on an internal resource API base. </p>
+
+<h2 id="toc_8">Runtime Injection</h2>
+
+<p>Each time this app resource is accessed by a get request, the setDb() get previously called and the DB object is injected from outside. It is not configured for this class to use any DB object, please focus on the injected object that is being relied on. In a <em>GET</em> request a slave DB object can be injected and for the other <em>PUT</em>,*POST*,*DELETE* requests a master DB object.</p>
+
+<p>This is referred to as runtime injection. Binding between the particular method (in this case onGet) and the intercepter that is called before that method is executed (in this case DB object injector) are then acheived.</p>
+
+<p>This architecture of the DB object being injected at runtime is not a BEAR.Sunday fixed structure is is the work of <code>DotrineDbalModule</code> which you install in <code>AppModule</code>. In  <code>DotrineDbalModule</code> class methods annotated with <em>@Db</em> binds the DB injector, that DB injector looks at the request method, decides whether master or slave should be used and sets the DB object.</p>
+
+        </div>
+    </div>
+
+</div>
+
+</div>
+</div>
+<div id="footer">
+    <div class="container">
+        <p class="text-muted credit">
+            © 2013 <a href="https://github.com/koriym/BEAR.Sunday">BEAR.Sunday</a>
+        </p>
+    </div>
+</div>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script type="text/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+
+<!-- GoogleAnalytics -->
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-6074569-8', 'bearsunday.github.io');
+    ga('send', 'pageview');
+
+</script>
+</body>
+</html>

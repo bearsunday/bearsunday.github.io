@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: default_ja
 title: BEAR.Sunday | Blog Tutorial(4) Creating an index page
 category: Blog Tutorial
 ---

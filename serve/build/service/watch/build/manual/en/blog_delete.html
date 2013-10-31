@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BEAR.Sunday | Blog Tutorial(8) Deleting Posts</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/index.css">
+    <link rel="stylesheet" href="/css/syntax.css">
+    <link rel="stylesheet" href="/css/github.css">
+    <link rel="stylesheet" href="/css/main.css">
+    <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/carousel.css">
+    <link rel="icon" sizes="16x16 32x32 48x48 64x64" href="/images/icon/favicon.ico">
+
+    <!--[if IE]><link rel="shortcut icon" href="/images/icon/favicon.ico"><![endif]-->
+
+    <!-- The below are optional but encouraged -->
+
+    <!-- Touch icon for iOS 2.0+ and Android 2.1+: -->
+    <link rel="apple-touch-icon-precomposed" href="/images/icon/favicon-152.png">
+
+    <!-- The below are optional -->
+
+    <!-- IE 10 Metro tile icon (Metro equivalent of apple-touch-icon): -->
+    <meta name="msapplication-TileColor" content="#FFFFFF">
+    <meta name="msapplication-TileImage" content="/images/icon/favicon-144.png">
+    <!-- For iPad with high-resolution Retina display running iOS ≥ 7: -->
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="/images/icon/favicon-152.png">
+    <!-- For iPad with high-resolution Retina display running iOS ≤ 6: -->
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/images/icon/favicon-144.png">
+    <!-- For iPhone with high-resolution Retina display running iOS ≥ 7: -->
+    <link rel="apple-touch-icon-precomposed" sizes="120x120" href="/images/icon/favicon-120.png">
+    <!-- For iPhone with high-resolution Retina display running iOS ≤ 6: -->
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/images/icon/favicon-114.png">
+    <!-- For first- and second-generation iPad: -->
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/images/icon/favicon-72.png">
+    <!-- For non-Retina iPhone, iPod Touch, and Android 2.1+ devices: -->
+    <link rel="apple-touch-icon-precomposed" href="/images/icon/favicon-57.png">
+</head>
+<body>
+<!--<div id="wrap">-->
+
+    <!-- Docs master nav -->
+    <div class="navbar navbar-default">
+        <div class="container">
+            <div class="navbar-header">
+                <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".bs-navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+
+                <a href="/index.html" class="navbar-brand">
+                    <span class="bear-icon-32"></span>
+                </a>
+            </div>
+            <nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
+                <ul class="nav navbar-nav">
+                    <li >
+                        <a href="/manual/en/index.html">Manual</a>
+                    </li>
+                    <li >
+                        <a href="/manual/en/tutorial.html">Tutorial</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+<div class="container">
+
+    <div class="row">
+        <div class="col-md-3">
+            <div class="panel panel-default">
+    <div class="panel-heading"><strong>Blog Tutorial</strong></div>
+    <div class="panel-body">
+
+        <ul class="nav nav-pills nav-stacked">
+            
+                <li><a href="blog.html">Getting Started</a></li>
+<li><a href="blog_get.html">Creating a Post Resource</a></li>
+<li><a href="blog_page.html">Creating a Post Detail Page</a></li>
+<li><a href="blog_template.html">Creating a Template</a></li>
+<li><a href="blog_create.html">Adding a Post</a></li>
+<li><a href="blog_validate.html">Validation</a></li>
+<li><a href="blog_delete.html">Removing a Post</a></li>
+<li><a href="blog_update.html">Editing a Post</a></li>
+
+            
+
+            
+
+            
+
+            
+
+            
+
+            
+
+            
+
+            
+
+            
+
+            
+
+        </ul>
+    </div>
+</div>
+        </div>
+        <div class="col-md-9">
+            <h1 id="toc_0">DELETE Method</h1>
+
+<h2 id="toc_1">Deleting a Post page</h2>
+
+<p>So that you can delete a post that has is identified with an <code>id</code> from our posts page, we will create an <code>onDelete()</code> method in the posts page resource, this will respond to a DELETE request.</p>
+<div class="highlight"><pre><code class="php"><span class="cp">&lt;?php</span>
+    <span class="sd">/**</span>
+<span class="sd">     * @param int $id</span>
+<span class="sd">     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">onDelete</span><span class="p">(</span><span class="nv">$id</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="c1">// delete</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">resource</span>
+        <span class="o">-&gt;</span><span class="na">delete</span>
+        <span class="o">-&gt;</span><span class="na">uri</span><span class="p">(</span><span class="s1">&#39;app://self/posts&#39;</span><span class="p">)</span>
+        <span class="o">-&gt;</span><span class="na">withQuery</span><span class="p">([</span><span class="s1">&#39;id&#39;</span> <span class="o">=&gt;</span> <span class="nv">$id</span><span class="p">])</span>
+        <span class="o">-&gt;</span><span class="na">eager</span>
+        <span class="o">-&gt;</span><span class="na">request</span><span class="p">();</span>
+
+        <span class="c1">// message</span>
+        <span class="nv">$this</span><span class="p">[</span><span class="s1">&#39;message&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Entry deleted.&#39;</span><span class="p">;</span>
+        <span class="k">return</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">onGet</span><span class="p">();</span>
+    <span class="p">}</span>
+</code></pre></div>
+<p>As a page resource receives a <code>DELETE</code> request from a web browser it in the same way makes a <code>DELETE</code> request to the posts resource.s</p>
+
+<p>This link to the posts page resource will be available on the posts resource template. Using Javascript show a confirmation dialog, then so that the page request is made as a <code>DELETE</code> method use the <code>_method</code> query.</p>
+
+<p>Note: When posting using the <code>X-HTTP-Method-Override</code> hidden element or in the GET query a <code>_method</code> parameter is an <em>HTTP Method Override</em> method of supporting PUT/DELETE when your browser or when your server environment prevents you from fully using HTTP verbs.</p>
+
+<h2 id="toc_2">Create a Posts Resource DELETE interface</h2>
+
+<p>Receive a request post from a posts page and through accessing the DB delete the post. </p>
+<div class="highlight"><pre><code class="php"><span class="cp">&lt;?php</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">onDelete</span><span class="p">(</span><span class="nv">$id</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">db</span><span class="o">-&gt;</span><span class="na">delete</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">table</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;id&#39;</span> <span class="o">=&gt;</span> <span class="nv">$id</span><span class="p">]);</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">code</span> <span class="o">=</span> <span class="mi">204</span><span class="p">;</span>
+        <span class="k">return</span> <span class="nv">$this</span><span class="p">;</span>
+    <span class="p">}</span>
+</code></pre></div>
+<p>Note: Like the GET request interface the <code>$this->db</code> is automatically set by the injector. What is different to the GET request is that it used the master DB connection.</p>
+
+<h2 id="toc_3">Checking this with through the Command Line</h2>
+
+<p>Lets try it out. We have set it up with a 204 status code so it should look like this.</p>
+<div class="highlight"><pre><code class="text">$ php api.php delete app://self/posts?id=1
+204 No Content
+[BODY]
+</code></pre></div>
+<h2 id="toc_4">Unit Test</h2>
+
+<p>If we access with DELETE the records should be reduced by 1. The test will look something like this.</p>
+<div class="highlight"><pre><code class="php"><span class="cp">&lt;?php</span>
+    <span class="sd">/**</span>
+<span class="sd">     * @test</span>
+<span class="sd">     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">delete</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="c1">// dec 1</span>
+        <span class="nv">$before</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">getConnection</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">getRowCount</span><span class="p">(</span><span class="s1">&#39;posts&#39;</span><span class="p">);</span>
+        <span class="nv">$response</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">resource</span>
+        <span class="o">-&gt;</span><span class="na">delete</span>
+        <span class="o">-&gt;</span><span class="na">uri</span><span class="p">(</span><span class="s1">&#39;app://self/posts&#39;</span><span class="p">)</span>
+        <span class="o">-&gt;</span><span class="na">withQuery</span><span class="p">([</span><span class="s1">&#39;id&#39;</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">])</span>
+        <span class="o">-&gt;</span><span class="na">eager</span>
+        <span class="o">-&gt;</span><span class="na">request</span><span class="p">();</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertEquals</span><span class="p">(</span><span class="nv">$before</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">getConnection</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">getRowCount</span><span class="p">(</span><span class="s1">&#39;posts&#39;</span><span class="p">),</span> <span class="s2">&quot;faild to delete post&quot;</span><span class="p">);</span>
+    <span class="p">}</span>
+</code></pre></div>
+<h2 id="toc_5">Javascript Confirmation Dialogue</h2>
+
+<p>In order to add a confirmation to a delete action the we use the JS library that is included with the sandbox application.</p>
+<div class="highlight"><pre><code class="html"><span class="nt">&lt;a</span> <span class="na">title</span><span class="err">#</span> <span class="err">&quot;</span><span class="na">Delete</span> <span class="na">post</span><span class="err">&quot;</span> <span class="na">class=</span><span class="s">&quot;btn&quot;</span> <span class="na">href=</span><span class="s">&quot;#&quot;</span> <span class="na">onclick=</span><span class="s">&quot;return MyDialogs.loadConfirmationModal(&#39;my_dialog&#39;, &#39;/blog/posts?_method=delete&amp;id={$post.id}&#39;, &#39;Are you sure ?&#39;, &#39;The entry will be deleted permanently.&#39;);&quot;</span><span class="nt">&gt;&lt;span</span> <span class="na">class</span><span class="err">&quot;</span><span class="na">icon-trash</span><span class="err">&quot;</span><span class="nt">&gt;&lt;/span&gt;&lt;/a&gt;</span>
+</code></pre></div>
+        </div>
+    </div>
+
+</div>
+
+</div>
+</div>
+<div id="footer">
+    <div class="container">
+        <p class="text-muted credit">
+            © 2013 <a href="https://github.com/koriym/BEAR.Sunday">BEAR.Sunday</a>
+        </p>
+    </div>
+</div>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script type="text/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+
+<!-- GoogleAnalytics -->
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-6074569-8', 'bearsunday.github.io');
+    ga('send', 'pageview');
+
+</script>
+</body>
+</html>

@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: default_ja
 title: BEAR.Sunday | Blog Tutorial(6) Creating Posts
 category: Blog Tutorial
 ---

@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BEAR.Sunday | My First DI</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/index.css">
+    <link rel="stylesheet" href="/css/syntax.css">
+    <link rel="stylesheet" href="/css/github.css">
+    <link rel="stylesheet" href="/css/main.css">
+    <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/carousel.css">
+    <link rel="icon" sizes="16x16 32x32 48x48 64x64" href="/images/icon/favicon.ico">
+
+    <!--[if IE]><link rel="shortcut icon" href="/images/icon/favicon.ico"><![endif]-->
+
+    <!-- The below are optional but encouraged -->
+
+    <!-- Touch icon for iOS 2.0+ and Android 2.1+: -->
+    <link rel="apple-touch-icon-precomposed" href="/images/icon/favicon-152.png">
+
+    <!-- The below are optional -->
+
+    <!-- IE 10 Metro tile icon (Metro equivalent of apple-touch-icon): -->
+    <meta name="msapplication-TileColor" content="#FFFFFF">
+    <meta name="msapplication-TileImage" content="/images/icon/favicon-144.png">
+    <!-- For iPad with high-resolution Retina display running iOS ≥ 7: -->
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="/images/icon/favicon-152.png">
+    <!-- For iPad with high-resolution Retina display running iOS ≤ 6: -->
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/images/icon/favicon-144.png">
+    <!-- For iPhone with high-resolution Retina display running iOS ≥ 7: -->
+    <link rel="apple-touch-icon-precomposed" sizes="120x120" href="/images/icon/favicon-120.png">
+    <!-- For iPhone with high-resolution Retina display running iOS ≤ 6: -->
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/images/icon/favicon-114.png">
+    <!-- For first- and second-generation iPad: -->
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/images/icon/favicon-72.png">
+    <!-- For non-Retina iPhone, iPod Touch, and Android 2.1+ devices: -->
+    <link rel="apple-touch-icon-precomposed" href="/images/icon/favicon-57.png">
+</head>
+<body>
+<!--<div id="wrap">-->
+
+    <!-- Docs master nav -->
+    <div class="navbar navbar-default">
+        <div class="container">
+            <div class="navbar-header">
+                <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".bs-navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+
+                <a href="/index.html" class="navbar-brand">
+                    <span class="bear-icon-32"></span>
+                </a>
+            </div>
+            <nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
+                <ul class="nav navbar-nav">
+                    <li >
+                        <a href="/manual/en/index.html">Manual</a>
+                    </li>
+                    <li >
+                        <a href="/manual/en/tutorial.html">Tutorial</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+<div class="container">
+
+    <div class="row">
+        <div class="col-md-3">
+            <div class="panel panel-default">
+    <div class="panel-heading"><strong>My First - Tutorial</strong></div>
+    <div class="panel-body">
+
+        <ul class="nav nav-pills nav-stacked">
+            
+
+            
+
+            
+
+            
+
+            
+                <li><a href="my_first_resource.html">My First Resource Object</a></li>
+<li><a href="my_first_web_api.html">My First Web API</a></li>
+<li><a href="my_first_test.html">My First Test</a></li>
+<li><a href="my_first_web_page.html">My First Web Page</a></li>
+<li><a href="my_first_resource_request.html">My First Resource Request</a></li>
+<li><a href="my_first_di.html">My First Injection</a></li>
+<li><a href="my_first_aop.html">My First Aspect</a></li>
+<li><a href="my_first_pull.html">My First Pull</a></li>
+<li><a href="my_first_hypermedia.html">My First Hyper Media</a></li>
+            
+
+            
+
+            
+
+            
+
+            
+
+            
+
+        </ul>
+    </div>
+</div>
+        </div>
+        <div class="col-md-9">
+            <h1 id="toc_0">My First DI</h1>
+
+<h2 id="toc_1">Dependencies on Greeting that Enables a Whole Range of Greetings</h2>
+
+<p>In the greeting resource in [my_first_resource My First Resource] the word &quot;Hello&quot; is fixed.
+Here using <a href="http://ja.wikipedia.org/wiki/%E4%BE%9D%E5%AD%98%E6%80%A7%E3%81%AE%E6%B3%A8%E5%85%A5">Dependency Injection</a>
+we can make all sorts of greeting respond to this. </p>
+
+<h2 id="toc_2">Dependency</h2>
+
+<p>In order to show a greeting in [my_first_resource Greeting Resource] we need a string. 
+This string is the dependency. In which way can we prepare this string? 
+There are predominantly 3 ways.</p>
+
+<h3 id="toc_3">1.Dependency Inside</h3>
+
+<p>The descriptor is inside the dependency code.
+In [my_first_resource My First Resource] &#39;Hello&#39; was hard coded inside a method.
+If you make this a class constant the readability and maintainability is increased.
+However the existence of this within the dependency code means that to some degree it is the same as hard coding.
+In order to alter it you will need to alter the class itself still.</p>
+
+<h3 id="toc_4">2.Dependency Pull</h3>
+
+<p>Some time ago configuration value were often defined in global variables.
+From there we went on to using a configuration object.
+In both cases we are pulling in dependencies from an external scope, and so are not really any different.
+Even if you use a service locater it is the same. It is pulling in dependencies from external sources.</p>
+
+<p>You still need to change a configuration file or define a configuration in order to test it.</p>
+
+<h3 id="toc_5">3.Dependency Injection</h3>
+
+<p>You are not retrieving the greeting string yourself, externally upon construction the greeting string is injected into the class.
+As for retrieving the dependency the class is only concerned with receiving the dependency, no request is necessary.
+When testing the you simply use the constructor or specified setter to pass in the dependency.</p>
+
+<h2 id="toc_6">Take Hold of the Constructor</h2>
+
+<p>In [my_first_web_page_2 My First Resource Request] we used a trait for injection, but here we use a constructor to receive the dependency.</p>
+
+<p>The constructor looks like this.</p>
+
+<p>In the constructor wanting external assignment(injection) we add the <code>@Inject</code> annotation.
+In which case in order to set the specified injection, we add the annotation <code>@Named</code> to the injection point.</p>
+<div class="highlight"><pre><code class="php"><span class="cp">&lt;?php</span>
+    <span class="sd">/**</span>
+<span class="sd">     * Constructor</span>
+<span class="sd">     * </span>
+<span class="sd">     * @param string $message</span>
+<span class="sd">     * </span>
+<span class="sd">     * @Inject</span>
+<span class="sd">     * @Named(&quot;greeting_msg&quot;)</span>
+<span class="sd">     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">__construct</span><span class="p">(</span><span class="nv">$message</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">message</span> <span class="o">=</span> <span class="nv">$message</span><span class="p">;</span>
+    <span class="p">}</span>
+</code></pre></div>
+<h3 id="toc_7">Lets try a bad injection execution</h3>
+
+<p>We have saved the created file so we can make a URI request to <code>app://self/first/greeting/di</code>.</p>
+
+<p>We have added the annotation needed for injection, but we haven&#39;t done any configuration for what to inject.
+So the injector cannot carry out the injection. Lets try this bad injection execution.</p>
+<div class="highlight"><pre><code class="text">$ php api.php get &#39;app://self/first/greeting/di&#39;
+</code></pre></div><div class="highlight"><pre><code class="text">500 Internal Server Error
+X-EXCEPTION-CLASS: Ray\Di\Exception\NotBound
+X-EXCEPTION-MESSAGE: typehint# &#39;&#39;, annotate&#39;greeting_msg&#39; for $message in class &#39;Sandbox\Resource\App\First\Greeting\Di&#39;
+X-EXCEPTION-CODE: 0
+[BODY]
+Internal error occurred (e5f464)
+</code></pre></div>
+<p><code>Ray\Di\Exception\NotBound</code> exception is raised.</p>
+
+<p>The exception message shows that there is no DI settings have been bound for the named <code>greeting_msg</code> with no typehint. 
+A DI configuration is needed to be bound to the named <code>greeting_msg</code> method.</p>
+
+<h3 id="toc_8">Injector DSL</h3>
+
+<p>We can add the following to the <a href="https://github.com/koriym/BEAR.Package/blob/master/apps/Sandbox/src/Sandbox/Module/AppModule.php">{$APP_PATH}\Module\App\Dependency</a> or <a href="https://github.com/koriym/BEAR.Package/blob/master/apps/Sandbox/src/Sandbox/Module/AppModule.php">{$APP}\Module\AppModule</a> configure method, which is good enough for our purposes.
+The DI configuration (Injector Config) takes place in the <code>configure</code> method of the module. </p>
+<div class="highlight"><pre><code class="php"><span class="cp">&lt;?php</span>
+<span class="k">protected</span> <span class="k">function</span> <span class="nf">configure</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="c1">// ...</span>
+    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">bind</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">annotatedWith</span><span class="p">(</span><span class="s1">&#39;greeting_msg&#39;</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">toInstance</span><span class="p">(</span><span class="s1">&#39;Hola&#39;</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Here we pass &#39;Hola&#39; into the method we annotated with <code>@Inject</code>and<code>@Named(&quot;greeting_msg&quot;)</code> (or even a contstructor).</p>
+
+<p>Here we are directing an object (instance), but we can also can also set a class or factory class name.
+Using a factory is is possible to generate a more complex instance. * Even if you change the generation method, the retrieval descriptor method will not change. </p>
+<div class="highlight"><pre><code class="php"><span class="cp">&lt;?php</span>
+    <span class="sd">/**</span>
+<span class="sd">     * @Inject</span>
+<span class="sd">     * @Named(&quot;greeting_msg&quot;)</span>
+<span class="sd">     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">__construct</span><span class="p">(</span><span class="nv">$message</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">message</span> <span class="o">=</span> <span class="nv">$message</span><span class="p">;</span>
+    <span class="p">}</span>
+</code></pre></div>
+<h2 id="toc_9">Let&#39;s Check</h2>
+<div class="highlight"><pre><code class="text">$ php api.php get &#39;app://self/first/greeting/di?name=BEAR&#39;
+</code></pre></div><div class="highlight"><pre><code class="text">200 OK
+...
+[BODY]
+&quot;Hola, BEAR&quot;
+</code></pre></div>
+<p>We pass in the instance (string) that we setup in the module configuration.
+No matter if you retrieve the greeting text from a DB or from a file, the class will not change.
+The only change is in the preparation module.</p>
+
+<p>All we need to do is add an annotation to the class that we are using for DI to use.
+There is nothing special about the constructor, no specific method names or use of an object container, it is just a normal clean PHP class.
+You can easily unit test by passing a dependency manually.</p>
+
+<p>Your class has become more modular, reusable and testable. </p>
+
+        </div>
+    </div>
+
+</div>
+
+</div>
+</div>
+<div id="footer">
+    <div class="container">
+        <p class="text-muted credit">
+            © 2013 <a href="https://github.com/koriym/BEAR.Sunday">BEAR.Sunday</a>
+        </p>
+    </div>
+</div>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script type="text/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+
+<!-- GoogleAnalytics -->
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-6074569-8', 'bearsunday.github.io');
+    ga('send', 'pageview');
+
+</script>
+</body>
+</html>

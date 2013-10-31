@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: default_ja
 title: BEAR.Sunday | Blog(1) Installing BEAR
 category: Blog Tutorial
 ---

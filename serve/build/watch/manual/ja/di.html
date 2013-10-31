@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BEAR.Sunday | Dependency Injection</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/index.css">
+    <link rel="stylesheet" href="/css/syntax.css">
+    <link rel="stylesheet" href="/css/github.css">
+    <link rel="stylesheet" href="/css/main.css">
+    <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/carousel.css">
+    <link rel="icon" sizes="16x16 32x32 48x48 64x64" href="/images/icon/favicon.ico">
+
+    <!--[if IE]><link rel="shortcut icon" href="/images/icon/favicon.ico"><![endif]-->
+
+    <!-- The below are optional but encouraged -->
+
+    <!-- Touch icon for iOS 2.0+ and Android 2.1+: -->
+    <link rel="apple-touch-icon-precomposed" href="/images/icon/favicon-152.png">
+
+    <!-- The below are optional -->
+
+    <!-- IE 10 Metro tile icon (Metro equivalent of apple-touch-icon): -->
+    <meta name="msapplication-TileColor" content="#FFFFFF">
+    <meta name="msapplication-TileImage" content="/images/icon/favicon-144.png">
+    <!-- For iPad with high-resolution Retina display running iOS ≥ 7: -->
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="/images/icon/favicon-152.png">
+    <!-- For iPad with high-resolution Retina display running iOS ≤ 6: -->
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/images/icon/favicon-144.png">
+    <!-- For iPhone with high-resolution Retina display running iOS ≥ 7: -->
+    <link rel="apple-touch-icon-precomposed" sizes="120x120" href="/images/icon/favicon-120.png">
+    <!-- For iPhone with high-resolution Retina display running iOS ≤ 6: -->
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/images/icon/favicon-114.png">
+    <!-- For first- and second-generation iPad: -->
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/images/icon/favicon-72.png">
+    <!-- For non-Retina iPhone, iPod Touch, and Android 2.1+ devices: -->
+    <link rel="apple-touch-icon-precomposed" href="/images/icon/favicon-57.png">
+</head>
+<body>
+<!--<div id="wrap">-->
+
+    <!-- Docs master nav -->
+    <div class="navbar navbar-default">
+        <div class="container">
+            <div class="navbar-header">
+                <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".bs-navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+
+                <a href="/index.html" class="navbar-brand">
+                    <span class="bear-icon-32"></span>
+                </a>
+            </div>
+            <nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
+                <ul class="nav navbar-nav">
+                    <li  class="active">
+                        <a href="/manual/en/index.html">Manual</a>
+                    </li>
+                    <li >
+                        <a href="/manual/en/tutorial.html">Tutorial</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+<div class="container">
+
+    <div class="row">
+        <div class="col-md-3">
+            <div class="panel panel-default">
+    <div class="panel-heading"><strong>Manual</strong></div>
+    <div class="panel-body">
+
+        <ul class="nav nav-pills nav-stacked">
+            
+
+            
+
+            
+
+            
+
+            
+
+            
+
+            
+
+            
+
+            
+                <aside>
+    <ul class="nav nav-list">
+        <li><a href="introduction.html">Introduction</a></li>
+        <li><a href="install.html">Install</a></li>
+        <li><a href="di.html">DI</a></li>
+        <li><a href="aop.html">AOP</a></li>
+        <li><a href="resource.html">REST - Hypermedia</a></li>
+        <li><a href="application.html">Application</a></li>
+    </ul>
+            
+
+            
+
+        </ul>
+    </div>
+</div>
+        </div>
+        <div class="col-md-9">
+            <h1 id="toc_0">Dependency Injection framework</h1>
+
+<p><strong>Ray.Di</strong> was created in order to get Guice style dependency injection in PHP projects. It tries to mirror Guice&#39;s behavior and style. [Guice]((<a href="http://code.google.com/p/google-guice/wiki/Motivation?tm=6">http://code.google.com/p/google-guice/wiki/Motivation?tm=6</a>) is a Java dependency injection framework developed by Google.</p>
+
+<ul>
+<li>Supports some of the <a href="http://en.wikipedia.org/wiki/JSR_250">JSR-250</a> object lifecycle annotations (<code>@PostConstruct</code>, <code>@PreDestroy</code>)</li>
+<li>Provides an <a href="http://aopalliance.sourceforge.net/">AOP Alliance</a>-compliant aspect-oriented programming implementation.</li>
+<li>Extends <a href="http://auraphp.github.com/Aura.Di">Aura.Di</a>.</li>
+<li><a href="http://www.doctrine-project.org/projects/common">Doctrine.Common</a> annotations.</li>
+</ul>
+
+<p><em>Not all features of Guice have been implemented.</em></p>
+
+<h2 id="toc_1">Overview</h2>
+
+<p>Here is a basic example of dependency injection using Ray.Di.</p>
+
+<div class="highlight"><pre><code class="php"><span class="cp">&lt;?php</span>
+<span class="k">use</span> <span class="nx">Ray\Di\Injector</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Ray\Di\AbstractModule</span><span class="p">;</span>
+
+<span class="k">interface</span> <span class="nx">FinderInterface</span>
+<span class="p">{</span>
+<span class="p">}</span>
+
+<span class="k">class</span> <span class="nc">Finder</span> <span class="k">implements</span> <span class="nx">FinderInterface</span>
+<span class="p">{</span>
+<span class="p">}</span>
+
+<span class="k">class</span> <span class="nc">Lister</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="nv">$finder</span><span class="p">;</span>
+
+    <span class="sd">/**</span>
+<span class="sd">     * @Inject</span>
+<span class="sd">     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">setFinder</span><span class="p">(</span><span class="nx">FinderInterface</span> <span class="nv">$finder</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">finder</span> <span class="o">=</span> <span class="nv">$finder</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+
+<span class="k">class</span> <span class="nc">Module</span> <span class="k">extends</span> <span class="nx">\Ray\Di\AbstractModule</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">configure</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">bind</span><span class="p">(</span><span class="s1">&#39;MovieApp\FinderInterface&#39;</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">to</span><span class="p">(</span><span class="s1">&#39;MovieApp\Finder&#39;</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+<span class="nv">$injector</span> <span class="o">=</span> <span class="nx">Injector</span><span class="o">::</span><span class="na">create</span><span class="p">([</span><span class="k">new</span> <span class="nx">Module</span><span class="p">]);</span>
+<span class="nv">$lister</span> <span class="o">=</span> <span class="nv">$injector</span><span class="o">-&gt;</span><span class="na">getInstance</span><span class="p">(</span><span class="s1">&#39;MovieApp\Lister&#39;</span><span class="p">);</span>
+<span class="nv">$works</span> <span class="o">=</span> <span class="p">(</span><span class="nv">$lister</span><span class="o">-&gt;</span><span class="na">finder</span> <span class="nx">instanceof</span> <span class="nx">MovieApp\Finder</span><span class="p">);</span>
+<span class="k">echo</span><span class="p">((</span><span class="nv">$works</span><span class="p">)</span> <span class="o">?</span> <span class="s1">&#39;It works!&#39;</span> <span class="o">:</span> <span class="s1">&#39;It DOES NOT work!&#39;</span><span class="p">);</span>
+
+<span class="c1">// It works!</span>
+</code></pre></div>
+
+<p>This is an example of <strong>Linked Bindings</strong>. Linked bindings map a type to its implementation.</p>
+
+<h3 id="toc_2">Provider Bindings</h3>
+
+<p><a href="http://code.google.com/p/rayphp/wiki/ProviderBindings">Provider bindings</a> map a type to its provider.</p>
+
+<div class="highlight"><pre><code class="php"><span class="cp">&lt;?php</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="na">bind</span><span class="p">(</span><span class="s1">&#39;TransactionLogInterface&#39;</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">toProvider</span><span class="p">(</span><span class="s1">&#39;DatabaseTransactionLogProvider&#39;</span><span class="p">);</span>
+</code></pre></div>
+
+<p>The provider class implements Ray&#39;s Provider interface, which is a simple, general interface for supplying values:</p>
+
+<div class="highlight"><pre><code class="php"><span class="cp">&lt;?php</span>
+<span class="k">use</span> <span class="nx">Ray\Di\ProviderInterface</span><span class="p">;</span>
+
+<span class="k">interface</span> <span class="nx">ProviderInterface</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">get</span><span class="p">();</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>Our provider implementation class has dependencies of its own, which it receives via a contructor annotated with <code>@Inject</code>.
+It implements the Provider interface to define what&#39;s returned with complete type safety:</p>
+
+<div class="highlight"><pre><code class="php"><span class="cp">&lt;?php</span>
+<span class="k">class</span> <span class="nc">DatabaseTransactionLogProvider</span> <span class="k">implements</span> <span class="nx">Provider</span>
+<span class="p">{</span>
+    <span class="k">private</span> <span class="nx">ConnectionInterface</span> <span class="nx">connection</span><span class="p">;</span>
+
+    <span class="sd">/**</span>
+<span class="sd">     * @Inject</span>
+<span class="sd">     */</span>
+    <span class="k">public</span> <span class="nx">DatabaseTransactionLogProvider</span><span class="p">(</span><span class="nx">ConnectionInterface</span> <span class="nv">$connection</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">connection</span> <span class="o">=</span> <span class="nv">$connection</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="nx">TransactionLog</span> <span class="nx">get</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="nv">$transactionLog</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">DatabaseTransactionLog</span><span class="p">;</span>
+        <span class="nv">$transactionLog</span><span class="o">-&gt;</span><span class="na">setConnection</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">connection</span><span class="p">);</span>
+
+        <span class="k">return</span> <span class="nv">$transactionLog</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>Finally we bind to the provider using the <code>toProvider()</code> method:</p>
+
+<div class="highlight"><pre><code class="php"><span class="cp">&lt;?php</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="na">bind</span><span class="p">(</span><span class="s1">&#39;TransactionLogInterface&#39;</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">toProvider</span><span class="p">(</span><span class="s1">&#39;DatabaseTransactionLogProvider&#39;</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="toc_3">Named Bindings</h3>
+
+<p>Ray comes with a built-in binding annotation <code>@Named</code> that takes a string.</p>
+
+<div class="highlight"><pre><code class="php"><span class="cp">&lt;?php</span>
+<span class="sd">/**</span>
+<span class="sd"> *  @Inject</span>
+<span class="sd"> *  @Named(&quot;processor=Checkout&quot;)</span>
+<span class="sd"> */</span>
+<span class="k">public</span> <span class="nx">RealBillingService</span><span class="p">(</span><span class="nx">CreditCardProcessor</span> <span class="nv">$processor</span><span class="p">)</span>
+<span class="p">{</span>
+</code></pre></div>
+
+<p>To bind a specific name, pass that string using the <code>annotatedWith()</code> method.</p>
+
+<div class="highlight"><pre><code class="php"><span class="cp">&lt;?php</span>
+<span class="k">protected</span> <span class="k">function</span> <span class="nf">configure</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">bind</span><span class="p">(</span><span class="s1">&#39;CreditCardProcessorInterface&#39;</span><span class="p">)</span>
+        <span class="o">-&gt;</span><span class="na">annotatedWith</span><span class="p">(</span><span class="s1">&#39;Checkout&#39;</span><span class="p">)</span>
+        <span class="o">-&gt;</span><span class="na">to</span><span class="p">(</span><span class="s1">&#39;CheckoutCreditCardProcessor&#39;</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="toc_4">Instance Bindings</h3>
+
+<div class="highlight"><pre><code class="php"><span class="cp">&lt;?php</span>
+<span class="k">protected</span> <span class="k">function</span> <span class="nf">configure</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">bind</span><span class="p">(</span><span class="s1">&#39;UserIntetrface&#39;</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">toInstance</span><span class="p">(</span><span class="k">new</span> <span class="nx">User</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>&lt;?php
+You can bind a type to an instance of that type. This is usually only useful for objects that don&#39;t have dependencies of their own, such as value objects:</p>
+
+<div class="highlight"><pre><code class="php"><span class="cp">&lt;?php</span>
+<span class="k">protected</span> <span class="k">function</span> <span class="nf">configure</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">bind</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">annotatedWith</span><span class="p">(</span><span class="s2">&quot;login_id&quot;</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">toInstance</span><span class="p">(</span><span class="s1">&#39;bear&#39;</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="toc_5">Constructor Bindings</h3>
+
+<p>Occasionally it&#39;s necessary to bind a type to an arbitrary constructor. This arises when the <code>@Inject</code> annotation cannot be applied to the target constructor. eg. when it is a third party class.</p>
+
+<div class="highlight"><pre><code class="php"><span class="cp">&lt;?php</span>
+<span class="k">class</span> <span class="nc">TransactionLog</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">__construct</span><span class="p">(</span><span class="nv">$db</span><span class="p">)</span>
+    <span class="p">{</span>
+     <span class="c1">// ....</span>
+</code></pre></div>
+
+<div class="highlight"><pre><code class="php"><span class="cp">&lt;?php</span>
+<span class="k">protected</span> <span class="k">function</span> <span class="nf">configure</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">bind</span><span class="p">(</span><span class="s1">&#39;TransactionLog&#39;</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">toConstructor</span><span class="p">([</span><span class="s1">&#39;db&#39;</span> <span class="o">=&gt;</span> <span class="k">new</span> <span class="nx">Database</span><span class="p">]);</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h2 id="toc_6">Scopes</h2>
+
+<p>By default, Ray returns a new instance each time it supplies a value. This behaviour is configurable via scopes.</p>
+
+<div class="highlight"><pre><code class="php"><span class="cp">&lt;?php</span>
+<span class="k">protected</span> <span class="k">function</span> <span class="nf">configure</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">bind</span><span class="p">(</span><span class="s1">&#39;TransactionLog&#39;</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">to</span><span class="p">(</span><span class="s1">&#39;InMemoryTransactionLog&#39;</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">in</span><span class="p">(</span><span class="nx">Scope</span><span class="o">::</span><span class="na">SINGLETON</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h2 id="toc_7">Object life cycle</h2>
+
+<p><code>@PostConstruct</code> is used on methods that need to get executed after dependency injection has finalized to perform any extra initialization.</p>
+
+<div class="highlight"><pre><code class="php"><span class="cp">&lt;?php</span>
+<span class="sd">/**</span>
+<span class="sd"> * @PostConstruct</span>
+<span class="sd"> */</span>
+<span class="k">public</span> <span class="k">function</span> <span class="nf">onInit</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="c1">//....</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p><code>@PreDestroy</code> is used on methods that are called after script execution finishes or exit() is called.
+This method is registered by using <strong>register_shutdown_function</strong>.</p>
+
+<div class="highlight"><pre><code class="php"><span class="cp">&lt;?php</span>
+<span class="sd">/**</span>
+<span class="sd"> * @PreDestroy</span>
+<span class="sd"> */</span>
+<span class="k">public</span> <span class="k">function</span> <span class="nf">onShutdown</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="c1">//....</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h2 id="toc_8">Automatic Injection</h2>
+
+<p>Ray.Di automatically injects all of the following:</p>
+
+<ul>
+<li>instances passed to <code>toInstance()</code> in a bind statement</li>
+<li>provider instances passed to <code>toProvider()</code> in a bind statement</li>
+</ul>
+
+<p>The objects will be injected while the injector itself is being created. If they&#39;re needed to satisfy other startup injections, Ray.Di will inject them before they&#39;re used.</p>
+
+<h2 id="toc_9">Installation</h2>
+
+<p>A module can install other modules to configure more bindings.</p>
+
+<ul>
+<li>Earlier bindings have priority even if the same binding is made later.</li>
+<li>The module can use an existing bindings by passing in <code>$this</code>. The bindings in that module have priority.</li>
+</ul>
+
+<div class="highlight"><pre><code class="php"><span class="cp">&lt;?php</span>
+<span class="k">protected</span> <span class="k">function</span> <span class="nf">configure</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">install</span><span class="p">(</span><span class="k">new</span> <span class="nx">OtherModule</span><span class="p">);</span>
+    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">install</span><span class="p">(</span><span class="k">new</span> <span class="nx">CustomiseModule</span><span class="p">(</span><span class="nv">$this</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h2 id="toc_10">Injection in the module</h2>
+
+<p>You can use a built-in injector in the module which uses existing bindings.</p>
+
+<div class="highlight"><pre><code class="php"><span class="cp">&lt;?php</span>
+<span class="k">protected</span> <span class="k">function</span> <span class="nf">configure</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">bind</span><span class="p">(</span><span class="s1">&#39;DbInterface&#39;</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">to</span><span class="p">(</span><span class="s1">&#39;Db&#39;</span><span class="p">);</span>
+    <span class="nv">$dbLogger</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">requestInjection</span><span class="p">(</span><span class="s1">&#39;DbLogger&#39;</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h2 id="toc_11">Caching dependency-injected objects</h2>
+
+<p>Storing dependency-injected objects in a cache container has huge performance boosts.
+<strong>CacheInjector</strong> also handles <em>object life cycle</em> as well as auto loading of generated aspect weaved objects.</p>
+
+<div class="highlight"><pre><code class="php"><span class="cp">&lt;?php</span>
+<span class="nv">$injector</span> <span class="o">=</span> <span class="k">function</span><span class="p">()</span>  <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">Injector</span><span class="o">::</span><span class="na">create</span><span class="p">([</span><span class="k">new</span> <span class="nx">AppModule</span><span class="p">]);</span>
+<span class="p">};</span>
+<span class="nv">$initialization</span> <span class="o">=</span> <span class="k">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="c1">// initialize per system startup (not per each request)</span>
+<span class="p">};</span>
+<span class="nv">$injector</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">CacheInjector</span><span class="p">(</span><span class="nv">$injector</span><span class="p">,</span> <span class="nv">$initialization</span><span class="p">,</span> <span class="s1">&#39;cache-namespace&#39;</span><span class="p">,</span> <span class="k">new</span> <span class="nx">ApcCache</span><span class="p">);</span>
+<span class="nv">$app</span> <span class="o">=</span> <span class="nv">$injector</span><span class="o">-&gt;</span><span class="na">getInsntance</span><span class="p">(</span><span class="s1">&#39;ApplicationInterface&#39;</span><span class="p">);</span>
+<span class="nv">$app</span><span class="o">-&gt;</span><span class="na">run</span><span class="p">();</span>
+</code></pre></div>
+
+        </div>
+    </div>
+
+</div>
+
+</div>
+</div>
+<div id="footer">
+    <div class="container">
+        <p class="text-muted credit">
+            © 2013 <a href="https://github.com/koriym/BEAR.Sunday">BEAR.Sunday</a>
+        </p>
+    </div>
+</div>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script type="text/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+
+<!-- GoogleAnalytics -->
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-6074569-8', 'bearsunday.github.io');
+    ga('send', 'pageview');
+
+</script>
+</body>
+</html>

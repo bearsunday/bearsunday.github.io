@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BEAR.Sunday | Installation</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/index.css">
+    <link rel="stylesheet" href="/css/syntax.css">
+    <link rel="stylesheet" href="/css/github.css">
+    <link rel="stylesheet" href="/css/main.css">
+    <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/carousel.css">
+    <link rel="icon" sizes="16x16 32x32 48x48 64x64" href="/images/icon/favicon.ico">
+
+    <!--[if IE]><link rel="shortcut icon" href="/images/icon/favicon.ico"><![endif]-->
+
+    <!-- The below are optional but encouraged -->
+
+    <!-- Touch icon for iOS 2.0+ and Android 2.1+: -->
+    <link rel="apple-touch-icon-precomposed" href="/images/icon/favicon-152.png">
+
+    <!-- The below are optional -->
+
+    <!-- IE 10 Metro tile icon (Metro equivalent of apple-touch-icon): -->
+    <meta name="msapplication-TileColor" content="#FFFFFF">
+    <meta name="msapplication-TileImage" content="/images/icon/favicon-144.png">
+    <!-- For iPad with high-resolution Retina display running iOS ≥ 7: -->
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="/images/icon/favicon-152.png">
+    <!-- For iPad with high-resolution Retina display running iOS ≤ 6: -->
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/images/icon/favicon-144.png">
+    <!-- For iPhone with high-resolution Retina display running iOS ≥ 7: -->
+    <link rel="apple-touch-icon-precomposed" sizes="120x120" href="/images/icon/favicon-120.png">
+    <!-- For iPhone with high-resolution Retina display running iOS ≤ 6: -->
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/images/icon/favicon-114.png">
+    <!-- For first- and second-generation iPad: -->
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/images/icon/favicon-72.png">
+    <!-- For non-Retina iPhone, iPod Touch, and Android 2.1+ devices: -->
+    <link rel="apple-touch-icon-precomposed" href="/images/icon/favicon-57.png">
+</head>
+<body>
+<!--<div id="wrap">-->
+
+    <!-- Docs master nav -->
+    <div class="navbar navbar-default">
+        <div class="container">
+            <div class="navbar-header">
+                <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".bs-navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+
+                <a href="/index.html" class="navbar-brand">
+                    <span class="bear-icon-32"></span>
+                </a>
+            </div>
+            <nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
+                <ul class="nav navbar-nav">
+                    <li  class="active">
+                        <a href="/manual/en/index.html">Manual</a>
+                    </li>
+                    <li >
+                        <a href="/manual/en/tutorial.html">Tutorial</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+<div class="container">
+
+    <div class="row">
+        <div class="col-md-3">
+            <div class="panel panel-default">
+    <div class="panel-heading"><strong>Manual</strong></div>
+    <div class="panel-body">
+
+        <ul class="nav nav-pills nav-stacked">
+            
+
+            
+
+            
+
+            
+
+            
+
+            
+
+            
+
+            
+
+            
+                <aside>
+    <ul class="nav nav-list">
+        <li><a href="introduction.html">Introduction</a></li>
+        <li><a href="install.html">Install</a></li>
+        <li><a href="di.html">DI</a></li>
+        <li><a href="aop.html">AOP</a></li>
+        <li><a href="resource.html">REST - Hypermedia</a></li>
+        <li><a href="application.html">Application</a></li>
+    </ul>
+            
+
+            
+
+        </ul>
+    </div>
+</div>
+        </div>
+        <div class="col-md-9">
+            <h1 id="toc_0">Installation</h1>
+<div class="highlight"><pre><code class="text">$ composer create-project bear/package {$PROJECT_PATH}
+</code></pre></div>
+<h2 id="toc_1">Prerequisites</h2>
+
+<ul>
+<li>PHP 5.4+</li>
+</ul>
+
+<h2 id="toc_2">Optional</h2>
+
+<ul>
+<li><a href="http://php.net/manual/ja/book.apc.php">APC</a></li>
+<li><a href="http://pecl.php.net/package/APCu">APCu</a> (PHP5.5+)</li>
+<li><a href="http://php.net/manual/ja/book.curl.php">curl</a></li>
+<li>Profiler　<a href="http://jp.php.net/manual/en/book.xhprof.php">xhprof</a></li>
+<li>Graph Visualization <a href="http://www.graphviz.org/">graphviz</a></li>
+</ul>
+
+<h2 id="toc_3">Environment Check</h2>
+<div class="highlight"><pre><code class="text">$ php bin/env.php
+</code></pre></div>
+<p>BEAR.Sunday application can be accessed via the web or CLI.</p>
+
+<h3 id="toc_4">Helloworld application</h3>
+<div class="highlight"><pre><code class="text">$ cd {$PROJECT_PATH}/apps/Helloworld/var/www/
+$ php -S 0.0.0.0:8080 index.php
+</code></pre></div>
+<h3 id="toc_5">Sandbox application</h3>
+<div class="highlight"><pre><code class="text">cd {$PROJECT_PATH}/apps/Sandbox/var/www/
+php -S 0.0.0.0:8080 dev.php
+</code></pre></div>
+<p>Please see <a href="https://github.com/koriym/BEAR.package#buil-in-web-server-for-development">https://github.com/koriym/BEAR.package#buil-in-web-server-for-development</a>.</p>
+
+<h2 id="toc_6">Create New Application</h2>
+<div class="highlight"><pre><code class="text">$ composer create-project bear/skeleton {$PACKAGE_DIR}/apps/{$APPLICATION_NAME} {$SKELETON_VERSION}
+</code></pre></div>
+<h2 id="toc_7">Create New Resource</h2>
+<div class="highlight"><pre><code class="text">$ php {$PACKAGE_DIR}/bin/new_res.php {$APP_NAME} {$NEW_RESOURCE_URI}
+</code></pre></div>
+<h2 id="toc_8">Try it out</h2>
+
+<p>Let&#39;s create new application &#39;Hello&#39; and see how does it works.</p>
+<div class="highlight"><pre><code class="text">// create BEAR.Package framework files
+$ composer create-project bear/package ./bear
+$ cd bear/apps
+// create &#39;Hello&#39; application files
+$ composer create-project bear/skeleton Hello
+$ cd Hello/var/www/
+// run built-in web server
+$ php -S 0.0.0.0:8088 dev.php
+</code></pre></div>
+<p>Browse <code>http://0.0.0.0:8088</code> URL and see the message from BEAR.Sunday.</p>
+
+        </div>
+    </div>
+
+</div>
+
+</div>
+</div>
+<div id="footer">
+    <div class="container">
+        <p class="text-muted credit">
+            © 2013 <a href="https://github.com/koriym/BEAR.Sunday">BEAR.Sunday</a>
+        </p>
+    </div>
+</div>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script type="text/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+
+<!-- GoogleAnalytics -->
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-6074569-8', 'bearsunday.github.io');
+    ga('send', 'pageview');
+
+</script>
+</body>
+</html>

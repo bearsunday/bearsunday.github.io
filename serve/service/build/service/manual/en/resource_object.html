@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BEAR.Sunday | Resource Object</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/index.css">
+    <link rel="stylesheet" href="/css/syntax.css">
+    <link rel="stylesheet" href="/css/github.css">
+    <link rel="stylesheet" href="/css/main.css">
+    <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/carousel.css">
+    <link rel="icon" sizes="16x16 32x32 48x48 64x64" href="/images/icon/favicon.ico">
+
+    <!--[if IE]><link rel="shortcut icon" href="/images/icon/favicon.ico"><![endif]-->
+
+    <!-- The below are optional but encouraged -->
+
+    <!-- Touch icon for iOS 2.0+ and Android 2.1+: -->
+    <link rel="apple-touch-icon-precomposed" href="/images/icon/favicon-152.png">
+
+    <!-- The below are optional -->
+
+    <!-- IE 10 Metro tile icon (Metro equivalent of apple-touch-icon): -->
+    <meta name="msapplication-TileColor" content="#FFFFFF">
+    <meta name="msapplication-TileImage" content="/images/icon/favicon-144.png">
+    <!-- For iPad with high-resolution Retina display running iOS ≥ 7: -->
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="/images/icon/favicon-152.png">
+    <!-- For iPad with high-resolution Retina display running iOS ≤ 6: -->
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/images/icon/favicon-144.png">
+    <!-- For iPhone with high-resolution Retina display running iOS ≥ 7: -->
+    <link rel="apple-touch-icon-precomposed" sizes="120x120" href="/images/icon/favicon-120.png">
+    <!-- For iPhone with high-resolution Retina display running iOS ≤ 6: -->
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/images/icon/favicon-114.png">
+    <!-- For first- and second-generation iPad: -->
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/images/icon/favicon-72.png">
+    <!-- For non-Retina iPhone, iPod Touch, and Android 2.1+ devices: -->
+    <link rel="apple-touch-icon-precomposed" href="/images/icon/favicon-57.png">
+</head>
+<body>
+<!--<div id="wrap">-->
+
+    <!-- Docs master nav -->
+    <div class="navbar navbar-default">
+        <div class="container">
+            <div class="navbar-header">
+                <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".bs-navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+
+                <a href="/index.html" class="navbar-brand">
+                    <span class="bear-icon-32"></span>
+                </a>
+            </div>
+            <nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
+                <ul class="nav navbar-nav">
+                    <li >
+                        <a href="/manual/en/index.html">Manual</a>
+                    </li>
+                    <li >
+                        <a href="/manual/en/tutorial.html">Tutorial</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+<div class="container">
+
+    <div class="row">
+        <div class="col-md-3">
+            <div class="panel panel-default">
+    <div class="panel-heading"><strong>Resource</strong></div>
+    <div class="panel-body">
+
+        <ul class="nav nav-pills nav-stacked">
+            
+
+            
+
+            
+
+            
+
+            
+
+            
+
+            
+                <li><a href="resource.html">What's a REST ?</a></li>
+<li><a href="rest.html">Hypermedia Framework</a></li>
+<li><a href="resource_client.html">Resource Client</a></li>
+<li><a href="resource_object.html">Resource Object</a></li>
+<li><a href="resource_renderer.html">Resource Renderer</a></li>
+<li><a href="resource_adapter.html">Resource Adapter</a></li>
+            
+
+            
+
+            
+
+            
+
+        </ul>
+    </div>
+</div>
+        </div>
+        <div class="col-md-9">
+            <h1 id="toc_0">Resource Object</h1>
+
+<p><em>Representational State Transfer (REST) is a style of software architecture for distributed systems such as the World Wide Web...Individual resources are identified in requests, for example using URIs in web-based REST systems.- wikipedia &quot;REST&quot;</em></p>
+
+<p>BEAR.Sundays resource object takes these REST resource features and allows you build up these in a web application in an internal API.</p>
+
+<p>A resource object can contain the resource state, request interface and links.</p>
+
+<h2 id="toc_1">Resource Object Type</h2>
+
+<p>Resource objects are made distinct by their schema. In the current sandbox application there are 2 types the application resource (app） and page resource (page).</p>
+
+<h2 id="toc_2">Resource object class</h2>
+
+<p>This hold the resource status and the request interface. Except for the query 1 URI corresponds to 1 class.</p>
+
+<table><thead>
+<tr>
+<th>URI</th>
+<th>Class</th>
+<th>File</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>page://self/index</td>
+<td>Sandbox\Resource\Page\Index</td>
+<td>Sandbox/Resource/Page/Index.php</td>
+</tr>
+<tr>
+<td>app://self/blog/posts</td>
+<td>Sandbox\Resource\App\Blog\Posts</td>
+<td>Sandbox/Resource/App/Blog/Posts.php</td>
+</tr>
+</tbody></table>
+
+<p>The resources request resource interface is mapped to a PHP class.</p>
+
+<p>Note: The schema and the process are not fixed. The user can add names to the applications cross-cutting concerns and re-use them or pass the processing over to a mock for testing.</p>
+
+<h1 id="toc_3">Resource Property</h1>
+
+<p>A resource has 5 public properties.</p>
+
+<table><thead>
+<tr>
+<th>Property</th>
+<th>Name</th>
+<th>Meaning　</th>
+<th>Type</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>code</td>
+<td>Code　</td>
+<td>Status</td>
+<td>int</td>
+</tr>
+<tr>
+<td>headers</td>
+<td>Header</td>
+<td>Meta Data</td>
+<td>array&lt;$name =&gt; $value&gt;</td>
+</tr>
+<tr>
+<td>links</td>
+<td>Link</td>
+<td>Resource Link</td>
+<td>array&lt;$rel =&gt; $uri&gt;</td>
+</tr>
+<tr>
+<td>body</td>
+<td>Body</td>
+<td>Resource Status</td>
+<td>mixed</td>
+</tr>
+<tr>
+<td>view</td>
+<td>View</td>
+<td>Resource View</td>
+<td>string</td>
+</tr>
+</tbody></table>
+
+<h3 id="toc_4">Code</h3>
+
+<p>Displays the resource status. When it is a page resource this is the HTTP status. The default is 200(OK). </p>
+
+<h3 id="toc_5">Header</h3>
+
+<p>The resources meta data. For example in a resource that handles paging, how many records are displayed or which page is currently being shown, pagers total records or even html for the navigation or other non essential meta data can be stored here. In the case of a page resource, these will be in the HTTP headers.</p>
+
+<h3 id="toc_6">Link</h3>
+
+<p>The resource link functionality encapsulates the link relationships between resource. The active client can use the relationships without any knowledge relationships are implemented. Using the web a tag as example it is simple to understand. It is not the client that manages the link url&#39;s instead it is the web service, the user only needs to click on the link text. The relationship info is all contained within the resource not the client.</p>
+
+<h2 id="toc_7">Body</h2>
+
+<p>The resources true value is in the body that displays the resource content.</p>
+
+<p>Example) Car speed resource</p>
+<div class="highlight"><pre><code class="text">(int) 60
+</code></pre></div>
+<p>Example) Car journey resource</p>
+<div class="highlight"><pre><code class="php"><span class="x">[</span>
+<span class="x"> &#39;speed&#39; =&gt; 60,</span>
+<span class="x"> &#39;passenger&#39; =&gt; 1,</span>
+<span class="x"> &#39;gear&#39; =&gt; 4</span>
+<span class="x"> ...</span>
+<span class="x">]</span>
+</code></pre></div>
+<h2 id="toc_8">View</h2>
+
+<p>The view is something that &#39;expresses&#39; the resource. For example a resource for tomorrows weather could be something like the following.</p>
+
+<p>Resource state: &#39;Sunny&#39;
+Resource expression: &#39;Weather: <img src="sky.gif">Sunny&#39;</p>
+
+<h1 id="toc_9">Request Interface</h1>
+
+<h2 id="toc_10">Method</h2>
+
+<p>A resource can contain an interface that responds to the request. For example a resource that only responds to a GET request will have an <code>onGet</code> method.</p>
+
+<p>Example  a GET interface that responds to $id, $body, $title　as a query (parameters).</p>
+<div class="highlight"><pre><code class="php"><span class="cp">&lt;?php</span>
+<span class="k">public</span> <span class="k">function</span> <span class="nf">onGet</span><span class="p">(</span><span class="nv">$id</span><span class="p">,</span> <span class="nv">$body</span><span class="p">,</span> <span class="nv">$title</span> <span class="o">=</span> <span class="s1">&#39;untitled&#39;</span><span class="p">)</span> 
+<span class="p">{</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>This is different to BEAR.Saturday which has the notation of a a regular PHP method. When using this you call it using named parameters the ordering is not important.</p>
+
+<p>Note: If you change the ordering there is no need to edit the calling side.
+ Note: Where possible only receive scalar variables.</p>
+
+<h2 id="toc_11">Self Building</h2>
+
+<p>The method that receives the request (Request Interface) can be change the resource status by means of a database, external web API or through business logic. (hence changing properties of the $body property, $headers or $code).</p>
+<div class="highlight"><pre><code class="php"><span class="cp">&lt;?php</span>
+<span class="k">return</span> <span class="nv">$this</span>
+</code></pre></div>
+<p>Note: If anything other than $this is returned, that will be used to populate $body and $this is returned.
+ Example) return 3; is the same as $this->body = 3; return $this;</p>
+
+        </div>
+    </div>
+
+</div>
+
+</div>
+</div>
+<div id="footer">
+    <div class="container">
+        <p class="text-muted credit">
+            © 2013 <a href="https://github.com/koriym/BEAR.Sunday">BEAR.Sunday</a>
+        </p>
+    </div>
+</div>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script type="text/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+
+<!-- GoogleAnalytics -->
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-6074569-8', 'bearsunday.github.io');
+    ga('send', 'pageview');
+
+</script>
+</body>
+</html>

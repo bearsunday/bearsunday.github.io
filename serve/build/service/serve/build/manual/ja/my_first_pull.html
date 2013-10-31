@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BEAR.Sunday | My First Pull</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/index.css">
+    <link rel="stylesheet" href="/css/syntax.css">
+    <link rel="stylesheet" href="/css/github.css">
+    <link rel="stylesheet" href="/css/main.css">
+    <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/carousel.css">
+    <link rel="icon" sizes="16x16 32x32 48x48 64x64" href="/images/icon/favicon.ico">
+
+    <!--[if IE]><link rel="shortcut icon" href="/images/icon/favicon.ico"><![endif]-->
+
+    <!-- The below are optional but encouraged -->
+
+    <!-- Touch icon for iOS 2.0+ and Android 2.1+: -->
+    <link rel="apple-touch-icon-precomposed" href="/images/icon/favicon-152.png">
+
+    <!-- The below are optional -->
+
+    <!-- IE 10 Metro tile icon (Metro equivalent of apple-touch-icon): -->
+    <meta name="msapplication-TileColor" content="#FFFFFF">
+    <meta name="msapplication-TileImage" content="/images/icon/favicon-144.png">
+    <!-- For iPad with high-resolution Retina display running iOS ≥ 7: -->
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="/images/icon/favicon-152.png">
+    <!-- For iPad with high-resolution Retina display running iOS ≤ 6: -->
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/images/icon/favicon-144.png">
+    <!-- For iPhone with high-resolution Retina display running iOS ≥ 7: -->
+    <link rel="apple-touch-icon-precomposed" sizes="120x120" href="/images/icon/favicon-120.png">
+    <!-- For iPhone with high-resolution Retina display running iOS ≤ 6: -->
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/images/icon/favicon-114.png">
+    <!-- For first- and second-generation iPad: -->
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/images/icon/favicon-72.png">
+    <!-- For non-Retina iPhone, iPod Touch, and Android 2.1+ devices: -->
+    <link rel="apple-touch-icon-precomposed" href="/images/icon/favicon-57.png">
+</head>
+<body>
+<!--<div id="wrap">-->
+
+    <!-- Docs master nav -->
+    <div class="navbar navbar-default">
+        <div class="container">
+            <div class="navbar-header">
+                <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".bs-navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+
+                <a href="/index.html" class="navbar-brand">
+                    <span class="bear-icon-32"></span>
+                </a>
+            </div>
+            <nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
+                <ul class="nav navbar-nav">
+                    <li >
+                        <a href="/manual/en/index.html">Manual</a>
+                    </li>
+                    <li >
+                        <a href="/manual/en/tutorial.html">Tutorial</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+<div class="container">
+
+    <div class="row">
+        <div class="col-md-3">
+            <div class="panel panel-default">
+    <div class="panel-heading"><strong>My First - Tutorial</strong></div>
+    <div class="panel-body">
+
+        <ul class="nav nav-pills nav-stacked">
+            
+
+            
+
+            
+
+            
+
+            
+                <li><a href="my_first_resource.html">My First Resource Object</a></li>
+<li><a href="my_first_web_api.html">My First Web API</a></li>
+<li><a href="my_first_test.html">My First Test</a></li>
+<li><a href="my_first_web_page.html">My First Web Page</a></li>
+<li><a href="my_first_resource_request.html">My First Resource Request</a></li>
+<li><a href="my_first_di.html">My First Injection</a></li>
+<li><a href="my_first_aop.html">My First Aspect</a></li>
+<li><a href="my_first_pull.html">My First Pull</a></li>
+<li><a href="my_first_hypermedia.html">My First Hyper Media</a></li>
+            
+
+            
+
+            
+
+            
+
+            
+
+            
+
+        </ul>
+    </div>
+</div>
+        </div>
+        <div class="col-md-9">
+            <h1 id="toc_0">My First Pull</h1>
+
+<h2 id="toc_1">Let&#39;s try calling a resource from a template</h2>
+
+<p>Lets use a resource directly from a view(PHP Script).
+When you directly use the greeting resource that we made before from HTML you do so like this.</p>
+<div class="highlight"><pre><code class="php"><span class="cp">&lt;?php</span>
+<span class="nv">$app</span> <span class="o">=</span> <span class="k">require</span> <span class="s1">&#39;{$APP_PATH}/bootstrap/instance.php&#39;</span><span class="p">;</span>
+<span class="nv">$message</span> <span class="o">=</span> <span class="nv">$app</span>
+    <span class="o">-&gt;</span><span class="na">resource</span>
+    <span class="o">-&gt;</span><span class="na">get</span>
+    <span class="o">-&gt;</span><span class="na">uri</span><span class="p">(</span><span class="s1">&#39;app://self/first/greeting&#39;</span><span class="p">)</span>
+    <span class="o">-&gt;</span><span class="na">withQuery</span><span class="p">([</span><span class="s1">&#39;name&#39;</span> <span class="o">&gt;</span> <span class="s1">&#39;BEAR&#39;</span><span class="p">])</span>
+    <span class="o">-&gt;</span><span class="na">eager</span>
+    <span class="o">-&gt;</span><span class="na">request</span><span class="p">()</span>
+    <span class="o">-&gt;</span><span class="na">body</span><span class="p">;</span>
+<span class="cp">?&gt;</span><span class="x"></span>
+<span class="x">&lt;html&gt;</span>
+<span class="x">    &lt;body&gt;</span><span class="cp">&lt;?php</span> <span class="k">echo</span> <span class="nv">$message</span><span class="p">;</span><span class="cp">?&gt;</span><span class="x">&lt;/body&gt;</span>
+<span class="x">&lt;/html&gt;</span>
+</code></pre></div>
+<p>This <em>Plain PHP Script</em> is open directly in the web document domain, the web client receives the request directly.</p>
+
+<p>The application object is retrieved from a script, then you can use that resource client to retrieve the application resource.</p>
+
+<p>Note: $app is a resource client and dependency injector needed for application control. For HTTP output and the like it has functionality that is key to the application. </p>
+
+<p>This shows how through this small script all information in BEAR.Sunday as a resource can easily be used.</p>
+
+<h2 id="toc_2">How is this any Different to What We Have Already</h2>
+
+<p>Until now we have used resources from either the web or command line.
+We have checked the resource as an API from the command line or used as a Web API.
+Also a page is accessed from the web and viewed as a web page.</p>
+
+<p>In both cases there has been a front script and from there the resource is requested and output.</p>
+
+<p>Differently the resource consumed directly by this script.</p>
+
+<h2 id="toc_3">Is this any good?</h2>
+
+<p>In MVC terms this is like the model being retrieved from the view.
+Is the sequence not opposite? Is this right? The design and logic mixed, can&#39;t you even say this is bad code?</p>
+
+<h2 id="toc_4">Pull Based Architecture</h2>
+
+<p>When from the view layer you trigger any processing, according to your needs you &#39;pull&#39; the result it is called <a href="http://en.wikipedia.org/wiki/Web_application_framework#Push-based_vs._pull-based">Pull Based Architecture</a>.</p>
+
+<p>Many web MVC frameworks use the opposite &#39;Push&#39; .
+Execute the action which requests a process, next &#39;Pushing&#39; the result to the view layer so that the data can be output. 
+&#39;Pull&#39; is the opposite.</p>
+
+<p>Note: In <a href="http://en.wikipedia.org/wiki/Comparison_of_web_application_frameworks">Comparison of web application frameworks</a> we can see many different frameworks and whether they use PUSH/PULL.</p>
+
+<p>Again BEAR.Sunday&#39;s &#39;resource pull&#39; pulls resources using PHP code, however logic like domain logic or controller logic is not mixed up in the view.
+In reality the resource is only being bound to the resource placeholder (<code>&lt;?php echo $message;?&gt;</code>).</p>
+
+<h2 id="toc_5">Use the API as a Resource</h2>
+
+<p>This PHP script is uses the BEAR.Sunday framework, but it is not being used by any thing else. So through the script you are directly calling the resource for use.</p>
+
+<p>In that just retrieving the resource client and making a request.
+With no preparation at all you just use the resource.
+You are not using HTTP as a mediator, as an API you can use resources in any other CMS or framework.</p>
+
+<p>Note: Using HTTP you can use many different frameworks from many other languages like <a href="http://thrift.apache.org/">Thrift</a> for even more portability. 
+ Document DB, client side MVC, mobile devices, SNS applications etc... Now more than any there is are huge reasons for building a core API application to support a large diversity of applications.</p>
+
+        </div>
+    </div>
+
+</div>
+
+</div>
+</div>
+<div id="footer">
+    <div class="container">
+        <p class="text-muted credit">
+            © 2013 <a href="https://github.com/koriym/BEAR.Sunday">BEAR.Sunday</a>
+        </p>
+    </div>
+</div>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script type="text/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+
+<!-- GoogleAnalytics -->
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-6074569-8', 'bearsunday.github.io');
+    ga('send', 'pageview');
+
+</script>
+</body>
+</html>

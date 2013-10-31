@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BEAR.Sunday | Resource Link</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/index.css">
+    <link rel="stylesheet" href="/css/syntax.css">
+    <link rel="stylesheet" href="/css/github.css">
+    <link rel="stylesheet" href="/css/main.css">
+    <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/carousel.css">
+    <link rel="icon" sizes="16x16 32x32 48x48 64x64" href="/images/icon/favicon.ico">
+
+    <!--[if IE]><link rel="shortcut icon" href="/images/icon/favicon.ico"><![endif]-->
+
+    <!-- The below are optional but encouraged -->
+
+    <!-- Touch icon for iOS 2.0+ and Android 2.1+: -->
+    <link rel="apple-touch-icon-precomposed" href="/images/icon/favicon-152.png">
+
+    <!-- The below are optional -->
+
+    <!-- IE 10 Metro tile icon (Metro equivalent of apple-touch-icon): -->
+    <meta name="msapplication-TileColor" content="#FFFFFF">
+    <meta name="msapplication-TileImage" content="/images/icon/favicon-144.png">
+    <!-- For iPad with high-resolution Retina display running iOS ≥ 7: -->
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="/images/icon/favicon-152.png">
+    <!-- For iPad with high-resolution Retina display running iOS ≤ 6: -->
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/images/icon/favicon-144.png">
+    <!-- For iPhone with high-resolution Retina display running iOS ≥ 7: -->
+    <link rel="apple-touch-icon-precomposed" sizes="120x120" href="/images/icon/favicon-120.png">
+    <!-- For iPhone with high-resolution Retina display running iOS ≤ 6: -->
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/images/icon/favicon-114.png">
+    <!-- For first- and second-generation iPad: -->
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/images/icon/favicon-72.png">
+    <!-- For non-Retina iPhone, iPod Touch, and Android 2.1+ devices: -->
+    <link rel="apple-touch-icon-precomposed" href="/images/icon/favicon-57.png">
+</head>
+<body>
+<!--<div id="wrap">-->
+
+    <!-- Docs master nav -->
+    <div class="navbar navbar-default">
+        <div class="container">
+            <div class="navbar-header">
+                <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".bs-navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+
+                <a href="/index.html" class="navbar-brand">
+                    <span class="bear-icon-32"></span>
+                </a>
+            </div>
+            <nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
+                <ul class="nav navbar-nav">
+                    <li >
+                        <a href="/manual/en/index.html">Manual</a>
+                    </li>
+                    <li >
+                        <a href="/manual/en/tutorial.html">Tutorial</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+<div class="container">
+
+    <div class="row">
+        <div class="col-md-3">
+            <div class="panel panel-default">
+    <div class="panel-heading"><strong>Resource</strong></div>
+    <div class="panel-body">
+
+        <ul class="nav nav-pills nav-stacked">
+            
+
+            
+
+            
+
+            
+
+            
+
+            
+
+            
+                <li><a href="resource.html">What's a REST ?</a></li>
+<li><a href="rest.html">Hypermedia Framework</a></li>
+<li><a href="resource_client.html">Resource Client</a></li>
+<li><a href="resource_object.html">Resource Object</a></li>
+<li><a href="resource_renderer.html">Resource Renderer</a></li>
+<li><a href="resource_adapter.html">Resource Adapter</a></li>
+            
+
+            
+
+            
+
+            
+
+        </ul>
+    </div>
+</div>
+        </div>
+        <div class="col-md-9">
+            <h1 id="toc_0">Resource Link</h1>
+
+<p>You can link a resource to other resources. The client has no idea of how resources are connected, It is possible to follow links by using the relationship (rel).</p>
+
+<p>Just like how multiple objects appear on an object graph, web site html (resource) and html linked by an a tag is a resource graph. In BEAR.Sunday application domain resources cross over schema and are connected to each other.</p>
+
+<p>There are 2 types, directly setting the URI&#39;s links using the <code>links</code>property and calling link methods in the same class.</p>
+
+<h1 id="toc_1">Link Property</h1>
+
+<p>The resource object contains a <code>links</code> property to which an array or a link object that implements the <a href="http://php.net/manual/en/class.arrayaccess.php">ArrayAccess</a> interface is assigned that contains linking data. The simplest format needed is something like <code>$rel # &gt; [&#39;href&#39; &gt; $uri];</code></p>
+
+<p>For example the <code>sandbox top page resource</code> has link data to each page similar to the following.</p>
+<div class="highlight"><pre><code class="php"><span class="x">use BEAR\Framework\Resource\Link;</span>
+
+<span class="x">class Index extends Page</span>
+<span class="x">{</span>
+<span class="x">...</span>
+<span class="x">    /**</span>
+<span class="x">     * Links</span>
+<span class="x">     *</span>
+<span class="x">     * @var array</span>
+<span class="x">     */</span>
+<span class="x">    public $links = [</span>
+<span class="x">        &#39;helloworld&#39; # &gt; [Link::HREF &gt; &#39;page://self/hello/world&#39;],</span>
+<span class="x">        &#39;blog&#39; # &gt; [Link::HREF &gt; &#39;page://self/blog/posts&#39;],</span>
+<span class="x">        &#39;restbucks&#39; # &gt; [Link::HREF &gt; &#39;page://self/restbucks/index&#39;]</span>
+<span class="x">    ];</span>
+</code></pre></div>
+<p>The key shows the relationship (rel), the value shows the link URI. This connection data is used by the view template as follows.</p>
+<div class="highlight"><pre><code class="html"><span class="nt">&lt;a</span> <span class="na">href</span><span class="err">#</span> <span class="err">&quot;{</span><span class="na">href</span> <span class="na">rel</span><span class="err">&quot;</span><span class="na">helloworld</span><span class="err">&quot;}&quot;</span><span class="nt">&gt;</span>Hello World<span class="nt">&lt;/a&gt;</span>
+<span class="nt">&lt;a</span> <span class="na">href</span><span class="err">#</span> <span class="err">&quot;{</span><span class="na">href</span> <span class="na">rel</span><span class="err">&quot;</span><span class="na">blog</span><span class="err">&quot;}&quot;</span><span class="nt">&gt;</span>Blog tutorial<span class="nt">&lt;/a&gt;</span>
+</code></pre></div>
+<h2 id="toc_2">URI Template</h2>
+
+<p>In the link the [<a href="http://code.google.com/p/uri-templates/">http://code.google.com/p/uri-templates/</a> URI template] is used.
+[<a href="http://code.google.com/p/uri-templates/">http://code.google.com/p/uri-templates/</a> URI Templates] is a type of template language for URI&#39;s. If a variable is assigned they are developed via the processor. </p>
+
+<p>When URI Templates are used the <code>templated</code> option is set to true. $rel<code># &gt; [&#39;href&#39; =&gt; $uri, &#39;templated&#39; &gt; true];</code></p>
+
+<p><code>Blog Article Application Resources</code> will each be linked to the articles edit, delete etc page resources.</p>
+<div class="highlight"><pre><code class="php"><span class="x">    /**</span>
+<span class="x">     * Links</span>
+<span class="x">     *</span>
+<span class="x">     * @var array</span>
+<span class="x">     */</span>
+<span class="x">    public $links = [</span>
+<span class="x">        &#39;page_post&#39; # &gt; [Link::HREF &gt; &#39;page://self/blog/posts/post&#39;],</span>
+<span class="x">        &#39;page_edit&#39; # &gt; [Link::HREF =&gt; &#39;page://self/blog/posts/edit{?id}&#39;, Link::TEMPLATED &gt; true],</span>
+<span class="x">        &#39;page_delete&#39; # &gt; [Link::HREF =&gt; &#39;page://self/blog/posts?_method=delete{&amp;id}&#39;, Link::TEMPLATED &gt; true]</span>
+<span class="x">    ];</span>
+</code></pre></div>
+<p>With this how is each <code>id</code> (Article ID) set?
+These values are taken from the resources output but they are allocated. For example if you take the following output <code>id=2</code> is assigned.</p>
+<div class="highlight"><pre><code class="php"><span class="x">    public function onGet($id = null)</span>
+<span class="x">    {</span>
+<span class="x">         return [&#39;name&#39; # &gt; &#39;BEAR&#39;, &#39;id&#39; &gt; 2];</span>
+<span class="x">    }</span>
+</code></pre></div>
+<p>If you take the next DB query the value is the select&#39;s id column value.</p>
+<div class="highlight"><pre><code class="php"><span class="x">    public function onGet($id)</span>
+<span class="x">    {</span>
+<span class="x">        $sql = &quot;SELECT id, title, body, created, modified FROM {$this-&gt;table}&quot;;</span>
+<span class="x">            $sql .# &quot; WHERE id  :id&quot;;</span>
+<span class="x">            $stmt = $this-&gt;db-&gt;prepare($sql);</span>
+<span class="x">            $stmt-&gt;bindValue(&#39;id&#39;, $id);</span>
+<span class="x">            $stmt-&gt;execute();</span>
+<span class="x">            $this-&gt;body = $stmt-&gt;fetch(PDO::FETCH_ASSOC);</span>
+<span class="x">        }</span>
+<span class="x">        return $this;</span>
+<span class="x">    }</span>
+</code></pre></div>
+<h1 id="toc_3">Link Method</h1>
+
+<p>Adding a linking method to the resource object. Using <code>on</code> + the links name becomes the link method. In the method the value returned from onGet etc is included.</p>
+
+<p>For example in the following a <code>blog article</code>&#39;s <code>coment resource</code> is connected with a link method.</p>
+<div class="highlight"><pre><code class="php"><span class="x">    public function onLinkComment(array $body)</span>
+<span class="x">    {</span>
+<span class="x">        $request = $this</span>
+<span class="x">        -&gt;resource</span>
+<span class="x">        -&gt;get</span>
+<span class="x">        -&gt;uri(&#39;app://self/User/Entry/Comment&#39;)</span>
+<span class="x">        -&gt;withQuery([&#39;entry_id&#39; =&gt; $body[&#39;id&#39;]])</span>
+<span class="x">        -&gt;eager</span>
+<span class="x">        -&gt;request();</span>
+
+<span class="x">        return $request;</span>
+<span class="x">    }</span>
+</code></pre></div>
+<p>Inside the link method the entity (the actual value) is returned, or like in this example the next resource link is returned.</p>
+
+<h1 id="toc_4">Client</h1>
+
+<p>The resource client  accesses link methods like this:</p>
+<div class="highlight"><pre><code class="php"><span class="x">$blog = $this</span>
+<span class="x">    -&gt;resource</span>
+<span class="x">    -&gt;get</span>
+<span class="x">    -&gt;uri(&#39;app://self/User&#39;)</span>
+<span class="x">    -&gt;withQuery([&#39;id&#39; =&gt; 1])</span>
+<span class="x">    -&gt;linkSelf(&quot;blog&quot;)</span>
+<span class="x">    -&gt;eager</span>
+<span class="x">    -&gt;request()</span>
+<span class="x">    -&gt;body;</span>
+</code></pre></div>
+<p>In this example the user with ID=1 retrieves a linked resource with the name <code>blog</code>.</p>
+
+<h2 id="toc_5">Link Method</h2>
+
+<p>There are 3 link methods.</p>
+
+<p>|| <em>Method Name</em> || <em>Link Activity</em> ||
+|| linkSelf($rel) || The link is replaced ||
+|| linkNew($rel) || The link resource is appended to the original resource ||
+|| linkCrawl($rel) || In a 1:n relationship multiple links are appended to the original resource||</p>
+
+<p>When resources are appended they are carried out on the body. Resources result value where <code>rel</code> is a key is appended.</p>
+
+<h3 id="toc_6">Not implemented / tested</h3>
+
+<p>The following links have not been implemented or are not adequately tested.</p>
+
+<p># When a resource property uses a resource client&#39;s link method.
+ # @Link Annotated assignment.</p>
+
+        </div>
+    </div>
+
+</div>
+
+</div>
+</div>
+<div id="footer">
+    <div class="container">
+        <p class="text-muted credit">
+            © 2013 <a href="https://github.com/koriym/BEAR.Sunday">BEAR.Sunday</a>
+        </p>
+    </div>
+</div>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script type="text/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+
+<!-- GoogleAnalytics -->
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-6074569-8', 'bearsunday.github.io');
+    ga('send', 'pageview');
+
+</script>
+</body>
+</html>

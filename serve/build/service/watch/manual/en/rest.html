@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BEAR.Sunday | Resource</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/index.css">
+    <link rel="stylesheet" href="/css/syntax.css">
+    <link rel="stylesheet" href="/css/github.css">
+    <link rel="stylesheet" href="/css/main.css">
+    <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/carousel.css">
+    <link rel="icon" sizes="16x16 32x32 48x48 64x64" href="/images/icon/favicon.ico">
+
+    <!--[if IE]><link rel="shortcut icon" href="/images/icon/favicon.ico"><![endif]-->
+
+    <!-- The below are optional but encouraged -->
+
+    <!-- Touch icon for iOS 2.0+ and Android 2.1+: -->
+    <link rel="apple-touch-icon-precomposed" href="/images/icon/favicon-152.png">
+
+    <!-- The below are optional -->
+
+    <!-- IE 10 Metro tile icon (Metro equivalent of apple-touch-icon): -->
+    <meta name="msapplication-TileColor" content="#FFFFFF">
+    <meta name="msapplication-TileImage" content="/images/icon/favicon-144.png">
+    <!-- For iPad with high-resolution Retina display running iOS ≥ 7: -->
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="/images/icon/favicon-152.png">
+    <!-- For iPad with high-resolution Retina display running iOS ≤ 6: -->
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/images/icon/favicon-144.png">
+    <!-- For iPhone with high-resolution Retina display running iOS ≥ 7: -->
+    <link rel="apple-touch-icon-precomposed" sizes="120x120" href="/images/icon/favicon-120.png">
+    <!-- For iPhone with high-resolution Retina display running iOS ≤ 6: -->
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/images/icon/favicon-114.png">
+    <!-- For first- and second-generation iPad: -->
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/images/icon/favicon-72.png">
+    <!-- For non-Retina iPhone, iPod Touch, and Android 2.1+ devices: -->
+    <link rel="apple-touch-icon-precomposed" href="/images/icon/favicon-57.png">
+</head>
+<body>
+<!--<div id="wrap">-->
+
+    <!-- Docs master nav -->
+    <div class="navbar navbar-default">
+        <div class="container">
+            <div class="navbar-header">
+                <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".bs-navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+
+                <a href="/index.html" class="navbar-brand">
+                    <span class="bear-icon-32"></span>
+                </a>
+            </div>
+            <nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
+                <ul class="nav navbar-nav">
+                    <li >
+                        <a href="/manual/en/index.html">Manual</a>
+                    </li>
+                    <li >
+                        <a href="/manual/en/tutorial.html">Tutorial</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+<div class="container">
+
+    <div class="row">
+        <div class="col-md-3">
+            <div class="panel panel-default">
+    <div class="panel-heading"><strong>Resource</strong></div>
+    <div class="panel-body">
+
+        <ul class="nav nav-pills nav-stacked">
+            
+
+            
+
+            
+
+            
+
+            
+
+            
+
+            
+                <li><a href="resource.html">What's a REST ?</a></li>
+<li><a href="rest.html">Hypermedia Framework</a></li>
+<li><a href="resource_client.html">Resource Client</a></li>
+<li><a href="resource_object.html">Resource Object</a></li>
+<li><a href="resource_renderer.html">Resource Renderer</a></li>
+<li><a href="resource_adapter.html">Resource Adapter</a></li>
+            
+
+            
+
+            
+
+            
+
+        </ul>
+    </div>
+</div>
+        </div>
+        <div class="col-md-9">
+            <h2 id="toc_0">Hypermedia framework for object as a service</h2>
+
+<p><strong>BEAR.Resource</strong> Is a Hypermedia framework that allows resources to behave as objects. It allows objects to have RESTful web service benefits such as client-server, uniform interface, statelessness, resource expression with mutual connectivity and layered components.</p>
+
+<p>In order to introduce flexibility and longevity to your existing domain model or application data you can introduce an API as the driving force in your develpment by making your application REST-Centric in it&#39;s approach.</p>
+
+<h3 id="toc_1">Resource Object</h3>
+
+<p>The resource object is an object that has resource behavior.</p>
+
+<ul>
+<li>1 URI Resource is mapped to 1 class, it is retrieved by using a resource client.</li>
+<li>A request is made to a method with named parameters that responds to a uniform resource request.</li>
+<li>Through the request the method changes the resource state and return itself <code>$this</code>.</li>
+</ul>
+<div class="highlight"><pre><code class="php"><span class="cp">&lt;?php</span>
+<span class="k">namespace</span> <span class="nx">Sandbox\Blog</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">Author</span> <span class="k">extends</span> <span class="nx">ResourceObject</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="nv">$code</span> <span class="o">=</span> <span class="mi">200</span><span class="p">;</span>
+
+    <span class="k">public</span> <span class="nv">$headers</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">];</span>
+
+    <span class="k">public</span> <span class="nv">$body</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s1">&#39;id&#39;</span> <span class="o">=&gt;</span><span class="mi">1</span><span class="p">,</span>
+        <span class="s1">&#39;name&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;koriym&#39;</span>
+    <span class="p">];</span>
+
+    <span class="sd">/**</span>
+<span class="sd">     * @Link(rel=&quot;blog&quot;, href=&quot;app://self/blog/post?author_id={id}&quot;)</span>
+<span class="sd">     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">onGet</span><span class="p">(</span><span class="nv">$id</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="nv">$this</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">onPost</span><span class="p">(</span><span class="nv">$name</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">code</span> <span class="o">=</span> <span class="mi">201</span><span class="p">;</span> <span class="c1">// created</span>
+        <span class="c1">// ...</span>
+        <span class="k">return</span> <span class="nv">$this</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">onPut</span><span class="p">(</span><span class="nv">$id</span><span class="p">,</span> <span class="nv">$name</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="c1">//...</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">onDelete</span><span class="p">(</span><span class="nv">$id</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="c1">//...</span>
+    <span class="p">}</span>
+</code></pre></div>
+<h3 id="toc_2">Resource request</h3>
+
+<p>Using the URI and a query the resource is requested.</p>
+<div class="highlight"><pre><code class="php"><span class="cp">&lt;?php</span>
+<span class="nv">$user</span> <span class="o">=</span> <span class="nv">$resource</span>
+    <span class="o">-&gt;</span><span class="na">get</span>
+    <span class="o">-&gt;</span><span class="na">uri</span><span class="p">(</span><span class="s1">&#39;app://self/user&#39;</span><span class="p">)</span>
+    <span class="o">-&gt;</span><span class="na">withQuery</span><span class="p">([</span><span class="s1">&#39;id&#39;</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">])</span>
+    <span class="o">-&gt;</span><span class="na">eager</span>
+    <span class="o">-&gt;</span><span class="na">request</span><span class="p">();</span>
+</code></pre></div>
+<ul>
+<li>This request passes 1 to the <strong>onGet($id)</strong> method in the <strong>Sandbox\Resource\App\User</strong> class that conforms to <a href="https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-0.md">PSR0</a>.</li>
+<li>The retrieved resource has 3 properties <strong>code</strong>, <strong>headers</strong> and <strong>body</strong>.</li>
+</ul>
+<div class="highlight"><pre><code class="php"><span class="cp">&lt;?php</span>
+<span class="nb">var_dump</span><span class="p">(</span><span class="nv">$user</span><span class="o">-&gt;</span><span class="na">body</span><span class="p">);</span>
+
+<span class="c1">// Array</span>
+<span class="c1">// (</span>
+<span class="c1">//  [name] =&gt; Athos</span>
+<span class="c1">//  [age] =&gt; 15</span>
+<span class="c1">//  [blog_id] =&gt; 0</span>
+<span class="c1">//)</span>
+</code></pre></div>
+<h2 id="toc_3">Hypermedia</h2>
+
+<p>A resource can contain <a href="http://en.wikipedia.org/wiki/Hyperlink">hyperlinks</a> to other related resources.
+Hyperlinks are shown by methods annotated with <strong>@Link</strong>.</p>
+<div class="highlight"><pre><code class="php"><span class="cp">&lt;?php</span>
+<span class="k">use</span> <span class="nx">BEAR\Resource\Annotation\Link</span><span class="p">;</span>
+
+<span class="sd">/**</span>
+<span class="sd"> * @Link(rel=&quot;blog&quot;, href=&quot;app://self/blog?author_id={id}&quot;)</span>
+<span class="sd"> */</span>
+</code></pre></div>
+<p>The relation name is set by <strong>rel</strong> and link URI&#39;s are set by <strong>href</strong> (hyper reference).
+The URI can assign the current resource value using the <a href="http://code.google.com/p/uri-templates/">URI Template</a>(<a href="http://tools.ietf.org/html/rfc6570">rfc6570</a>).</p>
+
+<p>Within a link their are several types <strong>self</strong>, <strong>new</strong>, <strong>crawl</strong> which can be used to effectively create a resource graph.</p>
+
+<h3 id="toc_4">linkSelf</h3>
+
+<p><code>linkSelf</code> retrieves the linked resource.</p>
+<div class="highlight"><pre><code class="php"><span class="cp">&lt;?php</span>
+<span class="nv">$blog</span> <span class="o">=</span> <span class="nv">$resource</span>
+    <span class="o">-&gt;</span><span class="na">get</span>
+    <span class="o">-&gt;</span><span class="na">uri</span><span class="p">(</span><span class="s1">&#39;app://self/user&#39;</span><span class="p">)</span>
+    <span class="o">-&gt;</span><span class="na">withQuery</span><span class="p">([</span><span class="s1">&#39;id&#39;</span> <span class="o">=&gt;</span> <span class="mi">0</span><span class="p">])</span>
+    <span class="o">-&gt;</span><span class="na">linkSelf</span><span class="p">(</span><span class="s1">&#39;blog&#39;</span><span class="p">)</span>
+    <span class="o">-&gt;</span><span class="na">eager</span>
+    <span class="o">-&gt;</span><span class="na">request</span><span class="p">();</span>
+</code></pre></div>
+<p>The result of the  <strong>app://self/user</strong> resource request jumps over the the <strong>blog</strong> link and retrieves the <strong>app://self/blog</strong> resource.
+Just like clicking a link a the webpage it is replaced by the next resource.</p>
+
+<h3 id="toc_5">linkNew</h3>
+
+<p><code>linkNew</code> adds the linked resource to the response.</p>
+<div class="highlight"><pre><code class="php"><span class="cp">&lt;?php</span>
+<span class="nv">$user</span> <span class="o">=</span> <span class="nv">$resource</span>
+    <span class="o">-&gt;</span><span class="na">get</span>
+    <span class="o">-&gt;</span><span class="na">uri</span><span class="p">(</span><span class="s1">&#39;app://self/user&#39;</span><span class="p">)</span>
+    <span class="o">-&gt;</span><span class="na">withQuery</span><span class="p">([</span><span class="s1">&#39;id&#39;</span> <span class="o">=&gt;</span> <span class="mi">0</span><span class="p">])</span>
+    <span class="o">-&gt;</span><span class="na">linkNew</span><span class="p">(</span><span class="s1">&#39;blog&#39;</span><span class="p">)</span>
+    <span class="o">-&gt;</span><span class="na">eager</span>
+    <span class="o">-&gt;</span><span class="na">request</span><span class="p">();</span>
+
+<span class="nv">$blog</span> <span class="o">=</span> <span class="nv">$user</span><span class="p">[</span><span class="s1">&#39;blog&#39;</span><span class="p">];</span>
+</code></pre></div>
+<p>In a web page this is like &#39;opening a page in a new window&#39;, while passing the current resource but also retreiving the next.</p>
+
+<h3 id="toc_6">Crawl</h3>
+
+<p>A crawl passes over a list of resources (array) in order retrieving their links, with this you can construct a more complictated resource graph. Just as a crawler crawls a web page, the resource client crawls hyperlinks and creates a resource graph.</p>
+
+<p>Let&#39;s think of author, post, meta, tag, tag/name and they are all connected together by a resource graph.
+Each resource has a hyperlink. In ths resource graph add the name <strong>post-tree</strong>, on each resource add the hyper-reference <em>href</em> in the @link annotation.</p>
+
+<p>In the author resource there is a hyperlink to the post resource. This is a 1:n relationship.</p>
+<div class="highlight"><pre><code class="php"><span class="cp">&lt;?php</span>
+<span class="sd">/**</span>
+<span class="sd"> * @Link(crawl=&quot;post-tree&quot;, rel=&quot;post&quot;, href=&quot;app://self/post?author_id={id}&quot;)</span>
+<span class="sd"> */</span>
+<span class="k">public</span> <span class="k">function</span> <span class="nf">onGet</span><span class="p">(</span><span class="nv">$id</span> <span class="o">=</span> <span class="k">null</span><span class="p">)</span>
+</code></pre></div>
+<p>In the post resource there is a hyperlink to meta and tag resources. This is also a 1:n relationship.</p>
+<div class="highlight"><pre><code class="php"><span class="cp">&lt;?php</span>
+<span class="sd">/**</span>
+<span class="sd"> * @Link(crawl=&quot;post-tree&quot;, rel=&quot;meta&quot;, href=&quot;app://self/meta?post_id={id}&quot;)</span>
+<span class="sd"> * @Link(crawl=&quot;post-tree&quot;, rel=&quot;tag&quot;,  href=&quot;app://self/tag?post_id={id}&quot;)</span>
+<span class="sd"> */</span>
+<span class="k">public</span> <span class="k">function</span> <span class="nf">onGet</span><span class="p">(</span><span class="nv">$author_id</span><span class="p">)</span>
+<span class="p">{</span>
+</code></pre></div>
+<p>There is a hyperlink in the tag resource with only an ID for the tag/name resource that corresponds to that ID. It is a 1:1 relationship.</p>
+<div class="highlight"><pre><code class="php"><span class="cp">&lt;?php</span>
+<span class="sd">/**</span>
+<span class="sd"> * @Link(crawl=&quot;post-tree&quot;, rel=&quot;tag_name&quot;,  href=&quot;app://self/tag/name?tag_id={tag_id}&quot;)</span>
+<span class="sd"> */</span>
+<span class="k">public</span> <span class="k">function</span> <span class="nf">onGet</span><span class="p">(</span><span class="nv">$post_id</span><span class="p">)</span>
+</code></pre></div>
+<p>Set the crawl name and make the request.</p>
+<div class="highlight"><pre><code class="php"><span class="cp">&lt;?php</span>
+<span class="nv">$graph</span> <span class="o">=</span> <span class="nv">$resource</span>
+  <span class="o">-&gt;</span><span class="na">get</span>
+  <span class="o">-&gt;</span><span class="na">uri</span><span class="p">(</span><span class="s1">&#39;app://self/marshal/author&#39;</span><span class="p">)</span>
+  <span class="o">-&gt;</span><span class="na">linkCrawl</span><span class="p">(</span><span class="s1">&#39;post-tree&#39;</span><span class="p">)</span>
+  <span class="o">-&gt;</span><span class="na">eager</span>
+  <span class="o">-&gt;</span><span class="na">request</span><span class="p">();</span>
+</code></pre></div>
+<p>The resource client looks for the crawl name annotated with @link using the <strong>rel</strong> name connects to the resource and creates a resource graph.</p>
+<div class="highlight"><pre><code class="text">var_export($graph-&gt;body);
+
+array (
+    0 =&gt;
+    array (
+        &#39;name&#39; =&gt; &#39;Athos&#39;,
+        &#39;post&#39; =&gt;
+        array (
+            0 =&gt;
+            array (
+                &#39;author_id&#39; =&gt; &#39;1&#39;,
+                &#39;body&#39; =&gt; &#39;Anna post #1&#39;,
+                &#39;meta&#39; =&gt;
+                array (
+                    0 =&gt;
+                    array (
+                        &#39;data&#39; =&gt; &#39;meta 1&#39;,
+                    ),
+                ),
+                &#39;tag&#39; =&gt;
+                array (
+                    0 =&gt;
+                    array (
+                        &#39;tag_name&#39; =&gt;
+                        array (
+                            0 =&gt;
+                            array (
+                                &#39;name&#39; =&gt; &#39;zim&#39;,
+                            ),
+                        ),
+                    ),
+ ...
+</code></pre></div>
+<h3 id="toc_7">HETEOAS Hypermedia as the Engine of Application State</h3>
+
+<p>The resource client next then takes the next behavior as hyperlink and carrying on from that link changes the application state.
+For example in an order resource by using <strong>POST</strong> the order is created, from that order state to the payment resource using a <strong>PUT</strong> method a payment is made.</p>
+
+<p>Order resource</p>
+<div class="highlight"><pre><code class="php"><span class="cp">&lt;?php</span>
+<span class="sd">/**</span>
+<span class="sd"> * @Link(rel=&quot;payment&quot;, href=&quot;app://self/payment{?order_id, credit_card_number, expires, name, amount}&quot;, method=&quot;put&quot;)</span>
+<span class="sd"> */</span>
+<span class="k">public</span> <span class="k">function</span> <span class="nf">onPost</span><span class="p">(</span><span class="nv">$drink</span><span class="p">)</span>
+</code></pre></div>
+<p>Client code</p>
+<div class="highlight"><pre><code class="php"><span class="cp">&lt;?php</span>
+    <span class="nv">$order</span> <span class="o">=</span> <span class="nv">$resource</span>
+        <span class="o">-&gt;</span><span class="na">post</span>
+        <span class="o">-&gt;</span><span class="na">uri</span><span class="p">(</span><span class="s1">&#39;app://self/order&#39;</span><span class="p">)</span>
+        <span class="o">-&gt;</span><span class="na">withQuery</span><span class="p">([</span><span class="s1">&#39;drink&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;latte&#39;</span><span class="p">])</span>
+        <span class="o">-&gt;</span><span class="na">eager</span>
+        <span class="o">-&gt;</span><span class="na">request</span><span class="p">();</span>
+
+    <span class="nv">$payment</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s1">&#39;credit_card_number&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;123456789&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;expires&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;07/07&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;name&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;Koriym&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;amount&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;4.00&#39;</span>
+    <span class="p">];</span>
+
+    <span class="c1">// Now use a hyperlink to pay</span>
+    <span class="nv">$response</span> <span class="o">=</span> <span class="nv">$resource</span><span class="o">-&gt;</span><span class="na">href</span><span class="p">(</span><span class="s1">&#39;payment&#39;</span><span class="p">,</span> <span class="nv">$payment</span><span class="p">);</span>
+
+    <span class="k">echo</span> <span class="nv">$response</span><span class="o">-&gt;</span><span class="na">code</span><span class="p">;</span> <span class="c1">// 201</span>
+</code></pre></div>
+<p>The payment method is provided by the order resource with the hyperlink.
+There is no change in client code even though the relationship between the order and payment is changed,
+You can checkout more on HETEOAS at <a href="http://www.infoq.com/articles/webber-rest-workflow">How to GET a Cup of Coffee</a>.</p>
+
+<h3 id="toc_8">Resource Representation</h3>
+
+<p>Each resource has a renderer for representation. This renderer is a dependency of the resource, so it is injected in using an injector.
+Apart from <code>JsonModule</code>you can also use the <code>HalModule</code> which uses a <a href="http://stateless.co/hal_specification.html">HAL (Hyper Application Laungage)</a> renderer.</p>
+<div class="highlight"><pre><code class="php"><span class="cp">&lt;?php</span>
+<span class="nv">$modules</span> <span class="o">=</span> <span class="p">[</span><span class="k">new</span> <span class="nx">ResourceModule</span><span class="p">(</span><span class="s1">&#39;Sandbox&#39;</span><span class="p">),</span> <span class="k">new</span> <span class="nx">JsonModule</span><span class="p">]</span><span class="o">:</span>
+<span class="nv">$resource</span> <span class="o">=</span> <span class="nx">Injector</span><span class="o">::</span><span class="na">create</span><span class="p">(</span><span class="nx">modules</span><span class="p">)</span>
+  <span class="o">-&gt;</span><span class="na">getInstance</span><span class="p">(</span><span class="s1">&#39;BEAR\Resource\ResourceInterface&#39;</span><span class="p">);</span>
+</code></pre></div>
+<p>When the resource is output as a string the injected resource renderer is used then displayed as the resource representation.</p>
+<div class="highlight"><pre><code class="php"><span class="cp">&lt;?php</span>
+<span class="k">echo</span> <span class="nv">$user</span><span class="p">;</span>
+
+<span class="c1">// {</span>
+<span class="c1">//     &quot;name&quot;: &quot;Aramis&quot;,</span>
+<span class="c1">//     &quot;age&quot;: 16,</span>
+<span class="c1">//     &quot;blog_id&quot;: 1</span>
+<span class="c1">// }</span>
+</code></pre></div>
+<p>In this case <code>$user</code> is the renderers internal <code>ResourceObject</code>.
+This is not a string so is treated as either an array or an object.</p>
+<div class="highlight"><pre><code class="php"><span class="cp">&lt;?php</span>
+
+<span class="k">echo</span> <span class="nv">$user</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">];</span>
+
+<span class="c1">// Aramis</span>
+
+<span class="k">echo</span> <span class="nv">$user</span><span class="o">-&gt;</span><span class="na">onGet</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+
+<span class="c1">// {</span>
+<span class="c1">//     &quot;name&quot;: &quot;Yumi&quot;,</span>
+<span class="c1">//     &quot;age&quot;: 15,</span>
+<span class="c1">//     &quot;blog_id&quot;: 2</span>
+<span class="c1">// }</span>
+</code></pre></div>
+<h3 id="toc_9">Lazy Loading</h3>
+<div class="highlight"><pre><code class="php"><span class="cp">&lt;?php</span>
+<span class="nv">$user</span> <span class="o">=</span> <span class="nv">$resource</span>
+  <span class="o">-&gt;</span><span class="na">get</span>
+  <span class="o">-&gt;</span><span class="na">uri</span><span class="p">(</span><span class="s1">&#39;app://self/user&#39;</span><span class="p">)</span>
+  <span class="o">-&gt;</span><span class="na">withQuery</span><span class="p">([</span><span class="s1">&#39;id&#39;</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">])</span>
+  <span class="o">-&gt;</span><span class="na">request</span><span class="p">();</span>
+
+<span class="nv">$smarty</span><span class="o">-&gt;</span><span class="na">assign</span><span class="p">(</span><span class="s1">&#39;user&#39;</span><span class="p">,</span> <span class="nv">$user</span><span class="p">);</span>
+</code></pre></div>
+<p>In a non <code>eager</code> <code>request()</code> not the resource request result but a request object is retrieved.
+When this is assigned to the template engine at the timing of the output of a resource request <code>{$user}</code> in the template the <code>resource request</code> and <code>resource rendering</code> is executed and is displayed as a string.</p>
+
+<h2 id="toc_10">Signal Parameter</h2>
+
+<p>In order to execute a method parameters are needed. Normally the following parameters are available in priority order:</p>
+
+<ul>
+<li>Use of a consumer that calls the method <code>$obj->method(1, 2, ...);</code></li>
+<li>Use of default method signature <code>function method($a1 = 1)</code></li>
+<li>When null is present in a method instantiate internally. <code>function method($cat = null) { $cat = $cat ?: new Cat;</code></li>
+</ul>
+
+<p>In order to seperate the provision responsibility of parameters from the method and consumer we use the <code>signal parameter</code>.
+This only fires when the consumer and method does not provision the needed parameters.</p>
+
+<p>The name <code>signal parameter</code> comes from the <a href="http://en.wikipedia.org/wiki/Signals_and_slots">Signal and Slots</a> design pattern.
+When a parameter is not available a <code>signal</code> is dispatched in the variable name and missing value is resolved by a signal parameter that is registered as a <code>slot</code>.</p>
+
+<h3 id="toc_11">Registering a Parameter Provider</h3>
+
+<p>Assign the variable names and provider in the resource client.</p>
+<div class="highlight"><pre><code class="php"><span class="x">$resource = $injector-&gt;getInstance(&#39;BEAR\Resource\ResourceInterface&#39;);</span>
+<span class="x">$resource-&gt;attachParamProvider(&#39;user_id&#39;, new SessionIdParam);</span>
+</code></pre></div>
+<p>In this case the when the parameter that has the variable name <code>$user_id</code> is needed, <code>SessionIdParam</code> is called.</p>
+
+<h3 id="toc_12">Parameter Provider Implementation</h3>
+<div class="highlight"><pre><code class="php"><span class="cp">&lt;?php</span>
+<span class="k">class</span> <span class="nc">SessionIdParam</span> <span class="k">implements</span> <span class="nx">ParamProviderInterface</span>
+<span class="p">{</span>
+    <span class="sd">/**</span>
+<span class="sd">     * @param Param $param</span>
+<span class="sd">     *</span>
+<span class="sd">     * @return mixed</span>
+<span class="sd">     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">__invoke</span><span class="p">(</span><span class="nx">Param</span> <span class="nv">$param</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nb">isset</span><span class="p">(</span><span class="nv">$_SESSION</span><span class="p">[</span><span class="s1">&#39;login_id&#39;</span><span class="p">]))</span> <span class="p">{</span>
+            <span class="c1">// found !</span>
+            <span class="k">return</span> <span class="nv">$param</span><span class="o">-&gt;</span><span class="na">inject</span><span class="p">(</span><span class="nv">$_SESSION</span><span class="p">[</span><span class="s1">&#39;login_id&#39;</span><span class="p">]);</span>
+        <span class="p">};</span>
+        <span class="c1">// no idea, ask another provider...</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><code>SessionIdParam</code> implements the <code>ParamProviderInterface</code> interface and recieves parameter data, <strong>when possible</strong> it then prepares the actual parameters and returns them in <code>$param->inject($args)</code>.</p>
+
+<p>The parameter provider can register multiple parameters with a matching variable name, the registered provider will then be called by each of them. When none of the providers can prepare all parameters then <code>BEAR\Resource\Exception\Parameter</code> exception is thrown.</p>
+
+<h3 id="toc_13">The <code>onProvides</code> Method</h3>
+
+<p>By not setting a variable name and assigning <code>OnProvidesParam</code> to &#39;*&#39; then setting up a provided is not needed, it is possible to inject parameters into a class method following a single pattern.</p>
+<div class="highlight"><pre><code class="php"><span class="cp">&lt;?php</span>
+<span class="k">class</span> <span class="nc">Post</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">onPost</span><span class="p">(</span><span class="nv">$date</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="c1">// $date is passed by the onProvidesDate method.</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">onProvidesDate</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="nb">date</span><span class="p">(</span><span class="nx">DATE_RFC822</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>In this resource when <code>$date</code> is not specified in the client <code>onProvidesDate</code> is called, the returned value is passed to the <code>onPost</code> method.
+In the <code>onPost</code> method only the values passed to it are used, which has a clear separation of concerns and gives you a vast improvement in testability.</p>
+
+<p>To use the <code>onProvides</code> method functionality simply register the <code>OnProvidesParam</code> parameter provider.</p>
+<div class="highlight"><pre><code class="php"><span class="cp">&lt;?php</span>
+<span class="nv">$resource</span><span class="o">-&gt;</span><span class="na">attachParamProvider</span><span class="p">(</span><span class="s1">&#39;*&#39;</span><span class="p">,</span> <span class="k">new</span> <span class="nx">OnProvidesParam</span><span class="p">);</span>
+</code></pre></div>
+<h3 id="toc_14">A Clean Layered Architecture</h3>
+
+<p>A resource is built up from other resources. Although a resource is a service, a layered architecture can be acheived by the resource also becoming a resource client. A resource is handled with injection and aspect wrapping from the Ray.Di injector, meaning a resource can be built as a clean object with a separation of concerns.</p>
+<div class="highlight"><pre><code class="php"><span class="cp">&lt;?php</span>
+
+<span class="k">class</span> <span class="nc">News</span> <span class="k">extends</span> <span class="nx">ResourceObject</span>
+<span class="p">{</span>
+    <span class="sd">/**</span>
+<span class="sd">     * @Inject</span>
+<span class="sd">     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">__construct</span><span class="p">(</span><span class="nx">ResourceInterface</span> <span class="nv">$resource</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">resource</span> <span class="o">=</span> <span class="nv">$resource</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="sd">/**</span>
+<span class="sd">     * @Auth</span>
+<span class="sd">     * @Cache(60)</span>
+<span class="sd">     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">onGet</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="p">[</span><span class="s1">&#39;domestic&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">resource</span><span class="o">-&gt;</span><span class="na">get</span><span class="o">-&gt;</span><span class="na">uri</span><span class="p">(</span><span class="s1">&#39;app://self/news/domestic&#39;</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">request</span><span class="p">();</span>
+        <span class="nv">$this</span><span class="p">[</span><span class="s1">&#39;international&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">resource</span><span class="o">-&gt;</span><span class="na">get</span><span class="o">-&gt;</span><span class="na">uri</span><span class="p">(</span><span class="s1">&#39;app://news/international/&#39;</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">request</span><span class="p">();</span>
+        <span class="nv">$this</span><span class="p">[</span><span class="s1">&#39;breaking&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">resource</span><span class="o">-&gt;</span><span class="na">get</span><span class="o">-&gt;</span><span class="na">uri</span><span class="p">(</span><span class="s1">&#39;app://self/news/domestic/breaking&#39;</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">request</span><span class="p">();</span>
+            <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">resource</span><span class="o">-&gt;</span><span class="na">get</span><span class="o">-&gt;</span><span class="na">uri</span><span class="p">(</span><span class="s1">&#39;app://self/news/international/breaking&#39;</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">request</span><span class="p">();</span>
+        <span class="p">];</span>
+
+        <span class="k">return</span> <span class="nv">$this</span><span class="p">;</span>
+    <span class="p">}</span><span class="sb">``</span><span class="err">`</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>In this way the variables in the resource are not <code>eager</code>, even when resource contains a request, the resource request made inside the the resource is lazily loaded.</p>
+
+        </div>
+    </div>
+
+</div>
+
+</div>
+</div>
+<div id="footer">
+    <div class="container">
+        <p class="text-muted credit">
+            © 2013 <a href="https://github.com/koriym/BEAR.Sunday">BEAR.Sunday</a>
+        </p>
+    </div>
+</div>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script type="text/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+
+<!-- GoogleAnalytics -->
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-6074569-8', 'bearsunday.github.io');
+    ga('send', 'pageview');
+
+</script>
+</body>
+</html>

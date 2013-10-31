@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: default_ja
 title: BEAR.Sunday | My First Web Page
 category: My First - Tutorial
 ---

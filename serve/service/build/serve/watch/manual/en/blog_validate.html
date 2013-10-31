@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BEAR.Sunday | Blog Tutorial(5) Validation</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/index.css">
+    <link rel="stylesheet" href="/css/syntax.css">
+    <link rel="stylesheet" href="/css/github.css">
+    <link rel="stylesheet" href="/css/main.css">
+    <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/carousel.css">
+    <link rel="icon" sizes="16x16 32x32 48x48 64x64" href="/images/icon/favicon.ico">
+
+    <!--[if IE]><link rel="shortcut icon" href="/images/icon/favicon.ico"><![endif]-->
+
+    <!-- The below are optional but encouraged -->
+
+    <!-- Touch icon for iOS 2.0+ and Android 2.1+: -->
+    <link rel="apple-touch-icon-precomposed" href="/images/icon/favicon-152.png">
+
+    <!-- The below are optional -->
+
+    <!-- IE 10 Metro tile icon (Metro equivalent of apple-touch-icon): -->
+    <meta name="msapplication-TileColor" content="#FFFFFF">
+    <meta name="msapplication-TileImage" content="/images/icon/favicon-144.png">
+    <!-- For iPad with high-resolution Retina display running iOS ≥ 7: -->
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="/images/icon/favicon-152.png">
+    <!-- For iPad with high-resolution Retina display running iOS ≤ 6: -->
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/images/icon/favicon-144.png">
+    <!-- For iPhone with high-resolution Retina display running iOS ≥ 7: -->
+    <link rel="apple-touch-icon-precomposed" sizes="120x120" href="/images/icon/favicon-120.png">
+    <!-- For iPhone with high-resolution Retina display running iOS ≤ 6: -->
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/images/icon/favicon-114.png">
+    <!-- For first- and second-generation iPad: -->
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/images/icon/favicon-72.png">
+    <!-- For non-Retina iPhone, iPod Touch, and Android 2.1+ devices: -->
+    <link rel="apple-touch-icon-precomposed" href="/images/icon/favicon-57.png">
+</head>
+<body>
+<!--<div id="wrap">-->
+
+    <!-- Docs master nav -->
+    <div class="navbar navbar-default">
+        <div class="container">
+            <div class="navbar-header">
+                <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".bs-navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+
+                <a href="/index.html" class="navbar-brand">
+                    <span class="bear-icon-32"></span>
+                </a>
+            </div>
+            <nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
+                <ul class="nav navbar-nav">
+                    <li >
+                        <a href="/manual/en/index.html">Manual</a>
+                    </li>
+                    <li >
+                        <a href="/manual/en/tutorial.html">Tutorial</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+<div class="container">
+
+    <div class="row">
+        <div class="col-md-3">
+            <div class="panel panel-default">
+    <div class="panel-heading"><strong>Blog Tutorial</strong></div>
+    <div class="panel-body">
+
+        <ul class="nav nav-pills nav-stacked">
+            
+                <li><a href="blog.html">Getting Started</a></li>
+<li><a href="blog_get.html">Creating a Post Resource</a></li>
+<li><a href="blog_page.html">Creating a Post Detail Page</a></li>
+<li><a href="blog_template.html">Creating a Template</a></li>
+<li><a href="blog_create.html">Adding a Post</a></li>
+<li><a href="blog_validate.html">Validation</a></li>
+<li><a href="blog_delete.html">Removing a Post</a></li>
+<li><a href="blog_update.html">Editing a Post</a></li>
+
+            
+
+            
+
+            
+
+            
+
+            
+
+            
+
+            
+
+            
+
+            
+
+            
+
+        </ul>
+    </div>
+</div>
+        </div>
+        <div class="col-md-9">
+            <h1 id="toc_0">Form</h1>
+
+<p>In the previous section we implemented the POST interface in the posts add page, we were then able to add posts by receiving a HTTP mtethod.</p>
+
+<p>Next we will add to the POST interface validation, folder, pre populated fields on error functionality as a web form.</p>
+
+<p>Note: In this tutorial we won&#39;t use any special libraries we will just code in plain PHP. In reality it might be better to use a validation library that is part of Zend Framework or Symfony.</p>
+
+<h2 id="toc_1">Validation</h2>
+
+<p>We will implement a form interceptor that doesn&#39;t depend on a specific library. First we will bind the form validation interceptor and the <code>@Form</code> annotation.</p>
+
+<p><em>\BEAR\Sunday\Annotation\Form</em>
+```php
+&lt;?php
+namespace Sandbox\Annotation;</p>
+
+<p>/**
+ * Form
+ *
+ * @Annotation
+ * @Target({&quot;METHOD&quot;})
+ */
+final class Form
+{
+}
+```</p>
+
+<p>_\BEAR\Sunday\Annotation\Form
+Interceptor binding</p>
+<div class="highlight"><pre><code class="php"><span class="cp">&lt;?php</span>
+    <span class="sd">/**</span>
+<span class="sd">     * @Form - bind form validator</span>
+<span class="sd">     */</span>
+    <span class="k">private</span> <span class="k">function</span> <span class="nf">installFormValidator</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">bindInterceptor</span><span class="p">(</span>
+            <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">matcher</span><span class="o">-&gt;</span><span class="na">subclassesOf</span><span class="p">(</span><span class="s1">&#39;Sandbox\Resource\Page\Blog\Posts\Newpost&#39;</span><span class="p">),</span>
+            <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">matcher</span><span class="o">-&gt;</span><span class="na">annotatedWith</span><span class="p">(</span><span class="s1">&#39;sandbox\Annotation\Form&#39;</span><span class="p">),</span>
+            <span class="p">[</span><span class="k">new</span> <span class="nx">PostsFormValidator</span><span class="p">]</span>
+        <span class="p">);</span>
+    <span class="p">}</span>
+</code></pre></div>
+<p>In this case the <code>PostsFormValidator</code> is bound to methods annotated with <code>@Form</code>. Before the request calls the POST method this validation interceptor is called.</p>
+
+<h2 id="toc_2">@Form Validation Interceptor</h2>
+
+<p>In the interceptor that is　wedged between the request and the method, after the tag removal process is when the validation happens.</p>
+<div class="highlight"><pre><code class="php"><span class="cp">&lt;?php</span>
+<span class="k">return</span> <span class="nv">$invocation</span><span class="o">-&gt;</span><span class="na">proceed</span><span class="p">();</span>
+</code></pre></div>
+<p>If the validation fails then the <em>processing GET request page</em> that shows an error message and preset values etc is output. The POST interface method will not be called.</p>
+<div class="highlight"><pre><code class="php"><span class="cp">&lt;?php</span>
+<span class="k">return</span> <span class="nv">$page</span><span class="o">-&gt;</span><span class="na">onGet</span><span class="p">();</span>
+</code></pre></div>
+<p>When this is all wrapped up in the <code>PostsFormValidator</code> it looks like this.</p>
+<div class="highlight"><pre><code class="php"><span class="cp">&lt;?php</span>
+<span class="sd">/**</span>
+<span class="sd"> * Log Interceptor</span>
+<span class="sd"> */</span>
+<span class="k">class</span> <span class="nc">PostsFormValidator</span> <span class="k">implements</span> <span class="nx">MethodInterceptor</span>
+<span class="p">{</span>
+    <span class="k">const</span> <span class="no">TITLE</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="k">const</span> <span class="no">BODY</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+
+    <span class="sd">/**</span>
+<span class="sd">     * Error</span>
+<span class="sd">     * </span>
+<span class="sd">     * @var array</span>
+<span class="sd">     */</span>
+    <span class="k">private</span> <span class="nv">$errors</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s1">&#39;title&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;body&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;&#39;</span>
+    <span class="p">];</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">invoke</span><span class="p">(</span><span class="nx">MethodInvocation</span> <span class="nv">$invocation</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="c1">// retrieve page and query</span>
+        <span class="nv">$args</span> <span class="o">=</span> <span class="nv">$invocation</span><span class="o">-&gt;</span><span class="na">getArguments</span><span class="p">();</span>
+        <span class="nv">$page</span> <span class="o">=</span> <span class="nv">$invocation</span><span class="o">-&gt;</span><span class="na">getThis</span><span class="p">();</span>
+
+        <span class="c1">// strip tags</span>
+        <span class="k">foreach</span> <span class="p">(</span><span class="nv">$args</span> <span class="k">as</span> <span class="o">&amp;</span><span class="nv">$arg</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nv">$arg</span> <span class="o">=</span> <span class="nb">strip_tags</span><span class="p">(</span><span class="nv">$arg</span><span class="p">);</span>
+        <span class="p">}</span>
+
+        <span class="c1">// required title</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nv">$args</span><span class="p">[</span><span class="nx">self</span><span class="o">::</span><span class="na">TITLE</span><span class="p">]</span> <span class="c1"># = &#39;&#39;) {</span>
+            <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">errors</span><span class="p">[</span><span class="s1">&#39;title&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;title required.&#39;</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="c1">// required body</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nv">$args</span><span class="p">[</span><span class="nx">self</span><span class="o">::</span><span class="na">BODY</span><span class="p">]</span> <span class="c1"># = &#39;&#39;) {</span>
+            <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">errors</span><span class="p">[</span><span class="s1">&#39;body&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;body required.&#39;</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="c1">// valid form ?</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nb">implode</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">errors</span><span class="p">)</span> <span class="c1"># = &#39;&#39;) {</span>
+            <span class="k">return</span> <span class="nv">$invocation</span><span class="o">-&gt;</span><span class="na">proceed</span><span class="p">();</span>
+        <span class="p">}</span>
+
+        <span class="c1">// error, modify &#39;GET&#39; page with error message.</span>
+        <span class="nv">$page</span><span class="p">[</span><span class="s1">&#39;errors&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">errors</span><span class="p">;</span>
+        <span class="nv">$page</span><span class="p">[</span><span class="s1">&#39;submit&#39;</span><span class="p">]</span> <span class="o">=</span><span class="p">[</span>
+            <span class="s1">&#39;title&#39;</span> <span class="o">=&gt;</span> <span class="nv">$args</span><span class="p">[</span><span class="nx">self</span><span class="o">::</span><span class="na">TITLE</span><span class="p">],</span>
+            <span class="s1">&#39;body&#39;</span> <span class="o">=&gt;</span> <span class="nv">$args</span><span class="p">[</span><span class="nx">self</span><span class="o">::</span><span class="na">BODY</span><span class="p">]</span>
+        <span class="p">];</span>
+        <span class="k">return</span> <span class="nv">$page</span><span class="o">-&gt;</span><span class="na">onGet</span><span class="p">();</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><a href="https://github.com/koriym/Ray.Aop/blob/master/src/Ray/Aop/MethodInterceptor.php">MethodInterceptor</a> which conforms to the [<a href="http://aopalliance.sourceforge.net/">http://aopalliance.sourceforge.net/</a> AOP Alliance]. The <code>$invocation</code> object passed to the <code>invoke</code> method is as it suggests method invoking object of the <code>MethodInvocation</code> type.</p>
+
+<p>The parameters at the time the method can be obtained by calling <code>$invocation->getArguments()</code> and<br>
+the original page display resource object can be obtained by calling <code>$invocation->getThis();</code>.</p>
+
+<p>Note: The parameters are not in the named parameters style, they are the ordered style that can normally be picked up in the method call.</p>
+
+        </div>
+    </div>
+
+</div>
+
+</div>
+</div>
+<div id="footer">
+    <div class="container">
+        <p class="text-muted credit">
+            © 2013 <a href="https://github.com/koriym/BEAR.Sunday">BEAR.Sunday</a>
+        </p>
+    </div>
+</div>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script type="text/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+
+<!-- GoogleAnalytics -->
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-6074569-8', 'bearsunday.github.io');
+    ga('send', 'pageview');
+
+</script>
+</body>
+</html>
