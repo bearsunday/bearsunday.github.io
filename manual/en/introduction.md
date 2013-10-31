@@ -44,12 +44,11 @@ It organizes a web application framework with application scripts and developmen
 
 ## Ray DI/AOP packages
 
-All dependencies for an application and framework are resolved  [Ray.Di](https://github.com/koriym/Ray.Di) framework.
-Ray.Di is google guice clone. It creates one root object in bootstrap.
-
-[Ray.Aop](https://github.com/koriym/Ray.Aop) framework enables to separate domain logic and application logic, increased testability and reusability
-
-Once all dependencies are injected and also all cross cutting concerns are bound to specified method **by context**, Its object graph is cached and re-used beyond request.
+BEAR.Sunday uses universally across the framework the Dependency Injection(DI) pattern and Aspect Orientated Programming (AOP).
+With the benefit of being able to use annotations to inject dependencies it uses the [Ray.Di](https://github.com/koriym/Ray.Di)[Ray.Aop](https://github.com/koriym/Ray.Aop) framework which is a PHP clone of [http://en.wikipedia.org/wiki/Google_Guice Google Guice].
+AOP in BEAR.Sunday uses the interface settled upon by the [http://aopalliance.sourceforge.net/ AOP Alliance] implemented in PHP. Being able to bind multiple cross-cutting concerns to a specific method by using annotations or naming conventions.
+In dynamic languages DI/AOP introduction can bring in performance concerns.
+However in BEAR.Sunday with loose coupling and a high level of abstraction, using a created dependencies injected application cached object graph has next to no affect on performance.
 
 ## Framework Organization
 
