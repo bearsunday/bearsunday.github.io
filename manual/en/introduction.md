@@ -20,14 +20,15 @@ In BEAR.Sunday everything is a REST resource which leads to far simpler design a
 
 <img src="/images/screen/diagram.png" style="max-width: 100%;height: auto;"/>
 
-The above diagram illustrates how the resource object works.
-
-TBD.
+The above diagram illustrates how a resource object works.
 
 # Packages
 
-BEAR.Sunday application framework consists packages of three type. **Independent packages** which are available in [Packagist](https://packagist.org/)
-. **Ray packages** are DI and AOP object framework. **BEAR.* packages** organize as a application framework with former two packages.
+BEAR.Sunday application framework consists packages of three types. 
+
+* **Independent packages** which are available in [Packagist](https://packagist.org/).
+* **Ray packages** are DI and AOP object frameworks.
+* **BEAR.* packages** organize these former 2 packages as an application framework.
 
 ## BEAR.* packages
 
@@ -36,19 +37,21 @@ BEAR.Sunday application framework consists packages of three type. **Independent
 [BEAR.Resource](https://github.com/koriym/BEAR.Sunday) is a **hypermedia framework** that allows resources to behave as objects.
 It allows objects to have RESTful web service benefits such as client-server, uniform interface, statelessness, resource expression with mutual connectivity and layered components.
 
-[BEAR.Sunday](https://github.com/koriym/BEAR.Sunday) is a collections of abstractions to form BEAR.Resource as an application framework.
-Such as annotations, exceptions or interfaces. It has almost no actual implementations.
+[BEAR.Sunday](https://github.com/koriym/BEAR.Sunday) is a collections of abstractions to form BEAR.Resource as an application framework such as annotations, exceptions or interfaces. It has almost no actual implementation.
 
-[BEAR.Package](https://github.com/koriym/BEAR.Package) supply bindings for BEAR.Sunday abstractions to actual implementations, such as Aura libraries or Symfony components.
-It organizes a web application framework with application scripts and development tools.
+[BEAR.Package](https://github.com/koriym/BEAR.Package) supplies the bindings of BEAR.Sunday abstractions to actual implementations, such as Aura libraries or Symfony components.
+It organizes a web application framework by using application scripts and development tools.
 
 ## Ray DI/AOP packages
 
-BEAR.Sunday uses universally across the framework the Dependency Injection(DI) pattern and Aspect Orientated Programming (AOP).
-With the benefit of being able to use annotations to inject dependencies it uses the [Ray.Di](https://github.com/koriym/Ray.Di)[Ray.Aop](https://github.com/koriym/Ray.Aop) framework which is a PHP clone of [http://en.wikipedia.org/wiki/Google_Guice Google Guice].
-AOP in BEAR.Sunday uses the interface settled upon by the [http://aopalliance.sourceforge.net/ AOP Alliance] implemented in PHP. Being able to bind multiple cross-cutting concerns to a specific method by using annotations or naming conventions.
-In dynamic languages DI/AOP introduction can bring in performance concerns.
-However in BEAR.Sunday with loose coupling and a high level of abstraction, using a created dependencies injected application cached object graph has next to no affect on performance.
+BEAR.Sunday uses the Dependency Injection(DI) pattern and Aspect Orientated Programming (AOP) universally across the framework.
+
+With the benefits of being able to use annotations to inject dependencies it uses the [Ray.Di](https://github.com/koriym/Ray.Di)[Ray.Aop](https://github.com/koriym/Ray.Aop) framework which is a PHP clone of [http://en.wikipedia.org/wiki/Google_Guice Google Guice].
+
+AOP in BEAR.Sunday uses PHP implementation of an interface established by the [http://aopalliance.sourceforge.net/ AOP Alliance]. Being able to bind multiple cross-cutting concerns to a specific method by using annotations or naming conventions.
+
+In dynamic languages the introduction of DI/AOP can bring performance concerns.
+However in BEAR.Sunday with loose coupling and a high level of abstraction, using created dependencies injected application cached object graph has next to no affect on performance.
 
 ## Framework Organization
 
