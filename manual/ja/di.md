@@ -8,22 +8,27 @@ category: Manual
 Dependency Injection framework
 ==============================
 
-**Ray.Di** was created in order to get Guice style dependency injection in PHP projects. It tries to mirror Guice's behavior and style. [Guice]((http://code.google.com/p/google-guice/wiki/Motivation?tm=6) is a Java dependency injection framework developed by Google.
+**Ray.Di**はGoogleのJava用DI framework [Guice]((http://code.google.com/p/google-guice/wiki/Motivation?tm=6)の主要な機能を持つアノテーションベースのDIフレームワークです。
+DIを効率よく使用すると以下のようなメリットがあります。
 
- * Supports some of the [JSR-250](http://en.wikipedia.org/wiki/JSR_250) object lifecycle annotations (`@PostConstruct`, `@PreDestroy`)
- * Provides an [AOP Alliance](http://aopalliance.sourceforge.net/)-compliant aspect-oriented programming implementation.
- * Extends [Aura.Di](http://auraphp.github.com/Aura.Di).
- * [Doctrine.Common](http://www.doctrine-project.org/projects/common) annotations.
+* ロジックとコンフィギュレーションの分離を促進し、ソースコードを読みやすくします。
+* コンポーネントの独立性と再利用性を強化します。コンポーネントは依存関係のあるインタフェースを宣言するだけになるため、他のコンポーネントとの関係を疎結合にし再利用性を高めます。
+* コーディング量を減少させます。インジェクションの処理そのものはインジェクターが提供するためその分だけ実装するコードの量が減ります。多くの場合、依存を受け取る為のtraitの`use`文を記述するだけです。
 
-_Not all features of Guice have been implemented._
+Ray.Diは以下の特徴があります。
 
+ * [JSR-250](http://en.wikipedia.org/wiki/JSR_250)のオブジェクトライフサイクル(`@PostConstruct`, `@PreDestroy`)のアノテーションをサポートしています。
+ * [AOP Alliance](http://aopalliance.sourceforge.net/)に準拠したアスペクト指向プログラミングをサポートしています。
+ * [Aura.Di](http://auraphp.github.com/Aura.Di )を拡張しています。
+ * [Doctrine.Commons](http://www.doctrine-project.org/projects/common)アノテーションを使用しています。
 
-Overview
---------
+Getting Stated
+--------------
 
-Here is a basic example of dependency injection using Ray.Di.
+Ray.Diを使ったディペンデンシーインジェクション（[依存性の注入](http://ja.wikipedia.org/wiki/%E4%BE%9D%E5%AD%98%E6%80%A7%E3%81%AE%E6%B3%A8%E5%85%A5)）の一般的な例です。
 
-{% highlight php %}<?php
+```php
+<?php
 use Ray\Di\Injector;
 use Ray\Di\AbstractModule;
 
@@ -62,31 +67,29 @@ $works = ($lister->finder instanceof MovieApp\Finder);
 echo(($works) ? 'It works!' : 'It DOES NOT work!');
 
 // It works!
-{% endhighlight %}
-This is an example of **Linked Bindings**. Linked bindings map a type to its implementation.
-
+```
+これは **Linked Bindings** という束縛（バインディング）です。. Linked bindings はインターフェイスとその実装クラスを束縛します。
 
 ### Provider Bindings
 
-[Provider bindings](http://code.google.com/p/rayphp/wiki/ProviderBindings) map a type to its provider.
+[Provider bindings](http://code.google.com/p/rayphp/wiki/ProviderBindings) はインターフェイスと実装クラスの`プロバイダー`を束縛します。
 
-{% highlight php %}<?php
-$this->bind('TransactionLogInterface')->toProvider('DatabaseTransactionLogProvider');
-{% endhighlight %}
-The provider class implements Ray's Provider interface, which is a simple, general interface for supplying values:
-
-{% highlight php %}<?php
+シンプルでインスタンス（値）を返すだけの、Providerインターフェイスを実装したプロバイダークラスを作成します。
+```php
+<?php
 use Ray\Di\ProviderInterface;
 
 interface ProviderInterface
 {
     public function get();
 }
-{% endhighlight %}
-Our provider implementation class has dependencies of its own, which it receives via a contructor annotated with `@Inject`.
-It implements the Provider interface to define what's returned with complete type safety:
+```
 
-{% highlight php %}<?php
+このプロバイダーの実装は自身にコンストラクターで`@Inject`とアノテートしている依存があります。
+依存を使ってインスタンスを生成して`get()`メソッドで生成したインスタンスを返します。
+
+```php
+<?php
 class DatabaseTransactionLogProvider implements Provider
 {
     private ConnectionInterface connection;
@@ -107,89 +110,107 @@ class DatabaseTransactionLogProvider implements Provider
         return $transactionLog;
     }
 }
-{% endhighlight %}
-Finally we bind to the provider using the `toProvider()` method:
+```
+このように依存が必要なインスタンスには **Provider Bindings**を使います。
 
-{% highlight php %}<?php
+```php
+<?php
 $this->bind('TransactionLogInterface')->toProvider('DatabaseTransactionLogProvider');
-{% endhighlight %}
+```
 
-### Named Bindings
 
-Ray comes with a built-in binding annotation `@Named` that takes a string.
 
-{% highlight php %}<?php
+### Named Binding
+
+Rayには`@Named`という文字列で`名前`を指定できるビルトインアノテーションがあります。
+
+```php
+<?php
 /**
  *  @Inject
  *  @Named("processor=Checkout")
  */
 public RealBillingService(CreditCardProcessor $processor)
 {
-{% endhighlight %}
+...
+```
 
-To bind a specific name, pass that string using the `annotatedWith()` method.
+特定の名前を使って束縛するために`annotatedWith()`メソッドを使います。
 
-{% highlight php %}<?php
+```php
+<?php
 protected function configure()
 {
-    $this->bind('CreditCardProcessorInterface')
-        ->annotatedWith('Checkout')
-        ->to('CheckoutCreditCardProcessor');
+    $this->bind('CreditCardProcessorInterface')->annotatedWith('Checkout')->to('CheckoutCreditCardProcessor');
 }
-{% endhighlight %}
+```
 
 ### Instance Bindings
 
-{% highlight php %}<?php
+値を直接束縛することができます。依存のないオブジェクトや配列やスカラー値などの時だけ利用するようにします。
+
+```php
+<?php
 protected function configure()
 {
-    $this->bind('UserIntetrface')->toInstance(new User);
+    $this->bind('UserInterface')->toInstance(new User);
 }
-{% endhighlight %}<?php
-You can bind a type to an instance of that type. This is usually only useful for objects that don't have dependencies of their own, such as value objects:
+```
 
-{% highlight php %}<?php
+PHPのスカラー値には型がないので、名前を使って束縛します。
+
+```php
+<?php
 protected function configure()
 {
     $this->bind()->annotatedWith("login_id")->toInstance('bear');
 }
-{% endhighlight %}
+```
 
-### Constructor Bindings
+### Constructor Binfings
 
-Occasionally it's necessary to bind a type to an arbitrary constructor. This arises when the `@Inject` annotation cannot be applied to the target constructor. eg. when it is a third party class.
+外部のクラスなどで`@Inject`が使えない場合などに、任意のコンストラクタに型を束縛することができます。
 
-{% highlight php %}<?php
+```php
+<?php
 class TransactionLog
 {
     public function __construct($db)
     {
      // ....
-{% endhighlight %}
+```
 
-{% highlight php %}<?php
+変数名を指定して束縛します。
+
+```php
+<?php
 protected function configure()
 {
     $this->bind('TransactionLog')->toConstructor(['db' => new Database]);
 }
-{% endhighlight %}
+```
 
 ## Scopes
 
-By default, Ray returns a new instance each time it supplies a value. This behaviour is configurable via scopes.
+デフォルトでは、Rayは毎回新しいインスタンスを生成しますが、これはスコープの設定で変更することができます。
 
-{% highlight php %}<?php
+```php
+<?php
 protected function configure()
 {
     $this->bind('TransactionLog')->to('InMemoryTransactionLog')->in(Scope::SINGLETON);
 }
-{% endhighlight %}
+```
 
 ## Object life cycle
 
-`@PostConstruct` is used on methods that need to get executed after dependency injection has finalized to perform any extra initialization.
+オブジェクトライフサイクルのアノテーションを使ってオブジェクトの初期化や、PHPの終了時に呼ばれるメソッドを指定する事ができます。
 
-{% highlight php %}<?php
+このメソッドは全ての依存がインジェクトされた後に呼ばれます。
+セッターインジェクションがある場合などでも全ての必要な依存が注入された前提にすることができます。
+
+```php
+<?php
 /**
  * @PostConstruct
  */
@@ -197,12 +218,12 @@ public function onInit()
 {
     //....
 }
-{% endhighlight %}
+```
 
-`@PreDestroy` is used on methods that are called after script execution finishes or exit() is called.
-This method is registered by using **register_shutdown_function**.
+このメソッドはPHPの **register_shutdown_function** 関数に要録されスクリプト処理が完了したとき、あるいは *exit()* がコールされたときに呼ばれます。
 
-{% highlight php %}<?php
+```php
+<?php
 /**
  * @PreDestroy
  */
@@ -210,52 +231,81 @@ public function onShutdown()
 {
     //....
 }
-{% endhighlight %}
+```
+## Install
 
-## Automatic Injection
+モジュールは他のモジュールの束縛をインストールして使う事ができます。
 
-Ray.Di automatically injects all of the following:
+ * 同一の束縛があれば先にされた方が優先されますが
+ * `$this`を渡すとそれまでの束縛をインストール先のモジュールが利用することができます。そのモジュールでの束縛は現在の束縛より優先されます。
 
- * instances passed to `toInstance()` in a bind statement
- * provider instances passed to `toProvider()` in a bind statement
-
-The objects will be injected while the injector itself is being created. If they're needed to satisfy other startup injections, Ray.Di will inject them before they're used.
-
-
-## Installation
-
-A module can install other modules to configure more bindings.
-
- * Earlier bindings have priority even if the same binding is made later.
- * The module can use an existing bindings by passing in `$this`. The bindings in that module have priority.
-
-{% highlight php %}<?php
+```php
+<?php
 protected function configure()
 {
     $this->install(new OtherModule);
     $this->install(new CustomiseModule($this);
 }
-{% endhighlight %}
+```
 
-## Injection in the module
+## Automatic Injection
 
-You can use a built-in injector in the module which uses existing bindings.
+Ray.Diは`toInstance()`や`toProvider()`がインスタンスを渡した時に自動的にインジェクトします。
+またインジェクターが作られたときにそのインジェクターはモジュールにインジェクトされます。依存にはまた違う依存があり、順に辿って依存を解決します。
 
-{% highlight php %}<?php
-protected function configure()
+
+## Aspect Oriented Programing
+
+Ray.Aopのアスペクト指向プログラミングが利用できます。インターセプターの束縛はより簡単になり、アスペクトの依存解決も行われます。
+
+```php
+<?php
+class TaxModule extends AbstractModule
 {
-    $this->bind('DbInterface')->to('Db');
-    $dbLogger = $this->requestInjection('DbLogger');
+    protected function configure()
+    {
+        $this->bindInterceptor(
+            $this->matcher->subclassesOf('Ray\Di\Aop\RealBillingService'),
+            $this->matcher->annotatedWith('Tax'),
+            [new TaxCharger]
+        );
+    }
 }
-{% endhighlight %}
+```
+
+```php
+<?php
+class AopMatcherModule extends AbstractModule
+{
+    pro
+    protected function configure()
+    {
+        $this->bindInterceptor(
+            $this->matcher->any(),                 // In any class and
+            $this->matcher->startWith('delete'), // ..the method start with "delete"
+            [new Logger]
+        );
+    }
+}
+
+```
+
+
+Best practice
+-------------
+
+可能な限りインジェクターを直接使わないコードにします。その代わりアプリケーションのbootstrapで **ルートオブジェクト** をインジェクトするようにします。
+このルートオブジェクトのクラスは依存する他のオブジェクトのインジェクションに使われます。その先のオブジェクトも同じで、依存が依存を必要として最終的にオブジェクトグラフが作られます。
 
 Caching dependency-injected objects
 -----------------------------------
 
-Storing dependency-injected objects in a cache container has huge performance boosts.
-**CacheInjector** also handles *object life cycle* as well as auto loading of generated aspect weaved objects.
+インジェクト済みのキャッシュを保存して利用すればパフォーマンスは大きく向上します。
+**CacheInjector** はオブジェクトライフサイクルと自動生成されたアスペクトファイルのローディングも行います。
+`$initialization`クロージャにはアプリケーションがコンパイル時に一度しか行わない初期化処理を記述します。
 
-{% highlight php %}<?php
+```php
+<?php
 $injector = function()  {
     return Injector::create([new AppModule]);
 };
@@ -265,4 +315,5 @@ $initialization = function() {
 $injector = new CacheInjector($injector, $initialization, 'cache-namespace', new ApcCache);
 $app = $injector->getInsntance('ApplicationInterface');
 $app->run();
-{% endhighlight %}
+```
+
