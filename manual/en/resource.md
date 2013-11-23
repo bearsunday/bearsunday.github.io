@@ -88,8 +88,9 @@ In a resource request there is no state.
 $name = $resource
   ->get
   ->uri('app://self/user')
+  ->withQuery(['id' => 1])
   ->eager
-  ->request(['id' => 1])
+  ->request()
   ->body['name'];
 ```
 
