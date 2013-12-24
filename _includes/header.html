@@ -45,17 +45,11 @@
     <div class="navbar navbar-default">
         <div class="container">
             <div class="navbar-header">
-                <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".bs-navbar-collapse">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-
                 <a href="/index.html" class="navbar-brand">
                     <span class="bear-icon-32"></span>
                 </a>
             </div>
+
             <nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
                 <ul class="nav navbar-nav">
                     <li {% if page.category == "Manual" %} class="active"{% endif %}>
@@ -65,6 +59,11 @@
                         <a href="/manual/en/tutorial.html">Tutorial</a>
                     </li>
                 </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="{% if page.layout  == 'default' %}active{% endif %}"><a href="/manual/en/">En</a></li>
+                    <li class="{% if page.layout  == 'default_ja' %}active{% endif %}"><a href="/manual/ja/">Ja</a></li>
+                </ul>
+
             </nav>
         </div>
     </div>
