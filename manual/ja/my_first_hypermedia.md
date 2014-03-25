@@ -2,11 +2,11 @@
 layout: default_ja
 title: BEAR.Sunday | My First Hypermedia
 category: My First - Tutorial
---- 
+---
 
 # My First Hypermedia
 
-## What is Hypermedia? 
+## What is Hypermedia?
 
 In 1962 Ted Nelson proposed [**Hypertext**](http://en.wikipedia.org/wiki/Hypertext).
 This is when in order to refer some text other text referral links are embedded in the text itself, the referrals that joins the text are called Hyperlinks.
@@ -16,7 +16,7 @@ The most famous and successful implementation of Hypertext is the Worldwide Web.
 (The href in a property of the `<a>` tag is an abbreviation for hyper-reference).
 Also to note is that PHP is an acronym of *PHP: Hypertext Preprocessor* [PHP an acronym for what?](http://www.php.net/manual/en/faq.general.php#faq.general.acronym))
 
-## Non Existent Hypermedia 
+## Non Existent Hypermedia
 
 Let's think in terms of a `REST API` for example when you order a coffee at a coffee shop.
 
@@ -46,11 +46,11 @@ The order resource has been created and the order contents are returned.
 
 This is *not hypermedia*. The data does not have any attached uniquely displayed URI's or related links.
 
-## HAL - Hypertext Application Language 
+## HAL - Hypertext Application Language
 
-JSON is not essentially a hypermedia format, however using JSON the 
+JSON is not essentially a hypermedia format, however using JSON the
 [http://stateless.co/hal_specification.html HAL - Hypertext Application Language]
-which is a [http://tools.ietf.org/html/draft-kelly-json-hal-00 RFC Draft Standard] 
+which is a [http://tools.ietf.org/html/draft-kelly-json-hal-00 RFC Draft Standard]
 is used to provide `JSON+HAL` hyper-media.
 
 In BEAR.Sunday when you set your resource rendering to `HalRenderer` you can output in HAL format.
@@ -79,9 +79,9 @@ On the service side you can change the link references according to service circ
 In those times you need to change nothing on the client, just carry on following the provided link.
 By having links you transform your service from just another data format to a self descriptive Hyper-Media resource.
 
-## Adding Hyperlinks 
+## Adding Hyperlinks
 
-You declare your resource object's `links` property like this. 
+You declare your resource object's `links` property like this.
 
 ```php
     public $links = [
@@ -89,7 +89,7 @@ You declare your resource object's `links` property like this.
     ];
 ```
 
-## Using a URI Template for your Query 
+## Using a URI Template for your Query
 
 When the URI to dynamically decided you can for example you can create a query in the onPost method like this.
 
@@ -107,7 +107,7 @@ In the `links` property you can set the URI template like this.
 
 Here the necessary variable `{id}` is retrieved from the resource `body`.
 
-## Lets Try 
+## Lets Try
 
 Here is the class that assigns `$item` and creates the order resource.
 
@@ -141,7 +141,7 @@ In order to add hyperlinks setup the `links` property.
     ];
 ```
 
-## Make API Request From the Console  
+## Make API Request From the Console
 
 ```php
 $ api get app://self/first/hypermedia/user?id=1
@@ -168,7 +168,7 @@ content-type: application/hal+json; charset=UTF-8
 
 The `payment` link now appears.
 
-## Using Links in a Program 
+## Using Links in a Program
 
 In order to use links in your code, inject the `A` object using the trait `AInject` and use the `href` method to retrieve links.
 The resource body can retrieve the link composed by the URI template.
@@ -180,9 +180,7 @@ namespace Sandbox\Resource\App\First\HyperMedia;
 use BEAR\Resource\AbstractObject;
 use BEAR\Sunday\Inject\ResourceInject;
 use BEAR\Sunday\Inject\AInject;
-/**
- * Greeting resource
- */
+
 class Shop extends AbstractObject
 {
     use ResourceInject;
