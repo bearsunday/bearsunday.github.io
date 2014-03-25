@@ -177,11 +177,11 @@ The resource body can retrieve the link composed by the URI template.
 <?php
 namespace Sandbox\Resource\App\First\HyperMedia;
 
-use BEAR\Resource\AbstractObject;
+use BEAR\Resource\ResourceObject;
 use BEAR\Sunday\Inject\ResourceInject;
 use BEAR\Sunday\Inject\AInject;
 
-class Shop extends AbstractObject
+class Shop extends ResourceObject
 {
     use ResourceInject;
     use AInject;
