@@ -93,8 +93,6 @@ The application directory structure looks like this:
 │   │   ├── api.php
 │   │   ├── dev.php
 │   │   └── prod.php
-│   ├── develop
-│   │   └── instance.php # application script for development
 │   └── instance.php     # application script for production
 ├── src
 │   └── {Vendor.Application}
