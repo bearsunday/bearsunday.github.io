@@ -56,22 +56,24 @@ The framework package (BEAR.Package) directory structure looks like this:
 
 ```
 {$PACKAGE_DIR}
-├── apps                 # applications
-│   ├── Helloworld
-│   └── Sandbox
-├── bin                  # command-line script invokers
-│   ├── env.php
-│   └── new_res.php
-├── src                  # BEAR.Package source code organized for PSR-0
+├── apps                     # applications
+│   ├── Demo.Helloworld
+│   └── Demo.Sandbox
+├── bin                      # command-line script invokers
+│   ├── bear.compile
+│   ├── bear.server
+│   ├── bear.create-resource
+│   └── env.php
+├── src                      # BEAR.Package source code organized for PSR-0
 │   └── BEAR
 │       └── Package
-├── tests                # test files for phpunit
+├── tests                    # test files for phpunit
 ├── var
-│   ├── lib              # system script
-│   ├── log              # system log
+│   ├── lib                  # system script
+│   ├── log                  # system log
 │   └── www
-│       ├── admin        # public web folder for system
-│       └── dev          # public web folder for application development (/dev)
+│       ├── admin            # public web folder for system
+│       └── dev              # public web folder for application development (/dev)
 └── vendor
 ```
 
@@ -81,10 +83,7 @@ The application directory structure looks like this:
 
 ```
 ├── bin                  # command-line script invokers
-│   ├── api.php
 │   ├── clear.php
-│   ├── compiler.php
-│   └── web.php
 ├── bootstrap
 │   ├── autoload.php     # autoloader
 │   ├── contexts         # contextual application scripts
@@ -95,7 +94,7 @@ The application directory structure looks like this:
 │   │   └── instance.php # application script for development
 │   └── instance.php     # application script for production
 ├── src
-│   └── {Skeleton}
+│   └── {Vendor.Application}
 │       ├── Annotation   # application annotation
 │       ├── App.php      # application class
 │       ├── Interceptor  # AOP interceptors
