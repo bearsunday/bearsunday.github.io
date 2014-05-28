@@ -50,18 +50,19 @@ $ bin/bear.create-resource apps/Demo.Sandbox/ page://self/greeting
 ```
 ## Try it out
 
-Let's create new application 'Hello' and see how does it works.
+Let's create new application 'My.Hello' and see how does it works.
 
 ```
 // create BEAR.Package framework files
 $ composer create-project bear/package ./bear
 $ cd bear/apps
 
-// create 'Hello' application files
+// create 'My.Hello' application files
 $ composer create-project bear/skeleton My.Hello
-$ cd Hello/var/www/
+$ cd ..
+
 // run built-in web server
 $ bin/bear.server apps/My.Hello
 ```
 
-Browse `http://0.0.0.0:8088` URL and see the message from BEAR.Sunday.
+Browse `http://0.0.0.0:8080` URL and see the message from BEAR.Sunday.
