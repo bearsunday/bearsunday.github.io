@@ -7,7 +7,7 @@ category: Blog Tutorial
 
 BEAR.Sunday is a resource orientated framework. The relevant information is grouped into a resource, given a URI and has a request interface so that it works with GET/POST requests.
 
-In terms of MVC the role of M and C component are taken care of in BEAR.Sunday each by a page resource which acts as a page resource, the model is carried by application (app) resource. These resources are basically mapped as 1 resource to one class, the class name including the namespace responding to a URI the request interface is described as a method.
+In terms of MVC the role of M and C component are taken care of in BEAR.Sunday each by a page resource which acts as a page controller, the model is carried by application (app) resource. These resources are basically mapped as 1 resource to one class, the class name including the namespace responding to a URI the request interface is described as a method.
 
 For example, page for browsing posts is set up as a posts view resource (page://self/blog/posts), the so called state application resource (app://self/posts) shows the article itself.  
 
@@ -21,7 +21,7 @@ It is implemented in this kind of example resource class.
 
 ```php
 <?php
-namespace Sandbox\Resource\App;
+namespace Sandbox\Resource\App\Blog;
 
 class Posts extends ResourceObject
 {
