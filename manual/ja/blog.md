@@ -1,20 +1,17 @@
 ---
 layout: default_ja
-title: BEAR.Sunday | Blog Tutorial Getting Started 
+title: BEAR.Sunday | ブログチュートリアル はじめに
 category:  Blog Tutorial
 ---
 
-# Getting Started 
+# はじめに
 
-In this tutorial we create a simple blog application in BEAR.Sunday that is similar to the
-[CakePHP Blog Tutorial](http://book.cakephp.org/2.0/en/tutorials-and-examples/blog/blog.html) or [Symfony2 Blog Tutorial](http://tutorial.symblog.co.uk/).
+このチュートリアルでは、[CakePHP Blog Tutorial](http://book.cakephp.org/2.0/en/tutorials-and-examples/blog/blog.html)や[Symfony2 Blog Tutorial](http://tutorial.symblog.co.uk/)とほぼ同じシンプルなブログアプリケーションをBEAR.Sundayで構築します。
 
-We will install BEAR.Sunday, perform the database settings, and create application logic to show a posts list page, add, edit and delete.
+BEAR.Sundayをインストールし、データベースの設定を行い、ブログの投稿記事の一覧表示、追加、編集、削除などのアプリケーションロジックを作成します。
 
-By studying this tutorial at the same time as getting basic grasp of the BEAR.Sunday development cycle you can also compare to how this might be done in CakePHP or Symfony.
+このチュートリアルを学ぶと、BEAR.Sundayを使った初歩的な開発サイクルを学べると同時に、CakePHPやSymfonyとの比較を行うこともできます。
 
-## Set-up Environment and Requirements  
+## 準備しておく環境や知識
 
-A working web server and database server. Examples are written for SQLite.
-Knowledge of object orientated programming, REST/HTTP is assumed.
-
+動作しているWebサーバとデータベースサーバ。SQLiteを使用する前提で書いてあります。オブジェクト指向プログラミング、REST/HTTPの知識を前提とします。
