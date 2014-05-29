@@ -1,49 +1,51 @@
 ---
 layout: default_ja
-title: BEAR.Sunday | Blog Tutorial(3) Creating an posts resource
+title: BEAR.Sunday | ブログチュートリアル(3) 記事リソースの作成
 category: Blog Tutorial
 ---
-# Resource Object 
+# リソースオブジェクト
 
-BEAR.Sunday is a resource orientated framework. The relevant information is grouped into a resource, given a URI and has a request interface so that it works with GET/POST requests.
+BEAR.Sundayはリソース指向のフレームワークです。意味のある情報のまとまりにリソースとしてURIが与えられ、GET/POSTリクエストに対応するリクエストインターフェイスを持ちます。
 
-In terms of MVC the role of M and C component are taken care of in BEAR.Sunday each by a page resource which acts as a page controller, the model is carried by application (app) resource. These resources are basically mapped as 1 resource to one class, the class name including the namespace responding to a URI the request interface is described as a method.
+MVCでいうとコントローラーやモデルというコンポーネントの役割は、BEAR.Sundayではそれぞれページコントローラーとしてのページリソース、モデルはアプリケーション（app）リソースです。 これらのリソースは１リソース＝１クラスにマップされます。リソースのURIは名前空間を含んだクラス名が対応し、リクエストインターフェイスはメソッドに対応します。
 
-For example, page for browsing posts is set up as a posts view resource (page://self/blog/posts), the so called state application resource (app://self/posts) shows the article itself.  
+例えば、記事を閲覧するページは記事表示リソース（page://self/blog/posts）、記事そのものを表すのはいわゆる状態アプリケーションリソース（app://self/blog/posts）です。
 
-## Post Resource 
+## 記事リソース
 
-The application resource so to speak is an application *internal* API. In MVC terms this would be as a model. This holds the internal database accessing or business logic and offers an application internal API to the page resource which has the role of a controller.
+アプリケーションリソースは、いわばアプリケーションの *内部* APIです。MVCでいうとモデルに当たります。内部にデータベースアクセスやビジネスロジックを持ち、コントローラーとしての役割を持つページリソースにアプリケーションの内部APIを提供します。
 
-In the post resource in order to browse posts we need to implement an `onGet` method that responds to a GET request.
+記事リソースでは閲覧のためにGETリクエストに対応する `onGet` メソッドを実装します。
 
-It is implemented in this kind of example resource class.
+このようなリソースクラスのひな形から実装してみましょう。
 
 ```php
 <?php
-namespace Sandbox\Resource\App\Blog;
+namespace Demo\Sandbox\Resource\App\Blog;
+
+use BEAR\Resource\ResourceObject;
 
 class Posts extends ResourceObject
 {
     public function onGet($id = null)
     {
-        $this->body = '_Data that has been read from a database_';
+        $this->body = '_DBから読み出したデータ_';
         return $this;
     }
 }
 ```
 
-The inside the method that corresponds to the request (request interface) data is assigned to the `body` property and `$this` is returned.
- 
- Note: Instead of setting the $body property you can just directly return data. In which case in the receiving side the equivalent of `return $this;` is returned.
+リクエストに応じたメソッド（リクエストインターフェイス）内ではデータを `body` プロパティにセットして `$this` を返します。
 
-## Resource Stub 
+ Note: $bodyプロパティにセットする代わりにデータを直接返すこともできます。その場合、受け取った側は `return $this;` が返された場合と同様です。
 
-* **You can skip this section to Implement the Request Interface** *
+## リソース・スタブ
 
-Before we call the `onGet` method, lets try using some dummy data in the resource. A resource that uses stub data (dummy data) is handy for prototyping or testing an application. The sandbox application runs in a custom `STUB mode` which is set when creating the application object.
+* **このセクションをスキップして「リクエストインターフェイス実装」へ進むことができます。** *
 
-`apps/Sandbox/bootstrap/context/api.php`(API access) and `apps/Sandbox/bootstrap/context/dev.php`(web access)
+`onGet` メソッドを呼び出すまえに、ダミーのデータでリソースを利用してみましょう。Stubデータ（ダミーデータ）を使ったリソースはアプリケーションのプロトタイピングやテスト等に便利です。Sandboxアプリケーションはアプリケーションオブジェクトを作成するときにセットされるとカスタムの `STUBモード` で実行されます。
+
+`apps/Demo.Sandbox/bootstrap/context/api.php`(API access) と `apps/Demo.Sandbox/bootstrap/context/dev.php`(web access)
 
 ```
 $context = 'stub';
@@ -51,12 +53,12 @@ $context = 'stub';
 
 Lets prepare some stub data.
 
-*apps/Sandbox/config/stub/resource.php*
+*apps/Demo.Sandbox/var/lib/stub/resource.php*
 
 ```php
 <?php
 return [
-    'Sandbox\Resource\App\Posts' =>
+    'Demo\Sandbox\Resource\App\Blog\Posts' =>
         [
             [
                 'id' => 0,
@@ -84,7 +86,7 @@ Lets check the app we resource we made through via the console.
 
 ```php
 <?php
-$ php apps/Sandbox/htdocs/api.php get app://self/posts
+$ php apps/Demo.Sandbox/bootstrap/contexts/api.php get app://self/blog/posts
 200 OK
 [BODY]
 0:array (namespace Sandbox\Resource\App\Blog;
@@ -111,12 +113,12 @@ $ php apps/Sandbox/htdocs/api.php get app://self/posts
 It has become clear what kind of request result you are looking for using dummy data.
 
 
-## Stub Module 
+## スタブ・モジュール
 
 The resource returns stub data by the resource method name being bound to the stub interceptor 
 and implemented through aspect orientated programming.
 
-*BEAR\Package\Module\Stub\StubModule.php*
+*src/Module/Stub/StubModule.php*
 
 ```php
 <?php
@@ -149,7 +151,7 @@ class StubModule extends AbstractModule
 }
 ```
 　
- Note:Even though the client intends to request a resource, in reality the stub data interceptor that is wedged (intercepted) between the client and the resource returns the dummy data.
+ Note: Even though the client intends to request a resource, in reality the stub data interceptor that is wedged (intercepted) between the client and the resource returns the dummy data.
 
 
 You can install StubModule from other module like belows..
@@ -159,18 +161,18 @@ You can install StubModule from other module like belows..
 $this->install(new StubModule($stubData));
 ```
 
-## Implement the Request Interface 
+## リクエストインターフェイス実装
 
 Next we will actually access a db and extract data to be used in an `onGet` method to respond to a GET request.
 
 BEAR.Sunday doesn't have its own database usage library or database abstraction library. Inside the application resource by using other libraries you can directly use SQL or using an ORM. Inside the sandbox application [http://www.doctrine-project.org/projects/dbal.html Docrine DBAL] is used.
 
-*Sandbox/Resource/App/Blog/Posts.php*
+*Demo.Sandbox/src/Resource/App/Blog/Posts.php*
 
 ```php
 <?php
 
-namespace Sandbox\Resource\App\Blog;
+namespace Demo\Sandbox\Resource\App\Blog;
 
 use BEAR\Package\Module\Database\Dbal\Setter\DbSetterTrait;
 use BEAR\Resource\ResourceObject;
@@ -253,7 +255,7 @@ class Posts extends ResourceObject
             //
             $lastId = $this->db->lastInsertId('id');
             $this->code = Code::CREATED;
-            $this->links['new_post'] # [Link::HREF => "app://self/posts/post?id{$lastId}"];
+            $this->links['new_post'] # [Link::HREF => "app://self/blog/posts/post?id{$lastId}"];
             $this->links['page_new_post'] # [Link::HREF => "page://self/blog/posts/post?id{$lastId}"];
             return $this;
         }
@@ -295,10 +297,10 @@ class Posts extends ResourceObject
 ```
 In the resource class a method that responds to therequest interface is provided. In this resource if an $id is specified 1 post and if not set all posts are returned;
 
-## Use the Resource from the Command Line 
+## コマンドラインからリソースの利用
 
-_Sandbox/Resource/App/Posts.php_
-The URI `app://self/posts` is given to the app resource specified in the `Sandbox/Resource/App/Posts` class.
+_Demo.Sandbox/src/Resource/App/Blog/Posts.php_
+The URI `app://self/blog/posts` is given to the app resource specified in the `Demo\Sandbox\Resource\App\Blog\Posts` class.
 
 Let's take a look at the resource we made from the command line. Lets first go back to the application mode.
 
@@ -352,38 +354,38 @@ By switching the mode the dummy data can be displayed anytime.
 A query specifying parameters.
 
 ```
-$ php apps/Sandbox/htdocs/api.php get 'app://self/posts?id=1'
+$ php apps/Demo.Sandbox/bootstrap/contexts/api.php get 'app://self/blog/posts?id=1'
 ```
 
 
-## Alias Settings 
+## aliasの設定
 
 It is handy to create an alias to the full path in your shell. 
 
 _~/.bash_profile_
 
 ```
-alias api='php /path/to/apps/Sandbox/htdocs/api.php'
-alias web='php /path/to/apps/Sandbox/htdocs/web.php'
+alias api='php /path/to/apps/Demo.Sandbox/bootstrap/contexts/api.php'
+alias web='php /path/to/apps/Demo.Sandbox/bootstrap/contexts/web.php'
 ```
 
 Using the resource API above you can make the following web request. This is then a simple notation and you can use resource using the console from any directory. This is handy when using scripts from the OS for batch processing and the like.
 
 ```
 // API access
-$ api get app://self/posts
+$ api get app://self/blog/posts
 
 // web access
-$ web get /posts
+$ web get /blog/posts
 ```
 
-## API Driven Development 
+## API駆動開発
 
 In this way in BEAR.Sunday internal API development is used as a base to create web applications. A resource functions as a service layer, a name(uri) is provided to access data resource or business logic which is bundled through a RESTful universal interface.
 
 We _do not_ create/provide a web application based external API interface, we build an application as an API collection on an internal resource API base. 
 
-## Runtime Injection 
+## ランタイムインジェクション
 
 Each time this app resource is accessed by a get request, the setDb() get previously called and the DB object is injected from outside. It is not configured for this class to use any DB object, please focus on the injected object that is being relied on. In a *GET* request a slave DB object can be injected and for the other *PUT*,*POST*,*DELETE* requests a master DB object.
 

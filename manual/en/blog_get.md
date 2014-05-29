@@ -9,7 +9,7 @@ BEAR.Sunday is a resource orientated framework. The relevant information is grou
 
 In terms of MVC the role of M and C component are taken care of in BEAR.Sunday each by a page resource which acts as a page controller, the model is carried by application (app) resource. These resources are basically mapped as 1 resource to one class, the class name including the namespace responding to a URI the request interface is described as a method.
 
-For example, page for browsing posts is set up as a posts view resource (page://self/blog/posts), the so called state application resource (app://self/posts) shows the article itself.  
+For example, page for browsing posts is set up as a posts view resource (page://self/blog/posts), the so called state application resource (app://self/blog/posts) shows the article itself.  
 
 ## Post Resource 
 
@@ -21,7 +21,9 @@ It is implemented in this kind of example resource class.
 
 ```php
 <?php
-namespace Sandbox\Resource\App\Blog;
+namespace Demo\Sandbox\Resource\App\Blog;
+
+use BEAR\Resource\ResourceObject;
 
 class Posts extends ResourceObject
 {
@@ -41,22 +43,22 @@ The inside the method that corresponds to the request (request interface) data i
 
 * **You can skip this section to Implement the Request Interface** *
 
-Before we call the `onGet` method, lets try using some dummy data in the resource. A resource that uses stub data (dummy data) is handy for prototyping or testing an application. The sandbox application runs in a custom `STUB mode` which is set when creating the application object.
+Before we call the `onGet` method, let's try using some dummy data in the resource. A resource that uses stub data (dummy data) is handy for prototyping or testing an application. The sandbox application runs in a custom `STUB mode` which is set when creating the application object.
 
-`apps/Sandbox/bootstrap/context/api.php`(API access) and `apps/Sandbox/bootstrap/context/dev.php`(web access)
+`apps/Demo.Sandbox/bootstrap/context/api.php`(API access) and `apps/Demo.Sandbox/bootstrap/context/dev.php`(web access)
 
 ```
 $context = 'stub';
 ```
 
-Lets prepare some stub data.
+Let's prepare some stub data.
 
-*apps/Sandbox/config/stub/resource.php*
+*apps/Demo.Sandbox/var/lib/stub/resource.php*
 
 ```php
 <?php
 return [
-    'Sandbox\Resource\App\Posts' =>
+    'Demo\Sandbox\Resource\App\Blog\Posts' =>
         [
             [
                 'id' => 0,
@@ -80,11 +82,11 @@ return [
 ];
 ```
 
-Lets check the app we resource we made through via the console.
+Let's check the app we resource we made through via the console.
 
 ```php
 <?php
-$ php apps/Sandbox/htdocs/api.php get app://self/posts
+$ php apps/Demo.Sandbox/bootstrap/contexts/api.php get app://self/blog/posts
 200 OK
 [BODY]
 0:array (namespace Sandbox\Resource\App\Blog;
@@ -116,7 +118,7 @@ It has become clear what kind of request result you are looking for using dummy 
 The resource returns stub data by the resource method name being bound to the stub interceptor 
 and implemented through aspect orientated programming.
 
-*BEAR\Package\Module\Stub\StubModule.php*
+*src/Module/Stub/StubModule.php*
 
 ```php
 <?php
@@ -149,7 +151,7 @@ class StubModule extends AbstractModule
 }
 ```
 　
- Note:Even though the client intends to request a resource, in reality the stub data interceptor that is wedged (intercepted) between the client and the resource returns the dummy data.
+ Note: Even though the client intends to request a resource, in reality the stub data interceptor that is wedged (intercepted) between the client and the resource returns the dummy data.
 
 
 You can install StubModule from other module like belows..
@@ -165,12 +167,12 @@ Next we will actually access a db and extract data to be used in an `onGet` meth
 
 BEAR.Sunday doesn't have its own database usage library or database abstraction library. Inside the application resource by using other libraries you can directly use SQL or using an ORM. Inside the sandbox application [http://www.doctrine-project.org/projects/dbal.html Docrine DBAL] is used.
 
-*Sandbox/Resource/App/Blog/Posts.php*
+*Demo.Sandbox/src/Resource/App/Blog/Posts.php*
 
 ```php
 <?php
 
-namespace Sandbox\Resource\App\Blog;
+namespace Demo\Sandbox\Resource\App\Blog;
 
 use BEAR\Package\Module\Database\Dbal\Setter\DbSetterTrait;
 use BEAR\Resource\ResourceObject;
@@ -253,7 +255,7 @@ class Posts extends ResourceObject
             //
             $lastId = $this->db->lastInsertId('id');
             $this->code = Code::CREATED;
-            $this->links['new_post'] # [Link::HREF => "app://self/posts/post?id{$lastId}"];
+            $this->links['new_post'] # [Link::HREF => "app://self/blog/posts/post?id{$lastId}"];
             $this->links['page_new_post'] # [Link::HREF => "page://self/blog/posts/post?id{$lastId}"];
             return $this;
         }
@@ -297,8 +299,8 @@ In the resource class a method that responds to therequest interface is provided
 
 ## Use the Resource from the Command Line 
 
-_Sandbox/Resource/App/Posts.php_
-The URI `app://self/posts` is given to the app resource specified in the `Sandbox/Resource/App/Posts` class.
+_Demo.Sandbox/src/Resource/App/Blog/Posts.php_
+The URI `app://self/blog/posts` is given to the app resource specified in the `Demo\Sandbox\Resource\App\Blog\Posts` class.
 
 Let's take a look at the resource we made from the command line. Lets first go back to the application mode.
 
@@ -352,7 +354,7 @@ By switching the mode the dummy data can be displayed anytime.
 A query specifying parameters.
 
 ```
-$ php apps/Sandbox/htdocs/api.php get 'app://self/posts?id=1'
+$ php apps/Demo.Sandbox/bootstrap/contexts/api.php get 'app://self/blog/posts?id=1'
 ```
 
 
@@ -363,18 +365,18 @@ It is handy to create an alias to the full path in your shell.
 _~/.bash_profile_
 
 ```
-alias api='php /path/to/apps/Sandbox/htdocs/api.php'
-alias web='php /path/to/apps/Sandbox/htdocs/web.php'
+alias api='php /path/to/apps/Demo.Sandbox/bootstrap/contexts/api.php'
+alias web='php /path/to/apps/Demo.Sandbox/bootstrap/contexts/web.php'
 ```
 
 Using the resource API above you can make the following web request. This is then a simple notation and you can use resource using the console from any directory. This is handy when using scripts from the OS for batch processing and the like.
 
 ```
 // API access
-$ api get app://self/posts
+$ api get app://self/blog/posts
 
 // web access
-$ web get /posts
+$ web get /blog/posts
 ```
 
 ## API Driven Development 
