@@ -1,200 +1,89 @@
 ---
 layout: default_ja
-title: BEAR.Sunday | Blog Tutorial(3) Creating an posts resource
+title: BEAR.Sunday | ブログチュートリアル(3) 記事リソースの作成
 category: Blog Tutorial
 ---
-# Resource Object 
+# リソースオブジェクト
 
-BEAR.Sunday is a resource orientated framework. The relevant information is grouped into a resource, given a URI and has a request interface so that it works with GET/POST requests.
+BEAR.Sundayはリソース指向のフレームワークです。意味のある情報のまとまりにリソースとしてURIが与えられ、GET/POSTリクエストに対応するリクエストインターフェイスを持ちます。
 
-In terms of MVC the role of M and C component are taken care of in BEAR.Sunday each by a page resource which acts as a page controller, the model is carried by application (app) resource. These resources are basically mapped as 1 resource to one class, the class name including the namespace responding to a URI the request interface is described as a method.
+MVCでいうとコントローラーやモデルというコンポーネントの役割は、BEAR.Sundayではそれぞれページコントローラーとしてのページリソース、モデルはアプリケーション（app）リソースです。 これらのリソースは１リソース＝１クラスにマップされます。リソースのURIは名前空間を含んだクラス名が対応し、リクエストインターフェイスはメソッドに対応します。
 
-For example, page for browsing posts is set up as a posts view resource (page://self/blog/posts), the so called state application resource (app://self/posts) shows the article itself.  
+例えば、記事を閲覧するページは記事表示リソース（page://self/blog/posts）、記事そのものを表すのはいわゆる状態アプリケーションリソース（app://self/blog/posts）です。
 
-## Post Resource 
+## 記事リソース
 
-The application resource so to speak is an application *internal* API. In MVC terms this would be as a model. This holds the internal database accessing or business logic and offers an application internal API to the page resource which has the role of a controller.
+アプリケーションリソースは、いわばアプリケーションの *内部* APIです。MVCでいうとモデルに当たります。内部にデータベースアクセスやビジネスロジックを持ち、コントローラーとしての役割を持つページリソースにアプリケーションの内部APIを提供します。
 
-In the post resource in order to browse posts we need to implement an `onGet` method that responds to a GET request.
+記事リソースでは閲覧のためにGETリクエストに対応する `onGet` メソッドを実装します。
 
-It is implemented in this kind of example resource class.
+このようなリソースクラスのひな形から実装してみましょう。
 
 ```php
 <?php
-namespace Sandbox\Resource\App\Blog;
+namespace Demo\Sandbox\Resource\App\Blog;
+
+use BEAR\Resource\ResourceObject;
 
 class Posts extends ResourceObject
 {
     public function onGet($id = null)
     {
-        $this->body = '_Data that has been read from a database_';
+        $this->body = '_DBから読み出したデータ_';
         return $this;
     }
 }
 ```
 
-The inside the method that corresponds to the request (request interface) data is assigned to the `body` property and `$this` is returned.
- 
- Note: Instead of setting the $body property you can just directly return data. In which case in the receiving side the equivalent of `return $this;` is returned.
+リクエストに応じたメソッド（リクエストインターフェイス）内ではデータを `body` プロパティにセットして `$this` を返します。
 
-## Resource Stub 
+ Note: $bodyプロパティにセットする代わりにデータを直接返すこともできます。その場合、受け取った側は `return $this;` が返された場合と同様です。
 
-* **You can skip this section to Implement the Request Interface** *
+## リクエストインターフェイス実装
 
-Before we call the `onGet` method, lets try using some dummy data in the resource. A resource that uses stub data (dummy data) is handy for prototyping or testing an application. The sandbox application runs in a custom `STUB mode` which is set when creating the application object.
+次は実際にDBをアクセスしてデータを取り出すGETリクエストに対する `onGet` メソッドを実装します。
 
-`apps/Sandbox/bootstrap/context/api.php`(API access) and `apps/Sandbox/bootstrap/context/dev.php`(web access)
+BEAR.Sundayは自身のデータベース利用ライブラリや抽象化ライブラリを持ちません。アプリケーションリソースクラス内で他のライブラリを使ってSQLを直接利用したり、ORMを使用したりします。Sandboxアプリケーションでは [Docrine DBAL](http://www.doctrine-project.org/projects/dbal.html) でSQLを記述します。
 
-```
-$context = 'stub';
-```
-
-Lets prepare some stub data.
-
-*apps/Sandbox/config/stub/resource.php*
-
-```php
-<?php
-return [
-    'Sandbox\Resource\App\Posts' =>
-        [
-            [
-                'id' => 0,
-                'title' => 'Alan Kay 1',
-                'body' => 'People who are really serious about software should make their own hardware.',
-                'created' => '2011-05-07 16:13:11'
-            ],
-            [
-                'id' => 1,
-                'title' => 'Alan Kay 2',
-                'body' => 'Perspective is worth 80 IQ points.',
-                'created' => '2011-05-07 16:13:22'
-            ],
-            [
-                'id' => 2,
-                'title' => 'Alan Kay 3',
-                'body' => 'The best way to predict the future is to invent it.',
-                'created' => '2011-05-07 16:13:33'
-            ]
-         ]
-];
-```
-
-Lets check the app we resource we made through via the console.
-
-```php
-<?php
-$ php apps/Sandbox/htdocs/api.php get app://self/posts
-200 OK
-[BODY]
-0:array (namespace Sandbox\Resource\App\Blog;
-
-  'id' => 0,
-  'title' => 'Alan Kay 1',
-  'body' => 'People who are really serious about software should make their own hardware.',
-  'created' => '2011-05-07 16:13:11',
-)
-1:array (
-  'id' => 1,
-  'title' => 'Alan Kay 2',
-  'body' => 'Perspective is worth 80 IQ points.',
-  'created' => '2011-05-07 16:13:22',
-)
-2:array (
-  'id' => 2,
-  'title' => 'Alan Kay 3',
-  'body' => 'The best way to predict the future is to invent it.',
-  'created' => '2011-05-07 16:13:33',
-)
-```
-
-It has become clear what kind of request result you are looking for using dummy data.
-
-
-## Stub Module 
-
-The resource returns stub data by the resource method name being bound to the stub interceptor 
-and implemented through aspect orientated programming.
-
-*BEAR\Package\Module\Stub\StubModule.php*
-
-```php
-<?php
-class StubModule extends AbstractModule
-{
-    /**
-     * @var array
-     */
-    private $stub;
-
-    /**
-     * @param array $stub
-     */
-    public function __construct(array $stub)
-    {
-        parent::__construct();
-        $this->stub = $stub;
-    }
-
-    protected function configure()
-    {
-        foreach ($this->stub as $class => $value) {
-            $this->bindInterceptor(
-                $this->matcher->subclassesOf($class),
-                $this->matcher->any(),
-                [new Stub($value)]
-            );
-        }
-    }
-}
-```
-　
- Note:Even though the client intends to request a resource, in reality the stub data interceptor that is wedged (intercepted) between the client and the resource returns the dummy data.
-
-
-You can install StubModule from other module like belows..
-
-```php
-<?php
-$this->install(new StubModule($stubData));
-```
-
-## Implement the Request Interface 
-
-Next we will actually access a db and extract data to be used in an `onGet` method to respond to a GET request.
-
-BEAR.Sunday doesn't have its own database usage library or database abstraction library. Inside the application resource by using other libraries you can directly use SQL or using an ORM. Inside the sandbox application [http://www.doctrine-project.org/projects/dbal.html Docrine DBAL] is used.
-
-*Sandbox/Resource/App/Blog/Posts.php*
+*Demo.Sandbox/src/Resource/App/Blog/Posts.php*
 
 ```php
 <?php
 
-namespace Sandbox\Resource\App\Blog;
+namespace Demo\Sandbox\Resource\App\Blog;
 
 use BEAR\Package\Module\Database\Dbal\Setter\DbSetterTrait;
+use BEAR\Resource\Header;
 use BEAR\Resource\ResourceObject;
-use BEAR\Resource\Link;
 use BEAR\Resource\Code;
+use BEAR\Resource\Annotation\Link;
 use PDO;
-
+use BEAR\Sunday\Annotation\Cache;
+use BEAR\Sunday\Annotation\CacheUpdate;
 use BEAR\Sunday\Annotation\Db;
 use BEAR\Sunday\Annotation\Time;
 use BEAR\Sunday\Annotation\Transactional;
-use BEAR\Sunday\Annotation\Cache;
-use BEAR\Sunday\Annotation\CacheUpdate;
 
 /**
  * @Db
  */
 class Posts extends ResourceObject
 {
-    use DbSetter;
+    use DbSetterTrait;
 
     /**
+     * Current time
+     *
      * @var string
      */
     public $time;
+
+    public $links = [
+        'page_post' => [Link::HREF => 'page://self/blog/posts/post'],
+        'page_item' => [Link::HREF => 'page://self/blog/posts/post{?id}', Link::TEMPLATED => true],
+        'page_edit' => [Link::HREF => 'page://self/blog/posts/edit{?id}', Link::TEMPLATED => true],
+        'page_delete' => [Link::HREF => 'page://self/blog/posts/post']
+    ];
 
     /**
      * @var string
@@ -202,19 +91,8 @@ class Posts extends ResourceObject
     protected $table = 'posts';
 
     /**
-     * @var array
-     */
-    public $links = [
-        'page_post' # > [Link::HREF > 'page://self/blog/posts/post'],
-        'page_item' # > [Link::HREF => 'page://self/blog/posts/post{?id}', Link::TEMPLATED > true],
-        'page_edit' # > [Link::HREF => 'page://self/blog/posts/edit{?id}', Link::TEMPLATED > true],
-        'page_delete' # > [Link::HREF => 'page://self/blog/posts?_method=delete{&id}', Link::TEMPLATED > true]
-    ];
-
-    /**
      * @param int $id
      *
-     * @return Posts
      * @Cache(100)
      */
     public function onGet($id = null)
@@ -223,47 +101,48 @@ class Posts extends ResourceObject
         if (is_null($id)) {
             $stmt = $this->db->query($sql);
             $this->body = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        } else {
-            $sql .# " WHERE id  :id";
-            $stmt = $this->db->prepare($sql);
-            $stmt->bindValue('id', $id);
-            $stmt->execute();
-            $this->body = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            return $this;
         }
+        $sql .= " WHERE id = :id";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindValue('id', $id);
+        $stmt->execute();
+        $this->body = $stmt->fetch(PDO::FETCH_ASSOC);
+
         return $this;
     }
 
-        /**
-         * @param string $title
-         * @param string $body
-         *
-         * @return Posts
-         * @Time
-         * @Transactional
-         * @CacheUpdate
-         */
-        public function onPost($title, $body)
-        {
-            $values = [
-                'title' => $title,
-                'body' => $body,
-                'created' => $this->time
-            ];
-            $this->db->insert($this->table, $values);
-            //
-            $lastId = $this->db->lastInsertId('id');
-            $this->code = Code::CREATED;
-            $this->links['new_post'] # [Link::HREF => "app://self/posts/post?id{$lastId}"];
-            $this->links['page_new_post'] # [Link::HREF => "page://self/blog/posts/post?id{$lastId}"];
-            return $this;
-        }
+    /**
+     * @param string $title
+     * @param string $body
+     *
+     * @Time
+     * @Transactional
+     * @CacheUpdate
+     */
+    public function onPost($title, $body)
+    {
+        $values = [
+            'title' => $title,
+            'body' => $body,
+            'created' => $this->time
+        ];
+        $this->db->insert($this->table, $values);
+        //
+        $lastId = $this->db->lastInsertId('id');
+        $this->code = Code::CREATED;
+        $this->headers[Header::LOCATION] = "app://self/posts/post?id={$lastId}";
+        $this->headers[Header::X_ID] = $lastId;
+
+        return $this;
+    }
 
     /**
      * @param int    $id
      * @param string $title
      * @param string $body
      *
-     * @return Posts
      * @Time
      * @CacheUpdate
      */
@@ -276,117 +155,141 @@ class Posts extends ResourceObject
         ];
         $this->db->update($this->table, $values, ['id' => $id]);
         $this->code = Code::NO_CONTENT;
+
         return $this;
     }
 
     /**
      * @param int $id
      *
-     * @return Posts
      * @CacheUpdate
      */
     public function onDelete($id)
     {
         $this->db->delete($this->table, ['id' => $id]);
         $this->code = Code::NO_CONTENT;
+
         return $this;
     }
 }
 ```
-In the resource class a method that responds to therequest interface is provided. In this resource if an $id is specified 1 post and if not set all posts are returned;
 
-## Use the Resource from the Command Line 
+リソースクラスではリソースのリクエストインターフェイスに対応するメソッドを記述します。この記事リソースでは$idが指定されると記事１つが、指定されないと記事全てを返しています。 
 
-_Sandbox/Resource/App/Posts.php_
-The URI `app://self/posts` is given to the app resource specified in the `Sandbox/Resource/App/Posts` class.
+## コマンドラインからリソースの利用
 
-Let's take a look at the resource we made from the command line. Lets first go back to the application mode.
+_Demo.Sandbox/src/Resource/App/Blog/Posts.php_
+The URI `app://self/blog/posts` is given to the app resource specified in the `Demo\Sandbox\Resource\App\Blog\Posts` class.
 
-public/api.php
-```
-$mode = 'Stub";
-$app = require '/path/to/script/instance.php';
-```
+作成したリソースはをコマンドラインからみてみましょう。
 
-Let's make the call from the console.
+コンソールで呼び出します。
 
 ```
-$ php api.php get app://self/blog/posts
+$ php apps/Demo.Sandbox/bootstrap/contexts/api.php get app://self/blog/posts
 
 200 OK
+tag: [3959571851]
+x-cache: ["{\"mode\":\"W\",\"date\":\"Thu, 29 May 2014 08:30:35 +0200\",\"life\":100}"]
+content-type: ["application\/hal+json; charset=UTF-8"]
+cache-control: ["no-cache"]
+date: ["Thu, 29 May 2014 06:30:35 GMT"]
 [BODY]
-array (
-  0 => 
-  array (
-    'id' => '1',
-    'title' => 'Title',
-    'body' => 'This is the article text',
-    'created' => '2011-07-01 22:30:25',
-    'modified' => NULL,
-  ),
-  1 => 
-  array (
-    'id' => '2',
-    'title' => 'This is a title',
-    'body' => 'here the text continues',
-    'created' => '2011-07-01 22:30:25',
-    'modified' => NULL,
-  ),
-  2 => 
-  array (
-    'id' => '3',
-    'title' => 'Title counter attck',
-    'body' => 'This is not really very interesting',
-    'created' => '2011-07-01 22:30:27',
-    'modified' => NULL,
-  ),
-)
+0 => array(
+  id 1,
+  title Perspective,
+  body Perspective is worth 80 IQ points.
+
+-- Alan Kay,
+  created 2013-10-14 17:40:49,
+  modified ,
+),
+1 => array(
+  id 2,
+  title Before it becomes normal,
+  body Quite a few people have to believe something is normal before it becomes normal - a sort of 'voting' situation. But once the threshold is reached, then everyone demands to do whatever it is.
+
+-- Alan Kay,
+  created 2013-10-14 17:41:13,
+  modified ,
+),
+2 => array(
+  id 3,
+  title Most software today,
+  body Most software today is very much like an Egyptian pyramid with millions of bricks piled on top of each other, with no structural integrity, but just done by brute force and thousands of slaves.
+
+-- Alan Kay,
+  created 2013-10-14 17:41:37,
+  modified ,
+),
+...
+[VIEW]
+{
+    "0": {
+        "id": "1",
+        "title": "Perspective",
+        "body": "Perspective is worth 80 IQ points.\r\n\r\n-- Alan Kay",
+        "created": "2013-10-14 17:40:49",
+        "modified": null
+    },
+    "1": {
+        "id": "2",
+        "title": "Before it becomes normal",
+        "body": "Quite a few people have to believe something is normal before it becomes normal - a sort of 'voting' situation. But once the threshold is reached, then everyone demands to do whatever it is.\r\n\r\n-- Alan Kay",
+        "created": "2013-10-14 17:41:13",
+        "modified": null
+    },
+    "2": {
+        "id": "3",
+        "title": "Most software today",
+        "body": "Most software today is very much like an Egyptian pyramid with millions of bricks piled on top of each other, with no structural integrity, but just done by brute force and thousands of slaves.\r\n\r\n-- Alan Kay",
+        "created": "2013-10-14 17:41:37",
+        "modified": null
+    },
+...
 ```
 
-We have got the same output as to when we called the stub mode.
+リクエスト結果ではリソースがどのような値を持つか `[BODY]` 、それがどのように表現されるか `[VIEW]' が表されてます。
 
-By switching the mode the dummy data can be displayed anytime.
+    Note: `self` は現在のアプリケーション尾リソースを意味します。BEAR.Sundayでは他のアプリケーションからリソースをリクエストしたり、アプリケーションを横断するリソースをセットアップしたり利用できます。
 
-    Note: `self` means a resource of the current application. In BEAR.Sunday it is possible to request a resource from another application or to set up and use resources that cross applications.
-
-A query specifying parameters.
+引き数はクエリーの形式で指定します。
 
 ```
-$ php apps/Sandbox/htdocs/api.php get 'app://self/posts?id=1'
+$ php apps/Demo.Sandbox/bootstrap/contexts/api.php get 'app://self/blog/posts?id=1'
 ```
 
+## aliasの設定
 
-## Alias Settings 
-
-It is handy to create an alias to the full path in your shell. 
+シェルスクリプトでaliasをフルパスで設定しておくと便利です。 
 
 _~/.bash_profile_
 
 ```
-alias api='php /path/to/apps/Sandbox/htdocs/api.php'
-alias web='php /path/to/apps/Sandbox/htdocs/web.php'
+alias api='php /path/to/apps/Demo.Sandbox/bootstrap/contexts/api.php'
+alias web='php /path/to/apps/Demo.Sandbox/bootstrap/contexts/dev.php'
 ```
 
-Using the resource API above you can make the following web request. This is then a simple notation and you can use resource using the console from any directory. This is handy when using scripts from the OS for batch processing and the like.
+上のリソースのAPIを使い、次のWebリクエストを発行できます。シンプルな表現でコンソールを使いどのディレクトリからでもリソースを利用できます。これは、バッチ処理などのためにOSからスクリプトを使う場合に便利です。
 
 ```
-// API access
-$ api get app://self/posts
+// APIアクセス
+$ api get app://self/blog/posts
 
-// web access
-$ web get /posts
+// Webアクセス
+$ web get /blog/posts
 ```
 
-## API Driven Development 
+## API駆動開発
 
-In this way in BEAR.Sunday internal API development is used as a base to create web applications. A resource functions as a service layer, a name(uri) is provided to access data resource or business logic which is bundled through a RESTful universal interface.
+このようにBEAR.Sundayでは内部のAPI開発がWebアプリケーション開発のベースとして使われます。リソースはサービスレイヤーとして機能し、誰もが使っているRESTfulインターフェイスを通じてバンドルされるデータリソースやビジネスロジックにアクセスするために名前（uri）が提供されます。
 
-We _do not_ create/provide a web application based external API interface, we build an application as an API collection on an internal resource API base. 
+われわれは外部APIインターフェイスをベースとしたWebアプリケーションを開発したり提供しません。内部リソースのAPIをベースとしたAPIの集合としてのアプリケーションを開発します。
 
-## Runtime Injection 
+## ランタイムインジェクション
 
-Each time this app resource is accessed by a get request, the setDb() get previously called and the DB object is injected from outside. It is not configured for this class to use any DB object, please focus on the injected object that is being relied on. In a *GET* request a slave DB object can be injected and for the other *PUT*,*POST*,*DELETE* requests a master DB object.
+GETリクエストによりこのアプリケーションリソースがアクセスされるたびに、DbSetterTraitのsetDb()は以前に呼ばれたDBオブジェクトを外部から注入されます。このクラスのためにどのDBオブジェクトが使われるかは構成されていませんが、注入されたオブジェクトを信頼することに注目してください。*GET* リクエストではスレーブDBオブジェクトが注入され、その他の *PUT*、*POST*、*DELETE* リクエストではマスターDBオブジェクトが注入されます。
 
-This is referred to as runtime injection. Binding between the particular method (in this case onGet) and the intercepter that is called before that method is executed (in this case DB object injector) are then acheived.
+これをランタイムインジェクションと呼びます。特定のメソッド（このケースではonGet）とそのメソッドが実行される前に呼び出されるインターセプター（このケースではDBオブジェクトインジェクター）のバインディングにより実現されています。
 
-This architecture of the DB object being injected at runtime is not a BEAR.Sunday fixed structure is is the work of `DotrineDbalModule` which you install in `AppModule`. In  `DotrineDbalModule` class methods annotated with *@Db* binds the DB injector, that DB injector looks at the request method, decides whether master or slave should be used and sets the DB object.
+ランタイムにDBオブジェクトが注入されるこのアーキテクチャーはBEAR.Sundayの固定した仕組みではなく、`AppModule` の中でインストールした `DotrineDbalModule` の仕事です。`DotrineDbalModule` クラスが *@Db* でアノテートされたメソッドをBDインジェクターにバインドし、DBインジェクターがリクエストメソッドを見て、マスターまたはスレーブを使うか決定し、DBオブジェクトをセットします。
