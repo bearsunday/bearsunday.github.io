@@ -18,6 +18,8 @@ MVCでいうとコントローラーやモデルというコンポーネント�
 
 このようなリソースクラスのひな形から実装してみましょう。
 
+*Demo.Sandbox/src/Resource/App/Blog/Posts.php*
+
 ```php
 <?php
 namespace Demo\Sandbox\Resource\App\Blog;
@@ -36,7 +38,7 @@ class Posts extends ResourceObject
 
 リクエストに応じたメソッド（リクエストインターフェイス）内ではデータを `body` プロパティにセットして `$this` を返します。
 
- Note: データを直接返すとクライアントには値が$bodyプロパティにセットされた`$this`が返ります。
+Note: データを直接返すとクライアントには値が$bodyプロパティにセットされた`$this`が返ります。
 
 ## リクエストインターフェイス実装
 
@@ -178,7 +180,8 @@ class Posts extends ResourceObject
 ## コマンドラインからリソースの利用
 
 _Demo.Sandbox/src/Resource/App/Blog/Posts.php_
-The URI `app://self/blog/posts` is given to the app resource specified in the `Demo\Sandbox\Resource\App\Blog\Posts` class.
+
+URI `app://self/blog/posts` は `Demo\Sandbox\Resource\App\Blog\Posts` クラスで指定されているアプリケーションリソースに対して与えられます。
 
 作成したリソースはをコマンドラインからみてみましょう。
 
@@ -250,7 +253,7 @@ date: ["Thu, 29 May 2014 06:30:35 GMT"]
 
 リソースがどのような値を持つか `[BODY]` 、それがどのように表現されるか `[VIEW]` が表されてます。
 
-    Note: `self` は現在のアプリケーションを意味します。BEAR.Sundayでは他のアプリケーションからリソースをリクエストしたり、アプリケーションを横断するリソースをセットアップしたり利用できます。
+Note: `self` は現在のアプリケーションを意味します。BEAR.Sundayでは他のアプリケーションからリソースをリクエストしたり、アプリケーションを横断するリソースをセットアップしたり利用できます。
 
 引き数はクエリーの形式で指定します。
 

@@ -19,6 +19,8 @@ In the post resource in order to browse posts we need to implement an `onGet` me
 
 It is implemented in this kind of example resource class.
 
+*Demo.Sandbox/src/Resource/App/Blog/Posts.php*
+
 ```php
 <?php
 namespace Demo\Sandbox\Resource\App\Blog;
@@ -37,7 +39,7 @@ class Posts extends ResourceObject
 
 The inside the method that corresponds to the request (request interface) data is assigned to the `body` property and `$this` is returned.
  
- Note: Instead of setting the $body property you can just directly return data. In which case in the receiving side the equivalent of `return $this;` is returned.
+Note: Instead of setting the $body property you can just directly return data. In which case in the receiving side the equivalent of `return $this;` is returned.
 
 ## Implement the Request Interface 
 
@@ -178,6 +180,7 @@ In the resource class a method that responds to the request interface is provide
 ## Use the Resource from the Command Line 
 
 _Demo.Sandbox/src/Resource/App/Blog/Posts.php_
+
 The URI `app://self/blog/posts` is given to the app resource specified in the `Demo\Sandbox\Resource\App\Blog\Posts` class.
 
 Let's take a look at the resource we made from the command line.
@@ -250,7 +253,7 @@ date: ["Thu, 29 May 2014 06:30:35 GMT"]
 
 The result of the request shows `[BODY]` what the resouce has, `[VIEW]` how the resouce represents.
 
-    Note: `self` means a resource of the current application. In BEAR.Sunday it is possible to request a resource from another application or to set up and use resources that cross applications.
+Note: `self` means a resource of the current application. In BEAR.Sunday it is possible to request a resource from another application or to set up and use resources that cross applications.
 
 A query specifying parameters.
 
