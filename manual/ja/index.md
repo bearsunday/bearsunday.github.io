@@ -1,36 +1,36 @@
 ---
 layout: default_ja
-title: BEAR.Sunday Manual
+title: BEAR.Sunday マニュアル
 category: Manual
 ---
 
-# BEAR.Sunday Manual
+# BEAR.Sunday マニュアル
 
 
-## Getting started
+## はじめに
 
- * [Introduction](/manual/en/introduction.html)
-   * What is BEAR.Sunday ?
-   * Package organization
+ * [イントロダクション](/manual/ja/introduction.html)
+   * BEAR.Sundayとは
+   * パッケージ構成
 
- * [Install](/manual/en/install.html)
-   * new application
-   * new resource
+ * [インストール](/manual/ja/install.html)
+   * 新しいアプリケーション
+   * 新しいリソース
 
-## Frameworks
+## フレームワーク
 
- * [Dependency Injection Framework](/manual/en/di.html)
- * [Aspect Oriented Framework](/manual/en/aop.html)
- * [REST - Hypermedia Framework](/manual/en/rest.html)
-   * [What's a REST ?](/manual/en/resource.html)
-   * [Resource Client](/manual/en/resource_client.html)
-   * [Resource Object](/manual/en/resource_object.html)
-   * [Resource Renderer](/manual/en/resource_renderer.html)
-   * [Resource Adapter](/manual/en/resource_adapter.html)
+ * [Dependency Injection フレームワーク](/manual/ja/di.html)
+ * [Aspect Oriented フレームワーク](/manual/ja/aop.html)
+ * [REST - ハイパーメディアフレームワーク](/manual/ja/rest.html)
+   * [RESTとは](/manual/ja/resource.html)
+   * [リソースクライアント](/manual/ja/resource_client.html)
+   * [リソースオブジェクト](/manual/ja/resource_object.html)
+   * [リソースレンダラー](/manual/ja/resource_renderer.html)
+   * [リソースアダプター](/manual/ja/resource_adapter.html)
 
-## Application
- * [Application Introduction](/manual/en/application.html)
- * [Application Script](/manual/en/application_script.html)
- * [Application Object](/manual/en/application_object.html)
- * [Application Instance Script](/manual/en/application_instance_script.html)
- 
+## アプリケーション
+
+ * [イントロダクション](/manual/ja/application.html)
+ * [アプリケーションスクリプト](/manual/ja/application_script.html)
+ * [アプリケーションオブジェクト](/manual/ja/application_object.html)
+ * [インスタンススクリプト](/manual/ja/application_instance_script.html)
