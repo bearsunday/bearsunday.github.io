@@ -1,6 +1,6 @@
 ---
 layout: default_ja
-title: BEAR.Sunday | Dependency Injection 
+title: BEAR.Sunday | Dependency Injection
 category: Manual
 ---
 
@@ -289,31 +289,3 @@ class AopMatcherModule extends AbstractModule
 }
 
 ```
-
-
-Best practice
--------------
-
-可能な限りインジェクターを直接使わないコードにします。その代わりアプリケーションのbootstrapで **ルートオブジェクト** をインジェクトするようにします。
-このルートオブジェクトのクラスは依存する他のオブジェクトのインジェクションに使われます。その先のオブジェクトも同じで、依存が依存を必要として最終的にオブジェクトグラフが作られます。
-
-Caching dependency-injected objects
------------------------------------
-
-インジェクト済みのキャッシュを保存して利用すればパフォーマンスは大きく向上します。
-**CacheInjector** はオブジェクトライフサイクルと自動生成されたアスペクトファイルのローディングも行います。
-`$initialization`クロージャにはアプリケーションがコンパイル時に一度しか行わない初期化処理を記述します。
-
-```php
-<?php
-$injector = function()  {
-    return Injector::create([new AppModule]);
-};
-$initialization = function() {
-    // initialize per system startup (not per each request)
-};
-$injector = new CacheInjector($injector, $initialization, 'cache-namespace', new ApcCache);
-$app = $injector->getInsntance('ApplicationInterface');
-$app->run();
-```
-

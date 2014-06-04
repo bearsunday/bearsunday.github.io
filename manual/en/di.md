@@ -1,6 +1,6 @@
 ---
 layout: default
-title: BEAR.Sunday | Dependency Injection 
+title: BEAR.Sunday | Dependency Injection
 category: Manual
 ---
 
@@ -247,22 +247,4 @@ protected function configure()
     $this->bind('DbInterface')->to('Db');
     $dbLogger = $this->requestInjection('DbLogger');
 }
-{% endhighlight %}
-
-Caching dependency-injected objects
------------------------------------
-
-Storing dependency-injected objects in a cache container has huge performance boosts.
-**CacheInjector** also handles *object life cycle* as well as auto loading of generated aspect weaved objects.
-
-{% highlight php %}<?php
-$injector = function()  {
-    return Injector::create([new AppModule]);
-};
-$initialization = function() {
-    // initialize per system startup (not per each request)
-};
-$injector = new CacheInjector($injector, $initialization, 'cache-namespace', new ApcCache);
-$app = $injector->getInsntance('ApplicationInterface');
-$app->run();
 {% endhighlight %}
