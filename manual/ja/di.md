@@ -5,7 +5,7 @@ category: Manual
 ---
 
 
-Dependency Injection framework
+Dependency Injection フレームワーク
 ==============================
 
 **Ray.Di**はGoogleのJava用DI framework [Guice]((http://code.google.com/p/google-guice/wiki/Motivation?tm=6)の主要な機能を持つアノテーションベースのDIフレームワークです。
@@ -19,10 +19,10 @@ Ray.Diは以下の特徴があります。
 
  * [JSR-250](http://en.wikipedia.org/wiki/JSR_250)のオブジェクトライフサイクル(`@PostConstruct`, `@PreDestroy`)のアノテーションをサポートしています。
  * [AOP Alliance](http://aopalliance.sourceforge.net/)に準拠したアスペクト指向プログラミングをサポートしています。
- * [Aura.Di](http://auraphp.github.com/Aura.Di )を拡張しています。
+ * [Aura.Di](http://auraphp.github.com/Aura.Di)を拡張しています。
  * [Doctrine.Commons](http://www.doctrine-project.org/projects/common)アノテーションを使用しています。
 
-Getting Stated
+概要
 --------------
 
 Ray.Diを使ったディペンデンシーインジェクション（[依存性の注入](http://ja.wikipedia.org/wiki/%E4%BE%9D%E5%AD%98%E6%80%A7%E3%81%AE%E6%B3%A8%E5%85%A5)）の一般的な例です。
@@ -53,7 +53,6 @@ class Lister
     }
 }
 
-
 class Module extends \Ray\Di\AbstractModule
 {
     public function configure()
@@ -61,6 +60,7 @@ class Module extends \Ray\Di\AbstractModule
         $this->bind('MovieApp\FinderInterface')->to('MovieApp\Finder');
     }
 }
+
 $injector = Injector::create([new Module]);
 $lister = $injector->getInstance('MovieApp\Lister');
 $works = ($lister->finder instanceof MovieApp\Finder);
@@ -68,13 +68,15 @@ echo(($works) ? 'It works!' : 'It DOES NOT work!');
 
 // It works!
 ```
-これは **Linked Bindings** という束縛（バインディング）です。. Linked bindings はインターフェイスとその実装クラスを束縛します。
 
-### Provider Bindings
+これは **Linked Bindings** という束縛（バインディング）です。 Linked bindings はインターフェイスとその実装クラスを束縛します。
+
+### Provider バインディング
 
 [Provider bindings](http://code.google.com/p/rayphp/wiki/ProviderBindings) はインターフェイスと実装クラスの`プロバイダー`を束縛します。
 
 シンプルでインスタンス（値）を返すだけの、Providerインターフェイスを実装したプロバイダークラスを作成します。
+
 ```php
 <?php
 use Ray\Di\ProviderInterface;
@@ -111,16 +113,15 @@ class DatabaseTransactionLogProvider implements Provider
     }
 }
 ```
-このように依存が必要なインスタンスには **Provider Bindings**を使います。
+
+このように依存が必要なインスタンスには **Provider Bindings** を使います。
 
 ```php
 <?php
 $this->bind('TransactionLogInterface')->toProvider('DatabaseTransactionLogProvider');
 ```
 
-
-
-### Named Binding
+### Named バインディング
 
 Rayには`@Named`という文字列で`名前`を指定できるビルトインアノテーションがあります。
 
@@ -145,7 +146,7 @@ protected function configure()
 }
 ```
 
-### Instance Bindings
+### Instance バインディング
 
 値を直接束縛することができます。依存のないオブジェクトや配列やスカラー値などの時だけ利用するようにします。
 
@@ -167,7 +168,7 @@ protected function configure()
 }
 ```
 
-### Constructor Binfings
+### Constructor バインディング
 
 外部のクラスなどで`@Inject`が使えない場合などに、任意のコンストラクタに型を束縛することができます。
 
@@ -190,7 +191,7 @@ protected function configure()
 }
 ```
 
-## Scopes
+## スコープ
 
 デフォルトでは、Rayは毎回新しいインスタンスを生成しますが、これはスコープの設定で変更することができます。
 
@@ -202,7 +203,7 @@ protected function configure()
 }
 ```
 
-## Object life cycle
+## オブジェクトのライフサイクル
 
 オブジェクトライフサイクルのアノテーションを使ってオブジェクトの初期化や、PHPの終了時に呼ばれるメソッドを指定する事ができます。
 
@@ -232,6 +233,12 @@ public function onShutdown()
     //....
 }
 ```
+
+## 自動インジェクション
+
+Ray.Diは`toInstance()`や`toProvider()`がインスタンスを渡した時に自動的にインジェクトします。
+またインジェクターが作られたときにそのインジェクターはモジュールにインジェクトされます。依存にはまた違う依存があり、順に辿って依存を解決します。
+
 ## Install
 
 モジュールは他のモジュールの束縛をインストールして使う事ができます。
@@ -248,13 +255,20 @@ protected function configure()
 }
 ```
 
-## Automatic Injection
+## モジュール内でのインジェクション
 
-Ray.Diは`toInstance()`や`toProvider()`がインスタンスを渡した時に自動的にインジェクトします。
-またインジェクターが作られたときにそのインジェクターはモジュールにインジェクトされます。依存にはまた違う依存があり、順に辿って依存を解決します。
+既存の束縛を使うモジュールの中でビルトインのインジェクターを利用できます。
 
+```php
+<?php
+protected function configure()
+{
+    $this->bind('DbInterface')->to('Db');
+    $dbLogger = $this->requestInjection('DbLogger');
+}
+```
 
-## Aspect Oriented Programing
+## アスペクト指向プログラミング
 
 Ray.Aopのアスペクト指向プログラミングが利用できます。インターセプターの束縛はより簡単になり、アスペクトの依存解決も行われます。
 
@@ -287,5 +301,4 @@ class AopMatcherModule extends AbstractModule
         );
     }
 }
-
 ```
