@@ -99,12 +99,12 @@ class DatabaseTransactionLogProvider implements Provider
     /**
      * @Inject
      */
-    public DatabaseTransactionLogProvider(ConnectionInterface $connection)
+    public function __construct(ConnectionInterface $connection)
     {
         $this->connection = $connection;
     }
 
-    public TransactionLog get()
+    public function get()
     {
         $transactionLog = new DatabaseTransactionLog;
         $transactionLog->setConnection($this->connection);
@@ -221,7 +221,7 @@ public function onInit()
 }
 ```
 
-このメソッドはPHPの **register_shutdown_function** 関数に要録されスクリプト処理が完了したとき、あるいは *exit()* がコールされたときに呼ばれます。
+このメソッドはPHPの **register_shutdown_function** 関数に登録されスクリプト処理が完了したとき、あるいは *exit()* がコールされたときに呼ばれます。
 
 ```php
 <?php

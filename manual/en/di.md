@@ -100,12 +100,12 @@ class DatabaseTransactionLogProvider implements Provider
     /**
      * @Inject
      */
-    public DatabaseTransactionLogProvider(ConnectionInterface $connection)
+    public function __construct(ConnectionInterface $connection)
     {
         $this->connection = $connection;
     }
 
-    public TransactionLog get()
+    public function get()
     {
         $transactionLog = new DatabaseTransactionLog;
         $transactionLog->setConnection($this->connection);
