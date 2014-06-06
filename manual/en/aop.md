@@ -157,7 +157,8 @@ $this->bindInterceptor(
 | bool startWith($prefix) | Matches whatever class/method begins with this string|
 
 For example when you specify the following method matching, methods that are named setXX are matched.
-```
+
+```php
 <?php
 $this->matcher->startWith('set')
 ```
@@ -172,6 +173,26 @@ The `MethodInvocation` main methods are as below.
 | void proceed() | Run the target method |
 | Reflectionmethod getMethod() | Retrieve the target method reflection |
 | Object getThis() | Retrieve the target object |
-| array getArguments() (| Retrieve the argument array  |
+| array getArguments() | Retrieve the argument array  |
 | array getAnnotations() | Retrieve the target methods annotations |
 
+## NamedArgs
+
+Arguments of method interceptors are ordered varibles like normal PHP function calls.
+You can change them to associative array which has variable names as keys and variable values as values.
+
+```php
+ public function onGet($userId)
+```
+
+You can use the variable `$userId` like this.
+
+```php
+use NamedArgsInject;
+
+public function invoke(MethodInvocation $invocation)
+{
+    $args = $this->namedArgs->get($invocation);
+    $userId = $args['userId'] // value of argument $userId
+    ...
+```
