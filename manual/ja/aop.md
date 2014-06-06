@@ -7,9 +7,9 @@ category: Manual
 Aspect Oriented Framework
 =========================
 
-**Ray.Aop** パッケージはメソッドインターセプションの機能を提供します。マッチするメソッドが実行される度に実行されるコードを記述する事ができます。トランザクション、セキュリティやログといった横断的な”アスペクト”に向いています。なぜならインターセプターが問題をオブジェクトというよりアスペクトに分けるからです。これらの用法はアスペクトオリエンティッドプログラム(AOP)と呼ばれます。
+**Ray.Aop** パッケージはメソッドインターセプションの機能を提供します。マッチするメソッドが実行される度に実行されるコードを記述する事ができます。トランザクション、セキュリティやログといった横断的な”アスペクト”に向いています。なぜならインターセプターが問題をオブジェクトというよりアスペクトに分けるからです。これらの用法はアスペクトオリエンティッドプログラム（AOP）と呼ばれます。
 
-[Matcher](http://koriym.github.io/Ray.Aop/api/interfaces/Ray_Aop_Matchable.html) は値を受け取ったり拒否したりするシンプルなインターフェイスです。例えばRay.Aopでは２つの **Matcher** が必要です:１つはどのクラスに適用するかを決め、もう一つはそのクラスのどのメソッドに適用するかを決めます。これらを簡単に利用するためのファクトリークラスがあります。
+[Matcher](http://koriym.github.io/Ray.Aop/api/interfaces/Ray_Aop_Matchable.html) は値を受け取ったり拒否したりするシンプルなインターフェイスです。例えばRay.Aopでは２つの **Matcher** が必要です。１つはどのクラスに適用するかを決め、もう１つはそのクラスのどのメソッドに適用するかを決めます。これらを簡単に利用するためのファクトリークラスがあります。
 
 [MethodInterceptors](http://koriym.github.io/Ray.Aop/api/interfaces/Ray_Aop_MethodInterceptor.html) はマッチしたメソッドが呼ばれる度に実行されます。呼び出しやメソッド、それらの引き数、インスタンスを調べる事ができます。横断的なロジックと委譲されたメソッドが実行されます。最後に返り値を調べて返します。インターセプターは沢山のメソッドに適用され沢山のコールを受け取るので、実装は効果的で透過的なものになります。
 
@@ -133,11 +133,12 @@ Limitations
 
 AOP Alliance
 ------------
-このメソッドインターセプターのAPIは[AOP Alliance](http://aopalliance.sourceforge.net/doc/org/aopalliance/intercept/MethodInterceptor.html)の実装です。
+このメソッドインターセプターのAPIは [AOP Alliance](http://aopalliance.sourceforge.net/doc/org/aopalliance/intercept/MethodInterceptor.html) の実装です。
 
 ## インターセプター
 
 インターセプターはメソッドの呼び出しに割り込んで、クラスの横断的処理を行います。インターセプターはinvokeメソッドを実装し、そのメソッド内でオリジナルのメソッドを呼び出す事で横断的処理を実現します。
+
 ```php
 <?php
 public function invoke(MethodInvocation $invocation);
@@ -168,15 +169,15 @@ class Logger implements MethodInterceptor
 このインターセプターにはインジェクトされたLogオブジェクトを使って、呼び出し引数とその結果をJSON形式でログに記録します。
 このロガーがバインドされたメソッドには何の変更もありませんがログ機能が追加されました。
 
-元のメソッドはロガーの更新、着脱に元のメソッドは無関心です。関心は元のメソッドが本来もつ**本質的関心時(core concern)** と、
-ログをとるというメソッドをまたいで適用される**横断的関心事(cross cutting concern)** に分離されています。
+元のメソッドはロガーの更新、着脱に元のメソッドは無関心です。関心は元のメソッドが本来もつ **本質的関心時（core concern）** と、
+ログをとるというメソッドをまたいで適用される **横断的関心事（cross cutting concern）** に分離されています。
 
 フレームワークで使用する場合にはドメインロジックとアプリケーションロジックに分かれてるともいえます。例えばドメインロジックは「ユーザーリソースのSQL操作」、
 アプリケーションロジックはそれをアプリケーションとして有効に利用するように「ログ」や「トランザクション」です。
 
 ロガーが使うログオブジェクトもインジェクトされ、ロガーはそのログオブジェクトの実装に依存することなく抽象（インターフェイス）に依存しています。
 
-## マッチャー・バインディング
+## マッチャーバインディング
 
 作成したインターセプターはメソッドにバインドすることで機能します。どのメソッドにバインドするかに利用するのがmatcher です。以下はログオブジェクトをインジェクトしたLoggerオブジェクトをBEAR\Resource\Objectを継承したクラスの'on'で始まる全てのメソッドに束縛します。
 
@@ -201,7 +202,7 @@ bindInterceptorは３つのパラメーターをとり、１つめがクラス�
 
 例えば以下をメソッドマッチで指定するとsetXXという名前のメソッドにマッチします。
 
-```
+```php
 <?php
 $this->matcher->startWith('set');
 ```
@@ -215,14 +216,13 @@ $this->matcher->startWith('set');
 | void proceed() | 対象メソッド実行  |
 | Reflectionmethod getMethod() | 対象メソッドリフレクションの取得 |
 | Object getThis() | 対象オブジェクトの取得  |
-| array getArguments() (| 呼び出し引数配列の取得  |
+| array getArguments() | 呼び出し引数配列の取得  |
 | array getAnnotations() | 対象メソッドのアノテーション取得 |
 
 ## 名前付き引数
 
 メソッドインターセプターの引数は通常のPHPのファンクション呼び出しと同じく順序による変数です。
 これを変数名をキーに、値を変数の値にした名前付き変数の連想配列に変換することができます。
-
 
 ```php
  public function onGet($userId)
@@ -236,6 +236,6 @@ use NamedArgsInject;
 public function invoke(MethodInvocation $invocation)
 {
     $args = $this->namedArgs->get($invocation);
-    $userId = $args['userId'] // 引数`$userId`の値
+    $userId = $args['userId'] // 引数$userIdの値
     ...
 ```
