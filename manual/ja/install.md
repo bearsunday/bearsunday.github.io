@@ -1,68 +1,72 @@
 ---
 layout: default_ja
-title: BEAR.Sunday | Installation
+title: BEAR.Sunday | インストール
 category: Manual
 ---
 
-# Installation 
+# インストール
 
 ```
 $ composer create-project bear/package {$PROJECT_PATH}
 ```
 
-## Prerequisites 
+## 必要要件
+
  * PHP 5.4+
 
-## Optional 
+## オプション
+
  * [APC](http://php.net/manual/ja/book.apc.php)
  * [APCu](http://pecl.php.net/package/APCu) (PHP5.5+)
  * [curl](http://php.net/manual/ja/book.curl.php)
- * Profiler　[xhprof](http://jp.php.net/manual/en/book.xhprof.php)
+ * Profiler [xhprof](http://jp.php.net/manual/en/book.xhprof.php)
  * Graph Visualization [graphviz](http://www.graphviz.org/)
 
-## Environment Check 
+## 環境確認
+
 ```
 $ php bin/env.php
 ```
 
 BEAR.Sunday application can be accessed via the web or CLI.
 
-### Sandbox application
+### Sandbox アプリケーション
+
 ```
 $ bin/bear.server apps/Demo.Sandbox
 ```
 
-Please see https://github.com/koriym/BEAR.package#buil-in-web-server-for-development.
+https://github.com/koriym/BEAR.package#buil-in-web-server-for-development をご覧ください。
 
-
-## Create New Application
+## 新しいアプリケーションの作成
 
 ```
 $ composer create-project bear/skeleton {$PACKAGE_DIR}/apps/{$Vendor.Application}
 $ composer create-project bear/skeleton {$PACKAGE_DIR}/apps/{$Vendor.Application} {$SKELETON_VERSION}
 ```
 
-## Create New Resource
+## 新しいリソースの作成
 
 ```
 $ bin/bear.create-resource apps/Demo.{$Vendor.Application} {$URI}
 $ bin/bear.create-resource apps/Demo.Sandbox/ page://self/greeting
 ```
-## Try it out
 
-Let's create new application 'My.Hello' and see how does it works.
+## 試してみましょう
+
+新しいアプリケーション 'My.Hello' を作成し、どのように動くか見てみましょう。
 
 ```
-// create BEAR.Package framework files
+// BEAR.Package フレームワークのファイルを作成
 $ composer create-project bear/package ./bear
 $ cd bear/apps
 
-// create 'My.Hello' application files
+// 'My.Hello' アプリケーションのファイルを作成
 $ composer create-project bear/skeleton My.Hello
 $ cd ..
 
-// run built-in web server
+// ビルトインWebサーバーを起動
 $ bin/bear.server apps/My.Hello
 ```
 
-Browse `http://0.0.0.0:8080` URL and see the message from BEAR.Sunday.
+ブラウザで `http://0.0.0.0:8080` にアクセスし、BEAR.Sundayからのメッセージを確認してください。
