@@ -21,7 +21,7 @@ It is implemented in this kind of example resource class.
 
 *Demo.Sandbox/src/Resource/App/Blog/Posts.php*
 
-```php
+{% highlight php startinline %}
 <?php
 namespace Demo\Sandbox\Resource\App\Blog;
 
@@ -35,7 +35,7 @@ class Posts extends ResourceObject
         return $this;
     }
 }
-```
+{% endhighlight %}
 
 The inside the method that corresponds to the request (request interface) data is assigned to the `body` property and `$this` is returned.
  
@@ -49,7 +49,7 @@ BEAR.Sunday doesn't have its own database usage library or database abstraction 
 
 *Demo.Sandbox/src/Resource/App/Blog/Posts.php*
 
-```php
+{% highlight php startinline %}
 <?php
 
 namespace Demo\Sandbox\Resource\App\Blog;
@@ -174,7 +174,7 @@ class Posts extends ResourceObject
         return $this;
     }
 }
-```
+{% endhighlight %}
 In the resource class a method that responds to the request interface is provided. In this resource if an $id is specified 1 post and if not set all posts are returned;
 
 ## Use the Resource from the Command Line 

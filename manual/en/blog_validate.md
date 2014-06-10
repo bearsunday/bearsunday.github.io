@@ -17,7 +17,7 @@ Next we will add to the POST interface validation, folder, pre populated fields 
 We will implement a form interceptor that doesn't depend on a specific library. First we will bind the form validation interceptor and the `@Form` annotation.
 
 *\BEAR\Sunday\Annotation\Form*
-```php
+{% highlight php startinline %}
 <?php
 namespace Sandbox\Annotation;
 
@@ -30,12 +30,12 @@ namespace Sandbox\Annotation;
 final class Form
 {
 }
-```
+{% endhighlight %}
 
 _\BEAR\Sunday\Annotation\Form
 Interceptor binding
 
-```php
+{% highlight php startinline %}
 <?php
     /**
      * @Form - bind form validator
@@ -48,7 +48,7 @@ Interceptor binding
             [new PostsFormValidator]
         );
     }
-```
+{% endhighlight %}
 
 In this case the `PostsFormValidator` is bound to methods annotated with `@Form`. Before the request calls the POST method this validation interceptor is called.
 
@@ -56,21 +56,21 @@ In this case the `PostsFormValidator` is bound to methods annotated with `@Form`
 
 In the interceptor that is　wedged between the request and the method, after the tag removal process is when the validation happens.
 
-```php
+{% highlight php startinline %}
 <?php
 return $invocation->proceed();
-```
+{% endhighlight %}
 
 If the validation fails then the *processing GET request page* that shows an error message and preset values etc is output. The POST interface method will not be called.
 
-```php
+{% highlight php startinline %}
 <?php
 return $page->onGet();
-```
+{% endhighlight %}
 
 When this is all wrapped up in the `PostsFormValidator` it looks like this.
 
-```php
+{% highlight php startinline %}
 <?php
 /**
  * Log Interceptor
@@ -125,7 +125,7 @@ class PostsFormValidator implements MethodInterceptor
     	return $page->onGet();
     }
 }
-```
+{% endhighlight %}
 
 [MethodInterceptor](https://github.com/koriym/Ray.Aop/blob/master/src/Ray/Aop/MethodInterceptor.php) which conforms to the [http://aopalliance.sourceforge.net/ AOP Alliance]. The `$invocation` object passed to the `invoke` method is as it suggests method invoking object of the `MethodInvocation` type.
 

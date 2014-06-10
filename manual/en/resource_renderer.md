@@ -18,21 +18,21 @@ When creating a Web API for example a `JsonRenderer` which renders JSON or a for
 
 In the `DevModule` which is used for development the resource renderer interface is bound to the `DevRenderer` for development use. By changing this binding you can change every resource to output JSON data for a Web API.
 
-```php
+{% highlight php startinline %}
 <?php
 $this->bind('BEAR\Resource\Renderable')->to('BEAR\Framework\Resource\View\DevRenderer');
-```
+{% endhighlight %}
 
 ## Rendering 
 The renderer grabs hold of the resource state as a `ResourceObject`, then uses the injected template engine to turn this into a string.
 
-```php
+{% highlight php startinline %}
 <?php
 public function render(ResourceObject $ro)
 {
  ....
  return $ro->body;
 }
-```
+{% endhighlight %}
 
  Note: It is set up so that the resource object does not directly setup the template inside the resource request method. The renderer which indirectly holds the state of the resource (eg: Failed Login), or even view template decides based on that which template is used. So that the model is not concerned by the view, we make sure that the resource does not know any details about the rendering.

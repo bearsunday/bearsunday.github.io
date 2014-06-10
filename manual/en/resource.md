@@ -75,15 +75,15 @@ This means that there is no state involved in the resource request.
 
 For example there is a state in the request when accessing a model object.
 
-```php
+{% highlight php startinline %}
 <?php
 $user = new User($id);
 $name = $user->getName(); // Follows the premise that there is state through the setting of $id
-```
+{% endhighlight %}
 
 In a resource request there is no state.
 
-```php
+{% highlight php startinline %}
 <?php
 $name = $resource
   ->get
@@ -92,7 +92,7 @@ $name = $resource
   ->eager
   ->request()
   ->body['name'];
-```
+{% endhighlight %}
 
 ### Link
 

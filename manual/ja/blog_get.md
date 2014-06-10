@@ -20,7 +20,7 @@ MVCでいうとコントローラーやモデルというコンポーネント�
 
 *Demo.Sandbox/src/Resource/App/Blog/Posts.php*
 
-```php
+{% highlight php startinline %}
 <?php
 namespace Demo\Sandbox\Resource\App\Blog;
 
@@ -34,7 +34,7 @@ class Posts extends ResourceObject
         return $this;
     }
 }
-```
+{% endhighlight %}
 
 リクエストに応じたメソッド（リクエストインターフェイス）内ではデータを `body` プロパティにセットして `$this` を返します。
 
@@ -48,7 +48,7 @@ BEAR.Sundayは自身のデータベース利用ライブラリや抽象化ライ
 
 *Demo.Sandbox/src/Resource/App/Blog/Posts.php*
 
-```php
+{% highlight php startinline %}
 <?php
 
 namespace Demo\Sandbox\Resource\App\Blog;
@@ -173,7 +173,7 @@ class Posts extends ResourceObject
         return $this;
     }
 }
-```
+{% endhighlight %}
 
 リソースクラスではリソースのリクエストインターフェイスに対応するメソッドを記述します。この記事リソースでは引き数として`$id`が指定されると記事１つ、指定されないと全ての記事を返します。
 
@@ -257,9 +257,9 @@ Note: `self` は現在のアプリケーションを意味します。BEAR.Sunda
 
 引き数はクエリーの形式で指定します。
 
-```php
+{% highlight php startinline %}
 $ php apps/Demo.Sandbox/bootstrap/contexts/api.php get 'app://self/blog/posts?id=1'
-```
+{% endhighlight %}
 
 ## aliasの設定
 

@@ -10,7 +10,7 @@ category: My First - Tutorial
 Lets use a resource directly from a view(PHP Script).
 When you directly use the greeting resource that we made before from HTML you do so like this.
 
-```php
+{% highlight php startinline %}
 <?php
 $app = require '{$APP_PATH}/bootstrap/instance.php';
 $message = $app
@@ -25,7 +25,7 @@ $message = $app
 <html>
     <body><?php echo $message;?></body>
 </html>
-```
+{% endhighlight %}
 
 This *Plain PHP Script* is open directly in the web document domain, the web client receives the request directly.
 

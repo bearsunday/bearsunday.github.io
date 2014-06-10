@@ -83,15 +83,15 @@ BEAR.SundayのリソースもHTTPのメソッドに準じたインターフェ�
 
 例えば以下のようなオブジェクトモデルに対するアクセスはリクエストに状態があります。
 
-```php
+{% highlight php startinline %}
 <?php
 $user = new User($id);
 $name = $user->getName(); // $idがセットされてる状態を前提にしている
-```
+{% endhighlight %}
 
 リソースリクエストには状態がありません。
 
-```php
+{% highlight php startinline %}
 <?php
 $name = $resource
   ->get
@@ -99,7 +99,7 @@ $name = $resource
   ->eager
   ->request(['id' => 1])
   ->body['name'];
-```
+{% endhighlight %}
 
 ### 接続性
 

@@ -38,13 +38,13 @@ The configuration that uses the module decides how the object is built, but does
 
 For example it is not recommended to look at the configuration to change behavior at runtime.
 
-```php
+{% highlight php startinline %}
 <?php
 // Not recommended
 if ($config['debug'] === true) {
     //For use in debugging
 }
-```
+{% endhighlight %}
 
 Instead *at compile time upon checking the configuration bind to an object with different behavior*.
 The compile completed object can process just the differences at runtime. So it isn't recommended to have code that assigns strings in every request.

@@ -31,13 +31,13 @@ configはオブジェクトがどのように構成されるかを決めるも�
 
 例えばランタイムでconfigを見て振る舞いを変更する事は推奨されません。
 
-```php
+{% highlight php startinline %}
 <?php
 // Not recommended
 if ($config['debug'] === true) {
     //For use in debugging
 }
-```
+{% endhighlight %}
 その代わりに コンパイル時にconfigを見てコンテキストによって違うオブジェクトを作ります。
 
 *Note: Fore example in the development screen there are tools that you can check the information about many objects, because the development renderer is bound to the rendering interface, the renderer does not check the application mode to change the rendering. The application mode is not a variable that changes runtime behavior when the application is executed, instead according to that mode an object is created.

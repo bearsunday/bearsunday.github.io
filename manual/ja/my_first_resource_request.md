@@ -23,7 +23,7 @@ In BEAR.Sunday the necessary services (object) fundamentally expects everything 
 In a resource request we need a resource client.
 Using the type hinted Resource client interface （`BEAR\Resource\ResourceInterface`） and mark using the`@Inject` annotation we can have it injected for us (external assignment).
 
-```php
+{% highlight php startinline %}
 <?php
 use BEAR\Resource\ResourceInterface;
 use Ray\Di\Di\Inject;
@@ -37,12 +37,12 @@ class User
     {
         $this->resource = $resource;
     }
-```
+{% endhighlight %}
 
 ## Using the Trait Setter 
 This setter can be used via a trait as in the example below.
 
-```php
+{% highlight php startinline %}
 <?php
 use BEAR\Sunday\Inject\ResourceInject;
 
@@ -50,13 +50,13 @@ class User
 {
     use ResourceInject;
 }
-```
+{% endhighlight %}
 
 ## GET Request
 
 A method that makes a resource request to an application resource with a URI `app://self/first/greeting` and appended query string '?name=$name' looks like this.
 
-```php
+{% highlight php startinline %}
 <?php
     /**
      * @param  string $name
@@ -71,7 +71,7 @@ A method that makes a resource request to an application resource with a URI `ap
         
         return $this;
     }
-```
+{% endhighlight %}
 
 Here we assign `request` to `greeting` slot, not a value. If we add `eager` clause,
 Then that request was evaluate and assign as value.

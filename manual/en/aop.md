@@ -22,7 +22,7 @@ To mark select methods as weekdays-only, we define an annotation.
 (Ray.Aop uses Doctrine Annotations)
 
 
-```php
+{% highlight php startinline %}
 <?php
 /**
  * NotOnWeekends
@@ -33,11 +33,11 @@ To mark select methods as weekdays-only, we define an annotation.
 final class NotOnWeekends
 {
 }
-```
+{% endhighlight %}
 
 ...and apply it to the methods that need to be intercepted:
 
-```php
+{% highlight php startinline %}
 <?php
 class RealBillingService
 {
@@ -46,11 +46,11 @@ class RealBillingService
      */
     chargeOrder(PizzaOrder $order, CreditCard $creditCard)
     {
-```
+{% endhighlight %}
 
 Next, we define the interceptor by implementing the org.aopalliance.intercept.MethodInterceptor interface. When we need to call through to the underlying method, we do so by calling $invocation->proceed():
 
-```php
+{% highlight php startinline %}
 <?php
 class WeekendBlocker implements MethodInterceptor
 {
@@ -65,10 +65,10 @@ class WeekendBlocker implements MethodInterceptor
         return $invocation->proceed();
     }
 }
-```
+{% endhighlight %}
 Finally, we configure everything. In this case we match any class, but only the methods with our @NotOnWeekends annotation:
 
-```php
+{% highlight php startinline %}
 <?php
 $this->bindInterceptor(
     $this->matcher->any(),                          // any class
@@ -77,7 +77,7 @@ $this->bindInterceptor(
 );
 
 
-```
+{% endhighlight %}
 Putting it all together, (and waiting until Saturday), we see the method is intercepted and our order is rejected:
 
 Limitations
@@ -99,14 +99,14 @@ The method interceptor API implemented by Ray.Aop is a part of a public specific
 
 The interceptor takes hold of the method being called and performs cross-cutting processing on it. The interceptor implements the ```invoke``` method, inside that method the original method is called and the cross-cutting operations are performed.
 
-```php
+{% highlight php startinline %}
 <?php
 public function invoke(MethodInvocation $invocation);
-```
+{% endhighlight %}
 
 Below is a logger interceptor which logs the the parameters from the operation output.
 
-```php
+{% highlight php startinline %}
 <?php
 class Logger implements MethodInterceptor
 {
@@ -124,7 +124,7 @@ class Logger implements MethodInterceptor
         return $result;
     }
 }
-```
+{% endhighlight %}
 
 In this interceptor it uses the injected Log object, the called parameters and the result are logged in JSON format. This interceptor is bound to all resources in the sandbox application's DEV mode allowing you to easily debug your app.
 
@@ -137,7 +137,7 @@ The primary concern of the original method is its *(core concern)*, this is comp
 
 The interceptor you made operates by being bound to the method. You use the *matcher* to decides what method it will be bound to. The object below binds all methods that begin with `on` in classes that inherit from `BEAR\Resource\ResourceObject` to the injected log object.
 
-```php
+{% highlight php startinline %}
 <?php
 $logger = $this->requestInjection('BEAR\Framework\Interceptor\Logger');
 $this->bindInterceptor(
@@ -145,7 +145,7 @@ $this->bindInterceptor(
     $this->matcher->startWith('on'),
     [$logger]
 );
-```
+{% endhighlight %}
 
 `bindInterceptor` takes 3 parameters, the first is a class match, the second is a method match and the 3rd in an interceptor.
 
@@ -158,10 +158,10 @@ $this->bindInterceptor(
 
 For example when you specify the following method matching, methods that are named setXX are matched.
 
-```php
+{% highlight php startinline %}
 <?php
 $this->matcher->startWith('set')
-```
+{% endhighlight %}
 
 ## MethodInvocation
 
@@ -181,13 +181,13 @@ The `MethodInvocation` main methods are as below.
 Arguments of method interceptors are ordered varibles like normal PHP function calls.
 You can change them to associative array which has variable names as keys and variable values as values.
 
-```php
+{% highlight php startinline %}
  public function onGet($userId)
-```
+{% endhighlight %}
 
 You can use the variable `$userId` like this.
 
-```php
+{% highlight php startinline %}
 use NamedArgsInject;
 
 public function invoke(MethodInvocation $invocation)
@@ -195,4 +195,4 @@ public function invoke(MethodInvocation $invocation)
     $args = $this->namedArgs->get($invocation);
     $userId = $args['userId'] // value of argument $userId
     ...
-```
+{% endhighlight %}

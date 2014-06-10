@@ -20,7 +20,7 @@ a page resource can also create an instance of a page resource.
 
 The greeting **Hello** is fixed in a static page.
 
-```php
+{% highlight php startinline %}
 <?php
 namespace Sandbox\Resource\Page\First;
 
@@ -40,7 +40,7 @@ class Greeting extends ResourceObject
         return $this;
     }
 }
-```
+{% endhighlight %}
 
 We store the string 'Hello.' in the page contents 'greeting' slot. 
 When the get request is called it does nothing but return itself.

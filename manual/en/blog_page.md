@@ -30,21 +30,21 @@ In the [Application resource app_resource] section we ran the application resour
 
 Through the `use` keyword descriptor we can use a trait as below, and then the resource client will be injected into the `$resource` property.
 
-```php
+{% highlight php startinline %}
 <?php
     use ResourceInject;
-```
+{% endhighlight %}
 
 In order to make a resource request using the injected resource client you do something like below.
 
-```php
+{% highlight php startinline %}
 <?php
 $this->resource->get->uri('app://self/posts')->request()
-```
+{% endhighlight %}
 
 When this is put together you can do the following.
 
-```php
+{% highlight php startinline %}
 
 <?php
 namespace Sandbox\Resource\Page\Blog;
@@ -73,7 +73,7 @@ class Posts extends Page
     }
 }
 
-```
+{% endhighlight %}
 A request to `app://self/posts` is made then is stored in the posts slot of the current resource.
 
   Note: $this['posts'] is some syntax sugar which is an abbreviation of $this->body['body'].
@@ -102,14 +102,14 @@ As the page resource plays the role of a page controller it also plays the role 
 
 Where the page resource it is annotated with `@Cache`, in the sandbox application a method annotated as such is bound to the cache interceptor.
 
-```php
+{% highlight php startinline %}
 <php
 use BEAR\Sunday\Annotation\Cache;
 
 /**
  * @Cache(30)
  */
-```
+{% endhighlight %}
 
   Note: For the cache FQN the `use` keyword descriptor is needed.
 

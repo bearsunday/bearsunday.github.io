@@ -10,38 +10,38 @@ category: My First - Tutorial
 
 Add the current time to the greeting resource. The final outcome is like this.
 
-```php
+{% highlight php startinline %}
 "Hello, BEAR. It is 10:22."
-```
+{% endhighlight %}
 
 Placing the time after the message like this example is an easy way of implementing this.
 
-```php
+{% highlight php startinline %}
 <?php
     public function onGet($name = 'anonymous')
     {
         $time = date('g:i');
         return "{$this->message}, {$name}". " It is {$time} now";
     }
-```
+{% endhighlight %}
 
 How about if you had to add the current time like this to another 10 resources? 
 Carry out on another 10 resources an 'Add the time info to the end of some message' process.  
 We need to do the same process over and over again so lets make it a method.
 
-```php
+{% highlight php startinline %}
 <?php
     public function onGet($name = 'anonymous')
     {
         return "{$this->message}, {$name}". timeMessage();
     }
-```
+{% endhighlight %}
 
 This brings consolidation and increases re-usability.
 
 But we could do the same using a trait.
 
-```php
+{% highlight php startinline %}
 <?php
     use TimeMessageTrait;
 
@@ -49,7 +49,7 @@ But we could do the same using a trait.
     {
         return "{$this->message}, {$name}". $this->getTimeMessage();
     }
-```
+{% endhighlight %}
 
 It is the same.
 
@@ -102,7 +102,7 @@ Lets first take the original methods crosscutting process, this is an intercepto
 
 First of all a crosscutting process interceptor that does nothing.
 
-```php
+{% highlight php startinline %}
 <?php
 class TimeMessage implements MethodInterceptor
 {
@@ -112,13 +112,13 @@ class TimeMessage implements MethodInterceptor
         return $result;
     }
 }
-```
+{% endhighlight %}
 
 Run the original method（`$invocation->proceed()`）, and return its response.
 
 Using `$invocation->proceed()` when we run the original method the time message is added at the end of it.
 
-```php
+{% highlight php startinline %}
 <?php
 public function invoke(MethodInvocation $invocation)
 {
@@ -126,7 +126,7 @@ public function invoke(MethodInvocation $invocation)
     $result = $invocation->proceed();
     return $result . " It is {$time} now";
 }
-```
+{% endhighlight %}
 
 ## Bind this interceptor to a specific method. 
 
@@ -137,7 +137,7 @@ Using annotations is the general way, not using them here can also be done easil
 
 Add this to the `configure` method in `sandbox/Module/AppModule.php`.
 
-```php
+{% highlight php startinline %}
 <?php
 // time message binding
 $this->bindInterceptor(
@@ -145,7 +145,7 @@ $this->bindInterceptor(
     $this->matcher->any(),                                                   // method match
     [new TimeMessage]
 );
-```
+{% endhighlight %}
 
 In this way the `TimeMessage` interceptor is bound to any method in the `'Sandbox\Resource\App\First\Greeting\Aop'` class or sub-class.
 
@@ -155,12 +155,12 @@ In this way the `TimeMessage` interceptor is bound to any method in the `'Sandbo
 get app://self/first/greeting/aop?name=BEAR
 ```
 
-```php
+{% highlight php startinline %}
 200 OK
 ...
 [BODY]
 "Hello, BEAR. It is 3:12 now !"
-```
+{% endhighlight %}
 
 We have now successfully bound our greeting resource to our aspect which states the time.
 The greeting resource is has no knowledge of the fact that it is being overridden.
