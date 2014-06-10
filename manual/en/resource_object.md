@@ -60,14 +60,14 @@ Example) Car speed resource
 
 Example) Car journey resource
 
-```php
+{% highlight php startinline %}
 [
  'speed' => 60,
  'passenger' => 1,
  'gear' => 4
  ...
 ]
-```
+{% endhighlight %}
 
 ## View 
 The view is something that 'expresses' the resource. For example a resource for tomorrows weather could be something like the following.
@@ -82,12 +82,12 @@ A resource can contain an interface that responds to the request. For example a 
 
 Example  a GET interface that responds to $id, $body, $title　as a query (parameters).
 
-```php
+{% highlight php startinline %}
 <?php
 public function onGet($id, $body, $title = 'untitled') 
 {
 }
-```
+{% endhighlight %}
 
 This is different to BEAR.Saturday which has the notation of a a regular PHP method. When using this you call it using named parameters the ordering is not important.
 
@@ -99,10 +99,10 @@ This is different to BEAR.Saturday which has the notation of a a regular PHP met
 
 The method that receives the request (Request Interface) can be change the resource status by means of a database, external web API or through business logic. (hence changing properties of the $body property, $headers or $code).
 
-```php
+{% highlight php startinline %}
 <?php
 return $this
-```
+{% endhighlight %}
 
  Note: If anything other than $this is returned, that will be used to populate $body and $this is returned.
  Example) return 3; is the same as $this->body = 3; return $this;

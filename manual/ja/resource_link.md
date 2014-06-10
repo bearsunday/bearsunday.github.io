@@ -18,7 +18,7 @@ The resource object contains a `links` property to which an array or a link obje
 
 For example the `sandbox top page resource` has link data to each page similar to the following.
 
-```php
+{% highlight php startinline %}
 use BEAR\Framework\Resource\Link;
 
 class Index extends Page
@@ -34,7 +34,7 @@ class Index extends Page
         'blog' # > [Link::HREF > 'page://self/blog/posts'],
         'restbucks' # > [Link::HREF > 'page://self/restbucks/index']
     ];
-```
+{% endhighlight %}
 
 The key shows the relationship (rel), the value shows the link URI. This connection data is used by the view template as follows.
 
@@ -53,7 +53,7 @@ When URI Templates are used the `templated` option is set to true. $rel` # > ['h
 
 `Blog Article Application Resources` will each be linked to the articles edit, delete etc page resources.
 
-```php
+{% highlight php startinline %}
     /**
      * Links
      *
@@ -64,21 +64,21 @@ When URI Templates are used the `templated` option is set to true. $rel` # > ['h
         'page_edit' # > [Link::HREF => 'page://self/blog/posts/edit{?id}', Link::TEMPLATED > true],
         'page_delete' # > [Link::HREF => 'page://self/blog/posts?_method=delete{&id}', Link::TEMPLATED > true]
     ];
-```
+{% endhighlight %}
 
 With this how is each `id` (Article ID) set?
 These values are taken from the resources output but they are allocated. For example if you take the following output `id=2` is assigned.
 
-```php
+{% highlight php startinline %}
     public function onGet($id = null)
     {
          return ['name' # > 'BEAR', 'id' > 2];
     }
-```
+{% endhighlight %}
 
 If you take the next DB query the value is the select's id column value.
 
-```php
+{% highlight php startinline %}
     public function onGet($id)
     {
         $sql = "SELECT id, title, body, created, modified FROM {$this->table}";
@@ -90,7 +90,7 @@ If you take the next DB query the value is the select's id column value.
         }
         return $this;
     }
-```
+{% endhighlight %}
 
 # Link Method 
 
@@ -98,7 +98,7 @@ Adding a linking method to the resource object. Using `on` + the links name beco
 
 For example in the following a `blog article`'s `coment resource` is connected with a link method.
 
-```php
+{% highlight php startinline %}
     public function onLinkComment(array $body)
     {
         $request = $this
@@ -111,7 +111,7 @@ For example in the following a `blog article`'s `coment resource` is connected w
 
         return $request;
     }
-```
+{% endhighlight %}
 
 Inside the link method the entity (the actual value) is returned, or like in this example the next resource link is returned.
 
@@ -119,7 +119,7 @@ Inside the link method the entity (the actual value) is returned, or like in thi
 
 The resource client  accesses link methods like this:
 
-```php
+{% highlight php startinline %}
 $blog = $this
     ->resource
     ->get
@@ -129,7 +129,7 @@ $blog = $this
     ->eager
     ->request()
     ->body;
-```
+{% endhighlight %}
 
 In this example the user with ID=1 retrieves a linked resource with the name `blog`.
 

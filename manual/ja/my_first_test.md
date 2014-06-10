@@ -23,7 +23,7 @@ Lets create the test file structure. In relation to the greeting file it will lo
 
 We will save the class as `apps/Sandbox/tests/Resource/App/First/GreetingTest.php`.
 
-```php
+{% highlight php startinline %}
 <?php
 namespace Sandbox\tests\Resource\App\Blog;
 
@@ -90,7 +90,7 @@ class GreetingTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('Hello, BEAR', $resource->body);
     }
 }
-```
+{% endhighlight %}
 
 ## Let's Run the Tests　
 
@@ -126,19 +126,19 @@ In `build/coverage/index.html` we can see the scope of the tests covered.
 ## Let's Look At The Test Code 
 
 ### setup() 
-```php
+{% highlight php startinline %}
 <?php
 $injector = Injector::create([new TestModule]);
 $app = $injector->getInstance('BEAR\Sunday\Extension\Application\AppInterface');
 $this->resource = $app->resource;
-```
+{% endhighlight %}
 
 We create an injector in the test class setup method, with that interceptor we grab the application object.
 In the test the application object uses the resource client stored in a property.
 
 ### resource()
 
-```php
+{% highlight php startinline %}
 <?php
 $this
     ->resource
@@ -148,7 +148,7 @@ $this
     ->eager
     ->request();
 
-```
+{% endhighlight %}
 We use the resource client inside the resource() method to access the resource.
 
 ### Other Test Methods 

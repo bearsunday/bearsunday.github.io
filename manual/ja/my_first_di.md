@@ -47,7 +47,7 @@ The constructor looks like this.
 In the constructor wanting external assignment(injection) we add the `@Inject` annotation.
 In which case in order to set the specified injection, we add the annotation `@Named` to the injection point.
 
-```php
+{% highlight php startinline %}
 <?php
     /**
      * Constructor
@@ -61,7 +61,7 @@ In which case in order to set the specified injection, we add the annotation `@N
     {
         $this->message = $message;
     }
-```
+{% endhighlight %}
 
 ### Lets try a bad injection execution  
 
@@ -93,7 +93,7 @@ A DI configuration is needed to be bound to the named `greeting_msg` method.
 We can add the following to the [{$APP_PATH}\Module\App\Dependency](https://github.com/koriym/BEAR.Package/blob/master/apps/Sandbox/src/Sandbox/Module/AppModule.php) or [{$APP}\Module\AppModule](https://github.com/koriym/BEAR.Package/blob/master/apps/Sandbox/src/Sandbox/Module/AppModule.php) configure method, which is good enough for our purposes.
 The DI configuration (Injector Config) takes place in the `configure` method of the module. 
 
-```php
+{% highlight php startinline %}
 <?php
 protected function configure()
 {
@@ -101,7 +101,7 @@ protected function configure()
     $this->bind()->annotatedWith('greeting_msg')->toInstance('Hola');
 }
 
-```
+{% endhighlight %}
 
 Here we pass 'Hola' into the method we annotated with `@Inject`and`@Named("greeting_msg")` (or even a contstructor).
 
@@ -109,7 +109,7 @@ Here we are directing an object (instance), but we can also can also set a class
 Using a factory is is possible to generate a more complex instance. * Even if you change the generation method, the retrieval descriptor method will not change. 
 
 
-```php
+{% highlight php startinline %}
 <?php
     /**
      * @Inject
@@ -119,7 +119,7 @@ Using a factory is is possible to generate a more complex instance. * Even if yo
     {
         $this->message = $message;
     }
-```
+{% endhighlight %}
 
 ## Let's Check 
 ```

@@ -9,7 +9,7 @@ category: Blog Tutorial
 
 So that you can delete a post that has is identified with an `id` from our posts page, we will create an `onDelete()` method in the posts page resource, this will respond to a DELETE request.
 
-```php
+{% highlight php startinline %}
 <?php
     /**
      * @param int $id
@@ -28,7 +28,7 @@ So that you can delete a post that has is identified with an `id` from our posts
         $this['message'] = 'Entry deleted.';
         return $this->onGet();
     }
-```
+{% endhighlight %}
 
 As a page resource receives a `DELETE` request from a web browser it in the same way makes a `DELETE` request to the posts resource.s
 
@@ -41,7 +41,7 @@ This link to the posts page resource will be available on the posts resource tem
 Receive a request post from a posts page and through accessing the DB delete the post. 
 
 
-```php
+{% highlight php startinline %}
 <?php
     public function onDelete($id)
     {
@@ -49,7 +49,7 @@ Receive a request post from a posts page and through accessing the DB delete the
         $this->code = 204;
         return $this;
     }
-```
+{% endhighlight %}
 
   Note: Like the GET request interface the `$this->db` is automatically set by the injector. What is different to the GET request is that it used the master DB connection.
 
@@ -67,7 +67,7 @@ $ php api.php delete app://self/posts?id=1
 
 If we access with DELETE the records should be reduced by 1. The test will look something like this.
 
-```php
+{% highlight php startinline %}
 <?php
     /**
      * @test
@@ -84,7 +84,7 @@ If we access with DELETE the records should be reduced by 1. The test will look 
         ->request();
         $this->assertEquals($before - 1, $this->getConnection()->getRowCount('posts'), "faild to delete post");
     }
-```
+{% endhighlight %}
 
 ## Javascript Confirmation Dialogue 
 

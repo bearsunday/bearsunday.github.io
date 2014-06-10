@@ -13,7 +13,7 @@ In order to change this flow directly edit the application script.
 
 Below is a production script for the `Sandbox` application.
 
-```php
+{% highlight php startinline %}
 <?php
 // Application instance with loader
 $context = 'prod';
@@ -49,7 +49,7 @@ ERROR: {
     require dirname(__DIR__) . "/http/{$code}.php";
     exit(1);
 }
-```
+{% endhighlight %}
 
 The application object is retrieved from the the application instance script. The application object holds all of the service objects and properties needed by the application script.
 
@@ -57,20 +57,20 @@ The application object is retrieved from the the application instance script. Th
 
 ### Retrieve the application instance
 
-```php
+{% highlight php startinline %}
 <?php
 $context = 'prod';
 $app = require dirname(__DIR__) . '/bootstrap/instance.php';
-```
+{% endhighlight %}
 Retrieve the application object from the application instance script. In this script the class loading settings are run.
 
 ### Dispatch
 
-```php
+{% highlight php startinline %}
 <?php
 // Dispatch
 list($method, $pagePath, $query) = $app->router->match($GLOBALS);
-```
+{% endhighlight %}
 The request method, URI and query for the resource are retrieved from the global variable.
 
 ### Page resource request and output 

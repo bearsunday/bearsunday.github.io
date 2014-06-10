@@ -30,19 +30,19 @@ When you order a coffee, the `REST API` is provided with the following.
 
 You use this `API` when ordering a drink. When using this API you create a (POST) `Order Resource`.
 
-```php
+{% highlight php startinline %}
 post http://restbucks.com/order/?drink=latte
-```
+{% endhighlight %}
 
 The order resource has been created and the order contents are returned.
 
-```php
+{% highlight php startinline %}
 {
     "drink": "latte",
     "cost": 2.5,
     "id": "5052",
 }
-```
+{% endhighlight %}
 
 This is *not hypermedia*. The data does not have any attached uniquely displayed URI's or related links.
 
@@ -55,7 +55,7 @@ is used to provide `JSON+HAL` hyper-media.
 
 In BEAR.Sunday when you set your resource rendering to `HalRenderer` you can output in HAL format.
 
-```php
+{% highlight php startinline %}
 {
     "drink": "latte",
     "cost": 2.5,
@@ -69,7 +69,7 @@ In BEAR.Sunday when you set your resource rendering to `HalRenderer` you can out
         }
     }
 }
-```
+{% endhighlight %}
 
 This is an order resource output in the `HAL` Format.
 The URI's and related link information for itself are embedded in the `_links` property.
@@ -83,27 +83,27 @@ By having links you transform your service from just another data format to a se
 
 You declare your resource object's `links` property like this.
 
-```php
+{% highlight php startinline %}
     public $links = [
         'news' # > [Link::HREF > 'page://self/news/today']
     ];
-```
+{% endhighlight %}
 
 ## Using a URI Template for your Query
 
 When the URI to dynamically decided you can for example you can create a query in the onPost method like this.
 
-```php
+{% highlight php startinline %}
 $this->links['friend'] # [Link::HREF => "app://self/sns/friend?id{$id}"];
-```
+{% endhighlight %}
 
 In the `links` property you can set the URI template like this.
 
-```php
+{% highlight php startinline %}
     public $links => [
         'friend' # > [Link::HREF => 'app://self/sns/friend{?id}', Link::TEMPLATED > true]
     ];
-```
+{% endhighlight %}
 
 Here the necessary variable `{id}` is retrieved from the resource `body`.
 
@@ -111,7 +111,7 @@ Here the necessary variable `{id}` is retrieved from the resource `body`.
 
 Here is the class that assigns `$item` and creates the order resource.
 
-```php
+{% highlight php startinline %}
 <?php
 namespace Sandbox\Resource\App\First\HyperMedia;
 
@@ -131,23 +131,23 @@ class Order extends AbstractObject
         return $this;
     }
 }
-```
+{% endhighlight %}
 
 In order to add hyperlinks setup the `links` property.
 
-```php
+{% highlight php startinline %}
     public $links = [
         'payment' # > [Link::HREF => 'app:/self/first/hypermedia/payment{?id}', Link::TEMPLATED > true]
     ];
-```
+{% endhighlight %}
 
 ## Make API Request From the Console
 
-```php
+{% highlight php startinline %}
 $ api get app://self/first/hypermedia/user?id=1
-```
+{% endhighlight %}
 
-```php
+{% highlight php startinline %}
 200 OK
 content-type: application/hal+json; charset=UTF-8
 [BODY]
@@ -164,7 +164,7 @@ content-type: application/hal+json; charset=UTF-8
         }
     }
 }
-```
+{% endhighlight %}
 
 The `payment` link now appears.
 
@@ -173,7 +173,7 @@ The `payment` link now appears.
 In order to use links in your code, inject the `A` object using the trait `AInject` and use the `href` method to retrieve links.
 The resource body can retrieve the link composed by the URI template.
 
-```php
+{% highlight php startinline %}
 <?php
 namespace Sandbox\Resource\App\First\HyperMedia;
 
@@ -209,6 +209,6 @@ class Shop extends ResourceObject
         return $this;
     }
 }
-```
+{% endhighlight %}
 Just like on a web page and you just click a link to go on to the next page, you are now able to control the next links in the service layer.
 Even when the links change there is no need for any change in the client.

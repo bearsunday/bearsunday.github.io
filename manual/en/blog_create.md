@@ -12,13 +12,13 @@ In steps up until now we have been able to show posts that have been saved in ou
 
 Adding a POST interface to allow you to add posts to a posts resource that only has a GET interface method.
 
-```php
+{% highlight php startinline %}
 <?php
 public function onPost($title, $body, $created = null, $modified = null)
 {
     return $this;
 }
-```
+{% endhighlight %}
 
 First let try a POST even in this bare state.
 
@@ -67,14 +67,14 @@ NULL
 A status 200 OK with contents NULL has been returned.
 There is no problem, however lets change this to use the *more* accurate 204(No Content) status code.
 
-```php
+{% highlight php startinline %}
 <?php
 public function onPost($title, $body, $created = null, $modified = null)
 {
     $this->code = 204;
     return $this;
 }
-```
+{% endhighlight %}
 
 In order to change the status code we set the `code` property.
 
@@ -88,7 +88,7 @@ NULL
 
 Implementing the POST interface.
 
-```php
+{% highlight php startinline %}
 <?php
 public function onPost($title, $body, $created = null, $modified = null)
 {
@@ -96,7 +96,7 @@ public function onPost($title, $body, $created = null, $modified = null)
     $this->code = 204;
     return $this;
 }
-```
+{% endhighlight %}
 
 The interface method which picks up the POST request inserts the post into the database. In this way we are able to add posts.
 
@@ -108,7 +108,7 @@ Please remember that the DB object is bound by the injecting interceptor to all 
 
 The post has been added, lets make a test to check the added content. When a resource unit test contains a DB test you write code like the following.
 
-```php
+{% highlight php startinline %}
 <?php
 class AppPostsTest extends \PHPUnit_Extensions_Database_TestCase
 {
@@ -156,7 +156,7 @@ class AppPostsTest extends \PHPUnit_Extensions_Database_TestCase
         $this->assertEquals('test_title', $body['title']);
         $this->assertEquals('test_body', $body['body']);
     }
-```
+{% endhighlight %}
 
 We test that the post has been created by the post post method, we then check those contents using the postData method.
 
@@ -166,7 +166,7 @@ We have created the app resource that adds a post, we will now create a page res
 
 Add a form to a template.
 
-```php
+{% highlight php startinline %}
 <?php
 <h1>New Post</h1>
 <form action="/blog/posts/newpost" method="POST">
@@ -185,7 +185,7 @@ Add a form to a template.
 	</div>
 	<input type="submit" value"Send">
 </form>
-```
+{% endhighlight %}
 
 Note: Notice the `X-HTTP-Method-Override` hidden field. This sets the page resource request method. Even if the browser or web server only supports GET/POST, in separation to the external protocol this functions as an internal software protocol.
 
@@ -193,7 +193,7 @@ Note: When specifying a `$_GET` query you set this with `$_GET['_method']`.
 
 Implementing the page resource POST interface.
 
-```php
+{% highlight php startinline %}
 <?php
     /**
      * Post
@@ -215,7 +215,7 @@ Implementing the page resource POST interface.
         $this->headers = ['Location' => '/blog/posts'];
         return $this;
     }
-```
+{% endhighlight %}
 
 Unlike with the GET interface with the `withQuery()` the parameters for the resource request are set. Note that unlike a regular PHP method there is no order values are set using named parameters. Like a web request it has been set up for the method request to be made with a `key=value` style query. (The key is the parameter name)
 

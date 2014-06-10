@@ -20,7 +20,7 @@ Example: Forbidding method calls on weekends
 
 週末だけにするための[アノテーション](http://docs.doctrine-project.org/projects/doctrine-common/en/latest/reference/annotations.html)を定義します。
 
-```php
+{% highlight php startinline %}
 <?php
 /**
  * NotOnWeekends
@@ -31,11 +31,11 @@ Example: Forbidding method calls on weekends
 final class NotOnWeekends
 {
 }
-```
+{% endhighlight %}
 
 インターセプトさせるメソッドに適用します。
 
-```php
+{% highlight php startinline %}
 <?php
 class RealBillingService
 {
@@ -44,11 +44,11 @@ class RealBillingService
      */
     chargeOrder(PizzaOrder $order, CreditCard $creditCard)
     {
-```
+{% endhighlight %}
 
 次に、MethodInterceptorインターフェイスを実装します。元のメソッドを実行するためには **$invocation->proceed()** と実行します。
 
-```php
+{% highlight php startinline %}
 <?php
 class WeekendBlocker implements MethodInterceptor
 {
@@ -63,11 +63,11 @@ class WeekendBlocker implements MethodInterceptor
         return $invocation->proceed();
     }
 }
-```
+{% endhighlight %}
 
 設定完了しました。このコードでは「どのクラスでも」「メソッドに@NotOnWeekendsアノテーション」という条件にマッチします。
 
-```php
+{% highlight php startinline %}
 <?php
 $bind = new Bind;
 $matcher = new Matcher(new Reader);
@@ -87,11 +87,11 @@ try {
     echo $e->getMessage() . "\n";
     exit(1);
 }
-```
+{% endhighlight %}
 
 全てをまとめ（土曜日まで待って）、メソッドをコールするとインターセプターにより拒否されます。
 
-```php
+{% highlight php startinline %}
 <?php
 RuntimeException: chargeOrder not allowed on weekends! in /apps/pizza/WeekendBlocker.php on line 14
 
@@ -101,12 +101,12 @@ Call Stack:
     0.0054     317608   3. Ray\Aop\Weaver->__call() /libs/Ray.Aop/src/Weaver.php:14
     0.0055     318384   4. Ray\Aop\ReflectiveMethodInvocation->proceed() /libs/Ray.Aop/src/Weaver.php:68
     0.0056     318784   5. Ray\Aop\Sample\WeekendBlocker->invoke() /libs/Ray.Aop/src/ReflectiveMethodInvocation.php:65
-```
+{% endhighlight %}
 
 Explicit method name match
 ---------------------------
 
-```php
+{% highlight php startinline %}
 <?php
 	$bind = new Bind;
 	$bind->bindInterceptors('chargeOrder', [new WeekendBlocker]);
@@ -119,7 +119,7 @@ Explicit method name match
 	   echo $e->getMessage() . "\n";
 	   exit(1);
 	}
-```
+{% endhighlight %}
 
 Limitations
 -----------
@@ -139,14 +139,14 @@ AOP Alliance
 
 インターセプターはメソッドの呼び出しに割り込んで、クラスの横断的処理を行います。インターセプターはinvokeメソッドを実装し、そのメソッド内でオリジナルのメソッドを呼び出す事で横断的処理を実現します。
 
-```php
+{% highlight php startinline %}
 <?php
 public function invoke(MethodInvocation $invocation);
-```
+{% endhighlight %}
 
 以下は受け取った引数と実行した出力をログに記録するロガーインターセプターです。
 
-```php
+{% highlight php startinline %}
 <?php
 class Logger implements MethodInterceptor
 {
@@ -164,7 +164,7 @@ class Logger implements MethodInterceptor
         return $result;
     }
 }
-```
+{% endhighlight %}
 
 このインターセプターにはインジェクトされたLogオブジェクトを使って、呼び出し引数とその結果をJSON形式でログに記録します。
 このロガーがバインドされたメソッドには何の変更もありませんがログ機能が追加されました。
@@ -181,7 +181,7 @@ class Logger implements MethodInterceptor
 
 作成したインターセプターはメソッドにバインドすることで機能します。どのメソッドにバインドするかに利用するのがmatcher です。以下はログオブジェクトをインジェクトしたLoggerオブジェクトをBEAR\Resource\Objectを継承したクラスの'on'で始まる全てのメソッドに束縛します。
 
-```php
+{% highlight php startinline %}
 <?php
 $logger = $this->requestInjection('BEAR\Framework\Interceptor\Logger');
 $this->bindInterceptor(
@@ -189,7 +189,7 @@ $this->bindInterceptor(
     $this->matcher->startWith('on'),
     [$logger]
 );
-```
+{% endhighlight %}
 
 bindInterceptorは３つのパラメーターをとり、１つめがクラスマッチ、２つ目がメソッドマッチ、３つ目がインターセプターです。
 
@@ -202,10 +202,10 @@ bindInterceptorは３つのパラメーターをとり、１つめがクラス�
 
 例えば以下をメソッドマッチで指定するとsetXXという名前のメソッドにマッチします。
 
-```php
+{% highlight php startinline %}
 <?php
 $this->matcher->startWith('set');
-```
+{% endhighlight %}
 
 ## MethodInvocation
 
@@ -224,13 +224,13 @@ $this->matcher->startWith('set');
 メソッドインターセプターの引数は通常のPHPのファンクション呼び出しと同じく順序による変数です。
 これを変数名をキーに、値を変数の値にした名前付き変数の連想配列に変換することができます。
 
-```php
+{% highlight php startinline %}
  public function onGet($userId)
-```
+{% endhighlight %}
 
 上記の`$userId`という変数はこのように利用します。
 
-```php
+{% highlight php startinline %}
 use NamedArgsInject;
 
 public function invoke(MethodInvocation $invocation)
@@ -238,4 +238,4 @@ public function invoke(MethodInvocation $invocation)
     $args = $this->namedArgs->get($invocation);
     $userId = $args['userId'] // 引数$userIdの値
     ...
-```
+{% endhighlight %}

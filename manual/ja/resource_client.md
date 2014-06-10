@@ -11,20 +11,20 @@ BEAR.Sunday makes requests to each type of resource using the resource client. I
 ## Preperation 
 In order to inject the resource client object in the class wanting to the use the resource client from the injector, the resource client setter method is used. Using a trait is handy.
 
-```php
+{% highlight php startinline %}
 <?php
 use BEAR\Sunday\Inject\ResourceInject;
 
 class Edit extends Page
 {
     use ResourceInject;
-```
+{% endhighlight %}
 
 With this the the resource client is assigned to the resource property, using `$this->resource` you can access the resource client.
 
 ## Request DSL 
 
-```php
+{% highlight php startinline %}
 <?php
 $this
     ->resource
@@ -33,7 +33,7 @@ $this
     ->withQuery(['id' => 1])
     ->eager
     ->request();
-```
+{% endhighlight %}
 
 In this example the resource *`app://self/blog/posts`* with request `?id=1` is immediately made (eager).
 
@@ -81,12 +81,12 @@ In a request query you can pass named parameters. These are not standard php ord
 
 A query set as ['id' => 1] will correspond with the following resource request method. Set the parameter names. Any ordering of them is ignored.
 
-```php
+{% highlight php startinline %}
 <?php
 public function onGet($id)
 {
 }
-```
+{% endhighlight %}
 
 A request object is an object that contains all of the needed logic for the request. This can also assign to templates and assess latency.
 
@@ -96,17 +96,17 @@ A resource request has `lazy` and `eager` options. Any request that is not assig
 
 #### Lazy Request 
 
-```php
+{% highlight php startinline %}
 <?php
 $this['posts'] = $this->resource->get->uri('app://self/posts')->request();
-```
+{% endhighlight %}
 
 #### Eager Request 
 
-```php
+{% highlight php startinline %}
 <?php
 $this['posts'] = $this->resource->get->uri('app://self/posts')->eager->request();
-```
+{% endhighlight %}
 
 The response of a resource request *with* eager is the result.
 The response of a request *with out* eager is a request class that implements the request interface (BEAR\Resource\Requestable）
@@ -136,11 +136,11 @@ The renderer is injected through dependency injection. You can change the render
 
 The resource does contain a specific method for rendering. When evaluated as as string and when a string is returned from as a result from the renderers rendering. Below is an example. 
 
-```php
+{% highlight php startinline %}
 <?php
 $userHtml = (string) $user; // Type conversion
 echo $user;
-```
+{% endhighlight %}
 
 ## Template Representation  
 

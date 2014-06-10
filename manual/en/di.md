@@ -23,7 +23,7 @@ Overview
 
 Here is a basic example of dependency injection using Ray.Di.
 
-```php
+{% highlight php startinline %}
 <?php
 use Ray\Di\Injector;
 use Ray\Di\AbstractModule;
@@ -63,7 +63,7 @@ $works = ($lister->finder instanceof MovieApp\Finder);
 echo(($works) ? 'It works!' : 'It DOES NOT work!');
 
 // It works!
-```
+{% endhighlight %}
 
 This is an example of **Linked Bindings**. Linked bindings map a type to its implementation.
 
@@ -71,14 +71,14 @@ This is an example of **Linked Bindings**. Linked bindings map a type to its imp
 
 [Provider bindings](http://code.google.com/p/rayphp/wiki/ProviderBindings) map a type to its provider.
 
-```php
+{% highlight php startinline %}
 <?php
 $this->bind('TransactionLogInterface')->toProvider('DatabaseTransactionLogProvider');
-```
+{% endhighlight %}
 
 The provider class implements Ray's Provider interface, which is a simple, general interface for supplying values:
 
-```php
+{% highlight php startinline %}
 <?php
 use Ray\Di\ProviderInterface;
 
@@ -86,12 +86,12 @@ interface ProviderInterface
 {
     public function get();
 }
-```
+{% endhighlight %}
 
 Our provider implementation class has dependencies of its own, which it receives via a contructor annotated with `@Inject`.
 It implements the Provider interface to define what's returned with complete type safety:
 
-```php
+{% highlight php startinline %}
 <?php
 class DatabaseTransactionLogProvider implements Provider
 {
@@ -113,20 +113,20 @@ class DatabaseTransactionLogProvider implements Provider
         return $transactionLog;
     }
 }
-```
+{% endhighlight %}
 
 Finally we bind to the provider using the `toProvider()` method:
 
-```php
+{% highlight php startinline %}
 <?php
 $this->bind('TransactionLogInterface')->toProvider('DatabaseTransactionLogProvider');
-```
+{% endhighlight %}
 
 ### Named Bindings
 
 Ray comes with a built-in binding annotation `@Named` that takes a string.
 
-```php
+{% highlight php startinline %}
 <?php
 /**
  *  @Inject
@@ -134,11 +134,11 @@ Ray comes with a built-in binding annotation `@Named` that takes a string.
  */
 public RealBillingService(CreditCardProcessor $processor)
 {
-```
+{% endhighlight %}
 
 To bind a specific name, pass that string using the `annotatedWith()` method.
 
-```php
+{% highlight php startinline %}
 <?php
 protected function configure()
 {
@@ -146,66 +146,66 @@ protected function configure()
         ->annotatedWith('Checkout')
         ->to('CheckoutCreditCardProcessor');
 }
-```
+{% endhighlight %}
 
 ### Instance Bindings
 
-```php
+{% highlight php startinline %}
 <?php
 protected function configure()
 {
     $this->bind('UserIntetrface')->toInstance(new User);
 }
-```
+{% endhighlight %}
 
 You can bind a type to an instance of that type. This is usually only useful for objects that don't have dependencies of their own, such as value objects:
 
-```php
+{% highlight php startinline %}
 <?php
 protected function configure()
 {
     $this->bind()->annotatedWith("login_id")->toInstance('bear');
 }
-```
+{% endhighlight %}
 
 ### Constructor Bindings
 
 Occasionally it's necessary to bind a type to an arbitrary constructor. This arises when the `@Inject` annotation cannot be applied to the target constructor. eg. when it is a third party class.
 
-```php
+{% highlight php startinline %}
 <?php
 class TransactionLog
 {
     public function __construct($db)
     {
      // ....
-```
+{% endhighlight %}
 
-```php
+{% highlight php startinline %}
 <?php
 protected function configure()
 {
     $this->bind('TransactionLog')->toConstructor(['db' => new Database]);
 }
-```
+{% endhighlight %}
 
 ## Scopes
 
 By default, Ray returns a new instance each time it supplies a value. This behaviour is configurable via scopes.
 
-```php
+{% highlight php startinline %}
 <?php
 protected function configure()
 {
     $this->bind('TransactionLog')->to('InMemoryTransactionLog')->in(Scope::SINGLETON);
 }
-```
+{% endhighlight %}
 
 ## Object life cycle
 
 `@PostConstruct` is used on methods that need to get executed after dependency injection has finalized to perform any extra initialization.
 
-```php
+{% highlight php startinline %}
 <?php
 /**
  * @PostConstruct
@@ -214,12 +214,12 @@ public function onInit()
 {
     //....
 }
-```
+{% endhighlight %}
 
 `@PreDestroy` is used on methods that are called after script execution finishes or exit() is called.
 This method is registered by using **register_shutdown_function**.
 
-```php
+{% highlight php startinline %}
 <?php
 /**
  * @PreDestroy
@@ -228,7 +228,7 @@ public function onShutdown()
 {
     //....
 }
-```
+{% endhighlight %}
 
 ## Automatic Injection
 
@@ -246,33 +246,33 @@ A module can install other modules to configure more bindings.
  * Earlier bindings have priority even if the same binding is made later.
  * The module can use an existing bindings by passing in `$this`. The bindings in that module have priority.
 
-```php
+{% highlight php startinline %}
 <?php
 protected function configure()
 {
     $this->install(new OtherModule);
     $this->install(new CustomiseModule($this);
 }
-```
+{% endhighlight %}
 
 ## Injection in the module
 
 You can use a built-in injector in the module which uses existing bindings.
 
-```php
+{% highlight php startinline %}
 <?php
 protected function configure()
 {
     $this->bind('DbInterface')->to('Db');
     $dbLogger = $this->requestInjection('DbLogger');
 }
-```
+{% endhighlight %}
 
 ## Aspect Oriented Programing
 
 You can use Aspect Oriented Programing of Ray.Aop. It makes binding interceptors easier, and also resolves aspect dependency.
 
-```php
+{% highlight php startinline %}
 <?php
 class TaxModule extends AbstractModule
 {
@@ -285,9 +285,9 @@ class TaxModule extends AbstractModule
         );
     }
 }
-```
+{% endhighlight %}
 
-```php
+{% highlight php startinline %}
 <?php
 class AopMatcherModule extends AbstractModule
 {
@@ -301,4 +301,4 @@ class AopMatcherModule extends AbstractModule
         );
     }
 }
-```
+{% endhighlight %}

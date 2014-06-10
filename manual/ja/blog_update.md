@@ -10,7 +10,7 @@ category: Blog Tutorial
 
 This is pretty much the same as posts create page. What is different is only that in the display (GET Request) is that the post data pre-populates the fields.
 
-```php
+{% highlight php startinline %}
 <?php
     /**
      * @param int $id
@@ -52,7 +52,7 @@ This is pretty much the same as posts create page. What is different is only tha
 
         return $this;
     }
-```
+{% endhighlight %}
 ## PUT Request
 
 In order to update the record we use the `PUT` interface.
