@@ -18,15 +18,15 @@ A page resource and application resource have the same configuration and have an
 
 The equivalent of an MVC controller in BEAR.Sunday is a page resource. The page receives the page request, requests the application resource and builds itself. The page is then handled as it is as an output object.
 
- Note: In BEAR.Sunday you can also use a router, however in this blog application we won't be using one.
+Note: In BEAR.Sunday you can also use a router, however in this blog application we won't be using one.
 
- Note: In a BEAR.Sunday site 1 page has 1 page resource class which conforms to the  [Page Controller](http://www.martinfowler.com/eaaCatalog/pageController.html) principle.
+Note: In a BEAR.Sunday site 1 page has 1 page resource class which conforms to the  [Page Controller](http://www.martinfowler.com/eaaCatalog/pageController.html) principle.
 
 ## Page Class 
 
 The role of this posts index page is to *retrieve through a GET request the application API's posts resource and assign them to the pages posts slot*.
 
-In the [Application resource app_resource] section we ran the application resource from the console, however when requesting a resource in PHP we need to use a resource client. The resource client can be injected by using a trait.
+In the [Application resource](blog_get.html) section we ran the application resource from the console, however when requesting a resource in PHP we need to use a resource client. The resource client can be injected by using a trait.
 
 Through the `use` keyword descriptor we can use a trait as below, and then the resource client will be injected into the `$resource` property.
 
@@ -45,7 +45,6 @@ $this->resource->get->uri('app://self/posts')->request()
 When this is put together you can do the following.
 
 {% highlight php startinline %}
-
 <?php
 namespace Sandbox\Resource\Page\Blog;
 
@@ -72,12 +71,12 @@ class Posts extends Page
         return $this;
     }
 }
-
 {% endhighlight %}
+
 A request to `app://self/posts` is made then is stored in the posts slot of the current resource.
 
-  Note: $this['posts'] is some syntax sugar which is an abbreviation of $this->body['body'].
-  Note: This is different to an MVC controller as you will notice there is no attention paid to output. There is no assignment of variables etc for a template.
+Note: $this['posts'] is some syntax sugar which is an abbreviation of $this->body['body'].
+Note: This is different to an MVC controller as you will notice there is no attention paid to output. There is no assignment of variables etc for a template.
 
 ## A Page as a Resource 
 
@@ -100,7 +99,7 @@ As the page resource plays the role of a page controller it also plays the role 
 
 ## Resource Cache 
 
-Where the page resource it is annotated with `@Cache`, in the sandbox application a method annotated as such is bound to the cache interceptor.
+Where the page resource it is annotated with `@Cache`, in the sandbox application a method annotated as such is bound to the cache interceptor. For example, if you want to cache it for 30 seconds, the code is like below.
 
 {% highlight php startinline %}
 <php
@@ -111,7 +110,7 @@ use BEAR\Sunday\Annotation\Cache;
  */
 {% endhighlight %}
 
-  Note: For the cache FQN the `use` keyword descriptor is needed.
+Note: For the cache FQN the `use` keyword descriptor is needed.
 
 ## Indefinite Caching 
 
@@ -119,6 +118,6 @@ In this page resource no cache time has been set, the resources GET request is c
 
 The page posts index page resource role is to request the posts resource and set them in posts. That role is not dependent on the request, is immutable and this assignment is cached.
 
-What is setting the page resource is not the request result instead it is the actual request itself. Even if the indefinite cache is configured with @Cache the cached posts resource is run reach time, the posts resource state is then reflected. (In this case the only cost saved by `@Cache` is merely creating the request inside the `OnGet()` method)
+What is setting the page resource is not the request result instead it is the actual request itself. Even if the indefinite cache is configured with @Cache the cached posts resource is run reach time, the posts resource state is then reflected. (In this case the only cost saved by `@Cache` is merely creating the request inside the `OnGet()` method.)
 
 In other words the cache is cutting out the cost of building up the request.
