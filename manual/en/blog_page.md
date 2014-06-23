@@ -74,6 +74,7 @@ class Posts extends Page
 A request to `app://self/posts` is made then is stored in the posts slot of the current resource.
 
 Note: $this['posts'] is some syntax sugar which is an abbreviation of $this->body['body'].
+
 Note: This is different to an MVC controller as you will notice there is no attention paid to output. There is no assignment of variables etc for a template.
 
 ## A Page as a Resource 
@@ -81,7 +82,7 @@ Note: This is different to an MVC controller as you will notice there is no atte
 So just like an application resource lets access the page resource from the console.
 
 ```
-$ php api.php get page://self/blog/posts
+$ php apps/Demo.Sandbox/bootstrap/contexts/api.php get page://self/blog/posts
 
 200 OK
 ...
