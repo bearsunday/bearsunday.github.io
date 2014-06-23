@@ -37,20 +37,20 @@ use ResourceInject;
 インジェクトされたリソースクライアントを使ってリソースリクエストを行うにはこのようにします。
 
 {% highlight php startinline %}
-$this->resource->get->uri('app://self/posts')->request()
+$this->resource->get->uri('app://self/blog/posts')->request()
 {% endhighlight %}
 
 まとめるとこうなります。
 
 {% highlight php startinline %}
 <?php
-namespace Sandbox\Resource\Page\Blog;
+namespace Demo\Sandbox\Resource\Page\Blog;
 
-use BEAR\Resource\AbstractObject as Page;
+use BEAR\Resource\ResourceObject;
 use BEAR\Sunday\Inject\ResourceInject;
-use BEAR\Sunday\Annotation;
+use BEAR\Sunday\Annotation\Cache;
 
-class Posts extends Page
+class Posts extends ResourceObject
 {
     use ResourceInject;
 
@@ -65,7 +65,7 @@ class Posts extends Page
      */
     public function onGet()
     {
-        $this['posts'] = $this->resource->get->uri('app://self/posts')->request();
+        $this['posts'] = $this->resource->get->uri('app://self/blog/posts')->request();
         return $this;
     }
 }
@@ -73,7 +73,7 @@ class Posts extends Page
 
 `app://self/posts` リソースへのリクエストを自らのpostsというスロットに格納しています。
 
-Note: $this['posts'] は $this->body['body'] の省略した書き方のシンタックスシュガー（＝読み書きのしやすさのために導入される構文）です。
+Note: $this['posts'] は $this->body['posts'] の省略した書き方のシンタックスシュガー（＝読み書きのしやすさのために導入される構文）です。
 
 Note: MVCのコントローラーと違って、出力に関心が払われてないのに注目してみてください。テンプレートファイルの指定や、テンプレートに対しての変数のアサイン等がありません。
 
@@ -86,13 +86,12 @@ $ php apps/Demo.Sandbox/bootstrap/contexts/api.php get page://self/blog/posts
 
 200 OK
 ...
-\[BODY]
-{
-    "posts": {
+[BODY]
+posts => Demo_Sandbox_Resource_App_Blog_Posts_76b99d827d509b164e02c644e3749f54RayAop(
 ...
 ```
 
-postsというスロットに *get app://self/posts* というリクエスト結果が格納されてます。
+postsというスロットに *get app://self/blog/posts* というリクエスト結果が格納されてます。
 
 ページリソースはページコントローラーの役割をするとともに出力用のオブジェクトの役割も果たしています。しかしどのように表現されるかにはまだ関心が払われていません。
 
