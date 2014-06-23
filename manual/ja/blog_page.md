@@ -1,51 +1,48 @@
 ---
 layout: default_ja
-title: BEAR.Sunday | Blog Tutorial(4) Creating an index page
+title: BEAR.Sunday | ブログチュートリアル(4) 記事表示ページの作成
 category: Blog Tutorial
 ---
-# Page Resource 
+# ページリソース
 
-## Creating a Page 
+## ページの作成
 
-When creating a new page in BEAR.Sunday you normally make the following.
+BEAR.Sundayで新しくページを作成する場合、通常次の２つを作成します。
 
- * Page resource class
- * Page resource template
+ * ページリソースクラス
+ * ページリソーステンプレート
 
-A page resource and application resource have the same configuration and have an interface. An application resource in its default state does not contain anything so we need to inject the DB object using dependency injection, we also need to inject dependencies into the page resource.
+ページリソースもアプリケーションリソースと同じ構成、インターフェイスを持ちます。アプリケーションリソースが標準の状態では何も持たず必要なDBオブジェクトをDIでインジェクトしたように、ページリソースも依存をインジェクトして使用します。
 
-## Page Controller 
+## ページコントローラー
 
-The equivalent of an MVC controller in BEAR.Sunday is a page resource. The page receives the page request, requests the application resource and builds itself. The page is then handled as it is as an output object.
+MVCのコントローラにあたる部分はBEARではページリソースです。ページはWebのリクエストを受け取り、アプリケーションリソースをリクエストして、自らを構成します。ページはそのまま出力用のオブジェクトとしても扱われます。
 
- Note: In BEAR.Sunday you can also use a router, however in this blog application we won't be using one.
+Note: BEAR.Sundayではルーターも利用できますが、このブログアプリでは利用しません。
 
- Note: In a BEAR.Sunday site 1 page has 1 page resource class which conforms to the  [Page Controller](http://www.martinfowler.com/eaaCatalog/pageController.html) principle.
+Note: BEAR.Sundayではサイトの１ページが１ページリソースクラスに相当し [Page Controller](http://www.martinfowler.com/eaaCatalog/pageController.html) の働きをします。
 
-## Page Class 
+## ページクラス
 
-The role of this posts index page is to *retrieve through a GET request the application API's posts resource and assign them to the pages posts slot*.
+この記事表示ページの役割は「アプリケーションAPIの記事リソースをGETリクエストで取得してページのpostsスロットにアサインする」ということです。
 
-In the [Application resource app_resource] section we ran the application resource from the console, however when requesting a resource in PHP we need to use a resource client. The resource client can be injected by using a trait.
+[アプリケーションリソース](blog_get.html) のセクションではコンソールからアプリケーションリソースを実行しましたが、PHPでリソースをリクエストするにはリソースクライアントを使います。リソースクライントはtraitでインジェクトすることが出来ます。
 
-Through the `use` keyword descriptor we can use a trait as below, and then the resource client will be injected into the `$resource` property.
+traitを使用する `use` 文で次のように記述するとリソースクライアントが `$resource` プロパティにインジェクトされます。
 
 {% highlight php startinline %}
-<?php
-    use ResourceInject;
+use ResourceInject;
 {% endhighlight %}
 
-In order to make a resource request using the injected resource client you do something like below.
+インジェクトされたリソースクライアントを使ってリソースリクエストを行うにはこのようにします。
 
 {% highlight php startinline %}
-<?php
 $this->resource->get->uri('app://self/posts')->request()
 {% endhighlight %}
 
-When this is put together you can do the following.
+まとめるとこうなります。
 
 {% highlight php startinline %}
-
 <?php
 namespace Sandbox\Resource\Page\Blog;
 
@@ -56,7 +53,7 @@ use BEAR\Sunday\Annotation;
 class Posts extends Page
 {
     use ResourceInject;
-	
+
     public $body = [
         'posts' => ''
     ];
@@ -72,16 +69,16 @@ class Posts extends Page
         return $this;
     }
 }
-
 {% endhighlight %}
-A request to `app://self/posts` is made then is stored in the posts slot of the current resource.
 
-  Note: $this['posts'] is some syntax sugar which is an abbreviation of $this->body['body'].
-  Note: This is different to an MVC controller as you will notice there is no attention paid to output. There is no assignment of variables etc for a template.
+`app://self/posts` リソースへのリクエストを自らのpostsというスロットに格納しています。
 
-## A Page as a Resource 
+Note: $this['posts'] は $this->body['body'] の省略した書き方のシンタックスシュガー（＝読み書きのしやすさのために導入される構文）です。
+Note: MVCのコントローラーと違って、出力に関心が払われてないのに注目してみてください。テンプレートファイルの指定や、テンプレートに対しての変数のアサイン等がありません。
 
-So just like an application resource lets access the page resource from the console.
+## リソースとしてのページ
+
+それではページリソースをアプリケーションリソースと同じようにコンソールからアクセスしてみましょう。
 
 ```
 $ php api.php get page://self/blog/posts
@@ -94,16 +91,15 @@ $ php api.php get page://self/blog/posts
 ...
 ```
 
-In the posts slot the result of request *get app://self/posts* is assigned.  
+postsというスロットに *get app://self/posts* というリクエスト結果が格納されてます。
 
-As the page resource plays the role of a page controller it also plays the role of an output object. Although pays no attention to how it is displayed.
+ページリソースはページコントローラーの役割をするとともに出力用のオブジェクトの役割も果たしています。しかしどのように表現されるかにはまだ関心が払われていません。
 
-## Resource Cache 
+## リソースキャッシュ
 
-Where the page resource it is annotated with `@Cache`, in the sandbox application a method annotated as such is bound to the cache interceptor.
+ページリソースには `@Cache` とアノテートされていて、sandboxアプリケーションではこのアノテーションを持つメソッドにはキャシュインターセプターがバインドされています。例えば30秒間リソースをキャッシュしたいならこのように表記します。
 
 {% highlight php startinline %}
-<php
 use BEAR\Sunday\Annotation\Cache;
 
 /**
@@ -111,14 +107,14 @@ use BEAR\Sunday\Annotation\Cache;
  */
 {% endhighlight %}
 
-  Note: For the cache FQN the `use` keyword descriptor is needed.
+Note: CacheのFQNのために `use` 文が必要です。
 
-## Indefinite Caching 
+## 無期限キャッシュ
 
-In this page resource no cache time has been set, the resources GET request is cached indefinitely and the onGet method is only run once the first time. So even if posts are added or deleted will the displayed page not change?
+このページリソースには時間が指定されていないので、リソースのGETリクエストは無期限にキャッシュされonGetメソッドが実行されるのは最初の一回のみです。それでは記事が追加されたり削除されてもこの記事表示ページは変更されないのでしょうか？
 
-The page posts index page resource role is to request the posts resource and set them in posts. That role is not dependent on the request, is immutable and this assignment is cached.
+この記事表示ページリソースの役割は、記事リソースをリクエストしてpostsにセットすることです。その役割はリクエストによらず不変でこの役割がキャッシュされます。
 
-What is setting the page resource is not the request result instead it is the actual request itself. Even if the indefinite cache is configured with @Cache the cached posts resource is run reach time, the posts resource state is then reflected. (In this case the only cost saved by `@Cache` is merely creating the request inside the `OnGet()` method)
+ページリソースにセットしているのはリクエストの結果ではなくて、リクエストそのものです。@Cacheで無期限のキャッシュを指定してもキャッシュされた記事リソースリクエストは毎回実行され、記事リソースのリソース状態は反映されます（この場合、@CacheでセーブされるのはOnGet()メソッド内でリクエストを作るわずかなコストだけです）。
 
-In other words the cache is cutting out the cost of building up the request.
+つまりこのキャッシュでカットしているのはリソースリクエストを組み立てるコストです。
