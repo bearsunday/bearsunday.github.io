@@ -74,6 +74,7 @@ class Posts extends Page
 `app://self/posts` リソースへのリクエストを自らのpostsというスロットに格納しています。
 
 Note: $this['posts'] は $this->body['body'] の省略した書き方のシンタックスシュガー（＝読み書きのしやすさのために導入される構文）です。
+
 Note: MVCのコントローラーと違って、出力に関心が払われてないのに注目してみてください。テンプレートファイルの指定や、テンプレートに対しての変数のアサイン等がありません。
 
 ## リソースとしてのページ
@@ -81,7 +82,7 @@ Note: MVCのコントローラーと違って、出力に関心が払われて�
 それではページリソースをアプリケーションリソースと同じようにコンソールからアクセスしてみましょう。
 
 ```
-$ php api.php get page://self/blog/posts
+$ php apps/Demo.Sandbox/bootstrap/contexts/api.php get page://self/blog/posts
 
 200 OK
 ...
