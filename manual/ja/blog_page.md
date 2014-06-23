@@ -31,14 +31,12 @@ Note: BEAR.Sundayではサイトの１ページが１ページリソースクラ
 traitを使用する `use` 文で次のように記述するとリソースクライアントが `$resource` プロパティにインジェクトされます。
 
 {% highlight php startinline %}
-<?php
-    use ResourceInject;
+use ResourceInject;
 {% endhighlight %}
 
 インジェクトされたリソースクライアントを使ってリソースリクエストを行うにはこのようにします。
 
 {% highlight php startinline %}
-<?php
 $this->resource->get->uri('app://self/posts')->request()
 {% endhighlight %}
 
@@ -55,7 +53,7 @@ use BEAR\Sunday\Annotation;
 class Posts extends Page
 {
     use ResourceInject;
-	
+
     public $body = [
         'posts' => ''
     ];
@@ -102,7 +100,6 @@ postsというスロットに *get app://self/posts* というリクエスト結
 ページリソースには `@Cache` とアノテートされていて、sandboxアプリケーションではこのアノテーションを持つメソッドにはキャシュインターセプターがバインドされています。例えば30秒間リソースをキャッシュしたいならこのように表記します。
 
 {% highlight php startinline %}
-<php
 use BEAR\Sunday\Annotation\Cache;
 
 /**

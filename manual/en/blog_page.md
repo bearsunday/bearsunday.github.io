@@ -31,14 +31,12 @@ In the [Application resource](blog_get.html) section we ran the application reso
 Through the `use` keyword descriptor we can use a trait as below, and then the resource client will be injected into the `$resource` property.
 
 {% highlight php startinline %}
-<?php
-    use ResourceInject;
+use ResourceInject;
 {% endhighlight %}
 
 In order to make a resource request using the injected resource client you do something like below.
 
 {% highlight php startinline %}
-<?php
 $this->resource->get->uri('app://self/posts')->request()
 {% endhighlight %}
 
@@ -55,7 +53,7 @@ use BEAR\Sunday\Annotation;
 class Posts extends Page
 {
     use ResourceInject;
-	
+
     public $body = [
         'posts' => ''
     ];
@@ -102,7 +100,6 @@ As the page resource plays the role of a page controller it also plays the role 
 Where the page resource it is annotated with `@Cache`, in the sandbox application a method annotated as such is bound to the cache interceptor. For example, if you want to cache it for 30 seconds, the code is like below.
 
 {% highlight php startinline %}
-<php
 use BEAR\Sunday\Annotation\Cache;
 
 /**
