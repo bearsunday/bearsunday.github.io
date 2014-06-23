@@ -1,25 +1,22 @@
 ---
 layout: default_ja
-title: BEAR.Sunday | Blog Tutorial(5) Creating templates
+title: BEAR.Sunday | ブログチュートリアル(5) テンプレートの作成
 category: Blog Tutorial
 ---
 
-# Resource Rendering 
+# リソースレンダリング
 
-Blog Tutorial(5) Creating templates 
+## リソース状態を表現するリソースレンダラー
 
-## Resource Renderer Displaying the Resource State 
+前回までのステップで記事リソースには記事情報が、ページリソースには記事リソースへのリクエストがセットされました。これらの *リソース状態* を *表現* にするためにHTMLレンダリングします。
 
-In the steps up until last time in the posts resource the posts data was set in the page resource by a request to the posts resource. In order to *display* this *resource state* we need to use some HTML rendering.
+リソースはそれぞれが内部にレンダラーを持っています。Sandboxアプリケーションでは、HTML出力するための Smarty 3 テンプレートエンジンが全てのリソースにインジェクトされています。
 
-A resource each internally contain their own renderer. In the sandbox application in order to output HTML a Smarty 3 template engine is injected into all of the resources.
+Note: コントローラがモデルから取得したデータをテンプレートエンジンに渡して出力用文字列を得るのではなく、BEAR.Sundayでは全てのリソースがビュー用レンダラーを内包しています。モデルの出力の責任はそれぞれのリソースが持ちます。
 
-  Note: A controller does not retrieve data from the model and pass strings for output to a template engine. In BEAR.Sunday all resources include an view renderer. The responsibility for the output of the model is held by each of the resources themselves.
+## 記事リソーステンプレート
 
-## Posts Resource Template
-
-*Sandbox/Resource/App/Posts.tpl*
-
+*Demo.Sandbox/src/Resource/App/Posts.tpl*
 ```
 <table class="table table-bordered table-striped">
     <tr>
@@ -35,15 +32,15 @@ A resource each internally contain their own renderer. In the sandbox applicatio
         <td>{$post.body|truncate:60}</td>
         <td>{$post.created}</td>
     </tr>
-    {/foreach}    
-</table>    
+    {/foreach}
+</table>
 ```
-We are unfolding the contents (body property) of the posts resource ($posts).
 
-## Posts Display Page Template 
+記事リソース（$posts）のコンテンツ（bodyプロパティ）を展開しています。
 
-*Sandbox/Resource/Resource/Posts.tpl*
+## 記事表示ページテンプレート
 
+*Demo.Sandbox/src/Resource/Page/Posts.tpl*
 ```
 <html>
     <body>
@@ -53,21 +50,21 @@ We are unfolding the contents (body property) of the posts resource ($posts).
 </html>
 ```
 
-Please notice that the data details held by the posts resource is not shown in the page template. There is only a posts resource place holder, the page, page resource and page template take no notice that posts contain a 'title' or 'body' property etc.
+postsリソースが持つ情報の詳細はページテンプレートでは表されてないことに注目してください。postsリソースのプレースホルダだけがあり、記事が "title" や "body" 等どういうプロパティを持つかにページはページリソースもページテンプレートも関心を持っていません。記事リソースの構成（要素）が変わっても、それを利用するページリソースには変更がありません。
 
-What decides how the post resource should be displayed is the template that the post resource itself contains.
+postsリソースをどう表現するかは、postsリソース自身が持つテンプレートで構成されます。リソースの表現はリソースの責任です。
 
- Note: The class that contains the needed information for accomplishment of the 'general principle for assignment of object responsibility' follows the [http://en.wikipedia.org/wiki/GRASP_(object-oriented_design)#Information_Expert Information Expert Pattern]. In this case only the posts resource has anything to do with the template, the posts index page is not concerned posts resource template or the construction of the posts resource. 
+Note: オブジェクトへの責任割り当てにおける一般原則で責任の遂行に必要な情報を持っているクラス、「情報エキスパート」に責任を割り当てる [情報エキスパート（Information Expert）パターン](http://ja.wikipedia.org/wiki/GRASP#.E6.83.85.E5.A0.B1.E3.82.A8.E3.82.AD.E3.82.B9.E3.83.91.E3.83.BC.E3.83.88) の原則に従っています。この場合、記事リソースだけが記事テンプレートに関わりがあり、記事表示ページは記事リソーステンプレートや記事リソースの構成に対して無関心です。
 
-## Resource Display = Resource State + Resource Template 
+## リソース表現＝リソース状態＋リソーステンプレート
 
-Just like we have seen up to here the resource state is combined with the resource template, the rendered result is sent to the client as a resource representation.
+これまで見てきたようにリソース状態はリソーステンプレートと合成されレンダリングされた結果がリソース表現としてクライアントに伝えられます。 
 
-Lets check this through the command line. This time we won't use api.php, we will use web.php and request the web view.
-
-$ php web.php get page://self/blog/posts
+コマンドラインで確認してみましょう。今度はapi.phpではなく、dev.phpを使ってWeb表現（HTML）をリクエストしてみます。
 
 ```
+$ php apps/Demo.Sandbox/bootstrap/contexts/dev.php get page://self/blog/posts
+
 200 OK
 ...
 x-interceptors: ["{\"onGet\":[\"BEAR\\\\Sunday\\\\Interceptor\\\\CacheLoader\"]}"]
@@ -86,36 +83,35 @@ content-type: ["text\/html; charset=UTF-8"]
 <head>
     <meta charset="utf-8">
     <title>Posts &laquo; BEAR.Sunday Blog</title>
-
 ```
 
-Header information that is helpful in development is output, in the [BODY] we can check the HTML of the final output.
+ヘッダーには開発に役立つめた情報が格納されていて、[BODY] では最終的に出力されるHTMLが確認できます。
 
-The request to the posts resource is made the resource request result is assigned to the posts slot.
+記事リソースへのリクエストが行われリソースリクエスト結果がpostsスロットに格納されています。
 
-## Lazy Request 
+## レイジーリクエスト
 
-In a page resource the posts resource request are set in {$posts}. This request is made at the point that the {$posts} placeholder is called inside the template.
+ページリソースではpostsリソースへのリクエストが {$posts} にセットされていました。このリクエストはテンプレート内に {$posts} プレースホルダが出現した時点で実行されます。
 
-So if there is no call this request will never be made, it is up to template to decide whether or not this request is actually made.
+つまり出現しなければこのリクエストは実行されず、リクエストを行うかどうかがテンプレートで決定されます。
 
-## Resource Object 
+## リソースオブジェクト
 
-Not only are you able to handle the set resource representation you can also directly use the item component itself.
+セットされたリソースは表現として扱うだけでなくその要素を直接とりだすこともできます。
 
 ```
 {$posts.0.title}
 ```
 
-If you need it a method or property can be used an in an object.
+もし必要ならメソッドやプロパティを指定してオブジェクトしても扱えます。
 
 ```
 {$posts->owner}
 {$posts->isPublic()}
 ```
 
-* Having a custom method in this way is not considered resource orientated design. 
+Note: 独自のメソッドを持つというのはリソース指向設計ではありません。
 
-The behavior of the resource assigned to the template changes depending on how it is handled. Not Whether pages need to be accessed or not, how these are assigned, are both decided in the view according to the context and not in the controller.
+テンプレートにアサインされたリソースはその扱い方で振る舞いが変わります。コントローラーであるページがアクセスが必要かどうか、どのようにアサインするかを決めるのではなく、ビュー側がコンテキストに応じて後から決定します。
 
-This is one of the many features of BEAR.Sunday
+これはBEAR.Sundayの特徴の一つです。

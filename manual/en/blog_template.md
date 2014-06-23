@@ -6,20 +6,17 @@ category: Blog Tutorial
 
 # Resource Rendering 
 
-Blog Tutorial(5) Creating templates 
-
 ## Resource Renderer Displaying the Resource State 
 
 In the steps up until last time in the posts resource the posts data was set in the page resource by a request to the posts resource. In order to *display* this *resource state* we need to use some HTML rendering.
 
 A resource each internally contain their own renderer. In the sandbox application in order to output HTML a Smarty 3 template engine is injected into all of the resources.
 
-  Note: A controller does not retrieve data from the model and pass strings for output to a template engine. In BEAR.Sunday all resources include an view renderer. The responsibility for the output of the model is held by each of the resources themselves.
+Note: A controller does not retrieve data from the model and pass strings for output to a template engine. In BEAR.Sunday all resources include an view renderer. The responsibility for the output of the model is held by each of the resources themselves.
 
 ## Posts Resource Template
 
 *Sandbox/Resource/App/Posts.tpl*
-
 ```
 <table class="table table-bordered table-striped">
     <tr>
@@ -35,15 +32,15 @@ A resource each internally contain their own renderer. In the sandbox applicatio
         <td>{$post.body|truncate:60}</td>
         <td>{$post.created}</td>
     </tr>
-    {/foreach}    
-</table>    
+    {/foreach}
+</table>
 ```
+
 We are unfolding the contents (body property) of the posts resource ($posts).
 
 ## Posts Display Page Template 
 
 *Sandbox/Resource/Resource/Posts.tpl*
-
 ```
 <html>
     <body>
@@ -57,17 +54,17 @@ Please notice that the data details held by the posts resource is not shown in t
 
 What decides how the post resource should be displayed is the template that the post resource itself contains.
 
- Note: The class that contains the needed information for accomplishment of the 'general principle for assignment of object responsibility' follows the [http://en.wikipedia.org/wiki/GRASP_(object-oriented_design)#Information_Expert Information Expert Pattern]. In this case only the posts resource has anything to do with the template, the posts index page is not concerned posts resource template or the construction of the posts resource. 
+Note: The class that contains the needed information for accomplishment of the 'general principle for assignment of object responsibility' follows the [http://en.wikipedia.org/wiki/GRASP_(object-oriented_design)#Information_Expert Information Expert Pattern]. In this case only the posts resource has anything to do with the template, the posts index page is not concerned posts resource template or the construction of the posts resource. 
 
 ## Resource Display = Resource State + Resource Template 
 
 Just like we have seen up to here the resource state is combined with the resource template, the rendered result is sent to the client as a resource representation.
 
-Lets check this through the command line. This time we won't use api.php, we will use web.php and request the web view.
-
-$ php web.php get page://self/blog/posts
+Let's check this through the command line. This time we won't use api.php, we will use dev.php and request the web view.
 
 ```
+$ php apps/Demo.Sandbox/bootstrap/contexts/dev.php get page://self/blog/posts
+
 200 OK
 ...
 x-interceptors: ["{\"onGet\":[\"BEAR\\\\Sunday\\\\Interceptor\\\\CacheLoader\"]}"]
@@ -86,7 +83,6 @@ content-type: ["text\/html; charset=UTF-8"]
 <head>
     <meta charset="utf-8">
     <title>Posts &laquo; BEAR.Sunday Blog</title>
-
 ```
 
 Header information that is helpful in development is output, in the [BODY] we can check the HTML of the final output.
@@ -114,8 +110,8 @@ If you need it a method or property can be used an in an object.
 {$posts->isPublic()}
 ```
 
-* Having a custom method in this way is not considered resource orientated design. 
+Note: Having a custom method in this way is not considered resource orientated design. 
 
 The behavior of the resource assigned to the template changes depending on how it is handled. Not Whether pages need to be accessed or not, how these are assigned, are both decided in the view according to the context and not in the controller.
 
-This is one of the many features of BEAR.Sunday
+This is one of the many features of BEAR.Sunday.
