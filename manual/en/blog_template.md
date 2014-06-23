@@ -42,6 +42,7 @@ We are unfolding the contents (body property) of the posts resource ($posts).
 ## Posts Display Page Template 
 
 *Sandbox/Resource/Resource/Posts.tpl*
+
 ```html
 <html>
     <body>
