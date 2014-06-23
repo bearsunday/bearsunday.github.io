@@ -26,7 +26,7 @@ Note: A controller does not retrieve data from the model and pass strings for ou
         <th>Body</th>
         <th>CreatedAt</th>
     </tr>
-    {foreach from# $resource->body itempost}
+    {foreach from=$resource->body item=post}
     <tr>
         <td>{$post.id}</td>
         <td><a href="posts/post?id{$post.id}">{$post.title}</a></td>
@@ -68,26 +68,27 @@ Let's check this through the command line. This time we won't use api.php, we wi
 $ php apps/Demo.Sandbox/bootstrap/contexts/dev.php get page://self/blog/posts
 
 200 OK
-...
-x-interceptors: ["{\"onGet\":[\"BEAR\\\\Sunday\\\\Interceptor\\\\CacheLoader\"]}"]
-x-query: ["[]"]
-x-params: ["[]"]
-x-cache: ["{\"mode\":\"W\",\"date\":\"Tue, 13 Nov 2012 10:49:19 +0100\",\"life\":false}"]
-x-execution-time: [0.10759687423706]
-x-memory-usage: [416528]
-x-profile-id: ["50a2179f66680"]
+tag: [1850711642]
+x-cache: ["{\"mode\":\"W\",\"date\":\"Mon, 23 Jun 2014 13:44:09 +0200\",\"life\":0}"]
 cache-control: ["no-cache"]
-date: ["Tue, 13 Nov 2012 09:49:19 GMT"]
-content-type: ["text\/html; charset=UTF-8"]
+date: ["Mon, 23 Jun 2014 11:44:09 GMT"]
 [BODY]
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="utf-8">
-    <title>Posts &laquo; BEAR.Sunday Blog</title>
+posts app://self/blog/posts,
+
+[VIEW]
+<html>
+    <body>
+    <h1>Posts</h1>
+    <table class="table table-bordered table-striped">
+    <tr>
+        <th class="span1">Id</th>
+        <th>Title</th>
+        <th>Body</th>
+        <th>CreatedAt</th>
+    </tr>
 ```
 
-Header information that is helpful in development is output, in the [BODY] we can check the HTML of the final output.
+Header information that is helpful in development is output, in the [VIEW] we can check the HTML of the final output.
 
 The request to the posts resource is made the resource request result is assigned to the posts slot.
 
