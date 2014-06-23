@@ -53,10 +53,12 @@
             <nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
                 <ul class="nav navbar-nav">
                     <li {% if page.category == "Manual" %} class="active"{% endif %}>
-                        <a href="/manual/en/index.html">Manual</a>
+                        {% if page.layout  == 'default' %}<a href="/manual/en/index.html">Manual</a>{% endif %}
+                        {% if page.layout  == 'default_ja' %}<a href="/manual/ja/index.html">Manual</a>{% endif %}
                     </li>
                     <li {% if page.category == "Tutorial" %} class="active"{% endif %}>
-                        <a href="/manual/en/tutorial.html">Tutorial</a>
+                        {% if page.layout  == 'default' %}<a href="/manual/en/tutorial.html">Tutorial</a>{% endif %}
+                        {% if page.layout  == 'default_ja' %}<a href="/manual/ja/tutorial.html">Tutorial</a>{% endif %}
                     </li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
