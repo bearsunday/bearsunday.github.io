@@ -37,20 +37,20 @@ use ResourceInject;
 In order to make a resource request using the injected resource client you do something like below.
 
 {% highlight php startinline %}
-$this->resource->get->uri('app://self/posts')->request()
+$this->resource->get->uri('app://self/blog/posts')->request()
 {% endhighlight %}
 
 When this is put together you can do the following.
 
 {% highlight php startinline %}
 <?php
-namespace Sandbox\Resource\Page\Blog;
+namespace Demo\Sandbox\Resource\Page\Blog;
 
-use BEAR\Resource\AbstractObject as Page;
+use BEAR\Resource\ResourceObject;
 use BEAR\Sunday\Inject\ResourceInject;
-use BEAR\Sunday\Annotation;
+use BEAR\Sunday\Annotation\Cache;
 
-class Posts extends Page
+class Posts extends ResourceObject
 {
     use ResourceInject;
 
@@ -65,15 +65,15 @@ class Posts extends Page
      */
     public function onGet()
     {
-        $this['posts'] = $this->resource->get->uri('app://self/posts')->request();
+        $this['posts'] = $this->resource->get->uri('app://self/blog/posts')->request();
         return $this;
     }
 }
 {% endhighlight %}
 
-A request to `app://self/posts` is made then is stored in the posts slot of the current resource.
+A request to `app://self/blog/posts` is made then is stored in the posts slot of the current resource.
 
-Note: $this['posts'] is some syntax sugar which is an abbreviation of $this->body['body'].
+Note: $this['posts'] is some syntax sugar which is an abbreviation of $this->body['posts'].
 
 Note: This is different to an MVC controller as you will notice there is no attention paid to output. There is no assignment of variables etc for a template.
 
@@ -86,13 +86,12 @@ $ php apps/Demo.Sandbox/bootstrap/contexts/api.php get page://self/blog/posts
 
 200 OK
 ...
-\[BODY]
-{
-    "posts": {
+[BODY]
+posts => Demo_Sandbox_Resource_App_Blog_Posts_76b99d827d509b164e02c644e3749f54RayAop(
 ...
 ```
 
-In the posts slot the result of request *get app://self/posts* is assigned.  
+In the posts slot the result of request *get app://self/blog/posts* is assigned.  
 
 As the page resource plays the role of a page controller it also plays the role of an output object. Although pays no attention to how it is displayed.
 
