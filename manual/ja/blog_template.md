@@ -42,6 +42,7 @@ Note: コントローラがモデルから取得したデータをテンプレ�
 ## 記事表示ページテンプレート
 
 *Demo.Sandbox/src/Resource/Page/Posts.tpl*
+
 ```html
 <html>
     <body>
