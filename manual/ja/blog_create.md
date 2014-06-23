@@ -1,29 +1,28 @@
 ---
 layout: default_ja
-title: BEAR.Sunday | ブログチュートリアル(6) Creating Posts
+title: BEAR.Sunday | ブログチュートリアル(6) 記事の追加
 category: Blog Tutorial
 ---
 
-# POST Method 
+# POSTメソッド
 
-In steps up until now we have been able to show posts that have been saved in our database. Next we will go ahead and make a form however before we do that lets make it possible to add a post through a console resource operation.
+これまでのステップでデータベースに登録されている記事を表示できるようになりました。次はいよいよフォームを作成しますが、まずはその前にコンソールのリソース操作で記事を追加できるようにしましょう。
 
-## Create a Posts Resource POST Interface 
+## 記事リソースのPOSTインターフェイスを作成
 
-Adding a POST interface to allow you to add posts to a posts resource that only has a GET interface method.
+GETインターフェイスメソッドしかない記事リソースに記事を追加することのできるPOSTインターフェイスを加えます。
 
 {% highlight php startinline %}
-<?php
 public function onPost($title, $body, $created = null, $modified = null)
 {
     return $this;
 }
 {% endhighlight %}
 
-First let try a POST even in this bare state.
+まず、この状態でPOSTしてみましょう。
 
 ```
-$ php api.php post 'app://self/blog/posts'
+$ php apps/Demo.Sandbox/bootstrap/contexts/api.php post 'app://self/blog/posts'
 
 400 Bad Request
 X-EXCEPTION-CLASS: BEAR\Resource\Exception\InvalidParameter
@@ -32,12 +31,12 @@ X-EXCEPTION-MESSAGE: $title in Sandbox\Resource\App\Posts::onPost
 You sent a request that query is not valid.
 ```
 
-You have not specified the required parameters, a *400 Bad Request* response is returned. 
+必要な引数を指定していないので、リクエスト不正という *400 Bad Request* のレスポンスが帰ってきました。
 
-We can check what the required parameters are by using the `options` method.
+リソースリクエストに必要な引数は `options` メソッドで調べる事ができます。
 
 ```
-$ php api.php options 'app://self/blog/posts'
+$ php apps/Demo.Sandbox/bootstrap/contexts/api.php options 'app://self/blog/posts'
 
 200 OK
 allow: ["get","post","put","delete"]
@@ -48,27 +47,24 @@ param-delete: id
 content-type: application/hal+json; charset=UTF-8
 ```
 
-The possible methods are shown in the `allow` header, then each of the possible parameters are shown. Parameters shown in parenthesis are optional.
+利用可能なメソッドは `allow` ヘッダーで表され、続いてそれぞれに利用可能な引数が表示されます。括弧で囲まれているのはオプション指定で省力可能です。
 
-For example a GET method can be requested with either no parameters or by using the `id` parameter. The POST method however *must* contain a `title` and `body` parameter.
+例えばGETメソッドは、引数なし、あるいは `id` を指定してリクエストします。POSTメソッドは *かならず* `title` と `body` が必要です。
 
-The required fields have now become clear. We can now add a query to make our request.
-
-```
-$ php api.php post 'app://self/posts?title=hello&body="this is first post"'
-```
+必要な指定引数が明らかになりました。次はクエリーを付けてリクエストします。 
 
 ```
+$ php apps/Demo.Sandbox/bootstrap/contexts/api.php post 'app://self/posts?title=hello&body="this is first post"'
+
 200 OK
 [BODY]
 NULL
 ```
 
-A status 200 OK with contents NULL has been returned.
-There is no problem, however lets change this to use the *more* accurate 204(No Content) status code.
+コンテンツNULLの200 OKが帰ってきました。
+問題はありませんが、*もっと* 正確な204（No Content）のステータスコードに変更してみましょう。
 
 {% highlight php startinline %}
-<?php
 public function onPost($title, $body, $created = null, $modified = null)
 {
     $this->code = 204;
@@ -76,9 +72,9 @@ public function onPost($title, $body, $created = null, $modified = null)
 }
 {% endhighlight %}
 
-In order to change the status code we set the `code` property.
+リソースのステータスコードを変更するには `code` プロパティを指定します。
 
-We have now made it so that we are more accurately informed of the correct status code. This will also help us in our unit tests.
+ステータスコードはよりリソースの正確なステータスを報告してくれるようになりました。ユニットテストにも役立ちそうです。
 
 ```
 204 No Content
@@ -86,10 +82,9 @@ We have now made it so that we are more accurately informed of the correct statu
 NULL
 ```
 
-Implementing the POST interface.
+POSTインターフェイスを実装します。
 
 {% highlight php startinline %}
-<?php
 public function onPost($title, $body, $created = null, $modified = null)
 {
     $this->db->insert($this->table, ['title',  $title, 'body', $body]);
@@ -98,28 +93,27 @@ public function onPost($title, $body, $created = null, $modified = null)
 }
 {% endhighlight %}
 
-The interface method which picks up the POST request inserts the post into the database. In this way we are able to add posts.
+リクエストを受け取ったPOSTインターフェイスメソッドがDBに記事をインサートします。これで記事の追加ができるようになりました。
 
-Just like the GET interface when we use this method the injected DB object is available for us to use. The difference to the GET interface is that it is not the _slave_ DB object that is injected but the _master_.
+このメソッドでもGETインターフェイスの時と同じく外部からインジェクトされたDBオブジェクトを用いています。GETインターフェイスと違うの _slave_ ではなく、_master_ のDBオブジェクトがインジェクトされていることです。
 
-Please remember that the DB object is bound by the injecting interceptor to all method names that begin with `on`. The bound DB injector depending on the resource request injects the DB object just before the method is requested. Please take notice that the resource request *pays no attention to the preparation or retrieval of the required dependencies, it just uses the object. In this way BEAR.Sunday adhears to the *separation of concerns* principle in a consistent and unified manner.
+このクラスの `on` で始まる全てのメソッドに束縛したDBオブジェクトをインジェクトするインターセプターをバインドした事を思い出してください。束縛されたDBインジェクターはメソッドがリクエストされる直前にリソースリクエストに応じたDBオブジェクトをインジェクトします。リソースリクエストは *必要とする依存の準備や取得に関心を払う事なく、そのオブジェクトを利用してる* 事に注目してください。これはBEAR.Sundayが一貫して指向している *関心の分離* の原則に従っています。
 
-## Post Resource Test 
+## 記事リソースのテスト
 
-The post has been added, lets make a test to check the added content. When a resource unit test contains a DB test you write code like the following.
+記事が追加され、その追加した内容を確認するテストを作成します。DBのテストを含んだリソースのユニットテストはこのようなコードになります。
 
 {% highlight php startinline %}
-<?php
 class AppPostsTest extends \PHPUnit_Extensions_Database_TestCase
 {
     public function getConnection()
     {
-        // DB Connection
+        // DB接続
     }
 
     public function getDataSet()
     {
-        // Initial data set
+        // 初期データセット
     }
 
     /**
@@ -130,20 +124,20 @@ class AppPostsTest extends \PHPUnit_Extensions_Database_TestCase
         // +1
         $before = $this->getConnection()->getRowCount('posts');
         $response = $this->resource
-        ->post
-        ->uri('app://self/posts')
-        ->withQuery(['title' => 'test_title', 'body' => 'test_body'])
-        ->eager
-        ->request();
+            ->post
+            ->uri('app://self/posts')
+            ->withQuery(['title' => 'test_title', 'body' => 'test_body'])
+            ->eager
+            ->request();
         $this->assertEquals($before + 1, $this->getConnection()->getRowCount('posts'), "faild to add post");
 
         // new post
         $body = $this->resource
-        ->get
-        ->uri('app://self/posts')
-        ->withQuery(['id' => 4])
-        ->eager
-        ->request()->body;
+            ->get
+            ->uri('app://self/posts')
+            ->withQuery(['id' => 4])
+            ->eager
+            ->request()->body;
         return $body;
     }
 
@@ -158,16 +152,15 @@ class AppPostsTest extends \PHPUnit_Extensions_Database_TestCase
     }
 {% endhighlight %}
 
-We test that the post has been created by the post post method, we then check those contents using the postData method.
+postメソッドで記事が追加されたかをテストし、postDataメソッドでその内容を確認しています。 
 
-## Creating the Add Post Page 
+## 記事を追加するページを作成
 
-We have created the app resource that adds a post, we will now create a page resource that grabs input from the web and requests the app resource.
+記事を追加するappリソースが出来たので、次はWebからの入力を受け取ってそのappリソースをリクエストするページリソースを作成します。
 
-Add a form to a template.
+テンプレートにフォームを追加します。
 
-{% highlight php startinline %}
-<?php
+```html
 <h1>New Post</h1>
 <form action="/blog/posts/newpost" method="POST">
 	<input name="X-HTTP-Method-Override" type="hidden" value="POST" />
@@ -185,16 +178,15 @@ Add a form to a template.
 	</div>
 	<input type="submit" value"Send">
 </form>
-{% endhighlight %}
+```
 
-Note: Notice the `X-HTTP-Method-Override` hidden field. This sets the page resource request method. Even if the browser or web server only supports GET/POST, in separation to the external protocol this functions as an internal software protocol.
+Note: `X-HTTP-Method-Override` というhideen項目に注目してください。これはページリソースへのリクエストメソッドを指定しています。ブラウザやWebサーバーがGET/POSTしかサポートしていなくても、その外部プロトコルとは別にソフトウエアの内部プロトコルとして機能します。
 
-Note: When specifying a `$_GET` query you set this with `$_GET['_method']`.
+Note: `$_GET` クエリーで指定するときは `$_GET['_method']` で指定します。
 
-Implementing the page resource POST interface.
+ページリソースにPOSTインターフェイスを実装します。
 
 {% highlight php startinline %}
-<?php
     /**
      * Post
      *
@@ -205,10 +197,10 @@ Implementing the page resource POST interface.
     {
         // create post
         $this->resource
-        ->post
-        ->uri('app://self/posts')
-        ->withQuery(['title' => $title, 'body' => $body])
-        ->eager->request();
+            ->post
+            ->uri('app://self/posts')
+            ->withQuery(['title' => $title, 'body' => $body])
+            ->eager->request();
         
         // redirect
         $this->code = 303;
@@ -217,14 +209,14 @@ Implementing the page resource POST interface.
     }
 {% endhighlight %}
 
-Unlike with the GET interface with the `withQuery()` the parameters for the resource request are set. Note that unlike a regular PHP method there is no order values are set using named parameters. Like a web request it has been set up for the method request to be made with a `key=value` style query. (The key is the parameter name)
+GETインターフェイスの時と違って `withQuery()` メソッドでリソースリクエストに引数を指定しています。通常のPHPのメソッド引数と違って順番でなく、名前で引数を指定しているのに注目してください。Webのリクエストと同じように `key=value` と並べたものクエリーとしてメソッドリクエストに用いてます（keyが変数名です）。
 
-An **eager->request()** shows that the resource request will be made *immediately*.
+**eager->request()** は *すぐに* リソースリクエストを行う事を表しています。
 
-From the console lets try a `POST` via a posts page resource request.
+コンソールから記事をページリソースリクエスト経由で `POST` してみます。
 
 ```
-php api.php post 'page://self/posts?title="hello again"&body="how have you been ?"'
+$ php apps/Demo.Sandbox/bootstrap/contexts/api.php post 'page://self/posts?title="hello again"&body="how have you been ?"'
 ```
 
-Now when you make a POST request to the posts view page a post resource is added.
+記事表示ページにPOSTリクエストをすると記事リソースが追加されます。
