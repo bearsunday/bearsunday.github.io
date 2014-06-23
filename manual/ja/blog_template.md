@@ -17,7 +17,7 @@ Note: コントローラがモデルから取得したデータをテンプレ�
 ## 記事リソーステンプレート
 
 *Demo.Sandbox/src/Resource/App/Posts.tpl*
-```
+```html
 <table class="table table-bordered table-striped">
     <tr>
         <th class="span1">Id</th>
@@ -41,7 +41,7 @@ Note: コントローラがモデルから取得したデータをテンプレ�
 ## 記事表示ページテンプレート
 
 *Demo.Sandbox/src/Resource/Page/Posts.tpl*
-```
+```html
 <html>
     <body>
     <h1>Posts</h1>
