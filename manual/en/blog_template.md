@@ -17,6 +17,7 @@ Note: A controller does not retrieve data from the model and pass strings for ou
 ## Posts Resource Template
 
 *Sandbox/Resource/App/Posts.tpl*
+
 ```html
 <table class="table table-bordered table-striped">
     <tr>

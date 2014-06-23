@@ -17,6 +17,7 @@ Note: コントローラがモデルから取得したデータをテンプレ�
 ## 記事リソーステンプレート
 
 *Demo.Sandbox/src/Resource/App/Posts.tpl*
+
 ```html
 <table class="table table-bordered table-striped">
     <tr>
