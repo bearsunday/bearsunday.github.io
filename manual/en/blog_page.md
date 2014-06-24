@@ -73,7 +73,7 @@ class Posts extends ResourceObject
 
 A request to `app://self/blog/posts` is made then is stored in the posts slot of the current resource.
 
-Note: $this['posts'] is some syntax sugar which is an abbreviation of $this->body['posts'].
+Note: `$this['posts']` is some syntax sugar which is an abbreviation of `$this->body['posts']`.
 
 Note: This is different to an MVC controller as you will notice there is no attention paid to output. There is no assignment of variables etc for a template.
 
