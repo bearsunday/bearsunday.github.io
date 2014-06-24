@@ -71,9 +71,9 @@ class Posts extends ResourceObject
 }
 {% endhighlight %}
 
-`app://self/posts` リソースへのリクエストを自らのpostsというスロットに格納しています。
+`app://self/blog/posts` リソースへのリクエストを自らのpostsというスロットに格納しています。
 
-Note: $this['posts'] は $this->body['posts'] の省略した書き方のシンタックスシュガー（＝読み書きのしやすさのために導入される構文）です。
+Note: `$this['posts']` は `$this->body['posts']` の省略した書き方のシンタックスシュガー（＝読み書きのしやすさのために導入される構文）です。
 
 Note: MVCのコントローラーと違って、出力に関心が払われてないのに注目してみてください。テンプレートファイルの指定や、テンプレートに対しての変数のアサイン等がありません。
 
