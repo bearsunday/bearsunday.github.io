@@ -16,7 +16,7 @@ Note: A controller does not retrieve data from the model and pass strings for ou
 
 ## Posts Resource Template
 
-*Sandbox/Resource/App/Posts.tpl*
+*Demo.Sandbox/src/Resource/App/Blog/Posts.tpl*
 
 ```html
 <table class="table table-bordered table-striped">
@@ -28,10 +28,10 @@ Note: A controller does not retrieve data from the model and pass strings for ou
     </tr>
     {foreach from=$resource->body item=post}
     <tr>
-        <td>{$post.id}</td>
-        <td><a href="posts/post?id{$post.id}">{$post.title}</a></td>
-        <td>{$post.body|truncate:60}</td>
-        <td>{$post.created}</td>
+        <td>{$post.id|escape}</td>
+        <td><a href="posts/post?id{$post.id|escape:'url'}">{$post.title|escape}</a></td>
+        <td>{$post.body|truncate:60|escape}</td>
+        <td>{$post.created|escape}</td>
     </tr>
     {/foreach}
 </table>
@@ -41,14 +41,21 @@ We are unfolding the contents (body property) of the posts resource ($posts).
 
 ## Posts Display Page Template 
 
-*Sandbox/Resource/Resource/Posts.tpl*
+*Demo.Sandbox/src/Resource/Page/Blog/Posts.tpl*
 
 ```html
-<html>
-    <body>
-    <h1>Posts</h1>
-    {$posts}
-    </body>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+    <div class="container">
+        <h1>Posts</h1>
+        {$posts}
+    </div>
+</body>
 </html>
 ```
 
