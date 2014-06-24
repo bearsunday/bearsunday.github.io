@@ -12,6 +12,8 @@ In steps up until now we have been able to show posts that have been saved in ou
 
 Adding a POST interface to allow you to add posts to a posts resource that only has a GET interface method.
 
+*Demo.Sandbox/src/Resource/App/Blog/Posts.php*
+
 {% highlight php startinline %}
 public function onPost($title, $body, $created = null, $modified = null)
 {
@@ -24,11 +26,15 @@ First let's try a POST even in this bare state.
 ```
 $ php apps/Demo.Sandbox/bootstrap/contexts/api.php post 'app://self/blog/posts'
 
-400 Bad Request
-X-EXCEPTION-CLASS: BEAR\Resource\Exception\InvalidParameter
-X-EXCEPTION-MESSAGE: $title in Sandbox\Resource\App\Posts::onPost
+x-exception-class: ["BEAR\\Resource\\Exception\\SignalParameter"]
+x-exception-message: ["$title in Demo_Sandbox_Resource_App_Blog_Posts_cc436baec58dbc6a06237a589e2e39d8RayAop::onPost"]
+x-exception-code-file-line: ["(0) ...\/vendor\/bear\/resource\/src\/SignalParameter.php:62"]
+x-exception-previous: ["BEAR\\Resource\\Exception\\Parameter: $title in Demo_Sandbox_Resource_App_Blog_Posts_cc436baec58dbc6a06237a589e2e39d8RayAop::onPost"]
+x-exception-id: ["e500-efa6b"]
+x-exception-id-file: ["...\/vendor\/bear\/demo-apps\/Demo.Sandbox\/var\/log\/e500-efa6b.log"]
+cache-control: ["no-cache"]
+date: ["Tue, 24 Jun 2014 00:45:57 GMT"]
 [BODY]
-You sent a request that query is not valid.
 ```
 
 You have not specified the required parameters, a *400 Bad Request* response is returned. 
@@ -39,12 +45,21 @@ We can check what the required parameters are by using the `options` method.
 $ php apps/Demo.Sandbox/bootstrap/contexts/api.php options 'app://self/blog/posts'
 
 200 OK
-allow: ["get","post","put","delete"]
-param-get: (id)
-param-post: title,body
-param-put: id,title,body
-param-delete: id
-content-type: application/hal+json; charset=UTF-8
+allow: ["get","post"]
+param-post: ["title,body,(created),(modified)"]
+content-type: ["application\/hal+json; charset=UTF-8"]
+cache-control: ["no-cache"]
+date: ["Tue, 24 Jun 2014 00:47:25 GMT"]
+[BODY]
+*NULL
+[VIEW]
+{
+    "_links": {
+        "self": {
+            "href": "http://localhost/app/blog/posts/"
+        }
+    }
+}
 ```
 
 The possible methods are shown in the `allow` header, then each of the possible parameters are shown. Parameters shown in parenthesis are optional.
@@ -54,15 +69,19 @@ For example a GET method can be requested with either no parameters or by using 
 The required fields have now become clear. We can now add a query to make our request.
 
 ```
-$ php apps/Demo.Sandbox/bootstrap/contexts/api.php post 'app://self/posts?title=hello&body="this is first post"'
+$ php apps/Demo.Sandbox/bootstrap/contexts/api.php post 'app://self/blog/posts?title=hello&body=this%20is%20first%20post'
 
 200 OK
+...
 [BODY]
-NULL
+*NULL
+...
 ```
 
 A status 200 OK with contents NULL has been returned.
 There is no problem, however lets change this to use the *more* accurate 204(No Content) status code.
+
+*Demo.Sandbox/src/Resource/App/Blog/Posts.php*
 
 {% highlight php startinline %}
 public function onPost($title, $body, $created = null, $modified = null)
@@ -78,17 +97,28 @@ We have now made it so that we are more accurately informed of the correct statu
 
 ```
 204 No Content
+...
 [BODY]
-NULL
+*NULL
+...
 ```
 
 Implementing the POST interface.
 
+*Demo.Sandbox/src/Resource/App/Blog/Posts.php*
+
 {% highlight php startinline %}
 public function onPost($title, $body, $created = null, $modified = null)
 {
-    $this->db->insert($this->table, ['title',  $title, 'body', $body]);
+    $values = [
+        'title' => $title,
+        'body' => $body,
+        'created' => $created,
+        'modified' => $modified,
+    ];
+    $this->db->insert($this->table, $values);
     $this->code = 204;
+
     return $this;
 }
 {% endhighlight %}
@@ -126,7 +156,7 @@ class AppPostsTest extends \PHPUnit_Extensions_Database_TestCase
         $before = $this->getConnection()->getRowCount('posts');
         $response = $this->resource
             ->post
-            ->uri('app://self/posts')
+            ->uri('app://self/blog/posts')
             ->withQuery(['title' => 'test_title', 'body' => 'test_body'])
             ->eager
             ->request();
@@ -135,7 +165,7 @@ class AppPostsTest extends \PHPUnit_Extensions_Database_TestCase
         // new post
         $body = $this->resource
             ->get
-            ->uri('app://self/posts')
+            ->uri('app://self/blog/posts')
             ->withQuery(['id' => 4])
             ->eager
             ->request()->body;
@@ -161,24 +191,25 @@ We have created the app resource that adds a post, we will now create a page res
 
 Add a form to a template.
 
+*Demo.Sandbox/src/Resource/Page/Blog/Posts.tpl*
+
 ```html
-<?php
 <h1>New Post</h1>
-<form action="/blog/posts/newpost" method="POST">
+<form action="/blog/posts" method="POST">
 	<input name="X-HTTP-Method-Override" type="hidden" value="POST" />
 	<div class="control-group {if $errors.title}error{/if}">
-		<label class="control-label" for"title">Title</label>
+		<label class="control-label" for="title">Title</label>
 		<div class="controls">
-			<input type="text" id="title" name="title" value"{$submit.title}">
+			<input type="text" id="title" name="title" value="{$submit.title}">
 			<p class="help-inline">{$errors.title}</p>
 		</div>
 	</div>
 	<div class="control-group {if $errors.body}error{/if}">
 		<label>Body</label>
-		<textarea name="body" rows="10" cols"40">{$submit.body}</textarea>
+		<textarea name="body" rows="10" cols="40">{$submit.body}</textarea>
 		<p class="help-inline">{$errors.body}</p>
 	</div>
-	<input type="submit" value"Send">
+	<input type="submit" value="Send">
 </form>
 ```
 
@@ -189,7 +220,6 @@ Note: When specifying a `$_GET` query you set this with `$_GET['_method']`.
 Implementing the page resource POST interface.
 
 {% highlight php startinline %}
-<?php
     /**
      * Post
      *
@@ -201,7 +231,7 @@ Implementing the page resource POST interface.
         // create post
         $this->resource
             ->post
-            ->uri('app://self/posts')
+            ->uri('app://self/blog/posts')
             ->withQuery(['title' => $title, 'body' => $body])
             ->eager->request();
         
@@ -219,7 +249,7 @@ An **eager->request()** shows that the resource request will be made *immediatel
 From the console let's try a `POST` via a posts page resource request.
 
 ```
-$ php apps/Demo.Sandbox/bootstrap/contexts/api.php post 'page://self/posts?title="hello again"&body="how have you been ?"'
+$ php apps/Demo.Sandbox/bootstrap/contexts/api.php post 'page://self/blog/posts?title=hello%20again&body=how%20have%20you%20been%20?'
 ```
 
 Now when you make a POST request to the posts view page a post resource is added.
