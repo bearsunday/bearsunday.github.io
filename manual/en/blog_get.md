@@ -54,17 +54,11 @@ BEAR.Sunday doesn't have its own database usage library or database abstraction 
 
 namespace Demo\Sandbox\Resource\App\Blog;
 
-use BEAR\Package\Module\Database\Dbal\Setter\DbSetterTrait;
-use BEAR\Resource\Header;
 use BEAR\Resource\ResourceObject;
+use BEAR\Package\Module\Database\Dbal\Setter\DbSetterTrait;
 use BEAR\Resource\Code;
-use BEAR\Resource\Annotation\Link;
 use PDO;
-use BEAR\Sunday\Annotation\Cache;
-use BEAR\Sunday\Annotation\CacheUpdate;
 use BEAR\Sunday\Annotation\Db;
-use BEAR\Sunday\Annotation\Time;
-use BEAR\Sunday\Annotation\Transactional;
 
 /**
  * @Db
@@ -80,13 +74,6 @@ class Posts extends ResourceObject
      */
     public $time;
 
-    public $links = [
-        'page_post' => [Link::HREF => 'page://self/blog/posts/post'],
-        'page_item' => [Link::HREF => 'page://self/blog/posts/post{?id}', Link::TEMPLATED => true],
-        'page_edit' => [Link::HREF => 'page://self/blog/posts/edit{?id}', Link::TEMPLATED => true],
-        'page_delete' => [Link::HREF => 'page://self/blog/posts/post']
-    ];
-
     /**
      * @var string
      */
@@ -94,8 +81,6 @@ class Posts extends ResourceObject
 
     /**
      * @param int $id
-     *
-     * @Cache(100)
      */
     public function onGet($id = null)
     {
@@ -106,6 +91,7 @@ class Posts extends ResourceObject
 
             return $this;
         }
+
         $sql .= " WHERE id = :id";
         $stmt = $this->db->prepare($sql);
         $stmt->bindValue('id', $id);
@@ -114,67 +100,9 @@ class Posts extends ResourceObject
 
         return $this;
     }
-
-    /**
-     * @param string $title
-     * @param string $body
-     *
-     * @Time
-     * @Transactional
-     * @CacheUpdate
-     */
-    public function onPost($title, $body)
-    {
-        $values = [
-            'title' => $title,
-            'body' => $body,
-            'created' => $this->time
-        ];
-        $this->db->insert($this->table, $values);
-        //
-        $lastId = $this->db->lastInsertId('id');
-        $this->code = Code::CREATED;
-        $this->headers[Header::LOCATION] = "app://self/posts/post?id={$lastId}";
-        $this->headers[Header::X_ID] = $lastId;
-
-        return $this;
-    }
-
-    /**
-     * @param int    $id
-     * @param string $title
-     * @param string $body
-     *
-     * @Time
-     * @CacheUpdate
-     */
-    public function onPut($id, $title, $body)
-    {
-        $values = [
-            'title' => $title,
-            'body' => $body,
-            'created' => $this->time
-        ];
-        $this->db->update($this->table, $values, ['id' => $id]);
-        $this->code = Code::NO_CONTENT;
-
-        return $this;
-    }
-
-    /**
-     * @param int $id
-     *
-     * @CacheUpdate
-     */
-    public function onDelete($id)
-    {
-        $this->db->delete($this->table, ['id' => $id]);
-        $this->code = Code::NO_CONTENT;
-
-        return $this;
-    }
 }
 {% endhighlight %}
+
 In the resource class a method that responds to the request interface is provided. In this resource if an $id is specified 1 post and if not set all posts are returned;
 
 ## Use the Resource from the Command Line 
