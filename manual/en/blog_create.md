@@ -203,7 +203,7 @@ Add a template.
 <body>
     <div class="container">
         <h1>New Post</h1>
-        <form action="/blog/posts" method="POST">
+        <form action="/blog/posts/newpost" method="POST">
             <input name="X-HTTP-Method-Override" type="hidden" value="POST" />
             <div class="control-group {if $errors.title}error{/if}">
                 <label class="control-label" for="title">Title</label>
@@ -228,7 +228,7 @@ Note: Notice the `X-HTTP-Method-Override` hidden field. This sets the page resou
 
 Note: When specifying a `$_GET` query you set this with `$_GET['_method']`.
 
-Add Newpost page resource and implement the POST interface.
+Add Newpost page resource and implement the GET and POST interfaces.
 
 *Demo.Sandbox/src/Resource/Page/Blog/Posts/Newpost.php*
 
@@ -243,6 +243,11 @@ use BEAR\Sunday\Inject\ResourceInject;
 class Newpost extends ResourceObject
 {
     use ResourceInject;
+
+    public function onGet()
+    {
+        return $this;
+    }
 
     /**
      * Post

@@ -203,7 +203,7 @@ postメソッドで記事が追加されたかをテストし、postDataメソ�
 <body>
     <div class="container">
         <h1>New Post</h1>
-        <form action="/blog/posts" method="POST">
+        <form action="/blog/posts/newpost" method="POST">
             <input name="X-HTTP-Method-Override" type="hidden" value="POST" />
             <div class="control-group {if $errors.title}error{/if}">
                 <label class="control-label" for="title">Title</label>
@@ -228,7 +228,7 @@ Note: `X-HTTP-Method-Override` というhideen項目に注目してください�
 
 Note: `$_GET` クエリーで指定するときは `$_GET['_method']` で指定します。
 
-Newpostページリソースを作成しPOSTインターフェイスを実装します。
+Newpostページリソースを作成しGETインターフェイスとPOSTインターフェイスを実装します。
 
 *Demo.Sandbox/src/Resource/Page/Blog/Posts/Newpost.php*
 
@@ -243,6 +243,11 @@ use BEAR\Sunday\Inject\ResourceInject;
 class Newpost extends ResourceObject
 {
     use ResourceInject;
+
+    public function onGet()
+    {
+        return $this;
+    }
 
     /**
      * Post
