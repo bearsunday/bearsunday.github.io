@@ -40,7 +40,7 @@ date: ["Tue, 24 Jun 2014 00:45:57 GMT"]
 
 必要な引数を指定していないので、リクエスト不正という *400 Bad Request* のレスポンスが帰ってきました。
 
-リソースリクエストに必要な引数は `options` メソッドで調べる事ができます。
+リソースリクエストに必要な引数は `options` メソッドで調べる事ができます。（@TODO optionsメソッドが現在すべてのメソッドの引数を表示しない）
 
 ```
 $ php apps/Demo.Sandbox/bootstrap/contexts/api.php options 'app://self/blog/posts'
@@ -67,7 +67,7 @@ date: ["Tue, 24 Jun 2014 00:47:25 GMT"]
 
 例えばGETメソッドは、引数なし、あるいは `id` を指定してリクエストします。POSTメソッドは *かならず* `title` と `body` が必要です。
 
-必要な指定引数が明らかになりました。次はクエリーを付けてリクエストします。 
+必要な指定引数が明らかになりました。次はクエリーを付けてリクエストします。
 
 ```
 $ php apps/Demo.Sandbox/bootstrap/contexts/api.php post 'app://self/blog/posts?title=hello&body=this%20is%20first%20post'
@@ -189,39 +189,66 @@ postメソッドで記事が追加されたかをテストし、postDataメソ�
 
 記事を追加するappリソースが出来たので、次はWebからの入力を受け取ってそのappリソースをリクエストするページリソースを作成します。
 
-テンプレートにフォームを追加します。
+テンプレートを追加します。
 
-*Demo.Sandbox/src/Resource/Page/Blog/Posts.tpl*
+*Demo.Sandbox/src/Resource/Page/Blog/Posts/Newpost.tpl*
 
 ```html
-<h1>New Post</h1>
-<form action="/blog/posts" method="POST">
-	<input name="X-HTTP-Method-Override" type="hidden" value="POST" />
-	<div class="control-group {if $errors.title}error{/if}">
-		<label class="control-label" for="title">Title</label>
-		<div class="controls">
-			<input type="text" id="title" name="title" value="{$submit.title}">
-			<p class="help-inline">{$errors.title}</p>
-		</div>
-	</div>
-	<div class="control-group {if $errors.body}error{/if}">
-		<label>Body</label>
-		<textarea name="body" rows="10" cols="40">{$submit.body}</textarea>
-		<p class="help-inline">{$errors.body}</p>
-	</div>
-	<input type="submit" value="Send">
-</form>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+    <div class="container">
+        <h1>New Post</h1>
+        <form action="/blog/posts/newpost" method="POST">
+            <input name="X-HTTP-Method-Override" type="hidden" value="POST" />
+            <div class="control-group {if $errors.title}error{/if}">
+                <label class="control-label" for="title">Title</label>
+                <div class="controls">
+                    <input type="text" id="title" name="title" value="{$submit.title}">
+                    <p class="help-inline">{$errors.title}</p>
+                </div>
+            </div>
+            <div class="control-group {if $errors.body}error{/if}">
+                <label>Body</label>
+                <textarea name="body" rows="10" cols="40">{$submit.body}</textarea>
+                <p class="help-inline">{$errors.body}</p>
+            </div>
+            <input type="submit" value="Send">
+        </form>
+    </div>
+</body>
+</html>
 ```
 
 Note: `X-HTTP-Method-Override` というhideen項目に注目してください。これはページリソースへのリクエストメソッドを指定しています。ブラウザやWebサーバーがGET/POSTしかサポートしていなくても、その外部プロトコルとは別にソフトウエアの内部プロトコルとして機能します。
 
 Note: `$_GET` クエリーで指定するときは `$_GET['_method']` で指定します。
 
-ページリソースにPOSTインターフェイスを実装します。
+Newpostページリソースを作成しGETインターフェイスとPOSTインターフェイスを実装します。
 
-*Demo.Sandbox/src/Resource/Page/Blog/Posts.php*
+*Demo.Sandbox/src/Resource/Page/Blog/Posts/Newpost.php*
 
 {% highlight php startinline %}
+<?php
+
+namespace Demo\Sandbox\Resource\Page\Blog\Posts;
+
+use BEAR\Resource\ResourceObject;
+use BEAR\Sunday\Inject\ResourceInject;
+
+class Newpost extends ResourceObject
+{
+    use ResourceInject;
+
+    public function onGet()
+    {
+        return $this;
+    }
+
     /**
      * Post
      *
@@ -236,12 +263,13 @@ Note: `$_GET` クエリーで指定するときは `$_GET['_method']` で指定�
             ->uri('app://self/blog/posts')
             ->withQuery(['title' => $title, 'body' => $body])
             ->eager->request();
-        
+
         // redirect
         $this->code = 303;
         $this->headers = ['Location' => '/blog/posts'];
         return $this;
     }
+}
 {% endhighlight %}
 
 GETインターフェイスの時と違って `withQuery()` メソッドでリソースリクエストに引数を指定しています。通常のPHPのメソッド引数と違って順番でなく、名前で引数を指定しているのに注目してください。Webのリクエストと同じように `key=value` と並べたものクエリーとしてメソッドリクエストに用いてます（keyが変数名です）。
@@ -251,7 +279,7 @@ GETインターフェイスの時と違って `withQuery()` メソッドでリ�
 コンソールから記事をページリソースリクエスト経由で `POST` してみます。
 
 ```
-$ php apps/Demo.Sandbox/bootstrap/contexts/api.php post 'page://self/blog/posts?title=hello%20again&body=how%20have%20you%20been%20?'
+$ php apps/Demo.Sandbox/bootstrap/contexts/api.php post 'page://self/blog/posts/newpost?title=hello%20again&body=how%20have%20you%20been%20?'
 ```
 
-記事表示ページにPOSTリクエストをすると記事リソースが追加されます。
+NewpostページにPOSTリクエストをすると記事リソースが追加されます。
