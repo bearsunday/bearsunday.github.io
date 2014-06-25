@@ -54,6 +54,8 @@ Interceptor binding *src/Module/App/Aspect.php*
 
 In this case the `Demo\Sandbox\Interceptor\Form\BlogPost` is bound to methods annotated with `@Form`. Before the request calls the POST method this validation interceptor is called.
 
+Finally, add annotation `@Form` at the comment of the `onPost` method in `src/Resource/Page/Blog/Posts/Newpost.php`. Don't forget to add `use BEAR\Sunday\Annotation\Form;`.
+
 ## @Form Validation Interceptor 
 
 In the interceptor that is wedged between the request and the method, after the tag removal process is when the validation happens. (@TODO make sense?)

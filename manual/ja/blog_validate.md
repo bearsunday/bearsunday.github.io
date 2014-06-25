@@ -54,6 +54,8 @@ final class Form implements AnnotationInterface
 
 これで `@Form` とアノテートされているメソッドに `Demo\Sandbox\Interceptor\Form\BlogPost` が束縛されました。リクエストがPOSTメソッドをコールする前にこのバリデートインターセプターが呼ばれます。
 
+最後に `src/Resource/Page/Blog/Posts/Newpost.php` の `onPost` メソッドのコメントに `@Form` アノテーションを追加します。忘れずに、 `use BEAR\Sunday\Annotation\Form;` も追加してください。
+
 ## @Formバリデーションインターセプター
 
 リクエストとメソッドに割り込んだインターセプターでは、タグを取り除くフィルター処理の後にバリデーションをしています。バリデーションが通れば元のPOSTメソッドを呼びます。
