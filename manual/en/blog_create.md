@@ -39,7 +39,7 @@ date: ["Tue, 24 Jun 2014 00:45:57 GMT"]
 
 You have not specified the required parameters, a *400 Bad Request* response is returned. 
 
-We can check what the required parameters are by using the `options` method.
+We can check what the required parameters are by using the `options` method. (@TODO options method does not show all method params now)
 
 ```
 $ php apps/Demo.Sandbox/bootstrap/contexts/api.php options 'app://self/blog/posts'
@@ -189,37 +189,61 @@ We test that the post has been created by the post method, we then check those c
 
 We have created the app resource that adds a post, we will now create a page resource that grabs input from the web and requests the app resource.
 
-Add a form to a template.
+Add a template.
 
-*Demo.Sandbox/src/Resource/Page/Blog/Posts.tpl*
+*Demo.Sandbox/src/Resource/Page/Blog/Posts/Newpost.tpl*
 
 ```html
-<h1>New Post</h1>
-<form action="/blog/posts" method="POST">
-	<input name="X-HTTP-Method-Override" type="hidden" value="POST" />
-	<div class="control-group {if $errors.title}error{/if}">
-		<label class="control-label" for="title">Title</label>
-		<div class="controls">
-			<input type="text" id="title" name="title" value="{$submit.title}">
-			<p class="help-inline">{$errors.title}</p>
-		</div>
-	</div>
-	<div class="control-group {if $errors.body}error{/if}">
-		<label>Body</label>
-		<textarea name="body" rows="10" cols="40">{$submit.body}</textarea>
-		<p class="help-inline">{$errors.body}</p>
-	</div>
-	<input type="submit" value="Send">
-</form>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+    <div class="container">
+        <h1>New Post</h1>
+        <form action="/blog/posts" method="POST">
+            <input name="X-HTTP-Method-Override" type="hidden" value="POST" />
+            <div class="control-group {if $errors.title}error{/if}">
+                <label class="control-label" for="title">Title</label>
+                <div class="controls">
+                    <input type="text" id="title" name="title" value="{$submit.title}">
+                    <p class="help-inline">{$errors.title}</p>
+                </div>
+            </div>
+            <div class="control-group {if $errors.body}error{/if}">
+                <label>Body</label>
+                <textarea name="body" rows="10" cols="40">{$submit.body}</textarea>
+                <p class="help-inline">{$errors.body}</p>
+            </div>
+            <input type="submit" value="Send">
+        </form>
+    </div>
+</body>
+</html>
 ```
 
 Note: Notice the `X-HTTP-Method-Override` hidden field. This sets the page resource request method. Even if the browser or web server only supports GET/POST, in separation to the external protocol this functions as an internal software protocol.
 
 Note: When specifying a `$_GET` query you set this with `$_GET['_method']`.
 
-Implementing the page resource POST interface.
+Add Newpost page resource and implement the POST interface.
+
+*Demo.Sandbox/src/Resource/Page/Blog/Posts/Newpost.php*
 
 {% highlight php startinline %}
+<?php
+
+namespace Demo\Sandbox\Resource\Page\Blog\Posts;
+
+use BEAR\Resource\ResourceObject;
+use BEAR\Sunday\Inject\ResourceInject;
+
+class Newpost extends ResourceObject
+{
+    use ResourceInject;
+
     /**
      * Post
      *
@@ -234,22 +258,23 @@ Implementing the page resource POST interface.
             ->uri('app://self/blog/posts')
             ->withQuery(['title' => $title, 'body' => $body])
             ->eager->request();
-        
+
         // redirect
         $this->code = 303;
         $this->headers = ['Location' => '/blog/posts'];
         return $this;
     }
+}
 {% endhighlight %}
 
 Unlike with the GET interface with the `withQuery()` the parameters for the resource request are set. Note that unlike a regular PHP method there is no order values are set using named parameters. Like a web request it has been set up for the method request to be made with a `key=value` style query. (The key is the parameter name.)
 
 An **eager->request()** shows that the resource request will be made *immediately*.
 
-From the console let's try a `POST` via a posts page resource request.
+From the console let's try a `POST` via a newpost page resource request.
 
 ```
-$ php apps/Demo.Sandbox/bootstrap/contexts/api.php post 'page://self/blog/posts?title=hello%20again&body=how%20have%20you%20been%20?'
+$ php apps/Demo.Sandbox/bootstrap/contexts/api.php post 'page://self/blog/posts/newpost?title=hello%20again&body=how%20have%20you%20been%20?'
 ```
 
-Now when you make a POST request to the posts view page a post resource is added.
+Now when you make a POST request to the newpost page a post resource is added.
