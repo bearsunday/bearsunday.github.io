@@ -1,74 +1,92 @@
 ---
 layout: default_ja
-title: BEAR.Sunday | Blog Tutorial(8) Deleting Posts
+title: BEAR.Sunday | ブログチュートリアル(8) 記事の削除
 category: Blog Tutorial
 ---
-# DELETE Method 
+# DELETEメソッド
 
-## Deleting a Post page 
+## 記事ページの削除
 
-So that you can delete a post that has is identified with an `id` from our posts page, we will create an `onDelete()` method in the posts page resource, this will respond to a DELETE request.
+記事ページから `id` 指定した記事を削除できるように、記事ページリソースに `onDelete()` メソッドを作成しDELETEリクエストに対応します。
+
+*src/Resource/Page/Blog/Posts/Post.php*
 
 {% highlight php startinline %}
 <?php
+
+namespace Demo\Sandbox\Resource\Page\Blog\Posts;
+
+use BEAR\Resource\ResourceObject;
+use BEAR\Sunday\Inject\ResourceInject;
+
+class Post extends ResourceObject
+{
+    use ResourceInject;
+
     /**
-     * @param int $id
+     * @param int $id entry id
      */
     public function onDelete($id)
     {
         // delete
         $this->resource
-        ->delete
-        ->uri('app://self/posts')
-        ->withQuery(['id' => $id])
-        ->eager
-        ->request();
-        
-        // message
-        $this['message'] = 'Entry deleted.';
-        return $this->onGet();
+            ->delete
+            ->uri('app://self/blog/posts')
+            ->withQuery(['id' => $id])
+            ->eager
+            ->request();
+
+        $this->code = 303;
+        $this->headers = ['Location' => '/blog/posts'];
+
+        return $this;
     }
+}
 {% endhighlight %}
 
-As a page resource receives a `DELETE` request from a web browser it in the same way makes a `DELETE` request to the posts resource.s
+Webブラウザからの `DELETE` リクエストを受け取ったページリソースは、記事リソースを同じように `DELETE` リクエストしています。
 
-This link to the posts page resource will be available on the posts resource template. Using Javascript show a confirmation dialog, then so that the page request is made as a `DELETE` method use the `_method` query.
+この記事ページリソースへのリンクは記事リソースのテンプレートに記述します。JavaScriptを使って確認ダイアログを出し、ページリクエストを `DELETE` にするために `_method` クエリーを使っています。 
 
-  Note: When posting using the `X-HTTP-Method-Override` hidden element or in the GET query a `_method` parameter is an _HTTP Method Override_ method of supporting PUT/DELETE when your browser or when your server environment prevents you from fully using HTTP verbs.
+Note: POSTの時にフォームに `X-HTTP-Method-Override` hiddenエレメントを埋め込んだり、GETクエリーで `_method` を使ったりするのはHTTPメソッドオーバーライドという方法でPUT/DELETEのサポートがないブラウザやサーバー環境でHTTP動詞をフルに使う為の仕組みです。
 
-## Create a Posts Resource DELETE interface 
+## 記事リソースのDELETEインターフェイスの作成
 
-Receive a request post from a posts page and through accessing the DB delete the post. 
+記事ページからリクエストを受け取った記事リソースがDBアクセスで記事を削除します。
 
+*src/Resource/App/Blog/Posts.php*
 
 {% highlight php startinline %}
-<?php
     public function onDelete($id)
     {
         $this->db->delete($this->table, ['id' => $id]);
         $this->code = 204;
+
         return $this;
     }
 {% endhighlight %}
 
-  Note: Like the GET request interface the `$this->db` is automatically set by the injector. What is different to the GET request is that it used the master DB connection.
+Note: GETリクエストインターフェイスと同じく `$this->db` プロパティはインジェクターによって自動でセットされます。GETの時と違うのはマスターDB用の接続が使われる事です。
 
+## コマンドで確認
 
-## Checking this with through the Command Line
-Lets try it out. We have set it up with a 204 status code so it should look like this.
+ではコンソールで試してみましょう。codeに204を指定したのでこのような表示になるはずです。
 
 ```
-$ php api.php delete app://self/posts?id=1
+$ php apps/Demo.Sandbox/bootstrap/contexts/api.php delete app://self/blog/posts?id=1
+
 204 No Content
+...
 [BODY]
+*NULL
+...
 ```
 
-## Unit Test 
+## ユニットテスト
 
-If we access with DELETE the records should be reduced by 1. The test will look something like this.
+DELETEアクセスすると記事が１つ減っているはずです。テストはこのようなものになるでしょう。
 
 {% highlight php startinline %}
-<?php
     /**
      * @test
      */
@@ -77,19 +95,19 @@ If we access with DELETE the records should be reduced by 1. The test will look 
         // dec 1
         $before = $this->getConnection()->getRowCount('posts');
         $response = $this->resource
-        ->delete
-        ->uri('app://self/posts')
-        ->withQuery(['id' => 1])
-        ->eager
-        ->request();
+            ->delete
+            ->uri('app://self/blog/posts')
+            ->withQuery(['id' => 1])
+            ->eager
+            ->request();
         $this->assertEquals($before - 1, $this->getConnection()->getRowCount('posts'), "faild to delete post");
     }
 {% endhighlight %}
 
-## Javascript Confirmation Dialogue 
+## Javascript確認ダイアログ
 
-In order to add a confirmation to a delete action the we use the JS library that is included with the sandbox application.
+削除の確認をするためにSandboxアプリケーションが持つJavaScriptライブラリを利用しています。
 
 ```html
-<a title# "Delete post" class="btn" href="#" onclick="return MyDialogs.loadConfirmationModal('my_dialog', '/blog/posts?_method=delete&id={$post.id}', 'Are you sure ?', 'The entry will be deleted permanently.');"><span class"icon-trash"></span></a>
+<script src="/assets/js/delete_post.js"></script>
 ```
