@@ -1,30 +1,36 @@
 ---
 layout: default_ja
-title: BEAR.Sunday | Blog Tutorial(2) Editing a Post
+title: BEAR.Sunday | ブログチュートリアル(2) 記事の編集
 category: Blog Tutorial
 ---
 
-# PUT Method 
+# PUTメソッド
 
-## Creating an Edit Page 
+## 記事編集ページの作成
 
-This is pretty much the same as posts create page. What is different is only that in the display (GET Request) is that the post data pre-populates the fields.
+記事作成ページとほとんど同じです。違いは最初の表示（GETリクエスト）で指定された記事データを読み込みデフォルトをセットしてることだけです。
+
+*Demo.Sandbox/src/Resource/Page/Blog/Posts/Edit.php*
 
 {% highlight php startinline %}
 <?php
+
+namespace Demo\Sandbox\Resource\Page\Blog\Posts;
+
+use BEAR\Resource\ResourceObject;
+use BEAR\Sunday\Inject\ResourceInject;
+use BEAR\Sunday\Annotation\Form;
+use BEAR\Resource\Annotation\Embed;
+
+class Edit extends ResourceObject
+{
+    use ResourceInject;
+
     /**
-     * @param int $id
+     * @Embed(rel="submit", src="app://self/blog/posts{?id}")
      */
     public function onGet($id)
     {
-        $this['submit'] = $this
-            ->resource
-            ->get
-            ->uri('app://self/posts')
-            ->withQuery(['id' => $id])
-            ->eager
-            ->request()
-            ->body;
         $this['id'] = $id;
 
         return $this;
@@ -39,12 +45,13 @@ This is pretty much the same as posts create page. What is different is only tha
      */
     public function onPut($id, $title, $body)
     {
-        // create post
+        // update post
         $this->resource
             ->put
-            ->uri('app://self/posts')
+            ->uri('app://self/blog/posts')
             ->withQuery(['id' => $id, 'title' => $title, 'body' => $body])
-            ->eager->request();
+            ->eager
+            ->request();
 
         // redirect
         $this->code = 303;
@@ -52,15 +59,80 @@ This is pretty much the same as posts create page. What is different is only tha
 
         return $this;
     }
+}
 {% endhighlight %}
-## PUT Request
 
-In order to update the record we use the `PUT` interface.
+## 記事リソースのPUTインターフェイスの作成
 
-In order to make a `PUT` request we need to insert the `X-HTTP-Method-Override` field.
+記事ページからリクエストを受け取った記事リソースがDBアクセスで記事を変更します。
+
+*Demo.Sandbox/src/Resource/App/Blog/Posts.php*
+
+{% highlight php startinline %}
+    /**
+     * @param int    $id
+     * @param string $title
+     * @param string $body
+     */
+    public function onPut($id, $title, $body)
+    {
+        $values = [
+            'title' => $title,
+            'body' => $body,
+            'modified' => $this->time
+        ];
+        $this->db->update($this->table, $values, ['id' => $id]);
+        $this->code = 204;
+
+        return $this;
+    }
+{% endhighlight %}
+
+## テンプレートの作成
+
+*Demo.Sandbox/src/Resource/Page/Blog/Posts/Edit.tpl*
+
+{% highlight php startinline %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+    <div class="container">
+        <h1>New Post</h1>
+        <form action="/blog/posts/edit" method="POST">
+            <input type="hidden" name="_method" value="PUT">
+            <input type="hidden" name="id" value="{$id}">
+            
+            <div class="form-group {if $errors.title}error{/if}">
+                <label class="control-label" for="title">Title</label>
+                <div class="controls">
+                    <input type="text" id="title" name="title" value="{$submit.title}">
+                    <p class="help-block">{$errors.title}</p>
+                </div>
+            </div>
+            <div class="form-group {if $errors.body}error{/if}">
+                <label class="control-label" for="body">Body</label>
+                <textarea name="body" rows="10" cols="40">{$submit.body}</textarea>
+                <p class="help-block">{$errors.body}</p>
+            </div>
+            <input type="submit" value="Send">
+        </form>
+    </div>
+</body>
+</html>
+{% endhighlight %}
+
+## PUTリクエスト
+
+変更には `PUT` インターフェイスを使っています。
+
+`PUT` リクエストにするためにフォームにHTTPメソッドオーバーライドのための項目を埋め込みます。
 
 ```html
-<input name="X-HTTP-Method-Override" type="hidden" value"PUT" />
+<input type="hidden" name="_method" value="PUT">
 ```
 
- Note: In this tutorial we have handles `POST` posts creation and `PUT` posts update. The difference between POST/PUT is *[Idempotence](http://en.wikipedia.org/wiki/Idempotence)*. If the same `POST` request is made multiple times to the posts resource the amount of post records will increase and increase, in an `PUT` update no matter whether the request is made once or multiple times has the same affect. Generally basing your choice of method upon indempotence is a good idea.
+Note: このチュートリアルでは　`POST` を記事の作成、`PUT` を記事の変更と扱ってきました。POST/PUTの区別は *[べき等性](http://ja.wikipedia.org/wiki/%E5%86%AA%E7%AD%89)* により行われます。記事リソースに同じ `POST` リクエストを複数回行うとどんどん記事が増えていきますが、`PUT` による変更では１回行っても複数回行っても同じです。一般にメソッドの選択はこのべき等性に基づいて行うのが適当でしょう。
