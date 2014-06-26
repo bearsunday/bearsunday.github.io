@@ -47,7 +47,7 @@ Let's implement the Sandbox application. The URI, PHP class and file layout are 
 
 | URI | Class | File |
 |-----|--------|-----|
-| app://self/first/greeting | Sandbox\Resource\App\First\Greeting | apps/Demo.Sandbox/src/Sandbox/Resource/App/First/Greeting.php |
+| app://self/first/greeting | Demo\Sandbox\Resource\App\First\Greeting | apps/Demo.Sandbox/src/Sandbox/Resource/App/First/Greeting.php |
 
 Implementing the request interface (method).
 

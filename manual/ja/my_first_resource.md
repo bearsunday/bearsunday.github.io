@@ -47,7 +47,7 @@ Sandboxアプリケーションに実装します。URIとPHPのクラス、フ�
 
 | URI | Class | File |
 |-----|--------|-----|
-| app://self/first/greeting | Sandbox\Resource\App\First\Greeting | apps/Demo.Sandbox/src/Sandbox/Resource/App/First/Greeting.php |
+| app://self/first/greeting | Demo\Sandbox\Resource\App\First\Greeting | apps/Demo.Sandbox/src/Sandbox/Resource/App/First/Greeting.php |
 
 リクエストインターフェイス（メソッド）を実装します。
 
@@ -124,7 +124,7 @@ Hello, BEAR
 ## リソースオブジェクトが返ります
 
 この挨拶リソース実装では文字列を返していますが、
-以下の記述のと同じものとして扱われます。
+以下の記述と同じものとして扱われます。
 どちらの記述でもリクエストしたクライアントのはリソースオブジェクトが返ります。
 
 {% highlight php startinline %}
