@@ -1,61 +1,58 @@
 ---
 layout: default_ja
-title: BEAR.Sunday | My First Hypermedia
+title: BEAR.Sunday | はじめてのハイパーメディア
 category: My First - Tutorial
 ---
 
-# My First Hypermedia
+# はじめてのハイパーメディア
 
-## What is Hypermedia?
+## ハイパーメディアとはなんでしょうか
 
-In 1962 Ted Nelson proposed [**Hypertext**](http://en.wikipedia.org/wiki/Hypertext).
-This is when in order to refer some text other text referral links are embedded in the text itself, the referrals that joins the text are called Hyperlinks.
+1962年、Ted Nelson氏が [**ハイパーテキスト**](http://en.wikipedia.org/wiki/Hypertext) を発案しました。これはテキストが他のテキストを参照するための参照リンクをテキストに埋め込むというもので、テキスト間を結びつける参照をハイパーリンクと呼びます。
 
-The most famous and successful implementation of Hypertext is the Worldwide Web.
+最も有名で成功したハイパーテキスト実装がWWWです（<a>タグのhrefはハイパーリファレンスの略です）。
 
-(The href in a property of the `<a>` tag is an abbreviation for hyper-reference).
-Also to note is that PHP is an acronym of *PHP: Hypertext Preprocessor* [PHP an acronym for what?](http://www.php.net/manual/en/faq.general.php#faq.general.acronym))
+これをテキストに制限しないであらゆるメディアにしたのがハイパーメディアです。重要なのは相互参照（hyper reference）のためのリンクが埋め込まれてるということです。
 
-## Non Existent Hypermedia
+また、PHPは *PHP: Hypertext Preprocessor* の略です。[PHP とは何の略ですか?](http://www.php.net/manual/ja/faq.general.php#faq.general.acronym))
 
-Let's think in terms of a `REST API` for example when you order a coffee at a coffee shop.
+## ハイパーメディアではないもの
 
-When you order a coffee, the `REST API` is provided with the following.
+例えばコーヒーショップでコーヒーをオーダーする、これをREST APIとして考えてみます。
 
-| type | value |
-|------|-------|
-| METHOD | POST |
-| URI | http://restbucks.com/order/{?drink} |
-| Query | drink=Drink Name |
+飲み物を注文するREST APIが以下の様に与えられています。
 
-You use this `API` when ordering a drink. When using this API you create a (POST) `Order Resource`.
+| type   | value                               |
+|--------|-------------------------------------|
+| METHOD | POST                                |
+| URI    | http://restbucks.com/order/{?drink} |
+| Query  | drink=Drink Name                    |
 
-{% highlight php startinline %}
+この `API` を使って飲み物を注文します。これのAPIを使って `注文リソース` を作成（POST）します。
+
+```
 post http://restbucks.com/order/?drink=latte
-{% endhighlight %}
+```
 
-The order resource has been created and the order contents are returned.
+注文リソースは作成され注文内容が返ってきました。
 
-{% highlight php startinline %}
+```json
 {
     "drink": "latte",
     "cost": 2.5,
     "id": "5052",
 }
-{% endhighlight %}
+```
 
-This is *not hypermedia*. The data does not have any attached uniquely displayed URI's or related links.
+これは **ハイパーメディアではありません**。情報を一意に現すURIが付いていないし参照リンクもありません。
 
 ## HAL - Hypertext Application Language
 
-JSON is not essentially a hypermedia format, however using JSON the
-[http://stateless.co/hal_specification.html HAL - Hypertext Application Language]
-which is a [http://tools.ietf.org/html/draft-kelly-json-hal-00 RFC Draft Standard]
-is used to provide `JSON+HAL` hyper-media.
+JSONは本来ハイパーメディアのためのフォーマットではありませんが、JSON+HALというメディアタイプを与えハイパーメディアとしてJSONを扱おうという [HAL - Hypertext Application Language](http://stateless.co/hal_specification.html) という [RFCドラフト規格](http://tools.ietf.org/html/draft-kelly-json-hal-00) があります。
 
-In BEAR.Sunday when you set your resource rendering to `HalRenderer` you can output in HAL format.
+BEAR.Sundayではリソースのレンダリングを `HalRenderer` にすることでHALフォーマットで出力することができます。
 
-{% highlight php startinline %}
+```json
 {
     "drink": "latte",
     "cost": 2.5,
@@ -69,146 +66,166 @@ In BEAR.Sunday when you set your resource rendering to `HalRenderer` you can out
         }
     }
 }
-{% endhighlight %}
+```
 
-This is an order resource output in the `HAL` Format.
-The URI's and related link information for itself are embedded in the `_links` property.
-The order and payment relationship is not saved by the client, but by the service.
+これがHALのフォーマットで出力された注文リソースです。
+自己のURIと関連するリンクの情報が `_links` に埋め込まれています。
+注文と支払いの関係性をクライアントでなくサービスが保持しています。
 
-On the service side you can change the link references according to service circumstances.
-In those times you need to change nothing on the client, just carry on following the provided link.
-By having links you transform your service from just another data format to a self descriptive Hyper-Media resource.
+サービス側はサービスの都合でリンク先を変える事ができます。
+そのときにクライアントの利用に変更はありません。リンクを辿るだけです。
+リンクを持つ事でデータは単なるフォーマットから自己記述的なハイパーメディアになりました。
 
-## Adding Hyperlinks
+## ハイパーリンクを追加する
 
-You declare your resource object's `links` property like this.
+リソースオブジェクトの `links` プロパティでこのように指定します。
 
 {% highlight php startinline %}
     public $links = [
-        'news' # > [Link::HREF > 'page://self/news/today']
+        'news' => [Link::HREF > 'page://self/news/today']
     ];
 {% endhighlight %}
 
-## Using a URI Template for your Query
+## クエリーにURIテンプレートを使う
 
-When the URI to dynamically decided you can for example you can create a query in the onPost method like this.
+URIが動的に決まる場合にはこのようにonPost等のメソッド内でクエリーをつくることもできます。
 
 {% highlight php startinline %}
-$this->links['friend'] # [Link::HREF => "app://self/sns/friend?id{$id}"];
+$this->links['friend'] = [Link::HREF => "app://self/sns/friend?id{$id}"];
 {% endhighlight %}
 
-In the `links` property you can set the URI template like this.
+`links` プロパティでこのようにURIテンプレートを指定することもできます。 
 
 {% highlight php startinline %}
     public $links => [
-        'friend' # > [Link::HREF => 'app://self/sns/friend{?id}', Link::TEMPLATED > true]
+        'friend' => [Link::HREF => 'app://self/sns/friend{?id}', Link::TEMPLATED => true]
     ];
 {% endhighlight %}
 
-Here the necessary variable `{id}` is retrieved from the resource `body`.
+ここに必要な変数 `{id}` はリソース `body` から取得されます。
 
-## Lets Try
+## 試してみましょう
 
-Here is the class that assigns `$item` and creates the order resource.
+`$item` を指定すると注文リソースを作成するクラスです。
 
 {% highlight php startinline %}
 <?php
-namespace Sandbox\Resource\App\First\HyperMedia;
 
-use BEAR\Resource\AbstractObject;
+namespace Demo\Sandbox\Resource\App\First\Hypermedia;
+
+use BEAR\Resource\ResourceObject;
 use BEAR\Resource\Link;
 
 /**
- * Greeting resource
+ * Order resource
  */
-class Order extends AbstractObject
+class Order extends ResourceObject
 {
+    /**
+     * @param string $item
+     *
+     * @return Order
+     */
     public function onPost($item)
     {
         $this['item'] = $item;
         $this['id'] = date('is'); // min+sec
-
         return $this;
     }
 }
 {% endhighlight %}
 
-In order to add hyperlinks setup the `links` property.
+これにハイパーリンクを加えるために `links` プロパティを設置します。
 
 {% highlight php startinline %}
     public $links = [
-        'payment' # > [Link::HREF => 'app:/self/first/hypermedia/payment{?id}', Link::TEMPLATED > true]
+        'payment' => [Link::HREF => 'app://self/first/hypermedia/payment{?id}', Link::TEMPLATED => true]
     ];
 {% endhighlight %}
 
-## Make API Request From the Console
+## コンソールでAPIリクエストしてみます
 
-{% highlight php startinline %}
-$ api get app://self/first/hypermedia/user?id=1
-{% endhighlight %}
+```
+$ php apps/Demo.Sandbox/bootstrap/contexts/api.php post app://self/first/hypermedia/order?item=book
 
-{% highlight php startinline %}
 200 OK
-content-type: application/hal+json; charset=UTF-8
+content-type: ["application\/hal+json; charset=UTF-8"]
+cache-control: ["no-cache"]
+date: ["Thu, 26 Jun 2014 07:26:01 GMT"]
 [BODY]
+item book,
+id 2601,
+
+[VIEW]
 {
     "item": "book",
-    "id": "1442",
+    "id": "2601",
     "_links": {
         "self": {
-            "href": "app://self/first/hypermedia/order?item=book"
+            "href": "http://localhost/app/first/hypermedia/order/?item=book"
         },
         "payment": {
-            "href": "app:/self/first/hypermedia/payment{?id}",
+            "href": "http://localhost/app/first/hypermedia/payment{/?id}",
             "templated": true
         }
     }
 }
-{% endhighlight %}
+```
 
-The `payment` link now appears.
+`payment` リンクが現れるようになりました。
 
-## Using Links in a Program
+## リンクをプログラムで利用する
 
-In order to use links in your code, inject the `A` object using the trait `AInject` and use the `href` method to retrieve links.
-The resource body can retrieve the link composed by the URI template.
+リンクをコードで利用するためにはトレイト `AInject` を使い、`A` オブジェクトをインジェクトしてその `href` メソッドでリンクを取得します。
+リソースのボディがURIテンプレートに合成されてリンクが取得できます。
 
 {% highlight php startinline %}
 <?php
-namespace Sandbox\Resource\App\First\HyperMedia;
+
+namespace Demo\Sandbox\Resource\App\First\Hypermedia;
 
 use BEAR\Resource\ResourceObject;
-use BEAR\Sunday\Inject\ResourceInject;
 use BEAR\Sunday\Inject\AInject;
+use BEAR\Sunday\Inject\ResourceInject;
 
+/**
+ * Shop resource
+ */
 class Shop extends ResourceObject
 {
     use ResourceInject;
     use AInject;
 
+    /**
+     * @param string $item
+     * @param string $card_no
+     *
+     * @return Shop
+     */
     public function onPost($item, $card_no)
     {
         $order = $this
-        ->resource
-        ->post
-        ->uri('app://self/first/hypermedia/order')
-        ->withQuery(['item' => $item])
-        ->eager
-        ->request();
+            ->resource
+            ->post
+            ->uri('app://self/first/hypermedia/order')
+            ->withQuery(['item' => $item])
+            ->eager
+            ->request();
 
         $payment = $this->a->href('payment', $order);
 
-        $this
-        ->resource
-        ->put
-        ->uri($payment)
-        ->withQuery(['card_no' => $card_no])
-        ->request();
+        $this->resource
+            ->put
+            ->uri($payment)
+            ->withQuery(['card_no' => $card_no])
+            ->request();
 
         $this->code = 204;
+
         return $this;
     }
 }
 {% endhighlight %}
-Just like on a web page and you just click a link to go on to the next page, you are now able to control the next links in the service layer.
-Even when the links change there is no need for any change in the client.
+
+Webページでリンクをクリックするだけで次のページに移れるように、次のリンクをサービス側がコントロールできるようになりました。
+リンク先に変更があってもクライアントには変更がありません。
