@@ -31,35 +31,43 @@ The expected greeting resource is as below.
 
 Request
 
-{% highlight php startinline %}
+```
 get app://self/first/greeting?name=BEAR
-{% endhighlight %}
+```
 
 Response
 
-{% highlight php startinline %}
+```
 Hello, BEAR.
-{% endhighlight %}
+```
 
 ## Resource Object 
 
-Lets run the Sandbox application. The URI, PHP class and file layout is as follows. 
-
+Let's implement the Sandbox application. The URI, PHP class and file layout are as follows. 
 
 | URI | Class | File |
 |-----|--------|-----|
-| app://self/first/greeting | Sandbox\Resource\App\First\Greeting | apps/Sandbox/src/Sandbox/Resource/App/First/Greeting.php |
+| app://self/first/greeting | Sandbox\Resource\App\First\Greeting | apps/Demo.Sandbox/src/Sandbox/Resource/App/First/Greeting.php |
 
 Implementing the request interface (method).
 
 {% highlight php startinline %}
 <?php
-namespace Sandbox\Resource\App\First;
+
+namespace Demo\Sandbox\Resource\App\First;
 
 use BEAR\Resource\ResourceObject;
 
+/**
+ * Greeting resource
+ */
 class Greeting extends ResourceObject
 {
+    /**
+     * @param string $name
+     *
+     * @return string
+     */
     public function onGet($name)
     {
         return "Hello, {$name}";
@@ -69,51 +77,49 @@ class Greeting extends ResourceObject
 
 ## Command Line Testing 
 
-Lets try this out using the Command Line Interface (CLI). 
+Let's try this out using the Command Line Interface (CLI). 
 In the console we will enter some commands, starting with a *failure*.
 
-{% highlight php startinline %}
-php api.php get app://self/first/greeting
-{% endhighlight %}
+```
+$ php apps/Demo.Sandbox/bootstrap/contexts/api.php get app://self/first/greeting
+```
 
-400 Bad Request　is returned in the response.
+400 Bad Request is returned in the response.
 
-{% highlight php startinline %}
+```
 400 Bad Request
 ...
 [BODY]
-Internal error occurred (e613b4)
-{% endhighlight %}
+```
 
 As you can see in the header information that an exception has been raised, 
 you can decipher that in the query a `name` is required. 
-Using the *`OPTIONS`Method* you can more accurately examine this.
+Using the *`OPTIONS` Method* you can more accurately examine this.
 
-{% highlight php startinline %}
-php api.php options app://self/first/greeting?name=BEAR
-{% endhighlight %}
+```
+$ php apps/Demo.Sandbox/bootstrap/contexts/api.php options app://self/first/greeting
 
-{% highlight php startinline %}
 200 OK
 allow: ["get"]
 param-get: ["name"]
-{% endhighlight %}
+...
+```
 
 This tells us that the resource has the `GET` method enabled and requires 1 parameter `name`.
 If this `name` parameter was to be optional you would wrap it in parenthesis `(name)`.
-Now we know about the required parameters via the options method lets try again.
- 
+Now we know about the required parameters via the options method, let's try again.
 
-{% highlight php startinline %}
-php api.php get app://self/first/greeting?name=BEAR
-{% endhighlight %}
+```
+$ php apps/Demo.Sandbox/bootstrap/contexts/api.php get app://self/first/greeting?name=BEAR
 
-{% highlight php startinline %}
 200 OK
-...
+content-type: ["application\/hal+json; charset=UTF-8"]
+cache-control: ["no-cache"]
+date: ["Thu, 26 Jun 2014 11:25:07 GMT"]
 [BODY]
 Hello, BEAR
-{% endhighlight %}
+```
+
 Now the correct response is returned. Success!
 
 ## The resource object is returned 
@@ -123,12 +129,11 @@ but if you alter it as below it will be handled in the same way.
 Which ever method is used the request made by the client will return a resource object.
 
 {% highlight php startinline %}
-<?php
 public function onGet($name)
- {
+{
     $this->body = "Hello, {$name}";
     return $this;
 }
 {% endhighlight %}
 
-Lets change the `onGet` method like this and check that the response returned has not changed.
+Let's change the `onGet` method like this and check that the response returned has not changed.
