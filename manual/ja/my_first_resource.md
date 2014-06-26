@@ -1,65 +1,73 @@
 ---
 layout: default_ja
-title: BEAR.Sunday | My First Resource
+title: BEAR.Sunday | はじめてのリソース
 category: My First - Tutorial
 ---
 
-# My First Resource Object
+# はじめてのリソース
 
-## Application Resource
+## アプリケーションリソース
 
-Here we will pass in a `name` and create a `greeting` resource which the greeting will return.
-In terms of MVC the `Model` in BEAR.Sunday is called an `Application Resource`. 
-An application resource is used as an internal API within the application.
+ここでは `name` を渡すと挨拶を返してくれる `greeting` リソースをつくってみます。
+MVCでいうと `モデル` にあたる部分をBEAR.Sundayでは `アプリケーション（app）リソース` と呼びます。
+アプリケーションリソースはアプリケーションの内部APIとして利用されます。
 
-## Resource Architecture 
+## リソース設計
 
-A resource is a bundle of information. 
-He we have a greeting (`greeting`) which is used as a `greeting resource`.
-In order to create the resource object class the following is needed.
+リソースとは情報のかたまりです。
+ここでは挨拶（`greeting`）が「挨拶リソース」として使われます。
+リソースオブジェクトクラスには以下のものが必要です。
 
  * URI
- * Request Interface 
+ * リクエストインターフェイス
 
-The pattern is as follows.
+ここではこういう風に決めました。
 
-| Method | URI                         | Query      |
+| メソッド | URI                         | クエリー    |
 |--------|-----------------------------|------------|
-| get    | app://self/first/greeting   |?name=Name  |
+| get    | app://self/first/greeting   |?name=名前  |
 
-The expected greeting resource is as below.
+期待するgreetingリソースはこういうものです。
 
-Request
+リクエスト
 
-{% highlight php startinline %}
+```
 get app://self/first/greeting?name=BEAR
-{% endhighlight %}
+```
 
-Response
+レスポンス
 
-{% highlight php startinline %}
+```
 Hello, BEAR.
-{% endhighlight %}
+```
 
-## Resource Object 
+## リソースオブジェクト
 
-Lets run the Sandbox application. The URI, PHP class and file layout is as follows. 
-
+Sandboxアプリケーションに実装します。URIとPHPのクラス、ファイル位置はこのように対応します。
 
 | URI | Class | File |
 |-----|--------|-----|
-| app://self/first/greeting | Sandbox\Resource\App\First\Greeting | apps/Sandbox/src/Sandbox/Resource/App/First/Greeting.php |
+| app://self/first/greeting | Sandbox\Resource\App\First\Greeting | apps/Demo.Sandbox/src/Sandbox/Resource/App/First/Greeting.php |
 
-Implementing the request interface (method).
+リクエストインターフェイス（メソッド）を実装します。
 
 {% highlight php startinline %}
 <?php
-namespace Sandbox\Resource\App\First;
+
+namespace Demo\Sandbox\Resource\App\First;
 
 use BEAR\Resource\ResourceObject;
 
+/**
+ * Greeting resource
+ */
 class Greeting extends ResourceObject
 {
+    /**
+     * @param string $name
+     *
+     * @return string
+     */
     public function onGet($name)
     {
         return "Hello, {$name}";
@@ -67,68 +75,64 @@ class Greeting extends ResourceObject
 }
 {% endhighlight %}
 
-## Command Line Testing 
+## コマンドラインで試してみましょう
 
-Lets try this out using the Command Line Interface (CLI). 
-In the console we will enter some commands, starting with a *failure*.
+コンソールから入力します。まずは *失敗* から。
 
-{% highlight php startinline %}
-php api.php get app://self/first/greeting
-{% endhighlight %}
+```
+$ php apps/Demo.Sandbox/bootstrap/contexts/api.php get app://self/first/greeting
+```
 
-400 Bad Request　is returned in the response.
+400 Bad Requestのレスポンスが帰ってきます。
 
-{% highlight php startinline %}
+```
 400 Bad Request
 ...
 [BODY]
-Internal error occurred (e613b4)
-{% endhighlight %}
+```
 
-As you can see in the header information that an exception has been raised, 
-you can decipher that in the query a `name` is required. 
-Using the *`OPTIONS`Method* you can more accurately examine this.
+ヘッダーをみると例外発生の情報があり、
+クエリーに `name` が必要だというこ とがわかります。
+*`OPTIONS` メソッド* を使ってもっと正確に調べてみることができます。
 
-{% highlight php startinline %}
-php api.php options app://self/first/greeting?name=BEAR
-{% endhighlight %}
+```
+$ php apps/Demo.Sandbox/bootstrap/contexts/api.php options app://self/first/greeting
 
-{% highlight php startinline %}
 200 OK
 allow: ["get"]
 param-get: ["name"]
-{% endhighlight %}
-
-This tells us that the resource has the `GET` method enabled and requires 1 parameter `name`.
-If this `name` parameter was to be optional you would wrap it in parenthesis `(name)`.
-Now we know about the required parameters via the options method lets try again.
- 
-
-{% highlight php startinline %}
-php api.php get app://self/first/greeting?name=BEAR
-{% endhighlight %}
-
-{% highlight php startinline %}
-200 OK
 ...
+```
+
+このリソースは `GET` メソッドだけが有効で、パラメーターは１つ、`name` が必要だというのが分かります。
+もしこの `name` パラメーターがオプションであるなら `(name)` と表示されます。
+では引き数がOPTIONSメソッドでわかったところで再度試してみます。
+
+```
+$ php apps/Demo.Sandbox/bootstrap/contexts/api.php get app://self/first/greeting?name=BEAR
+
+200 OK
+content-type: ["application\/hal+json; charset=UTF-8"]
+cache-control: ["no-cache"]
+date: ["Thu, 26 Jun 2014 11:25:07 GMT"]
 [BODY]
 Hello, BEAR
-{% endhighlight %}
-Now the correct response is returned. Success!
+```
 
-## The resource object is returned 
+今度は正しいレスポンスが返ってきました。成功です！
 
-This greeting resource returns a string when run, 
-but if you alter it as below it will be handled in the same way.
-Which ever method is used the request made by the client will return a resource object.
+## リソースオブジェクトが返ります
+
+この挨拶リソース実装では文字列を返していますが、
+以下の記述のと同じものとして扱われます。
+どちらの記述でもリクエストしたクライアントのはリソースオブジェクトが返ります。
 
 {% highlight php startinline %}
-<?php
 public function onGet($name)
- {
+{
     $this->body = "Hello, {$name}";
     return $this;
 }
 {% endhighlight %}
 
-Lets change the `onGet` method like this and check that the response returned has not changed.
+`onGet` メソッド内をこのように変えてレスポンスが変わらない事を確認してみましょう。
