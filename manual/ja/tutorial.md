@@ -10,4 +10,4 @@ category: Tutorial
 
 ## ブログチュートリアル
 
-BEAR.Sundayによる、[CakePHP ブログチュートリアル](http://book.cakephp.org/2.0/ja/tutorials-and-examples/blog/blog.html) や [Symfony2 blogチュートリアル](http://docs.symfony.gr.jp/symfony2/sf2-blog-tutorial/) と同じようなシンプルなブログアプリケーション。
+BEAR.Sundayによる、[CakePHP ブログチュートリアル](http://book.cakephp.org/2.0/ja/tutorials-and-examples/blog/blog.html) や [Symfony2 でブログを作ろう](http://symblog.ganchiku.com/) と同じようなシンプルなブログアプリケーション。
