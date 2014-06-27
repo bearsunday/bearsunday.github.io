@@ -6,7 +6,7 @@ category:  Blog Tutorial
 
 # はじめに
 
-このチュートリアルでは、[CakePHP Blog Tutorial](http://book.cakephp.org/2.0/en/tutorials-and-examples/blog/blog.html)や[Symfony2 Blog Tutorial](http://tutorial.symblog.co.uk/)とほぼ同じシンプルなブログアプリケーションをBEAR.Sundayで構築します。
+このチュートリアルでは、[CakePHP ブログチュートリアル](http://book.cakephp.org/2.0/ja/tutorials-and-examples/blog/blog.html) や [Symfony2 でブログを作ろう](http://symblog.ganchiku.com/) とほぼ同じシンプルなブログアプリケーションをBEAR.Sundayで構築します。
 
 BEAR.Sundayをインストールし、データベースの設定を行い、ブログの投稿記事の一覧表示、追加、編集、削除などのアプリケーションロジックを作成します。
 

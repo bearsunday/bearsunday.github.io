@@ -1,9 +1,12 @@
 ---
 layout: default_ja
-title: BEAR.Sunday | ブログチュートリアル(3) 記事リソースの作成
+title: BEAR.Sunday | ブログチュートリアル 記事リソースの作成
 category: Blog Tutorial
 ---
-# リソースオブジェクト
+
+# 記事リソースの作成
+
+## リソースオブジェクト
 
 BEAR.Sundayはリソース指向のフレームワークです。意味のある情報のまとまりにリソースとしてURIが与えられ、GET/POSTリクエストに対応するリクエストインターフェイスを持ちます。
 
@@ -22,6 +25,7 @@ MVCでいうとコントローラーやモデルというコンポーネント�
 
 {% highlight php startinline %}
 <?php
+
 namespace Demo\Sandbox\Resource\App\Blog;
 
 use BEAR\Resource\ResourceObject;
@@ -38,13 +42,13 @@ class Posts extends ResourceObject
 
 リクエストに応じたメソッド（リクエストインターフェイス）内ではデータを `body` プロパティにセットして `$this` を返します。
 
-Note: データを直接返すとクライアントには値が$bodyプロパティにセットされた`$this`が返ります。
+Note: データを直接返すとクライアントには値が `$body` プロパティにセットされた `$this` が返ります。
 
 ## リクエストインターフェイス実装
 
 次は実際にDBをアクセスしてデータを取り出すGETリクエストに対する `onGet` メソッドを実装します。
 
-BEAR.Sundayは自身のデータベース利用ライブラリや抽象化ライブラリを持ちません。アプリケーションリソースクラス内でSQLを直接利用したり、ORMを使用したりします。Sandboxアプリケーションでは [Docrine DBAL](http://www.doctrine-project.org/projects/dbal.html) でSQLを記述します。
+BEAR.Sundayは自身のデータベース利用ライブラリや抽象化ライブラリを持ちません。アプリケーションリソースクラス内でSQLを直接利用したり、ORMを使用したりします。Sandboxアプリケーションでは [PDO](http://www.php.net/manual/ja/book.pdo.php) でSQLを記述します。
 
 *Demo.Sandbox/src/Resource/App/Blog/Posts.php*
 
@@ -53,11 +57,10 @@ BEAR.Sundayは自身のデータベース利用ライブラリや抽象化ライ
 
 namespace Demo\Sandbox\Resource\App\Blog;
 
+use BEAR\Sunday\Annotation\Db;
 use BEAR\Resource\ResourceObject;
 use BEAR\Package\Module\Database\Dbal\Setter\DbSetterTrait;
-use BEAR\Resource\Code;
 use PDO;
-use BEAR\Sunday\Annotation\Db;
 
 /**
  * @Db
@@ -102,7 +105,7 @@ class Posts extends ResourceObject
 }
 {% endhighlight %}
 
-リソースクラスではリソースのリクエストインターフェイスに対応するメソッドを記述します。この記事リソースでは引き数として`$id`が指定されると記事１つ、指定されないと全ての記事を返します。
+リソースクラスではリソースのリクエストインターフェイスに対応するメソッドを記述します。この記事リソースでは引き数として `$id` が指定されると記事１つ、指定されないと全ての記事を返します。
 
 ## コマンドラインからリソースの利用
 
@@ -215,9 +218,8 @@ $ web get /blog/posts
 作成したリソースには名前（URI）が与えられアプリケーション内部、外部ともに同様のアクセスをすることができます。
 APIの集合がBEAR.Sundayアプリケーションになります。
 
-
 ## ランタイムインジェクション
 
-アプリケーションリソースがGETリクエストでアクセスされる度に`setDb`セッターメソッドを通してDBオブジェクトが注入（外部から代入）されます。
-`GET`リクエストではスレーブDBが注入され、その他の`PUT`、`POST`、`DELETE`リクエストではマスターDBオブジェクトが注入されます。
-これをランタイムインジェクションと呼びます。指定した特定のメソッドがコールされる直前に`インターセプター`と呼ばれる割り込み処理が実行されメソッド名から（`GET`かそれ以外か）適切なDBオブジェクトを選択して注入します。
+アプリケーションリソースがGETリクエストでアクセスされる度に `DbSetterTrait` の `setDb` セッターメソッドを通してDBオブジェクトが注入（外部から代入）されます。
+`GET` リクエストではスレーブDBが注入され、その他の `PUT`、`POST`、`DELETE` リクエストではマスターDBオブジェクトが注入されます。
+これをランタイムインジェクションと呼びます。指定した特定のメソッドがコールされる直前に `インターセプター` と呼ばれる割り込み処理が実行されメソッド名から（`GET` かそれ以外か）適切なDBオブジェクトを選択して注入します。

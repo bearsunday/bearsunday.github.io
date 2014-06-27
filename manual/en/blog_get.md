@@ -1,9 +1,12 @@
 ---
 layout: default
-title: BEAR.Sunday | Blog Tutorial(3) Creating an posts resource
+title: BEAR.Sunday | Blog Tutorial Creating a Posts Resource
 category: Blog Tutorial
 ---
-# Resource Object 
+
+# Creating a Posts Resource
+
+## Resource Object 
 
 BEAR.Sunday is a resource orientated framework. The relevant information is grouped into a resource, given a URI and has a request interface so that it works with GET/POST requests.
 
@@ -23,6 +26,7 @@ It is implemented in this kind of example resource class.
 
 {% highlight php startinline %}
 <?php
+
 namespace Demo\Sandbox\Resource\App\Blog;
 
 use BEAR\Resource\ResourceObject;
@@ -39,13 +43,13 @@ class Posts extends ResourceObject
 
 The inside the method that corresponds to the request (request interface) data is assigned to the `body` property and `$this` is returned.
  
-Note: Instead of setting the $body property you can just directly return data. In which case in the receiving side the equivalent of `return $this;` is returned.
+Note: Instead of setting the `$body` property you can just directly return data. In which case in the receiving side the equivalent of `return $this;` is returned.
 
 ## Implement the Request Interface 
 
 Next we will actually access a db and extract data to be used in an `onGet` method to respond to a GET request.
 
-BEAR.Sunday doesn't have its own database usage library or database abstraction library. Inside the application resource by using other libraries you can directly use SQL or using an ORM. Inside the sandbox application [Docrine DBAL](http://www.doctrine-project.org/projects/dbal.html) is used.
+BEAR.Sunday doesn't have its own database usage library or database abstraction library. Inside the application resource by using other libraries you can directly use SQL or using an ORM. Inside the sandbox application [PDO](http://www.php.net/manual/en/book.pdo.php) is used.
 
 *Demo.Sandbox/src/Resource/App/Blog/Posts.php*
 
@@ -218,8 +222,8 @@ We _do not_ create/provide a web application based external API interface, we bu
 
 ## Runtime Injection 
 
-Each time this app resource is accessed by a get request, the setDb() in DbSetterTrait get previously called and the DB object is injected from outside. It is not configured for this class to use any DB object, please focus on the injected object that is being relied on. In a *GET* request a slave DB object can be injected and for the other *PUT*,*POST*,*DELETE* requests a master DB object.
+Each time this app resource is accessed by a get request, the `setDb` method in `DbSetterTrait` get previously called and the DB object is injected from outside. It is not configured for this class to use any DB object, please focus on the injected object that is being relied on. In a *GET* request a slave DB object can be injected and for the other *PUT*, *POST*, *DELETE* requests a master DB object.
 
 This is referred to as runtime injection. Binding between the particular method (in this case onGet) and the intercepter that is called before that method is executed (in this case DB object injector) are then acheived.
 
-This architecture of the DB object being injected at runtime is not a BEAR.Sunday fixed structure it is the work of `DotrineDbalModule` which you install in `AppModule`. In  `DotrineDbalModule` class methods annotated with *@Db* binds the DB injector, that DB injector looks at the request method, decides whether master or slave should be used and sets the DB object.
+This architecture of the DB object being injected at runtime is not a BEAR.Sunday fixed structure it is the work of `DbalModule` which you install in `AppModule`. In  `DbalModule` class methods annotated with `@Db` binds the DB injector, that DB injector looks at the request method, decides whether master or slave should be used and sets the DB object.

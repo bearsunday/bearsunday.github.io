@@ -1,12 +1,14 @@
 ---
 layout: default
-title: BEAR.Sunday | Blog Tutorial(2) Editing a Post
+title: BEAR.Sunday | Blog Tutorial Editing a Post
 category: Blog Tutorial
 ---
 
-# PUT Method 
+# Editing a Post
 
-## Creating an Edit Page 
+## PUT Method
+
+### Creating an Edit Page
 
 This is pretty much the same as posts create page. What is different is only that in the display (GET Request) is that the post data pre-populates the fields.
 
@@ -54,7 +56,7 @@ This is pretty much the same as posts create page. What is different is only tha
     }
 {% endhighlight %}
 
-## Create a Posts Resource PUT interface 
+### Create a Posts Resource PUT interface 
 
 Receive a request post from a posts page and through accessing the DB update the post. 
 
@@ -80,7 +82,7 @@ Receive a request post from a posts page and through accessing the DB update the
     }
 {% endhighlight %}
 
-## Create a template
+### Create a template
 
 *Demo.Sandbox/src/Resource/Page/Blog/Posts/Edit.tpl*
 
@@ -117,7 +119,9 @@ Receive a request post from a posts page and through accessing the DB update the
 </html>
 {% endhighlight %}
 
-## PUT Request
+Note: Notice the `_method` hidden field. This sets the page resource request method. Even if the browser or web server only supports GET/POST, in separation to the external protocol this functions as an internal software protocol.
+
+### PUT Request
 
 In order to update the record we use the `PUT` interface.
 

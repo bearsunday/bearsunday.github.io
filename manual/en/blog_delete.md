@@ -1,15 +1,18 @@
 ---
 layout: default
-title: BEAR.Sunday | Blog Tutorial(8) Deleting Posts
+title: BEAR.Sunday | Blog Tutorial Deleting a Post
 category: Blog Tutorial
 ---
-# DELETE Method 
 
-## Deleting a Post page 
+# Deleting a Post
 
-So that you can delete a post that has is identified with an `id` from our posts page, we will create an `onDelete()` method in the posts page resource, this will respond to a DELETE request.
+## DELETE Method 
 
-*src/Resource/Page/Blog/Posts/Post.php*
+### Deleting a Post page
+
+So that you can delete a post that has is identified with an `id` from our posts page, we will create an `Blog\Posts\Post` page resource and implement `onDelete()` method in it, this will respond to a DELETE request.
+
+*Demo.Sandbox/src/Resource/Page/Blog/Posts/Post.php*
 
 {% highlight php startinline %}
 <?php
@@ -46,15 +49,21 @@ class Post extends ResourceObject
 
 As a page resource receives a `DELETE` request from a web browser it in the same way makes a `DELETE` request to the posts resource.
 
-This link to the posts page resource will be available on the posts resource template. Using Javascript show a confirmation dialog, then so that the page request is made as a `DELETE` method use the `_method` query.
+This link to the posts page resource will be available on the posts resource template (App/Blog/Posts.tpl). Using JavaScript show a confirmation dialog, then so that the page request is made as a `DELETE` method use Ajax with `X-HTTP-Method-Override: DELETE` header.
 
-Note: When posting using the `X-HTTP-Method-Override` hidden element or in the GET query a `_method` parameter is an _HTTP Method Override_ method of supporting PUT/DELETE when your browser or when your server environment prevents you from fully using HTTP verbs.
+```html
+<script src="/assets/js/delete_post.js"></script>
 
-## Create a Posts Resource DELETE interface 
+<a title="Delete post" class="btn remove confirm" href="#"><span class="glyphicon glyphicon-trash" data-post-id="{$post.id}"></span></a>
+```
+
+Note: When using `X-HTTP-Method-Override` header or posting using the `_method` hidden element is an _HTTP Method Override_ method of supporting PUT/DELETE when your browser or when your server environment prevents you from fully using HTTP verbs.
+
+### Create a Posts Resource DELETE interface 
 
 Receive a request post from a posts page and through accessing the DB delete the post. 
 
-*src/Resource/App/Blog/Posts.php*
+*Demo.Sandbox/src/Resource/App/Blog/Posts.php*
 
 {% highlight php startinline %}
     public function onDelete($id)
@@ -68,7 +77,7 @@ Receive a request post from a posts page and through accessing the DB delete the
 
 Note: Like the GET request interface the `$this->db` is automatically set by the injector. What is different to the GET request is that it used the master DB connection.
 
-## Checking this with through the Command Line
+### Checking this with through the Command Line
 
 Let's try it out. We have set it up with a 204 status code so it should look like this.
 
@@ -82,32 +91,15 @@ $ php apps/Demo.Sandbox/bootstrap/contexts/api.php delete app://self/blog/posts?
 ...
 ```
 
-## Unit Test 
+### Unit Test 
 
 If we access with DELETE the records should be reduced by 1. The test will look something like this.
 
 {% highlight php startinline %}
-    /**
-     * @test
-     */
-    public function delete()
+    public function testOnDelete()
     {
-        // dec 1
         $before = $this->getConnection()->getRowCount('posts');
-        $response = $this->resource
-            ->delete
-            ->uri('app://self/blog/posts')
-            ->withQuery(['id' => 1])
-            ->eager
-            ->request();
-        $this->assertEquals($before - 1, $this->getConnection()->getRowCount('posts'), "faild to delete post");
+        $this->resource->delete->uri('app://self/blog/posts')->withQuery(['id' => 1])->eager->request();
+        $this->assertEquals($before - 1, $this->getConnection()->getRowCount('posts'), "failed to delete");
     }
 {% endhighlight %}
-
-## JavaScript Confirmation Dialogue 
-
-In order to add a confirmation to a delete action the we use the JavaScript library that is included with the sandbox application.
-
-```html
-<script src="/assets/js/delete_post.js"></script>
-```

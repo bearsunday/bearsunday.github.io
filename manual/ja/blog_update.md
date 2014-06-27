@@ -1,12 +1,14 @@
 ---
 layout: default_ja
-title: BEAR.Sunday | ブログチュートリアル(2) 記事の編集
+title: BEAR.Sunday | ブログチュートリアル 記事の編集
 category: Blog Tutorial
 ---
 
-# PUTメソッド
+# 記事の編集
 
-## 記事編集ページの作成
+## PUTメソッド
+
+### 記事編集ページの作成
 
 記事作成ページとほとんど同じです。違いは最初の表示（GETリクエスト）で指定された記事データを読み込みデフォルトをセットしてることだけです。
 
@@ -62,7 +64,9 @@ class Edit extends ResourceObject
 }
 {% endhighlight %}
 
-## 記事リソースのPUTインターフェイスの作成
+@TODO `@Embed` の説明
+
+### 記事リソースのPUTインターフェイスの作成
 
 記事ページからリクエストを受け取った記事リソースがDBアクセスで記事を変更します。
 
@@ -88,7 +92,7 @@ class Edit extends ResourceObject
     }
 {% endhighlight %}
 
-## テンプレートの作成
+### テンプレートの作成
 
 *Demo.Sandbox/src/Resource/Page/Blog/Posts/Edit.tpl*
 
@@ -101,31 +105,37 @@ class Edit extends ResourceObject
 </head>
 <body>
     <div class="container">
-        <h1>New Post</h1>
-        <form action="/blog/posts/edit" method="POST">
+         <ul class="breadcrumb">
+            <li><a href="/">Home</a> <span class="divider">/</span></li>
+            <li><a href="/blog/posts">Blog</a> <span class="divider">/</span></li>
+            <li class="active">Edit Post</li>
+        </ul>
+        
+        <h1>Edit Post</h1>
+        <form action="/blog/posts/edit" method="POST" role="form">
             <input type="hidden" name="_method" value="PUT">
-            <input type="hidden" name="id" value="{$id}">
-            
-            <div class="form-group {if $errors.title}error{/if}">
-                <label class="control-label" for="title">Title</label>
-                <div class="controls">
-                    <input type="text" id="title" name="title" value="{$submit.title}">
-                    <p class="help-block">{$errors.title}</p>
-                </div>
+            <input type="hidden" name="id" value="{$id|escape}">
+
+            <div class="form-group {if $errors.title}has-error{/if}">
+                <label for="title">Title</label>
+                <input type="text" id="title" name="title" value="{$submit.title|escape}" class="form-control">
+                <label class="control-label" for="title">{$errors.title|escape}</label>
             </div>
-            <div class="form-group {if $errors.body}error{/if}">
-                <label class="control-label" for="body">Body</label>
-                <textarea name="body" rows="10" cols="40">{$submit.body}</textarea>
-                <p class="help-block">{$errors.body}</p>
+            <div class="form-group {if $errors.body}has-error{/if}">
+                <label for="body">Body</label>
+                <textarea name="body" rows="10" cols="40" class="form-control" id="body">{$submit.body|escape}</textarea>
+                <label class="control-label" for="body">{$errors.body|escape}</label>
             </div>
-            <input type="submit" value="Send">
+            <button type="submit" class="btn btn-default">Submit</button>
         </form>
     </div>
 </body>
 </html>
 {% endhighlight %}
 
-## PUTリクエスト
+Note: `_method` というhidden項目に注目してください。これはページリソースへのリクエストメソッドを指定しています。ブラウザやWebサーバーがGET/POSTしかサポートしていなくても、その外部プロトコルとは別にソフトウエアの内部プロトコルとして機能します。
+
+### PUTリクエスト
 
 変更には `PUT` インターフェイスを使っています。
 

@@ -1,21 +1,23 @@
 ---
 layout: default
-title: BEAR.Sunday | Blog Tutorial(6) Creating Posts
+title: BEAR.Sunday | Blog Tutorial Adding a Post
 category: Blog Tutorial
 ---
 
-# POST Method 
+# Adding a Post
+
+## POST Method
 
 In steps up until now we have been able to show posts that have been saved in our database. Next we will go ahead and make a form, however before we do that, let's make it possible to add a post through a console resource operation.
 
-## Create a Posts Resource POST Interface 
+### Create a Posts Resource POST Interface 
 
 Adding a POST interface to allow you to add posts to a posts resource that only has a GET interface method.
 
 *Demo.Sandbox/src/Resource/App/Blog/Posts.php*
 
 {% highlight php startinline %}
-public function onPost($title, $body, $created = null, $modified = null)
+public function onPost($title, $body)
 {
     return $this;
 }
@@ -46,7 +48,7 @@ $ php apps/Demo.Sandbox/bootstrap/contexts/api.php options 'app://self/blog/post
 
 200 OK
 allow: ["get","post"]
-param-post: ["title,body,(created),(modified)"]
+param-post: ["title,body"]
 content-type: ["application\/hal+json; charset=UTF-8"]
 cache-control: ["no-cache"]
 date: ["Tue, 24 Jun 2014 00:47:25 GMT"]
@@ -84,7 +86,7 @@ There is no problem, however lets change this to use the *more* accurate 204(No 
 *Demo.Sandbox/src/Resource/App/Blog/Posts.php*
 
 {% highlight php startinline %}
-public function onPost($title, $body, $created = null, $modified = null)
+public function onPost($title, $body)
 {
     $this->code = 204;
     return $this;
@@ -108,13 +110,12 @@ Implementing the POST interface.
 *Demo.Sandbox/src/Resource/App/Blog/Posts.php*
 
 {% highlight php startinline %}
-public function onPost($title, $body, $created = null, $modified = null)
+public function onPost($title, $body)
 {
     $values = [
         'title' => $title,
         'body' => $body,
-        'created' => $created,
-        'modified' => $modified,
+        'created' => $this->time,
     ];
     $this->db->insert($this->table, $values);
     $this->code = 204;
@@ -129,63 +130,80 @@ Just like the GET interface when we use this method the injected DB object is av
 
 Please remember that the DB object is bound by the injecting interceptor to all method names that begin with `on`. The bound DB injector depending on the resource request injects the DB object just before the method is requested. Please take notice that the resource request *pays no attention to the preparation or retrieval of the required dependencies, it just uses the object*. In this way BEAR.Sunday adhears to the *separation of concerns* principle in a consistent and unified manner.
 
-## Post Resource Test 
+### Post Resource Test 
 
 The post has been added, let's make a test to check the added content. When a resource unit test contains a DB test you write code like the following.
 
 {% highlight php startinline %}
 <?php
-class AppPostsTest extends \PHPUnit_Extensions_Database_TestCase
+
+namespace Demo\Sandbox\tests\Resource\App\Blog;
+
+use BEAR\Resource\Code;
+use BEAR\Resource\Header;
+
+class PostsTest extends \PHPUnit_Extensions_Database_TestCase
 {
+    private $resource;
+
     public function getConnection()
     {
-        // DB Connection
+        $pdo = require $_ENV['APP_DIR'] . '/tests/scripts/db.php';
+
+        return $this->createDefaultDBConnection($pdo, 'sqlite');
     }
 
     public function getDataSet()
     {
-        // Initial data set
+        $seed = $this->createFlatXmlDataSet($_ENV['APP_DIR'] . '/tests/mock/seed.xml');
+        return $seed;
     }
 
-    /**
-     * @test
-     */
-    public function post()
+    protected function setUp()
     {
-        // +1
+        parent::setUp();
+        $this->resource = $GLOBALS['RESOURCE'];
+    }
+
+    public function testOnPost()
+    {
+        // inc 1
         $before = $this->getConnection()->getRowCount('posts');
-        $response = $this->resource
+        $resourceObject = $this->resource
             ->post
             ->uri('app://self/blog/posts')
             ->withQuery(['title' => 'test_title', 'body' => 'test_body'])
             ->eager
             ->request();
-        $this->assertEquals($before + 1, $this->getConnection()->getRowCount('posts'), "faild to add post");
 
-        // new post
-        $body = $this->resource
-            ->get
-            ->uri('app://self/blog/posts')
-            ->withQuery(['id' => 4])
-            ->eager
-            ->request()->body;
-        return $body;
+        $this->assertEquals($before + 1, $this->getConnection()->getRowCount('posts'), "failed to add");
     }
 
     /**
-     * @test
-     * @depends post
+     * @depends testOnPost
      */
-    public function postData($body)
+    public function testOnPostNewRow()
     {
+        $this->resource
+            ->post
+            ->uri('app://self/blog/posts')
+            ->withQuery(['title' => 'test_title', 'body' => 'test_body'])
+            ->eager
+            ->request();
+
+        // new post
+        $entries = $this->resource->get->uri('app://self/blog/posts')->withQuery([])->eager->request()->body;
+        $body = array_pop($entries);
+
         $this->assertEquals('test_title', $body['title']);
         $this->assertEquals('test_body', $body['body']);
     }
+}
 {% endhighlight %}
 
-We test that the post has been created by the post method, we then check those contents using the postData method.
+We test that the post has been created by the `testOnPost` method, and we check contents by the `testOnPostNewRow` method.
 
-## Creating the Add Post Page 
+### Creating the Add Post Page 
 
 We have created the app resource that adds a post, we will now create a page resource that grabs input from the web and requests the app resource.
 
@@ -224,10 +242,6 @@ Add a template.
 </html>
 ```
 
-Note: Notice the `X-HTTP-Method-Override` hidden field. This sets the page resource request method. Even if the browser or web server only supports GET/POST, in separation to the external protocol this functions as an internal software protocol.
-
-Note: When specifying a `$_GET` query you set this with `$_GET['_method']`.
-
 Add Newpost page resource and implement the GET and POST interfaces.
 
 *Demo.Sandbox/src/Resource/Page/Blog/Posts/Newpost.php*
@@ -250,8 +264,6 @@ class Newpost extends ResourceObject
     }
 
     /**
-     * Post
-     *
      * @param string $title
      * @param string $body
      */
