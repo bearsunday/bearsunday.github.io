@@ -1,24 +1,26 @@
 ---
 layout: default_ja
-title: BEAR.Sunday | My First Web API
+title: BEAR.Sunday | はじめてのWeb API
 category: My First - Tutorial
 --- 
-# My First Web API 
 
-Lets use the resource we made in [my_first_resource My First Resource] as a Web API.
+# はじめてのWeb API
 
-Start the built in web server for the API.
+[はじめてのリソース](my_first_resource.html) でつくったリソースをWeb APIとして利用してみましょう。
+
+API用のビルトインWebサーバーを起動します。
 
 ```
-$ php -S 0.0.0.0:8081 {$PROJECT_PATH}/apps/Sandbox/bootstrap/contexts/api.php
+$ php -S 0.0.0.0:8081 {$PROJECT_PATH}/apps/Demo.Sandbox/bootstrap/contexts/api.php
 ```
 
-We can then access it through a REST client ([for FireFox](https://addons.mozilla.org/ja/firefox/addon/restclient/#id=9780), or [for Chrome](https://chrome.google.com/webstore/detail/advanced-rest-client/hgmloofddffdnphfgcellkdfbfbjeloo))
+ブラウザのアドオンのRESTクライアント（FireFox用](https://addons.mozilla.org/ja/firefox/addon/restclient/#id=9780) や [Chrome用](https://chrome.google.com/webstore/detail/advanced-rest-client/hgmloofddffdnphfgcellkdfbfbjeloo)）等でアクセスします。
 
 ```
 GET http://localhost:8081/first/greeting?name=BEAR
 ```
-Did the greeting come back as JSON data like this ?
+
+JSONで挨拶がかえってきたでしょうか？
 
 ```json
 {
@@ -31,5 +33,5 @@ Did the greeting come back as JSON data like this ?
 }
 ```
 
-In this way the resource you created can be used as a Web API.
-If you run a web server like apache you can have people from across the world use your resource as a web api.
+これであなたの作成したリソースはWeb APIとして利用できるようになりました。
+Apache等のサーバーで運用すれば世界中の人からこのリソースをWeb APIとして利用できます！
