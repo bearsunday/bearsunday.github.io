@@ -20,6 +20,8 @@ a page resource can also create an instance of a page resource.
 
 The greeting **Hello** is fixed in a static page.
 
+*app/Demo.Sandbox/src/Resource/Page/First/Greeting.php*
+
 {% highlight php startinline %}
 <?php
 
@@ -57,7 +59,7 @@ When the get request is called it does nothing but return itself.
 Let's check this resource from the command line.
 
 ```
-$ cd  {$PROJECT_PATH}/apps/Demo.Sandbox/bootstrap/contexts/
+$ cd {$PROJECT_PATH}/apps/Demo.Sandbox/bootstrap/contexts/
 $ php api.php get page://self/first/greeting
 
 200 OK

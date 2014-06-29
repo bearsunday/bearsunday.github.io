@@ -20,6 +20,8 @@ category: My First - Tutorial
 
 挨拶が **Hello** と固定化されている静的なページです。
 
+*app/Demo.Sandbox/src/Resource/Page/First/Greeting.php*
+
 {% highlight php startinline %}
 <?php
 
@@ -57,7 +59,7 @@ GETリクエストは呼ばれると何もしないで自身を返していま�
 このリソースをコマンドラインで確認してみましょう。
 
 ```
-$ cd  {$PROJECT_PATH}/apps/Demo.Sandbox/bootstrap/contexts/
+$ cd {$PROJECT_PATH}/apps/Demo.Sandbox/bootstrap/contexts/
 $ php api.php get page://self/first/greeting
 
 200 OK
