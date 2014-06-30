@@ -1,36 +1,45 @@
 ---
 layout: default_ja
-title: BEAR.Sunday | My First Web Page
+title: BEAR.Sunday | はじめてのWebページ
 category: My First - Tutorial
 ---
 
-# My First Web Page
+# はじめてのWebページ
 
-## Lets Create A Web Page
+## Webページを作りましょう
 
-## Page Resource 
+## ページリソース
 
-First without using an application resource, we will make the most basic page class possible.
-(without using a model and only using a controller to create a **Hello World** page)
+まず最初にアプリケーションリソースを利用しない最小限のページクラスを作成します。
+（モデルを使わないコントローラーだけの **Hello World** ページのようなページです。)
 
-## Starting from the Most Basic of Pages 
+## 最小構成のページから始めます
 
-Just like application resource creates the instance of a resource, 
-a page resource can also create an instance of a page resource.
+アプリケーションリソースがリソースの状態を構成したように、
+ページリソースがページの状態を構成します。
 
-The greeting **Hello** is fixed in a static page.
+挨拶が **Hello** と固定化されている静的なページです。
+
+*app/Demo.Sandbox/src/Resource/Page/First/Greeting.php*
 
 {% highlight php startinline %}
 <?php
-namespace Sandbox\Resource\Page\First;
+
+namespace Demo\Sandbox\Resource\Page\First;
 
 use BEAR\Resource\ResourceObject;
+use BEAR\Sunday\Inject\ResourceInject;
 
 /**
  * Greeting page
  */
 class Greeting extends ResourceObject
-{    
+{
+    use ResourceInject;
+
+    /**
+     * @var array
+     */
     public $body = [
         'greeting' => 'Hello.'
     ];
@@ -42,53 +51,60 @@ class Greeting extends ResourceObject
 }
 {% endhighlight %}
 
-We store the string 'Hello.' in the page contents 'greeting' slot. 
-When the get request is called it does nothing but return itself.
+ページのコンテンツの `greeting` というスロットに `Hello.` という文字列を格納しています。
+GETリクエストは呼ばれると何もしないで自身を返しています。 
 
-## Lets Check the Page Resource State from the Command Line 
+## コマンドラインでページリソース状態確認します
 
-Lets check this resource from the command line.
+このリソースをコマンドラインで確認してみましょう。
 
 ```
-$ cd  {$PROJECT_PATH}/apps/Sandbox/bootstrap/contexts/
+$ cd {$PROJECT_PATH}/apps/Demo.Sandbox/bootstrap/contexts/
 $ php api.php get page://self/first/greeting
 
 200 OK
-...
+content-type: ["application\/hal+json; charset=UTF-8"]
+cache-control: ["no-cache"]
+date: ["Sun, 29 Jun 2014 09:11:01 GMT"]
 [BODY]
-greeting:Hello.
+greeting Hello.,
+...
 ```
 
-We have confirmed that in the greeting slot the string 'Hello' exists.
+`greeting` というスロットに `Hello.` という文字列が入っているのが確認できました。
 
-## Render the Page Resource State 
+## ページリソースの状態を表現にします
 
-In order to render the state of the page resource as HTML we need a template. 
-We save this in the same place as the resource and just change the suffix.
+このページリソースの状態をHTML表現としてレンダリングするためにテンプレートが必要です。
+リソースと同じ場所に拡張子だけ変更します。
 
-### File Path 
+### ファイルパス
 
-|URI|Resource Class| Resource Template |
+|URI|リソースクラス| リソーステンプレート |
 |---|--------------|-------------------|
-|page://self/first/greeting | apps/Sandbox/Resource/Page/First/Greeting.php | apps/Sandbox/Resource/Page/First/Greeting.tpl |
+|page://self/first/greeting | apps/Demo.Sandbox/Resource/Page/First/Greeting.php | apps/Demo.Sandbox/Resource/Page/First/Greeting.tpl |
 
-### Template
+### テンプレート
 
 ```html
 <!DOCTYPE html>
 <html lang="en">
-  <body>
-      <h1>{$greeting}</h1>
-  </body>
+<body>
+<head>
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<h1>{$greeting|escape}</h1>
+</body>
 </html>
 ```
 
-## Check the HTML from the Command Line 
+## コマンドラインでページHTMLを確認します
 
-We assign the resource state to the template and the resource renders as HTML.
-This is a HTML page and can also be checked via the command line.
+リソースの状態をテンプレートにアサインしてレンダリングするとリソースのHTML表現になります。
+つまりHTMLページになります。これもコマンドラインで 確認することができます。 
 
-Lets check.
+では確認してみましょう。
 
 ```
 $ php dev.php get /first/greeting
@@ -97,32 +113,40 @@ $ php dev.php get /first/greeting
 ```html
 200 OK
 cache-control: ["no-cache"]
-date: ["Fri, 01 Feb 2013 14:21:45 GMT"]
+date: ["Sun, 29 Jun 2014 09:15:37 GMT"]
 [BODY]
+greeting Hello.,
+
+[VIEW]
 <!DOCTYPE html>
 <html lang="en">
+<head>
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
 <body>
-<h1>Hello, anonymous</h1>
+<h1>Hello.</h1>
 </body>
 </html>
 ```
 
-HTML all checked!
+HTMLが確認できました。
 
- Note: Because we are running the development environment, there are many headers prepended by `x-` that contain useful development information. 
-
-## Checking the Page HTML in a Web Browser 
+## WebブラウザでページHTMLを確認します
 
 ```
-http://localhost:8088/first/greeting
+$ php -S localhost:8088 dev.php
 ```
 
-Did you see the page OK?
+http://localhost:8088/first/greeting にアクセスします。
+無事ページが見えたでしょうか？
 
-## Role of the Page 
+## ページの役割、RESTとは？
 
-A page gathers clusters of information (resource), and configures the page itself.
-Here a singular slot 'greeting' has the string 'Hello' stored in it, however many pages will need multiple slots.
+ページは自身を構成するために必要な情報のかたまり（リソース）を集めます。
+ここでは１つの `greeting` というスロットに `Hello.` という文字列の情報を格納しましたが、多くのページは複数のスロットがあるでしょう。
 
-The pages role is to configure the page to gather other resources and to solidify the pages state. 
-The resource state is composed with the resource template and rendered as HTML to be passed and shown to the user.
+ページの役割はページを構成する複数のリソースを合成しページの状態を決定する事です。
+ページのリソース状態はリソーステンプレートと合成されリソース表現になりHTML等としてユーザーに転送されます。
+
+リソース状態（REpresentational State）のTransfer（転送）、それがRESTです。
