@@ -1,23 +1,22 @@
 ---
 layout: default_ja
-title: BEAR.Sunday | My First Aspect
+title: BEAR.Sunday | はじめてのアスペクト
 category: My First - Tutorial
 --- 
 
-# My First Aspect
+# はじめてのアスペクト
 
-## Add the current time to the greeting 
+## 挨拶に現在時間を追加する
 
-Add the current time to the greeting resource. The final outcome is like this.
+[greetingリソース](my_first_resource.html) に現在時刻を追加します。出来上がりイメージはこうです。
+
+```
+Hello, BEAR. It is 1:53 now !
+```
+
+このようにメッセージの後ろに時間を追加すれば簡単に実現できます。
 
 {% highlight php startinline %}
-"Hello, BEAR. It is 10:22."
-{% endhighlight %}
-
-Placing the time after the message like this example is an easy way of implementing this.
-
-{% highlight php startinline %}
-<?php
     public function onGet($name = 'anonymous')
     {
         $time = date('g:i');
@@ -25,24 +24,22 @@ Placing the time after the message like this example is an easy way of implement
     }
 {% endhighlight %}
 
-How about if you had to add the current time like this to another 10 resources? 
-Carry out on another 10 resources an 'Add the time info to the end of some message' process.  
-We need to do the same process over and over again so lets make it a method.
+ではこの現在時刻の追加を他の10のリソースでも行いたいとしたらどうでしょう？
+「何かのメッセージの後に時間情報を追加」という処理を他の10のリソースでも行います。
+同じ処理を何度もするので関数にしてみます。
 
 {% highlight php startinline %}
-<?php
     public function onGet($name = 'anonymous')
     {
         return "{$this->message}, {$name}". timeMessage();
     }
 {% endhighlight %}
 
-This brings consolidation and increases re-usability.
+集約され、再利用性が高まりました。
 
-But we could do the same using a trait.
+あるいはtraitを使ってみましょうか。
 
 {% highlight php startinline %}
-<?php
     use TimeMessageTrait;
 
     public function onGet($name = 'anonymous')
@@ -51,61 +48,74 @@ But we could do the same using a trait.
     }
 {% endhighlight %}
 
-It is the same.
+同じですね。
 
-Even though this brings us some consolidation the number of methods being used needs to change.
+しかし集約することはできましたが、利用メソッドの数だけ変更が必要です。
 
-Say not the time, after the greeting we want to change it to add the weather.
-Shall we change `timeMessage` to `weatherMessage`?
+今度は時間ではなくて、挨拶の後は天気情報を付加するように変更がありました。
+`timeMessage` を `weatherMessage` に変えましょうか？
 
-Or shall we add after the message `postMessage` to be more generic?
-We are starting to exhaust ourselves. 
-It is not really a good way to use methods like this, to transversely deal with the same types of processing.  
-## Making this an Aspect 
+それとも、後ろにメッセージが付加される事を汎用的に `postMessage` としましょうか...
+だんだん無理が出てきました。
+このようなメソッドを横断して同じ処理を適用する良い方法はないでしょうか？
 
-When you use this kind of method to carry out transverse processing a rather difficult side of coding appears.
-When you run code either before and/or after a process like logging, caching, transactions etc,
-have you ever experienced the same sort of code being left all over the place? 
+## アスペクトにする
 
-In processing like `begin, [query], (commit | rollback)`, even though
-`[query]` is the the only thing that changes we write often this the same way all about the shop.
+このようなメソッドを横断する処理はそもそもコーディングが難しい面があります。
+ログやキャッシュ、トランザクションなど何かの処理の前後に行うようなコードは
+あちこちに同じものを記述した経験はないでしょうか？
 
-So how about implementing crosscutting processing to consolidate code and keep the original core process.
-We combine the original message and the added message dynamically.
+DBのトランザクションのコード、`begin, [query], (commit | rollback)` という処理は
+`[query]` が変わるだけなのにいつも同じように全てを記述したりしなかったでしょうか。
 
-In in this example, the re-usability of the 'Adding the time information' (crosscutting) process is called an 'Aspect'.
-The binding of this aspect and the original process is what we refer to as 'Aspect Orientated Programming'
+ではこの横断的な処理を、元の本質的な処理と合成するようにしてみてはどうでしょうか。
+元のメッセージと付加するメッセージを動的に結合するのです。
 
-## Reflective method invocation interceptor 
+この例では、「時刻情報を追加する」という処理をクラスをまたがって使われる（＝横断的な）処理とみなし、アスペクトと呼びます。
+このアスペクトと元の処理を合成するのがアスペクト指向プログラミングです。
 
-In BEAR.Sunday uses the interceptor pattern to bind this crosscutting process to the original process.  
+## リフレクティブ・メソッドインボケーション(ReflectiveMethodInvocation)
 
-The crosscutting process is not used inside the original method, the original method is snatched (intercepted) by the 
-crosscutting process, the crosscutting process then calls the original method.
+この横断的な処理と本質的な処理を合成するのにBEAR.Sundayではインターセプターというパターンを使います。
 
-In the previous example you are not calling the a process made up from various methods in 'Adding time' (=crosscutting process) from the 'greeting' method call.
-The main process is called from the time adding crosscutting method, then calls the greeting.
+横断処理を元のメソッドの中から利用するのではなくて、元のメソッドを横断処理が横取り（インターセプト）して、横断処理が元のメソッドを呼ぶようにします。
 
-Can you see that the Master/Slave (Dependency Relationship) has been reversed. 
-Where the logging code was called by the DB access code, 
-now the DB access code is called by the logging code.
+さっきの例でいえば「あいさつ」という処理から「時刻付加」という色々なメソッドから呼ばれる処理（＝横断処理）を呼ぶのではなくて、時刻付加という横断処理からメインの処理「あいさつ」を呼びます。
 
-This time the original code being run is called by a method using reflection, this is the (Method Invocation) object.
-When using this object the parameters being used can be inspected and you can run the it just as fully intended. 
-We use this object and intercept it.
+呼び出す側と呼ばれる側の関係が通常と逆になってるのが分かるでしょうか。
+DBアクセスのコードから結果を記録するためにログを呼び出していたのを、
+ログのコードからDBアクセスのコードを呼ぶようにするのです。
 
+この時に元のコードの実行そのものがリフレクションを使ったメソッド実行（メソッドインボケーション）オブジェクトになっています。
+そのオブジェクトを利用すると呼び出し引数を調べたり、呼び出しそのものを実行できるようになります。
+そのオブジェクトを使ってインターセプトします。
 
-## Create an Interceptor 
+## インターセプターを作成します
 
-Lets take a look at the code.
-Lets first take the original methods crosscutting process, this is an interceptor.
+まずは元メソッドを横取りする横断処理、つまりインターセプターです。
 
-First of all a crosscutting process interceptor that does nothing.
+まずは横断処理を「何もしない」インターセプターです。
+
+*apps/Demo.Sandbox/src/Interceptor/TimeMessage.php*
 
 {% highlight php startinline %}
 <?php
+/**
+ * Time message
+ */
+namespace Demo\Sandbox\Interceptor;
+
+use Ray\Aop\MethodInterceptor;
+use Ray\Aop\MethodInvocation;
+
+/**
+ * +Time message add interceptor
+ */
 class TimeMessage implements MethodInterceptor
 {
+    /**
+     * {@inheritdoc}
+     */
     public function invoke(MethodInvocation $invocation)
     {
         $result = $invocation->proceed();
@@ -114,62 +124,63 @@ class TimeMessage implements MethodInterceptor
 }
 {% endhighlight %}
 
-Run the original method（`$invocation->proceed()`）, and return its response.
+元のメソッドを実行（`$invocation->proceed()`）し、その結果を返しています。
 
-Using `$invocation->proceed()` when we run the original method the time message is added at the end of it.
+`$invocation->proceed()` でオリジナルのメソッドを実行し、その後ろに時刻メッセージを追加します。
 
 {% highlight php startinline %}
-<?php
-public function invoke(MethodInvocation $invocation)
-{
-    $time = date('g:i');
-    $result = $invocation->proceed();
-    return $result . " It is {$time} now";
-}
+    public function invoke(MethodInvocation $invocation)
+    {
+        $time = date('g:i');
+        $result = $invocation->proceed() . ". It is {$time} now !";
+
+        return $result;
+    }
 {% endhighlight %}
 
-## Bind this interceptor to a specific method. 
+## このインターセプターを特定のメソッドにバインドする
 
-In this way a we have created an interceptor which a from crosscutting process 
-triggers the original method to run. Next we will assign (bind) the aspect to specific methods.
+これで横断処理から元メソッドの実行を実行するインターセプターができました。
+つぎに特定のメソッドとこのアスペクトを束縛（バインド）します。
 
-Using annotations is the general way, not using them here can also be done easily.
+アノテーションを使う方法が一般的ですが、ここでは使わない最も簡単な方法で行ってみます。
 
-Add this to the `configure` method in `sandbox/Module/AppModule.php`.
+以下のコードを `apps/Demo.Sandbox/src/Module/AppModule.php` の `configure` メソッドに追加します。
+
+*apps/Demo.Sandbox/src/Module/AppModule.php*
 
 {% highlight php startinline %}
-<?php
-// time message binding
-$this->bindInterceptor(
-    $this->matcher->subclassesOf('Sandbox\Resource\App\First\Greeting\Aop'), // class match
-    $this->matcher->any(),                                                   // method match
-    [new TimeMessage]
-);
+    // time message binding
+    $this->bindInterceptor(
+        $this->matcher->subclassesOf('Demo\Sandbox\Resource\App\First\Greeting\Aop'),
+        $this->matcher->any(),
+        [$this->requestInjection('Demo\Sandbox\Interceptor\TimeMessage')]
+    );
 {% endhighlight %}
 
-In this way the `TimeMessage` interceptor is bound to any method in the `'Sandbox\Resource\App\First\Greeting\Aop'` class or sub-class.
+これで `Demo\Sandbox\Resource\App\First\Greeting\Aop` クラス（およびそのサブクラス）のどのメソッドにも `TimeMessage` インターセプターがバインドされます。
 
-### Lets run it
+### 実行してみましょう
 
 ```
-get app://self/first/greeting/aop?name=BEAR
-```
+$ php apps/Demo.Sandbox/bootstrap/contexts/api.php get app://self/first/greeting/aop?name=BEAR
 
-{% highlight php startinline %}
 200 OK
-...
+content-type: ["application\/hal+json; charset=UTF-8"]
+cache-control: ["no-cache"]
+date: ["Tue, 01 Jul 2014 11:53:50 GMT"]
 [BODY]
-"Hello, BEAR. It is 3:12 now !"
-{% endhighlight %}
+Hello, BEAR. It is 1:53 now !
+```
 
-We have now successfully bound our greeting resource to our aspect which states the time.
-The greeting resource is has no knowledge of the fact that it is being overridden.
-The crosscutting process has called the original code and rides on top of it.
+時刻伝えるアスペクトと挨拶リソースが合成されました！
+挨拶リソースは自身が加工編集されることに無関心です。
+横断処理が元処理を呼ぶコードに乗っ取られています。
 
-This has not built a dependency on the greeting resource, 
-it is also different to a crosscutting process that uses a trait, it is a dynamic binding.
-This resource can be bound to other aspects, and the aspect can be bound to other resources.
+挨拶リソースには依存はなく、
+またtraitを使った横断処理の追加と違って束縛は動的です。
+このリソースに他のアスペクトを束縛できるし、このアスペクトは他のリソースにも束縛可能です。
 
-The weaving of this aspect can not only be applied to a resource.
-It can be applied to any other standard object.
-However the original format changes to a `weaving` format, hence compatibility may be lost.
+このアスペクトの織り込みはリソースだけに適用可能ではありません。
+他の一般オブジェクトにも適用可能です。
+ただし型が元の型からWeaveという型に変わってしまい、この点では互換性が失われてしまう事に注意が必要です。

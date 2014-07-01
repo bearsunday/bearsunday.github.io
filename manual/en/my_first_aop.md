@@ -8,16 +8,15 @@ category: My First - Tutorial
 
 ## Add the current time to the greeting 
 
-Add the current time to the greeting resource. The final outcome is like this.
+Add the current time to the [greeting resource](my_first_resource.html). The final outcome is like this.
 
-{% highlight php startinline %}
-"Hello, BEAR. It is 10:22."
-{% endhighlight %}
+```
+Hello, BEAR. It is 1:53 now !
+```
 
 Placing the time after the message like this example is an easy way of implementing this.
 
 {% highlight php startinline %}
-<?php
     public function onGet($name = 'anonymous')
     {
         $time = date('g:i');
@@ -30,7 +29,6 @@ Carry out on another 10 resources an 'Add the time info to the end of some messa
 We need to do the same process over and over again so lets make it a method.
 
 {% highlight php startinline %}
-<?php
     public function onGet($name = 'anonymous')
     {
         return "{$this->message}, {$name}". timeMessage();
@@ -42,7 +40,6 @@ This brings consolidation and increases re-usability.
 But we could do the same using a trait.
 
 {% highlight php startinline %}
-<?php
     use TimeMessageTrait;
 
     public function onGet($name = 'anonymous')
@@ -53,14 +50,15 @@ But we could do the same using a trait.
 
 It is the same.
 
-Even though this brings us some consolidation the number of methods being used needs to change.
+Even though this brings us some consolidation, the number of methods being used needs to change.
 
 Say not the time, after the greeting we want to change it to add the weather.
 Shall we change `timeMessage` to `weatherMessage`?
 
 Or shall we add after the message `postMessage` to be more generic?
 We are starting to exhaust ourselves. 
-It is not really a good way to use methods like this, to transversely deal with the same types of processing.  
+It is not really a good way to use methods like this, to transversely deal with the same types of processing.
+
 ## Making this an Aspect 
 
 When you use this kind of method to carry out transverse processing a rather difficult side of coding appears.
@@ -94,18 +92,33 @@ This time the original code being run is called by a method using reflection, th
 When using this object the parameters being used can be inspected and you can run the it just as fully intended. 
 We use this object and intercept it.
 
-
 ## Create an Interceptor 
 
-Lets take a look at the code.
-Lets first take the original methods crosscutting process, this is an interceptor.
+Let's take a look at the code.
+Let's first take the original methods crosscutting process, this is an interceptor.
 
 First of all a crosscutting process interceptor that does nothing.
 
+*apps/Demo.Sandbox/src/Interceptor/TimeMessage.php*
+
 {% highlight php startinline %}
 <?php
+/**
+ * Time message
+ */
+namespace Demo\Sandbox\Interceptor;
+
+use Ray\Aop\MethodInterceptor;
+use Ray\Aop\MethodInvocation;
+
+/**
+ * +Time message add interceptor
+ */
 class TimeMessage implements MethodInterceptor
 {
+    /**
+     * {@inheritdoc}
+     */
     public function invoke(MethodInvocation $invocation)
     {
         $result = $invocation->proceed();
@@ -119,13 +132,13 @@ Run the original method（`$invocation->proceed()`）, and return its response.
 Using `$invocation->proceed()` when we run the original method the time message is added at the end of it.
 
 {% highlight php startinline %}
-<?php
-public function invoke(MethodInvocation $invocation)
-{
-    $time = date('g:i');
-    $result = $invocation->proceed();
-    return $result . " It is {$time} now";
-}
+    public function invoke(MethodInvocation $invocation)
+    {
+        $time = date('g:i');
+        $result = $invocation->proceed() . ". It is {$time} now !";
+
+        return $result;
+    }
 {% endhighlight %}
 
 ## Bind this interceptor to a specific method. 
@@ -135,35 +148,36 @@ triggers the original method to run. Next we will assign (bind) the aspect to sp
 
 Using annotations is the general way, not using them here can also be done easily.
 
-Add this to the `configure` method in `sandbox/Module/AppModule.php`.
+Add this to the `configure` method in `apps/Demo.Sandbox/src/Module/AppModule.php`.
+
+*apps/Demo.Sandbox/src/Module/AppModule.php*
 
 {% highlight php startinline %}
-<?php
-// time message binding
-$this->bindInterceptor(
-    $this->matcher->subclassesOf('Sandbox\Resource\App\First\Greeting\Aop'), // class match
-    $this->matcher->any(),                                                   // method match
-    [new TimeMessage]
-);
+    // time message binding
+    $this->bindInterceptor(
+        $this->matcher->subclassesOf('Demo\Sandbox\Resource\App\First\Greeting\Aop'),
+        $this->matcher->any(),
+        [$this->requestInjection('Demo\Sandbox\Interceptor\TimeMessage')]
+    );
 {% endhighlight %}
 
-In this way the `TimeMessage` interceptor is bound to any method in the `'Sandbox\Resource\App\First\Greeting\Aop'` class or sub-class.
+In this way the `TimeMessage` interceptor is bound to any method in the `Demo\Sandbox\Resource\App\First\Greeting\Aop` class or sub-class.
 
-### Lets run it
+### Let's run it
 
 ```
-get app://self/first/greeting/aop?name=BEAR
-```
+$ php apps/Demo.Sandbox/bootstrap/contexts/api.php get app://self/first/greeting/aop?name=BEAR
 
-{% highlight php startinline %}
 200 OK
-...
+content-type: ["application\/hal+json; charset=UTF-8"]
+cache-control: ["no-cache"]
+date: ["Tue, 01 Jul 2014 11:53:50 GMT"]
 [BODY]
-"Hello, BEAR. It is 3:12 now !"
-{% endhighlight %}
+Hello, BEAR. It is 1:53 now !
+```
 
 We have now successfully bound our greeting resource to our aspect which states the time.
-The greeting resource is has no knowledge of the fact that it is being overridden.
+The greeting resource has no knowledge of the fact that it is being overridden.
 The crosscutting process has called the original code and rides on top of it.
 
 This has not built a dependency on the greeting resource, 
