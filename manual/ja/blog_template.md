@@ -1,12 +1,14 @@
 ---
 layout: default_ja
-title: BEAR.Sunday | ブログチュートリアル(5) テンプレートの作成
+title: BEAR.Sunday | ブログチュートリアル テンプレートの作成
 category: Blog Tutorial
 ---
 
-# リソースレンダリング
+# テンプレートの作成
 
-## リソース状態を表現するリソースレンダラー
+## リソースレンダリング
+
+### リソース状態を表現するリソースレンダラー
 
 前回までのステップで記事リソースには記事情報が、ページリソースには記事リソースへのリクエストがセットされました。これらの *リソース状態* を *表現* にするためにHTMLレンダリングします。
 
@@ -19,6 +21,8 @@ Note: コントローラがモデルから取得したデータをテンプレ�
 *Demo.Sandbox/src/Resource/App/Blog/Posts.tpl*
 
 ```html
+<script src="/assets/js/delete_post.js"></script>
+
 <table class="table table-bordered table-striped">
     <tr>
         <th class="span1">Id</th>
@@ -26,14 +30,18 @@ Note: コントローラがモデルから取得したデータをテンプレ�
         <th>Body</th>
         <th>CreatedAt</th>
     </tr>
-    {foreach from=$resource->body item=post}
+{foreach from=$resource->body item=post}
     <tr>
         <td>{$post.id|escape}</td>
-        <td><a href="posts/post?id{$post.id|escape:'url'}">{$post.title|escape}</a></td>
+        <td><a href="posts/post?id={$post.id|escape:'url'}">{$post.title|escape}</a></td>
         <td>{$post.body|truncate:60|escape}</td>
         <td>{$post.created|escape}</td>
+        <td>
+            <a title="Edit post" class="btn" href="/blog/posts/edit?id={$post.id}"><span class="glyphicon glyphicon-edit"></span></a>
+            <a title="Delete post" class="btn remove confirm" href="#"><span class="glyphicon glyphicon-trash" data-post-id="{$post.id}"></span></a>
+        </td>
     </tr>
-    {/foreach}
+{/foreach}
 </table>
 ```
 
@@ -52,8 +60,14 @@ Note: コントローラがモデルから取得したデータをテンプレ�
 </head>
 <body>
     <div class="container">
+        <ul class="breadcrumb">
+            <li><a href="/">Home</a> <span class="divider">/</span></li>
+            <li class="active">Blog</li>
+        </ul>
+        
         <h1>Posts</h1>
         {$posts}
+        <a href="posts/newpost" class="btn btn-primary btn-large">New Post</a>
     </div>
 </body>
 </html>
@@ -83,25 +97,39 @@ date: ["Mon, 23 Jun 2014 11:44:09 GMT"]
 posts app://self/blog/posts,
 
 [VIEW]
-<html>
-    <body>
-    <h1>Posts</h1>
-    <table class="table table-bordered table-striped">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+    <div class="container">
+        <ul class="breadcrumb">
+            <li><a href="/">Home</a> <span class="divider">/</span></li>
+            <li class="active">Blog</li>
+        </ul>
+        
+        <h1>Posts</h1>
+        <script src="/assets/js/delete_post.js"></script>
+
+<table class="table table-bordered table-striped">
     <tr>
         <th class="span1">Id</th>
         <th>Title</th>
         <th>Body</th>
         <th>CreatedAt</th>
     </tr>
+...
 ```
 
-ヘッダーには開発に役立つめた情報が格納されていて、[VIEW] では最終的に出力されるHTMLが確認できます。
+ヘッダーには開発に役立つめた情報が格納されていて、 `[VIEW]` では最終的に出力されるHTMLが確認できます。
 
-記事リソースへのリクエストが行われリソースリクエスト結果がpostsスロットに格納されています。
+記事リソースへのリクエストが行われリソースリクエスト結果が `posts` スロットに格納されています。
 
 ## レイジーリクエスト
 
-ページリソースではpostsリソースへのリクエストが {$posts} にセットされていました。このリクエストはテンプレート内に {$posts} プレースホルダが出現した時点で実行されます。
+ページリソースではpostsリソースへのリクエストが `{$posts}` にセットされていました。このリクエストはテンプレート内に `{$posts}` プレースホルダが出現した時点で実行されます。
 
 つまり出現しなければこのリクエストは実行されず、リクエストを行うかどうかがテンプレートで決定されます。
 

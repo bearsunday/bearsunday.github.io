@@ -1,15 +1,18 @@
 ---
 layout: default_ja
-title: BEAR.Sunday | ブログチュートリアル(8) 記事の削除
+title: BEAR.Sunday | ブログチュートリアル 記事の削除
 category: Blog Tutorial
 ---
-# DELETEメソッド
 
-## 記事ページの削除
+# 記事の削除
 
-記事ページから `id` 指定した記事を削除できるように、記事ページリソースに `onDelete()` メソッドを作成しDELETEリクエストに対応します。
+## DELETEメソッド
 
-*src/Resource/Page/Blog/Posts/Post.php*
+### 記事削除ページ
+
+記事ページから `id` 指定した記事を削除できるように、`Blog\Posts\Post` ページリソースを作成し `onDelete()` メソッドを実装し、DELETEリクエストに対応します。
+
+*Demo.Sandbox/src/Resource/Page/Blog/Posts/Post.php*
 
 {% highlight php startinline %}
 <?php
@@ -46,15 +49,21 @@ class Post extends ResourceObject
 
 Webブラウザからの `DELETE` リクエストを受け取ったページリソースは、記事リソースを同じように `DELETE` リクエストしています。
 
-この記事ページリソースへのリンクは記事リソースのテンプレートに記述します。JavaScriptを使って確認ダイアログを出し、ページリクエストを `DELETE` にするために `_method` クエリーを使っています。 
+この記事ページリソースへのリンクは記事リソースのテンプレート（App/Blog/Posts.tpl）に記述します。JavaScriptを使って確認ダイアログを出し、ページリクエストを `DELETE` にするためにAjaxを使い `X-HTTP-Method-Override` ヘッダーに `DELETE` を指定しています。
 
-Note: POSTの時にフォームに `X-HTTP-Method-Override` hiddenエレメントを埋め込んだり、GETクエリーで `_method` を使ったりするのはHTTPメソッドオーバーライドという方法でPUT/DELETEのサポートがないブラウザやサーバー環境でHTTP動詞をフルに使う為の仕組みです。
+```html
+<script src="/assets/js/delete_post.js"></script>
 
-## 記事リソースのDELETEインターフェイスの作成
+<a title="Delete post" class="btn remove confirm" href="#"><span class="glyphicon glyphicon-trash" data-post-id="{$post.id}"></span></a>
+```
+
+Note: `X-HTTP-Method-Override` ヘッダーや、POSTの時にフォームに `_method` hiddenエレメントを埋め込むのは、HTTPメソッドオーバーライドという方法でPUT/DELETEのサポートがないブラウザやサーバー環境でHTTP動詞をフルに使う為の仕組みです。
+
+### 記事リソースのDELETEインターフェイスの作成
 
 記事ページからリクエストを受け取った記事リソースがDBアクセスで記事を削除します。
 
-*src/Resource/App/Blog/Posts.php*
+*Demo.Sandbox/src/Resource/App/Blog/Posts.php*
 
 {% highlight php startinline %}
     public function onDelete($id)
@@ -82,32 +91,15 @@ $ php apps/Demo.Sandbox/bootstrap/contexts/api.php delete app://self/blog/posts?
 ...
 ```
 
-## ユニットテスト
+### ユニットテスト
 
 DELETEアクセスすると記事が１つ減っているはずです。テストはこのようなものになるでしょう。
 
 {% highlight php startinline %}
-    /**
-     * @test
-     */
-    public function delete()
+    public function testOnDelete()
     {
-        // dec 1
         $before = $this->getConnection()->getRowCount('posts');
-        $response = $this->resource
-            ->delete
-            ->uri('app://self/blog/posts')
-            ->withQuery(['id' => 1])
-            ->eager
-            ->request();
-        $this->assertEquals($before - 1, $this->getConnection()->getRowCount('posts'), "faild to delete post");
+        $this->resource->delete->uri('app://self/blog/posts')->withQuery(['id' => 1])->eager->request();
+        $this->assertEquals($before - 1, $this->getConnection()->getRowCount('posts'), "failed to delete");
     }
 {% endhighlight %}
-
-## Javascript確認ダイアログ
-
-削除の確認をするためにSandboxアプリケーションが持つJavaScriptライブラリを利用しています。
-
-```html
-<script src="/assets/js/delete_post.js"></script>
-```

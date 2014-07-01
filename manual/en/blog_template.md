@@ -1,12 +1,14 @@
 ---
 layout: default
-title: BEAR.Sunday | Blog Tutorial(5) Creating templates
+title: BEAR.Sunday | Blog Tutorial Creating a Template
 category: Blog Tutorial
 ---
 
-# Resource Rendering 
+# Creating a Template
 
-## Resource Renderer Displaying the Resource State 
+## Resource Rendering 
+
+### Resource Renderer Displaying the Resource State 
 
 In the steps up until last time in the posts resource the posts data was set in the page resource by a request to the posts resource. In order to *display* this *resource state* we need to use some HTML rendering.
 
@@ -19,6 +21,8 @@ Note: A controller does not retrieve data from the model and pass strings for ou
 *Demo.Sandbox/src/Resource/App/Blog/Posts.tpl*
 
 ```html
+<script src="/assets/js/delete_post.js"></script>
+
 <table class="table table-bordered table-striped">
     <tr>
         <th class="span1">Id</th>
@@ -26,14 +30,18 @@ Note: A controller does not retrieve data from the model and pass strings for ou
         <th>Body</th>
         <th>CreatedAt</th>
     </tr>
-    {foreach from=$resource->body item=post}
+{foreach from=$resource->body item=post}
     <tr>
         <td>{$post.id|escape}</td>
-        <td><a href="posts/post?id{$post.id|escape:'url'}">{$post.title|escape}</a></td>
+        <td><a href="posts/post?id={$post.id|escape:'url'}">{$post.title|escape}</a></td>
         <td>{$post.body|truncate:60|escape}</td>
         <td>{$post.created|escape}</td>
+        <td>
+            <a title="Edit post" class="btn" href="/blog/posts/edit?id={$post.id}"><span class="glyphicon glyphicon-edit"></span></a>
+            <a title="Delete post" class="btn remove confirm" href="#"><span class="glyphicon glyphicon-trash" data-post-id="{$post.id}"></span></a>
+        </td>
     </tr>
-    {/foreach}
+{/foreach}
 </table>
 ```
 
@@ -52,8 +60,14 @@ We are unfolding the contents (body property) of the posts resource ($posts).
 </head>
 <body>
     <div class="container">
+        <ul class="breadcrumb">
+            <li><a href="/">Home</a> <span class="divider">/</span></li>
+            <li class="active">Blog</li>
+        </ul>
+        
         <h1>Posts</h1>
         {$posts}
+        <a href="posts/newpost" class="btn btn-primary btn-large">New Post</a>
     </div>
 </body>
 </html>
@@ -83,25 +97,39 @@ date: ["Mon, 23 Jun 2014 11:44:09 GMT"]
 posts app://self/blog/posts,
 
 [VIEW]
-<html>
-    <body>
-    <h1>Posts</h1>
-    <table class="table table-bordered table-striped">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+    <div class="container">
+        <ul class="breadcrumb">
+            <li><a href="/">Home</a> <span class="divider">/</span></li>
+            <li class="active">Blog</li>
+        </ul>
+        
+        <h1>Posts</h1>
+        <script src="/assets/js/delete_post.js"></script>
+
+<table class="table table-bordered table-striped">
     <tr>
         <th class="span1">Id</th>
         <th>Title</th>
         <th>Body</th>
         <th>CreatedAt</th>
     </tr>
+...
 ```
 
-Header information that is helpful in development is output, in the [VIEW] we can check the HTML of the final output.
+Header information that is helpful in development is output, in the `[VIEW]` we can check the HTML of the final output.
 
-The request to the posts resource is made the resource request result is assigned to the posts slot.
+The request to the posts resource is made the resource request result is assigned to the `posts` slot.
 
 ## Lazy Request 
 
-In a page resource the posts resource request are set in {$posts}. This request is made at the point that the {$posts} placeholder is called inside the template.
+In a page resource the posts resource request are set in `{$posts}`. This request is made at the point that the `{$posts}` placeholder is called inside the template.
 
 So if there is no call this request will never be made, it is up to template to decide whether or not this request is actually made.
 

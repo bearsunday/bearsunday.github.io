@@ -1,10 +1,10 @@
 ---
 layout: default
-title: BEAR.Sunday | Blog Tutorial(5) Validation
+title: BEAR.Sunday | Blog Tutorial Validation
 category: Blog Tutorial
 ---
 
-# Form 
+# Validation
 
 In the previous section we implemented the POST interface in the posts add page, we were then able to add posts by receiving a HTTP mtethod.
 
@@ -12,7 +12,7 @@ Next we will add to the POST interface validation, filtering, pre populated fiel
 
 Note: In this tutorial we won't use any special libraries we will just code in plain PHP. In reality it might be better to use a validation library that is part of Zend Framework or Symfony.
 
-## Validation 
+## Implementing Form Interceptor
 
 We will implement a form interceptor that doesn't depend on a specific library. First we will bind the form validation interceptor and the `@Form` annotation.
 
@@ -56,7 +56,7 @@ In this case the `Demo\Sandbox\Interceptor\Form\BlogPost` is bound to methods an
 
 Finally, add annotation `@Form` at the comment of the `onPost` method in `src/Resource/Page/Blog/Posts/Newpost.php`. Don't forget to add `use BEAR\Sunday\Annotation\Form;`.
 
-## @Form Validation Interceptor 
+## BlogPost Interceptor
 
 In the interceptor that is wedged between the request and the method, after the tag removal process is when the validation happens. (@TODO make sense?)
 
@@ -103,14 +103,19 @@ class BlogPost implements MethodInterceptor
      */
     public function invoke(MethodInvocation $invocation)
     {
-        // retrieve page and query
-        $args = $this->namedArgs->get($invocation);
+        // retrieve query (reference)
+        $args = $invocation->getArguments();
+        // retrieve page
         $page = $invocation->getThis();
 
+        // change values of query
         // strip tags
         foreach ($args as &$arg) {
-            strip_tags($arg);
+            $arg = strip_tags($arg);
         }
+
+        // retrieve named query. this is copy of values, not reference
+        $args = $this->namedArgs->get($invocation); // this is copy of args
 
         // required title
         if ($args['title'] === '') {
@@ -127,6 +132,9 @@ class BlogPost implements MethodInterceptor
             return $invocation->proceed();
         }
 
+        // on PUT we need id
+        $id = isset($args['id']) ? $args['id'] : null;
+        
         // error, modify 'GET' page wih error message.
         $page['errors'] = $this->errors;
         $page['submit'] = [
@@ -134,9 +142,10 @@ class BlogPost implements MethodInterceptor
             'body' => $args['body']
         ];
 
-        return $page->onGet();
+        return $page->onGet($id);
     }
 }
+
 {% endhighlight %}
 
 [MethodInterceptor](https://github.com/koriym/Ray.Aop/blob/master/src/Ray/Aop/MethodInterceptor.php) which conforms to the [http://aopalliance.sourceforge.net/ AOP Alliance]. The `$invocation` object passed to the `invoke` method is as it suggests method invoking object of the `MethodInvocation` type.
@@ -145,3 +154,5 @@ The parameters at the time the method can be obtained by calling `$invocation->g
 the original page display resource object can be obtained by calling `$invocation->getThis()`.
 
 Note: The parameters are not in the named parameters style, they are the ordered style that can normally be picked up in the method call.
+
+The named parameters can be obtained by `$this->namedArgs->get($invocation)`, but they are copies of values, so you can't change original parameters if you change them in the interceptor.

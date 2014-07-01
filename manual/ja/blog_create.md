@@ -1,21 +1,23 @@
 ---
 layout: default_ja
-title: BEAR.Sunday | ブログチュートリアル(6) 記事の追加
+title: BEAR.Sunday | ブログチュートリアル 記事の追加
 category: Blog Tutorial
 ---
 
-# POSTメソッド
+# 記事の追加
+
+## POSTメソッド
 
 これまでのステップでデータベースに登録されている記事を表示できるようになりました。次はいよいよフォームを作成しますが、まずはその前にコンソールのリソース操作で記事を追加できるようにしましょう。
 
-## 記事リソースのPOSTインターフェイスを作成
+### 記事リソースのPOSTインターフェイスを作成
 
 GETインターフェイスメソッドしかない記事リソースに記事を追加することのできるPOSTインターフェイスを加えます。
 
 *Demo.Sandbox/src/Resource/App/Blog/Posts.php*
 
 {% highlight php startinline %}
-public function onPost($title, $body, $created = null, $modified = null)
+public function onPost($title, $body)
 {
     return $this;
 }
@@ -47,7 +49,7 @@ $ php apps/Demo.Sandbox/bootstrap/contexts/api.php options 'app://self/blog/post
 
 200 OK
 allow: ["get","post"]
-param-post: ["title,body,(created),(modified)"]
+param-post: ["title,body"]
 content-type: ["application\/hal+json; charset=UTF-8"]
 cache-control: ["no-cache"]
 date: ["Tue, 24 Jun 2014 00:47:25 GMT"]
@@ -80,12 +82,12 @@ $ php apps/Demo.Sandbox/bootstrap/contexts/api.php post 'app://self/blog/posts?t
 ```
 
 コンテンツNULLの200 OKが帰ってきました。
-問題はありませんが、*もっと* 正確な204（No Content）のステータスコードに変更してみましょう。
+問題はありませんが、 *もっと* 正確な204（No Content）のステータスコードに変更してみましょう。
 
 *Demo.Sandbox/src/Resource/App/Blog/Posts.php*
 
 {% highlight php startinline %}
-public function onPost($title, $body, $created = null, $modified = null)
+public function onPost($title, $body)
 {
     $this->code = 204;
     return $this;
@@ -109,13 +111,12 @@ POSTインターフェイスを実装します。
 *Demo.Sandbox/src/Resource/App/Blog/Posts.php*
 
 {% highlight php startinline %}
-public function onPost($title, $body, $created = null, $modified = null)
+public function onPost($title, $body)
 {
     $values = [
         'title' => $title,
         'body' => $body,
-        'created' => $created,
-        'modified' => $modified,
+        'created' => $this->time,
     ];
     $this->db->insert($this->table, $values);
     $this->code = 204;
@@ -130,62 +131,80 @@ public function onPost($title, $body, $created = null, $modified = null)
 
 このクラスの `on` で始まる全てのメソッドに束縛したDBオブジェクトをインジェクトするインターセプターをバインドした事を思い出してください。束縛されたDBインジェクターはメソッドがリクエストされる直前にリソースリクエストに応じたDBオブジェクトをインジェクトします。リソースリクエストは *必要とする依存の準備や取得に関心を払う事なく、そのオブジェクトを利用してる* 事に注目してください。これはBEAR.Sundayが一貫して指向している *関心の分離* の原則に従っています。
 
-## 記事リソースのテスト
+### 記事リソースのテスト
 
 記事が追加され、その追加した内容を確認するテストを作成します。DBのテストを含んだリソースのユニットテストはこのようなコードになります。
 
 {% highlight php startinline %}
-class AppPostsTest extends \PHPUnit_Extensions_Database_TestCase
+<?php
+
+namespace Demo\Sandbox\tests\Resource\App\Blog;
+
+use BEAR\Resource\Code;
+use BEAR\Resource\Header;
+
+class PostsTest extends \PHPUnit_Extensions_Database_TestCase
 {
+    private $resource;
+
     public function getConnection()
     {
-        // DB接続
+        $pdo = require $_ENV['APP_DIR'] . '/tests/scripts/db.php';
+
+        return $this->createDefaultDBConnection($pdo, 'sqlite');
     }
 
     public function getDataSet()
     {
-        // 初期データセット
+        $seed = $this->createFlatXmlDataSet($_ENV['APP_DIR'] . '/tests/mock/seed.xml');
+        return $seed;
     }
 
-    /**
-     * @test
-     */
-    public function post()
+    protected function setUp()
     {
-        // +1
+        parent::setUp();
+        $this->resource = $GLOBALS['RESOURCE'];
+    }
+
+    public function testOnPost()
+    {
+        // inc 1
         $before = $this->getConnection()->getRowCount('posts');
-        $response = $this->resource
+        $resourceObject = $this->resource
             ->post
             ->uri('app://self/blog/posts')
             ->withQuery(['title' => 'test_title', 'body' => 'test_body'])
             ->eager
             ->request();
-        $this->assertEquals($before + 1, $this->getConnection()->getRowCount('posts'), "faild to add post");
 
-        // new post
-        $body = $this->resource
-            ->get
-            ->uri('app://self/blog/posts')
-            ->withQuery(['id' => 4])
-            ->eager
-            ->request()->body;
-        return $body;
+        $this->assertEquals($before + 1, $this->getConnection()->getRowCount('posts'), "failed to add");
     }
 
     /**
-     * @test
-     * @depends post
+     * @depends testOnPost
      */
-    public function postData($body)
+    public function testOnPostNewRow()
     {
+        $this->resource
+            ->post
+            ->uri('app://self/blog/posts')
+            ->withQuery(['title' => 'test_title', 'body' => 'test_body'])
+            ->eager
+            ->request();
+
+        // new post
+        $entries = $this->resource->get->uri('app://self/blog/posts')->withQuery([])->eager->request()->body;
+        $body = array_pop($entries);
+
         $this->assertEquals('test_title', $body['title']);
         $this->assertEquals('test_body', $body['body']);
     }
+}
 {% endhighlight %}
 
-postメソッドで記事が追加されたかをテストし、postDataメソッドでその内容を確認しています。 
+`testOnPost` メソッドで記事が追加されたかをテストし、`testOnPostNewRow` メソッドで内容を確認しています。
 
-## 記事を追加するページを作成
+### 記事を追加するページを作成
 
 記事を追加するappリソースが出来たので、次はWebからの入力を受け取ってそのappリソースをリクエストするページリソースを作成します。
 
@@ -202,31 +221,30 @@ postメソッドで記事が追加されたかをテストし、postDataメソ�
 </head>
 <body>
     <div class="container">
+        <ul class="breadcrumb">
+            <li><a href="/">Home</a> <span class="divider">/</span></li>
+            <li><a href="/blog/posts">Blog</a> <span class="divider">/</span></li>
+            <li class="active">New Post</li>
+        </ul>
+        
         <h1>New Post</h1>
-        <form action="/blog/posts/newpost" method="POST">
-            <input name="X-HTTP-Method-Override" type="hidden" value="POST" />
-            <div class="control-group {if $errors.title}error{/if}">
-                <label class="control-label" for="title">Title</label>
-                <div class="controls">
-                    <input type="text" id="title" name="title" value="{$submit.title}">
-                    <p class="help-inline">{$errors.title}</p>
-                </div>
+        <form action="/blog/posts/newpost" method="POST" role="form">
+            <div class="form-group {if $errors.title}has-error{/if}">
+                <label for="title">Title</label>
+                <input type="text" id="title" name="title" value="{$submit.title|escape}" class="form-control">
+                <label class="control-label" for="title">{$errors.title|escape}</label>
             </div>
-            <div class="control-group {if $errors.body}error{/if}">
-                <label>Body</label>
-                <textarea name="body" rows="10" cols="40">{$submit.body}</textarea>
-                <p class="help-inline">{$errors.body}</p>
+            <div class="form-group {if $errors.body}has-error{/if}">
+                <label for="body">Body</label>
+                <textarea name="body" rows="10" cols="40" class="form-control" id="body">{$submit.body|escape}</textarea>
+                <label class="control-label" for="body">{$errors.body|escape}</label>
             </div>
-            <input type="submit" value="Send">
+            <button type="submit" class="btn btn-default">Submit</button>
         </form>
     </div>
 </body>
 </html>
 ```
-
-Note: `X-HTTP-Method-Override` というhideen項目に注目してください。これはページリソースへのリクエストメソッドを指定しています。ブラウザやWebサーバーがGET/POSTしかサポートしていなくても、その外部プロトコルとは別にソフトウエアの内部プロトコルとして機能します。
-
-Note: `$_GET` クエリーで指定するときは `$_GET['_method']` で指定します。
 
 Newpostページリソースを作成しGETインターフェイスとPOSTインターフェイスを実装します。
 
@@ -250,8 +268,6 @@ class Newpost extends ResourceObject
     }
 
     /**
-     * Post
-     *
      * @param string $title
      * @param string $body
      */
