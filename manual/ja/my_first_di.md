@@ -1,59 +1,74 @@
 ---
 layout: default_ja
-title: BEAR.Sunday | My First DI
+title: BEAR.Sunday | はじめてのDI
 category: My First - Tutorial
 --- 
 
-# My First DI
+# はじめてのDI
 
-## Dependencies on Greeting that Enables a Whole Range of Greetings 
+## 挨拶を依存にしてさまざまな挨拶を可能にする
 
-In the greeting resource in [my_first_resource My First Resource] the word "Hello" is fixed.
-Here using [Dependency Injection](http://ja.wikipedia.org/wiki/%E4%BE%9D%E5%AD%98%E6%80%A7%E3%81%AE%E6%B3%A8%E5%85%A5)
-we can make all sorts of greeting respond to this. 
+[はじめてのリソース](my_first_resource.html) の挨拶リソースは "Hello" と英語で固定されていました。
+ここではDI（Dependency Injection＝[依存性の注入](http://ja.wikipedia.org/wiki/%E4%BE%9D%E5%AD%98%E6%80%A7%E3%81%AE%E6%B3%A8%E5%85%A5)）を使って
+さまざまな挨拶に対応するリソースにしましょう。
 
-## Dependency 
-In order to show a greeting in [my_first_resource Greeting Resource] we need a string. 
-This string is the dependency. In which way can we prepare this string? 
-There are predominantly 3 ways.
+## 依存（Dependency）
 
+[挨拶リソース](my_first_resource.html) では挨拶するための挨拶文字列が必要です。
+これがこのリソースの依存（Dependency）です。この文字列はどのように用意できるでしょうか？
+大きく３つの方法があります。
 
-### 1.Dependency Inside 
-The descriptor is inside the dependency code.
-In [my_first_resource My First Resource] 'Hello' was hard coded inside a method.
-If you make this a class constant the readability and maintainability is increased.
-However the existence of this within the dependency code means that to some degree it is the same as hard coding.
-In order to alter it you will need to alter the class itself still.
+### 1. 内包する（Dependency Inside）
 
+依存をコード内に記述します。
+[はじめてのリソース](my_first_resource.html) では "Hello" がメソッド内にハードコードされてました。
+これをクラス定数constにすればもう少しメンテナンス性や可読性が良くなるでしょう。
+しかし依存がコード内に存在してるという意味ではハードコードもconstも同じです。
+変更にはクラスを変更する必要があります。
 
-### 2.Dependency Pull 
-Some time ago configuration value were often defined in global variables.
-From there we went on to using a configuration object.
-In both cases we are pulling in dependencies from an external scope, and so are not really any different.
-Even if you use a service locater it is the same. It is pulling in dependencies from external sources.
+### 2. 取得する（Dependency Pull）
 
-You still need to change a configuration file or define a configuration in order to test it.
+その昔、設定といえばグローバル変数で定義されていました。
+それが設定オブジェクトを使うようになりました。
+どちらも外部から依存を取得することには代わりはありません。
+これはサービスロケータを使っても同じです。外部からpullしています。
 
-### 3.Dependency Injection 
-You are not retrieving the greeting string yourself, externally upon construction the greeting string is injected into the class.
-As for retrieving the dependency the class is only concerned with receiving the dependency, no request is necessary.
-When testing the you simply use the constructor or specified setter to pass in the dependency.
+テストをするときには依存（設定ファイルや定義）を変更する必要があります。
 
-## Take Hold of the Constructor 
-In [my_first_web_page_2 My First Resource Request] we used a trait for injection, but here we use a constructor to receive the dependency.
+### 3. 代入してもらう（Dependency Injection）
 
-The constructor looks like this.
+自ら挨拶文字列を取得するのではなく、コンストラクションの時に外部から挨拶文字列を代入してもらいます。
+依存の取得に関して利用クラスは完全に受け身です。
+テストの時にはその依存をコンストラクタや専用のセッターメソッドを使って渡します。
 
-In the constructor wanting external assignment(injection) we add the `@Inject` annotation.
-In which case in order to set the specified injection, we add the annotation `@Named` to the injection point.
+## コンストラクタで受け取る
+
+[はじめてのリソースリクエスト](my_first_resource_request.html) ではtraitをつかった注入を行いましたが、ここではコンストラクタで受け取ってみます。
+
+コンストラクタはこのようなコードになります。
+
+外部からの代入（注入）が欲しいコンストラクタにに `@Inject` とマークしています。
+その際この注入を特定するために、注入個所（インジェクトポイント）に `@Named` で名前をつけています。
+
+*apps/Demo.Sandbox/src/Resource/App/First/Greeting/Di.php*
 
 {% highlight php startinline %}
 <?php
+
+namespace Demo\Sandbox\Resource\App\First\Greeting;
+
+use BEAR\Resource\ResourceObject;
+use Ray\Di\Di\Inject;
+use Ray\Di\Di\Named;
+
+/**
+ * Greeting resource
+ */
+class Di extends ResourceObject
+{
     /**
-     * Constructor
-     * 
      * @param string $message
-     * 
+     *
      * @Inject
      * @Named("greeting_msg")
      */
@@ -61,56 +76,64 @@ In which case in order to set the specified injection, we add the annotation `@N
     {
         $this->message = $message;
     }
+
+    /**
+     * @param string $name
+     *
+     * @return string
+     *
+     */
+    public function onGet($name = 'anonymous')
+    {
+        return "{$this->message}, {$name}";
+    }
+}
 {% endhighlight %}
 
-### Lets try a bad injection execution  
+### まずは注入失敗を実験してみる
 
-We have saved the created file so we can make a URI request to `app://self/first/greeting/di`.
+できあがったファイルは `app://self/first/greeting/di` のURIでリクエストできるように保存しました。
 
-We have added the annotation needed for injection, but we haven't done any configuration for what to inject.
-So the injector cannot carry out the injection. Lets try this bad injection execution.
-
-```
-$ php api.php get 'app://self/first/greeting/di'
-```
+注入される箇所のマークは行いましたが、何を注入するかは設定していません。
+これでは注入を行うインジェクターはうまく注入をすることができません。その失敗を実験してみます。
 
 ```
+$ php apps/Demo.Sandbox/bootstrap/contexts/api.php get 'app://self/first/greeting/di'
+
 500 Internal Server Error
-X-EXCEPTION-CLASS: Ray\Di\Exception\NotBound
-X-EXCEPTION-MESSAGE: typehint# '', annotate'greeting_msg' for $message in class 'Sandbox\Resource\App\First\Greeting\Di'
-X-EXCEPTION-CODE: 0
-[BODY]
-Internal error occurred (e5f464)
+x-exception-class: ["Ray\\Di\\Exception\\NotBound"]
+x-exception-message: ["typehint='', annotate='greeting_msg' for $message in class 'Demo\\Sandbox\\Resource\\App\\First\\Greeting\\Di'"]
+...
 ```
 
-`Ray\Di\Exception\NotBound` exception is raised.
+`Ray\Di\Exception\NotBound` 例外が発生しました。
 
-The exception message shows that there is no DI settings have been bound for the named `greeting_msg` with no typehint. 
-A DI configuration is needed to be bound to the named `greeting_msg` method.
+例外メッセージはtypehintなしで `greeting_msg` という名前で束縛されたDI設定が無い事を表してます。
+`greeting_msg` という名前で依存性を束縛するDI設定が必要です。
 
-### Injector DSL 
+### 注入設定のDSL
 
-We can add the following to the [{$APP_PATH}\Module\App\Dependency](https://github.com/koriym/BEAR.Package/blob/master/apps/Sandbox/src/Sandbox/Module/AppModule.php) or [{$APP}\Module\AppModule](https://github.com/koriym/BEAR.Package/blob/master/apps/Sandbox/src/Sandbox/Module/AppModule.php) configure method, which is good enough for our purposes.
-The DI configuration (Injector Config) takes place in the `configure` method of the module. 
+DI設定（注入の設定）はモジュールの `configure()` メソッド内で行います。
+`Demo\Sandbox\Module\App\Dependency` クラスの `configure()` メソッドのどこでもよいので下記の行を追加します。
+
+*apps/Demo.Sandbox/src/Module/App/Dependency.php*
 
 {% highlight php startinline %}
-<?php
 protected function configure()
 {
     // ...
     $this->bind()->annotatedWith('greeting_msg')->toInstance('Hola');
 }
-
 {% endhighlight %}
 
-Here we pass 'Hola' into the method we annotated with `@Inject`and`@Named("greeting_msg")` (or even a contstructor).
+これで `@Inject` とマークし `@Named("greeting_msg")` と名前を指定したメソッド（またはコンストラクタ）に 'Hola' が渡ります。
 
-Here we are directing an object (instance), but we can also can also set a class or factory class name.
-Using a factory is is possible to generate a more complex instance. * Even if you change the generation method, the retrieval descriptor method will not change. 
+ここでは何かの実体（インスタンス）を直接指定していますが、クラス名やファクトリークラス名を指定する事もできます。
+ファクトリーでは複雑なインスタンス生成が可能です。
 
+Note: 生成方法は変わっても受けとる方の記述は同じです。
 
 {% highlight php startinline %}
-<?php
     /**
      * @Inject
      * @Named("greeting_msg")
@@ -121,24 +144,25 @@ Using a factory is is possible to generate a more complex instance. * Even if yo
     }
 {% endhighlight %}
 
-## Let's Check 
-```
-$ php api.php get 'app://self/first/greeting/di?name=BEAR'
-```
+## 確認します
 
 ```
+$ php apps/Demo.Sandbox/bootstrap/contexts/api.php get 'app://self/first/greeting/di?name=BEAR'
+
 200 OK
-...
+content-type: ["application\/hal+json; charset=UTF-8"]
+cache-control: ["no-cache"]
+date: ["Tue, 01 Jul 2014 10:19:08 GMT"]
 [BODY]
-"Hola, BEAR"
+Hola, BEAR
 ```
 
-We pass in the instance (string) that we setup in the module configuration.
-No matter if you retrieve the greeting text from a DB or from a file, the class will not change.
-The only change is in the preparation module.
+モジュールで設定したインスタンス（文字列）が注入されています！
+これで挨拶文字列の用意は利用クラスから切り離されました。挨拶文字列がDBやファイルから用意されるようになっても、利用クラスに変更はありません。
+準備するモジュールに変更があるだけです。
 
-All we need to do is add an annotation to the class that we are using for DI to use.
-There is nothing special about the constructor, no specific method names or use of an object container, it is just a normal clean PHP class.
-You can easily unit test by passing a dependency manually.
+この利用クラスではDIの利用をするためにアノテーションを使用してますがそれだけです。
+固有のコンストラクタや特定のメソッド名、特定のオブジェクトコンテナの使用のないごく普通のクリーンなPHPクラスです。
+依存は手動で渡せばユニットテストも簡単です。
 
-Your class has become more modular, reusable and testable. 
+利用クラスのモジュール性は高まり、再利用性とテストが容易になりました。
