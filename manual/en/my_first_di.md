@@ -9,24 +9,26 @@ category: My First - Tutorial
 ## Dependencies on Greeting that Enables a Whole Range of Greetings 
 
 In the greeting resource in [my_first_resource My First Resource] the word "Hello" is fixed.
-Here using [Dependency Injection](http://ja.wikipedia.org/wiki/%E4%BE%9D%E5%AD%98%E6%80%A7%E3%81%AE%E6%B3%A8%E5%85%A5)
+Here using [Dependency Injection](http://en.wikipedia.org/wiki/Dependency_injection)
 we can make all sorts of greeting respond to this. 
 
-## Dependency 
+## Dependency
+
 In order to show a greeting in [my_first_resource Greeting Resource] we need a string. 
 This string is the dependency. In which way can we prepare this string? 
 There are predominantly 3 ways.
 
 
-### 1.Dependency Inside 
+### 1. Dependency Inside
+
 The descriptor is inside the dependency code.
 In [my_first_resource My First Resource] 'Hello' was hard coded inside a method.
 If you make this a class constant the readability and maintainability is increased.
 However the existence of this within the dependency code means that to some degree it is the same as hard coding.
 In order to alter it you will need to alter the class itself still.
 
+### 2. Dependency Pull
 
-### 2.Dependency Pull 
 Some time ago configuration value were often defined in global variables.
 From there we went on to using a configuration object.
 In both cases we are pulling in dependencies from an external scope, and so are not really any different.
@@ -34,26 +36,40 @@ Even if you use a service locater it is the same. It is pulling in dependencies 
 
 You still need to change a configuration file or define a configuration in order to test it.
 
-### 3.Dependency Injection 
+### 3. Dependency Injection
+
 You are not retrieving the greeting string yourself, externally upon construction the greeting string is injected into the class.
 As for retrieving the dependency the class is only concerned with receiving the dependency, no request is necessary.
 When testing the you simply use the constructor or specified setter to pass in the dependency.
 
-## Take Hold of the Constructor 
-In [my_first_web_page_2 My First Resource Request] we used a trait for injection, but here we use a constructor to receive the dependency.
+## Take Hold of the Constructor
+
+In [My First Resource Request](my_first_resource_request.html) we used a trait for injection, but here we use a constructor to receive the dependency.
 
 The constructor looks like this.
 
 In the constructor wanting external assignment(injection) we add the `@Inject` annotation.
 In which case in order to set the specified injection, we add the annotation `@Named` to the injection point.
 
+*apps/Demo.Sandbox/src/Resource/App/First/Greeting/Di.php*
+
 {% highlight php startinline %}
 <?php
+
+namespace Demo\Sandbox\Resource\App\First\Greeting;
+
+use BEAR\Resource\ResourceObject;
+use Ray\Di\Di\Inject;
+use Ray\Di\Di\Named;
+
+/**
+ * Greeting resource
+ */
+class Di extends ResourceObject
+{
     /**
-     * Constructor
-     * 
      * @param string $message
-     * 
+     *
      * @Inject
      * @Named("greeting_msg")
      */
@@ -61,56 +77,64 @@ In which case in order to set the specified injection, we add the annotation `@N
     {
         $this->message = $message;
     }
+
+    /**
+     * @param string $name
+     *
+     * @return string
+     *
+     */
+    public function onGet($name = 'anonymous')
+    {
+        return "{$this->message}, {$name}";
+    }
+}
 {% endhighlight %}
 
-### Lets try a bad injection execution  
+### Let's try a bad injection execution
 
 We have saved the created file so we can make a URI request to `app://self/first/greeting/di`.
 
 We have added the annotation needed for injection, but we haven't done any configuration for what to inject.
-So the injector cannot carry out the injection. Lets try this bad injection execution.
+So the injector cannot carry out the injection. Let's try this bad injection execution.
 
 ```
-$ php api.php get 'app://self/first/greeting/di'
-```
+$ php apps/Demo.Sandbox/bootstrap/contexts/api.php get 'app://self/first/greeting/di'
 
-```
 500 Internal Server Error
-X-EXCEPTION-CLASS: Ray\Di\Exception\NotBound
-X-EXCEPTION-MESSAGE: typehint# '', annotate'greeting_msg' for $message in class 'Sandbox\Resource\App\First\Greeting\Di'
-X-EXCEPTION-CODE: 0
-[BODY]
-Internal error occurred (e5f464)
+x-exception-class: ["Ray\\Di\\Exception\\NotBound"]
+x-exception-message: ["typehint='', annotate='greeting_msg' for $message in class 'Demo\\Sandbox\\Resource\\App\\First\\Greeting\\Di'"]
+...
 ```
 
 `Ray\Di\Exception\NotBound` exception is raised.
 
 The exception message shows that there is no DI settings have been bound for the named `greeting_msg` with no typehint. 
-A DI configuration is needed to be bound to the named `greeting_msg` method.
+A DI configuration is needed to be bound to the named `greeting_msg`.
 
 ### Injector DSL 
 
-We can add the following to the [{$APP_PATH}\Module\App\Dependency](https://github.com/koriym/BEAR.Package/blob/master/apps/Sandbox/src/Sandbox/Module/AppModule.php) or [{$APP}\Module\AppModule](https://github.com/koriym/BEAR.Package/blob/master/apps/Sandbox/src/Sandbox/Module/AppModule.php) configure method, which is good enough for our purposes.
-The DI configuration (Injector Config) takes place in the `configure` method of the module. 
+The DI configuration (Injector Config) takes place in the `configure()` method of the module. 
+We add the following to the `configure()` method in class `Demo\Sandbox\Module\App\Dependency`.
+
+*apps/Demo.Sandbox/src/Module/App/Dependency.php*
 
 {% highlight php startinline %}
-<?php
 protected function configure()
 {
     // ...
     $this->bind()->annotatedWith('greeting_msg')->toInstance('Hola');
 }
-
 {% endhighlight %}
 
 Here we pass 'Hola' into the method we annotated with `@Inject`and`@Named("greeting_msg")` (or even a contstructor).
 
 Here we are directing an object (instance), but we can also can also set a class or factory class name.
-Using a factory is is possible to generate a more complex instance. * Even if you change the generation method, the retrieval descriptor method will not change. 
+Using a factory is is possible to generate a more complex instance. 
 
+Note: Even if you change the generation method, the retrieval descriptor method will not change.
 
 {% highlight php startinline %}
-<?php
     /**
      * @Inject
      * @Named("greeting_msg")
@@ -121,7 +145,8 @@ Using a factory is is possible to generate a more complex instance. * Even if yo
     }
 {% endhighlight %}
 
-## Let's Check 
+## Let's Check
+
 ```
 $ php api.php get 'app://self/first/greeting/di?name=BEAR'
 ```
@@ -141,4 +166,4 @@ All we need to do is add an annotation to the class that we are using for DI to 
 There is nothing special about the constructor, no specific method names or use of an object container, it is just a normal clean PHP class.
 You can easily unit test by passing a dependency manually.
 
-Your class has become more modular, reusable and testable. 
+Your class has become more modular, reusable and testable.
