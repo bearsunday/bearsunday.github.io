@@ -25,10 +25,11 @@ $ composer create-project bear/package {$PROJECT_PATH}
 ## 環境確認
 
 ```
+$ cd {$PROJECT_PATH}
 $ php bin/env.php
 ```
 
-BEAR.Sunday application can be accessed via the web or CLI.
+BEAR.SundayアプリケーションはWebまたはCLIからアクセスできます。
 
 ### Sandbox アプリケーション
 
@@ -36,34 +37,33 @@ BEAR.Sunday application can be accessed via the web or CLI.
 $ bin/bear.server apps/Demo.Sandbox
 ```
 
-https://github.com/koriym/BEAR.package#buil-in-web-server-for-development をご覧ください。
+https://github.com/koriym/BEAR.package#built-in-web-server-for-development をご覧ください。
 
 ## 新しいアプリケーションの作成
 
 ```
-$ composer create-project bear/skeleton {$PACKAGE_DIR}/apps/{$Vendor.Application}
-$ composer create-project bear/skeleton {$PACKAGE_DIR}/apps/{$Vendor.Application} {$SKELETON_VERSION}
+$ composer create-project bear/skeleton apps/{$Vendor.Application}
+$ composer create-project bear/skeleton apps/{$Vendor.Application} {$SKELETON_VERSION}
 ```
 
 ## 新しいリソースの作成
 
 ```
-$ bin/bear.create-resource apps/Demo.{$Vendor.Application} {$URI}
+$ bin/bear.create-resource apps/{$Vendor.Application} {$URI}
 $ bin/bear.create-resource apps/Demo.Sandbox/ page://self/greeting
 ```
 
 ## 試してみましょう
 
-新しいアプリケーション 'My.Hello' を作成し、どのように動くか見てみましょう。
+新しいアプリケーション `My.Hello` を作成し、どのように動くか見てみましょう。
 
 ```
 // BEAR.Package フレームワークのファイルを作成
 $ composer create-project bear/package ./bear
-$ cd bear/apps
+$ cd bear
 
 // 'My.Hello' アプリケーションのファイルを作成
-$ composer create-project bear/skeleton My.Hello
-$ cd ..
+$ composer create-project bear/skeleton apps/My.Hello
 
 // ビルトインWebサーバーを起動
 $ bin/bear.server apps/My.Hello

@@ -25,6 +25,7 @@ $ composer create-project bear/package {$PROJECT_PATH}
 ## Environment Check 
 
 ```
+$ cd {$PROJECT_PATH}
 $ php bin/env.php
 ```
 
@@ -36,34 +37,32 @@ BEAR.Sunday application can be accessed via the web or CLI.
 $ bin/bear.server apps/Demo.Sandbox
 ```
 
-Please see https://github.com/koriym/BEAR.package#buil-in-web-server-for-development.
+Please see https://github.com/koriym/BEAR.package#built-in-web-server-for-development .
 
 ## Create New Application
 
 ```
-$ composer create-project bear/skeleton {$PACKAGE_DIR}/apps/{$Vendor.Application}
-$ composer create-project bear/skeleton {$PACKAGE_DIR}/apps/{$Vendor.Application} {$SKELETON_VERSION}
+$ composer create-project bear/skeleton apps/{$Vendor.Application}
+$ composer create-project bear/skeleton apps/{$Vendor.Application} {$SKELETON_VERSION}
 ```
 
 ## Create New Resource
 
 ```
-$ bin/bear.create-resource apps/Demo.{$Vendor.Application} {$URI}
+$ bin/bear.create-resource apps/{$Vendor.Application} {$URI}
 $ bin/bear.create-resource apps/Demo.Sandbox/ page://self/greeting
 ```
 
 ## Try it out
 
-Let's create new application 'My.Hello' and see how does it works.
+Let's create new application `My.Hello` and see how does it works.
 
 ```
 // create BEAR.Package framework files
 $ composer create-project bear/package ./bear
-$ cd bear/apps
 
 // create 'My.Hello' application files
-$ composer create-project bear/skeleton My.Hello
-$ cd ..
+$ composer create-project bear/skeleton apps/My.Hello
 
 // run built-in web server
 $ bin/bear.server apps/My.Hello
