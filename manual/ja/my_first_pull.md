@@ -1,75 +1,75 @@
 ---
 layout: default_ja
-title: BEAR.Sunday | My First Pull
+title: BEAR.Sunday | 初めてのプル
 category: My First - Tutorial
---- 
-# My First Pull
+---
 
-## Let's try calling a resource from a template  
+# 初めてのプル
 
-Lets use a resource directly from a view(PHP Script).
-When you directly use the greeting resource that we made before from HTML you do so like this.
+## テンプレートからリソースを呼び出してみましょう
+
+ビュー（PHPスクリプト）から直接リソースを利用してみましょう。
+以前つくった挨拶リソースをHTMLから直接利用するにはこうなります。
 
 {% highlight php startinline %}
 <?php
 $app = require '{$APP_PATH}/bootstrap/instance.php';
-$message = $app
-    ->resource
+$message = $app->resource
     ->get
     ->uri('app://self/first/greeting')
     ->withQuery(['name' > 'BEAR'])
-    ->eager
-    ->request()
+    ->eager->request()
     ->body;
 ?>
 <html>
-    <body><?php echo $message;?></body>
+    <body><?php echo $message; ?></body>
 </html>
 {% endhighlight %}
 
-This *Plain PHP Script* is open directly in the web document domain, the web client receives the request directly.
+この *プレーンなPHPスクリプト* はWebドキュメント領域に直接公開して、Webクライアントから直接リクエストを受けます。
 
-The application object is retrieved from a script, then you can use that resource client to retrieve the application resource.
+アプリケーションオブジェクトを（$app）をスクリプトから取得しそのリソースクライアントをつかってアプリケーションリソースを取り出しています。
 
- Note: $app is a resource client and dependency injector needed for application control. For HTTP output and the like it has functionality that is key to the application. 
+Note: `$app` はアプリケーションのコントロールに必要なリソースクライントやディペンデンシーインジェクター、HTTP出力などアプリケーションの重要な機能をもっています。
 
-This shows how through this small script all information in BEAR.Sunday as a resource can easily be used.
+この短いスクリプトはBEAR.Sundayでは全ての情報はリソースで、簡単に利用可能という事を表しています。
 
-## How is this any Different to What We Have Already 
+## これまでと違うところ
 
-Until now we have used resources from either the web or command line.
-We have checked the resource as an API from the command line or used as a Web API.
-Also a page is accessed from the web and viewed as a web page.
+これまでリソースをコマンドラインかWebから利用していました。
+リソースをAPIとしてコマンドラインでの確認やWeb APIとして利用しました。
+またページはWebからアクセスしてWebページとして表示されました。
 
-In both cases there has been a front script and from there the resource is requested and output.
+どちらにしてもフロントスクリプトがあり、それからリソースがリクエストされ出力されてました。
 
-Differently the resource consumed directly by this script.
+一方、このスクリプトではリソースが直接利用されています。
 
-## Is this any good? 
+## これはいいのでしょうか
 
-In MVC terms this is like the model being retrieved from the view.
-Is the sequence not opposite? Is this right? The design and logic mixed, can't you even say this is bad code?
+MVCでいえばこれはビューからモデルが取得されてる事と同じです。
+順序が逆になってないでしょうか？これで良いのでしょうか？デザインとロジックが混ざってる、良くないコードとも言えないのでしょうか？
 
-## Pull Based Architecture 
+## プル型アーキテクチャ
 
-When from the view layer you trigger any processing, according to your needs you 'pull' the result it is called [Pull Based Architecture](http://en.wikipedia.org/wiki/Web_application_framework#Push-based_vs._pull-based ).
+この表示レイヤから処理を開始し、必要に応じて結果を「プル」するアーキテクチャを [プル型アーキテクチャ](http://ja.wikipedia.org/wiki/Web%E3%82%A2%E3%83%97%E3%83%AA%E3%82%B1%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3%E3%83%95%E3%83%AC%E3%83%BC%E3%83%A0%E3%83%AF%E3%83%BC%E3%82%AF#.E3.83.97.E3.83.83.E3.82.B7.E3.83.A5.E5.9E.8B_vs._.E3.83.97.E3.83.AB.E5.9E.8B) といいます。
 
-Many web MVC frameworks use the opposite 'Push' .
-Execute the action which requests a process, next 'Pushing' the result to the view layer so that the data can be output. 
-'Pull' is the opposite.
+多くのWeb MVCフレームワークはこの逆の「プッシュ型」です。
+処理を要求するアクションを実行し、次に結果を出力するためにデータを表示のレイヤに「プッシュ」します。
+「プル型」はその逆です。
 
- Note: In [Comparison of web application frameworks](http://en.wikipedia.org/wiki/Comparison_of_web_application_frameworks) we can see many different frameworks and whether they use PUSH/PULL.
+Note: [Comparison of web application frameworks](http://en.wikipedia.org/wiki/Comparison_of_web_application_frameworks#PHP_2) では様々なフレームワークでのPUSH/PULL分類がわかります。
 
 Again BEAR.Sunday's 'resource pull' pulls resources using PHP code, however logic like domain logic or controller logic is not mixed up in the view.
 In reality the resource is only being bound to the resource placeholder (`<?php echo $message;?>`).
+またこのBEAR.Sundayの「リソースプル」はPHPのコードでリソースをプルしていますが、ドメインロジック、コントロールロジックなどのロジックがこのビューに紛れ込んでるわけではありません。
+あくまでリソースのプレースホルダー（`<?php echo $message; ?>`）とそのリソースを束縛してるだけす。
 
-## Use the API as a Resource 
+## APIとしてリソースを使う
 
-This PHP script is uses the BEAR.Sunday framework, but it is not being used by any thing else. So through the script you are directly calling the resource for use.
+このPHPスクリプトはBEAR.Sundayフレームワークを利用していますが、利用はされていません。主がこのスクリプトで、直接リソースを呼び出して利用しています。
 
-In that just retrieving the resource client and making a request.
-With no preparation at all you just use the resource.
-You are not using HTTP as a mediator, as an API you can use resources in any other CMS or framework.
- 
- Note: Using HTTP you can use many different frameworks from many other languages like [Thrift](http://thrift.apache.org/) for even more portability. 
- Document DB, client side MVC, mobile devices, SNS applications etc... Now more than any there is are huge reasons for building a core API application to support a large diversity of applications.
+それにはリソースクライアントを取得しリクエストするだけです。
+準備なしにこれだけでリソースを使う事ができます。
+HTTPを介する事なくAPIとして、他のCMSやフレームワークのPHPプログラムからリソースを利用できます。
+
+Note: HTTP越しにしたり、[Thrift](http://thrift.apache.org/) 等の多言語フレームワークを使う事で更にポータビリティは高まります。ドキュメントDB、クライアントサイドMVC、モバイルデバイス、SNSアプリ等... 今日の多様化するアプリケーションに対してAPIをコアにアプリケーションを構築する事は大きな意味があります。
