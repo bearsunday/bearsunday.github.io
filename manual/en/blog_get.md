@@ -49,7 +49,7 @@ Note: Instead of setting the `$body` property you can just directly return data.
 
 Next we will actually access a db and extract data to be used in an `onGet` method to respond to a GET request.
 
-BEAR.Sunday doesn't have its own database usage library or database abstraction library. Inside the application resource by using other libraries you can directly use SQL or using an ORM. Inside the sandbox application [PDO](http://www.php.net/manual/en/book.pdo.php) is used.
+BEAR.Sunday doesn't have its own database usage library or database abstraction library. Inside the application resource by using other libraries you can directly use SQL or using an ORM. Inside the sandbox application [Docrine DBAL](http://www.doctrine-project.org/projects/dbal.html) is used.
 
 *Demo.Sandbox/src/Resource/App/Blog/Posts.php*
 
