@@ -10,11 +10,11 @@ category: My First - Tutorial
 
 1962年、Ted Nelson氏が [**ハイパーテキスト**](http://en.wikipedia.org/wiki/Hypertext) を発案しました。これはテキストが他のテキストを参照するための参照リンクをテキストに埋め込むというもので、テキスト間を結びつける参照をハイパーリンクと呼びます。
 
-最も有名で成功したハイパーテキスト実装がWWWです（<a>タグのhrefはハイパーリファレンスの略です）。
+最も有名で成功したハイパーテキスト実装がWWWです（`<a>` タグのhrefはハイパーリファレンスの略です）。
 
 これをテキストに制限しないであらゆるメディアにしたのがハイパーメディアです。重要なのは相互参照（hyper reference）のためのリンクが埋め込まれてるということです。
 
-また、PHPは *PHP: Hypertext Preprocessor* の略です。[PHP とは何の略ですか?](http://www.php.net/manual/ja/faq.general.php#faq.general.acronym))
+また、PHPは *PHP: Hypertext Preprocessor* の略です。（[PHP とは何の略ですか?](http://www.php.net/manual/ja/faq.general.php#faq.general.acronym)）
 
 ## ハイパーメディアではないもの
 
@@ -26,7 +26,7 @@ category: My First - Tutorial
 |--------|-------------------------------------|
 | METHOD | POST                                |
 | URI    | http://restbucks.com/order/{?drink} |
-| Query  | drink=Drink Name                    |
+| Query  | drink=ドリンク名                      |
 
 この `API` を使って飲み物を注文します。これのAPIを使って `注文リソース` を作成（POST）します。
 
@@ -98,7 +98,10 @@ $this->links['friend'] = [Link::HREF => "app://self/sns/friend?id{$id}"];
 
 {% highlight php startinline %}
     public $links => [
-        'friend' => [Link::HREF => 'app://self/sns/friend{?id}', Link::TEMPLATED => true]
+        'friend' => [
+            Link::HREF => 'app://self/sns/friend{?id}',
+            Link::TEMPLATED => true
+        ]
     ];
 {% endhighlight %}
 
@@ -139,7 +142,10 @@ class Order extends ResourceObject
 
 {% highlight php startinline %}
     public $links = [
-        'payment' => [Link::HREF => 'app://self/first/hypermedia/payment{?id}', Link::TEMPLATED => true]
+        'payment' => [
+            Link::HREF => 'app://self/first/hypermedia/payment{?id}',
+            Link::TEMPLATED => true
+        ]
     ];
 {% endhighlight %}
 

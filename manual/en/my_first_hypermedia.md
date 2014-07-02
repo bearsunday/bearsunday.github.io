@@ -13,7 +13,7 @@ This is when in order to refer some text other text referral links are embedded 
 
 The most famous and successful implementation of Hypertext is the Worldwide Web. (The href in a property of the `<a>` tag is an abbreviation for hyper-reference.)
 
-Also to note is that PHP is an acronym of *PHP: Hypertext Preprocessor* [PHP an acronym for what?](http://www.php.net/manual/en/faq.general.php#faq.general.acronym))
+Also to note is that PHP is an acronym of *PHP: Hypertext Preprocessor* ([PHP an acronym for what?](http://www.php.net/manual/en/faq.general.php#faq.general.acronym))
 
 ## Non Existent Hypermedia
 
@@ -100,7 +100,10 @@ In the `links` property you can set the URI template like this.
 
 {% highlight php startinline %}
     public $links => [
-        'friend' => [Link::HREF => 'app://self/sns/friend{?id}', Link::TEMPLATED => true]
+        'friend' => [
+            Link::HREF => 'app://self/sns/friend{?id}',
+            Link::TEMPLATED => true
+        ]
     ];
 {% endhighlight %}
 
@@ -141,7 +144,10 @@ In order to add hyperlinks setup the `links` property.
 
 {% highlight php startinline %}
     public $links = [
-        'payment' => [Link::HREF => 'app://self/first/hypermedia/payment{?id}', Link::TEMPLATED => true]
+        'payment' => [
+            Link::HREF => 'app://self/first/hypermedia/payment{?id}',
+            Link::TEMPLATED => true
+        ]
     ];
 {% endhighlight %}
 
