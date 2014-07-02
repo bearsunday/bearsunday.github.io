@@ -67,9 +67,7 @@ The framework package (BEAR.Package) directory structure looks like this:
 │   ├── bear.server
 │   ├── bear.create-resource
 │   └── env.php
-├── src                      # BEAR.Package source code organized for PSR-0
-│   └── BEAR
-│       └── Package
+├── src                      # BEAR.Package source code organized for PSR-4
 ├── tests                    # test files for phpunit
 ├── var
 │   ├── lib                  # system script
@@ -100,10 +98,12 @@ The application directory structure looks like this:
 │       ├── App.php      # application class
 │       ├── Interceptor  # AOP interceptors
 │       ├── Module       # DI binding modules
-│       └── Params       # signal parameter providers
+│       ├── Params       # signal parameter providers
+│       └── Resource     # Resources
 ├── var                  # application variable directories
-│   ├── db               # application data base file
-│   ├── lib              # vendor(packagist) related files
+│   ├── conf             # application configuration files
+│   ├── db               # application data base files
+│   ├── lib              # vendor (packagist) related files
 │   ├── log              # application log directory
 │   ├── tmp              # application tmp files
 │   └── www              # public web folder
