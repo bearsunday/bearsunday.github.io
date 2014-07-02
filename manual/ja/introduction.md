@@ -60,7 +60,7 @@ BEAR.SundayのAOPは [AOP Alliance](http://aopalliance.sourceforge.net/) が策�
 フレームワークパッケージ（BEAR.Package）のディレクトリ構成はこのようになります。
 
 ```
-{$PACKAGE_DIR}
+{$PROJECT_PATH}
 ├── apps                     # applications
 │   ├── Demo.Helloworld
 │   └── Demo.Sandbox
