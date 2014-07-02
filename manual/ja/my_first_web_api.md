@@ -17,7 +17,7 @@ $ php -S 0.0.0.0:8081 {$PROJECT_PATH}/apps/Demo.Sandbox/bootstrap/contexts/api.p
 ブラウザのアドオンのRESTクライアント（FireFox用](https://addons.mozilla.org/ja/firefox/addon/restclient/#id=9780) や [Chrome用](https://chrome.google.com/webstore/detail/advanced-rest-client/hgmloofddffdnphfgcellkdfbfbjeloo)）等でアクセスします。
 
 ```
-GET http://localhost:8081/first/greeting?name=BEAR
+GET http://localhost:8081/app/first/greeting?name=BEAR
 ```
 
 JSONで挨拶がかえってきたでしょうか？

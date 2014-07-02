@@ -17,7 +17,7 @@ $ php -S 0.0.0.0:8081 {$PROJECT_PATH}/apps/Demo.Sandbox/bootstrap/contexts/api.p
 We can then access it through a REST client ([for FireFox](https://addons.mozilla.org/ja/firefox/addon/restclient/#id=9780), or [for Chrome](https://chrome.google.com/webstore/detail/advanced-rest-client/hgmloofddffdnphfgcellkdfbfbjeloo))
 
 ```
-GET http://localhost:8081/first/greeting?name=BEAR
+GET http://localhost:8081/app/first/greeting?name=BEAR
 ```
 
 Did the greeting come back as JSON data like this ?
