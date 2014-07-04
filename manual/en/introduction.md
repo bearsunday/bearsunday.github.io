@@ -58,7 +58,7 @@ However in BEAR.Sunday with loose coupling and a high level of abstraction, usin
 The framework package (BEAR.Package) directory structure looks like this:
 
 ```
-{$PROJECT_PATH}
+{$PACKAGE_DIR}
 ├── apps                     # applications
 │   ├── Demo.Helloworld
 │   └── Demo.Sandbox
