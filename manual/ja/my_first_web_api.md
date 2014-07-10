@@ -11,10 +11,10 @@ category: My First - Tutorial
 API用のビルトインWebサーバーを起動します。
 
 ```
-$ php -S 0.0.0.0:8081 {$PROJECT_PATH}/apps/Demo.Sandbox/bootstrap/contexts/api.php
+$ bin/bear.server --port=8081 --context=api apps/Demo.Sandbox
 ```
 
-ブラウザのアドオンのRESTクライアント（FireFox用](https://addons.mozilla.org/ja/firefox/addon/restclient/#id=9780) や [Chrome用](https://chrome.google.com/webstore/detail/advanced-rest-client/hgmloofddffdnphfgcellkdfbfbjeloo)）等でアクセスします。
+ブラウザのアドオンのRESTクライアント（[FireFox用](https://addons.mozilla.org/ja/firefox/addon/restclient/#id=9780) や [Chrome用](https://chrome.google.com/webstore/detail/advanced-rest-client/hgmloofddffdnphfgcellkdfbfbjeloo)）等でアクセスします。
 
 ```
 GET http://localhost:8081/app/first/greeting?name=BEAR

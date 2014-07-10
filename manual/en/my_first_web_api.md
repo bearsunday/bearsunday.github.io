@@ -11,7 +11,7 @@ Let's use the resource we made in [My First Resource](my_first_resource.html) as
 Start the built in web server for the API.
 
 ```
-$ php -S 0.0.0.0:8081 {$PROJECT_PATH}/apps/Demo.Sandbox/bootstrap/contexts/api.php
+$ bin/bear.server --port=8081 --context=api apps/Demo.Sandbox
 ```
 
 We can then access it through a REST client ([for FireFox](https://addons.mozilla.org/ja/firefox/addon/restclient/#id=9780), or [for Chrome](https://chrome.google.com/webstore/detail/advanced-rest-client/hgmloofddffdnphfgcellkdfbfbjeloo))
