@@ -59,8 +59,7 @@ When the get request is called it does nothing but return itself.
 Let's check this resource from the command line.
 
 ```
-$ cd {$PROJECT_PATH}/apps/Demo.Sandbox/bootstrap/contexts/
-$ php api.php get page://self/first/greeting
+$ php apps/Demo.Sandbox/bootstrap/contexts/api.php get page://self/first/greeting
 
 200 OK
 content-type: ["application\/hal+json; charset=UTF-8"]
@@ -107,7 +106,7 @@ This is a HTML page and can also be checked via the command line.
 Lets check.
 
 ```
-$ php dev.php get /first/greeting
+$ php apps/Demo.Sandbox/bootstrap/contexts/dev.php get /first/greeting
 ```
 
 ```html
@@ -132,7 +131,7 @@ HTML all checked!
 ## Checking the Page HTML in a Web Browser 
 
 ```
-$ php -S localhost:8088 dev.php
+$ bin/bear.server --port=8088 --context=dev apps/Demo.Sandbox
 ```
 
 Browse http://localhost:8088/first/greeting 

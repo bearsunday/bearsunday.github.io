@@ -45,8 +45,8 @@ Hello, BEAR.
 
 Sandboxアプリケーションに実装します。URIとPHPのクラス、ファイル位置はこのように対応します。
 
-| URI | Class | File |
-|-----|--------|-----|
+| URI | クラス | ファイル |
+|-----|--- ----|----------|
 | app://self/first/greeting | Demo\Sandbox\Resource\App\First\Greeting | apps/Demo.Sandbox/src/Sandbox/Resource/App/First/Greeting.php |
 
 リクエストインターフェイス（メソッド）を実装します。

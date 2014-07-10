@@ -59,8 +59,7 @@ GETリクエストは呼ばれると何もしないで自身を返していま�
 このリソースをコマンドラインで確認してみましょう。
 
 ```
-$ cd {$PROJECT_PATH}/apps/Demo.Sandbox/bootstrap/contexts/
-$ php api.php get page://self/first/greeting
+$ php apps/Demo.Sandbox/bootstrap/contexts/api.php get page://self/first/greeting
 
 200 OK
 content-type: ["application\/hal+json; charset=UTF-8"]
@@ -107,7 +106,7 @@ greeting Hello.,
 では確認してみましょう。
 
 ```
-$ php dev.php get /first/greeting
+$ php apps/Demo.Sandbox/bootstrap/contexts/dev.php get /first/greeting
 ```
 
 ```html
@@ -135,7 +134,7 @@ HTMLが確認できました。
 ## WebブラウザでページHTMLを確認します
 
 ```
-$ php -S localhost:8088 dev.php
+$ bin/bear.server --port=8088 --context=dev apps/Demo.Sandbox
 ```
 
 http://localhost:8088/first/greeting にアクセスします。
