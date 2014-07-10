@@ -7,7 +7,7 @@ category: Manual
 # Installation 
 
 ```
-$ composer create-project bear/package {$PROJECT_PATH}
+$ composer create-project bear/package {$PACKAGE_DIR}
 ```
 
 ## Prerequisites 
@@ -25,7 +25,7 @@ $ composer create-project bear/package {$PROJECT_PATH}
 ## Environment Check 
 
 ```
-$ cd {$PROJECT_PATH}
+$ cd {$PACKAGE_DIR}
 $ php bin/env.php
 ```
 
