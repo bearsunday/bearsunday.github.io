@@ -48,7 +48,7 @@ Note: データを直接返すとクライアントには値が `$body` プロ�
 
 次は実際にDBをアクセスしてデータを取り出すGETリクエストに対する `onGet` メソッドを実装します。
 
-BEAR.Sundayは自身のデータベース利用ライブラリや抽象化ライブラリを持ちません。アプリケーションリソースクラス内でSQLを直接利用したり、ORMを使用したりします。Sandboxアプリケーションでは [PDO](http://www.php.net/manual/ja/book.pdo.php) でSQLを記述します。
+BEAR.Sundayは自身のデータベース利用ライブラリや抽象化ライブラリを持ちません。アプリケーションリソースクラス内でSQLを直接利用したり、ORMを使用したりします。Sandboxアプリケーションでは [Docrine DBAL](http://www.doctrine-project.org/projects/dbal.html) でSQLを記述します。
 
 *Demo.Sandbox/src/Resource/App/Blog/Posts.php*
 
