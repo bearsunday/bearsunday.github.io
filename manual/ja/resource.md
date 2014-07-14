@@ -6,7 +6,7 @@ category: Resource
 
 ## Representational State Transfer
 
-[http://ja.wikipedia.org/wiki/REST REST] (Representational State Transfer) は 2000年、HTTP 仕様の中心的作成者の 1 人である Roy Fielding の博士論文で初めて紹介されました。
+[http://ja.wikipedia.org/wiki/REST REST] (Representational State Transfer) は 2000年、HTTP 仕様の中心的作成者の 1 人である Roy Fielding の博士論文ではじめて紹介されました。
 
 リソースとは意味のある情報のかたまりです。リソースの状態から表現がつくられその表現がクライアントに渡ります。これがREST(Representational State Transfer=表現可能な状態の転送) です。例えば在庫情報はリソースです。その状態からHTMLページという表現がつくられWebブラウザに渡され在庫情報ページになります。これはRESTです。
 
