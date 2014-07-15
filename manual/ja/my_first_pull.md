@@ -1,10 +1,10 @@
 ---
 layout: default_ja
-title: BEAR.Sunday | 初めてのプル
+title: BEAR.Sunday | はじめてのプル
 category: My First - Tutorial
 ---
 
-# 初めてのプル
+# はじめてのプル
 
 ## テンプレートからリソースを呼び出してみましょう
 
