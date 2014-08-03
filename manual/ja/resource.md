@@ -144,6 +144,7 @@ MVCフレームワークでコントローラーがモデルにアクセスす�
 ### REST リファレンスリンク
 
  * Wikipedia http://ja.wikipedia.org/wiki/REST
- * infoQ REST Introduction http://www.infoq.com/jp/articles/rest-introduction
- * Introduction to HTTP and REST http://net.tutsplus.com/tutorials/other/a-beginners-introduction-to-http-and-rest/
+ * infoQ REST入門 http://www.infoq.com/jp/articles/rest-introduction
+ * REST入門 http://yohei-y.blogspot.jp/2005/04/rest_23.html
+ * A Beginner's Guide to HTTP and REST http://net.tutsplus.com/tutorials/other/a-beginners-introduction-to-http-and-rest/
  * REST & ROA Best Practice http://www.ustream.tv/recorded/485516

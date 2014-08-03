@@ -136,6 +136,6 @@ the resource object retrieved using a URI is processed through a request interfa
 ### REST Reference Links
 
  * Wikipedia http://en.wikipedia.org/wiki/REST
- * infoQREST Introduction http://www.infoq.com/articles/rest-introduction
- * Introduction to HTTP and REST http://net.tutsplus.com/tutorials/other/a-beginners-introduction-to-http-and-rest/
- * REST & ROA Best Practice http://www.ustream.tv/recorded/485516
+ * infoQ A Brief Introduction to REST http://www.infoq.com/articles/rest-introduction
+ * A Beginner's Guide to HTTP and REST http://net.tutsplus.com/tutorials/other/a-beginners-introduction-to-http-and-rest/
+ * REST & ROA Best Practice (Japanese) http://www.ustream.tv/recorded/485516
