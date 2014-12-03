@@ -26,7 +26,7 @@ $ composer create-project bear/package {$PACKAGE_DIR}
 
 ```
 $ cd {$PACKAGE_DIR}
-$ php bin/env.php
+$ bin/bear.env
 ```
 
 BEAR.Sunday application can be accessed via the web or CLI.
