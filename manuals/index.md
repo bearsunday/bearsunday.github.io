@@ -2,7 +2,7 @@
 layout: docs-en
 title: BEAR.Sunday Manual
 category: Manual
-permalink: /manuals/1.0/
+permalink: /manuals/
 ---
 
 # BEAR.Sunday Manual
