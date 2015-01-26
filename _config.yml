@@ -3,8 +3,9 @@ safe: true
 lsi: false
 
 url: http://bearsunday.github.io
+title: BEAR.Sunday
 
 markdown: redcarpet
 redcarpet:
   extensions: ["autolink", "no_intra_emphasis", "fenced_code_blocks", "autolink", "strikethrough", "superscript", "with_toc_data", "tables"]
-pygments: true
+highlighter: pygments
