@@ -10,12 +10,12 @@ permalink: /manuals/1.0/ja/quick-start.html
 インストールは [composer](http://getcomposer.org) で行います。
 
 {% highlight bash %}
-create-project bear/skeleton MyVendor.MyPackage ~1.0@dev
+composer create-project bear/skeleton MyVendor.MyPackage ~1.0@dev
 cd MyVendor.MyPackage
 composer install
 {% endhighlight %}
 
-Pageリソースファイルを`MyVendor.MyPackage/Resource/Page/Hello.php`に作成します。
+次にPageリソースを作成します。PageリソースはWebページに対応したクラスです。 `MyVendor.MyPackage/src/Resource/Page/Hello.php`に作成します。
 
 {% highlight php %}
 <?php
@@ -35,20 +35,21 @@ class Hello extends ResourceObject
 }
 {% endhighlight %}
 
-Pageリソースは対応するWebページを表します。このページはGETメソッドでリクエストされると`Hello`と`$_GET['name']`文字列を連結して`greeting`にセットします。
+このページはGETメソッドでリクエストされると`Hello`と`$_GET['name']`文字列を連結して`greeting`にセットします。
 作成したアプリケーションはコンソールでもWebサーバーでも動作します。
 
 {% highlight bash %}
 php bootstrap/web.php get /hello
+php bootstrap/web.php get '/hello?name=World'
 
 code: 200
 header:
 body:
 {
-    "greeting": "Hello BEAR.Sunday",
+    "greeting": "Hello World",
     "_links": {
         "self": {
-            "href": "/hello"
+            "href": "/hello?name=World"
         }
     }
 }
