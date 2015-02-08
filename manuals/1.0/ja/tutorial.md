@@ -41,6 +41,8 @@ class Weekday extends ResourceObject
 {% endhighlight %}
 
 この`MyVendor\Weekday\Resource\App\Weekday`リソースクラスは`/weekday`というパスでアクセスすることができます。
+`GET`メソッドのクエリーが`onGet`メソッドの引数に渡されます。
+
 コンソールでアクセスしてみましょう。まずはエラーを試してみます。
 
 {% highlight bash %}
@@ -88,9 +90,10 @@ RESTクライアント（Chromeアプリの [Advanced REST client](https://chrom
 
 ## ルーティング
 
+デフォルトのルーターはURLをディレクトリにマップする`WebRouter`です。
+これを動的なパラメーターをパスで受け取るためにAuraルーターを使用します。
 
-デフォルトでセットされているのはURLをディレクトリがマップしただけの`WebRouter`です。
-Auraルーターを有効にするために`src/Modules/AppModule.php`で`AuraRouterModule`を上書きインストールします。
+`src/Modules/AppModule.php`で`AuraRouterModule`を上書き(override)インストールします。
 
 {% highlight php %}
 
@@ -234,7 +237,7 @@ class Weekday extends ResourceObject
 
 ## AOP
 
-メソッドの実行時間を計測するために、メソッドの前後で処理が必要です。
+メソッドの実行時間を計測するためのベンチマーク処理を考えてみます。
 
 {% highlight php %}
 $start = microtime(true);
@@ -242,10 +245,10 @@ $start = microtime(true);
 $time = microtime(true) - $start;
 {% endhighlight %}
 
-このようにメソッドの前後で特定処理をうまく実行できるのがアスペクト志向プログラミング、**AOP**です。
+ベンチマークを行う度にこのコードを付加して、不要になれば取り除くのは大変です。
+**アスペクト志向プログラミング(AOP)**はこのようなメソッドの前後の特定処理をうまく合成することが出来ます。
 
-
-AOPを実現するためにメソッドの実行を横取り（インターセプト）して`src/Interceptor/BenchMarker.php`ベンチマークを行う**インターセプター**を作成します。
+まずAOPを実現するためにメソッドの実行を横取り（インターセプト）してベンチマークを行う**インターセプター**を`src/Interceptor/BenchMarker.php`に作成します。
 
 {% highlight php %}
 <?php
@@ -279,8 +282,8 @@ class BenchMarker implements MethodInterceptor
 
 {% endhighlight %}
 
-元のメソッドを横取りしたインターセプターでは、元メソッドの実行(`$invocation->proceed();`)の前後にタイマーのリセット、計測記録の処理を`Invoke`メソッドに記述します。
-この時、メソッド実行オブジェクト[MethodInvocation](http://www.bear-project.net/Ray.Aop/build/apigen/class-Ray.Aop.MethodInvocation.html) `$invocation`から元メソッドのオブジェクトとメソッドの名前を取得しています。
+元のメソッドを横取りしたインターセプターの`Invoke`メソッドでは、元メソッドの実行を`$invocation->proceed();`で行うことができます。
+その前後にタイマーのリセット、計測記録の処理を行います。（メソッド実行オブジェクト[MethodInvocation](http://www.bear-project.net/Ray.Aop/build/apigen/class-Ray.Aop.MethodInvocation.html) `$invocation`から元メソッドのオブジェクトとメソッドの名前を取得しています。）
 
 次にベンチマークをしたいメソッドに目印をつけるための[アノテーション](http://docs.doctrine-project.org/projects/doctrine-common/en/latest/reference/annotations.html)を`src/Annotation/BenchMark.php `に作成します。
 
@@ -319,7 +322,7 @@ public function onGet($year, $month, $day)
 
 これで計測したいメソッドに`@BenchMark`とアノテートすればいつでもベンチマークできるようになりました。
 
-メソッドに処理を記述していないので、アノテーションはそのままでも束縛を外せばベンチマークを行いません。
+対象メソッドや、メソッドを呼ぶ側に変更はありません。アノテーションはそのままでも束縛を外せばベンチマークを行いません。
 `production`では外したり、開発時に特定の秒数を越すと警告を行うことができます。
 
 実行して`var/log/weekday.log`に実行時間のログが出力されることを確認しましょう。
