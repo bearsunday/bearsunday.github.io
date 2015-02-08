@@ -15,7 +15,7 @@ BEAR.Sundayの目標は、標準に準拠し高品質で粗結合なRESTfulア�
 
 `Ray.Di`は[依存関係逆転の原則](http://en.wikipedia.org/wiki/Dependency_inversion_principle)に基づいてオブジェクトを結びます。インターフェイスに対するプログラミングは、コンテキストによる振る舞いや将来の変更に柔軟です。
 
-`Ray.Aop`はアスペクト指向プログラミングで本質的関心と横断的関心を結びます。アノテーションでログや認証を指定することができます。
+`Ray.Aop`は[アスペクト指向プログラミング](http://en.wikipedia.org/wiki/Aspect-oriented_programming)で本質的関心と横断的関心を結びます。アノテーションでログや認証を指定することができます。
 
 `BEAR.Resource`は情報をリソースにして、ハイパーメディア制約で結びます。アプリケーション内部の情報もWebの世界と同じように統一されたURIとメソッドで扱うことができます。
 
