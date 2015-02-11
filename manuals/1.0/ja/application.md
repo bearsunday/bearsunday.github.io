@@ -9,25 +9,39 @@ permalink: /manuals/1.0/ja/application.html
 
 `$app`という１つの変数にアプリケーション全体のオブジェクトが格納されます。
 
+BEAR.Sundayのオブジェクトは、あるオブジェクトから所有されているか、他のオブジェクトを含んでいるか、そのどちらかでお互いに接続されています。
+これを[オブジェクトグラフ](http://en.wikipedia.org/wiki/Object_graph)と呼びますが`$app`はそのオブジェクトグラフのルートのオブジェクトです。
+
 `$app`は`router`や`transfer`などアプリケーションの実行に必要なサービスオブジェクトをプロパティに持ちます。
-アプリケーションスクリプト`bootstrap.php`はルーターを使いリソースリクエストを作成、実行して結果をクライアントに転送します。
+アプリケーションスクリプト`bootstrap.php`はそのサービスを使ってリソースを作成しその表現をクライントに転送します。
 
-## 実行シーケンス ##
+以下の手順でスクリプトが実行されます。
 
- 0. アプリケーションコンテキスト`$context`が与えられ、それに応じたDIとAOPの束縛の集合で`$app`を生成
- 1. 外部のパラメーターを元にリソースリクエストを作成してリクエスト
- 2. リクエスト結果を表現にしてクライアントに転送
+### 0. コンパイル ###
+
+アプリケーションスクリプト`bootstrap.php`にアプリケーションコンテキスト`$context`が与えられ、対応するDIとAOPの設定でアプリケーションオブジェクト`$app`が作られます。
+
+### 1. リクエスト ###
+
+HTTP等の外部のパラメーターを元にリソースリクエストが作成されます。リソースオブジェクトはHTTPのリクエストに対応する`onGet`や`onPost`などのメソッドで自身の状態を`code`や`body`にセットして変更します。
+
+### 2. レスポンス ###
+ 
+リソースオブジェクトにインジェクトされているレンダラーが、リクエスト結果によるリソースの状態をJSONやHTMLなどの**表現**にしてクライアントに**転送**します。
 
  <img src="/images/screen/diagram.png" style="max-width: 100%;height: auto;"/>
 
- この実行シーケンスを表したアプリケーションスクリプト`bootstrap/bootstrap.php`は変更可能です。
+### REST ###
+
+アプリケーションスクリプト`bootstrap/bootstrap.php`は「表現可能なリソース状態(**Representational State**)の転送(**Transfer**)=**REST**」の動作手順を表しています。
+依存解決はコンパイルの時点で完了していてランタイム（初期化が終わってアプリケーションの実行中）に依存解決のエラーは発生しません。またこのアプリケーションスクリプト`bootstrap/bootstrap.php`はユーザー領域にあり変更可能です。
  
 {% highlight php %}
 <?php
  
  /**
- * @global string $context
- */
+  * @global string $context
+  */
  namespace MyVendor\Weekday;
  
  use BEAR\Package\Bootstrap;
@@ -50,7 +64,8 @@ permalink: /manuals/1.0/ja/application.html
  
  try {
      // resource request
-     $page = $app->resource
+     $page = $app
+         ->resource
          ->{$request->method}
          ->uri($request->path)
          ->withQuery($request->query)
@@ -68,7 +83,8 @@ permalink: /manuals/1.0/ja/application.html
 
 ## 実行ファイル ##
  
-グローバル変数`$context`にコンテキストを指定して`bootstrap.php`ファイルを読み込むと実行されます。
+アプリケーションを実行するわずか２行のPHPスクリプトです。`var/www/index.php`や`bootstrap/api.php`等に設置してWebサーバーやコンソールアプリケーションのエントリーポイントにします。
+スクリプトではグローバル変数`$context`にコンテキストを指定して`bootstrap.php`ファイルを読み込むとアプリケーションが実行されます。
 
 {% highlight php %}
 <?php
@@ -76,7 +92,7 @@ $context = 'prod-api-hal-app'
 require 'pat/to/bootstrap.php'; 
 {% endhighlight %}
 
-コンテキストによるアプリケーション変更は実行ファイル選択で事で行います。例えばAPIは`bootstrap/api.php`をHTTPのゲートウエイファイルに指定しますが、
+コンテキストによるアプリケーション変更は実行ファイル選択する事で行います。例えばAPIは`bootstrap/api.php`をHTTPのゲートウエイファイルに指定しますが、
 コンソールアプリケーションの場合は`bootstrap/cli.php`を呼び出します。
 
 {% highlight bash %}
