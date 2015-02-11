@@ -25,13 +25,13 @@ HTTP等の外部のパラメーターを元にリソースリクエストが作�
 
 ### 2. レスポンス ###
  
-リソースオブジェクトにインジェクトされているレンダラーが、リクエスト結果によるリソースの状態をJSONやHTMLなどの**表現**にしてクライアントに**転送**します。
+リソースオブジェクトにインジェクトされているレンダラーが、リクエスト結果による**リソースの状態**をJSONやHTMLなどの**表現**にしてクライアントに**転送**します。
 
  <img src="/images/screen/diagram.png" style="max-width: 100%;height: auto;"/>
 
 ### REST ###
 
-アプリケーションスクリプト`bootstrap/bootstrap.php`は「表現可能なリソース状態(**Representational State**)の転送(**Transfer**)=**REST**」の動作手順を表しています。
+アプリケーションスクリプト`bootstrap/bootstrap.php`はREST=表現可能なリソース状態(**Representational State**)の転送(**Transfer**)の動作手順を表しています。
 依存解決はコンパイルの時点で完了していてランタイム（初期化が終わってアプリケーションの実行中）に依存解決のエラーは発生しません。またこのアプリケーションスクリプト`bootstrap/bootstrap.php`はユーザー領域にあり変更可能です。
  
 {% highlight php %}
