@@ -41,13 +41,16 @@ class Todo extends ResourceObject
 PHPのリソースクラスはWebのURIと同じような`app://self/blog/posts/?id=3`, `page://self/index`などのURIを持ち、HTTPのメソッドに準じた`onGet`, `onPost`, `onPut`, `onPatch`, `onDelete`インターフェイスを持ちます。
 リクエストはステートレスで行われ、リソースは`@Link`アノテーションのハイパーリンクで相互に接続することができます。
 
-`koriym/todo`アプリケーションの場合、URIとクラスはこのように対応します。
+メソッドの引数には`onGet`には`$_GET`、`onPost`には`$_POST`、
+
+それ以外の`onPut`,`onPatch`, `onDelete`のメソッドには`content-type`に応じて対応可能な値が引数になります。
 
 | URI | Class |
 |-----+-------|
 | page://self/index | Koriym\Todo\Resource\Page\Index |
 | app://self/blog/posts | Koriym\Todo\App\Blog\Posts |
 
+`koriym/todo`アプリケーションの場合、URIとクラスはこのように対応します。
 
 ## クライント
 
@@ -112,7 +115,7 @@ $blog = $this
 
 
 
-## アノテーション
+## @リンク
 
 ### @Link
 {% highlight php %}
@@ -145,6 +148,65 @@ public function onGet($id = null)
 {% endhighlight %}
 
 リソースの中に`src`でリンクしたリソースを埋め込みます。HTMLページの中に別のURLの画像リソースを埋め込む`<img src="...">`タグをイメージしてみてください。HALレンダラーでは`__embed`として扱われます。
+
+## @Webコンテキスト
+
+`$_GET`や`$_COOKIE`などのPHPのスーパーグローバルの値をメソッド内で取得するのではなく、メソッドの引数に束縛することができます。
+
+キーの名前と引数の名前が同じ場合
+{% highlight php %}
+<?php
+use Ray\WebContextParam\Annotation\QueryParam;
+
+    /**
+     * @QueryParam("id")
+     */
+    public function foo($id = null)
+    {
+      // $id = $_GET['id'];
+{% endhighlight %}
+
+
+キーの名前と引数の名前が違う場合は`key`と`var`で指定
+{% highlight php %}
+<?php
+use Ray\WebContextParam\Annotation\CookieParam;
+
+    /**
+     * @CookieParam(key="id", var="tokenId")
+     */
+    public function foo($tokenId = null)
+    {
+      // $id = $_COOKIE['id'];
+{% endhighlight %}
+
+フルリスト
+{% highlight php %}
+<?php
+
+use Ray\WebContextParam\Annotation\QueryParam;
+use Ray\WebContextParam\Annotation\CookieParam;
+use Ray\WebContextParam\Annotation\EnvParam;
+use Ray\WebContextParam\Annotation\FormParam;
+use Ray\WebContextParam\Annotation\ServerParam;
+
+    /**
+     * @QueryParam(key="id", var="userID")
+     * @CookieParam(key="id", var="tokenId")
+     * @EnvParam("app_mode")
+     * @FormParam("token")
+     * @ServerParam(key="SERVER_NAME", var="server")
+     */
+    public function foo($userId = null, $tokenId = "0000", $app_mode = null, $token = null, $server = null)
+    {
+       // $userId   = $_GET['id'];
+       // $tokenId  = $_COOKIE['id'] or "0" when unset;
+       // $app_mode = $_ENV['app_mode'];
+       // $token    = $_POST['token'];
+       // $server   = $_SERVER['SERVER_NAME'];
+{% endhighlight %}
+
+## @クエリーリポジトリー
 
 ### @ResourceRepository
 
