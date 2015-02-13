@@ -39,6 +39,9 @@ class Hello extends ResourceObject
 作成したアプリケーションはコンソールでもWebサーバーでも動作します。
 
 {% highlight bash %}
+php bootstrap/web.php get /hello
+php bootstrap/web.php get '/hello?name=World'
+
 200 OK
 Content-Type: application/hal+json
 
