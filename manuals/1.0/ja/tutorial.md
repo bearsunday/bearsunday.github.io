@@ -194,10 +194,12 @@ class MonologLoggerProvider implements ProviderInterface
 `src/Modules/AppModule.php`の`configure`メソッドに以下を追加します。
 
 {% highlight php %}
+<?php
 $this->bind(LoggerInterface::class)->toProvider(MonologLoggerProvider::class)->in(Scope::SINGLETON);
 {% endhighlight %}
 classキーワードでクラス名を解決するために以下のuse文も必要です。
 {% highlight php %}
+<?php
 use Psr\Log\LoggerInterface;
 use Ray\Di\Scope;
 {% endhighlight %}
@@ -240,6 +242,7 @@ class Weekday extends ResourceObject
 メソッドの実行時間を計測するためのベンチマーク処理を考えてみます。
 
 {% highlight php %}
+<?php
 $start = microtime(true);
 // メソッド実行
 $time = microtime(true) - $start;
