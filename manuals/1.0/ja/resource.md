@@ -5,7 +5,7 @@ category: Manual
 permalink: /manuals/1.0/ja/resource.html
 ---
 
-BEAR.Sundayアプリケーションではアプリケーションはリソースの集合です。RESTfulアプリケーションを[REST](http://ja.wikipedia.org/wiki/REST)（Representational State Transfer）のスタイルで作成します。
+BEAR.Sundayアプリケーションはリソースの集合です。RESTfulアプリケーションを[REST](http://ja.wikipedia.org/wiki/REST)のスタイルで作成します。
 
 ## サービスとしてのオブジェクト
 
@@ -18,7 +18,7 @@ class Index extends ResourceObject
     public function onGet($a, $b)
     {
         $this->code = 200; // 省略可
-        $this['result'] = $a + $b;
+        $this['result'] = $a + $b; // $a = $_GET['a']; $b = $_GET['b'];
 
         return $this;
     }
@@ -29,28 +29,36 @@ class Index extends ResourceObject
 <?php
 class Todo extends ResourceObject
 {
-    public function onPut($id, $todo)
+    public function onPost($id, $todo)
     {
-        $this->code = 201; // Created
-
+        $this->code = 201; // ステータスコード
+        $this->headers['Location'] = '/todo/new_id'; // ヘッダー
+        
         return $this;
     }
 }
 {% endhighlight %}
 
 PHPのリソースクラスはWebのURIと同じような`app://self/blog/posts/?id=3`, `page://self/index`などのURIを持ち、HTTPのメソッドに準じた`onGet`, `onPost`, `onPut`, `onPatch`, `onDelete`インターフェイスを持ちます。
-リクエストはステートレスで行われ、リソースは`@Link`アノテーションのハイパーリンクで相互に接続することができます。
 
-メソッドの引数には`onGet`には`$_GET`、`onPost`には`$_POST`、
+メソッドの引数には`onGet`には$_GET、`onPost`には$_POSTが変数名に応じて渡されます、それ以外の`onPut`,`onPatch`, `onDelete`のメソッドには`content-type`に応じて対応可能な値が引数になります。
 
-それ以外の`onPut`,`onPatch`, `onDelete`のメソッドには`content-type`に応じて対応可能な値が引数になります。
+メソッドでは引数に応じて自身のリソース状態`code`,`headers`,`body`を変更し`$this`を返します。
+
+`body`のアクセスは`$this->body['price'] = 10;`を`$this['price'] = 10;`と短く記述することができます。
+
+## リソースの種類
 
 | URI | Class |
 |-----+-------|
 | page://self/index | Koriym\Todo\Resource\Page\Index |
-| app://self/blog/posts | Koriym\Todo\App\Blog\Posts |
+| app://self/blog/posts | Koriym\Todo\Resource\App\Blog\Posts |
 
-`koriym/todo`アプリケーションの場合、URIとクラスはこのように対応します。
+アプリケーション名が`koriym\todo`というアプリケーションの場合、URIとクラスはこのように対応します。
+アプリケーションではクラス名の代わりにURIを使ってリソースにアクセスします。
+
+標準ではリソースは二種類用意されています。１つは`App`リソースでアプリケーションのプログラミングインタフェース(**API**)です。
+もう１つは`Page`リソースでHTTPに近いレイヤーのリソースです。`Page`リソースは`App`リソースを利用してWebページを作成します。
 
 ## クライント
 
@@ -263,3 +271,7 @@ public function onPut($id, $name, $age)
 ### @Etag
 
 クラスにアノテートされていてHTTPリクエストに`Etag`が含まれていれば、コンテンツを照合し変更がなければ`304 Not Modified`を返します。
+
+## BEAR.Resource
+
+リソースクラスに関するより詳しい情報はBEAR.Resourceの[README](https://github.com/koriym/BEAR.Resource/blob/develop-2/README.ja.md)もご覧ください。
