@@ -306,6 +306,7 @@ final class BenchMark
 `AppModule`では`インターセプターを適用するメソッドを**Matcher**を使って束縛（バインド）します。
 
 {% highlight php %}
+<?php
 $this->bindInterceptor(
     $this->matcher->any(),                           // どのクラスでも
     $this->matcher->annotatedWith(BenchMark::class), // @BenchMarkとアノテートされてるメソッドに
@@ -316,6 +317,7 @@ $this->bindInterceptor(
 ベンチマークを行いたいメソッドに`@BenchMark`とアノテートします。
 
 {% highlight php %}
+<?php
 /**
  * @BenchMark
  */
