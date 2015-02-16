@@ -58,5 +58,5 @@ Content-Type: application/hal+json
 次にPHPサーバを起動してみましょう。
 
 {% highlight bash %}
-php -S 0.0.0.0:8080 var/www/index.php
+php -S 127.0.0.1:8080 var/www/index.php
 {% endhighlight %}

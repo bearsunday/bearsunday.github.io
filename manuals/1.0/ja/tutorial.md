@@ -80,11 +80,11 @@ Content-Type: application/hal+json
 Built-inサーバーを立ち上げます。
 
 {% highlight bash %}
-php -S 0.0.0.0:8080 bootstrap/contexts/api.php
+php -S 127.0.0.1:8080 bootstrap/contexts/api.php
 {% endhighlight %}
 
 RESTクライアント（Chromeアプリの [Advanced REST client](https://chrome.google.com/webstore/detail/advanced-rest-client/hgmloofddffdnphfgcellkdfbfbjeloo/) など）で
-`http://0.0.0.0:8080/weekday?year=2001&month=1&day=1` にGETリクエストを送って確かめてみましょう。
+`http://127.0.0.1:8080/weekday?year=2001&month=1&day=1` にGETリクエストを送って確かめてみましょう。
 
 このリソースクラスにはGET以外のメソッドは用意されていないので他のメソッドを試すと`405 Method Not Allowed`が返されます。これも試してみましょう。
 
