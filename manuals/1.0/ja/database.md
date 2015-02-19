@@ -7,7 +7,6 @@ permalink: /manuals/1.0/ja/database.html
 
 データベースライブラリの利用のためのモジュールが二種類用意されています。
 一つは`Aura.Sql`、もう一つは`Doctrine DBAL`です。両方同時に利用することもできます。
-利用するためにインストールが必要です。
 
 # Aura.Sql
 
@@ -190,6 +189,8 @@ class Index
     }
 }
 {% endhighlight %}
+
+[MasterSlaveConnection](http://www.doctrine-project.org/api/dbal/2.0/class-Doctrine.DBAL.Connections.MasterSlaveConnection.html)というリプリケーションのためのマスター／スレーブ接続が標準で用意されています。
 
 ## 環境による接続先の変更
 
