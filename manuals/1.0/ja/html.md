@@ -13,35 +13,41 @@ HTML表示のためにcomposerで`madapaja/twig-module`をインストールし�
 composer require madapaja/twig-module
 {% endhighlight %}
 
-次にアプリケーションモジュール`src/Module/AppModule.php`で`TwigModule`をインストールします。
+次に`html`コンテキストファイル`src/Module/AppModule.php`を用意して`TwigModule`をインストールします。
 
 {% highlight php %}
 <?php
 
+namespace MyVendor\MyPackage\Module;
+
 use BEAR\AppMeta\AppMeta;
-use BEAR\Package\PackageModule;
-use Madapaja\TwigModule\TwigModule; // この行を追加
+use Madapaja\TwigModule\TwigModule;
 use Ray\Di\AbstractModule;
 
-class AppModule extends AbstractModule
+class HtmlModule extends AbstractModule
 {
     protected function configure()
     {
-        $this->install(new PackageModule(new AppMeta('MyVendor\MyPackage')));
-        $this->override(new TwigModule); // この行を追加
+        $this->install(new TwigModule);
     }
 }
 {% endhighlight %}
 
-`TwigModule`をインストールすることでデフォルトのレンダラーが`Json`から`Twig`に変更されました。
-`bootstrap/web.php`でコンテクストを変更します。
+`bootstrap/web.php`のコンテクストを変更して`html`を有効にします。
 
 {% highlight bash %}
-$context = 'cli-app';
+$context = 'cli-html-app';
 {% endhighlight %}
-Twigがデフォルトのレンダラーになったので`app`でHTML出力されます。
 リソースのphpファイルに`.html.twig`拡張子をつけたファイルでテンプレートを用意します。
 `Page/Index.php`に対応するのは`Page/Index.html.twig`になります。
+
+{% highlight html %}
+{% raw %}
+<h1>{{ greeting }}</h1>
+{% endraw %}
+{% endhighlight %}
+
+`$body`がテンプレートにアサインされて出力されます。
 
 {% highlight bash %}
 php bootstrap/web.php get /
