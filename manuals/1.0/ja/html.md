@@ -5,11 +5,9 @@ category: Manual
 permalink: /manuals/1.0/ja/html.html
 ---
 
-HTML表示のための**Ray.TwigModule**が用意されています。
-
 # Twig
 
-まずcomposerで`Madapaja.TwigModule`をインストールします。
+HTML表示のためにcomposerで`madapaja/twig-module`をインストールします。
 
 {% highlight bash %}
 composer require madapaja/twig-module
@@ -35,15 +33,15 @@ class AppModule extends AbstractModule
 }
 {% endhighlight %}
 
-`TwigModule`をインストールすることでデフォルトのレンダラーが`JsonからTwigに変更されました。
-`bootstrap/web.php`を変更します。
+`TwigModule`をインストールすることでデフォルトのレンダラーが`Json`から`Twig`に変更されました。
+`bootstrap/web.php`でコンテクストを変更します。
 
 {% highlight bash %}
 $context = 'cli-app';
 {% endhighlight %}
-Twigがデオフォルトのレンダラーになったので`app`でHTML出力されます。
-
-出力はこのようになります。
+Twigがデフォルトのレンダラーになったので`app`でHTML出力されます。
+リソースのphpファイルに`.html.twig`拡張子をつけたファイルでテンプレートを用意します。
+`Page/Index.php`に対応するのは`Page/Index.html.twig`になります。
 
 {% highlight bash %}
 php bootstrap/web.php get /
@@ -52,3 +50,51 @@ content-type: text/html; charset=utf-8
 
 <h1>Hello BEAR.Sunday</h1>
 {% endhighlight %}
+
+レイアウトや部分的なテンプレートファイルは`var/lib/twig`に設置します。
+
+## カスタム設定
+
+コンテンキストに応じてオプション等を設定したり、テンプレートのパスを追加したりする場合は
+`@TwigPaths`と`@TwigOptions`に設定値を束縛します。
+
+{% highlight php %}
+<?php
+
+namespace MyVendor\MyPackage\Module;
+
+use Madapaja\TwigModule\Annotation\TwigOptions;
+use Madapaja\TwigModule\Annotation\TwigPaths;
+use Madapaja\TwigModule\TwigModule;
+use Ray\Di\AbstractModule;
+
+class AppModule extends AbstractModule
+{
+    protected function configure()
+    {
+        $this->install(new TwigModule());
+
+        // You can add twig template paths by the following
+        $appDir = dirname(dirname(__DIR__));
+        $paths = [
+            $appDir . '/src/Resource',
+            $appDir . '/var/lib/twig'
+        ];
+        $this->bind()->annotatedWith(TwigPaths::class)->toInstance($paths);
+
+        // Also you can set environment options
+        // @see http://twig.sensiolabs.org/doc/api.html#environment-options
+        $options = [
+            'debug' => false,
+            'cache' => $appDir . '/tmp'
+        ];
+        $this->bind()->annotatedWith(TwigOptions::class)->toInstance($options);
+    }
+}
+{% endhighlight %}
+
+## 他のテンプレートエンジン
+
+テンプレートエンジンは選択できるだけでなく複数のテンプレートエンジンをリソース単位で選択することもできます。
+現在は`Twig`のみがサポートされてます。
+
