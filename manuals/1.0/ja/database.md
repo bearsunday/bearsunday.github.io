@@ -68,6 +68,79 @@ class Index
 
 `Ray.AuraSqlModule`は[Aura.SqlQuery](https://github.com/auraphp/Aura.SqlQuery)を含んでいてMySQLやPostgresなどのSQLを組み立てるのに利用できます。
 
+## リプリケーションのための接続
+
+マスター／スレーブの接続を自動で行うためには、
+接続オブジェクト`$locator`を作成して`AuraSqlLocatorModule`をインストールします。
+
+{% highlight php %}
+<?php
+use Ray\Di\AbstractModule;
+use Ray\AuraSqlModule\AuraSqlModule;
+use Aura\Sql\ConnectionLocator;
+
+class AppModule extends AbstractModule
+{
+    protected function configure()
+    {
+        $locator = new ConnectionLocator;
+        $locator->setWrite(
+            'master',
+            new Connection('mysql:host=localhost;dbname=master', 'id', 'password')
+        );
+        $locator->setRead(
+            'slave1',
+            new Connection('mysql:host=localhost;dbname=slave1', 'id', 'password')
+        );
+        $locator->setRead(
+            'slave2',
+            new Connection('mysql:host=localhost;dbname=slave2', 'id', 'password')
+        );
+        $this->install(new new AuraSqlLocatorModule($locator);
+    }
+}
+{% endhighlight %}
+
+これで`@ReadOnlyConnection`、`@WriteConnection`でアノテートされたメソッドが呼ばれたタイミングで`$this->db`にアノテーションに応じたDBオブジェクトがインジェクトされます。
+
+{% highlight php %}
+<?php
+use Ray\AuraSqlModule\Annotation\ReadOnlyConnection;  // important
+use Ray\AuraSqlModule\Annotation\WriteConnection;     // important
+
+class User
+{
+    public $pdo;
+
+    /**
+     * @ReadOnlyConnection
+     */
+    public function read()
+    {
+         $this->pdo: // slave db
+    }
+
+    /**
+     * @WriteConnection
+     */
+    public function write()
+    {
+         $this->pdo: // master db
+    }
+}
+{% endhighlight %}
+
+`AuraSqlLocatorModule`をインストールするときにメソッド名を指定すると、そのメソッドが呼ばれた時にマスタースレーブDBがインジェクトされる機能が追加されます。
+
+{% highlight php %}
+<?php
+$this->install(new new AuraSqlLocatorModule(
+    $locator,
+    ['onGet'],                         // slave
+    ['onPost', 'onUpdate', 'onDelete'] // master
+);
+{% endhighlight %}
+
 # Doctrine DBAL
 
 [Doctrine DBAL](http://www.doctrine-project.org/projects/dbal.html)もデータベースの抽象化レイヤーです。
