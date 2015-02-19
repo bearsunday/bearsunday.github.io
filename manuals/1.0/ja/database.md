@@ -5,12 +5,15 @@ category: Manual
 permalink: /manuals/1.0/ja/database.html
 ---
 
-データベースライブラリの利用のための**Ray.Diモジュール**が用意されています。
-composerのインストールとアプリケーションモジュールにインストールして準備します。
+データベースライブラリの利用のためのモジュールが二種類用意されています。
+一つは`Aura.Sql`、もう一つは`Doctrine DBAL`です。両方同時に利用することもできます。
+利用するためにインストールが必要です。
 
 # Aura.Sql
 
 [Aura.Sql](https://github.com/auraphp/Aura.Sql)はPHPのPDOを拡張したデータベースライブラリです。
+
+### インストール
 
 composerで`Ray.AuraSqlModule`をインストールします。
 
@@ -18,18 +21,21 @@ composerで`Ray.AuraSqlModule`をインストールします。
 composer require ray/aura-sql-module
 {% endhighlight %}
 
-アプリケーションモジュールで`AuraSqlModule`をインストールします。
+アプリケーションモジュール`src/Module/AppModule.php`で`AuraSqlModule`をインストールします。
 
 {% highlight php %}
 <?php
+use BEAR\AppMeta\AppMeta;
+use BEAR\Package\PackageModule;
+use Ray\AuraSqlModule\AuraSqlModule; // この行を追加
 use Ray\Di\AbstractModule;
-use Ray\AuraSqlModule\AuraSqlModule;
 
 class AppModule extends AbstractModule
 {
     protected function configure()
     {
-        $this->install(new AuraSqlModule('mysql:host=localhost;dbname=test', 'username', 'password');
+        $this->install(new PackageModule(new AppMeta('MyVendor\MyPackage')));
+        $this->install(new AuraSqlModule('mysql:host=localhost;dbname=test', 'username', 'password');  // この行を追加
     }
 }
 {% endhighlight %}
