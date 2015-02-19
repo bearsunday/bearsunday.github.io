@@ -13,7 +13,7 @@ HTML表示のためにcomposerで`madapaja/twig-module`をインストールし�
 composer require madapaja/twig-module
 {% endhighlight %}
 
-次に`html`コンテキストファイル`src/Module/AppModule.php`を用意して`TwigModule`をインストールします。
+次に`html`コンテキストファイル`src/Module/HtmlModule.php`を用意して`TwigModule`をインストールします。
 
 {% highlight php %}
 <?php
