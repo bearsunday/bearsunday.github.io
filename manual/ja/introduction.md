@@ -29,6 +29,18 @@ TBD.
 BEAR.Sundayアプリケーションフレームワークは３種類のパッケージ、[Packagist](https://packagist.org/) から入手できる **独立したパッケージ** から構成されています。
 **Rayパッケージ** は、DIとAOPのオブジェクトフレームワークです。 **BEAR.* パッケージ** はそれら２つのパッケージをアプリケーションフレームワークとして構成します。
 
+## Ray DI/AOP パッケージ
+
+BEAR.SundayではDI, Dependency Injection（依存性の注入）パターンとAOP, Aspect Oriented Programing（アスペクト指向プログラミング）をコードの全域に渡って利用しています。
+
+アノテーションを使用したオブジェクトへの依存性の注入をサポートしている [Ray.Di](https://github.com/koriym/Ray.Di)、[Ray.Aop](https://github.com/koriym/Ray.Aop) という [Google Guice](http://en.wikipedia.org/wiki/Google_Guice) のPHPクローンのDI/AOPフレームワークを利用します。
+RayというGoogle GuiceのPHPクローンのDI/AOPフレームワークを利用していて、アノテーションを使用したオブジェクトへの依存性の注入 をサポートしているのが特徴です。
+
+BEAR.SundayのAOPは [AOP Alliance](http://aopalliance.sourceforge.net/) が策定したインターフェイスをPHPで実装しています。アノテーションや名前で指定した特定のメソッドに複数の横断的処理を束縛する事ができます。
+
+動的言語のDI/AOP導入はしばしばパフォーマンス上の懸念がもたれます。
+しかし、BEAR.Sundayは低結合で多くの抽象化機能を持ちながら、キャッシュを使いオブジェクトグラフの生成を再利用することでDI/AOP導入によるパフォーマンス低下がほとんどありません。（@TODO 英訳が難しかったので、古い日本語を利用した。また、この説明は現状と合っていない？）
+
 ## BEAR.* パッケージ
 
 ### BEAR.Resource ⊂ BEAR.Sunday ⊂ BEAR.Package
@@ -42,18 +54,6 @@ BEAR.Sundayアプリケーションフレームワークは３種類のパッケ
 
 [BEAR.Package](https://github.com/koriym/BEAR.Package) は、BEAR.Sundayの抽象化に、AuraライブラリやSymfonyコンポーネントと言った実際の実装への束縛を提供します。
 アプリケーションスクリプトと開発ツールを持ったWebアプリケーションフレームワークを構成します。
-
-## Ray DI/AOP パッケージ
-
-BEAR.SundayではDI, Dependency Injection（依存性の注入）パターンとAOP, Aspect Oriented Programing（アスペクト指向プログラミング）をコードの全域に渡って利用しています。
-
-アノテーションを使用したオブジェクトへの依存性の注入をサポートしている [Ray.Di](https://github.com/koriym/Ray.Di)、[Ray.Aop](https://github.com/koriym/Ray.Aop) という [Google Guice](http://en.wikipedia.org/wiki/Google_Guice) のPHPクローンのDI/AOPフレームワークを利用します。
-RayというGoogle GuiceのPHPクローンのDI/AOPフレームワークを利用していて、アノテーションを使用したオブジェクトへの依存性の注入 をサポートしているのが特徴です。 
-
-BEAR.SundayのAOPは [AOP Alliance](http://aopalliance.sourceforge.net/) が策定したインターフェイスをPHPで実装しています。アノテーションや名前で指定した特定のメソッドに複数の横断的処理を束縛する事ができます。
-
-動的言語のDI/AOP導入はしばしばパフォーマンス上の懸念がもたれます。
-しかし、BEAR.Sundayは低結合で多くの抽象化機能を持ちながら、キャッシュを使いオブジェクトグラフの生成を再利用することでDI/AOP導入によるパフォーマンス低下がほとんどありません。（@TODO 英訳が難しかったので、古い日本語を利用した。また、この説明は現状と合っていない？）
 
 ## フレームワークの構成
 
