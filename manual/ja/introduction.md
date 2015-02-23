@@ -32,9 +32,8 @@ BEAR.Sundayアプリケーションフレームワークは３種類のパッケ
 ## Ray DI/AOP パッケージ
 
 BEAR.SundayではDI, Dependency Injection（依存性の注入）パターンとAOP, Aspect Oriented Programing（アスペクト指向プログラミング）をコードの全域に渡って利用しています。
-
-アノテーションを使用したオブジェクトへの依存性の注入をサポートしている [Ray.Di](https://github.com/koriym/Ray.Di)、[Ray.Aop](https://github.com/koriym/Ray.Aop) という [Google Guice](http://en.wikipedia.org/wiki/Google_Guice) のPHPクローンのDI/AOPフレームワークを利用します。
-RayというGoogle GuiceのPHPクローンのDI/AOPフレームワークを利用していて、アノテーションを使用したオブジェクトへの依存性の注入 をサポートしているのが特徴です。
+ [Ray.Di](https://github.com/koriym/Ray.Di)、[Ray.Aop](https://github.com/koriym/Ray.Aop) というDI/AOPフレームワークによって、アノテーションを使用したオブジェクトへの依存性の注入をサポートしています。
+Rayは [Google Guice](http://en.wikipedia.org/wiki/Google_Guice) のPHPクローンです。
 
 BEAR.SundayのAOPは [AOP Alliance](http://aopalliance.sourceforge.net/) が策定したインターフェイスをPHPで実装しています。アノテーションや名前で指定した特定のメソッドに複数の横断的処理を束縛する事ができます。
 
