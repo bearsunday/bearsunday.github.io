@@ -60,3 +60,5 @@ Content-Type: application/hal+json
 {% highlight bash %}
 php -S 127.0.0.1:8080 var/www/index.php
 {% endhighlight %}
+
+ブラウザで http://127.0.0.1:8080/hello にアクセスすると、`{"greeting": "Hello BEAR.Sunday"}` と表示されます。
