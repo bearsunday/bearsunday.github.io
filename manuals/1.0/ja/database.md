@@ -5,8 +5,7 @@ category: Manual
 permalink: /manuals/1.0/ja/database.html
 ---
 
-データベースライブラリの利用のためのモジュールが二種類用意されています。
-一つは`Aura.Sql`、もう一つは`Doctrine DBAL`です。両方同時に利用することもできます。
+データベースライブラリの利用のため`Aura.Sql`、`Doctrine DBAL`の二種類のモジュールが用意されています。
 
 # Aura.Sql
 
