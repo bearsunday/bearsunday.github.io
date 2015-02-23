@@ -145,6 +145,24 @@ $this->install(new new AuraSqlLocatorModule(
 );
 {% endhighlight %}
 
+## トランザクション
+
+`@Transactional`とアノテートしたメソッドはトランザクション管理されます。
+
+{% highlight php %}
+<?php
+use Ray\AuraSqlModule\Annotation\Transactional;
+
+// ....
+    /**
+     * @Transactional
+     */
+    public function write()
+    {
+         // 例外発生したら\Ray\AuraSqlModule\Exception\RollbackExceptionに
+    }
+{% endhighlight %}
+
 # Doctrine DBAL
 
 [Doctrine DBAL](http://www.doctrine-project.org/projects/dbal.html)もデータベースの抽象化レイヤーです。
