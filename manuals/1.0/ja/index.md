@@ -4,10 +4,10 @@ title: イントロダクション
 category: Manual
 permalink: /manuals/1.0/ja/
 ---
-
 # BEAR.Sundayとは
 
 BEAR.Sundayの目標は、標準に準拠し高品質で疎結合なRESTfulアプリケーションの**フレームワーク**を提供することです。
+
 
 ## フレームワーク
 
@@ -21,26 +21,54 @@ BEAR.Sundayの目標は、標準に準拠し高品質で疎結合なRESTfulア�
 
 ## ライブラリ
 
-BEAR.Sundayアプリケーションフレームワークは一般的なMVCフレームワークと違って認証やデータベースなどの特定の仕事のための独自のライブラリ（コンポーネント）を持ちません。
+BEAR.Sundayアプリケーションフレームワークは一般的なMVCフレームワークと違って認証やデータベースなどの特定の仕事のための独自のライブラリを持ちません。
 高品質なAuraフレームワークのライブラリや、Packagistで利用可能なサードパーティのライブラリを使用します。
 
 ## リソース指向パターン
 
-BEAR.SundayはMVCパターンではない、RESTfulアプリケーションに特化したパターンを採用しています。
-
-ステートレスな`Request`は`Resource`（`R`）の状態を変化させ、`R`に注入された`Renderer`が表現(`Representation`)にして返します。
+BEAR.SundayはMVCパターンではなく、RESTfulアプリケーション用の[Resource-Method-Representation](http://www.peej.co.uk/articles/rmr-architecture.html)パターンのバリエーションです。
 
 ![4R](/images/screen/4r.png)
 
-一般的なWebの`MVC`パターンとの比較では`R`は`MVC`でいう`C`の役割の一部を果たしますが、`V`(Renderer)にインタラクトすることはありません。`Renderer`が`R`を利用します。
+ステートレスなリクエストは`Method`で`Resource`状態をつくり、内部のRendererが`Representation`にしてレスポンスになります。
 
-`R`は**レイヤーコンポーネント**です。ビジネスコンポーネント（`M`）や単なる値は`R`に含まれます。また`R`は他の`R`を`@Embed`することができ、他の`R`をハイパーリンクで`@Link`することができます。
+## コンポーネント
 
-### なぜ新しいパターン？
+### Resource
 
+WebのリソースをオブジェクトにしたものがResourceです。アプリケーション内で固有のURIやHTTPに準じたリクエストインターフェイスを持ち、オブジェクトはサービスとして機能します。
+ハイパーメディアとして他のリソースを`@Embed`したり`@Link`することができます。
+
+### Method
+
+Webからのリクエストはユニークにルートされます。HTTPメソッドに応じたパラメーターで呼ばれ、Method内で自身のリソースプロパティを構成します。
+MVCのコントローラーのようにドメインモデルや他のリソースにアクセスする事もあります。
+
+Methodの構造は[オニオンアーキテクチャ](http://www.infoq.com/jp/news/2014/11/ddd-onion-architecture)や[クリーンアーキテクチャ](http://blog.8thlight.com/uncle-bob/2012/08/13/the-clean-architecture.html)のバリエーションの１つです。
+認証やバリデーション、ログなどのユースケースはアスペクト指向プログラミングでMethodに任意の層でラップされます。
+
+### Representation
+
+個別に注入されたRendererは文字列評価時にリソースの状態をRepresentationにします。MethodではRepresentationに関心を持ちません。Representationになったリソースはリソース内の`Responder`でクライアントに出力されます。
+
+![Clean Method](/images/screen/clean-method.png)
+
+## コラボレーション
+
+ 1. ウェブハンドラーはクライアントリクエストをアプリケーションのリソースリクエストに変更します。
+
+ 1. リクエストを受けた`Resource`内の`Method`は自身を構成します。
+
+ 1. 文字列評価で`Resource`内のレンダラーがリソース状態を`Representation`にします。
+
+ 1. `Resource`内のレスポンダーが`Representation`をクライアントにレスポンスとして返します。
+
+
+## なぜ新しいパターン？
 
 従来のパターンはオブジェクト指向パラダイムのアプリケーションをHTTPにマップしたものです。
-`C`はHTTPやRESTに対して無知で、HTTPはしばしば単なる通信プロトコルとして使われます。
+純粋なコントローラーはHTTPやRESTに対して無知で、ルーターやディスパッチャーを使ってマッピングします。
 
-新パターンではHTTPにマップするオブジェクトを作成します。
-HTTPを**アプリケーションプロトコル**としたアプリケーション作成を容易にし、RESTの力をより引き出すためのパターンです。
+新パターンではHTTPにマップするオブジェクトを作成します。RESTをフレームワークとして、適合するコンポーネントを作成します。
+
+RESTの力を引き出し、HTTPをアプリケーションプロトコルとして扱う、リソース指向のアプリケーションを作成するためのパターンです。
