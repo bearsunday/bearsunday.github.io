@@ -5,14 +5,14 @@ category: Manual
 permalink: /manuals/
 ---
 
-# BEAR.Sunday Manual
+# BEAR.Sunday v1 Manual
 
 <br>
 <ul>
   <li>
-    <a href="/manuals/1.0/ja/index.html">Read the version 1.0 in Japanese</a>
+    <a href="/manuals/1.0/ja/index.html">Read in Japanese</a>
   </li>
   <li>
-    <a href="/manuals/1.0/en/index.html">Read the version 1.0 in English</a>
+    <a href="/manuals/1.0/en/index.html">Read in English</a>
   </li>
 </ul>
