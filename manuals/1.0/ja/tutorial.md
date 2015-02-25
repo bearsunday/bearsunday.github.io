@@ -80,7 +80,7 @@ Content-Type: application/hal+json
 Built-inサーバーを立ち上げます。
 
 {% highlight bash %}
-php -S 127.0.0.1:8080 bootstrap/contexts/api.php
+php -S 127.0.0.1:8080 bootstrap/api.php
 {% endhighlight %}
 
 RESTクライアント（Chromeアプリの [Advanced REST client](https://chrome.google.com/webstore/detail/advanced-rest-client/hgmloofddffdnphfgcellkdfbfbjeloo/) など）で
@@ -158,7 +158,7 @@ monologログオブジェクトは`new`で直接作成しないで、作成さ�
 
 namespace MyVendor\Weekday\Module;
 
-use BEAR\Package\AbstractAppMeta;
+use BEAR\AppMeta\AbstractAppMeta;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Ray\Di\ProviderInterface;
@@ -307,10 +307,13 @@ final class BenchMark
 
 {% highlight php %}
 <?php
+use MyVendor\Weekday\Annotation\BenchMark;
+use MyVendor\Weekday\Interceptor\BenchMarker;
+
 $this->bindInterceptor(
     $this->matcher->any(),                           // どのクラスでも
     $this->matcher->annotatedWith(BenchMark::class), // @BenchMarkとアノテートされてるメソッドに
-    [BenchMarkerInterceptor::class]                  // BenchMarkerInterceptorを適用
+    [BenchMarker::class]                  // BenchMarkerInterceptorを適用
 );
 {% endhighlight %}
 
@@ -318,6 +321,8 @@ $this->bindInterceptor(
 
 {% highlight php %}
 <?php
+use MyVendor\Weekday\Annotation\BenchMark;
+
 /**
  * @BenchMark
  */
