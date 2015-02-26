@@ -35,7 +35,8 @@ class Hello extends ResourceObject
 }
 {% endhighlight %}
 
-このページはGETメソッドでリクエストされると`Hello`と`$_GET['name']`文字列を連結して`greeting`にセットします。
+GETメソッドでリクエストされると`$name`に`$_GET['name']`が渡されるので、挨拶を`greeting`にセットし`$this`を返します。
+
 作成したアプリケーションはコンソールでもWebサーバーでも動作します。
 
 {% highlight bash %}
