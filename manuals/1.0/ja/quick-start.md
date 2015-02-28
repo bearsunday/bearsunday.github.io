@@ -56,7 +56,7 @@ Content-Type: application/hal+json
 }
 {% endhighlight %}
 
-ビルトインウェブサーバで http://127.0.0.1:8080/hello にアクセスします。
+ビルトインウェブサーバーを起動し、 http://127.0.0.1:8080/hello にアクセスします。
 
 {% highlight bash %}
 php -S 127.0.0.1:8080 var/www/index.php
