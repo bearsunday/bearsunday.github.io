@@ -56,10 +56,8 @@ Content-Type: application/hal+json
 }
 {% endhighlight %}
 
-次にPHPのビルトインウェブサーバを起動してみましょう。
+ビルトインウェブサーバで http://127.0.0.1:8080/hello にアクセスします。
 
 {% highlight bash %}
 php -S 127.0.0.1:8080 var/www/index.php
 {% endhighlight %}
-
-ブラウザで http://127.0.0.1:8080/hello にアクセスすると、`{"greeting": "Hello BEAR.Sunday"}` と表示されます。
