@@ -175,13 +175,13 @@ use Ray\WebContextParam\Annotation\QueryParam;
 {% endhighlight %}
 
 
-キーの名前と引数の名前が違う場合は`key`と`var`で指定
+キーの名前と引数の名前が違う場合は`key`と`param`で指定
 {% highlight php %}
 <?php
 use Ray\WebContextParam\Annotation\CookieParam;
 
     /**
-     * @CookieParam(key="id", var="tokenId")
+     * @CookieParam(key="id", param="tokenId")
      */
     public function foo($tokenId = null)
     {
@@ -199,11 +199,11 @@ use Ray\WebContextParam\Annotation\FormParam;
 use Ray\WebContextParam\Annotation\ServerParam;
 
     /**
-     * @QueryParam(key="id", var="userID")
-     * @CookieParam(key="id", var="tokenId")
+     * @QueryParam(key="id", param="userID")
+     * @CookieParam(key="id", param="tokenId")
      * @EnvParam("app_mode")
      * @FormParam("token")
-     * @ServerParam(key="SERVER_NAME", var="server")
+     * @ServerParam(key="SERVER_NAME", param="server")
      */
     public function foo($userId = null, $tokenId = "0000", $app_mode = null, $token = null, $server = null)
     {
