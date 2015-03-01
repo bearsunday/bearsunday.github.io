@@ -97,8 +97,11 @@ require 'pat/to/bootstrap.php';
 // web app
 php -S 127.0.0.1:8080 var/www/index.php
 
-// console app
+// api app
 php bootstrap/api.php get /user/1
+
+// console app
+php bootstrap/cli.php get /user/1
 {% endhighlight %}
 
 ## アプリケーションコンテキスト
