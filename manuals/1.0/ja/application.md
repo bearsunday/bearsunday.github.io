@@ -90,18 +90,17 @@ $context = 'prod-api-hal-app'
 require 'pat/to/bootstrap.php';
 {% endhighlight %}
 
-コンテキストによるアプリケーション変更は実行ファイル選択する事で行います。例えばAPIは`bootstrap/api.php`をHTTPのゲートウエイファイルに指定しますが、
-コンソールアプリケーションの場合は`bootstrap/cli.php`を呼び出します。
+コンテキストに応じてをbootファイルを選択します。
 
 {% highlight bash %}
-// web app
+// fire php server
 php -S 127.0.0.1:8080 var/www/index.php
 
-// api app
+// console access
 php bootstrap/api.php get /user/1
 
-// console app
-php bootstrap/cli.php get /user/1
+// web access
+php -S 127.0.0.1:8080 bootstrap/api.php
 {% endhighlight %}
 
 ## アプリケーションコンテキスト
