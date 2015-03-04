@@ -38,7 +38,7 @@ class AppModule extends AbstractModule
 
 ## アノテーション
 
-バリデーションのために`@Valid`、`@OnInvalid`、`@OnFailure`の３つのアノテーションが用意されています。
+バリデーションのために`@Valid`、`@OnValidate`、`@OnInvalid`の３つのアノテーションが用意されています。
 
 
 まず、バリデーションを行いたいメソッドに`@Valid`とアノテートします。引数は元のメソッドと同じにします。
@@ -77,7 +77,7 @@ use Ray\Validation\Annotation\OnValidate;
 バリデーション失敗した要素には`要素名`と`エラーメッセージ`を指定してValidationオブジェクトに`addError()`し、最後にValidationオブジェクトを返します。
 
 バリデーションが失敗するば`Ray\Validation\Exception\InvalidArgumentException`例外が投げられますが、
-`@OnFailure`メソッドが用意されていればそのメソッドの結果が返されます。
+`@OnInvalid`メソッドが用意されていればそのメソッドの結果が返されます。
 
 {% highlight php %}
 <?php
@@ -99,7 +99,7 @@ use Ray\Validation\Annotation\OnInvalid;
         }
     }
 {% endhighlight %}
-`@OnFailure`メソッドには`$failure`が渡され`($failure->getMessages()`でエラーメッセージや`$failure->getInvocation()`でオリジナルメソッド実行のオブジェクトが取得できます。
+`@OnInvalid`メソッドには`$failure`が渡され`($failure->getMessages()`でエラーメッセージや`$failure->getInvocation()`でオリジナルメソッド実行のオブジェクトが取得できます。
 
 ## 複数のバリデーション
 
