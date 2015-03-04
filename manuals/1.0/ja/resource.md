@@ -7,7 +7,7 @@ permalink: /manuals/1.0/ja/resource.html
 
 BEAR.Sundayアプリケーションはリソースの集合です。RESTfulアプリケーションを[REST](http://ja.wikipedia.org/wiki/REST)のスタイルで作成します。
 
-## サービスとしてのオブジェクト
+# サービスとしてのオブジェクト
 
 リソースクラスはHTTPのメソッドをPHPのメソッドにマップしてPHPのクラスをサービスとして扱います。
 
@@ -60,7 +60,7 @@ PHPのリソースクラスはWebのURIと同じような`app://self/blog/posts/
 標準ではリソースは二種類用意されています。１つは`App`リソースでアプリケーションのプログラミングインタフェース(**API**)です。
 もう１つは`Page`リソースでHTTPに近いレイヤーのリソースです。`Page`リソースは`App`リソースを利用してWebページを作成します。
 
-## クライント
+# クライント
 
 リソースのリクエストにはリソースクライアントを使用します。
 
@@ -123,7 +123,7 @@ $blog = $this
 
 
 
-## @リンク
+## リンクアノテーション
 
 ### @Link
 {% highlight php %}
@@ -157,7 +157,11 @@ public function onGet($id = null)
 
 リソースの中に`src`でリンクしたリソースを埋め込みます。HTMLページの中に別のURLの画像リソースを埋め込む`<img src="...">`タグをイメージしてみてください。HALレンダラーでは`__embed`として扱われます。
 
-## @Webコンテキスト
+## バインドパラメーター
+
+リソースクラスのメソッドの引数をWebコンテキストや他リソースの状態と束縛することができます。
+
+### Webコンテキストパラメーター
 
 `$_GET`や`$_COOKIE`などのPHPのスーパーグローバルの値をメソッド内で取得するのではなく、メソッドの引数に束縛することができます。
 
@@ -175,13 +179,13 @@ use Ray\WebContextParam\Annotation\QueryParam;
 {% endhighlight %}
 
 
-キーの名前と引数の名前が違う場合は`key`と`var`で指定
+キーの名前と引数の名前が違う場合は`key`と`param`で指定
 {% highlight php %}
 <?php
 use Ray\WebContextParam\Annotation\CookieParam;
 
     /**
-     * @CookieParam(key="id", var="tokenId")
+     * @CookieParam(key="id", param="tokenId")
      */
     public function foo($tokenId = null)
     {
@@ -199,11 +203,11 @@ use Ray\WebContextParam\Annotation\FormParam;
 use Ray\WebContextParam\Annotation\ServerParam;
 
     /**
-     * @QueryParam(key="id", var="userID")
-     * @CookieParam(key="id", var="tokenId")
+     * @QueryParam(key="id", param="userID")
+     * @CookieParam(key="id", param="tokenId")
      * @EnvParam("app_mode")
      * @FormParam("token")
-     * @ServerParam(key="SERVER_NAME", var="server")
+     * @ServerParam(key="SERVER_NAME", param="server")
      */
     public function foo($userId = null, $tokenId = "0000", $app_mode = null, $token = null, $server = null)
     {
@@ -214,7 +218,22 @@ use Ray\WebContextParam\Annotation\ServerParam;
        // $server   = $_SERVER['SERVER_NAME'];
 {% endhighlight %}
 
-## @クエリーリポジトリー
+### リソースパラメーター
+
+`@ResourceParam`アノテーションを使えば他のリソースリクエストの結果をメソッドの引数に束縛できます。
+
+{% highlight php %}
+<?php
+/**
+ * @ResourceParam(param=“name”, uri="app://self//login#nickname")
+ */
+public function onGet($name)
+{
+{% endhighlight %}
+
+この例ではメソッドが呼ばれると`login`リソースに`get`リクエストを行い`$body['nickname']`を`$name`で受け取ります。
+
+## クエリーリポジトリー
 
 ### @ResourceRepository
 
