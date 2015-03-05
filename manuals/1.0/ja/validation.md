@@ -70,7 +70,7 @@ use Ray\Validation\Annotation\OnValidate;
             $validation->addError('name', 'name should be string');
         }
 
-        return $result;
+        return $validation;
     }
 {% endhighlight %}
 
