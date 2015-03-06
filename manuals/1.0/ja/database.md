@@ -74,8 +74,7 @@ class Index
 
 ## リプリケーションのための接続
 
-マスター／スレーブの接続を自動で行うためには、
-接続オブジェクト`$locator`を作成して`AuraSqlLocatorModule`をインストールします。
+マスター／スレーブの接続を自動で行うためには接続オブジェクト`$locator`を作成して`AuraSqlLocatorModule`をインストールします。
 
 {% highlight php %}
 <?php
@@ -134,15 +133,35 @@ class User
 }
 {% endhighlight %}
 
-`AuraSqlLocatorModule`をインストールするときにメソッド名を指定すると、そのメソッドが呼ばれた時にマスタースレーブDBがインジェクトされる機能が追加されます。
+`AuraSqlLocatorModule`をインストールするとメソッドに応じてマスター・スレーブDBが切り替わり`$pdo`プロパティにセットされます。
+この機能を使用するには、クラスに`@AuraSql`とアノテートします。
 
+インストール
 {% highlight php %}
 <?php
-$this->install(new new AuraSqlLocatorModule(
-    $locator,
-    ['onGet'],                         // slave
-    ['onPost', 'onUpdate', 'onDelete'] // master
+$this->install(
+    new AuraSqlLocatorModule(
+        $locator,
+        ['onGet'],                                 // slave
+        ['onPost', 'OnPut', 'onPatch', 'onDelete'] // master
+    )
 );
+{% endhighlight %}
+
+`@AuraSql`  利用クラス
+{% highlight php %}
+<?php
+use Ray\AuraSqlModule\Annotation\AuraSql;
+
+/**
+ * @AuraSql
+ */
+class Index extends ResourceObject
+{
+    public $pdo;
+
+    public function onGet()
+    {
 {% endhighlight %}
 
 ## トランザクション
