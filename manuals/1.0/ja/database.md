@@ -162,6 +162,7 @@ class Index extends ResourceObject
 
     public function onGet()
     {
+         $this->pdo: // slave db
 {% endhighlight %}
 
 ## トランザクション
