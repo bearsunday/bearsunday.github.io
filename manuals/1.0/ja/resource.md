@@ -271,21 +271,21 @@ class Todo
 
 例えばこのクラスでは`->post(10, 'shopping')`というリクエストがあると`id=10`の`QueryRepository`の内容が更新されます。
 
-### @Purge @Reload
+### @Purge @Refresh
 
-もう１つの方法は`@Purge`アノテーションや、`@Reload`アノテーションで更新対象のURIを指定することです。
+もう１つの方法は`@Purge`アノテーションや、`@Refresh`アノテーションで更新対象のURIを指定することです。
 
  
 {% highlight php %}
 <?php
 /**
  * @Purge(uri="app://self/user/friend?user_id={id}")
- * @Reload(uri="app://self/user/profile?user_id={id}")
+ * @Refresh(uri="app://self/user/profile?user_id={id}")
  */
 public function onPut($id, $name, $age)
 {% endhighlight %}
 
-別のクラスのリソースや関連する複数のリソースの`QueryRepository`の内容を更新することができます。`@Purge`はリソースを消去するだけで、`@Reload`は生成まで行います。
+別のクラスのリソースや関連する複数のリソースの`QueryRepository`の内容を更新することができます。`@Purge`はリソースのキャッシュを消去し`@Refresh`はキャッシュの再生成を行います。
 
 ### @Etag
 
