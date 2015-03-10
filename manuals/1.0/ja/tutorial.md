@@ -18,8 +18,7 @@ composer install
 ...
 {% endhighlight %}
 
-最初にインストールされるリソースを
-アプリケーションリソースファイルを`src/Resource/App/Weekday.php`に作成します。
+最初にインストールされるアプリケーションリソースファイルを`src/Resource/App/Weekday.php`に作成します。
 
 {% highlight php %}
 <?php
@@ -205,6 +204,7 @@ use Ray\Di\Scope;
 {% endhighlight %}
 
 どのクラスでもコンストラクタでmonologオブジェクトを受け取ることができるようになりました。
+`src/Resource/App/Weekday.php`を修正してlogを書きだしてみます。
 
 {% highlight php %}
 <?php
@@ -310,6 +310,7 @@ final class BenchMark
 use MyVendor\Weekday\Annotation\BenchMark;
 use MyVendor\Weekday\Interceptor\BenchMarker;
 
+// configure()に追加します。
 $this->bindInterceptor(
     $this->matcher->any(),                           // どのクラスでも
     $this->matcher->annotatedWith(BenchMark::class), // @BenchMarkとアノテートされてるメソッドに
