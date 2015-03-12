@@ -17,7 +17,7 @@ permalink: /manuals/1.0/ja/validation.html
 composerインストール
 
 {% highlight bash %}
-composer require ray-di/validate-module
+composer require ray/validate-module
 {% endhighlight %}
 
 アプリケーションモジュール`src/Module/AppModule.php`で`ValidateModule`をインストールします。
