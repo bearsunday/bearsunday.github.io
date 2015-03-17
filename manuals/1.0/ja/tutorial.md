@@ -7,7 +7,7 @@ permalink: /manuals/1.0/ja/tutorial.html
 
 ## チュートリアル
 
-年月日を入力すると曜日を返しすWebサービスを作成してみましょう。
+年月日を入力すると曜日を返すWebサービスを作成してみましょう。
 まずプロジェクトを作成します
 
 {% highlight bash %}
