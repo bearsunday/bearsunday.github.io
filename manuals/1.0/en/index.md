@@ -20,12 +20,12 @@ Ray.Di is a modern and powerful `Dependency Injection` framework that enables th
 
 ### Ray.Aop
 
-Ray.Aop is an `Aspect Orietated Programming` framework that allows you to wrap objects with other objects by binding them together. This is great when your core business logic should have no knowledge that it is being wrapped by for example an authentication or logging aspect.
+Ray.Aop is an `Aspect Orientated Programming` framework that allows you to wrap objects with other objects by binding them together. This is great when your core business logic should have no knowledge that it is being wrapped by for example an authentication or logging aspect.
 
 
 ### BEAR.Resource
 
 BEAR.Resource allows you to treat all entry points to your app as RESTful resources. Resources can then be consumed uniformly across your app. This can be done externally via HTTP or internally via the resource client. 
 
-Treating all of your data as a resource then simplifies the how you get to your app.
+No matter if you are already in your app or outside of it, treating all of your data as a resource then simplifies the how you get to it.
 
