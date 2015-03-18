@@ -101,4 +101,19 @@ http_cache: {
     $page->transfer($httpCache->saver, $_SERVER);
 {% endhighlight %}
 
+## エクステンション
 
+[PECL/uri_template](http://pecl.php.net/package/uri_template)をインストールするとパフォーマンスが向上します。
+
+インストール
+
+```
+pecl install uri_template
+```
+
+確認
+
+```
+composer show --platform | grep uri_template
+ext-uri_template    1.0      The uri_template PHP extension
+```
