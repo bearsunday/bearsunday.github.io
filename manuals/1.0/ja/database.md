@@ -43,7 +43,7 @@ class AppModule extends AbstractModule
 {% highlight php %}
 <?php
 
-use Aura\Sql\ExtendedPdoInterfaceに
+use Aura\Sql\ExtendedPdoInterface;
 
 class Index
 {
