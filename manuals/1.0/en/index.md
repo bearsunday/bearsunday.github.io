@@ -29,3 +29,9 @@ BEAR.Resource allows you to treat all entry points to your app as RESTful resour
 
 No matter if you are already in your app or outside of it, treating all of your data as a resource then simplifies the how you get to it.
 
+## Libraries
+
+BEAR.Sunday is not like other MVC frameworks and contains libraries that support databases, authentication or the like. 
+
+Instead just hook in any of the great libraries that are available on Packagist like the Aura component libraries.
+
