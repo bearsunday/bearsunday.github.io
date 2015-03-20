@@ -41,11 +41,11 @@ BEAR.Sundayの使用するRay.Diでは、インターフェイスとクラスや
 // クラスの束縛
 $this->bind($interface)->to($class);
 // プロバイダー（ファクトリー）の束縛
-$this->bind($interface)->toProvider($class);
+$this->bind($interface)->toProvider($provider);
 // インスタンス束縛
 $this->bind($interface)->toInstance($instance);
 // 名前付き束縛
-$this->bind($interface)->annotatedWith($annotation)->to($instance);
+$this->bind($interface)->annotatedWith($annotation)->to($class);
 // シングルトン
 $this->bind($interface)->to($class)->in(Scope::SINGLETON);
 // コンストラクタ束縛
