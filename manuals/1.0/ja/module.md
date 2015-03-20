@@ -78,13 +78,13 @@ $this->bindInterceptor(
 
 `Matcher`は他にこのような指定もできます。
 
- * Matcher::any - 無制限
- * Matcher::annotatedWith - アノテーション
- * Matcher::subclassesOf - 継承または実装されたクラス
- * Matcher::startsWith - 名前の始めの文字列
- * Matcher::logicalOr - OR条件
- * Matcher::logicalAnd - AND条件
- * Matcher::logicalNot - NOT条件
+ * [Matcher::any](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/MatcherInterface.php#L16) - 無制限
+ * [Matcher::annotatedWith](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/MatcherInterface.php#L23) - アノテーション
+ * [Matcher::subclassesOf](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/MatcherInterface.php#L30) - 継承または実装されたクラス
+ * [Matcher::startsWith](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/MatcherInterface.php#L37) - 名前の始めの文字列
+ * [Matcher::logicalOr](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/MatcherInterface.php#L44) - OR条件
+ * [Matcher::logicalAnd](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/MatcherInterface.php#L51) - AND条件
+ * [Matcher::logicalNot](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/MatcherInterface.php#L58) - NOT条件
 
 インターセプターの`invoke`メソッドでは`MethodInvocation`（メソッド実行）変数を受け取り、メソッドの前後に処理を加えることができます。
 
@@ -108,7 +108,7 @@ class MyInterceptor implements MethodInterceptor
 }
 {% endhighlight %}
 
-`MethodInvocation`はこのようなメソッドを持ちます。
+`MethodInvocation`で対象のメソッド実行に関連するオブジェクトやメソッド、引数にアクセスすることができます。
 
  * [MethodInvocation::proceed](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/Joinpoint.php#L39) - 対象メソッド実行
  * [MethodInvocation::getMethod](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/MethodInvocation.php) -  対象メソッドリフレクションの取得
