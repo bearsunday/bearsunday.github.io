@@ -50,10 +50,10 @@ Let's access in console. Try the error first.
 {% highlight bash %}
 php bootstrap/api.php get '/weekday'
 
-404 Not Found
+400 Bad Request
 Content-Type: application/vnd.error+json
 
-{"message":"404 Not Found"}
+{"message":"Bad Request"}
 ...
 {% endhighlight %}
 
