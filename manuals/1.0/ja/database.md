@@ -99,7 +99,7 @@ class AppModule extends AbstractModule
             'slave2',
             new Connection('mysql:host=localhost;dbname=slave2', 'id', 'password')
         );
-        $this->install(new new AuraSqlLocatorModule($locator);
+        $this->install(new AuraSqlLocatorModule($locator);
     }
 }
 {% endhighlight %}
@@ -193,7 +193,7 @@ composerで`Ray.DbalModule`をインストールします。
 composer require ray/dbal-module
 {% endhighlight %}
 
-アプリケーションモジュールで`AuraSqlModule`をインストールします。
+アプリケーションモジュールで`DbalModule`をインストールします。
 
 {% highlight php %}
 <?php
