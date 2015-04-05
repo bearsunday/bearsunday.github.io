@@ -189,7 +189,7 @@ use Ray\WebContextParam\Annotation\CookieParam;
      */
     public function foo($tokenId = null)
     {
-      // $id = $_COOKIE['id'];
+      // $tokenId = $_COOKIE['id'];
 {% endhighlight %}
 
 フルリスト
@@ -203,7 +203,7 @@ use Ray\WebContextParam\Annotation\FormParam;
 use Ray\WebContextParam\Annotation\ServerParam;
 
     /**
-     * @QueryParam(key="id", param="userID")
+     * @QueryParam(key="id", param="userId")
      * @CookieParam(key="id", param="tokenId")
      * @EnvParam("app_mode")
      * @FormParam("token")
@@ -212,7 +212,7 @@ use Ray\WebContextParam\Annotation\ServerParam;
     public function foo($userId = null, $tokenId = "0000", $app_mode = null, $token = null, $server = null)
     {
        // $userId   = $_GET['id'];
-       // $tokenId  = $_COOKIE['id'] or "0" when unset;
+       // $tokenId  = $_COOKIE['id'] or "0000" when unset;
        // $app_mode = $_ENV['app_mode'];
        // $token    = $_POST['token'];
        // $server   = $_SERVER['SERVER_NAME'];
