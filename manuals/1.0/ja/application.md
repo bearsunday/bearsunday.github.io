@@ -7,7 +7,7 @@ permalink: /manuals/1.0/ja/application.html
 
 
 アプリケーションスクリプト`bootstrap/bootstrap.php`では**表現可能なリソース状態の転送(REST)**が行われます。
-そのRESTがBEAR.Sunday`のアプリケーション実行です。コンパイル、リクエスト、レスポンスの順で実行されます。
+そのRESTがBEAR.Sundayのアプリケーション実行です。コンパイル、リクエスト、レスポンスの順で実行されます。
 
 ### 0. コンパイル
 
