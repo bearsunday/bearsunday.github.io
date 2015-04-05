@@ -246,7 +246,7 @@ public function onGet($name)
 class User extends ResourceObject
 {% endhighlight %}
 
-`@QueryRepository`とアノテートすると`get`リクエストは読み込み用のレポジトリ`QueryRepository`が使わ時間無制限のキャッシュとして機能します。
+`@QueryRepository`とアノテートすると`get`リクエストは読み込み用のレポジトリ`QueryRepository`が使われ、時間無制限のキャッシュとして機能します。
 `get`以外のリクエストがあると該当する`QueryRepository`のリソースが更新されます。
 
 `@QueryRepository`から読まれるリソースオブジェクトはHTTPに準じた`Last-Modified`と`ETag`ヘッダーが付加されます。
