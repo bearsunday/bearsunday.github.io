@@ -193,7 +193,7 @@ composerで`Ray.DbalModule`をインストールします。
 composer require ray/dbal-module
 {% endhighlight %}
 
-アプリケーションモジュールで`AuraSqlModule`をインストールします。
+アプリケーションモジュールで`DbalModule`をインストールします。
 
 {% highlight php %}
 <?php
