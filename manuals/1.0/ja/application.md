@@ -5,23 +5,22 @@ category: Manual
 permalink: /manuals/1.0/ja/application.html
 ---
 
-## アプリケーションスクリプト
 
-アプリケーションはアプリケーションスクリプト`bootstrap/bootstrap.php`で実行されます。
-
-スクリプトではリソースリクエストを行い、そのリソース表現(HTMLやJSON)をクライアントに転送します。
-その時アプリケーションオブジェクト`$app`は`router`や`transfer`などアプリケーションの実行に必要な保持しているサービスオブジェクトを使います。
-
-`$app`のオブジェクトは他から所有されているか、他のオブジェクトを含んでいるかの関係でお互いに接続されている１つの大きなオブジェクトです。
-これを[オブジェクトグラフ](http://en.wikipedia.org/wiki/Object_graph)と呼びますが`$app`はそのルートのオブジェクトです。
+アプリケーションスクリプト`bootstrap/bootstrap.php`では**表現可能なリソース状態の転送(REST)**が行われます。
+そのRESTがBEAR.Sunday`のアプリケーション実行です。コンパイル、リクエスト、レスポンスの順で実行されます。
 
 ### 0. コンパイル
 
 与えられた`$context`に対応するDIとAOPの設定でアプリケーションオブジェクト`$app`が作られます。
+`$app`は`router`や`transfer`などアプリケーションの実行に必要なサービスオブジェクトをプロパティとしてすべて保持している１つの大きなオブジェクトです。
+`$app`のオブジェクトは他から所有されているか、他のオブジェクトを含んでいるかの関係でお互いに接続されていて、これを[オブジェクトグラフ](http://en.wikipedia.org/wiki/Object_graph)と呼びます。
+`$app`はシリアライズされ再利用されます。
 
 ### 1. リクエスト
 
-HTTPリクエストを元にアプリケーションのリソースリクエストが作成されます。リソースオブジェクトはリクエストに対応する`onGet`や`onPost`などのメソッドで自身のリソース状態を`code`や`body`にセットします。
+HTTPリクエストを元にアプリケーションのリソースリクエストとリソースオブジェクトが作成されます。
+リソースオブジェクトはリクエストに対応する`onGet`や`onPost`などのメソッドで自身のリソース状態を`code`や`body`にセットします。
+リソースオブジェクトは他のリソースオブジェクトを`@Embed`したり`@Link`することができます。メソッド内ではリソース状態の変更をするだけでその表現（HTMLやJSONなど）に関心を持つことはありません。
 
 ### 2. レスポンス
 
@@ -29,56 +28,8 @@ HTTPリクエストを元にアプリケーションのリソースリクエス�
 
  <img src="/images/screen/diagram.png" style="max-width: 100%;height: auto;"/>
 
-### REST
 
-アプリケーションスクリプト`bootstrap/bootstrap.php`はユーザー領域にあり変更可能です。
-
-{% highlight php %}
-<?php
-
- /**
-  * @global string $context
-  */
- namespace MyVendor\Weekday;
-
- use BEAR\Package\Bootstrap;
- use BEAR\Package\AppMeta;
- use Doctrine\Common\Cache\ApcCache;
- use Doctrine\Common\Annotations\AnnotationRegistry;
-
- load: {
-     $dir = dirname(__DIR__);
-     $loader = require $dir . '/vendor/autoload.php';
-     AnnotationRegistry::registerLoader([$loader, 'loadClass']);
- }
-
- route: {
-     $context = isset($context) ? $context : 'app';
-     $app = (new Bootstrap)->newApp(new AppMeta(__NAMESPACE__), $context, new ApcCache);
-     /** @var $app \BEAR\Sunday\Extension\Application\AbstractApp */
-     $request = $app->router->match($GLOBALS, $_SERVER);
- }
-
- try {
-     // resource request
-     $page = $app
-         ->resource
-         ->{$request->method}
-         ->uri($request->path)
-         ->withQuery($request->query)
-         ->request();
-     /** @var $page \BEAR\Resource\Request */
-
-     // representation transfer
-     $page()->transfer($app->responder, $_SERVER);
-     exit(0);
- } catch (\Exception $e) {
-     $app->error->handle($e, $request)->transfer();
-     exit(1);
- }
-{% endhighlight %}
-
-## bootファイル
+# bootファイル
 
 アプリケーションを実行するわずか２行のPHPスクリプトです。`var/www/index.php`や`bootstrap/api.php`等に設置してWebサーバーやコンソールアプリケーションのエントリーポイントにします。
 スクリプトではグローバル変数`$context`にコンテキストを指定して`bootstrap.php`ファイルを読み込むとアプリケーションが実行されます。
