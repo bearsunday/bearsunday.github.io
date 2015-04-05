@@ -279,7 +279,7 @@ class BenchMarker implements MethodInterceptor
         $start = microtime(true);
         $result = $invocation->proceed(); // original method invocation
         $time = microtime(true) - $start;
-        $msg = sprintf("%s: %s", $invocation->getMethod()->getName(),$time);
+        $msg = sprintf("%s: %s", $invocation->getMethod()->getName(), $time);
         $this->logger->info($msg);
 
         return $result;
