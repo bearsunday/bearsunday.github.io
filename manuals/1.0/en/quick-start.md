@@ -12,7 +12,7 @@ Installation is done via [composer](http://getcomposer.org)
 {% highlight bash %}
 composer create-project bear/skeleton MyVendor.MyPackage ~1.0@dev
 cd MyVendor.MyPackage
-composer update
+composer install
 {% endhighlight %}
 
 Next, let's create a Page resource. Page resource is a class which is corresponding to a Web page.

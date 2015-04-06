@@ -12,7 +12,7 @@ permalink: /manuals/1.0/ja/quick-start.html
 {% highlight bash %}
 composer create-project bear/skeleton MyVendor.MyPackage ~1.0@dev
 cd MyVendor.MyPackage
-composer update
+composer install
 {% endhighlight %}
 
 次にPageリソースを作成します。PageリソースはWebページに対応したクラスです。 `MyVendor.MyPackage/src/Resource/Page/Hello.php`に作成します。
