@@ -74,12 +74,12 @@ class Index
 
 ## リプリケーションのための接続
 
-マスター／スレーブの接続を自動で行うためには接続オブジェクト`$locator`を作成して`AuraSqlLocatorModule`をインストールします。
+マスター／スレーブの接続を自動で行うためには接続オブジェクト`$locator`を作成して`AuraSqlReplicationModule`をインストールします。
 
 {% highlight php %}
-<?php
 use Ray\Di\AbstractModule;
 use Ray\AuraSqlModule\AuraSqlModule;
+use Ray\AuraSqlModule\Annotation\AuraSqlConfig;
 use Aura\Sql\ConnectionLocator;
 
 class AppModule extends AbstractModule
@@ -87,24 +87,18 @@ class AppModule extends AbstractModule
     protected function configure()
     {
         $locator = new ConnectionLocator;
-        $locator->setWrite(
-            'master',
-            new Connection('mysql:host=localhost;dbname=master', 'id', 'password')
-        );
-        $locator->setRead(
-            'slave1',
-            new Connection('mysql:host=localhost;dbname=slave1', 'id', 'password')
-        );
-        $locator->setRead(
-            'slave2',
-            new Connection('mysql:host=localhost;dbname=slave2', 'id', 'password')
-        );
-        $this->install(new AuraSqlLocatorModule($locator);
+        $locator->setWrite('master', new Connection('mysql:host=localhost;dbname=master', 'id', 'pass'));
+        $locator->setRead('slave1',  new Connection('mysql:host=localhost;dbname=slave1', 'id', 'pass'));
+        $locator->setRead('slave2',  new Connection('mysql:host=localhost;dbname=slave2', 'id', 'pass'));
+        $this->install(new AuraSqlReplicationModule($locator);
     }
 }
+
 {% endhighlight %}
 
-これで`@ReadOnlyConnection`、`@WriteConnection`でアノテートされたメソッドが呼ばれたタイミングで`$this->db`にアノテーションに応じたDBオブジェクトがインジェクトされます。
+これでHTTPリクエストがGETの時がスレーブDB、その他のメソッドの時はマスターDBに接続されるようになります。
+
+`@ReadOnlyConnection`、`@WriteConnection`でアノテートされたメソッドはコールされたタイミングで`$this->db`にアノテーションに応じたDBオブジェクトがインジェクトされます。
 
 {% highlight php %}
 <?php
@@ -131,38 +125,6 @@ class User
          $this->pdo: // master db
     }
 }
-{% endhighlight %}
-
-`AuraSqlLocatorModule`をインストールするとメソッドに応じてマスター・スレーブDBが切り替わり`$pdo`プロパティにセットされます。
-この機能を使用するには、クラスに`@AuraSql`とアノテートします。
-
-インストール
-{% highlight php %}
-<?php
-$this->install(
-    new AuraSqlLocatorModule(
-        $locator,
-        ['onGet'],                                 // slave
-        ['onPost', 'OnPut', 'onPatch', 'onDelete'] // master
-    )
-);
-{% endhighlight %}
-
-`@AuraSql`  利用クラス
-{% highlight php %}
-<?php
-use Ray\AuraSqlModule\Annotation\AuraSql;
-
-/**
- * @AuraSql
- */
-class Index extends ResourceObject
-{
-    public $pdo;
-
-    public function onGet()
-    {
-         $this->pdo: // slave db
 {% endhighlight %}
 
 ## トランザクション
