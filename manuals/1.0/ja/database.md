@@ -197,7 +197,7 @@ composer require ray/dbal-module
 
 {% highlight php %}
 <?php
-use BEAR\DbalModule\DbalModule;
+use Ray\DbalModule\DbalModule;
 use Ray\Di\AbstractModule;
 
 class AppModule extends AbstractModule
