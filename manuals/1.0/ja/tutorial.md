@@ -337,3 +337,142 @@ public function onGet($year, $month, $day)
 `production`では外したり、開発時に特定の秒数を越すと警告を行うことができます。
 
 実行して`var/log/weekday.log`に実行時間のログが出力されることを確認しましょう。
+
+## HTML
+
+次に今のAPIアプリケーションをHTMLアプリケーションにしてみましょう。
+今の`app`リソースに加えて、`src/Resource/Page/Index.php`に`page`リソースを追加します。
+
+`page`リソースクラスは場所と役割が違うだけで`app`リソースと基本的に同じクラスです。
+
+{% highlight php %}
+<?php
+
+namespace MyVendor\Weekday\Resource\Page;
+
+use BEAR\Resource\ResourceObject;
+use BEAR\Sunday\Inject\ResourceInject;
+
+class Index extends ResourceObject
+{
+    use ResourceInject;
+
+    public function onGet($year, $month, $day)
+    {
+        $this['weekday'] = $this->resource
+            ->get
+            ->uri('app://self/weekday')
+            ->withQuery(['year' => $year, 'month' => $month, 'day' => $day])
+            ->request();
+
+        return $this;
+    }
+}
+{% endhighlight %}
+
+`use ResourceInject;`でリソースリクエストを行うためのクライアントを受け取ったページリソースクラスは`$this->resource`リソースクライントを使って他のリソースにアクセスすることができます。
+`onGet`メソッドで`app://self/weekday`リソースのリクエストを自身の`weekday`というスロットに埋め込んでいます。
+
+この段階でこのページリソースがどのようなリソース表現をするのか試してみましょう。
+
+{% highlight bash %}
+php bootstrap/web.php get '/?year=1991&month=8&day=1'
+
+200 OK
+Content-Type: application/hal+json
+
+{
+    "_embedded": {
+        "weekday": {
+            "weekday": "Thu",
+            "_links": {
+                "self": {
+                    "href": "/weekday/1991/8/1"
+                }
+            }
+        }
+    },
+    "_links": {
+        "self": {
+            "href": "/?year=1991&month=8&day=1"
+        }
+    }
+}
+{% endhighlight %}
+
+他のリソースが`_embedded`されているのが確認できます。（別スキーマへのリソースに`_links`が対応してないのは注意）
+リソースのレンダラーに変更がないので`application/hal+json`メディアタイプで出力されていますが、これをHTML(text/html)で出力するために[HTMLのマニュアル](/manuals/1.0/ja/html.html)に従ってHTMLモジュールをインストールします。
+
+composerインストール
+{% highlight bash %}
+composer require madapaja/twig-module
+{% endhighlight %}
+
+`src/Module/HtmlModule.php`を作成
+{% highlight php %}
+<?php
+
+namespace MyVendor\Weekday\Module;
+
+use BEAR\AppMeta\AppMeta;
+use Madapaja\TwigModule\TwigModule;
+use Ray\Di\AbstractModule;
+
+class HtmlModule extends AbstractModule
+{
+    protected function configure()
+    {
+        $this->install(new TwigModule);
+    }
+}
+{% endhighlight %}
+
+`bootstrap/web.php`を変更
+{% highlight php %}
+<?php
+
+$context = 'cli-html-app';
+require __DIR__ . '/bootstrap.php';
+{% endhighlight %}
+
+これで`text/html`メディア出力の準備はできました。最後に`src/Resource/Page/Index.html.twig`にtwigテンプレートを用意します。
+
+{% highlight bash %}
+<!DOCTYPE html>
+<html>
+<body>
+{% raw %}The weekday of {{ year }}/{{ month }}/{{ day }} is {{ weekday.weekday }}.{% endraw %}
+</body> 
+</html>
+{% endhighlight %}
+
+準備完了です。まずはコンソールでこのようなHTMLが出力されるか確認しょうまう。
+
+{% highlight bash %}
+
+php bootstrap/web.php get '/?year=1991&month=8&day=1'
+200 OK
+content-type: text/html; charset=utf-8
+
+<!DOCTYPE html>
+<html>
+<body>
+The weekday of 1991/8/1 is <b>Thu</b>.
+</body>
+</html>
+{% endhighlight %}
+
+Webサービスを行うために`var/www/index.php`を変更します。
+
+{% highlight php %}
+<?php
+
+$context = 'prod-html-app';
+require dirname(dirname(__DIR__)) . '/bootstrap/bootstrap.php';
+{% endhighlight %}
+
+PHPサーバーを立ち上げてwebブラウザで`http://127.0.0.1:8080/?year=2001&month=1&day=1`をアクセスして確認してみましょう。
+
+{% highlight bash %}
+php -S 127.0.0.1:8080 var/www/index.php 
+{% endhighlight %}
