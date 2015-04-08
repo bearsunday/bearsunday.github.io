@@ -403,7 +403,7 @@ Content-Type: application/hal+json
 }
 {% endhighlight %}
 
-他のリソースが`_embedded`されているのが確認できます。（別スキーマへのリソースに`_links`が対応してないのは注意）
+他のリソースが`_embedded`されているのが確認できます。
 リソースのレンダラーに変更がないので`application/hal+json`メディアタイプで出力されていますが、これをHTML(text/html)で出力するために[HTMLのマニュアル](/manuals/1.0/ja/html.html)に従ってHTMLモジュールをインストールします。
 
 composerインストール
