@@ -359,6 +359,9 @@ class Index extends ResourceObject
 
     public function onGet($year, $month, $day)
     {
+        $this['year'] = $year;
+        $this['month'] = $month;
+        $this['day'] = $day;
         $this['weekday'] = $this->resource
             ->get
             ->uri('app://self/weekday')
