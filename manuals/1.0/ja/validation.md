@@ -38,7 +38,7 @@ class AppModule extends AbstractModule
 
 ## アノテーション
 
-バリデーションのために`@Valid`、`@OnValidate`、`@OnInvalid`の３つのアノテーションが用意されています。
+バリデーションのために`@Valid`、`@OnValidate`、`@OnFailure`の３つのアノテーションが用意されています。
 
 
 まず、バリデーションを行いたいメソッドに`@Valid`とアノテートします。
@@ -77,16 +77,16 @@ use Ray\Validation\Annotation\OnValidate;
 バリデーション失敗した要素には`要素名`と`エラーメッセージ`を指定してValidationオブジェクトに`addError()`し、最後にValidationオブジェクトを返します。
 
 バリデーションが失敗すれば`Ray\Validation\Exception\InvalidArgumentException`例外が投げられますが、
-`@OnInvalid`メソッドが用意されていればそのメソッドの結果が返されます。
+`@OnFailure`メソッドが用意されていればそのメソッドの結果が返されます。
 
 {% highlight php %}
 <?php
-use Ray\Validation\Annotation\OnInvalid;
+use Ray\Validation\Annotation\OnFailure;
 // ...
     /**
-     * @OnInvalid
+     * @OnFailure
      */
-    public function onInvalid(FailureInterface $failure)
+    public function onFailure(FailureInterface $failure)
     {
         // original parameters
         list($this->defaultName) = $failure->getInvocation()->getArguments();
@@ -99,7 +99,7 @@ use Ray\Validation\Annotation\OnInvalid;
         }
     }
 {% endhighlight %}
-`@OnInvalid`メソッドには`$failure`が渡され`($failure->getMessages()`でエラーメッセージや`$failure->getInvocation()`でオリジナルメソッド実行のオブジェクトが取得できます。
+`@OnFailure`メソッドには`$failure`が渡され`($failure->getMessages()`でエラーメッセージや`$failure->getInvocation()`でオリジナルメソッド実行のオブジェクトが取得できます。
 
 ## 複数のバリデーション
 
@@ -109,7 +109,7 @@ use Ray\Validation\Annotation\OnInvalid;
 <?php
 use Ray\Validation\Annotation\Valid;
 use Ray\Validation\Annotation\OnValidate;
-use Ray\Validation\Annotation\OnInvalid;
+use Ray\Validation\Annotation\OnFailure;
 // ...
 
     /**
@@ -125,9 +125,9 @@ use Ray\Validation\Annotation\OnInvalid;
     {
 
     /**
-     * @OnInvalid("foo")
+     * @OnFailure("foo")
      */
-    public function onInvalidFoo(FailureInterface $failure)
+    public function onFailureFoo(FailureInterface $failure)
     {
 {% endhighlight %}
 
