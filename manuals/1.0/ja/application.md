@@ -19,7 +19,7 @@ permalink: /manuals/1.0/ja/application.html
 ### 1. リクエスト
 
 HTTPリクエストを元にアプリケーションのリソースリクエストとリソースオブジェクトが作成されます。
-リソースオブジェクトはリクエストに対応する`onGet`や`onPost`などのメソッドで自身のリソース状態を`code`や`body`にセットします。
+リソースリクエストはリクエストに対応する`onGet`や`onPost`などのメソッドで自身のリソース状態を`code`や`body`にセットします。
 リソースオブジェクトは他のリソースオブジェクトを`@Embed`したり`@Link`することができます。メソッド内ではリソース状態の変更をするだけでその表現（HTMLやJSONなど）に関心を持つことはありません。
 
 ### 2. レスポンス
@@ -40,7 +40,7 @@ $context = 'prod-api-hal-app'
 require 'pat/to/bootstrap.php';
 {% endhighlight %}
 
-コンテキストに応じてをbootファイルを選択します。
+コンテキストに応じてbootファイルを選択します。
 
 {% highlight bash %}
 // fire php server
