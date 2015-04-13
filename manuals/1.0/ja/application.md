@@ -71,7 +71,7 @@ php -S 127.0.0.1:8080 bootstrap/api.php
 
  * `app`は素のアプリケーションです。
  * `api`はデフォルトのリソースをpageリソースから**appリソース**に変更します。`page://self/`にマップされているWebのルートアクセス(`GET /`)は`app://self/`へのアクセスになります。
- * `cli-app`にするとコンソールアプリケーションになり、`prod-hal-api-app`だと[HAL](http://stateless.co/hal_specification.html)メディタイプを使ったプロダクション用のAPIアプリケーションになります。
+ * `cli-app`にするとコンソールアプリケーションになり、`prod-hal-api-app`だと[HAL](http://stateless.co/hal_specification.html)メディアタイプを使ったプロダクション用のAPIアプリケーションになります。
 
 
  アプリケーションコンテキスト(cli, app..)はそれぞれのモジュールに対応します。例えば`cli`は`CliModule`に対応しており、コンソールアプリケーションのためのDIとAOPの束縛が行われます。
