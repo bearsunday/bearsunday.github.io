@@ -293,4 +293,4 @@ public function onPut($id, $name, $age)
 
 ## BEAR.Resource
 
-リソースクラスに関するより詳しい情報はBEAR.Resourceの[README](https://github.com/koriym/BEAR.Resource/blob/develop-2/README.ja.md)もご覧ください。
+リソースクラスに関するより詳しい情報はBEAR.Resourceの[README](https://github.com/bearsunday/BEAR.Resource/blob/1.x/README.ja.md)もご覧ください。
