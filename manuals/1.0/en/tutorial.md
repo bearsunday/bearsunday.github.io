@@ -279,7 +279,7 @@ class BenchMarker implements MethodInterceptor
         $start = microtime(true);
         $result = $invocation->proceed(); // original method invocation
         $time = microtime(true) - $start;
-        $msg = sprintf("%s: %s", $invocation->getMethod()->getName(),$time);
+        $msg = sprintf("%s: %s", $invocation->getMethod()->getName(), $time);
         $this->logger->info($msg);
 
         return $result;
@@ -288,7 +288,7 @@ class BenchMarker implements MethodInterceptor
 
 {% endhighlight %}
 
-You can invoke original method with `$invocation->proceed();` in `Invoke` method.
+You can invoke original method with `$invocation->proceed();` in `invoke` method.
 You may reset and stop the timer on before and after. An original method object and method name is taken [MethodInvocation](http://www.bear-project.net/Ray.Aop/build/apigen/class-Ray.Aop.MethodInvocation.html) object.
 
 Next, Provide a [annotate](http://docs.doctrine-project.org/projects/doctrine-common/en/latest/reference/annotations.html) class at `src/Annotation/BenchMark.php`.
