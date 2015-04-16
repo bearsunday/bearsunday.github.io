@@ -1,38 +1,44 @@
 ---
-layout: docs-ja
-title: アプリケーション
+layout: docs-en
+title: Application
 category: Manual
-permalink: /manuals/1.0/ja/application.html
+permalink: /manuals/1.0/en/application.html
 ---
 
+**"[This document](https://github.com/bearsunday/bearsunday.github.io/blob/master/manuals/1.0/en/application.md) needs to be proofread by a English speaker. If interested please send me a pull request."**
 
-アプリケーションスクリプト`bootstrap/bootstrap.php`では**表現可能なリソース状態の転送(REST)**が行われます。
-そのRESTがBEAR.Sundayのアプリケーション実行です。コンパイル、リクエスト、レスポンスの順で実行されます。
+BEAR.Sunday application transfer (REST) the state of resource that is capable of representation
+using script `bootstrap/bootstrap.php`.
 
-### 0. コンパイル
+### 0. Compile
 
-与えられた`$context`に対応するDIとAOPの設定でアプリケーションオブジェクト`$app`が作られます。
-`$app`は`router`や`transfer`などアプリケーションの実行に必要なサービスオブジェクトをプロパティとしてすべて保持している１つの大きなオブジェクトです。
-`$app`のオブジェクトは他から所有されているか、他のオブジェクトを含んでいるかの関係でお互いに接続されていて、これを[オブジェクトグラフ](http://en.wikipedia.org/wiki/Object_graph)と呼びます。
-`$app`はシリアライズされ再利用されます。
+An application Object `$app`, which is settings of DI and AOP, is created based on `$context`.
+`$app` consists of service objects such as `router` and `transfer` as property to run an application.
+`$app` are linked to these objects either owned by others or containing them so that it is capable of communicating with each other.
+This is called as [Object Graph](http://en.wikipedia.org/wiki/Object_graph).
+Also, `$app` is serialized and reused.
 
-### 1. リクエスト
+### 1. Request
 
-HTTPリクエストを元にアプリケーションのリソースリクエストとリソースオブジェクトが作成されます。
-リソースオブジェクトはリクエストに対応する`onGet`や`onPost`などのメソッドで自身のリソース状態を`code`や`body`にセットします。
-リソースオブジェクトは他のリソースオブジェクトを`@Embed`したり`@Link`することができます。メソッド内ではリソース状態の変更をするだけでその表現（HTMLやJSONなど）に関心を持つことはありません。
+The resource request and object of application are created based on HTTP request.
+The resource object is a method such as `onGet` and `onPost` that corresponds to a request and set its own state of the resource to `code` and `body`.
+Also, it is used to emebed `@Embed` or to link `@Link` other resource objects. 
+As a method, it just handle the state of resource or modify it and not to involved in the representation of resource such as HTML and JSON. 
 
-### 2. レスポンス
 
-リソースオブジェクトにインジェクトされているレンダラーが、リクエスト結果による**リソースの状態**をJSONやHTMLなどの**表現**にしてクライアントに**転送**します。
+### 2. Response
+
+A Renderer, which is injected into resource object, make the state of resource into representation such as HTML and JSON and transfer to a client.
 
  <img src="/images/screen/diagram.png" style="max-width: 100%;height: auto;"/>
 
 
-# bootファイル
+# boot file
 
-アプリケーションを実行するわずか２行のPHPスクリプトです。`var/www/index.php`や`bootstrap/api.php`等に設置してWebサーバーやコンソールアプリケーションのエントリーポイントにします。
-スクリプトではグローバル変数`$context`にコンテキストを指定して`bootstrap.php`ファイルを読み込むとアプリケーションが実行されます。
+To run an application, we need just two line of codes.
+It is usually set to `var/www/index.php` or `bootstrap/api.php` as entry point for web server and console application.
+As shown below, we need to set an application context to a global variable `$context` and require `bootstrap.php` to run an application.
+
 
 {% highlight php %}
 <?php
@@ -40,7 +46,7 @@ $context = 'prod-api-hal-app'
 require 'pat/to/bootstrap.php';
 {% endhighlight %}
 
-コンテキストに応じてをbootファイルを選択します。
+Your boot file will be selected by defined context.
 
 {% highlight bash %}
 // fire php server
@@ -53,27 +59,32 @@ php bootstrap/api.php get /user/1
 php -S 127.0.0.1:8080 bootstrap/api.php
 {% endhighlight %}
 
-## アプリケーションコンテキスト
+## Application Context
 
-コンテキストに応じてアプリケーションオブジェクト`$app`の構成が変わり、振る舞いが変更されます。
-例えばデフォルトの設定では`RouterInterface`に`WebRouter`が束縛されていますが、`Cli`では`RouterInterface`に`CliRouter`が束縛され(HTTPリクエストの代わりに)コンソールの入力値が入力値になります。
+The composition of application object `$app` changes in response to your defined context, so that application behavior changes.
+For example, `WebRouter` is bound to `RouterInterface` by default settings.
+However, if you set `Cli`, which is defined for console application, as your context, 
+then `CliRouter` is bound to `RouterInterface` and it will take console input instead.
 
-フレームワークが用意しているbuilt-inコンテキストとアプリケーションが作成するカスタムコンテキストがあります。
+There are built-in and custom context created by application.
 
-**built-inコンテキスト**
+**built-in context**
 
- * `api`  APIアプリケーション
- * `cli`  コンソールアプリケーション
- * `hal`  HALアプリケーション
- * `prod` プロダクション
+ * `api`  API Application
+ * `cli`  Console Application
+ * `hal`  HAL Application
+ * `prod` Production
 
- コンテキストは組み合わせて使う事ができます。
+ You can also use a combination of the context and others.
 
- * `app`は素のアプリケーションです。
- * `api`はデフォルトのリソースをpageリソースから**appリソース**に変更します。`page://self/`にマップされているWebのルートアクセス(`GET /`)は`app://self/`へのアクセスになります。
- * `cli-app`にするとコンソールアプリケーションになり、`prod-hal-api-app`だと[HAL](http://stateless.co/hal_specification.html)メディタイプを使ったプロダクション用のAPIアプリケーションになります。
+ * `app` is a default application context.
+ * `api` modify page resource to **app resource** by default. Also, web root access (`GET /`) that is mapped to `page://self/` will be changed to `app://self/`.
+ * `cli-app` is a console application. If you set `prod-hal-api-app` as context, your application will be an API application for production using [HAL](http://stateless.co/hal_specification.html) media type.
 
 
- アプリケーションコンテキスト(cli, app..)はそれぞれのモジュールに対応します。例えば`cli`は`CliModule`に対応しており、コンソールアプリケーションのためのDIとAOPの束縛が行われます。
+Application Context (cli, app..) corresponds to each modules.
+For example, `cli` context corresponds to a module `CliModule`, and conduct binding of DI and AOP for console application.
 
-コンテキストの値はオブジェクトグラフの作成のみに使われます。コンテキストを参照してアプリケーションやライブラリがて振る舞いを変える事は推奨されません。その代わりに**インターフェイスのみに依存したコード**と**コンテキストによる依存の変更**で振る舞いを変えます。
+The value of context wil be only used when generating an object graph.
+It is not recommend for your application code and library to change its behavior by referring to the context.
+Instead, it should be changed by **the code depend on interface** and **the changes of dependency by the context**.
