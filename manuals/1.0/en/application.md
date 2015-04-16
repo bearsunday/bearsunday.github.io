@@ -22,7 +22,7 @@ Also, `$app` is serialized and reused.
 
 The resource request and object of application are created based on HTTP request.
 The resource object is a method such as `onGet` and `onPost` that corresponds to a request and set its own state of the resource to `code` and `body`.
-Also, it is used to emebed `@Embed` or to link `@Link` other resource objects. 
+Also, it is used to embed `@Embed` or to link `@Link` other resource objects. 
 As a method, it just handle the state of resource or modify it and not to involved in the representation of resource such as HTML and JSON. 
 
 
