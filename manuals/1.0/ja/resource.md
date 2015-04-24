@@ -237,28 +237,33 @@ public function onGet($name)
 
 この例ではメソッドが呼ばれると`login`リソースに`get`リクエストを行い`$body['nickname']`を`$name`で受け取ります。
 
-## クエリーリポジトリー
+## リソースキャッシュ
 
-### @ResourceRepository
+### @Cacheable(expiry="short")
 
 {% highlight php %}
 <?php
 /**
- * @QueryRepository
+ * @Cacheable
  * @Etag
  */
 class User extends ResourceObject
 {% endhighlight %}
 
-`@QueryRepository`とアノテートすると`get`リクエストは読み込み用のレポジトリ`QueryRepository`が使われ、時間無制限のキャッシュとして機能します。
+`@Cacheable`とアノテートすると`get`リクエストは読み込み用のレポジトリ`QueryRepository`が使われ、時間無制限のキャッシュとして機能します。
 `get`以外のリクエストがあると該当する`QueryRepository`のリソースが更新されます。
 
-`@QueryRepository`から読まれるリソースオブジェクトはHTTPに準じた`Last-Modified`と`ETag`ヘッダーが付加されます。
+`@Cacheable`から読まれるリソースオブジェクトはHTTPに準じた`Last-Modified`と`ETag`ヘッダーが付加されます。
 
 同一クラスの`onGet`以外のリクエストメソッドがリクエストされ引数を見てリソースが変更されたと判断すると`QueryRepository`の内容も更新されます。
 
 {% highlight php %}
 <?php
+
+/**
+ * @Cacheable
+ * @Etag
+ */
 class Todo
 {
     public function onGet($id)
@@ -274,6 +279,21 @@ class Todo
 {% endhighlight %}
 
 例えばこのクラスでは`->post(10, 'shopping')`というリクエストがあると`id=10`の`QueryRepository`の内容が更新されます。
+この自動更新を利用しない時は`update`をfalseにします。
+
+{% highlight php %}
+/**
+ * @Cacheable(update=false)
+ */
+{% endhighlight %}
+
+時間を指定するには`expiry`を使って、`short`, `medium`あるいは`long`のいずれかを指定するか
+{% highlight php %}
+/**
+ * @Cacheable(expiry="short")
+ */
+{% endhighlight %}
+
 
 ### @Purge @Refresh
 
