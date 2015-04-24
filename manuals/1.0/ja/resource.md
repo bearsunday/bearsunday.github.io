@@ -138,6 +138,8 @@ $blog = $this
 
 {% highlight php %}
 <?php
+use BEAR\Resource\Annotation\Link;
+
 /**
  * @Link(crawl="post-tree", rel="post", href="app://self/post?author_id={id}")
  */
@@ -149,6 +151,8 @@ public function onGet($id = null)
 ### @Embed
 {% highlight php %}
 <?php
+use BEAR\Resource\Annotation\Embed;
+
     /**
      * @Embed(rel="website", src="/website{?id}")
      */
