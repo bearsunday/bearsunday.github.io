@@ -6,11 +6,14 @@ permalink: /manuals/1.0/ja/module.html
 ---
 # モジュール
 
-モジュールは独立したライブラリの機能をDIやAOPで特定のインターフェイスやメソッドの束縛の集合でフレームワークの機能を拡張します。
+モジュールはアプリケーションの設定です。DIとAOPの束縛を行います。
 
-例えば`LoggerInterface`に`MonoLog`を束縛すると`LoggerInterface`で宣言したコンストラクタに`MonoLog`がインジェクトされるようになり、`@Loggable`とメソッドにアノテートしたメソッドにロガーを束縛すると、実行結果がログされるようなります。前者がDI、後者がAOPの束縛です。
+BEAR.Sundayでは設置場所や記述フォーマットが固定されているいわゆる設定ファイルや、Configクラスはありません。
+その代わりに機能ごとに独立したモジュールに設定値を与え、DIとAOPの設定をします。
+起点となるモジュールが`AppModule` (/src/Module/AppModule.php)です。
+`AppModule`で必要なモジュールを`install`してアプリケーション全体を構成します。
 
-起点となるモジュールが`AppModule`です。アプリケーションモジュールクラスは`/src/Module/AppModule.php`に配置されいていて必要とする機能のモジュールを`install`することでアプリケーション全体を構成します。
+モジュールのコンストラクタに渡す値は、コンテキストによらないものはハードコードして構いません。環境によるものは`$_ENV`などの環境値を使います。
 
 {% highlight php %}
 <?php
@@ -22,15 +25,13 @@ class AppModule extends AbstractModule
     protected function configure()
     {
         // package標準のモジュール
-        $this->install(new PackageModule(new AppMeta('BEAR\HelloWorld')));
+        $this->install(new PackageModule));
         // 追加モジュール
-        $this->install(new MyModule1));
-        $this->install(new MyModule2));
+        $this->install(new AuraSqlModule('mysql:host=localhost;dbname=test', 'username', 'password');
+        $this->install(new TwigModule));
     }
 }
 {% endhighlight %}
-
-モジュールではDIとAOPの設定を行います。
 
 ## DIの設定
 
@@ -115,3 +116,6 @@ class MyInterceptor implements MethodInterceptor
  * [MethodInvocation::getThis](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/Joinpoint.php#L48) - 対象オブジェクトの取得
  * [MethodInvocation::getArguments](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/Invocation.php) - 呼び出し引数配列の取得
  
+## 環境による設定値
+
+BEAR.Sundayでは`prod`以外の特定の環境モードを持ちません。モジュールやアプリケーションは環境に対して無知です。

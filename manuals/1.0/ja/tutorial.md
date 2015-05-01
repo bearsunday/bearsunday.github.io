@@ -510,3 +510,19 @@ PHPサーバーを立ち上げてwebブラウザで`http://127.0.0.1:8080/?year=
 {% highlight bash %}
 php -S 127.0.0.1:8080 var/www/index.php 
 {% endhighlight %}
+
+コンテキストを変えるとアプリケーションの振る舞いも変わります。試してみましょう。
+
+{% highlight php %}
+<?php
+$context = 'app';           // JSONアプリケーション
+$context = 'prod-hal-app';  // プロダクション用HALアプリケーション
+{% endhighlight %}
+
+コテンキストに応じてインスタンスを生成するPHPコードが生成されます。`var/tmp/`フォルダを確認してみましょう。
+
+これらのファイルは普段みる必要はありませんが、オブジェクトがどのように作られてるかを確認することができます。`diff`コマンドでコンテキストでどの依存が変更されているかを確認する事もできます。
+
+{% highlight bash %}
+diff -q var/tmp/cli-app/ var/tmp/cli-hal-app/
+{% endhighlight %}
