@@ -239,7 +239,7 @@ public function onGet($name)
 
 ## リソースキャッシュ
 
-### @Cacheable(expiry="short")
+### @Cacheable
 
 {% highlight php %}
 <?php
