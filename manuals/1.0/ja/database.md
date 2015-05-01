@@ -5,7 +5,7 @@ category: Manual
 permalink: /manuals/1.0/ja/database.html
 ---
 
-データベースライブラリの利用のため`Aura.Sql`、`Doctrine DBAL`の二種類のモジュールが用意されています。
+データベースライブラリの利用のため`Aura.Sql`、`Doctrine DBAL`, `CakeDB`などのモジュールが用意されています。
 
 # Aura.Sql
 
@@ -194,3 +194,19 @@ class Index
 ## 環境による接続先の変更
 
 [phpdotenv](https://github.com/vlucas/phpdotenv)ライブラリなどを利用して環境先に応じた接続先を設定します。実装例の[Ex.Package](https://github.com/BEARSunday/Ex.Package)をご覧ください。
+
+# CakeDb
+
+**CakeDb**はアクティブレコードとデータマッパーパターンのアイデアを使ったORMで、素早くシンプルにORMを使うことができます。CakePHP3で提供されているORMと同じものです。
+
+composerで`Ray.CakeDbModule`をインストールします。
+
+{% highlight bash %}
+composer require ray/cake-database-module
+{% endhighlight %}
+
+インストールの方法については[Ray.CakeDbModule](https://github.com/ray-di/Ray.CakeDbModule)をORMの利用には[CakePHP3 Database Access & ORM](http://book.cakephp.org/3.0/en/orm.html)をご覧ください。
+
+Ray.CakeDbModuleはCakePHP3のORMを開発したJose([@lorenzo](https://github.com/lorenzo))さんにより提供されています。
+
+
