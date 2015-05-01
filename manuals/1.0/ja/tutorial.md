@@ -524,5 +524,5 @@ $context = 'prod-hal-app';  // プロダクション用HALアプリケーショ�
 これらのファイルは普段みる必要はありませんが、オブジェクトがどのように作られてるかを確認することができます。`diff`コマンドでコンテキストでどの依存が変更されているかを確認する事もできます。
 
 {% highlight bash %}
-diff -q var/tmp/cli-app/ var/tmp/cli-hal-app/
+diff -q var/tmp/app/ var/tmp/prod-hal-app/
 {% endhighlight %}
