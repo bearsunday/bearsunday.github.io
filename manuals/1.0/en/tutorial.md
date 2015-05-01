@@ -5,7 +5,7 @@ category: Manual
 permalink: /manuals/1.0/en/tutorial.html
 ---
 
-**"[This document](https://github.com/bearsunday/bearsunday.github.io/blob/master/manuals/1.0/en/tutorial.md) needs to be proofread by a English speaker. If interested please send me a pull request."**
+*"[This document](https://github.com/bearsunday/bearsunday.github.io/blob/master/manuals/1.0/en/tutorial.md) needs to be proofread by a English speaker. If interested please send me a pull request."*
 
 ## Tutorial
 
@@ -105,8 +105,8 @@ class AppModule extends AbstractModule
      */
     protected function configure()
     {
-        $this->install(new PackageModule(new AppMeta('MyVendor\Weekday')));
-        $this->override(new AuraRouterModule()); // add this line
+        $this->install(new PackageModule));
+        $this->override(new AuraRouterModule); // add this line
     }
 }
 {% endhighlight %}

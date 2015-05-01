@@ -105,8 +105,8 @@ class AppModule extends AbstractModule
      */
     protected function configure()
     {
-        $this->install(new PackageModule(new AppMeta('MyVendor\Weekday')));
-        $this->override(new AuraRouterModule()); // この行を追加
+        $this->install(new PackageModule));
+        $this->override(new AuraRouterModule); // この行を追加
     }
 }
 {% endhighlight %}
