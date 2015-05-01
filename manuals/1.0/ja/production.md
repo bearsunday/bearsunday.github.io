@@ -8,7 +8,8 @@ permalink: /manuals/1.0/ja/production.html
 
 ## bootファイル
 
-コンテクストが`prod-`で始まるbootファイルを`var/www/index.php`などに用意します。
+コンテキストが`prod-`で始まるとアプリケーションオブジェクト`$app`がキャッシュされます。
+キャッシュドライバーは環境に応じて`ApcCache`か`FilesystemCache`が自動選択されます。
 
 {% highlight php %}
 <?php
@@ -18,19 +19,9 @@ require dirname(dirname(__DIR__)) . '/bootstrap/bootstrap.php';
 
 ## キャッシュの設定
 
-## bootstrap.php
-
-{% highlight php %}
-<?php
-$app = (new Bootstrap)->newApp(new AppMeta(__NAMESPACE__), $context, new ApcCache);
-{% endhighlight %}
-
-`newApp()`の３つ目の引数はアプリケーションオブジェクトをキャッシュします。通常`ApcCache`を指定します。
-無指定の場合`ApcCache`か`FilesystemCache`を自動選択します。
-
 ## ProdModule
 
-`BEAR.Package`のプロダクション用のモジュール`ProdModule`はwebサーバー1台で`ApcCache`を前提したものです。
+`BEAR.Package`のプロダクション用のモジュール`ProdModule`はwebサーバー1台を前提にしている`ApcCache`になっています。
 
 複数のWebサーバーの構成のためには共有のキャッシュストレージの設定が必要です。
 設定のためアプリケーション固有の`ProdModule`を`src/Module/ProdModule.php`に用意します。
@@ -103,17 +94,19 @@ http_cache: {
 
 ## エクステンション
 
-[PECL/uri_template](http://pecl.php.net/package/uri_template)をインストールするとパフォーマンスが向上します。
+以下のPECLエクステンションをインストールするとパフォーマンスが最適化されます。
 
-インストール
+ * [PECL/uri_template](http://pecl.php.net/package/uri_template) URI Template
+ * [PECL/igbinary](https://pecl.php.net/package/igbinary) シリアライズ最適化
 
 ```
 pecl install uri_template
+pecl install igbinary
 ```
 
 確認
 
 ```
-composer show --platform | grep uri_template
+composer show --platform
 ext-uri_template    1.0      The uri_template PHP extension
 ```
