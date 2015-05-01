@@ -351,7 +351,7 @@ public function onGet($year, $month, $day)
 namespace MyVendor\Weekday\Resource\Page;
 
 use BEAR\Resource\ResourceObject;
-use BEAR\Sunday\Inject\ResourceInject;
+use BEAR\Resource\Annotation\Embed;
 
 class Index extends ResourceObject
 {
