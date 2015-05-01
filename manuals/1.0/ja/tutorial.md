@@ -355,6 +355,39 @@ use BEAR\Sunday\Inject\ResourceInject;
 
 class Index extends ResourceObject
 {
+    /**
+     * @Embed(rel="weekday", src="app://self/weekday{?year,month,day}")
+     */
+    public function onGet($year, $month, $day)
+    {
+        $this['year'] = $year;
+        $this['month'] = $month;
+        $this['day'] = $day;
+
+        return $this;
+    }
+}
+{% endhighlight %}
+
+`@Embed`アノテーションで`app://self/weekday`リソースを自身の`weekday`スロットに埋め込んでいます。
+
+`<iframe>`や`<img>`タグで他のリソースを含むページをイメージしてください。他のリソースを自身のリソースに埋め込んでいます。
+その際にPageリソースに与えられたクエリーを[RFC6570 URI template](https://github.com/ioseb/uri-template)を使って`{?year,month,day}`としてそのまま渡しています。
+
+上記のページクラスは下記のページクラスと同じものです。こちらは`@Embed`でリソースを埋め込むかわりに` use ResourceInject;`で`resource`としてリソースクライアントをインジェクトして他のリソースを埋め込んでいます。
+
+どちらの方法も有効ですが`@Embed`表記は簡潔でリソースがどのリソースに含まれているをよく表しています。
+
+{% highlight php %}
+<?php
+
+namespace MyVendor\Weekday\Resource\Page;
+
+use BEAR\Resource\ResourceObject;
+use BEAR\Sunday\Inject\ResourceInject;
+
+class Index extends ResourceObject
+{
     use ResourceInject;
 
     public function onGet($year, $month, $day)
@@ -373,8 +406,6 @@ class Index extends ResourceObject
 }
 {% endhighlight %}
 
-`use ResourceInject;`でリソースリクエストを行うためのクライアントを受け取ったページリソースクラスは`$this->resource`リソースクライントを使って他のリソースにアクセスすることができます。
-`onGet`メソッドで`app://self/weekday`リソースのリクエストを自身の`weekday`というスロットに埋め込んでいます。
 
 この段階でこのページリソースがどのようなリソース表現をするのか試してみましょう。
 
