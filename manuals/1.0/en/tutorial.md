@@ -5,13 +5,11 @@ category: Manual
 permalink: /manuals/1.0/en/tutorial.html
 ---
 
-*"[This document](https://github.com/bearsunday/bearsunday.github.io/blob/master/manuals/1.0/en/tutorial.md) needs to be proofread by a English speaker. If interested please send me a pull request."*
-
 ## Tutorial
 
 Let's make a web service that returns the weekday for a given year-month-day.
 
-Make a project with [composer](https://getcomposer.org/) first.
+First make a project with [composer](https://getcomposer.org/).
 
 {% highlight bash %}
 composer create-project bear/skeleton MyVendor.Weekday ~1.0@dev
@@ -42,10 +40,10 @@ class Weekday extends ResourceObject
 }
 {% endhighlight %}
 
-This `MyVendor\Weekday\Resource\App\Weekday` resource class is mapped `/weekday` path.
-The request query is passed to php method parameters.
+This `MyVendor\Weekday\Resource\App\Weekday` resource class is mapped to the `/weekday` path.
+The request query is then passed to php method parameters.
 
-Let's access in console. Try the error first.
+Let's access it in console and check the error code first.
 
 {% highlight bash %}
 php bootstrap/api.php get '/weekday'
@@ -57,9 +55,9 @@ Content-Type: application/vnd.error+json
 ...
 {% endhighlight %}
 
-A `400` means that you send the bad request.
+A `400` means that you sent a bad request.
 
-Next you request with expected parameters.
+Next make request with the expected parameters.
 
 {% highlight bash %}
 php bootstrap/api.php get '/weekday?year=2001&month=1&day=1'
@@ -77,7 +75,7 @@ Content-Type: application/hal+json
 }
 {% endhighlight %}
 
-The result is returned successfully with `application/hal+json` media type.
+The result is returned successfully with the `application/hal+json` media type.
 
 Let us fire the php server to make a web service for this
 
@@ -87,12 +85,12 @@ php -S 127.0.0.1:8080 bootstrap/api.php
 
 Send a `GET` request as `http://127.0.0.1:8080/weekday?year=2001&month=1&day=1` with a rest client like a Chrome [Advanced REST client](https://chrome.google.com/webstore/detail/advanced-rest-client/hgmloofddffdnphfgcellkdfbfbjeloo/).
 
-This resource class only have a GET method, therefore  `405 Method Not Allowed` will returned with another request. You may try it.
+This resource class only has a GET method, therefore `405 Method Not Allowed` will be returned with any other request. Try it out!.
 
 ## Routing
 
-A default router was set to `WebRouter` which simply maps URL to resource class directory.
-To receive a dynamic parameter in URI path, Use `AuraRouter`. Override install with `AuraRouterModule` in `src/Modules/AppModule.php`.
+A default router is set to `WebRouter` which simply maps URL's to the resource class directory.
+To receive a dynamic parameter in URI path, we can use `AuraRouter`. This can be done with an override install of the `AuraRouterModule` in `src/Modules/AppModule.php`.
 
 {% highlight php %}
 
@@ -111,7 +109,7 @@ class AppModule extends AbstractModule
 }
 {% endhighlight %}
 
-Place router script file at `var/conf/aura.route.php`.
+This module looks for a router script file at `var/conf/aura.route.php`.
 
 {% highlight php %}
 <?php
@@ -121,7 +119,7 @@ Place router script file at `var/conf/aura.route.php`.
 $router->add('/weekday', '/weekday/{year}/{month}/{day}')->addValues(['path' => '/weekday']);
 {% endhighlight %}
 
-Let's try it.
+Let's try it out.
 
 {% highlight bash %}
 php bootstrap/api.php get '/weekday/1981/09/08'
@@ -149,10 +147,10 @@ Get it with [composer](http://getcomposer.org) first.
 composer require monolog/monolog "~1.0"
 {% endhighlight %}
 
-You may *not* instantiate `monolog` object with `new` operator directory, 
-You "receive" a created instance as a dependency instead. This is so called [DI pattern](http://en.wikipedia.org/wiki/Dependency_injection).
+You instantiating `monolog` object with the `new` operator is *strongly discouraged*, 
+you "receive" a created instance as a dependency instead. This is called the [DI pattern](http://en.wikipedia.org/wiki/Dependency_injection).
 
-Make a `MonologLoggerProvider` dependency provider in `src/Module/MonologLoggerProvider.php`
+To do this make a `MonologLoggerProvider` dependency provider in `src/Module/MonologLoggerProvider.php`
 
 {% highlight php %}
 <?php
@@ -192,22 +190,22 @@ We need a log directory path to log, It can be get via the application meta info
 Dependency is provided via `get` method.
 
 To bind the [logger interface](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-3-logger-interface.md) to the factory class,
-Add following code in `configure` method in `src/Modules/AppModule.php`.
+Add the following code to the `configure` method in `src/Modules/AppModule.php`.
 
 {% highlight php %}
 <?php
 $this->bind(LoggerInterface::class)->toProvider(MonologLoggerProvider::class)->in(Scope::SINGLETON);
 {% endhighlight %}
 
-You may need to following code to resolve full class name.
+You may need the following code to resolve the full class name.
 {% highlight php %}
 <?php
 use Psr\Log\LoggerInterface;
 use Ray\Di\Scope;
 {% endhighlight %}
 
-Now we can expect to have a `monolog` object in any constructor.
-Add logging code in `src/Resource/App/Weekday.php`.
+Now we can expect to have a `monolog` object injected into any constructor.
+Add some code in `src/Resource/App/Weekday.php` to be able to start logging.
 
 {% highlight php %}
 <?php
@@ -238,11 +236,11 @@ class Weekday extends ResourceObject
 
 {% endhighlight %}
 
-Let's verify `var/log/weekday.log` to confirm logger worked.
+Let's check `var/log/weekday.log` to see if our logger worked.
 
 ## AOP
 
-Typical benchmarking for method invocation time is like this.
+We can benchmarking method invocation like is often done like this.
 
 {% highlight php %}
 <?php
@@ -251,10 +249,10 @@ $start = microtime(true);
 $time = microtime(true) - $start;
 {% endhighlight %}
 
-Changing code on each benchmarking is tedious.
-A [Aspect Oriented Programming](https://github.com/google/guice/wiki/AOP) works in such a case, It can compose a `cross cutting concern` and `core concern` nicely.
+Changing code to benchmark each different method can be tedious.
+For such problems [Aspect Oriented Programming](https://github.com/google/guice/wiki/AOP) works great. Using this concept you can compose a clean separation of a `cross cutting concern` and `core concern.
 
-First, Make a **interceptor** which intercept method for benchmarking at `src/Interceptor/BenchMarker.php`.
+First, make a **interceptor** which intercepts the target method for benchmarking which we will save in `src/Interceptor/BenchMarker.php`.
 
 {% highlight php %}
 <?php
@@ -288,10 +286,10 @@ class BenchMarker implements MethodInterceptor
 
 {% endhighlight %}
 
-You can invoke original method with `$invocation->proceed();` in `invoke` method.
-You may reset and stop the timer on before and after. An original method object and method name is taken [MethodInvocation](http://www.bear-project.net/Ray.Aop/build/apigen/class-Ray.Aop.MethodInvocation.html) object.
+You can invoke the original method with `$invocation->proceed();` inside an `invoke` method.
+You can then reset and stop the timer on before and after this is invoked. The target method object and method name is taken in the form of a [MethodInvocation](http://www.bear-project.net/Ray.Aop/build/apigen/class-Ray.Aop.MethodInvocation.html) object sent to the invoke method.
 
-Next, Provide a [annotate](http://docs.doctrine-project.org/projects/doctrine-common/en/latest/reference/annotations.html) class at `src/Annotation/BenchMark.php`.
+Next, provide an [annotation](http://docs.doctrine-project.org/projects/doctrine-common/en/latest/reference/annotations.html) class at `src/Annotation/BenchMark.php`.
 
 {% highlight php %}
 <?php
@@ -306,7 +304,7 @@ final class BenchMark
 }
 {% endhighlight %}
 
-Bind method to benchmarking interceptor in `AppModule` with the matcher. 
+We then need to bind the target method to the benchmarking interceptor in `AppModule` with a matcher. 
 
 {% highlight php %}
 <?php
@@ -321,7 +319,7 @@ $this->bindInterceptor(
 );
 {% endhighlight %}
 
-Annotate `@BenchMark` in target method.
+Annotate the target method with `@BenchMark`.
 
 {% highlight php %}
 <?php
@@ -334,8 +332,8 @@ public function onGet($year, $month, $day)
 {
 {% endhighlight %}
 
-Now, you can benchmark any method with `@BenchMark` annotation.
+Now, you can benchmark any method that has the `@BenchMark` annotation.
 
-No need to modify method caller or the method. Benchmarking is only invoked with interceptor binding even the annotation stay same.
+There is no need to modify the method caller or the target method itself. Benchmarking is only invoked with the interceptor binding, so even by leaving the annotation in place you can turn benchmarking on and off by adding and removing the binding from the application.
 
-Confirm `var/log/weekday.log` for invocation time is logged.
+Now check out the logging for the method invocation speed in `var/log/weekday.log`.
