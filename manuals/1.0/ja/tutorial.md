@@ -607,7 +607,7 @@ class Todo extends ResourceObject
 `POST`してみましょう。
 
 {% highlight bash %}
-post 'app://self/todo?todo=shopping'
+php bootstrap/api.php post 'app://self/todo?todo=shopping'
 
 201 Created
 Location: /todo/?id=6
