@@ -526,3 +526,181 @@ $context = 'prod-hal-app';  // プロダクション用HALアプリケーショ�
 {% highlight bash %}
 diff -q var/tmp/app/ var/tmp/prod-hal-app/
 {% endhighlight %}
+
+## データベースを使ったハイパーメディアAPI
+
+sqlite3を使ったアプリケーションリソースを作成してみましょう。
+まずはコンソールで`var/db/todo.sqlite3`にDBを作成します。
+
+{% highlight bash %}
+mkdir var/db
+sqlite3 var/db/todo.sqlite3
+
+create table todo(id integer primary key, todo, created);
+.exit
+{% endhighlight %}
+
+データベースは[AuraSql](https://github.com/ray-di/Ray.AuraSqlModule)や, [Doctrine Dbal](https://github.com/ray-di/Ray.DbalModule)、[CakeDB](https://github.com/ray-di/Ray.CakeDbModule)などから選べますが
+ここでは`ray/cake-database-module`をインストールします。
+
+{% highlight bash %}
+composer require ray/cake-database-module
+{% endhighlight %}
+
+`src/Module/AppModule::configure()`でモジュールのインストールをします。
+
+{% highlight bash %}
+$dbConfig = [
+    'driver' => 'Cake\Database\Driver\Sqlite',
+    'database' => dirname(dirname(__DIR__)) . '/var/db/todo.sqlite3'
+];
+$this->install(new CakeDbModule($dbConfig));
+{% endhighlight %}
+
+これでセッターメソッドのtrait `DatabaseInject`をuseすると`$this->db`でCakeDBオブジェクトが利用できます。
+
+Todoリソースを`src/Resource/App/Todo.php`に設置します。
+
+{% highlight php %}
+<?php
+
+namespace MyVendor\Weekday\Resource\App;
+
+use BEAR\Resource\ResourceObject;
+use Ray\CakeDbModule\DatabaseInject;
+
+class Todo extends ResourceObject
+{
+    use DatabaseInject;
+
+    public function onGet($id)
+    {
+        $this['todo'] = $this
+            ->db
+            ->newQuery()
+            ->select('*')
+            ->from('todo')
+            ->where(['id' => $id])
+            ->execute()
+            ->fetchAll('assoc');
+
+        return $this;
+    }
+
+    public function onPost($todo)
+    {
+        $statement = $this->db->insert(
+            'todo',
+            ['todo' => $todo, 'created' => new \DateTime('now')],
+            ['created' => 'datetime']
+        );
+        // hyper link
+        $this->headers['Location'] = '/todo/?id=' . $statement->lastInsertId();
+        // status code
+        $this->code = 201;
+
+        return $this;
+    }
+}
+{% endhighlight %}
+
+`POST`してみましょう。
+
+{% highlight bash %}
+post 'app://self/todo?todo=shopping'
+
+201 Created
+location: /todo/?id=6
+{% endhighlight %}
+
+`201`は`created`、新しいリソースが`/todo/?id=6`に作成されました。
+次にこのリソースを`GET`します。
+
+{% highlight bash %}
+php bootstrap/api.php get 'app://self/todo?id=1'
+
+200 OK
+content-type: application/hal+json
+
+{
+    "todo": [
+        {
+            "id": "6",
+            "todo": "shopping",
+            "created": "2015-05-03 01:58:17"
+        }
+    ],
+    "_links": {
+        "self": {
+            "href": "/todo?id=1"
+        }
+    }
+}
+
+{% endhighlight %}
+
+ハイパーメディアAPIの完成です。
+
+## トランザクション
+
+POSTメソッドにトランザクションを適用するにはメソッドに`@Transactional`とアノテートします。
+
+{% highlight bash %}
+
+<?php
+
+use Ray\CakeDbModule\Annotation\Transactional;
+// ...
+
+    /**
+     * @Transactional
+     */
+    public function onPost($todo="shopping")
+{% endhighlight %}
+
+これで
+
+## クエリーリポジトリ
+
+クラスに`@Cacheable`とアノテートすることでリソースのキャッシュが作られるようになります。このキャッシュデータは`OnPost`が完了したタイミングで作られ、値だけでなくHTMLやJSONなどの表現もキャッシュされます。
+
+{% highlight bash %}
+
+<?php
+use BEAR\RepositoryModule\Annotation\Cacheable;
+// ...
+
+/**
+ * @Cacheable
+ */
+class Todo extends ResourceObject
+{% endhighlight %}
+
+試してみましょう。前回のリクエストと違って`Etag`や`Last-Modified`がヘッダーで表されるようになります。
+
+{% highlight bash %}
+php bootstrap/api.php get 'app://self/todo?id=1'
+
+200 OK
+content-type: application/hal+json
+Etag: 2105959211
+Last-Modified: Sat, 02 May 2015 17:26:42 GMT
+
+
+{
+    "todo": [
+        {
+            "id": "6",
+            "todo": "shopping",
+            "created": "2015-05-03 01:58:17"
+// ...
+{% endhighlight %}
+
+`Last-Modified`はリクエストの度に変わってますが、これは現在のキャッシュの設定が無効になってるためでprod環境では有効になります。
+
+
+`@Cacheable`で`expiry`を指定していない限り無期限にキャッシュされます。しかしリソースの変更や削除が`onPut($id, $todo)`や`onDelete($id)`で行われたときは該当するする同じ`$id`のリソースキャッシュが更新されます。
+（つまりGETリクエストのときは生成されたキャッシュデータが使われるだけで`onGet`メソッドの中の処理は実行ません。）
+
+このtodoリソースのように、更新や削除のタイミングが完全にリソース内で閉じてるリソースにとても効果的です。`onPut`や`onDelete`メソッドを実装して確かめてみましょう。
+
