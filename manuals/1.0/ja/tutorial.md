@@ -610,7 +610,7 @@ class Todo extends ResourceObject
 post 'app://self/todo?todo=shopping'
 
 201 Created
-location: /todo/?id=6
+Location: /todo/?id=6
 {% endhighlight %}
 
 `201`は`created`、新しいリソースが`/todo/?id=6`に作成されました。
