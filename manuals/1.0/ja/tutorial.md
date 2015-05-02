@@ -658,8 +658,6 @@ use Ray\CakeDbModule\Annotation\Transactional;
     public function onPost($todo="shopping")
 {% endhighlight %}
 
-これで
-
 ## クエリーリポジトリ
 
 クラスに`@Cacheable`とアノテートすることでリソースのキャッシュが作られるようになります。このキャッシュデータは`OnPost`が完了したタイミングで作られ、値だけでなくHTMLやJSONなどの表現もキャッシュされます。
