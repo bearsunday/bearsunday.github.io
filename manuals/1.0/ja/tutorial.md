@@ -541,7 +541,7 @@ create table todo(id integer primary key, todo, created);
 {% endhighlight %}
 
 データベースは[AuraSql](https://github.com/ray-di/Ray.AuraSqlModule)や, [Doctrine Dbal](https://github.com/ray-di/Ray.DbalModule)、[CakeDB](https://github.com/ray-di/Ray.CakeDbModule)などから選べますが
-ここでは`ray/cake-database-module`をインストールします。
+ここではCakePHP3でも使われてるCakeDBをインストールしてみましょう。
 
 {% highlight bash %}
 composer require ray/cake-database-module
