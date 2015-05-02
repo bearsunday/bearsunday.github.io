@@ -337,3 +337,185 @@ Now, you can benchmark any method that has the `@BenchMark` annotation.
 There is no need to modify the method caller or the target method itself. Benchmarking is only invoked with the interceptor binding, so even by leaving the annotation in place you can turn benchmarking on and off by adding and removing the binding from the application.
 
 Now check out the logging for the method invocation speed in `var/log/weekday.log`.
+
+## HTML
+
+Next let's turn this API application into an HTML application. Go ahead and create a new `page` resource at `src/Resource/Page/Index.php`. Even though `page` resources and `app` resources are effectively the same class their role and location differs. 
+
+{% highlight php %}
+<?php
+
+namespace MyVendor\Weekday\Resource\Page;
+
+use BEAR\Resource\ResourceObject;
+use BEAR\Resource\Annotation\Embed;
+
+class Index extends ResourceObject
+{
+    /**
+     * @Embed(rel="weekday", src="app://self/weekday{?year,month,day}")
+     */
+    public function onGet($year, $month, $day)
+    {
+        $this['year'] = $year;
+        $this['month'] = $month;
+        $this['day'] = $day;
+
+        return $this;
+    }
+}
+{% endhighlight %}
+
+Using the `@Embed` annotation you can refer to the `app://self/weekday` resource in the `weekday` slot.
+
+If parameters are needed to be passed, parameters that have been recieved in a resource method can then be passed by using the [RFC6570 URI template](https://github.com/ioseb/uri-template) standard such as `{?year,month,day}`.
+
+The above page class is the same as the below page class. Here instead of using `@Embed` to include the linked resource resource, through implementing ` use ResourceInject;` a resource client is injected and another resource can be embedded.
+
+Both methods are equally valid, however the `@Embed` declaration is concise and you can see very clearly which resources are embedded in other resources.
+
+{% highlight php %}
+<?php
+
+namespace MyVendor\Weekday\Resource\Page;
+
+use BEAR\Resource\ResourceObject;
+use BEAR\Sunday\Inject\ResourceInject;
+
+class Index extends ResourceObject
+{
+    use ResourceInject;
+
+    public function onGet($year, $month, $day)
+    {
+        $this['year'] = $year;
+        $this['month'] = $month;
+        $this['day'] = $day;
+        $this['weekday'] = $this->resource
+            ->get
+            ->uri('app://self/weekday')
+            ->withQuery(['year' => $year, 'month' => $month, 'day' => $day])
+            ->request();
+
+        return $this;
+    }
+}
+{% endhighlight %}
+
+At this stage let's check how this resource is rendered.
+
+{% highlight bash %}
+php bootstrap/web.php get '/?year=1991&month=8&day=1'
+
+200 OK
+Content-Type: application/hal+json
+
+{
+    "_embedded": {
+        "weekday": {
+            "weekday": "Thu",
+            "_links": {
+                "self": {
+                    "href": "/weekday/1991/8/1"
+                }
+            }
+        }
+    },
+    "_links": {
+        "self": {
+            "href": "/?year=1991&month=8&day=1"
+        }
+    }
+}
+{% endhighlight %}
+
+We can see that the other resource has been included in the `_embedded` node.  Because there is no change to the resource renderer an `application/hal+json` media type is output. In order to output the HTML(text/html) media we need to install an HTML Module.
+
+Composer Install
+{% highlight bash %}
+composer require madapaja/twig-module
+{% endhighlight %}
+
+Create `src/Module/HtmlModule.php`.
+{% highlight php %}
+<?php
+
+namespace MyVendor\Weekday\Module;
+
+use BEAR\AppMeta\AppMeta;
+use Madapaja\TwigModule\TwigModule;
+use Ray\Di\AbstractModule;
+
+class HtmlModule extends AbstractModule
+{
+    protected function configure()
+    {
+        $this->install(new TwigModule);
+    }
+}
+{% endhighlight %}
+
+Change `bootstrap/web.php`
+{% highlight php %}
+<?php
+
+$context = 'cli-html-app';
+require __DIR__ . '/bootstrap.php';
+{% endhighlight %}
+
+In this way `text/html` media output can be set. Lastly save your twig template `src/Resource/Page/Index.html.twig`.
+
+{% highlight bash %}
+<!DOCTYPE html>
+<html>
+<body>
+{% raw %}The weekday of {{ year }}/{{ month }}/{{ day }} is {{ weekday.weekday }}.{% endraw %}
+</body> 
+</html>
+{% endhighlight %}
+
+Set up is now complete. Check in the console that this kind of HTML is output.
+
+{% highlight bash %}
+
+php bootstrap/web.php get '/?year=1991&month=8&day=1'
+200 OK
+content-type: text/html; charset=utf-8
+
+<!DOCTYPE html>
+<html>
+<body>
+The weekday of 1991/8/1 is <b>Thu</b>.
+</body>
+</html>
+{% endhighlight %}
+
+In order to run the web service we need make a change to `var/www/index.php`.
+
+{% highlight php %}
+<?php
+
+$context = 'prod-html-app';
+require dirname(dirname(__DIR__)) . '/bootstrap/bootstrap.php';
+{% endhighlight %}
+
+Boot up the PHP web server and check it out by accessing `http://127.0.0.1:8080/?year=2001&month=1&day=1`.
+
+{% highlight bash %}
+php -S 127.0.0.1:8080 var/www/index.php 
+{% endhighlight %}
+
+As the context changes so does the behaviour of the application. Let's try it.
+
+{% highlight php %}
+<?php
+$context = 'app';           // JSON Application
+$context = 'prod-hal-app';  // HAL application for production
+{% endhighlight %}
+
+For each context php code that builds up the application is produced and saved in `var/tmp/`. These files are not normally needed, but you can use it to check how your application object is created. Using the `diff` command you can check which dependencies have changed across contexts.
+
+{% highlight bash %}
+diff -q var/tmp/app/ var/tmp/prod-hal-app/
+{% endhighlight %}
+
