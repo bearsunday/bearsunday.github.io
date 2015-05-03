@@ -521,7 +521,7 @@ diff -q var/tmp/app/ var/tmp/prod-hal-app/
 
 ## Query Repository
 
-A resource cache is created by annotating a resource classs with `@cachable`. This cache data is created when the `OnPost` action has been made, not just the resource properties but the HTML and JSON is also cached.
+A resource cache is created by annotating a resource class with `@cachable`. This cache data is created when the `onPost` action has been invoked, not only the resource properties but the HTML and JSON is also cached.
 
 {% highlight bash %}
 
@@ -555,9 +555,9 @@ Last-Modified: Sat, 02 May 2015 17:26:42 GMT
 // ...
 {% endhighlight %}
 
-`Last-Modified` is changing each request, but this is because currently cache settings have been disabled. When `prod` is added to the context it is enabled. 
+`Last-Modified` changes upon each request, but this is because currently cache settings have been disabled. When `prod` is added to the context it becomes enabled. 
 
-On `@Cacheable` if no `expiry` is set then it will be cached forever. However when updates `onPut($id, $todo)` or deletes `onDelete($id)` occur on the resource then the cache will be updated on the corresponding id.
+On the `@Cacheable` annotation if no `expiry` is set then it will be cached forever. However when updates `onPut($id, $todo)` or deletes `onDelete($id)` occur on the resource then the cache will be updated on the corresponding id.
 
  So a GET request just uses the saved cache data, logic contained in the `onGet` method is not invoked.
  
