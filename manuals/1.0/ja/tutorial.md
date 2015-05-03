@@ -700,5 +700,142 @@ Last-Modified: Sat, 02 May 2015 17:26:42 GMT
 `@Cacheable`で`expiry`を指定していない限り無期限にキャッシュされます。しかしリソースの変更や削除が`onPut($id, $todo)`や`onDelete($id)`で行われたときは該当するする同じ`$id`のリソースキャッシュが更新されます。
 （つまりGETリクエストのときは生成されたキャッシュデータが使われるだけで`onGet`メソッドの中の処理は実行ません。）
 
-このtodoリソースのように、更新や削除のタイミングが完全にリソース内で閉じてるリソースにとても効果的です。`onPut`や`onDelete`メソッドを実装して確かめてみましょう。
+このtodoリソースのように、更新や削除のタイミングが完全にリソース内で閉じてるリソースにとても効果的です。
 
+## PUTメソッドによるキャッシュの自動更新
+
+`todo`リソースに`onPut`をメソッドを実装して確かめてみましょう。
+
+{% highlight php %}
+<?php
+
+namespace MyVendor\Weekday\Resource\App;
+
+use BEAR\RepositoryModule\Annotation\Cacheable;
+use BEAR\Resource\ResourceObject;
+use Ray\CakeDbModule\DatabaseInject;
+use Ray\CakeDbModule\Annotation\Transactional;
+
+/**
+ * @Cacheable
+ */
+class Todo extends ResourceObject
+{
+    use DatabaseInject;
+
+    public function onGet($id)
+    {
+        $this['todo'] = $this
+            ->db
+            ->newQuery()
+            ->select('*')
+            ->from('todo')
+            ->where(['id' => $id])
+            ->execute()
+            ->fetchAll('assoc');
+
+        return $this;
+    }
+
+    /**
+     * @Transactional
+     */
+    public function onPost($todo="shopping")
+    {
+        $statement = $this->db->insert(
+            'todo',
+            ['todo' => $todo, 'created' => new \DateTime('now')],
+            ['created' => 'datetime']
+        );
+        $this->headers['location'] = '/todo/?id=' . $statement->lastInsertId();
+        $this->code = 201;
+
+        return $this;
+    }
+
+
+    /**
+     * @Transactional
+     */
+    public function onPut($id, $todo)
+    {
+        $this->db->update(
+            'todo',
+            ['todo' => $todo],
+            ['id' => (int) $id]
+        );
+        $this->headers['location'] = '/todo/?id=' . $id;
+
+        return $this;
+    }
+}
+{% endhighlight %}
+
+まずはコンソールでPOSTしてデータを作成します。
+
+{% highlight bash %}
+php bootstrap/api.php post /todo?todo='run'
+
+201 Created
+location: /todo/?id=4
+content-type: application/hal+json
+
+{% endhighlight %}
+
+次にAPIサーバーを立ち上げます。
+{% highlight bash %}
+php -S 127.0.0.1:8081 bootstrap/api.php 
+{% endhighlight %}
+
+今度は`curl`コマンドでGETしてみましょう。
+{% highlight bash %}
+curl -v http://127.0.0.1:8081/todo?id=4
+
+> GET /todo?id=4 HTTP/1.1
+> User-Agent: curl/7.38.0
+> Host: 127.0.0.1:8081
+> Accept: */*
+> 
+< HTTP/1.1 200 OK
+< Host: 127.0.0.1:8081
+< Connection: close
+< X-Powered-By: PHP/5.6.8
+< content-type: application/hal+json
+< Etag: 2260029291
+< Last-Modified: Sun, 03 May 2015 18:55:20 GMT
+< 
+{
+    "todo": [
+        {
+            "id": "4",
+            "todo": "run",
+            "created": "2015-05-04 03:53:00"
+        }
+    ],
+    "_links": {
+        "self": {
+            "href": "/todo?id=4"
+        }
+    }
+}
+* Closing connection 0
+{% endhighlight %}
+
+何回かリクエストして`Last-Modified`の日付が変わらないことを確認しましょう。この時`onGet`メソッド内は実行されていません。試しにメソッド内で`echo`などを追加して確認してみましょう。
+
+次に`PUT`メソッドでこのリソースを変更します。
+
+{% highlight bash %}
+curl http://127.0.0.1:8081/todo -X PUT -d "id=4&todo=think"
+{% endhighlight %}
+
+再度GETを行うと`Last-Modified`が変わっているのが確認できます。
+
+{% highlight bash %}
+curl -v http://127.0.0.1:8081/todo?id=4
+{% endhighlight %}
+
+この`Last-Modified`の日付は`@Cacheable`で提供されるものです。
+アプリケーションが管理したり、データベースのカラムを用意したりするする必要はありません。
+
+`@Cacheable`を使うとリソースコンテンツは書き込み用のデータベースとは違うリソースの保存専用の「クエリーリポジトリ」で管理されデータの更新や`Etag`や`Last-Modified`のヘッダーの付加が透過的に行われます。
