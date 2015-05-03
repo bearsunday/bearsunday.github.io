@@ -636,6 +636,23 @@ content-type: application/hal+json
 
 The HyperMedia API is now complete.
 
+## Transactions
+
+In order to implement transactional behavior on the `POST` action we use the `@Transactional` annotation. 
+
+{% highlight bash %}
+
+<?php
+
+use Ray\CakeDbModule\Annotation\Transactional;
+// ...
+
+    /**
+     * @Transactional
+     */
+    public function onPost($todo="shopping")
+{% endhighlight %}
+
 ## Query Repository
 
 A resource cache is created by annotating a resource class with `@cachable`. This cache data is created when the `onPost` action has been invoked, not only the resource properties but the HTML and JSON is also cached.
