@@ -519,3 +519,46 @@ For each context php code that builds up the application is produced and saved i
 diff -q var/tmp/app/ var/tmp/prod-hal-app/
 {% endhighlight %}
 
+## Query Repository
+
+A resource cache is created by annotating a resource classs with `@cachable`. This cache data is created when the `OnPost` action has been made, not just the resource properties but the HTML and JSON is also cached.
+
+{% highlight bash %}
+
+<?php
+use BEAR\RepositoryModule\Annotation\Cacheable;
+// ...
+
+/**
+ * @Cacheable
+ */
+class Todo extends ResourceObject
+{% endhighlight %}
+
+Let's try it. Unlike last time an `Etag` and `Last-Modified` header has been added to the response.
+
+{% highlight bash %}
+php bootstrap/api.php get 'app://self/todo?id=1'
+
+200 OK
+content-type: application/hal+json
+Etag: 2105959211
+Last-Modified: Sat, 02 May 2015 17:26:42 GMT
+
+
+{
+    "todo": [
+        {
+            "id": "6",
+            "todo": "shopping",
+            "created": "2015-05-03 01:58:17"
+// ...
+{% endhighlight %}
+
+`Last-Modified` is changing each request, but this is because currently cache settings have been disabled. When `prod` is added to the context it is enabled. 
+
+On `@Cacheable` if no `expiry` is set then it will be cached forever. However when updates `onPut($id, $todo)` or deletes `onDelete($id)` occur on the resource then the cache will be updated on the corresponding id.
+
+ So a GET request just uses the saved cache data, logic contained in the `onGet` method is not invoked.
+ 
+ Just like this todo resource the timing of update or deletion of the cache is effective as it is completely contained within the resource itself. Invoke an `onPut` or `onDelete` method to give it a try.
