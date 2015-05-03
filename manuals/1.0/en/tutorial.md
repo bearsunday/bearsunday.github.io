@@ -519,6 +519,123 @@ For each context php code that builds up the application is produced and saved i
 diff -q var/tmp/app/ var/tmp/prod-hal-app/
 {% endhighlight %}
 
+## A Hypermedia API using a Database
+
+Let's make an application resource that uses SQLite3.
+First in the console we can create our database `var/db/todo.sqlite3`.
+
+{% highlight bash %}
+mkdir var/db
+sqlite3 var/db/todo.sqlite3
+
+create table todo(id integer primary key, todo, created);
+.exit
+{% endhighlight %}
+
+データベースは[AuraSql](https://github.com/ray-di/Ray.AuraSqlModule)や, [Doctrine Dbal](https://github.com/ray-di/Ray.DbalModule)、[CakeDB](https://github.com/ray-di/Ray.CakeDbModule)などから選べますが
+ここではCakePHP3でも使われてるCakeDBをインストールしてみましょう。
+For the DB there are various option that we have including [AuraSql](https://github.com/ray-di/Ray.AuraSqlModule), [Doctrine Dbal](https://github.com/ray-di/Ray.DbalModule) or [CakeDB](https://github.com/ray-di/Ray.CakeDbModule).
+Let's install CakeDB that the Cake PHP framework uses.
+
+{% highlight bash %}
+composer require ray/cake-database-module
+{% endhighlight %}
+
+In `src/Module/AppModule::configure()` we install the module.
+
+{% highlight bash %}
+$dbConfig = [
+    'driver' => 'Cake\Database\Driver\Sqlite',
+    'database' => dirname(dirname(__DIR__)) . '/var/db/todo.sqlite3'
+];
+$this->install(new CakeDbModule($dbConfig));
+{% endhighlight %}
+
+Now if we `use` the setter method trait `DatabaseInject` we have the CakeDB object available to us in `$this->db`.
+
+Build up the `src/Resource/App/Todo.php` resource.
+
+{% highlight php %}
+<?php
+
+namespace MyVendor\Weekday\Resource\App;
+
+use BEAR\Resource\ResourceObject;
+use Ray\CakeDbModule\DatabaseInject;
+
+class Todo extends ResourceObject
+{
+    use DatabaseInject;
+
+    public function onGet($id)
+    {
+        $this['todo'] = $this
+            ->db
+            ->newQuery()
+            ->select('*')
+            ->from('todo')
+            ->where(['id' => $id])
+            ->execute()
+            ->fetchAll('assoc');
+
+        return $this;
+    }
+
+    public function onPost($todo)
+    {
+        $statement = $this->db->insert(
+            'todo',
+            ['todo' => $todo, 'created' => new \DateTime('now')],
+            ['created' => 'datetime']
+        );
+        // hyper link
+        $this->headers['Location'] = '/todo/?id=' . $statement->lastInsertId();
+        // status code
+        $this->code = 201;
+
+        return $this;
+    }
+}
+{% endhighlight %}
+
+Let's try a `POST`.
+
+{% highlight bash %}
+php bootstrap/api.php post 'app://self/todo?todo=shopping'
+
+201 Created
+Location: /todo/?id=6
+{% endhighlight %}
+
+We can see that with a `201` response, a new resource `/todo/?id=6` has been created.
+
+Next we will do a `GET`.
+
+{% highlight bash %}
+php bootstrap/api.php get 'app://self/todo?id=1'
+
+200 OK
+content-type: application/hal+json
+
+{
+    "todo": [
+        {
+            "id": "6",
+            "todo": "shopping",
+            "created": "2015-05-03 01:58:17"
+        }
+    ],
+    "_links": {
+        "self": {
+            "href": "/todo?id=1"
+        }
+    }
+}
+
+{% endhighlight %}
+
+The HyperMedia API is now complete.
+
 ## Query Repository
 
 A resource cache is created by annotating a resource class with `@cachable`. This cache data is created when the `onPost` action has been invoked, not only the resource properties but the HTML and JSON is also cached.
