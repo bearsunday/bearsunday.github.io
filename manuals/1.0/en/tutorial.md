@@ -532,8 +532,6 @@ create table todo(id integer primary key, todo, created);
 .exit
 {% endhighlight %}
 
-データベースは[AuraSql](https://github.com/ray-di/Ray.AuraSqlModule)や, [Doctrine Dbal](https://github.com/ray-di/Ray.DbalModule)、[CakeDB](https://github.com/ray-di/Ray.CakeDbModule)などから選べますが
-ここではCakePHP3でも使われてるCakeDBをインストールしてみましょう。
 For the DB there are various option that we have including [AuraSql](https://github.com/ray-di/Ray.AuraSqlModule), [Doctrine Dbal](https://github.com/ray-di/Ray.DbalModule) or [CakeDB](https://github.com/ray-di/Ray.CakeDbModule).
 Let's install CakeDB that the Cake PHP framework uses.
 
