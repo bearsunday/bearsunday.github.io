@@ -315,7 +315,7 @@ use MyVendor\Weekday\Interceptor\BenchMarker;
 $this->bindInterceptor(
     $this->matcher->any(),                           // in any class
     $this->matcher->annotatedWith(BenchMark::class), // which annotated as @BenchMark
-    [BenchMarker::class]                             // apply BenchMarkerInterceptor
+    [BenchMarker::class]                             // apply BenchMarker interceptor
 );
 {% endhighlight %}
 
