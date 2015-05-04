@@ -778,12 +778,12 @@ content-type: application/hal+json
 
 {% endhighlight %}
 
-次にAPIサーバーを立ち上げます。
+Next we start up the API server.
 {% highlight bash %}
 php -S 127.0.0.1:8081 bootstrap/api.php 
 {% endhighlight %}
 
-今度は`curl`コマンドでGETしてみましょう。
+This time do a get with a `curl` command.
 {% highlight bash %}
 curl -v http://127.0.0.1:8081/todo?id=4
 
@@ -817,21 +817,26 @@ curl -v http://127.0.0.1:8081/todo?id=4
 * Closing connection 0
 {% endhighlight %}
 
-何回かリクエストして`Last-Modified`の日付が変わらないことを確認しましょう。この時`onGet`メソッド内は実行されていません。試しにメソッド内で`echo`などを追加して確認してみましょう。
+Make a request several times and check that the `Last-Modified` time stamp doesn't change. In this case the `onGet` method has not been run. As a test add an `echo` into the method and try again.
 
-次に`PUT`メソッドでこのリソースを変更します。
+Next we update the resource with a `PUT`.
 
 {% highlight bash %}
 curl http://127.0.0.1:8081/todo -X PUT -d "id=4&todo=think"
 {% endhighlight %}
 
-再度GETを行うと`Last-Modified`が変わっているのが確認できます。
+If you would rather send a JSON body with the PUT request you can run the following.
+
+{% highlight bash %}
+curl http://127.0.0.1:8081/todo -X PUT -H 'Content-Type: application/json' -d '{"id": "4", "todo":"think" }'
+{% endhighlight %} 
+
+This time when you perform a `GET` you can see that the `Last-Modified` has been updated.
 
 {% highlight bash %}
 curl -v http://127.0.0.1:8081/todo?id=4
 {% endhighlight %}
 
-この`Last-Modified`の日付は`@Cacheable`で提供されるものです。
-アプリケーションが管理したり、データベースのカラムを用意したりするする必要はありません。
+This `Last-Modified` time stamp has been provided by `@Cacheable`. No need to provide any special application admin or database columns.
 
-`@Cacheable`を使うとリソースコンテンツは書き込み用のデータベースとは違うリソースの保存専用の「クエリーリポジトリ」で管理されデータの更新や`Etag`や`Last-Modified`のヘッダーの付加が透過的に行われます。
+When you use `@Cacheable` the resource content is also saved in a separate `query repository` where along with the resources changes are managed along with `Etag` or `Last-Modified` headers beinig automatically appended.
