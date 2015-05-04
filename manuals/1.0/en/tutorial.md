@@ -613,7 +613,7 @@ We can see that with a `201` response, a new resource `/todo/?id=6` has been cre
 Next we will do a `GET`.
 
 {% highlight bash %}
-php bootstrap/api.php get 'app://self/todo?id=1'
+php bootstrap/api.php get 'app://self/todo?id=6'
 
 200 OK
 content-type: application/hal+json

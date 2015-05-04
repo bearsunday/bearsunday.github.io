@@ -677,7 +677,7 @@ class Todo extends ResourceObject
 試してみましょう。前回のリクエストと違って`Etag`や`Last-Modified`がヘッダーで表されるようになります。
 
 {% highlight bash %}
-php bootstrap/api.php get 'app://self/todo?id=1'
+php bootstrap/api.php get 'app://self/todo?id=6'
 
 200 OK
 content-type: application/hal+json
