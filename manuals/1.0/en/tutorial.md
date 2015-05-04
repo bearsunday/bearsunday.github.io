@@ -442,7 +442,6 @@ Create `src/Module/HtmlModule.php`.
 
 namespace MyVendor\Weekday\Module;
 
-use BEAR\AppMeta\AppMeta;
 use Madapaja\TwigModule\TwigModule;
 use Ray\Di\AbstractModule;
 
@@ -542,6 +541,10 @@ composer require ray/cake-database-module
 In `src/Module/AppModule::configure()` we install the module.
 
 {% highlight bash %}
+
+use Ray\CakeDbModule\CakeDbModule;
+
+...
 $dbConfig = [
     'driver' => 'Cake\Database\Driver\Sqlite',
     'database' => dirname(dirname(__DIR__)) . '/var/db/todo.sqlite3'
@@ -694,3 +697,146 @@ On the `@Cacheable` annotation if no `expiry` is set then it will be cached fore
  So a GET request just uses the saved cache data, logic contained in the `onGet` method is not invoked.
  
  Just like this todo resource the timing of update or deletion of the cache is effective as it is completely contained within the resource itself. Invoke an `onPut` or `onDelete` method to give it a try.
+
+ ## Auto-Updating the Cache via the PUT method
+
+Let's implement the `onPut` method in the `todo` resource.
+
+{% highlight php %}
+<?php
+
+namespace MyVendor\Weekday\Resource\App;
+
+use BEAR\RepositoryModule\Annotation\Cacheable;
+use BEAR\Resource\ResourceObject;
+use Ray\CakeDbModule\DatabaseInject;
+use Ray\CakeDbModule\Annotation\Transactional;
+
+/**
+ * @Cacheable
+ */
+class Todo extends ResourceObject
+{
+    use DatabaseInject;
+
+    public function onGet($id)
+    {
+        $this['todo'] = $this
+            ->db
+            ->newQuery()
+            ->select('*')
+            ->from('todo')
+            ->where(['id' => $id])
+            ->execute()
+            ->fetchAll('assoc');
+
+        return $this;
+    }
+
+    /**
+     * @Transactional
+     */
+    public function onPost($todo="shopping")
+    {
+        $statement = $this->db->insert(
+            'todo',
+            ['todo' => $todo, 'created' => new \DateTime('now')],
+            ['created' => 'datetime']
+        );
+        $this->headers['location'] = '/todo/?id=' . $statement->lastInsertId();
+        $this->code = 201;
+
+        return $this;
+    }
+
+
+    /**
+     * @Transactional
+     */
+    public function onPut($id, $todo)
+    {
+        $this->db->update(
+            'todo',
+            ['todo' => $todo],
+            ['id' => (int) $id]
+        );
+        $this->headers['location'] = '/todo/?id=' . $id;
+
+        return $this;
+    }
+}
+{% endhighlight %}
+
+First create some data by doing a POST in the console.
+
+{% highlight bash %}
+php bootstrap/api.php post /todo?todo='run'
+
+201 Created
+location: /todo/?id=4
+content-type: application/hal+json
+
+{% endhighlight %}
+
+Next we start up the API server.
+{% highlight bash %}
+php -S 127.0.0.1:8081 bootstrap/api.php 
+{% endhighlight %}
+
+This time do a get with a `curl` command.
+{% highlight bash %}
+curl -v http://127.0.0.1:8081/todo?id=4
+
+> GET /todo?id=4 HTTP/1.1
+> User-Agent: curl/7.38.0
+> Host: 127.0.0.1:8081
+> Accept: */*
+> 
+< HTTP/1.1 200 OK
+< Host: 127.0.0.1:8081
+< Connection: close
+< X-Powered-By: PHP/5.6.8
+< content-type: application/hal+json
+< Etag: 2260029291
+< Last-Modified: Sun, 03 May 2015 18:55:20 GMT
+< 
+{
+    "todo": [
+        {
+            "id": "4",
+            "todo": "run",
+            "created": "2015-05-04 03:53:00"
+        }
+    ],
+    "_links": {
+        "self": {
+            "href": "/todo?id=4"
+        }
+    }
+}
+* Closing connection 0
+{% endhighlight %}
+
+Make a request several times and check that the `Last-Modified` time stamp doesn't change. In this case the `onGet` method has not been run. As a test add an `echo` into the method and try again.
+
+Next we update the resource with a `PUT`.
+
+{% highlight bash %}
+curl http://127.0.0.1:8081/todo -X PUT -d "id=4&todo=think"
+{% endhighlight %}
+
+If you would rather send a JSON body with the PUT request you can run the following.
+
+{% highlight bash %}
+curl http://127.0.0.1:8081/todo -X PUT -H 'Content-Type: application/json' -d '{"id": "4", "todo":"think" }'
+{% endhighlight %} 
+
+This time when you perform a `GET` you can see that the `Last-Modified` has been updated.
+
+{% highlight bash %}
+curl -v http://127.0.0.1:8081/todo?id=4
+{% endhighlight %}
+
+This `Last-Modified` time stamp has been provided by `@Cacheable`. No need to provide any special application admin or database columns.
+
+When you use `@Cacheable` the resource content is also saved in a separate `query repository` where along with the resources changes are managed along with `Etag` or `Last-Modified` headers beinig automatically appended.
