@@ -528,8 +528,8 @@ First in the console we can create our database `var/db/todo.sqlite3`.
 mkdir var/db
 sqlite3 var/db/todo.sqlite3
 
-create table todo(id integer primary key, todo, created);
-.exit
+sqlite> create table todo(id integer primary key, todo, created);
+sqlite> .exit
 {% endhighlight %}
 
 For the DB there are various option that we have including [AuraSql](https://github.com/ray-di/Ray.AuraSqlModule), [Doctrine Dbal](https://github.com/ray-di/Ray.DbalModule) or [CakeDB](https://github.com/ray-di/Ray.CakeDbModule).

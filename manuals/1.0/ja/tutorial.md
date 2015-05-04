@@ -536,8 +536,8 @@ sqlite3を使ったアプリケーションリソースを作成してみまし�
 mkdir var/db
 sqlite3 var/db/todo.sqlite3
 
-create table todo(id integer primary key, todo, created);
-.exit
+sqlite> create table todo(id integer primary key, todo, created);
+sqlite> .exit
 {% endhighlight %}
 
 データベースは[AuraSql](https://github.com/ray-di/Ray.AuraSqlModule)や, [Doctrine Dbal](https://github.com/ray-di/Ray.DbalModule)、[CakeDB](https://github.com/ray-di/Ray.CakeDbModule)などから選べますが
