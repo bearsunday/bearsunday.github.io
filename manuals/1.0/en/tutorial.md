@@ -607,10 +607,11 @@ class Todo extends ResourceObject
 Let's try a `POST`.
 
 {% highlight bash %}
+
 php bootstrap/api.php post 'app://self/todo?todo=shopping'
 
 201 Created
-Location: /todo/?id=6
+Location: /todo/?id=1
 {% endhighlight %}
 
 We can see that with a `201` response, a new resource `/todo/?id=6` has been created.
@@ -618,7 +619,7 @@ We can see that with a `201` response, a new resource `/todo/?id=6` has been cre
 Next we will do a `GET`.
 
 {% highlight bash %}
-php bootstrap/api.php get 'app://self/todo?id=6'
+php bootstrap/api.php get 'app://self/todo?id=1'
 
 200 OK
 content-type: application/hal+json
@@ -626,7 +627,7 @@ content-type: application/hal+json
 {
     "todo": [
         {
-            "id": "6",
+            "id": "1",
             "todo": "shopping",
             "created": "2015-05-03 01:58:17"
         }
@@ -689,7 +690,7 @@ Last-Modified: Sat, 02 May 2015 17:26:42 GMT
 {
     "todo": [
         {
-            "id": "6",
+            "id": "1",
             "todo": "shopping",
             "created": "2015-05-03 01:58:17"
 // ...
@@ -778,7 +779,7 @@ First create some data by doing a POST in the console.
 php bootstrap/api.php post /todo?todo='run'
 
 201 Created
-location: /todo/?id=4
+location: /todo/?id=2
 content-type: application/hal+json
 
 {% endhighlight %}
@@ -790,9 +791,9 @@ php -S 127.0.0.1:8081 bootstrap/api.php
 
 This time do a get with a `curl` command.
 {% highlight bash %}
-curl -v http://127.0.0.1:8081/todo?id=4
+curl -v http://127.0.0.1:8081/todo?id=2
 
-> GET /todo?id=4 HTTP/1.1
+> GET /todo?id=2 HTTP/1.1
 > User-Agent: curl/7.38.0
 > Host: 127.0.0.1:8081
 > Accept: */*
@@ -808,14 +809,14 @@ curl -v http://127.0.0.1:8081/todo?id=4
 {
     "todo": [
         {
-            "id": "4",
+            "id": "2",
             "todo": "run",
             "created": "2015-05-04 03:53:00"
         }
     ],
     "_links": {
         "self": {
-            "href": "/todo?id=4"
+            "href": "/todo?id=2"
         }
     }
 }
@@ -827,19 +828,19 @@ Make a request several times and check that the `Last-Modified` time stamp doesn
 Next we update the resource with a `PUT`.
 
 {% highlight bash %}
-curl http://127.0.0.1:8081/todo -X PUT -d "id=4&todo=think"
+curl http://127.0.0.1:8081/todo -X PUT -d "id=2&todo=think"
 {% endhighlight %}
 
 If you would rather send a JSON body with the PUT request you can run the following.
 
 {% highlight bash %}
-curl http://127.0.0.1:8081/todo -X PUT -H 'Content-Type: application/json' -d '{"id": "4", "todo":"think" }'
+curl http://127.0.0.1:8081/todo -X PUT -H 'Content-Type: application/json' -d '{"id": "2", "todo":"think" }'
 {% endhighlight %} 
 
 This time when you perform a `GET` you can see that the `Last-Modified` has been updated.
 
 {% highlight bash %}
-curl -v http://127.0.0.1:8081/todo?id=4
+curl -v http://127.0.0.1:8081/todo?id=2
 {% endhighlight %}
 
 This `Last-Modified` time stamp has been provided by `@Cacheable`. No need to provide any special application admin or database columns.

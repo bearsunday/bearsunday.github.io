@@ -615,10 +615,10 @@ class Todo extends ResourceObject
 php bootstrap/api.php post 'app://self/todo?todo=shopping'
 
 201 Created
-Location: /todo/?id=6
+Location: /todo/?id=1
 {% endhighlight %}
 
-`201`は`created`、新しいリソースが`/todo/?id=6`に作成されました。
+`201`は`created`、新しいリソースが`/todo/?id=1`に作成されました。
 次にこのリソースを`GET`します。
 
 {% highlight bash %}
@@ -630,7 +630,7 @@ content-type: application/hal+json
 {
     "todo": [
         {
-            "id": "6",
+            "id": "1",
             "todo": "shopping",
             "created": "2015-05-03 01:58:17"
         }
@@ -682,7 +682,7 @@ class Todo extends ResourceObject
 試してみましょう。前回のリクエストと違って`Etag`や`Last-Modified`がヘッダーで表されるようになります。
 
 {% highlight bash %}
-php bootstrap/api.php get 'app://self/todo?id=6'
+php bootstrap/api.php get 'app://self/todo?id=1'
 
 200 OK
 content-type: application/hal+json
@@ -693,7 +693,7 @@ Last-Modified: Sat, 02 May 2015 17:26:42 GMT
 {
     "todo": [
         {
-            "id": "6",
+            "id": "1",
             "todo": "shopping",
             "created": "2015-05-03 01:58:17"
 // ...
@@ -782,7 +782,7 @@ class Todo extends ResourceObject
 php bootstrap/api.php post /todo?todo='run'
 
 201 Created
-location: /todo/?id=4
+location: /todo/?id=2
 content-type: application/hal+json
 
 {% endhighlight %}
@@ -794,9 +794,9 @@ php -S 127.0.0.1:8081 bootstrap/api.php
 
 今度は`curl`コマンドでGETしてみましょう。
 {% highlight bash %}
-curl -v http://127.0.0.1:8081/todo?id=4
+curl -v http://127.0.0.1:8081/todo?id=2
 
-> GET /todo?id=4 HTTP/1.1
+> GET /todo?id=2 HTTP/1.1
 > User-Agent: curl/7.38.0
 > Host: 127.0.0.1:8081
 > Accept: */*
@@ -812,14 +812,14 @@ curl -v http://127.0.0.1:8081/todo?id=4
 {
     "todo": [
         {
-            "id": "4",
+            "id": "2",
             "todo": "run",
             "created": "2015-05-04 03:53:00"
         }
     ],
     "_links": {
         "self": {
-            "href": "/todo?id=4"
+            "href": "/todo?id=2"
         }
     }
 }
@@ -837,7 +837,7 @@ curl http://127.0.0.1:8081/todo -X PUT -d "id=4&todo=think"
 再度GETを行うと`Last-Modified`が変わっているのが確認できます。
 
 {% highlight bash %}
-curl -v http://127.0.0.1:8081/todo?id=4
+curl -v http://127.0.0.1:8081/todo?id=2
 {% endhighlight %}
 
 この`Last-Modified`の日付は`@Cacheable`で提供されるものです。
