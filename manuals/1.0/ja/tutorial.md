@@ -834,6 +834,12 @@ curl -v http://127.0.0.1:8081/todo?id=2
 curl http://127.0.0.1:8081/todo -X PUT -d "id=4&todo=think"
 {% endhighlight %}
 
+ `Content-Type` ヘッダーを使ってJSONでも指定することができます。
+
+{% highlight bash %}
+curl http://127.0.0.1:8081/todo -X PUT -H 'Content-Type: application/json' -d '{"id": "2", "todo":"think" }'
+{% endhighlight %} 
+
 再度GETを行うと`Last-Modified`が変わっているのが確認できます。
 
 {% highlight bash %}
