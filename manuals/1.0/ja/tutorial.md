@@ -92,10 +92,15 @@ RESTクライアント（Chromeアプリの [Advanced REST client](https://chrom
 デフォルトのルーターはURLをディレクトリにマップする`WebRouter`です。
 これを動的なパラメーターをパスで受け取るためにAuraルーターを使用します。
 
-`src/Modules/AppModule.php`で`AuraRouterModule`を上書き(override)インストールします。
+`src/Module/AppModule.php`で`AuraRouterModule`を上書き(override)インストールします。
 
 {% highlight php %}
+<?php
 
+namespace MyVendor\Weekday\Module;
+
+use BEAR\Package\PackageModule;
+use Ray\Di\AbstractModule;
 use BEAR\Package\Provide\Router\AuraRouterModule; // この行を追加
 
 class AppModule extends AbstractModule
@@ -105,7 +110,7 @@ class AppModule extends AbstractModule
      */
     protected function configure()
     {
-        $this->install(new PackageModule));
+        $this->install(new PackageModule);
         $this->override(new AuraRouterModule); // この行を追加
     }
 }
