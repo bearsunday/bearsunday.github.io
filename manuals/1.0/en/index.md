@@ -47,7 +47,7 @@ Resource state is created by calling stateless  requests on RESTful methods, the
 
 ### Resources
 
-What initially makes up a web application is a group of resources. In BEAR.Sunday these can be created as Resource Objects. The resources can then be accessed locally via PHP or by HTTP requests. In both cases using a consistent URI interface. Each Resource object can then be exposed as a service either or both inside and outside of you application. Using Hypermedia using specially provided annotations you can either `@link` or `@embed` other resources.
+What initially makes up a web application is a group of resources. In BEAR.Sunday these can be created as Resource Objects. The resources can then be accessed locally via PHP or by HTTP requests. In both cases using a consistent URI interface. Each Resource object can then be exposed as a service either or both inside and outside of you application. Using Hypermedia using specially provided annotations you can either `@Link` or `@Embed` other resources.
 
 ### Methods
 
