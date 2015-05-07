@@ -97,14 +97,23 @@ class AppModule extends AbstractModule
 
 {% endhighlight %}
 
-これでHTTPリクエストがGETの時がスレーブDB、その他のメソッドの時はマスターDBに接続されるようになります。
+これでHTTPリクエストがGETの時がスレーブDB、その他のメソッドの時はマスターDBのDBオブジェクトがコンスタラクタに渡されます。
 
 {% highlight php %}
 <?php
 
-class User
+use Aura\Sql\ExtendedPdoInterface;
+use BEAR\Resource\ResourceObject;
+use PDO;
+
+class User extends ResourceObject
 {
     public $pdo;
+
+    public function __construct(ExtendedPdoInterface $pdo)
+    {
+        $this->pdo = $pdo;
+    }
 
     public function onGet()
     {
@@ -118,7 +127,7 @@ class User
 }
 {% endhighlight %}
 
-`@ReadOnlyConnection`、`@WriteConnection`でアノテートされたメソッドはメソッドに関わらず、コールされたタイミングで`$this->db`にアノテーションに応じたDBオブジェクトがインジェクトされます。
+`@ReadOnlyConnection`、`@WriteConnection`でアノテートされたメソッドはメソッド名に関わらず、呼ばれた時にアノテーションに応じたDBオブジェクトが`$this->pdo`に上書きされます。
 
 {% highlight php %}
 <?php
@@ -127,7 +136,7 @@ use Ray\AuraSqlModule\Annotation\WriteConnection;     // important
 
 class User
 {
-    public $pdo;
+    public $pdo; // @ReadOnlyConnectionや@WriteConnectionのメソッドが呼ばれた時に上書きされる
     
     public function onPost($todo)
     {
