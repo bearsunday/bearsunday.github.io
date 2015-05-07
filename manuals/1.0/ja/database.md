@@ -77,6 +77,7 @@ class Index
 マスター／スレーブの接続を自動で行うためには接続オブジェクト`$locator`を作成して`AuraSqlReplicationModule`をインストールします。
 
 {% highlight php %}
+<?php
 use Ray\Di\AbstractModule;
 use Ray\AuraSqlModule\AuraSqlModule;
 use Ray\AuraSqlModule\Annotation\AuraSqlConfig;
@@ -90,7 +91,7 @@ class AppModule extends AbstractModule
         $locator->setWrite('master', new Connection('mysql:host=localhost;dbname=master', 'id', 'pass'));
         $locator->setRead('slave1',  new Connection('mysql:host=localhost;dbname=slave1', 'id', 'pass'));
         $locator->setRead('slave2',  new Connection('mysql:host=localhost;dbname=slave2', 'id', 'pass'));
-        $this->install(new AuraSqlReplicationModule($locator);
+        $this->install(new AuraSqlReplicationModule($locator));
     }
 }
 
@@ -98,7 +99,26 @@ class AppModule extends AbstractModule
 
 これでHTTPリクエストがGETの時がスレーブDB、その他のメソッドの時はマスターDBに接続されるようになります。
 
-`@ReadOnlyConnection`、`@WriteConnection`でアノテートされたメソッドはコールされたタイミングで`$this->db`にアノテーションに応じたDBオブジェクトがインジェクトされます。
+{% highlight php %}
+<?php
+
+class User
+{
+    public $pdo;
+
+    public function onGet()
+    {
+         $this->pdo: // slave db
+    }
+
+    public function onPost($todo)
+    {
+         $this->pdo: // master db
+    }
+}
+{% endhighlight %}
+
+`@ReadOnlyConnection`、`@WriteConnection`でアノテートされたメソッドはメソッドに関わらず、コールされたタイミングで`$this->db`にアノテーションに応じたDBオブジェクトがインジェクトされます。
 
 {% highlight php %}
 <?php
@@ -108,6 +128,11 @@ use Ray\AuraSqlModule\Annotation\WriteConnection;     // important
 class User
 {
     public $pdo;
+    
+    public function onPost($todo)
+    {
+         $this->read();
+    }
 
     /**
      * @ReadOnlyConnection
