@@ -108,12 +108,12 @@ class User
 
     public function onGet()
     {
-         $this->pdo: // slave db
+         $this->pdo; // slave db
     }
 
     public function onPost($todo)
     {
-         $this->pdo: // master db
+         $this->pdo; // master db
     }
 }
 {% endhighlight %}
@@ -139,7 +139,7 @@ class User
      */
     public function read()
     {
-         $this->pdo: // slave db
+         $this->pdo; // slave db
     }
 
     /**
@@ -147,7 +147,7 @@ class User
      */
     public function write()
     {
-         $this->pdo: // master db
+         $this->pdo; // master db
     }
 }
 {% endhighlight %}
