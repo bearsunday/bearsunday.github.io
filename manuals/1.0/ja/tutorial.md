@@ -92,7 +92,12 @@ RESTクライアント（Chromeアプリの [Advanced REST client](https://chrom
 デフォルトのルーターはURLをディレクトリにマップする`WebRouter`です。
 これを動的なパラメーターをパスで受け取るためにAuraルーターを使用します。
 
-`src/Module/AppModule.php`で`AuraRouterModule`を上書き(override)インストールします。
+最初にcompoerでインストールします。
+{% highlight bash %}
+composer require bear/aura-router-module "~0.1"
+{% endhighlight %}
+
+次に`src/Module/AppModule.php`で`AuraRouterModule`を上書き(override)インストールします。
 
 {% highlight php %}
 <?php

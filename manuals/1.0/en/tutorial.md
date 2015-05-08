@@ -91,6 +91,11 @@ This resource class only has a GET method, therefore `405 Method Not Allowed` wi
 
 A default router is set to `WebRouter` which simply maps URL's to the resource class directory.
 To receive a dynamic parameter in URI path, we can use `AuraRouter`. This can be done with an override install of the `AuraRouterModule` in `src/Module/AppModule.php`.
+Get it with [composer](http://getcomposer.org) first.
+
+{% highlight bash %}
+composer require bear/aura-router-module "~0.1"
+{% endhighlight %}
 
 {% highlight php %}
 <?php
