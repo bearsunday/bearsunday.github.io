@@ -855,3 +855,130 @@ curl -v http://127.0.0.1:8081/todo?id=2
 アプリケーションが管理したり、データベースのカラムを用意したりするする必要はありません。
 
 `@Cacheable`を使うとリソースコンテンツは書き込み用のデータベースとは違うリソースの保存専用の「クエリーリポジトリ」で管理されデータの更新や`Etag`や`Last-Modified`のヘッダーの付加が透過的に行われます。
+
+## アプリケーションのインポート
+
+BEAR.Sundayで作られたリソースは再利用性が優れています。
+他のアプリケーションのリソースを利用してみましょう。
+
+ここではチュートリアルのために新規で作成して手動で設定します。
+
+{% highlight bash %}
+cd my-vendor
+composer create-project bear/skeleton Acme.Blog ~1.0@dev
+{% endhighlight %}
+
+`composer.json`で`autoload`のセクションに`Acme\\Blog`を追加します。
+{% highlight bash %}
+
+"autoload": {
+    "psr-4": {
+        "MyVendor\\Weekday\\": "src/",
+        "Acme\\Blog\\": "my-vendor/Acme.Blog/src/"
+    }
+},
+{% endhighlight %}
+
+`autoload`をダンプします。
+
+{% highlight bash %}
+composer dump-autoload
+{% endhighlight %}
+
+これで`Acme\Blog`アプリケーションが配置できました。
+
+次に`src/Module/AppModule.php`で`AuraRouterModule`を上書き(override)インストールします。
+
+{% highlight php %}
+<?php
+use BEAR\Resource\Module\ImportAppModule;
+use BEAR\Resource\ImportApp;
+use BEAR\Package\Context;
+
+$importConfig = [
+    new ImportApp('blog', 'Acme\Blog', 'prod-hal-app') // ホスト, 名前, コンテキスト 
+];
+$this->override(new ImportAppModule($importConfig , Context::class));
+{% endhighlight %}
+これは`'Acme\Blog'アプリケーションを'prod-hal-app'コンテキストで作成したリソースを`blog`というホストで使用することができます。
+
+`src/Resource/App/Import.php`にImportリソースを作成して確かめてみましょう。
+
+{% highlight php %}
+<?php
+
+namespace MyVendor\Weekday\Resource\App;
+
+use BEAR\Resource\ResourceObject;
+use BEAR\Sunday\Inject\ResourceInject;
+
+class Import extends ResourceObject
+{
+    use ResourceInject;
+
+    public function onGet()
+    {
+        $this['blog'] = $this->resource->get->uri('page://blog/index')->eager->request()->body['greeting'];
+        $this['time'] = 
+        
+        return $this;
+    }
+}
+{% endhighlight %}
+
+`page://blog/index`リソースが`blog`に代入されているはずです。`@Embed`も同様に使えます。
+
+{% highlight bash %}
+php bootstrap/api.php get /import
+200 OK
+content-type: application/hal+json
+
+{
+    "blog": "Hello BEAR.Sunday",
+    "_links": {
+        "self": {
+            "href": "/import"
+        }
+    }
+}
+{% endhighlight %}
+
+他のアプリケーションのリソースを利用することができました！データ取得をHTTP越しにする必要もありません。
+
+合成されたアプリケーションも他からみたら１つのアプリケーションの１つのレイヤーです。
+（レイヤードシステムはRESTの特徴の１つです）
+
+次に**BEAR.Sundayでは無い**システムからこのリソースを利用してみましょう。
+`app.php`を作成します。どこに設置してもかまいませんが`autoload.php`のパスには注意しましょう。
+
+{% highlight php %}
+<?php
+
+use BEAR\Package\Bootstrap;
+use Doctrine\Common\Annotations\AnnotationRegistry;
+
+/** @var $loader \Composer\Autoload\ClassLoader */
+$loader = require __DIR__ . '/vendor/autoload.php';
+AnnotationRegistry::registerLoader([$loader, 'loadClass']);
+
+$app = (new Bootstrap)->getApp('MyVendor\Weekday', 'prod-hal-app');
+$import = $app->resource->get->uri('app://self/import')->request();
+
+echo $import['blog'];
+{% endhighlight %}
+
+試してみます。
+{% highlight bash %}
+php app.php
+{% endhighlight %}
+`Hello`が表示されたでしょうか？
+
+## Because everything is a resource
+
+BEAR.Sundayアプリケーションのリソースは再利用性に優れています。
+
+BEAR同士ではもちろん、他のCMSやフレームワークからも利用できます。
+HTTPをベースにしたものなのでAPIサイトにすることも容易です。BEAR.Sundayから他のシステムに移行することがあっても、それまで作成したリソースが無駄になることなく利用できます。
+リソースの値と表現は完全に区別されていて、Webページですら他のアプリケーションのAPIになることができます。
+
+何故なら全てはリソースだからです。
