@@ -5,7 +5,7 @@ category: Manual
 permalink: /manuals/1.0/en/application.html
 ---
 
- * *[This document](https://github.com/bearsunday/bearsunday.github.io/blob/master/manuals/1.0/en/application.md) needs to be proofread by a English speaker. If interested please send me a pull request. Thank you.*
+ * *[This document](https://github.com/bearsunday/bearsunday.github.io/blob/master/manuals/1.0/en/application.md) needs to be proofread by an English speaker. If interested please send me a pull request. Thank you.*
 
 BEAR.Sunday application transfer (REST) the state of resource that is capable of representation
 using script `bootstrap/bootstrap.php`.

@@ -5,7 +5,7 @@ category: Manual
 permalink: /manuals/1.0/en/module.html
 ---
 
- * *[This document](https://github.com/bearsunday/bearsunday.github.io/blob/master/manuals/1.0/en/module.md) needs to be proofread by a English speaker. If interested please send me a pull request. Thank you.*
+ * *[This document](https://github.com/bearsunday/bearsunday.github.io/blob/master/manuals/1.0/en/module.md) needs to be proofread by an English speaker. If interested please send me a pull request. Thank you.*
 
 
 # Module
