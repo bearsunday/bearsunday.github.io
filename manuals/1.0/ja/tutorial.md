@@ -861,7 +861,8 @@ curl -v http://127.0.0.1:8081/todo?id=2
 BEAR.Sundayで作られたリソースは再利用性が優れています。
 他のアプリケーションのリソースを利用してみましょう。
 
-ここではチュートリアルのために新規で作成して手動で設定します。
+ここではチュートリアルのために`my-vedor`に新規でアプリケーションを作成して手動でオートローダーを設定します。
+（通常はアプリケーションをパッケージとして利用します）
 
 {% highlight bash %}
 cd my-vendor
@@ -887,7 +888,7 @@ composer dump-autoload
 
 これで`Acme\Blog`アプリケーションが配置できました。
 
-次に`src/Module/AppModule.php`で`AuraRouterModule`を上書き(override)インストールします。
+次にアプリケーションをインポートするために`src/Module/AppModule.php`で`ImportAppModule`を上書き(override)インストールします。
 
 {% highlight php %}
 <?php
@@ -946,10 +947,10 @@ content-type: application/hal+json
 他のアプリケーションのリソースを利用することができました！データ取得をHTTP越しにする必要もありません。
 
 合成されたアプリケーションも他からみたら１つのアプリケーションの１つのレイヤーです。
-（レイヤードシステムはRESTの特徴の１つです）
+[レイヤードシステム](http://en.wikipedia.org/wiki/Representational_state_transfer#Layered_system)はRESTの特徴の１つです。
 
-次に**BEAR.Sundayでは無い**システムからこのリソースを利用してみましょう。
-`app.php`を作成します。どこに設置してもかまいませんが`autoload.php`のパスには注意しましょう。
+次にBEAR.Sundayでは無いシステムからこのリソースを利用してみましょう。
+`app.php`を作成します。どこに設置してもかまいませんが`autoload.php`のパスが通るように注意しましょう。
 
 {% highlight php %}
 <?php
@@ -959,12 +960,15 @@ use Doctrine\Common\Annotations\AnnotationRegistry;
 
 /** @var $loader \Composer\Autoload\ClassLoader */
 $loader = require __DIR__ . '/vendor/autoload.php';
-AnnotationRegistry::registerLoader([$loader, 'loadClass']);
+AnnotationRegistry::registerLoader([$loader, 'loadClass']); // アノテーションのロード
 
-$app = (new Bootstrap)->getApp('MyVendor\Weekday', 'prod-hal-app');
-$import = $app->resource->get->uri('app://self/import')->request();
+$app = (new Bootstrap)->getApp('MyVendor\Weekday', 'prod-hal-app'); // アプリケーションの取得
+$import = $app->resource->get->uri('app://self/import')->request(); 
 
-echo $import['blog'];
+echo $import['blog'] . PHP_EOL;
+
+// echo $import. PHP_EOL;
+
 {% endhighlight %}
 
 試してみます。
@@ -975,10 +979,9 @@ php app.php
 
 ## Because everything is a resource
 
-BEAR.Sundayアプリケーションのリソースは再利用性に優れています。
+情報の識別子URI、統一されたインターフェイス、ステートテレスなアクセス、強力なキャッシュシステム、ハイパーリンク、レイヤードシステム、自己記述性。
+BEAR.SundayアプリケーションのリソースはこれらのRESTの特徴を備えたもので、再利用性に優れています。
 
-BEAR同士ではもちろん、他のCMSやフレームワークからも利用できます。
-HTTPをベースにしたものなのでAPIサイトにすることも容易です。BEAR.Sundayから他のシステムに移行することがあっても、それまで作成したリソースが無駄になることなく利用できます。
-リソースの値と表現は完全に区別されていて、Webページですら他のアプリケーションのAPIになることができます。
-
-何故なら全てはリソースだからです。
+異なるアプリケーションの情報もハイパーリンクで接続することができ、他のCMSやフレームワークからも利用やAPIサイトにすることも容易です。
+BEAR.Sundayから他のシステムに移行することがあっても、それまで作成したリソースが無駄になることなく利用できます。
+リソースの値と表現は分離されていて、Webページですら他のアプリケーションのAPIになることができます。
