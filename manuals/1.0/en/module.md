@@ -12,9 +12,11 @@ permalink: /manuals/1.0/en/module.html
 
 Module is the collection of DI & AOP bindings. It forms application.
 
-BEAR.Sunday doesn't have any *global* application config file nor `Config` class.
-Instead, Give function specific config value to each `Module` in constructor parameters. Pull nothing, Even in configuration.
-`AppModule` (`/src/Module/AppModule.php`) is a root module. We can`install()` various modules to extends functions, or to change behavior by `override()`
+BEAR.Sunday doesn't have an *global* application config file nor Config class.
+Instead of pulling the config values from factory class, Inject them to each Module in `AppModule` constructor.
+
+`AppModule` (src/Module/AppModule.php) is a root module. We `install()` all required module here.
+Binding can be changed by `override()`.
 
 {% highlight php %}
 <?php
@@ -54,8 +56,8 @@ $this->bind($interface)->to($class)->in(Scope::SINGLETON);
 $this->bind($interface)->toConstructor($class, $named);
 {% endhighlight %}
 
-Earlier binding has a priority. But you can override bindings with `override()`.
-More detail informationis available at Ray.Di [README](https://github.com/ray-di/Ray.Di/blob/2.x/README.md)
+Earlier binding has a priority. You can override bindings with `override()`.
+More detail information are available at Ray.Di [README](https://github.com/ray-di/Ray.Di/blob/2.x/README.md)
 
 ## Aop bindings
 
@@ -86,7 +88,7 @@ $this->bindInterceptor(
  * [Matcher::logicalAnd](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/MatcherInterface.php#L51) - AND
  * [Matcher::logicalNot](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/MatcherInterface.php#L58) - NOT
 
-We can receive `MethodInvocation` object in`invoke`. Decorating the configured instances so some logic can be run before or after any of their methods.
+We can receive a `MethodInvocation` object in`invoke` method. Decorating the configured instances so some logic can be run before or after any of their methods.
 
 {% highlight php %}
 <?php
