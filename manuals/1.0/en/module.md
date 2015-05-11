@@ -12,11 +12,11 @@ permalink: /manuals/1.0/en/module.html
 
 Module is the collection of DI & AOP bindings. It forms application.
 
-BEAR.Sunday doesn't have an *global* application config file nor Config class.
-Instead of pulling the config values from factory class, Inject them to each Module in `AppModule` constructor.
+BEAR.Sunday doesn't have an *global* config file nor Config class for the components such as database or template engine.
+Inject component config values into each Module in `AppModule` in constructor instead of pulling them from factory class. 
 
-`AppModule` (src/Module/AppModule.php) is a root module. We `install()` all required module here.
-Binding can be changed by `override()`.
+`AppModule` (src/Module/AppModule.php) is a root application module. We `install()` all required module here.
+Also you can override existing bindings `override()`.
 
 {% highlight php %}
 <?php
