@@ -18,7 +18,7 @@ class Index extends ResourceObject
     public function onGet($a, $b)
     {
         $this->code = 200; // 省略可
-        $this['result'] = $a + $b; // $a = $_GET['a']; $b = $_GET['b'];
+        $this['result'] = $a + $b; // $_GET['a'] + $_GET['b']
 
         return $this;
     }
