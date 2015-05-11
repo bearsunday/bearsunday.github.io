@@ -52,7 +52,7 @@ app://self/blog/posts/?id=3
 page://self/index
 {% endhighlight %}
   
-It has methods which correspond to HTTP method `onGet`, `onPost`, `onPut`, `onPatch`, or `onDelete`.
+It has methods which correspond to HTTP methods `onGet`, `onPost`, `onPut`, `onPatch`, or `onDelete`.
 `$_GET` is passed to the parameters of `onGet` method, `$_POST` is same to `onPost`. 
 
 {% highlight php %}
@@ -80,7 +80,7 @@ The resource status (`code`,`headers` or`body`) is changed by method with given 
 
 ### Syntax sugar
 
-The access to body has a syntax sugar. 
+The body access has a syntax sugar. 
 {% highlight php %}
 <?php
 
@@ -159,7 +159,7 @@ class Index extends ResourceObject
 {% endhighlight %}
 
 This code invoke `GET` request to `app://self/blog/posts` App resource with `?id=1` query.
-If you have no `eager` options with the request, It is just a request. Request invocation is made at representation.
+If you have no `eager` options with the request, It is just a request. Request invocation will be made at representation.
 
 {% highlight php %}
 <?php
@@ -167,7 +167,7 @@ $posts = $this->resource->get->uri('app://self/posts')->request(); //lazy
 $posts = $this->resource->get->uri('app://self/posts')->eager->request(); // eager
 {% endhighlight %}
 
-A `request()` method without `eager` returns invokable request object, Or you can invoke by `$posts()`.
+A `request()` method without `eager` returns invokable request object, or you can invoke by `$posts()`.
 You can assign this value to template engine or embed to another resource. It will be lazy evaluated.
 
 ## Link request
@@ -242,9 +242,7 @@ You can bind method parameter to "external value". The external value might be w
 
 ### Web context parameter
 
-For instance, Instead you "pull" `$_GET` or any global web context values, You can bind PHP super global values to method parameters.
-
-When key name and parameter name is same:
+For instance, Instead you "pull" `$_GET` or any global the web context values, You can bind PHP super global values to method parameters.
 
 {% highlight php %}
 <?php
@@ -258,8 +256,8 @@ use Ray\WebContextParam\Annotation\QueryParam;
       // $id = $_GET['id'];
 {% endhighlight %}
 
-
-Specify `key` and `param` if it is not matched.
+The above example is in the case a key name and parameter name is same.
+Specify `key` and `param` when it isn't matched.
 
 {% highlight php %}
 <?php
