@@ -91,17 +91,13 @@ $this->body['price'] = 10;
 
 ## Resource scheme
 
-Resource scheme has two types. The one is `App` resource. It is an **API**.
-The other one is `Page` resource. It is Web Page.
-`Page` resource crate web page using `App` resource. It is like `Controller` use `Model` for output.
-
-The following is the example how `URI` and `class` are mapped when `koriym\todo` application name is given.
+The equivalent to a MVC model is an `app` resource. A resource functions as an internal API, but as it is designed using REST it also works as an external API transport.
+The `page` resource carries out the page controller role is also a resource, according to its URL calls an application resource and builds itself.
 
 | URI | Class |
 |-----+-------|
 | page://self/index | Koriym\Todo\Resource\Page\Index |
 | app://self/blog/posts | Koriym\Todo\Resource\App\Blog\Posts |
-
 
 # Resource client
 
@@ -189,6 +185,8 @@ public function onGet($id = null)
 {% endhighlight %}
 
 A `crawl` tagged link will be [crawled](https://github.com/koriym/BEAR.Resource#crawl) with `linkCrawl`.
+
+Found more info about the `@Link` at  BEAR.Resource [README](https://github.com/bearsunday/BEAR.Resource/blob/1.x/README.md).
 
 ### @Embed
 {% highlight php %}
@@ -362,7 +360,3 @@ You can update another resource class and multiple resource at once. `@Purge` de
 ### @Etag
 
 When HTTP request contains `Etag` and contents is not modified, `304 Not Modified` will be responded.
-
-## BEAR.Resource
-
-You can find more detail at BEAR.Resource [README](https://github.com/bearsunday/BEAR.Resource/blob/1.x/README.md).
