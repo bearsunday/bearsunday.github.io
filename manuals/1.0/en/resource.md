@@ -89,7 +89,7 @@ $this['price'] = 10;
 $this->body['price'] = 10;
 {% endhighlight %}
 
-## Resource scheme
+## Scheme
 
 The equivalent to a MVC model is an `app` resource. A resource functions as an internal API, but as it is designed using REST it also works as an external API transport.
 The `page` resource carries out the page controller role is also a resource, according to its URL calls an application resource and builds itself.
@@ -99,7 +99,40 @@ The `page` resource carries out the page controller role is also a resource, acc
 | page://self/index | Koriym\Todo\Resource\Page\Index |
 | app://self/blog/posts | Koriym\Todo\Resource\App\Blog\Posts |
 
-# Resource client
+## Method
+
+Resources have 6 interfaces conforming to the HTTP methods.
+
+| **method** | **description**|
+|--------|------------|
+| GET | Resource retrieval |
+| PUT | Resource update and creation |
+| PATCH | Resource update |
+| POST | Resource creation |
+| DELETE | Resource delete |
+| OPTIONS | Resource access method query |
+
+#### GET 
+Resource reading. This method does not provide any changing of the resource state. A safe method with no side affects.
+
+#### PUT 
+Performs resource updates and also creation. This method has the benefit that even if you run it once, running it many more times will have no more effect. See [Idempotence](http://en.wikipedia.org/wiki/Idempotence).
+
+#### PATCH
+
+Performs resource updatese, but unlike PUT, it applies a delta rather than replacing the entire resource. 
+
+#### POST 
+Performs resource creation. If you run the request multiple times the resource will be created that many times. A method with no idempotence.
+
+#### DELETE 
+Resource deletion. Has idempotence just as PUT.
+
+#### OPTIONS 
+Inspects which methods and parameters can be used on the resource. Just like `GET` there is no effect on the resource.
+
+
+## Client
 
 You need **Resource client** to request resource. See the following example. `ResourceInject` trait is useful for injection.
 
