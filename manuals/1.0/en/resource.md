@@ -9,8 +9,9 @@ permalink: /manuals/1.0/en/resource.html
 
 # Object as a service
 
-The application of BEAR.Sunday is the the collection of resources. It is truly [RESTful](http://en.wikipedia.org/wiki/Representational_state_transfer).
-A HTTP method is mapped to PHP method. The `resource object` works as a service.
+The application of BEAR.Sunday is [RESTful](http://en.wikipedia.org/wiki/Representational_state_transfer). It is consisted of the the collection of resources.
+
+A HTTP method is mapped to PHP method in `ResourceObject` class.
 
 Here are examples of resource object:
 
@@ -42,16 +43,53 @@ class Todo extends ResourceObject
 }
 {% endhighlight %}
 
-The PHP resource class has the URI like `app://self/blog/posts/?id=3` or `page://self/index`. Also it has  method which correspond to HTTP method `onGet`, `onPost`, `onPut`, `onPatch`, or `onDelete`.
-`$_GET` is passed to the parameters of `onGet` method, `$_POST` is same to `onPost`. `content-type`ed value will be passed to PHP method for `onPut`,`onPatch` or `onDelete`, 
+A resource has a URI like a web URL. 
+{% highlight bash %}
+app://self/blog/posts/?id=3
+{% endhighlight %}
 
-With given parameters, The resource status (`code`,`headers` or`body`) should be changed by method and return `$this`. 
+{% highlight bash %}
+page://self/index
+{% endhighlight %}
+  
+It has methods which correspond to HTTP method `onGet`, `onPost`, `onPut`, `onPatch`, or `onDelete`.
+`$_GET` is passed to the parameters of `onGet` method, `$_POST` is same to `onPost`. 
 
+{% highlight php %}
+<?php
+    class User
+    {
+        public function onGet($id, $todo)
+        {
+            // $id   <= $_GET['id']
+            // $todo <= $_GET['todo']
+{% endhighlight %}
 
- * NOTE: `$this->body['price'] = 10;` can be written as `$this['price'] = 10;` with syntax sugar.
+The value which format defined by `content-type` header will be passed to PHP method for `onPut`,`onPatch` or `onDelete`.
+
+{% highlight php %}
+<?php
+    class User
+    {
+        public function onPut($id, $todo)
+        {
+            // $id   <= a value encoded `x-www-form-urlencoded` or `application/json`
+{% endhighlight %}
+
+The resource status (`code`,`headers` or`body`) is changed by method with given parameters. Then the resource class return itself(`$this`). 
+
+### Syntax sugar
+
+The access to body has a syntax sugar. 
+{% highlight php %}
+<?php
+
+$this['price'] = 10;
+// is same as
+$this->body['price'] = 10;
+{% endhighlight %}
 
 ## Resource scheme
-
 
 Resource scheme has two types. The one is `App` resource. It is an **API**.
 The other one is `Page` resource. It is Web Page.
@@ -324,7 +362,6 @@ You can update another resource class and multiple resource at once. `@Purge` de
 ### @Etag
 
 When HTTP request contains `Etag` and contents is not modified, `304 Not Modified` will be responded.
-
 
 ## BEAR.Resource
 
