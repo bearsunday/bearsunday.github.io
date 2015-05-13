@@ -8,7 +8,7 @@ permalink: /manuals/1.0/ja/tutorial.html
 ## チュートリアル
 
 年月日を入力すると曜日を返すWebサービスを作成してみましょう。
-まずプロジェクトを作成します
+まずプロジェクトを作成します。
 
 {% highlight bash %}
 composer create-project bear/skeleton MyVendor.Weekday ~1.0@dev
@@ -55,7 +55,7 @@ Content-Type: application/vnd.error+json
 {% endhighlight %}
 
 400はリクエストに問題があるエラーコードです。
-次は引数をつけて正しいリクエストします。
+次は引数をつけて正しいリクエストを試します。
 
 {% highlight bash %}
 php bootstrap/api.php get '/weekday?year=2001&month=1&day=1'
@@ -85,7 +85,7 @@ php -S 127.0.0.1:8080 bootstrap/api.php
 RESTクライアント（Chromeアプリの [Advanced REST client](https://chrome.google.com/webstore/detail/advanced-rest-client/hgmloofddffdnphfgcellkdfbfbjeloo/) など）で
 `http://127.0.0.1:8080/weekday?year=2001&month=1&day=1` にGETリクエストを送って確かめてみましょう。
 
-このリソースクラスにはGET以外のメソッドは用意されていないので他のメソッドを試すと`405 Method Not Allowed`が返されます。これも試してみましょう。
+このリソースクラスにはGET以外のメソッドは用意されていないので、他のメソッドを試すと`405 Method Not Allowed`が返されます。これも試してみましょう。
 
 ## ルーティング
 
@@ -158,7 +158,7 @@ composer require monolog/monolog "~1.0"
 {% endhighlight %}
 
 monologログオブジェクトは`new`で直接作成しないで、作成されたログオブジェクトを受け取るようにします。
-このように必要なもの（依存）を自らが取得するのではなく、外部からの代入する仕組みを [DI](http://ja.wikipedia.org/wiki/%E4%BE%9D%E5%AD%98%E6%80%A7%E3%81%AE%E6%B3%A8%E5%85%A5) といいます。
+このように必要なもの（依存）を自らが取得するのではなく、外部から代入する仕組みを [DI](http://ja.wikipedia.org/wiki/%E4%BE%9D%E5%AD%98%E6%80%A7%E3%81%AE%E6%B3%A8%E5%85%A5) といいます。
 
 依存を提供する`MonologLoggerProvider`を`src/Module/MonologLoggerProvider.php`に作成します。
 
@@ -196,10 +196,10 @@ class MonologLoggerProvider implements ProviderInterface
 }
 {% endhighlight %}
 
-ログをファイル記録するためにログフォルダのパスの情報が必要ですが、コンストラクタでアプリケーションのメタ情報を受け取っています。
+ログをファイル記録するために必要なログフォルダのパスの情報は、コンストラクタで受け取ったアプリケーションのメタ情報から取得します。
 依存は`get`メソッドで提供します。
 
-次に[ロガーインターフェイス](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-3-logger-interface.md)とこの依存を生成するファクトリークラスを結びつけます。
+次に[ロガーインターフェイス](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-3-logger-interface.md)と、この依存を生成するファクトリークラスを結びつけます。
 `src/Modules/AppModule.php`の`configure`メソッドに以下を追加します。
 
 {% highlight php %}
@@ -501,7 +501,7 @@ content-type: text/html; charset=utf-8
 <!DOCTYPE html>
 <html>
 <body>
-The weekday of 1991/8/1 is <b>Thu</b>.
+The weekday of 1991/8/1 is Thu.
 </body>
 </html>
 {% endhighlight %}
@@ -531,7 +531,7 @@ $context = 'prod-hal-app';  // プロダクション用HALアプリケーショ�
 
 コンテキストに応じてインスタンスを生成するPHPコードが生成されます。`var/tmp/`フォルダを確認してみましょう。
 
-これらのファイルは普段みる必要はありませんが、オブジェクトがどのように作られてるかを確認することができます。`diff`コマンドでコンテキストでどの依存が変更されているかを確認する事もできます。
+これらのファイルは普段みる必要はありませんが、オブジェクトがどのように作られているかを確認することができます。`diff`コマンドでコンテキストでどの依存が変更されているかを確認する事もできます。
 
 {% highlight bash %}
 diff -q var/tmp/app/ var/tmp/prod-hal-app/
@@ -559,7 +559,11 @@ composer require ray/cake-database-module
 
 `src/Module/AppModule::configure()`でモジュールのインストールをします。
 
-{% highlight bash %}
+{% highlight php %}
+<?php
+use Ray\CakeDbModule\CakeDbModule;
+// ...
+
 $dbConfig = [
     'driver' => 'Cake\Database\Driver\Sqlite',
     'database' => dirname(dirname(__DIR__)) . '/var/db/todo.sqlite3'
@@ -655,7 +659,7 @@ content-type: application/hal+json
 
 POSTメソッドにトランザクションを適用するにはメソッドに`@Transactional`とアノテートします。
 
-{% highlight bash %}
+{% highlight php %}
 
 <?php
 
@@ -670,9 +674,9 @@ use Ray\CakeDbModule\Annotation\Transactional;
 
 ## クエリーリポジトリ
 
-クラスに`@Cacheable`とアノテートすることでリソースのキャッシュが作られるようになります。このキャッシュデータは`OnPost`が完了したタイミングで作られ、値だけでなくHTMLやJSONなどの表現もキャッシュされます。
+クラスに`@Cacheable`とアノテートすることでリソースのキャッシュが作られるようになります。このキャッシュデータは`onPost`が完了したタイミングで作られ、値だけでなくHTMLやJSONなどの表現もキャッシュされます。
 
-{% highlight bash %}
+{% highlight php %}
 
 <?php
 use BEAR\RepositoryModule\Annotation\Cacheable;
@@ -708,13 +712,13 @@ Last-Modified: Sat, 02 May 2015 17:26:42 GMT
 
 
 `@Cacheable`で`expiry`を指定していない限り無期限にキャッシュされます。しかしリソースの変更や削除が`onPut($id, $todo)`や`onDelete($id)`で行われたときは該当するする同じ`$id`のリソースキャッシュが更新されます。
-（つまりGETリクエストのときは生成されたキャッシュデータが使われるだけで`onGet`メソッドの中の処理は実行ません。）
+（つまりGETリクエストのときは生成されたキャッシュデータが使われるだけで`onGet`メソッドの中の処理は実行されません。）
 
 このtodoリソースのように、更新や削除のタイミングが完全にリソース内で閉じてるリソースにとても効果的です。
 
 ## PUTメソッドによるキャッシュの自動更新
 
-`todo`リソースに`onPut`をメソッドを実装して確かめてみましょう。
+`todo`リソースに`onPut`メソッドを実装して確かめてみましょう。
 
 {% highlight php %}
 <?php
@@ -836,7 +840,7 @@ curl -v http://127.0.0.1:8081/todo?id=2
 次に`PUT`メソッドでこのリソースを変更します。
 
 {% highlight bash %}
-curl http://127.0.0.1:8081/todo -X PUT -d "id=4&todo=think"
+curl http://127.0.0.1:8081/todo -X PUT -d "id=2&todo=think"
 {% endhighlight %}
 
  `Content-Type` ヘッダーを使ってJSONでも指定することができます。
@@ -852,16 +856,16 @@ curl -v http://127.0.0.1:8081/todo?id=2
 {% endhighlight %}
 
 この`Last-Modified`の日付は`@Cacheable`で提供されるものです。
-アプリケーションが管理したり、データベースのカラムを用意したりするする必要はありません。
+アプリケーションが管理したり、データベースのカラムを用意したりする必要はありません。
 
-`@Cacheable`を使うとリソースコンテンツは書き込み用のデータベースとは違うリソースの保存専用の「クエリーリポジトリ」で管理されデータの更新や`Etag`や`Last-Modified`のヘッダーの付加が透過的に行われます。
+`@Cacheable`を使うと、リソースコンテンツは書き込み用のデータベースとは違うリソースの保存専用の「クエリーリポジトリ」で管理され、データの更新や`Etag`や`Last-Modified`のヘッダーの付加が透過的に行われます。
 
 ## アプリケーションのインポート
 
 BEAR.Sundayで作られたリソースは再利用性が優れています。
 他のアプリケーションのリソースを利用してみましょう。
 
-ここではチュートリアルのために`my-vedor`に新規でアプリケーションを作成して手動でオートローダーを設定します。
+ここではチュートリアルのために`my-vendor`に新規でアプリケーションを作成して手動でオートローダーを設定します。
 （通常はアプリケーションをパッケージとして利用します）
 
 {% highlight bash %}
@@ -920,7 +924,6 @@ class Import extends ResourceObject
     public function onGet()
     {
         $this['blog'] = $this->resource->get->uri('page://blog/index')->eager->request()->body['greeting'];
-        $this['time'] = 
         
         return $this;
     }
@@ -982,6 +985,6 @@ php app.php
 情報の識別子URI、統一されたインターフェイス、ステートテレスなアクセス、強力なキャッシュシステム、ハイパーリンク、レイヤードシステム、自己記述性。
 BEAR.SundayアプリケーションのリソースはこれらのRESTの特徴を備えたもので、再利用性に優れています。
 
-異なるアプリケーションの情報もハイパーリンクで接続することができ、他のCMSやフレームワークからも利用やAPIサイトにすることも容易です。
+異なるアプリケーションの情報もハイパーリンクで接続することができ、他のCMSやフレームワークからの利用やAPIサイトにすることも容易です。
 BEAR.Sundayから他のシステムに移行することがあっても、それまで作成したリソースが無駄になることなく利用できます。
 リソースの値と表現は分離されていて、Webページですら他のアプリケーションのAPIになることができます。
