@@ -970,7 +970,7 @@ Does it display `Hello`?
 
 ## Because everything is a resource
 
-Unique data identifier URIs, a consistent interface, stateless access, powerful caching system, hyperlinks, layered system, self documentation. A resource built with BEAR.Sunday implements all of these REST features.
+Unique data identifier URIs, a consistent interface, stateless access, powerful caching system, hyperlinks, layered system, and self-descriptive messages. A resource built with BEAR.Sunday implements all of these REST features.
 
 You can connect to data from other applications using hyperlinks, creating an API to be consumed from another CMS or framework is easy. The resource object is completely decoupled from any rendering! 
 
