@@ -851,3 +851,126 @@ curl -v http://127.0.0.1:8081/todo?id=2
 This `Last-Modified` time stamp has been provided by `@Cacheable`. No need to provide any special application admin or database columns.
 
 When you use `@Cacheable` the resource content is also saved in a separate `query repository` where along with the resources changes are managed along with `Etag` or `Last-Modified` headers beinig automatically appended.
+
+## Application Import
+
+Resources created with BEAR.Sunday have unrivaled re-usability. Let's try using a resource in another application.
+
+So for this tutorial let's create a new `my-vendor` and manually add it to the auto loader. (Normally you would set up the new application as a package). 
+
+{% highlight bash %}
+cd my-vendor
+composer create-project bear/skeleton Acme.Blog ~1.0@dev
+{% endhighlight %}
+
+In the `composer.json` in the `autoload` section add `Acme\\Blog`.
+{% highlight bash %}
+
+"autoload": {
+    "psr-4": {
+        "MyVendor\\Weekday\\": "src/",
+        "Acme\\Blog\\": "my-vendor/Acme.Blog/src/"
+    }
+},
+{% endhighlight %}
+
+Dump the `autoload`.
+
+{% highlight bash %}
+composer dump-autoload
+{% endhighlight %}
+
+With this the configuration for the `Acme\Blog` application is complete.
+
+Next in order to import the application in `src/Module/AppModule.php` we use the `ImportAppModule` in `src/Module/AppModule.php` to install as an override. 
+
+{% highlight php %}
+<?php
+use BEAR\Resource\Module\ImportAppModule;
+use BEAR\Resource\ImportApp;
+use BEAR\Package\Context;
+
+$importConfig = [
+    new ImportApp('blog', 'Acme\Blog', 'prod-hal-app') // host, name, context 
+];
+$this->override(new ImportAppModule($importConfig , Context::class));
+{% endhighlight %}
+With this a Acme\Blog` application using a `prod-hal-app` context can create resources that will be available to the `blog` host.
+
+Let's check it works by creating an Import resource in `src/Resource/App/Import.php`.
+
+{% highlight php %}
+<?php
+
+namespace MyVendor\Weekday\Resource\App;
+
+use BEAR\Resource\ResourceObject;
+use BEAR\Sunday\Inject\ResourceInject;
+
+class Import extends ResourceObject
+{
+    use ResourceInject;
+
+    public function onGet()
+    {
+        $this['blog'] = $this->resource->get->uri('page://blog/index')->eager->request()->body['greeting'];
+        
+        return $this;
+    }
+}
+{% endhighlight %}
+
+The `page://blog/index` resource should now be assigned to `blog`. `@Embed` can be used in the same way.
+
+
+{% highlight bash %}
+php bootstrap/api.php get /import
+200 OK
+content-type: application/hal+json
+
+{
+    "blog": "Hello BEAR.Sunday",
+    "_links": {
+        "self": {
+            "href": "/import"
+        }
+    }
+}
+{% endhighlight %}
+
+Great, we could now use another application's resource. We do not even need to use HTTP to fetch this data.
+
+The combined application is now seen as 1 layer of a single application. A
+[Layered System](http://en.wikipedia.org/wiki/Representational_state_transfer#Layered_system) is another feature of REST.
+
+Next lets look at how we use a resource in a system that is not BEAR.Sunday based. We create an app.php. You can place this anywhere but be careful that it picks up `autoload.php` path correctly.
+
+{% highlight php %}
+<?php
+
+use BEAR\Package\Bootstrap;
+use Doctrine\Common\Annotations\AnnotationRegistry;
+
+/** @var $loader \Composer\Autoload\ClassLoader */
+$loader = require __DIR__ . '/vendor/autoload.php';
+AnnotationRegistry::registerLoader([$loader, 'loadClass']); // Annotation load
+
+$app = (new Bootstrap)->getApp('MyVendor\Weekday', 'prod-hal-app'); // Fetch the application
+$import = $app->resource->get->uri('app://self/import')->request(); 
+
+echo $import['blog'] . PHP_EOL;
+
+{% endhighlight %}
+
+Let's try it..
+{% highlight bash %}
+php app.php
+{% endhighlight %}
+Does it display `Hello`?
+
+## Because everything is a resource
+
+Unique data identifier URIs, a consistent interface, stateless access, powerful caching system, hyperlinks, layered system, self documentation. A resource built with BEAR.Sunday implements all of these REST features.
+
+You can connect to data from other applications using hyperlinks, creating an API to be consumed from another CMS or framework is easy. The resource object is completely decoupled from any rendering! 
+
