@@ -905,7 +905,7 @@ $importConfig = [
 ];
 $this->override(new ImportAppModule($importConfig , Context::class));
 {% endhighlight %}
-これは`'Acme\Blog`アプリケーションを`prod-hal-app`コンテキストで作成したリソースを`blog`というホストで使用することができます。
+これは`Acme\Blog`アプリケーションを`prod-hal-app`コンテキストで作成したリソースを`blog`というホストで使用することができます。
 
 `src/Resource/App/Import.php`にImportリソースを作成して確かめてみましょう。
 
@@ -969,8 +969,6 @@ $app = (new Bootstrap)->getApp('MyVendor\Weekday', 'prod-hal-app'); // アプリ
 $import = $app->resource->get->uri('app://self/import')->request(); 
 
 echo $import['blog'] . PHP_EOL;
-
-// echo $import. PHP_EOL;
 
 {% endhighlight %}
 
