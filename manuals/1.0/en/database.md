@@ -5,15 +5,13 @@ category: Manual
 permalink: /manuals/1.0/en/database.html
 ---
 
- * *[This document](https://github.com/bearsunday/bearsunday.github.io/blob/master/manuals/1.0/en/database.md) needs to be proofread by an English speaker. If interested please send me a pull request. Thank you.*
-
-`Aura.Sql`、`Doctrine DBAL`, `CakeDB` module are provided for database.
+`Aura.Sql`、`Doctrine DBAL`, `CakeDB` modules are available for database connections.
 
 # Aura.Sql
 
-[Aura.Sql](https://github.com/auraphp/Aura.Sql) is `PDO` extended Aura database library.
+[Aura.Sql](https://github.com/auraphp/Aura.Sql) is an Aura database library that extends from `PDO` .
 
-### Install
+### Installation
 
 Install `Ray.AuraSqlModule` via composer.
 
@@ -21,7 +19,7 @@ Install `Ray.AuraSqlModule` via composer.
 composer require ray/aura-sql-module
 {% endhighlight %}
 
-Install `AuraSqlModule` in application module`src/Module/AppModule.php`.
+Installing `AuraSqlModule` in your application module`src/Module/AppModule.php`.
 
 {% highlight php %}
 <?php
@@ -35,12 +33,19 @@ class AppModule extends AbstractModule
     protected function configure()
     {
         $this->install(new PackageModule));
-        $this->install(new AuraSqlModule('mysql:host=localhost;dbname=test', 'username', 'password');   // add this line
+        // Add the below install method call and contents
+        $this->install(
+            new AuraSqlModule(
+                'mysql:host=localhost;dbname=test', 
+                'username', 
+                'password'
+            )
+        );
     }
 }
 {% endhighlight %}
 
-Now DI bindings are ready. The db object will be injected via constructor or `AuraSqlInject` setter trait.
+Now the `DI` bindings are ready. The db object will be injected via a constructor or the `AuraSqlInject` setter trait.
 
 {% highlight php %}
 <?php
@@ -72,12 +77,12 @@ class Index
 }
 {% endhighlight %}
 
-`Ray.AuraSqlModule` contains [Aura.SqlQuery](https://github.com/auraphp/Aura.SqlQuery) in order to help to build the sql.
+`Ray.AuraSqlModule` contains [Aura.SqlQuery](https://github.com/auraphp/Aura.SqlQuery) to help you build sql queries.
 
 
-## Replication connect
+## Replication
 
-Install `AuraSqlReplicationModule` by `$locator` for master/slave connection.
+Installing `AuraSqlReplicationModule` using a `connection locator` for master/slave connections.
 
 {% highlight php %}
 <?php
@@ -100,7 +105,7 @@ class AppModule extends AbstractModule
 
 {% endhighlight %}
 
-You will have a slave db connection in HTTP GET, or master db connection in other HTTP methods.
+You will now have a slave db connection when using HTTP GET, or a master db connection in other HTTP methods.
 
 {% highlight php %}
 <?php
@@ -130,7 +135,7 @@ class User extends ResourceObject
 }
 {% endhighlight %}
 
-`$this->pdo` is overwritten if the method is annotated with`@ReadOnlyConnection` or`@WriteConnection`. The master / slave db connection is correspond to the annotation.
+`$this->pdo` is overwritten if the method is annotated with`@ReadOnlyConnection` or`@WriteConnection`. The master / slave db connection corresponds to the annotation.
 
 {% highlight php %}
 <?php
@@ -164,9 +169,9 @@ class User
 }
 {% endhighlight %}
 
-## Transaction
+## Transactions
 
-`@Transactional` annotated method apply transaction.
+Using the `@Transactional` annotation wraps methods with a transaction.
 
 {% highlight php %}
 <?php
@@ -186,7 +191,7 @@ use Ray\AuraSqlModule\Annotation\Transactional;
 
 [Doctrine DBAL](http://www.doctrine-project.org/projects/dbal.html) is also abstraction layer for database.
 
-Install `Ray.DbalModule` via composer.
+Install `Ray.DbalModule` with composer.
 
 {% highlight bash %}
 composer require ray/dbal-module
@@ -208,7 +213,7 @@ class AppModule extends AbstractModule
 }
 {% endhighlight %}
 
-DI bindings are ready. `$this->db` will be injected with `DbalInject` trait.
+New DI bindings are now ready and `$this->db` can be injected with the `DbalInject` trait.
 
 {% highlight php %}
 <?php
@@ -225,20 +230,20 @@ class Index
 }
 {% endhighlight %}
 
-[MasterSlaveConnection](http://www.doctrine-project.org/api/dbal/2.0/class-Doctrine.DBAL.Connections.MasterSlaveConnection.html) is provided for master/slave connection.
+[MasterSlaveConnection](http://www.doctrine-project.org/api/dbal/2.0/class-Doctrine.DBAL.Connections.MasterSlaveConnection.html) is provided for master/slave connections.
 
 # CakeDb
 
-**CakeDb** is the database access module for CakePHP3. The module is provided by [@lorenzo](https://github.com/lorenzo) (an original author of CakeDb).
+**CakeDb** is the database access module for the CakePHP3 Database library. This module is provided by [@lorenzo](https://github.com/lorenzo) ( original author of CakeDb).
 
-Install `Ray.CakeDbModule` via composer.
+Installing `Ray.CakeDbModule` with composer.
 
 {% highlight bash %}
 composer require ray/cake-database-module. 
 
 {% endhighlight %}
 
-See more detail at [Ray.CakeDbModule](https://github.com/ray-di/Ray.CakeDbModule) and [CakePHP3 Database Access & ORM](http://book.cakephp.org/3.0/en/orm.html).
+Then see more details at [Ray.CakeDbModule](https://github.com/ray-di/Ray.CakeDbModule) and [CakePHP3 Database Access & ORM](http://book.cakephp.org/3.0/en/orm.html).
 
 
 
