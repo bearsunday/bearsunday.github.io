@@ -15,8 +15,8 @@ cd MyVendor.MyPackage
 composer install
 {% endhighlight %}
 
-Next, let's create a Page resource. Page resource is a class which is corresponding to a Web page.
-Create your basic page resource `MyVendor.MyPackage/src/Resource/Page/Hello.php`
+Next, let's create a `page resource`. A page resource is a class which is corresponds to a web page.
+Create your own basic page resource in `MyVendor.MyPackage/src/Resource/Page/Hello.php`
 
 {% highlight php %}
 <?php
@@ -36,8 +36,8 @@ class Hello extends ResourceObject
 }
 {% endhighlight %}
 
-In the above example, when the page is requested using GET method, `Hello` and `$_GET['name']` strings are joined, and assigned to a variable `greeting`.
-BEAR.Sunday application that you create will work on Web server, but also in the console.
+In the above example, when the page is requested using a GET method, `Hello` and `$_GET['name']` strings are joined, and assigned to a variable `greeting`.
+The BEAR.Sunday application that you have created will work on a web server, but also in the console.
 
 {% highlight bash %}
 php bootstrap/web.php get /hello
@@ -56,7 +56,7 @@ Content-Type: application/hal+json
 }
 {% endhighlight %}
 
-Let us fire the php server
+Let us fire up the php server and access our page at `http://127.0.0.1:8080/hello`.
 
 {% highlight bash %}
 php -S 127.0.0.1:8080 var/www/index.php
