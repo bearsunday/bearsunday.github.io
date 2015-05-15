@@ -5,18 +5,16 @@ category: Manual
 permalink: /manuals/1.0/en/module.html
 ---
 
- * *[This document](https://github.com/bearsunday/bearsunday.github.io/blob/master/manuals/1.0/en/module.md) needs to be proofread by an English speaker. If interested please send me a pull request. Thank you.*
+# Modules
 
+A Module is a collection of DI & AOP bindings that sets up your application.
 
-# Module
+BEAR.Sunday doesn't have a *global* config fi=le or a config class to set default values for components such as a database or a template engine.
+Instead for each peice of functionality we set up DI and AOP by injecting configuration values into a stand alone module.
 
-Module is the collection of DI & AOP bindings. It forms application.
+`AppModule` (src/Module/AppModule.php) is the root module. We use an `install()` method in here to load each module that we would like to invoke.
 
-BEAR.Sunday doesn't have an *global* config file nor Config class for the components such as database or template engine.
-Inject component config values into each Module in `AppModule` in constructor instead of pulling them from factory class. 
-
-`AppModule` (src/Module/AppModule.php) is a root application module. We `install()` all required module here.
-Also you can override existing bindings `override()`.
+You can also override existing bindings by using `override()`.
 
 {% highlight php %}
 <?php
@@ -29,7 +27,7 @@ class AppModule extends AbstractModule
     {
         // install basic module
         $this->install(new PackageModule));
-        // install additional module
+        // install additional modules
         $this->install(new AuraSqlModule('mysql:host=localhost;dbname=test', 'username', 'password');
         $this->install(new TwigModule));
     }
@@ -38,7 +36,7 @@ class AppModule extends AbstractModule
 
 ## DI bindings
 
-`Ray.Di` is the DI framework in BEAR.Sunday. It binds interface to the class or factory to create an object graph.
+`Ray.Di` is the core DI framework used in BEAR.Sunday. It binds interfaces to a class or factory to create an object graph.
 
 {% highlight php %}
 <?php
@@ -56,29 +54,35 @@ $this->bind($interface)->to($class)->in(Scope::SINGLETON);
 $this->bind($interface)->toConstructor($class, $named);
 {% endhighlight %}
 
-Earlier binding has a priority. You can override bindings with `override()`.
-More detail information are available at Ray.Di [README](https://github.com/ray-di/Ray.Di/blob/2.x/README.md)
+Bindings declared first take priority
+More info can be found at Ray.Di [README](https://github.com/ray-di/Ray.Di/blob/2.x/README.md)
 
-## Aop bindings
+## AOP Bindings
 
-We can "search" class and method with builtin `Matcher`, then bound interceptors on found method.
+We can "search" for classes and methods with a built-in `Matcher`, then interceptors can be bound to any found methods.
 
 {% highlight php %}
 <?php
 $this->bindInterceptor(
-    $this->matcher->any(),                   // in any class
-    $this->matcher->annotatedWith('delete'), // method(s) starts with "delete"
-    [LoggerInterceptor::class]               // bind Logger interceptor
+    // In any class
+    $this->matcher->any(),
+    // Method(s) names that start with "delete"
+    $this->matcher->annotatedWith('delete'),
+    // Bind a Logger interceptor
+    [LoggerInterceptor::class]
 );
 
 $this->bindInterceptor(
-    $this->matcher->SubclassesOf(AdminPage::class),  // inherited or implemented of AdminPage
-    $this->matcher->annotatedWith(Auth::class),      // annotated with @Auth annotation
-    [AdminAuthenticationInterceptor::class]          // bind AdminAuthenticationInterceptor
+    // The AdminPage class or a class inherited from it.
+    $this->matcher->SubclassesOf(AdminPage::class),
+    // Annotated with the @Auth annotation
+    $this->matcher->annotatedWith(Auth::class),
+    // Bind the AdminAuthenticationInterceptor
+    [AdminAuthenticationInterceptor::class]
 );
 {% endhighlight %}
 
-`Matcher` has various bind methods.
+`Matcher` has various binding methods.
 
  * [Matcher::any](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/MatcherInterface.php#L16) - Any
  * [Matcher::annotatedWith](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/MatcherInterface.php#L23) - Annotation
@@ -88,7 +92,7 @@ $this->bindInterceptor(
  * [Matcher::logicalAnd](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/MatcherInterface.php#L51) - AND
  * [Matcher::logicalNot](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/MatcherInterface.php#L58) - NOT
 
-We can receive a `MethodInvocation` object in`invoke` method. Decorating the configured instances so some logic can be run before or after any of their methods.
+In an interceptor a `MethodInvocation` object gets passed to the `invoke` method. We can the decorate the targetted instances so that you run computations before or after any methods on the target are invoked.
 
 {% highlight php %}
 <?php
@@ -96,13 +100,13 @@ class MyInterceptor implements MethodInterceptor
 {
     public function invoke(MethodInvocation $invocation)
     {
-        // before invocation
+        // Before invocation
         // ...
         
-        //  method invocation
+        //  Method invocation
         $result = $invocation->proceed();
         
-        //  after invocation
+        //  After invocation
         // ...
         
         return $result; 
@@ -110,14 +114,14 @@ class MyInterceptor implements MethodInterceptor
 }
 {% endhighlight %}
 
-With `MethodInvocation`, You can access method invocation object, method, or parameters.
+With the `MethodInvocation` object, you can access the target method's invocation object, method's and parameters.
 
  * [MethodInvocation::proceed](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/Joinpoint.php#L39) - Invoke method
  * [MethodInvocation::getMethod](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/MethodInvocation.php) -  Get method reflection
  * [MethodInvocation::getThis](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/Joinpoint.php#L48) - Get object
  * [MethodInvocation::getArguments](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/Invocation.php) - Pet parameters
  
-## Mode
+## Environment Settings
 
-BEAR.Sunday does not have mode expect `prod`.
-An Module and application are agnostic about its own environment.
+BEAR.Sunday does not have any special environment mode except `prod`.
+A Module and the application itself are unaware of the current environment.
