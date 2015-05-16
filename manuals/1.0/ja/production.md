@@ -60,37 +60,47 @@ class ProdModule extends AbstractModule
 
 ## HTTP Cache
 
-`Etag`やリソースURIがクエリーレポジトリーに保存されていると`$httpCache($_SERVER)`を行った時最小のCPUコストでレスポンスを完了します。
-`Etag`の場合は`304 (Not Modified)`のコードを返し転送コストも最小です。
+キャッシュ可能(`@Cacheable`)とアノテートしたリソースはエンティティタグ`ETag`を出力します。
 
-`HttpCache`を有効にするためには`bootstrap.php`の`load`のセクションの後に`http_cache`セクションを追加します。
+この`ETag`を使ってリソースに変更が無い時は自動で適切な`304` (Not Modified)のレスポンスコードを返すことができます。
+（この時、ネットワークの転送コストだけでなく、CPUコストも最小限のものにします。）
+
+### App
+
+`HttpCache`をスクリプトで使うために`App`クラスで`HttpCacheInject`のtraitを使って`HttpCache`をインジェクトします。
 
 {% highlight php %}
 <?php
-use BEAR\QueryRepository\HttpCache;
 
-http_cache: {
-    $httpCache = new HttpCache(__NAMESPACE__);
-    list($code) = $httpCache($_SERVER);
-    if ($code) {
-        exit(0);
-    }
+namespace MyVendor\MyApi\Module;
+
+use BEAR\QueryRepository\HttpCacheInject; // この行を追加
+use BEAR\Sunday\Extension\Application\AbstractApp;
+use Ray\Di\Di\Inject;
+
+class App extends AbstractApp
+{
+    use HttpCacheInject; // この行を追加
 }
 {% endhighlight %}
 
-次にレスポンスの転送に`$httpCache->saver`を加えます。
+### bootstrap
+
+次に`bootstrap/bootstrap.php`の`route`のセクションで以下のように`if`文を追加して、
+与えらた`ETag`のコンテンツに変更がなければ`304`を返して終了するようにします。
 
 {% highlight php %}
 <?php
-    $page = $app->resource
-        ->{$request->method}
-        ->uri($request->path)
-        ->withQuery($request->query)
-        ->eager
-        ->request();
-    $page->transfer($app->responder, $_SERVER);
-    $page->transfer($httpCache->saver, $_SERVER);
+route: {
+    $app = (new Bootstrap)->getApp(__NAMESPACE__, $context);
+    if ($app->httpCache->isNotModified($_SERVER)) {
+        http_response_code(304);
+        exit(0);
+    }
+
 {% endhighlight %}
+
+以上です。
 
 ## エクステンション
 
