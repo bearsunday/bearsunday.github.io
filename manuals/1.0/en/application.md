@@ -12,26 +12,21 @@ A BEAR.Sunday app has a run order of `compile`, `request` and `response`.
 
 ### 0. Compile
 
-An `$app` application object is created through `DI` and `AOP` settings depending on the `$context` configuration.
-`$app` is made up of service objects as it's properties that are needed to run the application such as `router` or `transfer` etc.
-`$app` is then connects these object together depending on whether it is owned by another or contains other objects.
+An `$app` application object is created through `DI` and `AOP` configuration depending on a specified `$context`.
+An `$app` is made up of service objects as it's properties that are needed to run the application such as a `router` or `transfer` etc.
+`$app` then connects these object together depending on whether it is owned by another or contains other objects.
 This is called an [Object Graph](http://en.wikipedia.org/wiki/Object_graph).
-`$app` is then serialized and reused for each request and response.
-
-
-リソースオブジェクトはリクエストに対応する`onGet`や`onPost`などのメソッドで自身のリソース状態を`code`や`body`にセットします。
-リソースオブジェクトは他のリソースオブジェクトを`@Embed`したり`@Link`することができます。メソッド内ではリソース状態の変更をするだけでその表現（HTMLやJSONなど）に関心を持つことはありません。
+`$app` is then serialized and reused in each request and response.
 
 ### 1. Request
 
-An application resource request and and resource object is created based on the HTTP request.
+An application resource request and resource object is created based on the HTTP request.
 
 A resource object which has methods that respond to `onGet`, `onPost` etc upon request sets the `code` or `body` property of it's own resource state.
 
 The resource object can then `@Embed` or `@Link` other resource objects. 
 
-Methods on the resource object are only for changing the resources state and have no interest in the representation (HTML, JSON etc).
-
+Methods on the resource object are only for changing the resources state and have no interest in the representation itself (HTML, JSON etc).
 
 ### 2. Response
 
@@ -68,12 +63,15 @@ php -S 127.0.0.1:8080 bootstrap/api.php
 
 ## Application Context
 
-The composition of application object `$app` changes in response to your defined context, so that application behavior changes.
-For example, `WebRouter` is bound to `RouterInterface` by default settings.
-However, if you set `Cli`, which is defined for console application, as your context, 
-then `CliRouter` is bound to `RouterInterface` and it will take console input instead.
+The composition of the application object `$app` changes in response to the defined context, so that application behavior changes.
 
-There are built-in and custom context's created by application.
+Depending on the defined context the building of the application object `$app` changes, altering the overall behavior. 
+
+
+For example, `WebRouter` is bound to `RouterInterface` by default.
+However, if `Cli` mode is set (instead of HTTP) the `CliRouter` is bound to the `RouterInterface` and it will then take console input.
+
+There are built-in and custom contexts that can be used in an application.
 
 **Built-in contexts**
 
@@ -82,16 +80,16 @@ There are built-in and custom context's created by application.
  * `hal`  HAL Application
  * `prod` Production
 
- You can also use a combination of the built-in context and your own custom contexts.
+ You can also use a combination of these built-in contexts and add your own custom contexts.
 
  * `app` is the default application context.
  * `api` modifies page resources to an **app resource** by default. Also any web root access (`GET /`) that is usually mapped to `page://self/` will is re-mapped to `app://self/`.
  * `cli-app` represents a console application. If you set the context to `prod-hal-api-app` your application will run as an API application in production mode using the [HAL](http://stateless.co/hal_specification.html) media type.
 
 
-Each application context (cli, app etc) corresponds to a module.
-For example the `cli` context relates to `CliModule`, then binds all of the DI and AOP bindings that is needed for a console application.
+Each application context (cli, app etc) represents a module.
+For example the `cli` context relates to a `CliModule`, then binds all of the DI and AOP bindings that is needed for a console application.
 
-The value of context wil be only used when generating an object graph.
-It is not recommend for your application code and library to change its behavior by referring to the context.
-Instead, it should be changed by **the code depend on interface** and **the changes of dependency by the context**.
+The values of each context will be only used when generating an object graph.
+It is not recommended for your application code and libraries to change their behaviour based on the context.
+Instead, the behavior should only change through **code that is dependent on an interface** and **changes of dependencies by context**.
