@@ -246,7 +246,7 @@ Last-Modified: Fri, 15 May 2015 03:07:42 GMT
 {% endhighlight %}
 投稿した`title`、`body`、インデックスの`id`の他に[HAL](http://stateless.co/hal_specification.html)の仕様に従って`_embedded`や`_links`といったリソースのメタ情報が埋め込まれています。
 
-まだコメントが投稿されていないので、投稿リソースのは空です。コメントを投稿してみましょう。コメントの`URI`は`_links`を利用します。1つの記事に複数のコメントを投稿してみましょう。
+まだコメントが投稿されていないので、投稿リソースは空です。コメントを投稿してみましょう。コメントの`URI`は`_links`を利用します。1つの記事に複数のコメントを投稿してみましょう。
 
 {% highlight bash %}
 php bootstrap/api.php post 'app://self/comment?post_id=1&body=nice post !'
@@ -398,7 +398,7 @@ Last-Modified: Fri, 15 May 2015 01:25:12 GMT
 
 このリソースは`@Cacheable`なので`GET`を繰り返しても`Last-Modified`に変更がありません。確かめてみましょう。`Post`の`onGet`で`error_log`などを記述しても実行されないことを確認しましょう。キャッシュされています。
 
-次に`GET`リクエストで`Etag`ヘッダーに与えられた`ETag`を使てリクエストを行います。（`1234567890`の部分は表示された`Etag`の値に変更します）
+次に`GET`リクエストで`Etag`ヘッダーに与えられた`ETag`を使ってリクエストを行います。（`1234567890`の部分は表示された`Etag`の値に変更します）
 
 {% highlight bash %}
 curl -i 'http://127.0.0.1:8080/post?id=1' --header 'If-None-Match: 1234567890'
