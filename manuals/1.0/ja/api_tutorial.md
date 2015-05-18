@@ -7,7 +7,7 @@ permalink: /manuals/1.0/ja/api_tutorial.html
 # APIチュートリアル
 
 BEAR.Sundayで[HAL](http://stateless.co/hal_specification.html)を使ったRESTfulなWeb APIを作成します。
-アプリケーション名は`PSR`に準拠した`MyVendor.MyApi`としてスケルトンをインストールします。
+最初にアプリケーションの雛形を`MyVendor.MyApi`という名前でインストールします。名前は[PSR](http://www.php-fig.org/psr/psr-0/)準拠です。
 
 {% highlight bash %}
 composer create-project bear/skeleton -n MyVendor.MyApi ~1.0@dev
@@ -467,8 +467,9 @@ BEAR.Sundayの`Etag`は単にコンテンツのハッシュを返してネット
 
 いかがだったでしょうか？
 
-`BEAR.Sunday`は素早くAPIサイトのプロトタイプをつくることができます。
-開発速度を保ちながらこのAPIはRESTを単なる[HTTPのCRUD](http://www.infoq.com/jp/news/2009/08/CRUDREST)システムとしてとらえず、ハイパーメディア制約を使い、HTTPをアプリケーションプロトコルとした**RESTful Web API**です。
+このようにBEAR.SundayはAPIサイトの高速開発が可能です。
+しかしこのAPIはRESTを単なる[HTTPのCRUD](http://www.infoq.com/jp/news/2009/08/CRUDREST)システムとしてとらえいない、ハイパーメディア制約を使った**RESTful Web API**です。
+長期的運用に優れスケールも可能です。
 
  * 適切なレスポンスコードを返します。（`200`,`201`,`304`,`403`,`404`,`500`） 
  * HTTPに従ったリソースの適切なキャッシュにフレームワークが対応しています。（`ETag`レスポンスと`If-None-Match:`リクエストに対応）
@@ -483,6 +484,7 @@ BEAR.Sundayの`Etag`は単にコンテンツのハッシュを返してネット
  * キャッシュコントロールをサーバーサイドで行っています（リソースの自己記述性）
  * 起点となるAPIの以外の`URI`はサーバーから受け取り、クライアントでURIを組み立てません。
  * リソースの階層がレイヤーになっています。
+ * スケールに優れています。
 
 BEAR.SundayはRESTシステムの**フレームワーク**を提供し、これらの機能を標準で利用することができます。
 
