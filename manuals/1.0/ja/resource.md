@@ -295,7 +295,7 @@ class Todo
 {% endhighlight %}
 
 
-### @Purge @Refresh
+## @Purge @Refresh
 
 もう１つの方法は`@Purge`アノテーションや、`@Refresh`アノテーションで更新対象のURIを指定することです。
 
@@ -311,10 +311,37 @@ public function onPut($id, $name, $age)
 
 別のクラスのリソースや関連する複数のリソースの`QueryRepository`の内容を更新することができます。`@Purge`はリソースのキャッシュを消去し`@Refresh`はキャッシュの再生成を行います。
 
-### @Etag
+## クエリーリポジトリの直接操作
 
-クラスにアノテートされていてHTTPリクエストに`Etag`が含まれていれば、コンテンツを照合し変更がなければ`304 Not Modified`を返します。
+クエリージポジトリに格納されているデータは`QueryRepositoryInterface`で受け取ったクライントで直接`put`（保存）したり`get`したりすることができます。
 
+{% highlight php %}
+<?php
+use BEAR\QueryRepository\QueryRepositoryInterface;
+
+class Foo
+{
+    public function __construct(QueryRepositoryInterface $repository)
+    {
+        $this->repository = $repository;
+    }
+
+    public function foo()
+    {
+        // 保存
+        $this->repository->put($this);
+        $this->repository->put($resourceObject);
+
+        // 消去
+        $this->repository->purge($resourceObject->uri);
+        $this->repository->purge(new Uri('app://self/user'));
+        $this->queryRepository->purge(new Uri('app://self/ad/?id={id}', ['id' => 1]));
+
+        // 読み込み
+        list($code, $headers, $body, $view) = $repository->get(new Uri('app://self/user'));
+     }
+{% endhighlight %}
+     
 ## BEAR.Resource
 
 リソースクラスに関するより詳しい情報はBEAR.Resourceの[README](https://github.com/bearsunday/BEAR.Resource/blob/1.x/README.ja.md)もご覧ください。
