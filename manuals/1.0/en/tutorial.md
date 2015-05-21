@@ -12,7 +12,7 @@ Let's make a web service that returns the weekday for a given year-month-day.
 First make a project with [composer](https://getcomposer.org/).
 
 {% highlight bash %}
-composer create-project bear/skeleton MyVendor.Weekday ~1.0@dev
+composer create-project -n bear/skeleton MyVendor.Weekday ~1.0@dev
 ...
 cd MyVendor.Weekday
 composer install

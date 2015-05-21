@@ -11,7 +11,7 @@ permalink: /manuals/1.0/ja/tutorial.html
 まずプロジェクトを作成します。
 
 {% highlight bash %}
-composer create-project bear/skeleton MyVendor.Weekday ~1.0@dev
+composer create-project -n bear/skeleton MyVendor.Weekday ~1.0@dev
 ...
 cd MyVendor.Weekday
 composer install
