@@ -245,7 +245,6 @@ public function onGet($name)
 <?php
 /**
  * @Cacheable
- * @Etag
  */
 class User extends ResourceObject
 {% endhighlight %}
@@ -262,7 +261,6 @@ class User extends ResourceObject
 
 /**
  * @Cacheable
- * @Etag
  */
 class Todo
 {
