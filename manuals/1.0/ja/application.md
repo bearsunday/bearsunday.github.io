@@ -5,26 +5,28 @@ category: Manual
 permalink: /manuals/1.0/ja/application.html
 ---
 
+## アプリケーション実行
 
-アプリケーションスクリプト`bootstrap/bootstrap.php`では**表現可能なリソース状態の転送(REST)**が行われます。
-そのRESTがBEAR.Sundayのアプリケーション実行です。コンパイル、リクエスト、レスポンスの順で実行されます。
+アプリケーションは以下のような順番で実行されます。
 
-### 0. コンパイル
+{% highlight php %}
+boot -> compile -> request(route, method, interceptor) -> response(representation) -> exit
+{% endhighlight %}
 
-与えられた`$context`に対応するDIとAOPの設定でアプリケーションオブジェクト`$app`が作られます。
-`$app`は`router`や`transfer`などアプリケーションの実行に必要なサービスオブジェクトをプロパティとしてすべて保持している１つの大きなオブジェクトです。
-`$app`のオブジェクトは他から所有されているか、他のオブジェクトを含んでいるかの関係でお互いに接続されていて、これを[オブジェクトグラフ](http://en.wikipedia.org/wiki/Object_graph)と呼びます。
-`$app`はシリアライズされ再利用されます。
 
-### 1. リクエスト
+## 0. コンパイル
 
-HTTPリクエストを元にアプリケーションのリソースリクエストとリソースオブジェクトが作成されます。
-リソースオブジェクトはリクエストに対応する`onGet`や`onPost`などのメソッドで自身のリソース状態を`code`や`body`にセットします。
-リソースオブジェクトは他のリソースオブジェクトを`@Embed`したり`@Link`することができます。メソッド内ではリソース状態の変更をするだけでその表現（HTMLやJSONなど）に関心を持つことはありません。
+与えられた`$context`に対応するDIとAOPの設定で、`router`や`transfer`などアプリケーションの実行に必要なサービスを保持する`$app`オブジェクトが作られます。
 
-### 2. レスポンス
+## 1. リクエスト
 
-リソースオブジェクトにインジェクトされているレンダラーが、リクエスト結果による**リソースの状態**をJSONやHTMLなどの**表現**にしてクライアントに**転送**します。
+HTTPリクエストは`router`でアプリケーションのリソースへのリクエストに変換され実行されます。
+リソースの`method`では**リソース状態**を`code`,`header`, `body`にセットします。
+
+## 2. レスポンス
+
+リソースのレンダラーが**リソースの状態**を**表現**(JSONやHTML)にして、クライアントに**転送**します。
+(**RE**presentational **S**tate **T**ransfer) 
 
  <img src="/images/screen/diagram.png" style="max-width: 100%;height: auto;"/>
 
@@ -57,6 +59,7 @@ php -S 127.0.0.1:8080 bootstrap/api.php
 
 コンテキストに応じてアプリケーションオブジェクト`$app`の構成が変わり、振る舞いが変更されます。
 例えばデフォルトの設定では`RouterInterface`に`WebRouter`が束縛されていますが、`Cli`では`RouterInterface`に`CliRouter`が束縛され(HTTPリクエストの代わりに)コンソールの入力値が入力値になります。
+また、キャッシュや認証、ログなど`method`の前後に実行されるインターセプターもコンテキストに応じて変わります。
 
 フレームワークが用意しているbuilt-inコンテキストとアプリケーションが作成するカスタムコンテキストがあります。
 
