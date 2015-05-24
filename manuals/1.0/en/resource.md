@@ -5,15 +5,13 @@ category: Manual
 permalink: /manuals/1.0/en/resource.html
 ---
 
- * *[This document](https://github.com/bearsunday/bearsunday.github.io/blob/master/manuals/1.0/en/resource.md) needs to be proofread by an English speaker. If interested please send me a pull request. Thank you.*
-
 # Object as a service
 
-The application of BEAR.Sunday is [RESTful](http://en.wikipedia.org/wiki/Representational_state_transfer). It is consisted of the the collection of resources.
+A BEAR.Sunday application is [RESTful](http://en.wikipedia.org/wiki/Representational_state_transfer) and is made up of a collection of resources.
 
-A HTTP method is mapped to PHP method in `ResourceObject` class.
+An HTTP method is mapped to a PHP method in the `ResourceObject` class.
 
-Here are examples of resource object:
+Here are some examples of a resource object:
 
 {% highlight php %}
 <?php
@@ -22,7 +20,8 @@ class Index extends ResourceObject
     public function onGet($a, $b)
     {
         $this->code = 200; // 省略可
-        $this['result'] = $a + $b; // $_GET['a'] + $_GET['b']
+        // $_GET['a'] + $_GET['b']
+        $this['result'] = $a + $b;
 
         return $this;
     }
@@ -35,15 +34,17 @@ class Todo extends ResourceObject
 {
     public function onPost($id, $todo)
     {
-        $this->code = 201; // status code
-        $this->headers['Location'] = '/todo/new_id'; // location header for new resource
+        // status code
+        $this->code = 201;
+        // location header for created resource
+        $this->headers['Location'] = '/todo/new_id'; 
         
         return $this;
     }
 }
 {% endhighlight %}
 
-A resource has a URI like a web URL. 
+A resource has a URI just like a web URL. 
 {% highlight bash %}
 app://self/blog/posts/?id=3
 {% endhighlight %}
@@ -52,8 +53,8 @@ app://self/blog/posts/?id=3
 page://self/index
 {% endhighlight %}
   
-It has methods which correspond to HTTP methods `onGet`, `onPost`, `onPut`, `onPatch`, or `onDelete`.
-`$_GET` is passed to the parameters of `onGet` method, `$_POST` is same to `onPost`. 
+It has methods which corresponds to HTTP verbs `onGet`, `onPost`, `onPut`, `onPatch`, or `onDelete`.
+`$_GET` parameters are passed to the parameters of `onGet` method, as are `$_POST` parameters sent to the `onPost` method. 
 
 {% highlight php %}
 <?php
@@ -65,7 +66,7 @@ It has methods which correspond to HTTP methods `onGet`, `onPost`, `onPut`, `onP
             // $todo <= $_GET['todo']
 {% endhighlight %}
 
-The value which format defined by `content-type` header will be passed to PHP method for `onPut`,`onPatch` or `onDelete`.
+The format defined by `content-type` header will be passed to for `onPut`,`onPatch` or `onDelete`.
 
 {% highlight php %}
 <?php
@@ -73,7 +74,8 @@ The value which format defined by `content-type` header will be passed to PHP me
     {
         public function onPut($id, $todo)
         {
-            // $id   <= a value encoded `x-www-form-urlencoded` or `application/json`
+            // `x-www-form-urlencoded` or `application/json`
+            $id
 {% endhighlight %}
 
 The resource status (`code`,`headers` or`body`) is changed by method with given parameters. Then the resource class return itself(`$this`). 
