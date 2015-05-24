@@ -53,7 +53,7 @@ app://self/blog/posts/?id=3
 page://self/index
 {% endhighlight %}
   
-It has methods which corresponds to HTTP verbs `onGet`, `onPost`, `onPut`, `onPatch`, or `onDelete`.
+It has methods that correspond to HTTP verbs `onGet`, `onPost`, `onPut`, `onPatch`, or `onDelete`.
 `$_GET` parameters are passed to the parameters of `onGet` method, as are `$_POST` parameters sent to the `onPost` method. 
 
 {% highlight php %}
@@ -66,7 +66,7 @@ It has methods which corresponds to HTTP verbs `onGet`, `onPost`, `onPut`, `onPa
             // $todo <= $_GET['todo']
 {% endhighlight %}
 
-The format defined by `content-type` header will be passed to for `onPut`,`onPatch` or `onDelete`.
+The format defined by `content-type` header will handle the passing of parameters to be sent to `onPut`,`onPatch` or `onDelete`.
 
 {% highlight php %}
 <?php
@@ -78,11 +78,11 @@ The format defined by `content-type` header will be passed to for `onPut`,`onPat
             $id
 {% endhighlight %}
 
-The resource status (`code`,`headers` or`body`) is changed by method with given parameters. Then the resource class return itself(`$this`). 
+The resource state (`code`,`headers` or`body`) is handled by these method using the given parameters. Then the resource class returns itself(`$this`). 
 
 ### Syntax sugar
 
-The body access has a syntax sugar. 
+Access to the body property has some syntactic sugar. 
 {% highlight php %}
 <?php
 
@@ -94,7 +94,7 @@ $this->body['price'] = 10;
 ## Scheme
 
 The equivalent to a MVC model is an `app` resource. A resource functions as an internal API, but as it is designed using REST it also works as an external API transport.
-The `page` resource carries out the page controller role is also a resource, according to its URL calls an application resource and builds itself.
+The `page` resource carries out a similar role as a page controller which is also a resource. A page resource then can consume application resources and builds itself based on the called URI.
 
 | URI | Class |
 |-----+-------|
@@ -103,7 +103,7 @@ The `page` resource carries out the page controller role is also a resource, acc
 
 ## Method
 
-Resources have 6 interfaces conforming to the HTTP methods.
+Resources have 6 interfaces conforming to HTTP methods.
 
 | **method** | **description**|
 |--------|------------|
@@ -115,20 +115,20 @@ Resources have 6 interfaces conforming to the HTTP methods.
 | OPTIONS | Resource access method query |
 
 #### GET 
-Resource reading. This method does not provide any changing of the resource state. A safe method with no side affects.
+Reads resources. This method does not provide any changing of the resource state. A safe method with no possible side affects.
 
 #### PUT 
-Performs resource updates and also creation. This method has the benefit that even if you run it once, running it many more times will have no more effect. See [Idempotence](http://en.wikipedia.org/wiki/Idempotence).
+Performs creation and updates of a resource. This method has the benefit that running it once or many more times will have no more effect. This is referred to as [Idempotence](http://en.wikipedia.org/wiki/Idempotence).
 
 #### PATCH
 
-Performs resource updatese, but unlike PUT, it applies a delta rather than replacing the entire resource. 
+Performs resource updates, but unlike PUT, it applies a delta rather than replacing the entire resource. 
 
 #### POST 
-Performs resource creation. If you run the request multiple times the resource will be created that many times. A method with no idempotence.
+Performs resource creation. If you run a request multiple times the resource will be created as many times. A method with no idempotence.
 
 #### DELETE 
-Resource deletion. Has idempotence just as PUT.
+Resource deletion. Has idempotence just like PUT.
 
 #### OPTIONS 
 Inspects which methods and parameters can be used on the resource. Just like `GET` there is no effect on the resource.
@@ -136,7 +136,7 @@ Inspects which methods and parameters can be used on the resource. Just like `GE
 
 ## Client
 
-You need **Resource client** to request resource. See the following example. `ResourceInject` trait is useful for injection.
+You need a **Resource Client** to request resource. In the following example a `ResourceInject` trait is used to inject a `Resource Client`.
 
 {% highlight php %}
 <?php
@@ -160,8 +160,8 @@ class Index extends ResourceObject
 }
 {% endhighlight %}
 
-This code invoke `GET` request to `app://self/blog/posts` App resource with `?id=1` query.
-If you have no `eager` options with the request, It is just a request. Request invocation will be made at representation.
+This code invokes a `GET` request to `app://self/blog/posts` App resource with the query `?id=1` .
+If you do not specify an `eager` option with the request, it is just hold the request. Request invocation will then be made when values are lazily output in the representation.
 
 {% highlight php %}
 <?php
@@ -169,12 +169,12 @@ $posts = $this->resource->get->uri('app://self/posts')->request(); //lazy
 $posts = $this->resource->get->uri('app://self/posts')->eager->request(); // eager
 {% endhighlight %}
 
-A `request()` method without `eager` returns invokable request object, or you can invoke by `$posts()`.
-You can assign this value to template engine or embed to another resource. It will be lazy evaluated.
+A `request()` method without `eager` returns an invokable request object, which can be invoked by calling `$posts()`.
+You can assign this value to a template engine or embed it in another resource. It will then be lazily evaluated.
 
 ## Link request
 
-Resource can be linked in various way.
+Resources can be linked in various way.
 
 {% highlight php %}
 <?php
@@ -190,9 +190,9 @@ $blog = $this
 
 Three type of links are provided. 
 
- * `linkSelf($rel)` Replace with linked resource.
- * `linkNew($rel)`  Add linked resource to source resource.
- * `linkCrawl($rel)` Crawl the link to build resource tree.
+ * `linkSelf($rel)` Replace with the linked resource.
+ * `linkNew($rel)`  Add linked resources to the base resource.
+ * `linkCrawl($rel)` Crawl the link to build a resource tree.
 
 ## Link Annotation
 
@@ -207,7 +207,7 @@ Three type of links are provided.
 
 Set the link with `rel` key name and `href` resource URI. 
 
- * NOTE: In `hal` context, `@Link` is used for HAL link.
+ * NOTE: When using the `hal` context, `@Link` is used for a HAL link.
 
 {% highlight php %}
 <?php
@@ -219,9 +219,9 @@ use BEAR\Resource\Annotation\Link;
 public function onGet($id = null)
 {% endhighlight %}
 
-A `crawl` tagged link will be [crawled](https://github.com/koriym/BEAR.Resource#crawl) with `linkCrawl`.
+A `crawl` tagged link will then be [crawled](https://github.com/koriym/BEAR.Resource#crawl) with `linkCrawl`.
 
-Found more info about the `@Link` at  BEAR.Resource [README](https://github.com/bearsunday/BEAR.Resource/blob/1.x/README.md).
+Find out more about the `@Link` annotation at  BEAR.Resource [README](https://github.com/bearsunday/BEAR.Resource/blob/1.x/README.md).
 
 ### @Embed
 {% highlight php %}
@@ -234,13 +234,13 @@ use BEAR\Resource\Annotation\Embed;
     public function onGet($id)
 {% endhighlight %}
 
-You can embed another resource in `src`. Imagine  `<img src="...">` in HTML. It embedded image resource into its own html. It's just like that.
+You can embed another resource by using `src`. Just think of a regular image tag (`<img src="...">`) in HTML. It embeds an image resource into its own element. It's exactly the same.
 
- * NOTE: In HAL renderer, used as `__embed`.
+ * NOTE: In the HAL renderer, this is used as `__embed`.
 
-## Bind parameter
+## Bind parameters
 
-You can bind method parameter to "external value". The external value might be web context or other resource status.
+You can bind method parameters to an "external value". The external value might be a web context or any other resource state.
 
 ### Web context parameter
 
@@ -258,8 +258,8 @@ use Ray\WebContextParam\Annotation\QueryParam;
       // $id = $_GET['id'];
 {% endhighlight %}
 
-The above example is in the case a key name and parameter name is same.
-Specify `key` and `param` when it isn't matched.
+The above example is a case where a key name and the parameter name are the same.
+You can specify `key` and `param` values when they don't match.
 
 {% highlight php %}
 <?php
@@ -273,7 +273,7 @@ use Ray\WebContextParam\Annotation\CookieParam;
       // $tokenId = $_COOKIE['id'];
 {% endhighlight %}
 
-full list
+Full List
 
 {% highlight php %}
 <?php
@@ -300,11 +300,11 @@ use Ray\WebContextParam\Annotation\ServerParam;
        // $server   = $_SERVER['SERVER_NAME'];
 {% endhighlight %}
 
-This `bind parameter` is very useful for testing.
+This `bind parameter` is also very useful for testing.
 
 ### Resource Parameter
 
-We can bind the status of other resource to parameter with `@ResourceParam` annotation.
+We can bind the status of another resource to a parameter with the `@ResourceParam` annotation.
 
 {% highlight php %}
 <?php
@@ -315,7 +315,7 @@ public function onGet($name)
 {
 {% endhighlight %}
 
-In this example, `nickname` of `app://self//login` is bound to `$name`.
+In this example the `nickname` property of `app://self//login` is bound to `$name`.
 
 ## Resource cache
 
@@ -329,10 +329,10 @@ In this example, `nickname` of `app://self//login` is bound to `$name`.
 class User extends ResourceObject
 {% endhighlight %}
 
-`@Cacheable` annotated resource object works as cache without time limit.
-Cache is updated not by expiry time (unless you specify) but any no GET request in same class. (Parameter is looked to determine identify)
+`@Cacheable` annotated resource objects are cached without a time limit.
+The cache will be updated by any non-GET request on the same class  with no expiry time (unless you specify one). A parameter is inspected to determine identity of the resource.
 
-`@Cacheable` annotated resource object will have `Last-Modified` and `ETag` headers.
+`@Cacheable` annotated resource objects will have `Last-Modified` and `ETag` headers added automatically.
 
 {% highlight php %}
 <?php
@@ -354,8 +354,9 @@ class Todo
 }
 {% endhighlight %}
 
-For instance, when `->post(10, 'shopping')` is given at a request, `?id=10` cache will be updated.
-Set `update` false if you don't want to have this auto update.
+For example, when a request is made to `->post(10, 'shopping')`, the `?id=10` cache will be updated.
+
+Set `update` to false if you don't want to have this auto update.
 
 {% highlight php %}
 /**
@@ -363,7 +364,7 @@ Set `update` false if you don't want to have this auto update.
  */
 {% endhighlight %}
 
-You can specify `expiry` as cache life time. `short`, `medium` or `long` are valid for `expiry`.
+You can specify a cache life time as `short`, `medium` or `long` on the  `expiry` property.
 
 {% highlight php %}
 /**
@@ -374,7 +375,7 @@ You can specify `expiry` as cache life time. `short`, `medium` or `long` are val
 
 ### @Purge @Refresh
 
-You can also update cache with `@Purge` and `@Refresh`annotation.
+You can also update caches with the `@Purge` and `@Refresh` annotation.
 
 {% highlight php %}
 <?php
@@ -385,4 +386,4 @@ You can also update cache with `@Purge` and `@Refresh`annotation.
 public function onPut($id, $name, $age)
 {% endhighlight %}
 
-You can update another resource class and multiple resource at once. `@Purge` delete cache. `@Refresh` recreate cache data.
+You can update the cache for another resource class or even multiple resources at once. `@Purge` deletes a cache where `@Refresh` will recreate cache data.
