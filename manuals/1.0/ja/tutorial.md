@@ -11,7 +11,7 @@ permalink: /manuals/1.0/ja/tutorial.html
 まずプロジェクトを作成します。
 
 {% highlight bash %}
-composer create-project bear/skeleton MyVendor.Weekday ~1.0@dev
+composer create-project -n bear/skeleton MyVendor.Weekday ~1.0@dev
 ...
 cd MyVendor.Weekday
 composer install
@@ -984,5 +984,8 @@ php app.php
 BEAR.SundayアプリケーションのリソースはこれらのRESTの特徴を備えたもので、再利用性に優れています。
 
 異なるアプリケーションの情報もハイパーリンクで接続することができ、他のCMSやフレームワークからの利用やAPIサイトにすることも容易です。
-BEAR.Sundayから他のシステムに移行することがあっても、それまで作成したリソースが無駄になることなく利用できます。
 リソースの値と表現は分離されていて、Webページですら他のアプリケーションのAPIになることができます。
+
+## このチュートアリルの次は？
+
+`HTTP`や`RESTful Web API`についてより実践的に学びたい方は、復習として[APIチュートリアル](/manuals/1.0/ja/api_tutorial.html)が用意されています。

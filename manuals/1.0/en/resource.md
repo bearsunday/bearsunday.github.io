@@ -325,7 +325,6 @@ In this example, `nickname` of `app://self//login` is bound to `$name`.
 <?php
 /**
  * @Cacheable
- * @Etag
  */
 class User extends ResourceObject
 {% endhighlight %}
@@ -340,7 +339,6 @@ Cache is updated not by expiry time (unless you specify) but any no GET request 
 
 /**
  * @Cacheable
- * @Etag
  */
 class Todo
 {
@@ -388,8 +386,3 @@ public function onPut($id, $name, $age)
 {% endhighlight %}
 
 You can update another resource class and multiple resource at once. `@Purge` delete cache. `@Refresh` recreate cache data.
-
-
-### @Etag
-
-When HTTP request contains `Etag` and contents is not modified, `304 Not Modified` will be responded.
