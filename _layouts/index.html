@@ -57,10 +57,7 @@
         <nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
             <ul class="nav navbar-nav">
                 <li {% if page.category == "Manual" %} class="active"{% endif %}>
-                <a href="/manuals/">Manual v1</a>
-                </li>
-                <li {% if page.category == "Manual" %} class="active"{% endif %}>
-                <a href="/manual/en/index.html">Manual v0</a>
+                <a href="/manuals/">Manual</a>
                 </li>
             </ul>
         </nav>
@@ -77,4 +74,4 @@
 </div>
 
 
-{% include footer.html %}
+{% include manuals/1.0/footer.html %}
