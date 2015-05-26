@@ -716,7 +716,7 @@ Last-Modified: Sat, 02 May 2015 17:26:42 GMT
 
 このtodoリソースのように、更新や削除のタイミングが完全にリソース内で閉じてるリソースにとても効果的です。
 
-## PUTメソッドによるキャッシュの自動更新
+## メソッドによるキャッシュ更新
 
 `todo`リソースに`onPut`メソッドを実装して確かめてみましょう。
 
@@ -853,6 +853,146 @@ curl -v http://127.0.0.1:8081/todo?id=2
 アプリケーションが管理したり、データベースのカラムを用意したりする必要はありません。
 
 `@Cacheable`を使うと、リソースコンテンツは書き込み用のデータベースとは違うリソースの保存専用の「クエリーリポジトリ」で管理され、データの更新や`Etag`や`Last-Modified`のヘッダーの付加が透過的に行われます。
+
+## ハイパーリンク
+
+次はリソースとリソースをリンクするハイパーリンクを作成します。
+
+追加のDBを作成して
+{% highlight bash %}
+sqlite3 var/db/post.sqlite3
+
+sqlite> create table memo(id integer primary key, todo_id integer, body);
+sqlite> .exit
+{% endhighlight %}
+
+今度は[Aura.Sql](https://github.com/auraphp/Aura.Sql)を使ってみましょう。
+{% highlight bash %}
+composer require ray/aura-sql-module ~1.0
+{% endhighlight %}
+
+同じように`AppModule::configure()`でインストールします。
+
+{% highlight php %}
+<?php
+use Ray\AuraSqlModule\AuraSqlModule; // この行を追加
+
+class AppModule extends AbstractModule
+{
+    protected function configure()
+    {
+        // ...
+        $dbConfig = 'sqlite:' . dirname(dirname(__DIR__)). '/var/db/post.sqlite3';
+        $this->install(new AuraSqlModule($dbConfig));{% endhighlight %}
+
+`todo`リソースにメモをつけることができるように`Memo`リソースを追加します。
+
+{% highlight php %}
+<?php
+
+namespace MyVendor\Weekday\Resource\App;
+
+use BEAR\RepositoryModule\Annotation\Cacheable;
+use BEAR\RepositoryModule\Annotation\Refresh;
+use BEAR\Resource\ResourceObject;
+use Ray\AuraSqlModule\AuraSqlInject;
+
+/**
+ * @Cacheable
+ */
+class Memo extends ResourceObject
+{
+    use AuraSqlInject;
+
+    public function onGet($todo_id)
+    {
+        $sql  = 'SELECT * FROM memo WHERE todo_id = :todo_id';
+        $bind = ['todo_id' => $todo_id];
+        $this->body = $this->pdo->fetchAll($sql, $bind);
+
+        return $this;
+    }
+
+    /**
+     * @Refresh(uri="app://self/todo?id={todo_id}")
+     */
+    public function onPost($todo_id, $body)
+    {
+        $this['todo_id'] = $todo_id;
+        $sql = 'INSERT INTO memo (todo_id, body) VALUES(:todo_id, :body)';
+        $statement = $this->pdo->prepare($sql);
+        $bind = [
+            'todo_id' => $todo_id,
+            'body' => $body
+        ];
+        $statement->execute($bind);
+        $id = $this->pdo->lastInsertId();
+
+        $this->code = 201;
+        $this->headers['Location'] = "/comment?id={$id}";
+
+        return $this;
+    }
+}
+{% endhighlight %}
+
+作成したMemoリソースをTodoリソースに`@Embed`（埋め込み）ます。 
+
+{% highlight php %}
+<?php
+    /**
+     * @Embed(rel="memo", src="app://self/memo?todo_id={id}")
+     * @Link(rel="memo", href="app://self/memo?todo_id={id}")
+     */
+    public function onGet($id)
+    {
+        $this['id'] = $id;
+{% endhighlight %}
+
+Todoを`GET`した時に、対応するmemoリソースの`POST`先リンクがわかるように`@Link`でmemoリソースのリンクもアノテートします。
+
+Todoリソースを取得するとMemoリソースのリンクが表示されるようになりました。
+{% highlight bash %}
+php bootstrap/api.php get 'app://self/todo?id=1'
+
+200 OK
+Etag: 0
+Last-Modified: Tue, 26 May 2015 08:18:18 GMT
+content-type: application/hal+json
+
+{
+    "id": "1",
+    "todo": [
+        {
+            "id": "1",
+            "todo": "shopping",
+            "created": "2015-05-04 03:51:33"
+        }
+    ],
+    "_links": {
+        "self": {
+            "href": "/todo?id=1"
+        },
+        "memo": {
+            "href": "app://self/memo?todo_id=1"
+        }
+    }
+}
+{% endhighlight %}
+
+そのリンクを使ってMemoを`POST`してみます。
+        
+{% highlight bash %}
+php bootstrap/api.php post 'app://self/memo?todo_id=1&body=VERY IMPORTANT'
+{% endhighlight %}
+
+再びAppリソースを読み込むとメモが埋め込まれています。
+{% highlight bash %}
+php bootstrap/api.php get 'app://self/todo?id=1'
+{% endhighlight %}
+
+`@Refresh`アノテーションでキャッシュ生成をリンクすると、リソースの変更に応じて**他のリソースのキャッシュ**を更新することができます。
+同様のアノテーション`@Purge`は他のリソースのキャッシュを破壊するだけです。
 
 ## アプリケーションのインポート
 
