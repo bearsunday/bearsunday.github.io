@@ -936,7 +936,7 @@ class Memo extends ResourceObject
 }
 {% endhighlight %}
 
-作成したMemoリソースをTodoリソースに`@Embed`（埋め込み）ます。 
+作成したMemoリソースをTodoリソースに埋め込みます。 
 
 {% highlight php %}
 <?php
@@ -989,10 +989,46 @@ php bootstrap/api.php post 'app://self/memo?todo_id=1&body=VERY IMPORTANT'
 再びAppリソースを読み込むとメモが埋め込まれています。
 {% highlight bash %}
 php bootstrap/api.php get 'app://self/todo?id=1'
+
+content-type: application/hal+json
+ETag: 1105179874
+Last-Modified: Tue, 26 May 2015 15:33:28 GMT
+
+{
+    "id": "1",
+    "todo": [
+        {
+            "id": "1",
+            "todo": "shopping",
+            "created": "2015-05-26 23:49:11"
+        }
+    ],
+    "_embedded": {
+        "memo": {
+            "0": {
+                "id": "1",
+                "todo_id": "1",
+                "body": "VERY IMPORTANT"
+            },
+            "_links": {
+                "self": {
+                    "href": "/memo?todo_id=1"
+                }
+            }
+        }
+    },
+    "_links": {
+        "self": {
+            "href": "/todo?id=1"
+        },
+        "memo": {
+            "href": "app://self/memo?todo_id=1"
+        }
+    }
+}
 {% endhighlight %}
 
-`@Refresh`アノテーションでキャッシュ生成をリンクすると、リソースの変更に応じて**他のリソースのキャッシュ**を更新することができます。
-同様のアノテーション`@Purge`は他のリソースのキャッシュを破壊するだけです。
+このTodoリソースは自身の1)`PUT`メソッドを使うか、2)`@Refresh`でリンクしたMemoを`POST`したときのみキャッシュが再生成されます。
 
 ## アプリケーションのインポート
 
