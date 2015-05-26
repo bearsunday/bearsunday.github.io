@@ -788,7 +788,7 @@ class Todo extends ResourceObject
 まずはコンソールでPOSTしてデータを作成します。
 
 {% highlight bash %}
-php bootstrap/api.php post /todo?todo='run'
+php bootstrap/api.php post '/todo?todo=run'
 
 201 Created
 location: /todo/?id=2
@@ -846,7 +846,7 @@ curl http://127.0.0.1:8081/todo -X PUT -H 'Content-Type: application/json' -d '{
 再度GETを行うと`Last-Modified`が変わっているのが確認できます。
 
 {% highlight bash %}
-curl -v http://127.0.0.1:8081/todo?id=2
+curl -i 'http://127.0.0.1:8081/todo?id=2'
 {% endhighlight %}
 
 この`Last-Modified`の日付は`@Cacheable`で提供されるものです。

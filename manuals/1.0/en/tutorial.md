@@ -781,7 +781,8 @@ class Todo extends ResourceObject
 First create some data by doing a POST in the console.
 
 {% highlight bash %}
-php bootstrap/api.php post /todo?todo='run'
+php bootstrap/api.php post '/todo?todo=run'
+
 
 201 Created
 location: /todo/?id=2
@@ -839,7 +840,7 @@ curl http://127.0.0.1:8081/todo -X PUT -H 'Content-Type: application/json' -d '{
 This time when you perform a `GET` you can see that the `Last-Modified` has been updated.
 
 {% highlight bash %}
-curl -v http://127.0.0.1:8081/todo?id=2
+curl -i 'http://127.0.0.1:8081/todo?id=2'
 {% endhighlight %}
 
 This `Last-Modified` time stamp has been provided by `@Cacheable`. No need to provide any special application admin or database columns.
