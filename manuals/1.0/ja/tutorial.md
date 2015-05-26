@@ -803,27 +803,22 @@ php -S 127.0.0.1:8081 bootstrap/api.php
 
 今度は`curl`コマンドでGETしてみましょう。
 {% highlight bash %}
-curl -v http://127.0.0.1:8081/todo?id=2
+curl -i 'http://127.0.0.1:8081/todo?id=2'
 
-> GET /todo?id=2 HTTP/1.1
-> User-Agent: curl/7.38.0
-> Host: 127.0.0.1:8081
-> Accept: */*
-> 
-< HTTP/1.1 200 OK
-< Host: 127.0.0.1:8081
-< Connection: close
-< X-Powered-By: PHP/5.6.8
-< content-type: application/hal+json
-< Etag: 2260029291
-< Last-Modified: Sun, 03 May 2015 18:55:20 GMT
-< 
+HTTP/1.1 200 OK
+Host: 127.0.0.1:8081
+Connection: close
+X-Powered-By: PHP/5.6.6
+content-type: application/hal+json
+ETag: 3134272297
+Last-Modified: Tue, 26 May 2015 04:08:59 GMT
+
 {
     "todo": [
         {
             "id": "2",
             "todo": "run",
-            "created": "2015-05-04 03:53:00"
+            "created": "2015-05-04 03:51:50"
         }
     ],
     "_links": {
@@ -832,7 +827,6 @@ curl -v http://127.0.0.1:8081/todo?id=2
         }
     }
 }
-* Closing connection 0
 {% endhighlight %}
 
 何回かリクエストして`Last-Modified`の日付が変わらないことを確認しましょう。この時`onGet`メソッド内は実行されていません。試しにメソッド内で`echo`などを追加して確認してみましょう。
