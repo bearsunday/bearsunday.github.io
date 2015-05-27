@@ -94,7 +94,7 @@ To receive a dynamic parameter in URI path, we can use `AuraRouter`. This can be
 Get it with [composer](http://getcomposer.org) first.
 
 {% highlight bash %}
-composer require bear/aura-router-module "~0.1"
+composer require bear/aura-router-module "~1.0"
 {% endhighlight %}
 
 {% highlight php %}

@@ -94,7 +94,7 @@ RESTクライアント（Chromeアプリの [Advanced REST client](https://chrom
 
 最初にcompoerでインストールします。
 {% highlight bash %}
-composer require bear/aura-router-module "~0.1"
+composer require bear/aura-router-module "~1.0"
 {% endhighlight %}
 
 次に`src/Module/AppModule.php`で`AuraRouterModule`を上書き(override)インストールします。
