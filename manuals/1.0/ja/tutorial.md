@@ -468,7 +468,6 @@ composer require madapaja/twig-module "~1.0"
 
 namespace MyVendor\Weekday\Module;
 
-use BEAR\AppMeta\AppMeta;
 use Madapaja\TwigModule\TwigModule;
 use Ray\Di\AbstractModule;
 
@@ -528,7 +527,7 @@ $context = 'prod-html-app';
 require dirname(dirname(__DIR__)) . '/bootstrap/bootstrap.php';
 {% endhighlight %}
 
-PHPサーバーを立ち上げてwebブラウザで`http://127.0.0.1:8080/?year=2001&month=1&day=1`をアクセスして確認してみましょう。
+PHPサーバーを立ち上げてwebブラウザで[http://127.0.0.1:8080/?year=2001&month=1&day=1](http://127.0.0.1:8080/?year=2001&month=1&day=1)をアクセスして確認してみましょう。
 
 {% highlight bash %}
 php -S 127.0.0.1:8080 var/www/index.php 

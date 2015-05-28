@@ -518,7 +518,7 @@ $context = 'prod-html-app';
 require dirname(dirname(__DIR__)) . '/bootstrap/bootstrap.php';
 {% endhighlight %}
 
-Boot up the PHP web server and check it out by accessing `http://127.0.0.1:8080/?year=2001&month=1&day=1`.
+Boot up the PHP web server and check it out by accessing [http://127.0.0.1:8080/?year=2001&month=1&day=1](http://127.0.0.1:8080/?year=2001&month=1&day=1).
 
 {% highlight bash %}
 php -S 127.0.0.1:8080 var/www/index.php 
