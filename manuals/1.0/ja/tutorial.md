@@ -1161,7 +1161,7 @@ echo $import['blog'] . PHP_EOL;
 {% highlight bash %}
 php app.php
 {% endhighlight %}
-`Hello`が表示されたでしょうか？
+`Hello BEAR.Sunday`が表示されたでしょうか？
 
 ## Because everything is a resource
 

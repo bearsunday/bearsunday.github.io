@@ -974,7 +974,7 @@ Let's try it..
 {% highlight bash %}
 php app.php
 {% endhighlight %}
-Does it display `Hello`?
+Does it display `Hello BEAR.Sunday`?
 
 ## Because everything is a resource
 
