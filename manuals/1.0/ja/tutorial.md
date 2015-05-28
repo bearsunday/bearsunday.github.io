@@ -516,7 +516,10 @@ The weekday of 1991/8/1 is Thu.
 </html>
 {% endhighlight %}
 
-Webサービスを行うために`var/www/index.php`を変更します。
+もしこの時htmlが表示されなければ、テンプレートエンジンのエラーが発生しています。
+その時はログファイル(`var/log/app.cli-html-app.log`)でエラーを確認しましょう。
+
+次にWebサービスを行うために`var/www/index.php`を変更します。
 
 {% highlight php %}
 <?php
