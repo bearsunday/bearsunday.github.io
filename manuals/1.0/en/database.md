@@ -239,7 +239,7 @@ class Index
 Installing `Ray.CakeDbModule` with composer.
 
 {% highlight bash %}
-composer require ray/cake-database-module "~1.0"
+composer require ray/cake-database-module ~1.0
 
 {% endhighlight %}
 

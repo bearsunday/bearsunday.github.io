@@ -94,7 +94,7 @@ To receive a dynamic parameter in URI path, we can use `AuraRouter`. This can be
 Get it with [composer](http://getcomposer.org) first.
 
 {% highlight bash %}
-composer require bear/aura-router-module "~1.0"
+composer require bear/aura-router-module ~1.0
 {% endhighlight %}
 
 {% highlight php %}
@@ -154,7 +154,7 @@ Let's log a result with [monolog](https://github.com/Seldaek/monolog) logger.
 Get it with [composer](http://getcomposer.org) first.
 
 {% highlight bash %}
-composer require monolog/monolog "~1.0"
+composer require monolog/monolog ~1.0
 {% endhighlight %}
 
 You instantiating `monolog` object with the `new` operator is *strongly discouraged*, 
@@ -453,7 +453,7 @@ We can see that the other resource has been included in the `_embedded` node.  B
 
 Composer Install
 {% highlight bash %}
-composer require madapaja/twig-module "~1.0"
+composer require madapaja/twig-module ~1.0
 {% endhighlight %}
 
 Create `src/Module/HtmlModule.php`.
@@ -555,7 +555,7 @@ For the DB there are various option that we have including [AuraSql](https://git
 Let's install CakeDB that the Cake PHP framework uses.
 
 {% highlight bash %}
-composer require ray/cake-database-module "~1.0"
+composer require ray/cake-database-module ~1.0
 {% endhighlight %}
 
 In `src/Module/AppModule::configure()` we install the module.

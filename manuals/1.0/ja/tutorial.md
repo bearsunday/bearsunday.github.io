@@ -94,7 +94,7 @@ RESTクライアント（Chromeアプリの [Advanced REST client](https://chrom
 
 最初にcompoerでインストールします。
 {% highlight bash %}
-composer require bear/aura-router-module "~1.0"
+composer require bear/aura-router-module ~1.0
 {% endhighlight %}
 
 次に`src/Module/AppModule.php`で`AuraRouterModule`を上書き(override)インストールします。
@@ -154,7 +154,7 @@ Content-Type: application/hal+json
 [composer](http://getcomposer.org)で取得します。
 
 {% highlight bash %}
-composer require monolog/monolog "~1.0"
+composer require monolog/monolog ~1.0
 {% endhighlight %}
 
 monologログオブジェクトは`new`で直接作成しないで、作成されたログオブジェクトを受け取るようにします。
@@ -459,7 +459,7 @@ Content-Type: application/hal+json
 
 composerインストール
 {% highlight bash %}
-composer require madapaja/twig-module "~1.0"
+composer require madapaja/twig-module ~1.0
 {% endhighlight %}
 
 `src/Module/HtmlModule.php`を作成
@@ -566,7 +566,7 @@ sqlite> .exit
 ここではCakePHP3でも使われてるCakeDBをインストールしてみましょう。
 
 {% highlight bash %}
-composer require ray/cake-database-module "~1.0"
+composer require ray/cake-database-module ~1.0
 {% endhighlight %}
 
 `src/Module/AppModule::configure()`でモジュールのインストールをします。
