@@ -459,7 +459,7 @@ Content-Type: application/hal+json
 
 composerインストール
 {% highlight bash %}
-composer require madapaja/twig-module
+composer require madapaja/twig-module "~1.0"
 {% endhighlight %}
 
 `src/Module/HtmlModule.php`を作成

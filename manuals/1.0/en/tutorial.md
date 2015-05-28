@@ -453,7 +453,7 @@ We can see that the other resource has been included in the `_embedded` node.  B
 
 Composer Install
 {% highlight bash %}
-composer require madapaja/twig-module
+composer require madapaja/twig-module "~1.0"
 {% endhighlight %}
 
 Create `src/Module/HtmlModule.php`.
