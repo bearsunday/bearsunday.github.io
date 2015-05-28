@@ -623,7 +623,7 @@ Let's try a `POST`.
 
 {% highlight bash %}
 
-php bootstrap/api.php post 'app://self/todo?todo=shopping'
+php bootstrap/api.php post '/todo?todo=shopping'
 
 201 Created
 Location: /todo/?id=1
@@ -634,7 +634,7 @@ We can see that with a `201` response, a new resource `/todo/?id=6` has been cre
 Next we will do a `GET`.
 
 {% highlight bash %}
-php bootstrap/api.php get 'app://self/todo?id=1'
+php bootstrap/api.php get '/todo?id=1'
 
 200 OK
 content-type: application/hal+json
@@ -694,7 +694,7 @@ class Todo extends ResourceObject
 Let's try it. Unlike last time an `Etag` and `Last-Modified` header has been added to the response.
 
 {% highlight bash %}
-php bootstrap/api.php get 'app://self/todo?id=1'
+php bootstrap/api.php get '/todo?id=1'
 
 200 OK
 content-type: application/hal+json

@@ -633,7 +633,7 @@ class Todo extends ResourceObject
 `POST`してみましょう。
 
 {% highlight bash %}
-php bootstrap/api.php post 'app://self/todo?todo=shopping'
+php bootstrap/api.php post '/todo?todo=shopping'
 
 201 Created
 Location: /todo/?id=1
@@ -643,7 +643,7 @@ Location: /todo/?id=1
 次にこのリソースを`GET`します。
 
 {% highlight bash %}
-php bootstrap/api.php get 'app://self/todo?id=1'
+php bootstrap/api.php get '/todo?id=1'
 
 200 OK
 content-type: application/hal+json
@@ -703,7 +703,7 @@ class Todo extends ResourceObject
 試してみましょう。前回のリクエストと違って`Etag`や`Last-Modified`がヘッダーで表されるようになります。
 
 {% highlight bash %}
-php bootstrap/api.php get 'app://self/todo?id=1'
+php bootstrap/api.php get '/todo?id=1'
 
 200 OK
 content-type: application/hal+json
@@ -967,7 +967,7 @@ Todoを`GET`した時に、対応するmemoリソースの`POST`先リンクが�
 
 Todoリソースを取得するとMemoリソースのリンクが表示されるようになりました。
 {% highlight bash %}
-php bootstrap/api.php get 'app://self/todo?id=1'
+php bootstrap/api.php get '/todo?id=1'
 
 200 OK
 Etag: 0
@@ -997,12 +997,12 @@ content-type: application/hal+json
 そのリンクを使ってMemoを`POST`してみます。
         
 {% highlight bash %}
-php bootstrap/api.php post 'app://self/memo?todo_id=1&body=VERY IMPORTANT'
+php bootstrap/api.php post '/memo?todo_id=1&body=VERY IMPORTANT'
 {% endhighlight %}
 
 再びAppリソースを読み込むとメモが埋め込まれています。
 {% highlight bash %}
-php bootstrap/api.php get 'app://self/todo?id=1'
+php bootstrap/api.php get '/todo?id=1'
 
 content-type: application/hal+json
 ETag: 1105179874
