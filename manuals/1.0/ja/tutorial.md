@@ -955,15 +955,15 @@ class Memo extends ResourceObject
 {% highlight php %}
 <?php
     /**
-     * @Embed(rel="memo", src="app://self/memo?todo_id={id}")
-     * @Link(rel="memo", href="app://self/memo?todo_id={id}")
+     * @Embed(rel="memo", src="/memo?todo_id={id}")
+     * @Link(rel="memo", href="/memo?todo_id={id}")
      */
     public function onGet($id)
     {
         $this['id'] = $id;
 {% endhighlight %}
 
-Todoを`GET`した時に、対応するmemoリソースの`POST`先リンクがわかるように`@Link`でmemoリソースのリンクもアノテートします。
+Todoを`GET`した時に、対応するmemoリソースの`POST`先リンクがわかるように`@Link`でmemoリソースのリンクもアノテートします。同じスキーマ`app://self`の時は省略してパスだけを`src`や`href`に指定することができます。
 
 Todoリソースを取得するとMemoリソースのリンクが表示されるようになりました。
 {% highlight bash %}
