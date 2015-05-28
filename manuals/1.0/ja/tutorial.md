@@ -247,6 +247,11 @@ class Weekday extends ResourceObject
 
 実行して`var/log/weekday.log`に結果が出力されていることを確認しましょう。
 
+{% highlight bash %}
+php bootstrap/api.php get '/weekday/2011/05/23'
+cat var/log/weekday.log
+{% endhighlight %}
+
 ## AOP
 
 メソッドの実行時間を計測するためのベンチマーク処理を考えてみます。
@@ -347,6 +352,11 @@ public function onGet($year, $month, $day)
 `production`では外したり、開発時に特定の秒数を越すと警告を行うことができます。
 
 実行して`var/log/weekday.log`に実行時間のログが出力されることを確認しましょう。
+
+{% highlight bash %}
+php bootstrap/api.php get '/weekday/2015/05/28'
+cat var/log/weekday.log
+{% endhighlight %}
 
 ## HTML
 

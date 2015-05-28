@@ -248,6 +248,11 @@ class Weekday extends ResourceObject
 
 Let's check `var/log/weekday.log` to see if our logger worked.
 
+{% highlight bash %}
+php bootstrap/api.php get '/weekday/2011/05/23'
+cat var/log/weekday.log
+{% endhighlight %}
+
 ## AOP
 
 We can benchmarking method invocation like is often done like this.
@@ -347,6 +352,11 @@ Now, you can benchmark any method that has the `@BenchMark` annotation.
 There is no need to modify the method caller or the target method itself. Benchmarking is only invoked with the interceptor binding, so even by leaving the annotation in place you can turn benchmarking on and off by adding and removing the binding from the application.
 
 Now check out the logging for the method invocation speed in `var/log/weekday.log`.
+
+{% highlight bash %}
+php bootstrap/api.php get '/weekday/2015/05/28'
+cat var/log/weekday.log
+{% endhighlight %}
 
 ## HTML
 
