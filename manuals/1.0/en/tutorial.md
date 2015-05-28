@@ -866,6 +866,7 @@ Resources created with BEAR.Sunday have unrivaled re-usability. Let's try using 
 So for this tutorial let's create a new `my-vendor` and manually add it to the auto loader. (Normally you would set up the new application as a package). 
 
 {% highlight bash %}
+mkdir my-vendor
 cd my-vendor
 composer create-project bear/skeleton Acme.Blog ~1.0@dev
 {% endhighlight %}

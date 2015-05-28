@@ -1053,6 +1053,7 @@ BEAR.Sundayで作られたリソースは再利用性が優れています。
 （通常はアプリケーションをパッケージとして利用します）
 
 {% highlight bash %}
+mkdir my-vendor
 cd my-vendor
 composer create-project bear/skeleton Acme.Blog ~1.0@dev
 {% endhighlight %}
