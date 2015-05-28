@@ -555,7 +555,7 @@ For the DB there are various option that we have including [AuraSql](https://git
 Let's install CakeDB that the Cake PHP framework uses.
 
 {% highlight bash %}
-composer require ray/cake-database-module
+composer require ray/cake-database-module "~1.0"
 {% endhighlight %}
 
 In `src/Module/AppModule::configure()` we install the module.

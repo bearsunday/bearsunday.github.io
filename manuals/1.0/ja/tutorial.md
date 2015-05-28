@@ -566,7 +566,7 @@ sqlite> .exit
 ここではCakePHP3でも使われてるCakeDBをインストールしてみましょう。
 
 {% highlight bash %}
-composer require ray/cake-database-module
+composer require ray/cake-database-module "~1.0"
 {% endhighlight %}
 
 `src/Module/AppModule::configure()`でモジュールのインストールをします。
