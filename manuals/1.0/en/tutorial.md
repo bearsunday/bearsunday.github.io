@@ -730,8 +730,8 @@ namespace MyVendor\Weekday\Resource\App;
 
 use BEAR\RepositoryModule\Annotation\Cacheable;
 use BEAR\Resource\ResourceObject;
-use Ray\CakeDbModule\DatabaseInject;
 use Ray\CakeDbModule\Annotation\Transactional;
+use Ray\CakeDbModule\DatabaseInject;
 
 /**
  * @Cacheable
@@ -757,14 +757,16 @@ class Todo extends ResourceObject
     /**
      * @Transactional
      */
-    public function onPost($todo="shopping")
+    public function onPost($todo)
     {
         $statement = $this->db->insert(
             'todo',
             ['todo' => $todo, 'created' => new \DateTime('now')],
             ['created' => 'datetime']
         );
-        $this->headers['location'] = '/todo/?id=' . $statement->lastInsertId();
+        // hyper link
+        $this->headers['Location'] = '/todo/?id=' . $statement->lastInsertId();
+        // status code
         $this->code = 201;
 
         return $this;
