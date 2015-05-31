@@ -10,7 +10,7 @@ permalink: /manuals/1.0/en/quick-start.html
 Installation is done via [composer](http://getcomposer.org)
 
 {% highlight bash %}
-composer create-project -n bear/skeleton MyVendor.MyPackage ~1.0@dev
+composer create-project -n bear/skeleton MyVendor.MyPackage
 cd MyVendor.MyPackage
 composer install
 {% endhighlight %}

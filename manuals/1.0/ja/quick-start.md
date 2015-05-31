@@ -10,7 +10,7 @@ permalink: /manuals/1.0/ja/quick-start.html
 インストールは [composer](http://getcomposer.org) で行います。
 
 {% highlight bash %}
-composer create-project -n bear/skeleton MyVendor.MyPackage ~1.0@dev
+composer create-project -n bear/skeleton MyVendor.MyPackage
 cd MyVendor.MyPackage
 composer install
 {% endhighlight %}
