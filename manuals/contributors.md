@@ -4,7 +4,7 @@ title: BEAR.Sunday Contributors
 category: Index
 permalink: /contributors.html
 ---
-
+[<img alt="akkie" src="https://avatars.githubusercontent.com/u/307006?v=3&s=117" width="117">](https://github.com/akkie)
 [<img alt="zukimochi" src="https://avatars.githubusercontent.com/u/529051?v=3&s=117" width="117">](https://github.com/zukimochi)
 [<img alt="yuya-takeyama" src="https://avatars.githubusercontent.com/u/241542?v=3&s=117" width="117">](https://github.com/yuya-takeyama)
 [<img alt="yutakachiba" src="https://avatars.githubusercontent.com/u/5999747?v=3&s=117" width="117">](https://github.com/yutakachiba)
@@ -43,4 +43,3 @@ permalink: /contributors.html
 [<img alt="bar" src="https://avatars.githubusercontent.com/u/88155?v=3&s=117" width="117">](https://github.com/bar)
 [<img alt="atakig" src="https://avatars.githubusercontent.com/u/552033?v=3&s=117" width="117">](https://github.com/atakig)
 [<img alt="77web" src="https://avatars.githubusercontent.com/u/296615?v=3&s=117" width="117">](https://github.com/77web)
-
