@@ -719,7 +719,7 @@ On the `@Cacheable` annotation if no `expiry` is set then it will be cached fore
  
  Just like this todo resource the timing of update or deletion of the cache is effective as it is completely contained within the resource itself. Invoke an `onPut` or `onDelete` method to give it a try.
 
- ## Auto-Updating the Cache via the PUT method
+## Auto-Updating the Cache via the resource method
 
 Let's implement the `onPut` method in the `todo` resource.
 
