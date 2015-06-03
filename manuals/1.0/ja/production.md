@@ -22,9 +22,10 @@ require dirname(dirname(__DIR__)) . '/bootstrap/bootstrap.php';
 ## ProdModule
 
 `BEAR.Package`のプロダクション用のモジュール`ProdModule`はwebサーバー1台を前提にしている`ApcCache`になっています。
+webサーバー1台でキャッシュを全て`Apc`で使う場合にはそのまましようできます。
 
 複数のWebサーバーの構成のためには共有のキャッシュストレージの設定が必要です。
-設定のためアプリケーション固有の`ProdModule`を`src/Module/ProdModule.php`に用意します。
+その場合アプリケーション固有の`ProdModule`を`src/Module/ProdModule.php`に用意します。
 
 {% highlight php %}
 <?php
@@ -45,9 +46,10 @@ class ProdModule extends AbstractModule
      */
     protected function configure()
     {
-        $cache = ApcCache::class; // <= configure shared storage for query repository
-        $this->bind(Cache::class)->annotatedWith(Storage::class)->to($cache)->in(Scope::SINGLETON);
-        
+        // configure shared storage for query repository
+        $cache = ApcCache::class;
+        $this->bind(CacheProvider::class)->annotatedWith(Storage::class)->to($cache)->in(Scope::SINGLETON);
+
         $this->install(new PackageProdModule);
     }
 }
