@@ -43,3 +43,4 @@ permalink: /contributors.html
 [<img alt="bar" src="https://avatars.githubusercontent.com/u/88155?v=3&s=117" width="117">](https://github.com/bar)
 [<img alt="atakig" src="https://avatars.githubusercontent.com/u/552033?v=3&s=117" width="117">](https://github.com/atakig)
 [<img alt="77web" src="https://avatars.githubusercontent.com/u/296615?v=3&s=117" width="117">](https://github.com/77web)
+[<img alt="hum2" src="https://avatars.githubusercontent.com/u/9448804?v=3&s=117" width="117">](https://github.com/hum2)
