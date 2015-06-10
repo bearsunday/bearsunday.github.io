@@ -9,7 +9,7 @@ permalink: /manuals/1.0/en/module.html
 
 A Module is a collection of DI & AOP bindings that sets up your application.
 
-BEAR.Sunday doesn't have a *global* config fi=le or a config class to set default values for components such as a database or a template engine.
+BEAR.Sunday doesn't have a *global* config file or a config class to set default values for components such as a database or a template engine.
 Instead for each peice of functionality we set up DI and AOP by injecting configuration values into a stand alone module.
 
 `AppModule` (src/Module/AppModule.php) is the root module. We use an `install()` method in here to load each module that we would like to invoke.
@@ -102,14 +102,14 @@ class MyInterceptor implements MethodInterceptor
     {
         // Before invocation
         // ...
-        
+
         //  Method invocation
         $result = $invocation->proceed();
-        
+
         //  After invocation
         // ...
-        
-        return $result; 
+
+        return $result;
     }
 }
 {% endhighlight %}
@@ -120,7 +120,7 @@ With the `MethodInvocation` object, you can access the target method's invocatio
  * [MethodInvocation::getMethod](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/MethodInvocation.php) -  Get method reflection
  * [MethodInvocation::getThis](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/Joinpoint.php#L48) - Get object
  * [MethodInvocation::getArguments](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/Invocation.php) - Pet parameters
- 
+
 ## Environment Settings
 
 BEAR.Sunday does not have any special environment mode except `prod`.
