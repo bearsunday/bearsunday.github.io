@@ -139,6 +139,6 @@ use Ray\Validation\Annotation\OnFailure;
 ## Other validation
 
 If you need to implement the complex validation, you can have another class for validation and inject it.
-And then call in the method annotate with `onValidate`.
+And then call in the method annotated with `onValidate`.
 You can also change your validation behavior by context with DI.
 
