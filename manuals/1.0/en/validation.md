@@ -7,7 +7,7 @@ permalink: /manuals/1.0/en/validation.html
 
 # Validation
 
-In this section, we'll cover how to implement validation using AOP with BEAR.Sunday.
+In this section, we'll cover how to implement validation using AOP in BEAR.Sunday.
 
 Using `@Valid` annotation, you can set up validation as AOP for your method.
 By separating validation logic from the method, the code will be readable and testable.
