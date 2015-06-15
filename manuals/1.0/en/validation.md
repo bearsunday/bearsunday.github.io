@@ -1,26 +1,28 @@
 ---
-layout: docs-ja
-title: バリデーション
+layout: docs-en
+title: Validation
 category: Manual
-permalink: /manuals/1.0/ja/validation.html
+permalink: /manuals/1.0/en/validation.html
 ---
 
-# バリデーション
+# Validation
 
-`@Valid`アノテーションを使用すると、メソッドの実行前にバリデーションメソッドが自動的に実行されるようになります。
-エラーを検知すると例外が発生しますが、代わりに別のメソッドを呼ぶこともできます。
+In this section, we'll cover how to implement validation using AOP with BEAR.Sunday.
 
-分離したバリデーションのコードは可読性に優れテストが容易です。バリデーションのライブラリは[Aura.Filter](https://github.com/auraphp/Aura.Filter)や[Respect\Validation](https://github.com/Respect/Validation)、あるいは[PHP標準のFilter](http://php.net/manual/ja/book.filter.php)を使います。
+Using `@Valid` annotation, you can set up validation as AOP for your method.
+By separating validation logic from the method, the code will be readable and testable.
 
-## インストール
+Validation libraries are available such as [Aura.Filter](https://github.com/auraphp/Aura.Filter), [Respect\Validation](https://github.com/Respect/Validation), and [PHP Standard Filter](http://php.net/manual/en/book.filter.php)
 
-composerインストール
+## Install
+
+Install `Ray.ValidateModule` via composer.
 
 {% highlight bash %}
 composer require ray/validate-module
 {% endhighlight %}
 
-アプリケーションモジュール`src/Module/AppModule.php`で`ValidateModule`をインストールします。
+Installing `ValidateModule` in your application module `src/Module/AppModule.php`.
 
 {% highlight php %}
 <?php
@@ -36,12 +38,11 @@ class AppModule extends AbstractModule
 }
 {% endhighlight %}
 
-## アノテーション
+## Annotation
 
-バリデーションのために`@Valid`、`@OnValidate`、`@OnFailure`の３つのアノテーションが用意されています。
+There are three annotations `@Valid`, `@OnValidate`, `@OnFailure` for validation.
 
-
-まず、バリデーションを行いたいメソッドに`@Valid`とアノテートします。
+First of all, annotate method that you want to validate with `@Valid`.
 
 {% highlight php %}
 <?php
@@ -54,7 +55,9 @@ use Ray\Validation\Annotation\Valid;
     {
 {% endhighlight %}
 
-`@OnValidate`とアノテートしたメソッドでバリデーションを行います。引数は元のメソッドと同じにします。メソッド名は自由です。
+Validation will be conducted in the method annotated with `@OnValidate`. 
+
+The arguments of the method should be the same as the original method. The method name is free.
 
 {% highlight php %}
 <?php
@@ -74,10 +77,10 @@ use Ray\Validation\Annotation\OnValidate;
     }
 {% endhighlight %}
 
-バリデーション失敗した要素には`要素名`と`エラーメッセージ`を指定してValidationオブジェクトに`addError()`し、最後にValidationオブジェクトを返します。
+Add unvalidated elements to your validation object by `addError ()` with `element name` and` error message`, And return the validation object.
 
-バリデーションが失敗すれば`Ray\Validation\Exception\InvalidArgumentException`例外が投げられますが、
-`@OnFailure`メソッドが用意されていればそのメソッドの結果が返されます。
+When validation fail, the exception `Ray\Validation\Exception\InvalidArgumentException` will be thrown,
+but if you have method annotated with `@OnFailure`, it will be called instead of throwing exception.
 
 {% highlight php %}
 <?php
@@ -99,11 +102,13 @@ use Ray\Validation\Annotation\OnFailure;
         }
     }
 {% endhighlight %}
-`@OnFailure`メソッドには`$failure`が渡され`($failure->getMessages()`でエラーメッセージや`$failure->getInvocation()`でオリジナルメソッド実行のオブジェクトが取得できます。
 
-## 複数のバリデーション
+In the method annotated with `@OnFailure`, you can access to the validated messages with `$failure->getMessages()`
+and also you can get the object of the original method with `$failure->getInvocation()`.
 
-１つのクラスに複数のバリデーションメソッドが必要なときは以下のようにバリデーションの名前を指定します。
+## Various validation
+
+If you want to have various validation for a class, you can specify the name of validation like below.
 
 {% highlight php %}
 <?php
@@ -131,6 +136,9 @@ use Ray\Validation\Annotation\OnFailure;
     {
 {% endhighlight %}
 
-## その他のバリデーション
+## Other validation
 
-複雑なバリデーションの時は別にバリデーションクラスをインジェクトして、`onValidate`メソッドから呼び出してバリデーションを行います。DIなのでコンテキストによってバリデーションを変えることもできます。
+If you need to implement the complex validation, you can have another class for validation and inject it.
+And then call in the method annotate with `onValidate`.
+You can also change your validation behavior by context with DI.
+
