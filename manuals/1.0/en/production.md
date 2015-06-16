@@ -1,15 +1,19 @@
 ---
-layout: docs-ja
-title: プロダクション
+layout: docs-en
+title: Production
 category: Manual
-permalink: /manuals/1.0/ja/production.html
+permalink: /manuals/1.0/en/production.html
 ---
-プロダクション環境用の構成のためにキャッシュの設定やスクリプトの変更を行います。
 
-## bootファイル
+# Production
 
-コンテキストが`prod-`で始まるとアプリケーションオブジェクト`$app`がキャッシュされます。
-キャッシュドライバーは環境に応じて`ApcCache`か`FilesystemCache`が自動選択されます。
+In this section, we'll cover how to set cache and script for production environment.
+
+## Boot file
+
+In the context starting with `prod-`, an `$app` application object will be cached.
+
+Cache drivers like `ApcCache` or `FilesystemCache` will be selected in response to the environment automatically.
 
 {% highlight php %}
 <?php
@@ -17,15 +21,14 @@ $context = 'prod-app';
 require dirname(dirname(__DIR__)) . '/bootstrap/bootstrap.php';
 {% endhighlight %}
 
-## キャッシュの設定
+## Cache settings
 
 ## ProdModule
 
-`BEAR.Package`のプロダクション用のモジュール`ProdModule`はwebサーバー1台を前提にしている`ApcCache`になっています。
-webサーバー1台でキャッシュを全て`Apc`で使う場合にはそのまましようできます。
+In `ProdModule` production module in `BEAR.Package`, `ApcCache` cache is designed for one single web server.
 
-複数のWebサーバーの構成のためには共有のキャッシュストレージの設定が必要です。
-その場合アプリケーション固有の`ProdModule`を`src/Module/ProdModule.php`に用意します。
+As for multiple servers, we need to set shared cache storage.
+In that case, you can implement by creating application specific `ProdModule` to `src/Module/ProdModule.php`.
 
 {% highlight php %}
 <?php
@@ -54,42 +57,43 @@ class ProdModule extends AbstractModule
     }
 }
 {% endhighlight %}
-`@Storage`とアノテートされた`Cache`インターフェイスは、クエリーリポジトリーのためのものでWebサーバーで共有されるストレージです。
+`Cache` interface annotated with `@Storage` is defined for query repository and it is shared storage for web server.
 
-複数のWebサーバーで`ApcCache`を指定することはできないので、
-[Redis](http://doctrine-orm.readthedocs.org/en/latest/reference/caching.html#redis)を指定するか永続化可能な他のストレージを使ったアダプターを作成して束縛します。
-([memcached](http://doctrine-orm.readthedocs.org/en/latest/reference/caching.html#memcached)も指定できますが、メモリなので容量と揮発性に注意）
+We cannot use `ApcCache` on multiple servers, however, we have options to use 
+[Redis](http://doctrine-orm.readthedocs.org/en/latest/reference/caching.html#redis) or other storage by creating adapter.
+([memcached](http://doctrine-orm.readthedocs.org/en/latest/reference/caching.html#memcached) is also available, but be careful about the capacity and volatile because it is a memory storage.）
 
 ## HTTP Cache
 
-キャッシュ可能(`@Cacheable`)とアノテートしたリソースはエンティティタグ`ETag`を出力します。
+The resource annotated with `@Cacheable` cacheable, outputs `ETag` entity tag.
 
-この`ETag`を使ってリソースに変更が無い時は自動で適切な`304` (Not Modified)のレスポンスコードを返すことができます。
-（この時、ネットワークの転送コストだけでなく、CPUコストも最小限のものにします。）
+By using this `ETag`, we can return `304` (Not Modified) appropriate response when the resource is not modified.
+
+（In this time, we can save not only cpu cost but also transfer cost of network.）
 
 ### App
 
-`HttpCache`をスクリプトで使うために`App`クラスで`HttpCacheInject`のtraitを使って`HttpCache`をインジェクトします。
+To use `HttpCache` in script, we are going to inject `HttpCache` using `HttpCacheInject` trait in `App` class.
 
 {% highlight php %}
 <?php
 
 namespace MyVendor\MyApi\Module;
 
-use BEAR\QueryRepository\HttpCacheInject; // この行を追加
+use BEAR\QueryRepository\HttpCacheInject; // Add this line
 use BEAR\Sunday\Extension\Application\AbstractApp;
 use Ray\Di\Di\Inject;
 
 class App extends AbstractApp
 {
-    use HttpCacheInject; // この行を追加
+    use HttpCacheInject; // Add this line
 }
 {% endhighlight %}
 
 ### bootstrap
 
-次に`bootstrap/bootstrap.php`の`route`のセクションで以下のように`if`文を追加して、
-与えらた`ETag`のコンテンツに変更がなければ`304`を返して終了するようにします。
+Next, modify `route` section in `bootstrap/bootstrap.php` for returning `304` when the contents are not modified by adding
+`if` conditional statement.
 
 {% highlight php %}
 <?php
@@ -102,21 +106,22 @@ route: {
 
 {% endhighlight %}
 
-`ETag`の更新は自動で行われますが、`@Refresh`や`@Purge`アノテーションを使ってリソースキャッシュの破棄の関係性を適切に指定しておかなければなりません。
+`ETag` is also updated automatically,
+but you need to specify the relation of resource caches using `@Refresh` and `@Purge` annotations.
 
-## エクステンション
+## Extension
 
-以下のPECLエクステンションをインストールするとパフォーマンスが最適化されます。
+Optimize performances by installing pecl extensions.
 
  * [PECL/uri_template](http://pecl.php.net/package/uri_template) URI Template
- * [PECL/igbinary](https://pecl.php.net/package/igbinary) シリアライズ最適化
+ * [PECL/igbinary](https://pecl.php.net/package/igbinary) Optimization for serializing
 
 ```
 pecl install uri_template
 pecl install igbinary
 ```
 
-確認
+Confirmation
 
 ```
 composer show --platform
