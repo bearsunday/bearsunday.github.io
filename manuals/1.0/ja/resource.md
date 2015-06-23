@@ -125,16 +125,42 @@ $blog = $this
 
 ## リンクアノテーション
 
+他のリソースをハイパーリンクする`@Link`と他のリソースを内部に埋め込む`@Embed`アノテーションが利用できます。
+
 ### @Link
+
+リンクを`rel`と`href`で指定します。`hal`コンテキストではHALのリンクフォーマットとして扱われます。
+
 {% highlight php %}
 <?php
     /**
      * @Link(rel="profile", href="/profile{?id}")
      */
     public function onGet($id)
+    {
+        $this['id'] = 10;
+        
+        return $this;
+    }
 {% endhighlight %}
 
-リンクを`rel`と`href`で指定します。`hal`コンテキストではHALのリンクフォーマットとして扱われます。BEARのリソースリクエストのときには`linkSelf()`, `linkNew`, `linkCrawl`の時にリソースリンクとして使われます。
+`href`のURIの`{?id}`は`$body`の値です。[RFC6570 URI template](https://github.com/ioseb/uri-template)でURIが生成され、HALでの出力は以下のようになります。
+{% highlight json %}
+{
+    "id": 10,
+    "_links": {
+        "self": {
+            "href": "/test"
+        },
+        "profile": {
+            "href": "/profile?id=10"
+        }
+    }
+}
+{% endhighlight %}
+
+
+BEARのリソースリクエストでは`linkSelf()`, `linkNew`, `linkCrawl`の時にリソースリンクとして使われます。
 
 {% highlight php %}
 <?php
