@@ -22,10 +22,12 @@ require dirname(dirname(__DIR__)) . '/bootstrap/bootstrap.php';
 ## ProdModule
 
 `BEAR.Package`のプロダクション用のモジュール`ProdModule`はwebサーバー1台を前提にしている`ApcCache`になっています。
-webサーバー1台でキャッシュを全て`Apc`で使う場合にはそのまましようできます。
+webサーバー1台でキャッシュを全て`Apc`で使う場合にはそのまま使用できます。
 
 複数のWebサーバーの構成のためには共有のキャッシュストレージの設定が必要です。
-その場合アプリケーション固有の`ProdModule`を`src/Module/ProdModule.php`に用意します。
+その場合アプリケーション固有の`ProdModule`を`src/Module/ProdModule.php`に用意して、
+サーバー間で共有するコンテンツ用のキャッシュのインターフェイス'Doctrine\Common\Cache\CacheProvider:@BEAR\RepositoryModule\Annotation\Storage'
+とサーバー単位のキャッシュ`Doctrine\Common\Cache\Cache`インターフェイスを束縛します。
 
 {% highlight php %}
 <?php
@@ -34,6 +36,7 @@ namespace BEAR\HelloWorld\Module;
 use BEAR\RepositoryModule\Annotation\Storage;
 use BEAR\Package\Context\ProdModule as PackageProdModule;
 use Doctrine\Common\Cache\Cache;
+use Doctrine\Common\Cache\CacheProvider;
 use Ray\Di\AbstractModule;
 use Ray\Di\Scope;
 
@@ -46,10 +49,13 @@ class ProdModule extends AbstractModule
      */
     protected function configure()
     {
-        // configure shared storage for query repository
         $cache = ApcCache::class;
+        // shared cache
         $this->bind(CacheProvider::class)->annotatedWith(Storage::class)->to($cache)->in(Scope::SINGLETON);
+        // cache per server
+        $this->bind(Cache::class)->to($cache)->in(Scope::SINGLETON);
 
+        // install package ProdModule
         $this->install(new PackageProdModule);
     }
 }
