@@ -33,7 +33,7 @@ class Todo extends ResourceObject
     {
         $this->code = 201; // ステータスコード
         $this->headers['Location'] = '/todo/new_id'; // ヘッダー
-        
+
         return $this;
     }
 }
@@ -139,7 +139,7 @@ $blog = $this
     public function onGet($id)
     {
         $this['id'] = 10;
-        
+
         return $this;
     }
 {% endhighlight %}
@@ -323,7 +323,7 @@ class Todo
 
 もう１つの方法は`@Purge`アノテーションや、`@Refresh`アノテーションで更新対象のURIを指定することです。
 
- 
+
 {% highlight php %}
 <?php
 /**
@@ -333,7 +333,21 @@ class Todo
 public function onPut($id, $name, $age)
 {% endhighlight %}
 
-別のクラスのリソースや関連する複数のリソースの`QueryRepository`の内容を更新することができます。`@Purge`はリソースのキャッシュを消去し`@Refresh`はキャッシュの再生成を行います。
+別のクラスのリソースや関連する複数のリソースの`QueryRepository`の内容を更新することができます。
+`@Purge`はリソースのキャッシュを消去し`@Refresh`はキャッシュの再生成をメソッド実行直後に行います。
+
+uri-templateに与えられる値は他と同様に`$body`にアサインした値が実引数に優先したものです。
+
+{% highlight php %}
+<?php
+/**
+ * @Refresh(uri="/user/profile{?id,name}")
+ */
+public function onPut($id, $name)
+{
+    $this['id'] = 5; // [1, 'bear']で呼ばれると /user/profile?id=5&name=bearを@Refresh
+{% endhighlight %}
+
 
 ## クエリーリポジトリの直接操作
 
@@ -365,7 +379,7 @@ class Foo
         list($code, $headers, $body, $view) = $repository->get(new Uri('app://self/user'));
      }
 {% endhighlight %}
-     
+
 ## BEAR.Resource
 
 リソースクラスに関するより詳しい情報はBEAR.Resourceの[README](https://github.com/bearsunday/BEAR.Resource/blob/1.x/README.ja.md)もご覧ください。
