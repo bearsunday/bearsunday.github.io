@@ -33,7 +33,7 @@ Treating all of your data as a resource then simplifies the how you get to your 
 
 BEAR.Sunday is not like other MVC frameworks and contains libraries that support databases, authentication or the like. 
 
-Instead just hook in any of the great libraries that are available on Packagist like the Aura component libraries.
+Instead just hook in any of the great libraries that are available on [Packagist](https://packagist.org/) like the [Aura](http://auraphp.com/) component libraries.
 
 ## Resource Orientated Pattern
 
