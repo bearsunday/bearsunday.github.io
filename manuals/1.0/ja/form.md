@@ -84,9 +84,9 @@ class MyForm extends AbstractAuraForm
 
  * `submit()メソッド`ではフォームでバリデーションを行うための`$_POST`や`$_GET`を返します。
 
-### Controller
+### @FormValidationアノテーション
 
-コントローラークラスにフォームをインジェクトします。フォームのバリデーションを行うメソッドを`@FormValidation`で
+リソースオブジェクトクラスにフォームをインジェクトします。フォームのバリデーションを行うメソッドを`@FormValidation`で
 アノテートします。この時フォームのプロパティ名を`form`で、バリデーションが失敗したときのメソッドを`onFailure`で指定します。
 
 {% highlight php %}<?php
@@ -112,26 +112,36 @@ class MyController
     }
 
     /**
-     * @FormValidation(form="contactForm", onFailure="badRequestAction")
+     * @FormValidation(form="contactForm", onFailure="badRequest")
      */
-    public function createAction()
+    public function onPost()
     {
         // validation success
     }
 
-    public function badRequestAction()
+    public function badRequest()
     {
-        // validation faild
+        // validation failed
     }
 }
 {% endhighlight %}
-### View
+
+### ビュー
 
 フォームの`input`要素やエラーメッセージを取得するには要素名を指定します。
 
 {% highlight php %}<?php
-  echo $form->input('name'); // <input id="name" type="text" name="name" size="20" maxlength="20" />
-  echo $form->error('name'); // "Name must be alphabetic only." or blank.
+  $form->input('name'); // <input id="name" type="text" name="name" size="20" maxlength="20" />
+  $form->error('name'); // "Name must be alphabetic only." or blank.
+{% endhighlight %}
+
+テンプレートにTwigを使った場合でも同様です。
+
+{% highlight php %}
+{% raw %}
+{{ form.input('name') }}
+{{ form.error('name') }}
+{% endraw %}
 {% endhighlight %}
 
 ### CSRF Protections
@@ -149,7 +159,7 @@ class MyForm extends AbstractAuraForm
 セキュリティレベルを高めるためにはユーザーの認証を含んだカスタムCsrfクラスを作成してフォームクラスにセットします。
 詳しくはAura.Inputの[Applying CSRF Protections](https://github.com/auraphp/Aura.Input#applying-csrf-protections)をご覧ください。
 
-## Validation Exception
+## バリデーション例外
 
 以下のように `Ray\WebFormModule\FormVndErrorModule`をインストールするとフォームのバリデーションが失敗したときに`Ray\WebFormModule\Exception\ValidationException`例外が投げられるよになります。
 
@@ -171,28 +181,29 @@ class FakeVndErrorModule extends AbstractModule
 http_response_code(400);
 echo $e->error;
 
-//{
-//    "message": "Validation failed",
-//    "path": "/path/to/error",
-//    "validation_messages": {
-//        "name": [
-//            "Name must be alphabetic only."
-//        ]
-//    }
-//}
+// {
+//     "message": "Validation failed",
+//     "path": "/path/to/error",
+//     "validation_messages": {
+//         "name": [
+//             "Name must be alphabetic only."
+//         ]
+//     }
+// }
 {% endhighlight %}
 
 `@VndError`アノテーションで`vnd.error+json`に必要な情報を加えることができます。
 
 {% highlight php %}<?php
-    /**
-     * @FormValidation(form="contactForm")
-     * @VndError(
-     *   message="foo validation failed",
-     *   logref="a1000", path="/path/to/error",
-     *   href={"_self"="/path/to/error", "help"="/path/to/help"}
-     * )
-     */
+/**
+ * @FormValidation(form="contactForm")
+ * @VndError(
+ *   message="foo validation failed",
+ *   logref="a1000", path="/path/to/error",
+ *   href={"_self"="/path/to/error", "help"="/path/to/help"}
+ * )
+ */
+ public function onPost()
 {% endhighlight %}
 
 このオプションのモジュールはAPIアプリケーションの時に有用です。
