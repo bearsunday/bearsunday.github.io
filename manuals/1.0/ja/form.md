@@ -161,21 +161,28 @@ class MyForm extends AbstractAuraForm
 
 ## バリデーション例外
 
-以下のように `Ray\WebFormModule\FormVndErrorModule`をインストールするとフォームのバリデーションが失敗したときに`Ray\WebFormModule\Exception\ValidationException`例外が投げられるよになります。
+以下のように `Ray\WebFormModule\FormVndErrorModule`をインストールするとフォームのバリデーションが失敗したときに
+`Ray\WebFormModule\Exception\ValidationException`例外が投げられるよになります。
+
+`src/Module/ApiModule`を設置して、APIコンテキストのときにインストールすると便利です。
 
 {% highlight php %}<?php
+use BEAR\Package\Provide\Error\VndErrorModule;
 use Ray\Di\AbstractModule;
+use BEAR\Package\Context\ApiModule as PackageApiModule;
 
-class FakeVndErrorModule extends AbstractModule
+class ApiModule extends AbstractModule
 {
     protected function configure()
     {
-        $this->install(new WebFormModule);
-        $this->override(new FormVndErrorModule);
+        $this->install(new PackageApiModule);
+        $this->install(new VndErrorModule);
     }
+}
 {% endhighlight %} 
 
 キャッチした例外の`error`プロパティを`echo`すると[application/vnd.error+json](https://tools.ietf.org/html/rfc6906)メディアタイプの表現が出力されます。 
+
 
 {% highlight php %}<?php
 http_response_code(400);
