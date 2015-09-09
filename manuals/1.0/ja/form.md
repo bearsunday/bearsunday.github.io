@@ -20,7 +20,7 @@ permalink: /manuals/1.0/ja/form.html
 Aura.Inputを使ったフォーム処理を追加するのにcomposerで`ray/web-form-module`をインストールします。
 
 {% highlight bash %}
-composer require ray/web-form-module ~0.1
+composer require ray/web-form-module
 {% endhighlight %}
 
 アプリケーションモジュール`src/Module/AppModule.php`で`AuraInputModule`をインストールします。
