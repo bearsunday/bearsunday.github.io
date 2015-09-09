@@ -7,9 +7,13 @@ permalink: /manuals/1.0/ja/form.html
 
 # フォーム
 
-最初にフォーム要素の登録やバリデーションで出来るフォームクラスを定義し、次にリソースオブジェクトクラスにフォームオブジェクトを束縛します。
-バリデーションを行うメソッドでは`@FormValidation`とアノテートし、どのフォームでバリデーションするかを`form`プロパティで指定します。
-送信されたデーターがバリデーションに通った時のみメソッド内の処理が実行されます。
+[Aura.Input](https://github.com/auraphp/Aura.Input)と[Aura.Filter](https://github.com/auraphp/Aura.Filter)を使ったフォームクラスは
+機能が単体のクラスに集約され、テストや変更が容易です。
+
+テンプレートエンジンのフォームヘルパーやページコントローラーでのバリデーションを行うことない疎結合なフォームはAPIでの利用や将来的な拡張にすぐれています。
+
+フォーム要素の登録やルールを定めたフォームクラスを作成して、特定のメソッドと`@FormValidation`アノテーションを使って束縛します。
+送信されたデータがバリデートされた時のみメソッド内の処理が実行されます。
 
 ## インストール
 
@@ -42,10 +46,10 @@ class AppModule extends AbstractModule
 
 {% highlight php %}
 <?php
-use Ray\WebFormModule\AbstractAuraForm;
+use Ray\WebFormModule\AbstractForm;
 use Ray\WebFormModule\SetAntiCsrfTrait;
 
-class MyForm extends AbstractAuraForm
+class MyForm extends AbstractForm
 {
     /**
      * {@inheritdoc}
@@ -57,16 +61,9 @@ class MyForm extends AbstractAuraForm
              ->setAttribs([
                  'id' => 'name'
              ]);
-        // set input filters
-        /** @var $filter Filter */
-        $filter = $this->getFilter();
-        $filter->setRule(
-            'name',
-            'Name must be alphabetic only.',
-            function ($value) {
-                return ctype_alpha($value);
-            }
-        );
+        // set rules and user defined error message
+        $this->filter->validate('name')->is('alnum');
+        $this->filter->useFieldMessage('name', 'Name must be alphabetic only.');
     }
 
     /**
@@ -79,8 +76,12 @@ class MyForm extends AbstractAuraForm
 }
 {% endhighlight %}
 
- * `init()`メソッドではinput属性を指定してフォームを登録し、フィルターやルールを適用します。
-フォームクラスで利用できるメソッドについて詳しく`は[Aura.Input](https://github.com/auraphp/Aura.Input#self-initializing-forms)をご覧ください
+ * `init()`メソッドではinput属性を指定してフォームを登録し、Aura.Filterのバリデーションやサニタイズをルールとして適用します。
+ 
+ * 適用できるバリデーションについては[Rules To Validate Fields](https://github.com/auraphp/Aura.Filter/blob/2.x/docs/validate.md)を、
+ サニタイズは[Rules To Sanitize Fields](https://github.com/auraphp/Aura.Filter/blob/2.x/docs/sanitize.md)をご覧ください。
+ 
+ * フォームクラスで利用できるメソッドについて詳しく`は[Aura.Input](https://github.com/auraphp/Aura.Input#self-initializing-forms)をご覧ください
 
  * `submit()メソッド`ではフォームでバリデーションを行うための`$_POST`や`$_GET`を返します。
 
@@ -214,3 +215,7 @@ echo $e->error;
 {% endhighlight %}
 
 このオプションのモジュールはAPIアプリケーションの時に有用です。
+
+## デモ
+
+[MyVendor.ContactForm](https://github.com/bearsunday/MyVendor.ContactForm)ではフォームのデモを試すことができます。1 URLに複数のフォームを設置したときの例も用意されています。
