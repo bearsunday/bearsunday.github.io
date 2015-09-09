@@ -177,7 +177,7 @@ class ApiModule extends AbstractModule
     protected function configure()
     {
         $this->install(new PackageApiModule);
-        $this->install(new VndErrorModule);
+        $this->override(new VndErrorModule);
     }
 }
 {% endhighlight %} 
