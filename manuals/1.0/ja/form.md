@@ -38,8 +38,6 @@ class AppModule extends AbstractModule
 
 ## フォームクラス
 
-フォームのinput要素を登録するinit()メソッドとフォーム送信を行うsubmit()メソッドを持つフォームクラスを用意します。
-
 {% highlight php %}
 <?php
 use Ray\WebFormModule\AbstractAuraForm;
@@ -68,22 +66,14 @@ class MyForm extends AbstractAuraForm
             }
         );
     }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function submit()
-    {
-        return $_POST;
-    }
 }
 {% endhighlight %}
 
- * `init()`メソッドではinput属性を指定してフォームを登録し、フィルターやルールを適用します。
+`init()`メソッドでinput属性を指定してフォームを登録し、フィルターやルールを適用します。
 フォームクラスで利用できるメソッドについて詳しく`は[Aura.Input](https://github.com/auraphp/Aura.Input#self-initializing-forms)をご覧ください
 
- * `submit()メソッド`ではフォームでバリデーションを行うための`$_POST`や`$_GET`を返します。
-
+バリデーションの対象となる入力はメソッドを読んだ時の引数です。変更したいときは
+`SubmitInterface`インターフェイスの`submit()メソッド`を実装してメソッド内で入力にする値を返します。
 ### Controller
 
 コントローラークラスにフォームをインジェクトします。フォームのバリデーションを行うメソッドを`@FormValidation`で
@@ -125,7 +115,8 @@ class MyController
     }
 }
 {% endhighlight %}
-### View
+
+### ビュー
 
 フォームの`input`要素やエラーメッセージを取得するには要素名を指定します。
 
@@ -134,7 +125,7 @@ class MyController
   echo $form->error('name'); // "Name must be alphabetic only." or blank.
 {% endhighlight %}
 
-### CSRF Protections
+### クロスサイトリクエストフォージェリ（CSRF）対策
 
 CSRF対策を行うためにはフォームにCSRFオブジェクトをセットします。
 
@@ -149,23 +140,12 @@ class MyForm extends AbstractAuraForm
 セキュリティレベルを高めるためにはユーザーの認証を含んだカスタムCsrfクラスを作成してフォームクラスにセットします。
 詳しくはAura.Inputの[Applying CSRF Protections](https://github.com/auraphp/Aura.Input#applying-csrf-protections)をご覧ください。
 
-## Validation Exception
+## バリデーション例外
 
-以下のように `Ray\WebFormModule\FormVndErrorModule`をインストールするとフォームのバリデーションが失敗したときに`Ray\WebFormModule\Exception\ValidationException`例外が投げられるよになります。
+`@FormValidation`の代わりに`@InputValidation`とアノテートするとバリデーションが失敗したときに`Ray\WebFormModule\Exception\ValidationException`が投げられるよになります。
+この場合はHTML表現は使われません。Appリソースに適用してどのクライアントからもバリデーションを行うことができます。Web APIアプリケーションにも便利です。
 
-{% highlight php %}<?php
-use Ray\Di\AbstractModule;
-
-class FakeVndErrorModule extends AbstractModule
-{
-    protected function configure()
-    {
-        $this->install(new WebFormModule);
-        $this->override(new FormVndErrorModule);
-    }
-{% endhighlight %} 
-
-キャッチした例外の`error`プロパティを`echo`すると[application/vnd.error+json](https://tools.ietf.org/html/rfc6906)メディアタイプの表現が出力されます。 
+キャッチした例外の`error`プロパティを`echo`すると[application/vnd.error+json](https://tools.ietf.org/html/rfc6906)メディアタイプの表現が出力されます。
 
 {% highlight php %}<?php
 http_response_code(400);
@@ -194,5 +174,3 @@ echo $e->error;
      * )
      */
 {% endhighlight %}
-
-このオプションのモジュールはAPIアプリケーションの時に有用です。
