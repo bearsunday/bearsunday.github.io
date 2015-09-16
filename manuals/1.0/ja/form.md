@@ -66,28 +66,16 @@ class MyForm extends AbstractForm
 }
 {% endhighlight %}
 
-<<<<<<< HEAD
-`init()`メソッドでinput属性を指定してフォームを登録し、フィルターやルールを適用します。
+`init()`メソッドでフォームのinputエレメントを登録し、フィルターやルールを適用します。
 フォームクラスで利用できるメソッドについて詳しく`は[Aura.Input](https://github.com/auraphp/Aura.Input#self-initializing-forms)をご覧ください
 
 バリデーションの対象となる入力はメソッドを読んだ時の引数です。変更したいときは
 `SubmitInterface`インターフェイスの`submit()メソッド`を実装してメソッド内で入力にする値を返します。
-### Controller
-=======
- * `init()`メソッドではinput属性を指定してフォームを登録し、Aura.Filterのバリデーションやサニタイズをルールとして適用します。
 
- * 適用できるバリデーションについては[Rules To Validate Fields](https://github.com/auraphp/Aura.Filter/blob/2.x/docs/validate.md)を、
- サニタイズは[Rules To Sanitize Fields](https://github.com/auraphp/Aura.Filter/blob/2.x/docs/sanitize.md)をご覧ください。
+## @FormValidationアノテーション
 
- * フォームクラスで利用できるメソッドについて詳しく`は[Aura.Input](https://github.com/auraphp/Aura.Input#self-initializing-forms)をご覧ください
-
- * `submit()メソッド`ではフォームでバリデーションを行うための`$_POST`や`$_GET`を返します。
-
-### @FormValidationアノテーション
->>>>>>> 95302347574fa7ae81b0d22d33c4c92345d36786
-
-リソースオブジェクトクラスにフォームをインジェクトします。フォームのバリデーションを行うメソッドを`@FormValidation`で
-アノテートします。この時フォームのプロパティ名を`form`で、バリデーションが失敗したときのメソッドを`onFailure`で指定します。
+フォームのバリデーションを行うメソッドを`@FormValidation`でアノテートすると、実行前に`form`プロパティのフォームオブジェクトでバリデーションがおこなわれます。
+バリデーションに失敗するとメソッド名に`ValidationFailed`サフィックスをつけたメソッドが呼ばれます。
 
 {% highlight php %}<?php
 use Ray\Di\Di\Inject;
@@ -100,7 +88,7 @@ class MyController
     /**
      * @var FormInterface
      */
-    protected $contactForm;
+    protected $form;
 
     /**
      * @Inject
@@ -108,23 +96,27 @@ class MyController
      */
     public function setForm(FormInterface $form)
     {
-        $this->contactForm = $form;
+        $this->form = $form;
     }
 
     /**
-     * @FormValidation(form="contactForm", onFailure="badRequest")
+     * @FormValidation
+     * // または
+     * @FormValidation(form="form", onFailure="onPostValidationFailed")
      */
     public function onPost()
     {
         // validation success
     }
 
-    public function badRequest()
+    public function onPostValidationFailed()
     {
         // validation failed
     }
 }
 {% endhighlight %}
+
+`@FormValidation`アノテーションの`form`,`onValidationFailed`プロパティを変更して`form`プロパティの名前やメソッドの名前を明示的に指定こともできます。
 
 ### ビュー
 
@@ -161,31 +153,8 @@ class MyForm extends AbstractAuraForm
 
 ## バリデーション例外
 
-<<<<<<< HEAD
 `@FormValidation`の代わりに`@InputValidation`とアノテートするとバリデーションが失敗したときに`Ray\WebFormModule\Exception\ValidationException`が投げられるよになります。
 この場合はHTML表現は使われません。Appリソースに適用してどのクライアントからもバリデーションを行うことができます。Web APIアプリケーションにも便利です。
-
-キャッチした例外の`error`プロパティを`echo`すると[application/vnd.error+json](https://tools.ietf.org/html/rfc6906)メディアタイプの表現が出力されます。
-=======
-以下のように `Ray\WebFormModule\FormVndErrorModule`をインストールするとフォームのバリデーションが失敗したときに
-`Ray\WebFormModule\Exception\ValidationException`例外が投げられるよになります。
-
-`src/Module/ApiModule`を設置して、APIコンテキストのときにインストールすると便利です。
-
-{% highlight php %}<?php
-use BEAR\Package\Provide\Error\VndErrorModule;
-use Ray\Di\AbstractModule;
-use BEAR\Package\Context\ApiModule as PackageApiModule;
-
-class ApiModule extends AbstractModule
-{
-    protected function configure()
-    {
-        $this->install(new PackageApiModule);
-        $this->override(new VndErrorModule);
-    }
-}
-{% endhighlight %}
 
 キャッチした例外の`error`プロパティを`echo`すると[application/vnd.error+json](https://tools.ietf.org/html/rfc6906)メディアタイプの表現が出力されます。
 
@@ -223,4 +192,4 @@ echo $e->error;
 
 ## デモ
 
-[MyVendor.ContactForm](https://github.com/bearsunday/MyVendor.ContactForm)ではフォームのデモを試すことができます。1 URLに複数のフォームを設置したときの例も用意されています。
+[MyVendor.ContactForm](https://github.com/bearsunday/MyVendor.ContactForm)ではフォームのデモを試すことができます。1 URLに複数のフォームを設置したときの例や同じタイプのinputエレメントをループ表示する例も用意されています。
