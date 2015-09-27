@@ -90,7 +90,7 @@ RESTクライアント（Chromeアプリの [Advanced REST client](https://chrom
 ## ルーティング
 
 デフォルトのルーターはURLをディレクトリにマップする`WebRouter`です。
-これを動的なパラメーターをパスで受け取るためにAuraルーターを使用します。
+ここでは動的なパラメーターをパスで受け取るためにAuraルーターを使用します。
 
 最初にcompoerでインストールします。
 {% highlight bash %}
@@ -264,7 +264,7 @@ $time = microtime(true) - $start;
 {% endhighlight %}
 
 ベンチマークを行う度にこのコードを付加して、不要になれば取り除くのは大変です。
-**アスペクト志向プログラミング(AOP)**はこのようなメソッドの前後の特定処理をうまく合成することが出来ます。
+**アスペクト指向プログラミング(AOP)**はこのようなメソッドの前後の特定処理をうまく合成することが出来ます。
 
 まずAOPを実現するためにメソッドの実行を横取り（インターセプト）してベンチマークを行う**インターセプター**を`src/Interceptor/BenchMarker.php`に作成します。
 
@@ -318,7 +318,7 @@ final class BenchMark
 }
 {% endhighlight %}
 
-`AppModule`では`インターセプターを適用するメソッドを**Matcher**を使って束縛（バインド）します。
+`AppModule`ではインターセプターを適用するメソッドを**Matcher**を使って束縛（バインド）します。
 
 {% highlight php %}
 <?php
@@ -328,7 +328,7 @@ use MyVendor\Weekday\Interceptor\BenchMarker;
 // configure()に追加します。
 $this->bindInterceptor(
     $this->matcher->any(),                           // どのクラスでも
-    $this->matcher->annotatedWith(BenchMark::class), // @BenchMarkとアノテートされてるメソッドに
+    $this->matcher->annotatedWith(BenchMark::class), // @BenchMarkとアノテートされているメソッドに
     [BenchMarker::class]                             // BenchMarkerインターセプターを適用
 );
 {% endhighlight %}
@@ -543,7 +543,7 @@ $context = 'prod-hal-app';  // プロダクション用HALアプリケーショ�
 
 コンテキストに応じてインスタンスを生成するPHPコードが生成されます。`var/tmp/`フォルダを確認してみましょう。
 
-これらのファイルは普段みる必要はありませんが、オブジェクトがどのように作られているかを確認することができます。`diff`コマンドでコンテキストでどの依存が変更されているかを確認する事もできます。
+これらのファイルは普段見る必要はありませんが、オブジェクトがどのように作られているかを確認することができます。`diff`コマンドでコンテキストでどの依存が変更されているかを確認する事もできます。
 
 {% highlight bash %}
 diff -q var/tmp/app/ var/tmp/prod-hal-app/
@@ -563,7 +563,7 @@ sqlite> .exit
 {% endhighlight %}
 
 データベースは[AuraSql](https://github.com/ray-di/Ray.AuraSqlModule)や, [Doctrine Dbal](https://github.com/ray-di/Ray.DbalModule)、[CakeDB](https://github.com/ray-di/Ray.CakeDbModule)などから選べますが
-ここではCakePHP3でも使われてるCakeDBをインストールしてみましょう。
+ここではCakePHP3でも使われているCakeDBをインストールしてみましょう。
 
 {% highlight bash %}
 composer require ray/cake-database-module ~1.0
@@ -726,7 +726,7 @@ Last-Modified: Sat, 02 May 2015 17:26:42 GMT
 `@Cacheable`で`expiry`を指定していない限り無期限にキャッシュされます。しかしリソースの変更や削除が`onPut($id, $todo)`や`onDelete($id)`で行われたときは該当するする同じ`$id`のリソースキャッシュが更新されます。
 （つまりGETリクエストのときは生成されたキャッシュデータが使われるだけで`onGet`メソッドの中の処理は実行されません。）
 
-このtodoリソースのように、更新や削除のタイミングが完全にリソース内で閉じてるリソースにとても効果的です。
+このtodoリソースのように、更新や削除のタイミングが完全にリソース内で閉じているリソースにとても効果的です。
 
 ## メソッドによるキャッシュ更新
 
