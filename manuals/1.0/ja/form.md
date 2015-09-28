@@ -67,7 +67,7 @@ class MyForm extends AbstractForm
 {% endhighlight %}
 
 `init()`メソッドでフォームのinput要素を登録し、フィルターやルールを適用します。
-フォームクラスで利用できるメソッドについては、詳しくは[Aura.Input](https://github.com/auraphp/Aura.Input#self-initializing-forms)をご覧ください。
+フォームクラスで利用できるメソッドについて詳しくは[Aura.Input](https://github.com/auraphp/Aura.Input#self-initializing-forms)をご覧ください。
 
 バリデーションの対象となる入力はメソッドを呼んだ時の引数です。入力を変更したいときは
 `SubmitInterface`インターフェイスの`submit()メソッド`を実装してメソッド内で入力にする値を返します。
@@ -124,7 +124,7 @@ class MyController
 
 {% highlight php %}<?php
   $form->input('name'); // <input id="name" type="text" name="name" size="20" maxlength="20" />
-  $form->error('name'); // 「名前には全角文字またはアルファベットを入力して下さい。」の文字列、もしくはブランク。
+  $form->error('name'); // 文字列「名前には全角文字またはアルファベットを入力して下さい。」またはブランク
 {% endhighlight %}
 
 テンプレートにTwigを使った場合でも同様です。
@@ -153,7 +153,7 @@ class MyForm extends AbstractAuraForm
 
 ## バリデーション例外
 
-`@FormValidation`の代わりに`@InputValidation`とアノテートすると、バリデーションが失敗したときに`Ray\WebFormModule\Exception\ValidationException`が投げられるようになります。
+`@FormValidation`の代わりに`@InputValidation`とアノテートするとバリデーションが失敗したときに`Ray\WebFormModule\Exception\ValidationException`が投げられるようになります。
 この場合はHTML表現は使われません。Appリソースに適用してどのクライアントからもバリデーションを行うことができます。Web APIアプリケーションにも便利です。
 
 キャッチした例外の`error`プロパティを`echo`すると[application/vnd.error+json](https://tools.ietf.org/html/rfc6906)メディアタイプの表現が出力されます。
