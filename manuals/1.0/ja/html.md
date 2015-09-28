@@ -5,7 +5,8 @@ category: Manual
 permalink: /manuals/1.0/ja/html.html
 ---
 
-# Twig
+# HTML
+## Twig
 
 HTML表示のためにcomposerで`madapaja/twig-module`をインストールします。
 
@@ -33,12 +34,12 @@ class HtmlModule extends AbstractModule
 }
 {% endhighlight %}
 
-`bootstrap/web.php`のコンテクストを変更して`html`を有効にします。
+`bootstrap/web.php`のコンテキストを変更して`html`を有効にします。
 
 {% highlight bash %}
 $context = 'cli-html-app';
 {% endhighlight %}
-リソースのphpファイルに`.html.twig`拡張子をつけたファイルでテンプレートを用意します。
+リソースのPHPファイル名に`.html.twig`拡張子をつけたファイルでテンプレートを用意します。
 `Page/Index.php`に対応するのは`Page/Index.html.twig`になります。
 
 {% highlight html %}
@@ -80,7 +81,7 @@ class AppModule extends AbstractModule
     {
         $this->install(new TwigModule());
 
-        // You can add twig template paths by the following
+        // twig テンプレートパスを追加
         $appDir = dirname(dirname(__DIR__));
         $paths = [
             $appDir . '/src/Resource',
@@ -88,7 +89,7 @@ class AppModule extends AbstractModule
         ];
         $this->bind()->annotatedWith(TwigPaths::class)->toInstance($paths);
 
-        // Also you can set environment options
+        // 環境のオプションを設定することも可能
         // @see http://twig.sensiolabs.org/doc/api.html#environment-options
         $options = [
             'debug' => false,
@@ -101,5 +102,4 @@ class AppModule extends AbstractModule
 
 ## 他のテンプレートエンジン
 
-テンプレートエンジンは選択できるだけでなく複数のテンプレートエンジンをリソース単位で選択することもできます。
-
+テンプレートエンジンは選択できるだけでなく、複数のテンプレートエンジンをリソース単位で選択することもできます。

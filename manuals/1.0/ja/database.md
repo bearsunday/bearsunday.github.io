@@ -239,7 +239,7 @@ composerで`Ray.CakeDbModule`をインストールします。
 composer require ray/cake-database-module ~1.0
 {% endhighlight %}
 
-インストールの方法については[Ray.CakeDbModule](https://github.com/ray-di/Ray.CakeDbModule)をORMの利用には[CakePHP3 Database Access & ORM](http://book.cakephp.org/3.0/en/orm.html)をご覧ください。
+インストールの方法については[Ray.CakeDbModule](https://github.com/ray-di/Ray.CakeDbModule)を、ORMの利用には[CakePHP3 Database Access & ORM](http://book.cakephp.org/3.0/en/orm.html)をご覧ください。
 
 Ray.CakeDbModuleはCakePHP3のORMを開発したJose([@lorenzo](https://github.com/lorenzo))さんにより提供されています。
 

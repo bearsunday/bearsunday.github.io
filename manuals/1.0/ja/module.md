@@ -55,7 +55,7 @@ $this->bind($interface)->toConstructor($class, $named);
 
 束縛は先にされたものが優先されますが、モジュールを`override`すると先にされた束縛を上書きすることができます。
 
-詳しくは[Ray.DiのREADME](https://github.com/ray-di/Ray.Di/blob/develop-2/README.ja.md)をご覧ください。
+詳しくは[Ray.DiのREADME](https://github.com/ray-di/Ray.Di/blob/2.x/README.ja.md)をご覧ください。
 
 
 ## AOPの設定
@@ -71,8 +71,8 @@ $this->bindInterceptor(
 );
 
 $this->bindInterceptor(
-    $this->matcher->SubclassesOf(AdminPage::class),  // AdminPageの継承また実装クラスの
-    $this->matcher->annotatedWith(Auth::class),      // @Authアノテーションがアノテートされてるメソッドには
+    $this->matcher->SubclassesOf(AdminPage::class),  // AdminPageの継承または実装クラスの
+    $this->matcher->annotatedWith(Auth::class),      // @Authアノテーションがアノテートされているメソッドには
     [AdminAuthentication::class]                     // AdminAuthenticationインターセプターを束縛
 );
 {% endhighlight %}

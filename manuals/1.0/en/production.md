@@ -49,10 +49,12 @@ class ProdModule extends AbstractModule
      */
     protected function configure()
     {
-        // configure shared storage for query repository
         $cache = ApcCache::class;
+        // shared cache
         $this->bind(CacheProvider::class)->annotatedWith(Storage::class)->to($cache)->in(Scope::SINGLETON);
-
+        // cache per server
+        $this->bind(Cache::class)->to($cache)->in(Scope::SINGLETON);
+        // install package ProdModule
         $this->install(new PackageProdModule);
     }
 }

@@ -24,10 +24,9 @@ require dirname(dirname(__DIR__)) . '/bootstrap/bootstrap.php';
 `BEAR.Package`のプロダクション用のモジュール`ProdModule`はwebサーバー1台を前提にしている`ApcCache`になっています。
 webサーバー1台でキャッシュを全て`Apc`で使う場合にはそのまま使用できます。
 
-複数のWebサーバーの構成のためには共有のキャッシュストレージの設定が必要です。
-その場合アプリケーション固有の`ProdModule`を`src/Module/ProdModule.php`に用意して、
-サーバー間で共有するコンテンツ用のキャッシュのインターフェイス'Doctrine\Common\Cache\CacheProvider:@BEAR\RepositoryModule\Annotation\Storage'
-とサーバー単位のキャッシュ`Doctrine\Common\Cache\Cache`インターフェイスを束縛します。
+複数のWebサーバーを構成するためには共有のキャッシュストレージを設定する必要があります。
+この場合、アプリケーション固有の`ProdModule`を`src/Module/ProdModule.php`に用意して、
+サーバー間で共有するコンテンツ用キャッシュ`Doctrine\Common\Cache\CacheProvider:@BEAR\RepositoryModule\Annotation\Storage`インターフェイスとサーバー単位のキャッシュ`Doctrine\Common\Cache\Cache`インターフェイスを束縛します。
 
 {% highlight php %}
 <?php
@@ -50,12 +49,12 @@ class ProdModule extends AbstractModule
     protected function configure()
     {
         $cache = ApcCache::class;
-        // shared cache
+        // 共有キャッシュ
         $this->bind(CacheProvider::class)->annotatedWith(Storage::class)->to($cache)->in(Scope::SINGLETON);
-        // cache per server
+        // サーバー単位のキャッシュ
         $this->bind(Cache::class)->to($cache)->in(Scope::SINGLETON);
 
-        // install package ProdModule
+        // ProdModule パッケージのインストール
         $this->install(new PackageProdModule);
     }
 }
@@ -63,8 +62,8 @@ class ProdModule extends AbstractModule
 `@Storage`とアノテートされた`Cache`インターフェイスは、クエリーリポジトリーのためのものでWebサーバーで共有されるストレージです。
 
 複数のWebサーバーで`ApcCache`を指定することはできないので、
-[Redis](http://doctrine-orm.readthedocs.org/en/latest/reference/caching.html#redis)を指定するか永続化可能な他のストレージを使ったアダプターを作成して束縛します。
-([memcached](http://doctrine-orm.readthedocs.org/en/latest/reference/caching.html#memcached)も指定できますが、メモリなので容量と揮発性に注意）
+[Redis](http://doctrine-orm.readthedocs.org/en/latest/reference/caching.html#redis)を指定するか、永続化可能な他のストレージを使ったアダプターを作成して束縛します。
+([memcached](http://doctrine-orm.readthedocs.org/en/latest/reference/caching.html#memcached)も指定できますが、メモリなので容量と揮発性に注意する必要があります。）
 
 ## HTTP Cache
 
