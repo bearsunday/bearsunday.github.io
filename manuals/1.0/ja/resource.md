@@ -88,7 +88,7 @@ class Index extends ResourceObject
 
 このリクエストは`app://self/blog/posts`リソースに`?id=1`というクエリーでリクエストをすぐ`eager`に行います。
 
-リソースのリクエストはlazyとeagerがあります。リクエストにlazyがついてないものがeagerリクエストです。
+リソースのリクエストはlazyとeagerがあります。リクエストにeagerがついてないものがlazyリクエストです。
 
 {% highlight php %}
 <?php
@@ -311,7 +311,7 @@ class Todo
  */
 {% endhighlight %}
 
-時間を指定するには`expiry`を使って、`short`, `medium`あるいは`long`のいずれかを指定するか
+時間を指定するには、`expiry`を使って、`short`, `medium`あるいは`long`のいずれかを指定できます。
 {% highlight php %}
 /**
  * @Cacheable(expiry="short")

@@ -66,15 +66,15 @@ class MyForm extends AbstractForm
 }
 {% endhighlight %}
 
-`init()`メソッドでフォームのinputエレメントを登録し、フィルターやルールを適用します。
-フォームクラスで利用できるメソッドについて詳しく`は[Aura.Input](https://github.com/auraphp/Aura.Input#self-initializing-forms)をご覧ください
+`init()`メソッドでフォームのinput要素を登録し、フィルターやルールを適用します。
+フォームクラスで利用できるメソッドについては、詳しくは[Aura.Input](https://github.com/auraphp/Aura.Input#self-initializing-forms)をご覧ください。
 
-バリデーションの対象となる入力はメソッドを読んだ時の引数です。変更したいときは
+バリデーションの対象となる入力はメソッドを呼んだ時の引数です。入力を変更したいときは
 `SubmitInterface`インターフェイスの`submit()メソッド`を実装してメソッド内で入力にする値を返します。
 
 ## @FormValidationアノテーション
 
-フォームのバリデーションを行うメソッドを`@FormValidation`でアノテートすると、実行前に`form`プロパティのフォームオブジェクトでバリデーションがおこなわれます。
+フォームのバリデーションを行うメソッドを`@FormValidation`でアノテートすると、実行前に`form`プロパティのフォームオブジェクトでバリデーションが行われます。
 バリデーションに失敗するとメソッド名に`ValidationFailed`サフィックスをつけたメソッドが呼ばれます。
 
 {% highlight php %}<?php
@@ -124,7 +124,7 @@ class MyController
 
 {% highlight php %}<?php
   $form->input('name'); // <input id="name" type="text" name="name" size="20" maxlength="20" />
-  $form->error('name'); // "Name must be alphabetic only." or blank.
+  $form->error('name'); // 「名前には全角文字またはアルファベットを入力して下さい。」の文字列、もしくはブランク。
 {% endhighlight %}
 
 テンプレートにTwigを使った場合でも同様です。
@@ -148,12 +148,12 @@ class MyForm extends AbstractAuraForm
     use SetAntiCsrfTrait;
 {% endhighlight %}
 
-セキュリティレベルを高めるためにはユーザーの認証を含んだカスタムCsrfクラスを作成してフォームクラスにセットします。
+セキュリティレベルを高めるためには、ユーザーの認証を含んだカスタムCsrfクラスを作成してフォームクラスにセットします。
 詳しくはAura.Inputの[Applying CSRF Protections](https://github.com/auraphp/Aura.Input#applying-csrf-protections)をご覧ください。
 
 ## バリデーション例外
 
-`@FormValidation`の代わりに`@InputValidation`とアノテートするとバリデーションが失敗したときに`Ray\WebFormModule\Exception\ValidationException`が投げられるよになります。
+`@FormValidation`の代わりに`@InputValidation`とアノテートすると、バリデーションが失敗したときに`Ray\WebFormModule\Exception\ValidationException`が投げられるようになります。
 この場合はHTML表現は使われません。Appリソースに適用してどのクライアントからもバリデーションを行うことができます。Web APIアプリケーションにも便利です。
 
 キャッチした例外の`error`プロパティを`echo`すると[application/vnd.error+json](https://tools.ietf.org/html/rfc6906)メディアタイプの表現が出力されます。
@@ -168,7 +168,7 @@ echo $e->error;
 //     "path": "/path/to/error",
 //     "validation_messages": {
 //         "name": [
-//             "Name must be alphabetic only."
+//             "名前には全角文字またはアルファベットを入力して下さい。"
 //         ]
 //     }
 // }
@@ -192,4 +192,4 @@ echo $e->error;
 
 ## デモ
 
-[MyVendor.ContactForm](https://github.com/bearsunday/MyVendor.ContactForm)ではフォームのデモを試すことができます。1 URLに複数のフォームを設置したときの例や同じタイプのinputエレメントをループ表示する例も用意されています。
+[MyVendor.ContactForm](https://github.com/bearsunday/MyVendor.ContactForm)ではフォームのデモを試すことができます。1 URLに複数のフォームを設置したときの例や同じタイプのinput要素をループ表示する例も用意されています。
