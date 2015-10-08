@@ -33,7 +33,7 @@ class AppModule extends AbstractModule
     protected function configure()
     {
         $this->install(new PackageModule));
-        $this->install(new AuraSqlModule('mysql:host=localhost;dbname=test', 'username', 'password');  // この行を追加
+        $this->install(new AuraSqlModule('mysql:host=localhost;dbname=test', 'username', 'password'));  // この行を追加
     }
 }
 {% endhighlight %}
