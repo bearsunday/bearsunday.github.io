@@ -7,13 +7,8 @@ permalink: /manuals/1.0/ja/form.html
 
 # フォーム
 
-[Aura.Input](https://github.com/auraphp/Aura.Input)と[Aura.Filter](https://github.com/auraphp/Aura.Filter)を使ったフォームクラスは
-機能が単体のクラスに集約され、テストや変更が容易です。
-
-テンプレートエンジンのフォームヘルパーやページコントローラーでのバリデーションを行うことない疎結合なフォームはAPIでの利用や将来的な拡張にすぐれています。
-
-フォーム要素の登録やルールを定めたフォームクラスを作成して、特定のメソッドと`@FormValidation`アノテーションを使って束縛します。
-送信されたデータがバリデートされた時のみメソッド内の処理が実行されます。
+[Aura.Input](https://github.com/auraphp/Aura.Input)と[Aura.Filter](https://github.com/auraphp/Aura.Filter)を使ったWebフォーム機能は
+関連する機能が単体のクラスに集約され、テストや変更が容易です。１つのクラスでWebフォームとバリデーションのみの両方の用途に使えます。
 
 ## インストール
 
@@ -40,7 +35,10 @@ class AppModule extends AbstractModule
 }
 {% endhighlight %}
 
-## フォームクラス
+##  Webフォーム
+
+フォーム要素の登録やルールを定めた**フォームクラス**を作成して、`@FormValidation`アノテーションを使って特定のメソッドと束縛します。
+メソッドは送信されたデータがバリデーションOKのときのみ実行されます。
 
 {% highlight php %}
 <?php
@@ -66,11 +64,10 @@ class MyForm extends AbstractForm
 }
 {% endhighlight %}
 
-`init()`メソッドでフォームのinput要素を登録し、フィルターやルールを適用します。
-フォームクラスで利用できるメソッドについて詳しくは[Aura.Input](https://github.com/auraphp/Aura.Input#self-initializing-forms)をご覧ください。
+フォームクラスの`init()`メソッドでフォームのinput要素を登録し、バリデーションのフィルターやサニタイズのルールを適用します。バリデーションルールに関してはAura.Filterの[Rules To Validate Fields](https://github.com/auraphp/Aura.Filter/blob/2.x/docs/validate.md)、サニタイズに関しては[Rules To Sanitize Fields](https://github.com/auraphp/Aura.Filter/blob/2.x/docs/sanitize.md)をご覧ください。
 
-バリデーションの対象となる入力はメソッドを呼んだ時の引数です。入力を変更したいときは
-`SubmitInterface`インターフェイスの`submit()メソッド`を実装してメソッド内で入力にする値を返します。
+メソッドの引数を連想配列にしたもをバリデーションします。入力を変更したいときは
+`SubmitInterface`インターフェイスの`submit()メソッド`を実装して入力にする値を返します。
 
 ## @FormValidationアノテーション
 
@@ -151,12 +148,12 @@ class MyForm extends AbstractAuraForm
 セキュリティレベルを高めるためには、ユーザーの認証を含んだカスタムCsrfクラスを作成してフォームクラスにセットします。
 詳しくはAura.Inputの[Applying CSRF Protections](https://github.com/auraphp/Aura.Input#applying-csrf-protections)をご覧ください。
 
-## バリデーション例外
+## @InputValidationアノテーション
 
 `@FormValidation`の代わりに`@InputValidation`とアノテートするとバリデーションが失敗したときに`Ray\WebFormModule\Exception\ValidationException`が投げられるようになります。
-この場合はHTML表現は使われません。Appリソースに適用してどのクライアントからもバリデーションを行うことができます。Web APIアプリケーションにも便利です。
+この場合はHTML表現は使われません。Web APIに便利です。
 
-キャッチした例外の`error`プロパティを`echo`すると[application/vnd.error+json](https://tools.ietf.org/html/rfc6906)メディアタイプの表現が出力されます。
+キャッチした例外の`error`プロパティを`echo`すると[application/vnd.error+json](https://github.com/blongden/vnd.error)メディアタイプの表現が出力されます。
 
 
 {% highlight php %}<?php
@@ -188,8 +185,26 @@ echo $e->error;
  public function onPost()
 {% endhighlight %}
 
-このオプションのモジュールはAPIアプリケーションの時に有用です。
+## VndErrorModuleモジュール
+
+`VndErrorModule`をインストールすると`@FormValidation`フォームとアノートしたメソッドも`@InputValidation`とアノテートしたメソッドと同じように例外を投げるようになります。
+作成したPageリソースをAPIとして使うことが出来ます。
+
+{% highlight php %}
+<?php
+use BEAR\Package\Provide\Error\VndErrorModule;
+use Ray\Di\AbstractModule;
+
+class FooModule extends AbstractModule
+{
+    protected function configure()
+    {
+        $this->override(new VndErrorModule);
+    }
+}
+{% endhighlight %}
 
 ## デモ
 
-[MyVendor.ContactForm](https://github.com/bearsunday/MyVendor.ContactForm)ではフォームのデモを試すことができます。1 URLに複数のフォームを設置したときの例や同じタイプのinput要素をループ表示する例も用意されています。
+[MyVendor.ContactForm](https://github.com/bearsunday/MyVendor.ContactForm)アプリケーションでフォームのデモを実行して試すことができます。
+確認付きのフォームページや、複数のフォームを１ページに設置したときの例などが用意されています。
