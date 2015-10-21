@@ -456,12 +456,9 @@ class User extend ResourceObject
 
 [ray/aura-sql-module](https://packagist.org/packages/ray/aura-sql-module)はRay.Sqlの生SQL、Ray.AuraSqlQueryのクエリービルダー双方のページャーをサポートしています。
 バインドする値と１ページあたりのアイテム数、それに{page}をページ番号にしたuri_templateでページャーファクトリーを`newInstance()`で生成して、ページ番号で配列アクセスします。
-ページャーファクトリーはそれぞれ以下のインターフェイスで受け取ります。
 
- * `Ray\AuraSqlModule\Pagerfanta\AuraSqlPagerFactoryInterface` for Aura.Sql
- * `Ray\AuraSqlModule\Pagerfanta\AuraSqlQueryPagerFactoryInterface` for Aura.SqlQuery
-
-Aura.Sql用
+### Aura.Sql用
+AuraSqlPagerFactoryInterface
 {% highlight php %}
 <?php
 /* @var $factory \Ray\AuraSqlModule\Pagerfanta\AuraSqlPagerFactoryInterface */
@@ -469,7 +466,8 @@ $pager = $factory->newInstance($pdo, $sql, $params, 10, '/?page={page}&category=
 $page = $pager[2]; // page 2
 {% endhighlight %}
 
-Aura.SqlQuery用
+### Aura.SqlQuery用
+AuraSqlQueryPagerFactoryInterface
 {% highlight php %}
 <?php
 // for Select
