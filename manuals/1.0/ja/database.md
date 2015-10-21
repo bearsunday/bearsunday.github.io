@@ -61,8 +61,8 @@ use Ray\AuraSqlModule\AuraSqlInject;
 
 class Index
 {
-    use AuraSqlInject; 
- 
+    use AuraSqlInject;
+
     public function onGet()
     {
         return $this->pdo; // \Aura\Sql\ExtendedPdo
@@ -137,7 +137,7 @@ use Ray\AuraSqlModule\Annotation\WriteConnection;     // important
 class User
 {
     public $pdo; // @ReadOnlyConnectionや@WriteConnectionのメソッドが呼ばれた時に上書きされる
-    
+
     public function onPost($todo)
     {
          $this->read();
@@ -209,7 +209,7 @@ class User extend ResourceObject
 
     public function onGet()
     {
-        $this->select 
+        $this->select
             ->distinct()                    // SELECT DISTINCT
             ->cols([                        // select these columns
                 'id',                       // column name
@@ -251,9 +251,9 @@ class User extend ResourceObject
                 'bar' => 'bar_val',
                 'baz' => 'baz_val',
             ]);
-        
+
         $sth = $this->pdo->prepare($this->select->getStatement());
-        
+
         // bind the values and execute
         $sth->execute($this->select->getBindValues());
         $result = $sth->fetch(\PDO::FETCH_ASSOC);
@@ -293,12 +293,12 @@ class User extend ResourceObject
                 'bar' => 'foo',
                 'baz' => 'zim',
             ]);
-        
+
         $sth = $this->pdo->prepare($this->insert->getStatement());
         $sth->execute($this->insert->getBindValues());
-        // or 
+        // or
         // $sth = $this->pdo->perform($this->insert->getStatement(), this->insert->getBindValues());
-        
+
         // get the last insert ID
         $name = $insert->getLastInsertIdName('id');
         $id = $pdo->lastInsertId($name);
@@ -325,14 +325,14 @@ class User extend ResourceObject
 <?php
         // insert into this table
         $this->insert->into('foo');
-        
+
         // set up the first row
         $this->insert->cols([
             'bar' => 'bar-0',
             'baz' => 'baz-0'
         ]);
         $this->insert->set('ts', 'NOW()');
-        
+
         // set up the second row. the columns here are in a different order
         // than in the first row, but it doesn't matter; the INSERT object
         // keeps track and builds them the same order as the first row.
@@ -342,7 +342,7 @@ class User extend ResourceObject
             'bar' => 'bar-1',
             'baz' => 'baz-1'
         ]);
-        
+
         // set up further rows ...
         $this->insert->addRow();
         // ...
@@ -350,7 +350,7 @@ class User extend ResourceObject
         // execute a bulk insert of all rows
         $sth = $this->pdo->prepare($insert->getStatement());
         $sth->execute($insert->getBindValues());
-        
+
 {% endhighlight %}
 
 > 注:最初の行で始めて現れた列の値を指定しないで、行を追加しようとすると例外が投げられます。
@@ -364,14 +364,14 @@ class User extend ResourceObject
             'baz' => 'baz-0'
         ]);
         $insert->set('ts', 'NOW()');
-        
+
         // set up the second row
         $insert->addRow([
             'bar' => 'bar-1',
             'baz' => 'baz-1'
         ]);
         $insert->set('ts', 'NOW()');
-        
+
         // etc.
 {% endhighlight %}
 
@@ -415,7 +415,7 @@ class User extend ResourceObject
             ]);
         $sth = $this->pdo->prepare($update->getStatement())
         $sth->execute($this->update->getBindValues());
-        // or 
+        // or
         // $sth = $this->pdo->perform($this->update->getStatement(), $this->update->getBindValues());
 {% endhighlight %}
 
@@ -451,6 +451,34 @@ class User extend ResourceObject
         $sth = $this->pdo->prepare($update->getStatement())
         $sth->execute($this->delete->getBindValues());
 {% endhighlight %}
+
+## DBページャー
+
+[ray/aura-sql-module](https://packagist.org/packages/ray/aura-sql-module)はRay.Sqlの生SQL、Ray.AuraSqlQueryのクエリービルダー双方のページャーをサポートしています。
+バインドする値と１ページあたりのアイテム数、それに{page}をページ番号にしたuri_templateでページャーファクトリーを`newInstance()`で生成して、ページ番号で配列アクセスします。
+ページャーファクトリーはそれぞれ以下のインターフェイスで受け取ります。
+
+ * `Ray\AuraSqlModule\Pagerfanta\AuraSqlPagerFactoryInterface` for Aura.Sql
+ * `Ray\AuraSqlModule\Pagerfanta\AuraSqlQueryPagerFactoryInterface` for Aura.SqlQuery
+
+Aura.Sql用
+{% highlight php %}
+<?php
+/* @var $factory \Ray\AuraSqlModule\Pagerfanta\AuraSqlPagerFactoryInterface */
+$pager = $factory->newInstance($pdo, $sql, $params, 10, '/?page={page}&category=sports'); // 10 items per page
+$page = $pager[2]; // page 2
+{% endhighlight %}
+
+Aura.SqlQuery用
+{% highlight php %}
+<?php
+// for Select
+/* @var $factory \Ray\AuraSqlModule\Pagerfanta\AuraSqlQueryPagerFactoryInterface */
+$pager = $factory->newInstance($pdo, $select, 10, '/?page={page}&category=sports');
+$page = $pager[2]; // page 2
+{% endhighlight %}
+
+> 注：Aura.Sqlは生SQLを直接編集していますが現在MySql形式のLIMIT句しか対応していません。
 
 # Doctrine DBAL
 
@@ -488,7 +516,7 @@ use Ray\DbalModule\DbalInject;
 class Index
 {
     use DbalInject;
- 
+
     public function onGet()
     {
         return $this->db; // \Doctrine\DBAL\Driver\Connection
@@ -516,5 +544,3 @@ composer require ray/cake-database-module ~1.0
 インストールの方法については[Ray.CakeDbModule](https://github.com/ray-di/Ray.CakeDbModule)を、ORMの利用には[CakePHP3 Database Access & ORM](http://book.cakephp.org/3.0/en/orm.html)をご覧ください。
 
 Ray.CakeDbModuleはCakePHP3のORMを開発したJose([@lorenzo](https://github.com/lorenzo))さんにより提供されています。
-
-
