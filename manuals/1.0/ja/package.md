@@ -70,7 +70,7 @@ php -S 127.0.0.1bootstrap/api.php // PHPサーバー
 ### var/
 `log`,`tmp`フォルダは書き込み可能にします。`var/www`はWebドキュメントの公開エリアです。
 
-## フレームワーク・パッケージ
+# フレームワーク・パッケージ
 
 ## bear/package
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/bearsunday/BEAR.Package/badges/quality-score.png?b=1.x)](https://scrutinizer-ci.com/g/bearsunday/BEAR.Package/?branch=1.x)
@@ -94,6 +94,13 @@ php -S 127.0.0.1bootstrap/api.php // PHPサーバー
 
 PHPのオブジェクトをRESTサービスとして使用するRESTフレームワークです。
 
+## bear/middleware
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/bearsunday/BEAR.Middleware/badges/quality-score.png?b=1.x)]
+(https://scrutinizer-ci.com/g/bearsunday/BEAR.Middleware/?branch=1.x) [![Code Coverage](https://scrutinizer-ci.com/g/bearsunday/BEAR.Middleware/badges/coverage.png?b=1.x)](https://scrutinizer-ci.com/g/bearsunday/BEAR.Resource/?branch=develop-2)
+[![Build Status](https://travis-ci.org/bearsunday/BEAR.Middleware.svg?branch=1.x)](https://travis-ci.org/bearsunday/BEAR.Middleware)
+
+PSR7のミドルウエアのためのモジュールです。
+
 ## ray/di
  [![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/ray-di/Ray.Di/badges/quality-score.png?b=2.x)](https://scrutinizer-ci.com/g/ray-di/Ray.Di/)
  [![Code Coverage](https://scrutinizer-ci.com/g/ray-di/Ray.Di/badges/coverage.png?b=2.x)](https://scrutinizer-ci.com/g/ray-di/Ray.Di/)
@@ -108,11 +115,50 @@ Google GuiceスタイルのDIフレームワークです。
  
 AOPアライアンスに準拠したAOPフレームワークです。
 
+# ライブラリ・パッケージ
 
-以上が主なパッケージです。他にユーザーがオプションでインストールできるモジュールが[BEAR.Sundayパッケージ](https://github.com/bearsunday)や[Ray.Diパッケージ](https://github.com/ray-di)にも用意されていて、
-`AppModule`でインストールすることができます。
+必要なライブラリ・パッケージはcomposerで個別にインストールします。
 
-## Semver
+例 CakePHPデータベースのインストール
+
+{% highlight bash %}
+composer require ray/cake-database-module
+{% endhighlight %}
+
+### ルーター
+
+ *  [bear/aura-router-module](https://github.com/bearsunday/BEAR.AuraRouterModule) Aura.Router v2
+
+### データベース
+
+ * [ray/aura-sql-module](https://github.com/ray-di/Ray.AuraSqlModule) Aura.Sql v2
+ * [ray/dbal-module](https://github.com/ray-di/Ray.DbalModule) Doctrine DBAL
+ * [ray/cake-database-module](https://github.com/ray-di/Ray.CakeDbModule) CakePHP v3 database
+
+### ストレージ
+
+ * [bear/query-repository](https://github.com/bearsunday/BEAR.QueryRepository) r/wリポジトリの分離
+
+### Web
+
+ * [madapaja/twig-module](http://bearsunday.github.io/manuals/1.0/ja/html.html) Twig テンプレートエンジン
+ * [ray/web-form-module](http://bearsunday.github.io/manuals/1.0/ja/form.html) Webフォーム & バリデーション
+ * [ray/aura-web-module](https://github.com/Ray-Di/Ray.AuraWebModule) Aura.Web
+
+### 認証
+
+ * [ray/oauth-module](https://github.com/Ray-Di/Ray.OAuthModule) OAuth
+ * [ray/role-module](https://github.com/ray-di/Ray.RoleModule) Zend Acl
+  
+### ハイパーメディア
+
+ * [shingo-kumagai/siren-module](https://github.com/shingo-kumagai/BEAR.SirenModule) Siren
+
+### 開発
+
+ * [ray/fake-module](https://github.com/shingo-kumagai/Ray.FakeModule) モッキング
+ 
+# Semver
 
 BEAR.Sundayはパッケージの依存管理のために[セマンティックバージョニング](http://semver.org/lang/ja/)に従います。
 
