@@ -9,7 +9,7 @@ permalink: /manuals/1.0/ja/psr7.html
 
 既存のBEAR.Sundayアプリケーションは特別な変更無しに[PSR7](http://www.php-fig.org/psr/psr-7/)ミドルウエアとして動作させることができます。
 
-以下のコマンドで`bear/middleware`を追加して、ミドルウエアとして動作させるためのbootstrapスクリプトに置き換えます。
+以下のコマンドで`bear/middleware`を追加して、ミドルウエアとして動作させるための[bootstrapスクリプト](https://github.com/bearsunday/BEAR.Middleware/blob/1.x/bootstrap/bootstrap.php)に置き換えます。
 
 {% highlight bash %}
 composer require bear/middleware
