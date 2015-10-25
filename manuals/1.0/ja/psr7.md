@@ -16,9 +16,7 @@ composer require bear/middleware
 cp vendor/bear/middleware/bootstrap/bootstrap.php bootstrap/bootstrap.php
 {% endhighlight %}
 
-{% highlight bash %}
-{% endhighlight %}
-
+スクリプトの`__PACKAGE__\__VENDOR__`をアプリケーションの名前に変更して、
 通常のBEAR.Sundayアプリケーションと同様に公開Webディレクトリとして`var/www`を指定します。
 
 {% highlight bash %}
@@ -29,7 +27,7 @@ php -S 127.0.0.1:8080 -t var/www
 
 ミドルウエアに対応したBEAR.Sundayのリソースは[ストリーム](http://php.net/manual/ja/intro.stream.php)の出力に対応しています。
 
-以下のスクリプトは`image.jpg`画像ファイルをbase64エンコードしてHTTP出力します。
+以下のスクリプトはimage.jpg画像ファイルをbase64エンコードしてHTTP出力します。
 
 {% highlight bash %}
 <?php
