@@ -13,11 +13,8 @@ First make a project with [composer](https://getcomposer.org/).
 
 {% highlight bash %}
 composer create-project -n bear/skeleton MyVendor.Weekday
-...
-cd MyVendor.Weekday
-composer install
-...
 {% endhighlight %}
+This will prompt you to choose vendor name and project name. Type `MyVendor` and `Weekday` here.
 
 Add the first application resource file at `src/Resource/App/Weekday.php`
 

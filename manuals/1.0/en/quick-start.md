@@ -10,10 +10,9 @@ permalink: /manuals/1.0/en/quick-start.html
 Installation is done via [composer](http://getcomposer.org)
 
 {% highlight bash %}
-composer create-project -n bear/skeleton MyVendor.MyPackage
-cd MyVendor.MyPackage
-composer install
+composer create-project -n bear/skeleton MyVendor.MyProject
 {% endhighlight %}
+This will prompt you to choose vendor name and project name. Use default here.
 
 Next, let's create a `page resource`. A page resource is a class which is corresponds to a web page.
 Create your own basic page resource in `MyVendor.MyPackage/src/Resource/Page/Hello.php`
@@ -21,7 +20,7 @@ Create your own basic page resource in `MyVendor.MyPackage/src/Resource/Page/Hel
 {% highlight php %}
 <?php
 
-namespace MyVendor\MyPackage\Resource\Page;
+namespace MyVendor\MyProject\Resource\Page;
 
 use BEAR\Resource\ResourceObject;
 

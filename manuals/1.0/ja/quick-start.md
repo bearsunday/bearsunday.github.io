@@ -10,17 +10,16 @@ permalink: /manuals/1.0/ja/quick-start.html
 インストールは [composer](http://getcomposer.org) で行います。
 
 {% highlight bash %}
-composer create-project -n bear/skeleton MyVendor.MyPackage
-cd MyVendor.MyPackage
-composer install
+composer create-project -n bear/skeleton MyVendor.MyProject
 {% endhighlight %}
+**vendor**と**project**の名前を聞かれますがここではそのままエンターキーを押してデフォルトのものを使いましょう。
 
-次にPageリソースを作成します。PageリソースはWebページに対応したクラスです。 `MyVendor.MyPackage/src/Resource/Page/Hello.php`に作成します。
+次にPageリソースを作成します。PageリソースはWebページに対応したクラスです。 `MyVendor.MyProject/src/Resource/Page/Hello.php`に作成します。
 
 {% highlight php %}
 <?php
 
-namespace MyVendor\MyPackage\Resource\Page;
+namespace MyVendor\MyProject\Resource\Page;
 
 use BEAR\Resource\ResourceObject;
 

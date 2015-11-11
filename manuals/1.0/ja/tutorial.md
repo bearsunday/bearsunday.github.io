@@ -12,11 +12,8 @@ permalink: /manuals/1.0/ja/tutorial.html
 
 {% highlight bash %}
 composer create-project -n bear/skeleton MyVendor.Weekday
-...
-cd MyVendor.Weekday
-composer install
-...
 {% endhighlight %}
+**vendor**名を`MyVendor`に**project**名を`Weekday`として入力します。
 
 最初にインストールされるアプリケーションリソースファイルを`src/Resource/App/Weekday.php`に作成します。
 
