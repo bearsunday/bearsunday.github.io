@@ -12,7 +12,7 @@ Let's make a web service that returns the weekday for a given year-month-day.
 First make a project with [composer](https://getcomposer.org/).
 
 {% highlight bash %}
-composer create-project -n bear/skeleton MyVendor.Weekday
+composer create-project bear/skeleton MyVendor.Weekday
 {% endhighlight %}
 This will prompt you to choose vendor name and project name. Type `MyVendor` and `Weekday` here.
 

@@ -11,7 +11,7 @@ permalink: /manuals/1.0/ja/tutorial.html
 まずプロジェクトを作成します。
 
 {% highlight bash %}
-composer create-project -n bear/skeleton MyVendor.Weekday
+composer create-project bear/skeleton MyVendor.Weekday
 {% endhighlight %}
 **vendor**名を`MyVendor`に**project**名を`Weekday`として入力します。
 

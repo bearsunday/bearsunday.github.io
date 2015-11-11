@@ -12,7 +12,6 @@ permalink: /manuals/1.0/ja/quick-start.html
 {% highlight bash %}
 composer create-project -n bear/skeleton MyVendor.MyProject
 {% endhighlight %}
-**vendor**と**project**の名前を聞かれますがここではそのままエンターキーを押してデフォルトのものを使いましょう。
 
 次にPageリソースを作成します。PageリソースはWebページに対応したクラスです。 `MyVendor.MyProject/src/Resource/Page/Hello.php`に作成します。
 
