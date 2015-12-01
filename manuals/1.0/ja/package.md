@@ -15,8 +15,8 @@ BEAR.Sundayは機能別に独立した`composer`のパッケージで構成さ�
 ### 構造
 
 ```
-├── bootstrap 
-│   ├── api.php 
+├── bootstrap
+│   ├── api.php
 │   ├── bootstrap.php
 │   └── web.php
 ├── composer.json
@@ -46,8 +46,8 @@ BEAR.Sundayは機能別に独立した`composer`のパッケージで構成さ�
  2. bootファイルは実行コンテキストを指定してbootします。設定のため`Module/`のモジュールが使われます。
  3. `bootstrap.php`でルーターは外部のリクエストをアプリケーション内部のリソースリクエストに変換します。
  4. `/Resource`のリソースでリクエストが実行され結果がクライアントに転送されます。
- 
- 
+
+
 ### bootstrap/
 `bootstrap`フォルダのスクリプトはユーザーが直接コンソールで実行するか、またはPHPサーバーのスクリプトとしてアクセスします。
 
@@ -80,7 +80,7 @@ php -S 127.0.0.1bootstrap/api.php // PHPサーバー
 
 `bear/sunday`を実装したフレームワークの基本パッケージです。
 
-## bear/sunday 
+## bear/sunday
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/bearsunday/BEAR.Sunday/badges/quality-score.png?b=1.x)](https://scrutinizer-ci.com/g/bearsunday/BEAR.Sunday/?branch=1.x)
 [![Code Coverage](https://scrutinizer-ci.com/g/bearsunday/BEAR.Sunday/badges/coverage.png?b=1.x)](https://scrutinizer-ci.com/g/bearsunday/BEAR.Sunday/?branch=1.x)
 [![Build Status](https://travis-ci.org/bearsunday/BEAR.Sunday.svg?branch=1.x)](https://travis-ci.org/bearsunday/BEAR.Sunday?branch=1.x)
@@ -105,14 +105,14 @@ PSR7のミドルウエアのためのモジュールです。
  [![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/ray-di/Ray.Di/badges/quality-score.png?b=2.x)](https://scrutinizer-ci.com/g/ray-di/Ray.Di/)
  [![Code Coverage](https://scrutinizer-ci.com/g/ray-di/Ray.Di/badges/coverage.png?b=2.x)](https://scrutinizer-ci.com/g/ray-di/Ray.Di/)
  [![Build Status](https://secure.travis-ci.org/ray-di/Ray.Di.png?b=2.x)](http://travis-ci.org/ray-di/Ray.Di)
-  
+
 Google GuiceスタイルのDIフレームワークです。
 
 ## ray/aop
  [![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/ray-di/Ray.Aop/badges/quality-score.png?b=2.x)](https://scrutinizer-ci.com/g/ray-di/Ray.Aop/)
  [![Code Coverage](https://scrutinizer-ci.com/g/ray-di/Ray.Aop/badges/coverage.png?b=2.x)](https://scrutinizer-ci.com/g/ray-di/Ray.Aop/)
- [![Build Status](https://secure.travis-ci.org/ray-di/Ray.Aop.png?b=2.x)](http://travis-ci.org/ray-di/Ray.Aop) 
- 
+ [![Build Status](https://secure.travis-ci.org/ray-di/Ray.Aop.png?b=2.x)](http://travis-ci.org/ray-di/Ray.Aop)
+
 AOPアライアンスに準拠したAOPフレームワークです。
 
 # ライブラリ・パッケージ
@@ -149,15 +149,15 @@ composer require ray/cake-database-module
 
  * [ray/oauth-module](https://github.com/Ray-Di/Ray.OAuthModule) OAuth
  * [ray/role-module](https://github.com/ray-di/Ray.RoleModule) Zend Acl
-  
+
 ### ハイパーメディア
 
- * [shingo-kumagai/siren-module](https://github.com/shingo-kumagai/BEAR.SirenModule) Siren
+ * [kuma-guy/siren-module](https://github.com/kuma-guy/BEAR.SirenModule) Siren
 
 ### 開発
 
  * [ray/fake-module](https://github.com/shingo-kumagai/Ray.FakeModule) モッキング
- 
+
 # Semver
 
 BEAR.Sundayはパッケージの依存管理のために[セマンティックバージョニング](http://semver.org/lang/ja/)に従います。
