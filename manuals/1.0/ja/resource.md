@@ -258,14 +258,17 @@ use Ray\WebContextParam\Annotation\ServerParam;
      * @FormParam("token")
      * @ServerParam(key="SERVER_NAME", param="server")
      */
-    public function foo($userId = null, $tokenId = "0000", $app_mode = null, $token = null, $server = null)
+    public function foo($userId = null, $tokenId = null, $app_mode = null, $token = null, $server = null)
     {
        // $userId   = $_GET['id'];
-       // $tokenId  = $_COOKIE['id'] or "0000" when unset;
+       // $tokenId  = $_COOKIE['id'];
        // $app_mode = $_ENV['app_mode'];
        // $token    = $_POST['token'];
        // $server   = $_SERVER['SERVER_NAME'];
 {% endhighlight %}
+
+この機能を使うためには引数のデフォルトに`null`が必要です。
+またクライアントが値を指定した時は指定した値が優先され、束縛した値は無効になります。
 
 ### リソースパラメーター
 
