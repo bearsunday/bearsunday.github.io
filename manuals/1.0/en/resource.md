@@ -235,7 +235,7 @@ class News
 {
     /**
      * @Embed(rel="sports", src="/news/sports")
-     * @Embed(rel="weater", src="/news/wheater")
+     * @Embed(rel="weater", src="/news/weather")
      */
     public function onGet()
 {% endhighlight %}
