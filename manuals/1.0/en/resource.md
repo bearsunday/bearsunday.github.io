@@ -37,14 +37,14 @@ class Todo extends ResourceObject
         // status code
         $this->code = 201;
         // location header for created resource
-        $this->headers['Location'] = '/todo/new_id'; 
-        
+        $this->headers['Location'] = '/todo/new_id';
+
         return $this;
     }
 }
 {% endhighlight %}
 
-A resource has a URI just like a web URL. 
+A resource has a URI just like a web URL.
 {% highlight bash %}
 app://self/blog/posts/?id=3
 {% endhighlight %}
@@ -52,9 +52,9 @@ app://self/blog/posts/?id=3
 {% highlight bash %}
 page://self/index
 {% endhighlight %}
-  
+
 It has methods that correspond to HTTP verbs `onGet`, `onPost`, `onPut`, `onPatch`, or `onDelete`.
-`$_GET` parameters are passed to the parameters of `onGet` method, as are `$_POST` parameters sent to the `onPost` method. 
+`$_GET` parameters are passed to the parameters of `onGet` method, as are `$_POST` parameters sent to the `onPost` method.
 
 {% highlight php %}
 <?php
@@ -78,11 +78,11 @@ The format defined by `content-type` header will handle the passing of parameter
             $id
 {% endhighlight %}
 
-The resource state (`code`,`headers` or`body`) is handled by these method using the given parameters. Then the resource class returns itself(`$this`). 
+The resource state (`code`,`headers` or`body`) is handled by these method using the given parameters. Then the resource class returns itself(`$this`).
 
 ### Syntax sugar
 
-Access to the body property has some syntactic sugar. 
+Access to the body property has some syntactic sugar.
 {% highlight php %}
 <?php
 
@@ -114,23 +114,23 @@ Resources have 6 interfaces conforming to HTTP methods.
 | DELETE | Resource delete |
 | OPTIONS | Resource access method query |
 
-#### GET 
+#### GET
 Reads resources. This method does not provide any changing of the resource state. A safe method with no possible side affects.
 
-#### PUT 
+#### PUT
 Performs creation and updates of a resource. This method has the benefit that running it once or many more times will have no more effect. This is referred to as [Idempotence](http://en.wikipedia.org/wiki/Idempotence).
 
 #### PATCH
 
-Performs resource updates, but unlike PUT, it applies a delta rather than replacing the entire resource. 
+Performs resource updates, but unlike PUT, it applies a delta rather than replacing the entire resource.
 
-#### POST 
+#### POST
 Performs resource creation. If you run a request multiple times the resource will be created as many times. A method with no idempotence.
 
-#### DELETE 
+#### DELETE
 Resource deletion. Has idempotence just like PUT.
 
-#### OPTIONS 
+#### OPTIONS
 Inspects which methods and parameters can be used on the resource. Just like `GET` there is no effect on the resource.
 
 
@@ -188,7 +188,7 @@ $blog = $this
     ->request()->body;
 {% endhighlight %}
 
-Three type of links are provided. 
+Three type of links are provided.
 
  * `linkSelf($rel)` Replace with the linked resource.
  * `linkNew($rel)`  Add linked resources to the base resource.
@@ -205,7 +205,7 @@ Three type of links are provided.
     public function onGet($id)
 {% endhighlight %}
 
-Set the link with `rel` key name and `href` resource URI. 
+Set the link with `rel` key name and `href` resource URI.
 
  * NOTE: When using the `hal` context, `@Link` is used for a HAL link.
 
@@ -223,18 +223,35 @@ A `crawl` tagged link will then be [crawled](https://github.com/koriym/BEAR.Reso
 
 Find out more about the `@Link` annotation at  BEAR.Resource [README](https://github.com/bearsunday/BEAR.Resource/blob/1.x/README.md).
 
-### @Embed
+## Embedded Resource
+
+You can embed another resource by using `src`.
+
 {% highlight php %}
 <?php
 use BEAR\Resource\Annotation\Embed;
 
+class News
+{
+    /**
+     * @Embed(rel="sports", src="/news/sports")
+     * @Embed(rel="weater", src="/news/wheater")
+     */
+    public function onGet()
+{% endhighlight %}
+
+The resource **request** is embeded. The request is invoked when rendering. You can add parameters or replace with `addQuery()` or `withQuery()`
+
+{% highlight php %}
+<?php
     /**
      * @Embed(rel="website", src="/website{?id}")
      */
     public function onGet($id)
+    {
+        // ...
+        $this['website']->addQuery(['title' => $title]); // 引数追加
 {% endhighlight %}
-
-You can embed another resource by using `src`. Just think of a regular image tag (`<img src="...">`) in HTML. It embeds an image resource into its own element. It's exactly the same.
 
  * NOTE: In the HAL renderer, this is used as `__embed`.
 

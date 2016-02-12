@@ -174,18 +174,37 @@ public function onGet($id = null)
 
 `linkCrawl`は`crawl`の付いたリンクを[クロール](https://github.com/koriym/BEAR.Resource#crawl)してリソースを集めます。
 
-### @Embed
+## 埋め込みリソース
+
+リソースの中に`src`で指定した別のリソースを埋め込むことができます。
+
 {% highlight php %}
 <?php
 use BEAR\Resource\Annotation\Embed;
 
+class News
+{
+    /**
+     * @Embed(rel="sports", src="/news/sports")
+     * @Embed(rel="weater", src="/news/wheater")
+     */
+    public function onGet()
+{% endhighlight %}
+
+埋め込まれるのはリソース**リクエスト**です。レンダリングの時に実行されますが、その前に`addQuery()`メソッドで引数を加えたり`withQuery()`で引数を置き換えることができます。
+
+{% highlight php %}
+<?php
     /**
      * @Embed(rel="website", src="/website{?id}")
      */
     public function onGet($id)
+    {
+        // ...
+        $this['website']->addQuery(['title' => $title]); // 引数追加
 {% endhighlight %}
 
-リソースの中に`src`でリンクしたリソースを埋め込みます。HTMLページの中に別のURLの画像リソースを埋め込む`<img src="...">`タグをイメージしてみてください。HALレンダラーでは`__embed`として扱われます。
+[HAL](https://github.com/blongden/hal)レンダラーでは`_embedded `として扱われます。
 
 ## バインドパラメーター
 
