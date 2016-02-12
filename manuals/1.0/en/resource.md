@@ -223,7 +223,7 @@ A `crawl` tagged link will then be [crawled](https://github.com/koriym/BEAR.Reso
 
 Find out more about the `@Link` annotation at  BEAR.Resource [README](https://github.com/bearsunday/BEAR.Resource/blob/1.x/README.md).
 
-## Embedded Resource
+## Embed Resource
 
 You can embed another resource by using `src`.
 
