@@ -452,9 +452,9 @@ class User extend ResourceObject
         $sth->execute($this->delete->getBindValues());
 {% endhighlight %}
 
-## DBページャー
+## パジネーション
 
-[ray/aura-sql-module](https://packagist.org/packages/ray/aura-sql-module)はRay.Sqlの生SQL、Ray.AuraSqlQueryのクエリービルダー双方のページャーをサポートしています。
+[ray/aura-sql-module](https://packagist.org/packages/ray/aura-sql-module)はRay.Sqlの生SQL、Ray.AuraSqlQueryのクエリービルダー双方でパジネーション（ページ分割）をサポートしています。
 バインドする値と１ページあたりのアイテム数、それに{page}をページ番号にしたuri_templateでページャーファクトリーを`newInstance()`で生成して、ページ番号で配列アクセスします。
 
 ### Aura.Sql用
