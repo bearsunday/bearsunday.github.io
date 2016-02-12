@@ -19,7 +19,7 @@ class Index extends ResourceObject
 {
     public function onGet($a, $b)
     {
-        $this->code = 200; // 省略可
+        $this->code = 200; // optional, the default value is 200
         // $_GET['a'] + $_GET['b']
         $this['result'] = $a + $b;
 
@@ -250,7 +250,7 @@ The resource **request** is embeded. The request is invoked when rendering. You 
     public function onGet($id)
     {
         // ...
-        $this['website']->addQuery(['title' => $title]); // 引数追加
+        $this['website']->addQuery(['title' => $title]); // add parameters
 {% endhighlight %}
 
  * NOTE: In the HAL renderer, this is used as `__embed`.
@@ -332,7 +332,7 @@ public function onGet($name)
 {
 {% endhighlight %}
 
-In this example the `nickname` property of `app://self//login` is bound to `$name`.
+In this example, the `nickname` property of `app://self//login` is bound to `$name`.
 
 ## Resource cache
 
