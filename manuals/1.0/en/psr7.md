@@ -5,6 +5,8 @@ category: Manual
 permalink: /manuals/1.0/en/psr7.html
 ---
 
+*[This document](https://github.com/bearsunday/bearsunday.github.io/blob/master/manuals/1.0/en/psr7) needs to be proofread by an English speaker. If interested please send me a pull request. Thank you.*
+
 ## Middleware
 
 An existing BEAR.Sunday application can work as 
