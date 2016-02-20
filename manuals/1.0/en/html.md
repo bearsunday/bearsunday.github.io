@@ -6,7 +6,6 @@ permalink: /manuals/1.0/en/html.html
 ---
 
 # HTML
-## Twig
 
 In order to have an HTML reprensentation lets install `madapaja/twig-module` with composer.
 

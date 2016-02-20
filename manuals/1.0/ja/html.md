@@ -6,7 +6,6 @@ permalink: /manuals/1.0/ja/html.html
 ---
 
 # HTML
-## Twig
 
 HTML表示のためにcomposerで`madapaja/twig-module`をインストールします。
 
