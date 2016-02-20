@@ -4,8 +4,7 @@ title: Quick Start
 category: Manual
 permalink: /manuals/1.0/en/quick-start.html
 ---
-
-## Creating your project
+# Quick Satrt
 
 Installation is done via [composer](http://getcomposer.org)
 

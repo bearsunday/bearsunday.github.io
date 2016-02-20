@@ -5,13 +5,15 @@ category: Manual
 permalink: /manuals/1.0/en/database.html
 ---
 
+# Databse
+
 `Aura.Sql`、`Doctrine DBAL`, `CakeDB` modules are available for database connections.
 
 # Aura.Sql
 
 [Aura.Sql](https://github.com/auraphp/Aura.Sql) is an Aura database library that extends from `PDO` .
 
-### Installation
+## Installation
 
 Install `Ray.AuraSqlModule` via composer.
 

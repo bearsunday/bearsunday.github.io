@@ -5,7 +5,7 @@ category: Manual
 permalink: /manuals/1.0/ja/application.html
 ---
 
-## アプリケーション実行
+# アプリケーション
 
 アプリケーションは以下のような順番で実行されます。
 

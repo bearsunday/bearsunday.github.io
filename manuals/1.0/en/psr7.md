@@ -7,7 +7,7 @@ permalink: /manuals/1.0/en/psr7.html
 
 *[This document](https://github.com/bearsunday/bearsunday.github.io/blob/master/manuals/1.0/en/psr7.md) needs to be proofread by an English speaker. If interested please send me a pull request. Thank you.*
 
-## Middleware
+# PSR7
 
 An existing BEAR.Sunday application can work as 
 [PSR7](http://www.php-fig.org/psr/psr-7/) middleware with easy step.

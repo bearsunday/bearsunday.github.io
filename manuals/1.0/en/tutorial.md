@@ -5,7 +5,7 @@ category: Manual
 permalink: /manuals/1.0/en/tutorial.html
 ---
 
-## Tutorial
+# Tutorial
 
 Let's make a web service that returns the weekday for a given year-month-day.
 

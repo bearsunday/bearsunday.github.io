@@ -4,6 +4,7 @@ title: データベース
 category: Manual
 permalink: /manuals/1.0/ja/database.html
 ---
+# データベース
 
 データベースライブラリの利用のため`Aura.Sql`、`Doctrine DBAL`, `CakeDB`などのモジュールが用意されています。
 

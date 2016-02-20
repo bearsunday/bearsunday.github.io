@@ -4,6 +4,9 @@ title: プロダクション
 category: Manual
 permalink: /manuals/1.0/ja/production.html
 ---
+
+# プロダクション
+
 プロダクション環境用の構成のためにキャッシュの設定やスクリプトの変更を行います。
 
 ## bootファイル

@@ -5,7 +5,7 @@ category: Manual
 permalink: /manuals/1.0/ja/psr7.html
 ---
 
-## ミドルウエア
+# PSR7
 
 既存のBEAR.Sundayアプリケーションは特別な変更無しに[PSR7](http://www.php-fig.org/psr/psr-7/)ミドルウエアとして動作させることができます。
 

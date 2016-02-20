@@ -5,7 +5,8 @@ category: Manual
 permalink: /manuals/1.0/ja/quick-start.html
 ---
 
-## プロジェクトの作成
+
+# クイックスタート
 
 インストールは [composer](http://getcomposer.org) で行います。
 
