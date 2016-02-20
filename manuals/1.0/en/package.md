@@ -5,6 +5,8 @@ category: Manual
 permalink: /manuals/1.0/en/package.html
 ---
 
+*[This document](https://github.com/bearsunday/bearsunday.github.io/blob/master/manuals/1.0/en/psr7.md) needs to be proofread by an English speaker. If interested please send me a pull request. Thank you.*
+
 # Package
 
 BEAR.Sunday application is an composer package taking BEAR.Sunday framework as dependency package.
