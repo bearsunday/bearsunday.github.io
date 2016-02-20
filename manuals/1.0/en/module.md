@@ -86,11 +86,13 @@ $this->bindInterceptor(
 
  * [Matcher::any](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/MatcherInterface.php#L16) - Any
  * [Matcher::annotatedWith](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/MatcherInterface.php#L23) - Annotation
- * [Matcher::subclassesOf](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/MatcherInterface.php#L30) - Sub class
- * [Matcher::startsWith](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/MatcherInterface.php#L37) - start with name (class or method)
- * [Matcher::logicalOr](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/MatcherInterface.php#L44) - OR
- * [Matcher::logicalAnd](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/MatcherInterface.php#L51) - AND
- * [Matcher::logicalNot](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/MatcherInterface.php#L58) - NOT
+ * [Matcher::subclassesOf](https://github.com/ray-di/Ray.Aop/blob/2.x/src/MatcherInterface.php#L30) - Sub class
+ * [Matcher::startsWith](https://github.com/ray-di/Ray.Aop/blob/2.x/src/MatcherInterface.php#L37) - start with name (class or method)
+ * [Matcher::logicalOr](https://github.com/ray-di/Ray.Aop/blob/2.x/src/MatcherInterface.php#L44) - OR
+ * [Matcher::logicalAnd](https://github.com/ray-di/Ray.Aop/blob/2.x/src/MatcherInterface.php#L51) - AND
+ * [Matcher::logicalNot](https://github.com/ray-di/Ray.Aop/blob/2.x/src/MatcherInterface.php#L58) - NOT
+
+## Interceptor
 
 In an interceptor a `MethodInvocation` object gets passed to the `invoke` method. We can the decorate the targetted instances so that you run computations before or after any methods on the target are invoked.
 
@@ -121,6 +123,19 @@ With the `MethodInvocation` object, you can access the target method's invocatio
  * [MethodInvocation::getThis](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/Joinpoint.php#L48) - Get object
  * [MethodInvocation::getArguments](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/Invocation.php) - Pet parameters
 
+Annotations can be obtained using the reflection API.
+ 
+{% highlight php %}
+<?php
+$method = $invocation->getMethod();
+$class = $invocation->getMethod()->getDeclaringClass();
+{% endhighlight %}
+ 
+ * `$method->getAnnotations()`
+ * `$method->getAnnotation($name)`
+ * `$class->->getAnnotations()` 
+ * `$class->->getAnnotation($name)`
+ 
 ## Environment Settings
 
 BEAR.Sunday does not have any special environment mode except `prod`.

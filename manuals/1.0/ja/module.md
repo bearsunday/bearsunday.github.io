@@ -13,7 +13,7 @@ BEAR.Sundayでは設置場所や記述フォーマットが固定されている
 起点となるモジュールが`AppModule` (/src/Module/AppModule.php)です。
 `AppModule`で必要なモジュールを`install`してアプリケーション全体を構成します。
 
-モジュールのコンストラクタに渡す値は、コンテキストによらないものはハードコードして構いません。環境によるものは`$_ENV`などの環境値を使います。
+コンテキストに依存しない設定値はモジュールにそのまま記述し、環境により変更されるようなものやクレデンシャル情報は`$_ENV`値を使います。
 
 {% highlight php %}
 <?php
@@ -87,10 +87,15 @@ $this->bindInterceptor(
  * [Matcher::logicalAnd](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/MatcherInterface.php#L51) - AND条件
  * [Matcher::logicalNot](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/MatcherInterface.php#L58) - NOT条件
 
-インターセプターの`invoke`メソッドでは`MethodInvocation`（メソッド実行）変数を受け取り、メソッドの前後に処理を加えることができます。
+## インターセプター
+
+インターセプターの`invoke`メソッドでは`MethodInvocation`（メソッド実行）変数を受け取り、メソッドの前後に処理を加えます。
+
 
 {% highlight php %}
 <?php
+use Ray\Aop\MethodInvocation;
+
 class MyInterceptor implements MethodInterceptor
 {
     public function invoke(MethodInvocation $invocation)
@@ -109,13 +114,23 @@ class MyInterceptor implements MethodInterceptor
 }
 {% endhighlight %}
 
-`MethodInvocation`で対象のメソッド実行に関連するオブジェクトやメソッド、引数にアクセスすることができます。
+インターセプターに渡される`MethodInvocation`で対象のメソッド実行に関連するオブジェクトやメソッド、引数にアクセスすることができます。
 
- * [MethodInvocation::proceed](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/Joinpoint.php#L39) - 対象メソッド実行
- * [MethodInvocation::getMethod](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/MethodInvocation.php) -  対象メソッドリフレクションの取得
- * [MethodInvocation::getThis](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/Joinpoint.php#L48) - 対象オブジェクトの取得
- * [MethodInvocation::getArguments](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/Invocation.php) - 呼び出し引数配列の取得
+ * [MethodInvocation::proceed](https://github.com/ray-di/Ray.Aop/blob/2.x/src/Joinpoint.php) - 対象メソッド実行
+ * [MethodInvocation::getMethod](https://github.com/ray-di/Ray.Aop/blob/2.x/src/MethodInvocation.php) -  対象メソッドリフレクションの取得
+ * [MethodInvocation::getThis](https://github.com/ray-di/Ray.Aop/blob/2.x/src/Joinpoint.php) - 対象オブジェクトの取得
+ * [MethodInvocation::getArguments](https://github.com/ray-di/Ray.Aop/blob/2.x/src/Invocation.php) - 呼び出し引数配列の取得
  
-## 環境による設定値
 
-BEAR.Sundayでは`prod`以外の特定の環境モードを持ちません。モジュールやアプリケーションは環境に対して無知です。
+リフレクションのメソッドでアノテーションを取得することができます。
+ 
+{% highlight php %}
+<?php
+$method = $invocation->getMethod();
+$class = $invocation->getMethod()->getDeclaringClass();
+{% endhighlight %}
+ 
+ * `$method->getAnnotations()`     - メソッドアノテーションの取得
+ * `$method->getAnnotation($name)`
+ * `$class->->getAnnotations()`    - クラスアノテーションの取得
+ * `$class->->getAnnotation($name)`
