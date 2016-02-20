@@ -5,9 +5,11 @@ category: Manual
 permalink: /manuals/1.0/ja/resource.html
 ---
 
-BEAR.Sundayアプリケーションはリソースの集合です。RESTfulアプリケーションを[REST](http://ja.wikipedia.org/wiki/REST)のスタイルで作成します。
+# リソース
 
-# サービスとしてのオブジェクト
+BEAR.Sundayアプリケーションは[REST](http://ja.wikipedia.org/wiki/REST)リソースの集合です。
+
+## サービスとしてのオブジェクト
 
 リソースクラスはHTTPのメソッドをPHPのメソッドにマップしてPHPのクラスをサービスとして扱います。
 
