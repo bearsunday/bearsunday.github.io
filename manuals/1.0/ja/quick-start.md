@@ -63,4 +63,4 @@ php -S 127.0.0.1:8080 var/www/index.php
 
 # クイックAPI
 
-API用パッケージのスケルトンを使った[クイックAPI](quick-api.html)チュートリアルもおためしください。
+API用パッケージのスケルトンを使った[クイックAPI](quick-api.html)チュートリアルもお試しください。
