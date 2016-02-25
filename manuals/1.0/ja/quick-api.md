@@ -96,9 +96,9 @@ class MyNewMigration extends AbstractMigration
 
 # ルーティング
 
-`GET /task/1`のWebリクエストを`Task`クラスの`onGet($id)`メソッドにルートするためにルートファイルを編集します。
+`GET /task/1`Webリクエストを`Task::onGet($id)`メソッドにルートするために`var/conf/aura.route.php`
+を編集します。
 
-`var/conf/aura.route.php`
 
 {% highlight php %}
 <?php
@@ -106,11 +106,11 @@ class MyNewMigration extends AbstractMigration
 $router->route('/task', '/task/{id}');
 {% endhighlight %}
 
-`POST`や`PATCH`もそれぞれ`onPost()`、`onPatch()`メソッドにルートされます。
+`POST`や`PATCH`もそれぞ対応するメソッドにルートされます。
 
 # SQL
 
-SQLフィイルを`var/db/sql`に設置します。
+SQLフィイルを設置します。
 
 `var/db/sql/task_list.sql`
 
