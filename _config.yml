@@ -8,4 +8,4 @@ title: BEAR.Sunday
 markdown: kramdown
 redcarpet:
   extensions: ["autolink", "no_intra_emphasis", "fenced_code_blocks", "autolink", "strikethrough", "superscript", "with_toc_data", "tables"]
-highlighter: pygments
+highlighter: rouge
