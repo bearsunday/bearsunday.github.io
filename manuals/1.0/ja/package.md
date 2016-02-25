@@ -167,6 +167,14 @@ composer require ray/cake-database-module
 
  * [ray/fake-module](https://github.com/shingo-kumagai/Ray.FakeModule) モッキング
 
+## ベンダー・パッケージ
+
+特定のパッケージやツールの組み合わせを１つのパッケージにして再利用することができます。
+同じチームで複数のプロジェクトを行う場合のスケルトンになります。
+
+[Koriym.DbAppPackage](https://github.com/koriym/Koriym.DbAppPackage)はマイグレーションツールのPhinxやAuraPHPのコンポーネントなどをセットにして、設定ファイルや実行ファイルを添付したDBを使ったWeb APIアプリ用のパッケージです。
+カスタムパッケージを作る時の参考に。
+
 # Semver
 
 BEAR.Sundayはパッケージの依存管理のために[セマンティックバージョニング](http://semver.org/lang/ja/)に従います。
