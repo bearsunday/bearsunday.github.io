@@ -92,6 +92,13 @@ class MyNewMigration extends AbstractMigration
 }
 {% endhighlight %}
 
+
+マイグレーションを実行します。
+
+```
+php vendor/bin/phinx migrate -c var/db/phinx.php
+```
+
 マイグレーションファイルの詳細はマニュアルの[Writing Migrations](http://docs.phinx.org/en/latest/migrations.html)をご覧ください。
 
 # ルーティング
