@@ -68,7 +68,7 @@ php bin/create_db.php
 php vendor/bin/phinx create -c var/db/phinx.php MyNewMigration  
 ```
 
-作成されたマイグレーション編集します。
+作成されたマイグレーション編集します。[[?]](http://docs.phinx.org/en/latest/migrations.html "Phinx マニュアル: Writing Migrations")
 
 `var/db/20160222042911_my_new_migration.php`
 
@@ -98,8 +98,6 @@ class MyNewMigration extends AbstractMigration
 ```
 php vendor/bin/phinx migrate -c var/db/phinx.php
 ```
-
-マイグレーションファイルの詳細はマニュアルの[Writing Migrations](http://docs.phinx.org/en/latest/migrations.html)をご覧ください。
 
 # ルーティング
 
