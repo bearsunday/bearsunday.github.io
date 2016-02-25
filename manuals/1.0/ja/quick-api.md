@@ -14,7 +14,7 @@ permalink: /manuals/1.0/ja/quick-api.html
 {% highlight sql %}
 INSERT task (title, completed, created) VALUES (:title, :completed, :created);
 SELECT id, title, completed FROM task;
-SELECT id, completed, title FROM task WHERE id = :id;
+SELECT id, title, completed FROM task WHERE id = :id;
 UPDATE task SET completed = 1 WHERE id = :id;
 {% endhighlight %}
 
@@ -120,7 +120,7 @@ SELECT id, title, completed FROM task;
 `var/db/sql/task_item.sql`
 
 ```sql
-SELECT id, completed, title FROM task WHERE id = :id;
+SELECT id, title, completed FROM task WHERE id = :id;
 ```
 
 `var/db/sql/task_insert.sql`
