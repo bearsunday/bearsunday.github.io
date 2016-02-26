@@ -216,6 +216,64 @@ curl -i -X PATCH http://127.0.0.1:8080/task/1
 curl -i -X GET http://127.0.0.1:8080/task/1
 ```
 
+## テスト
+
+Taskリソースのテストコードを追加します。[[?]](https://phpunit.de/manual/current/ja/writing-tests-for-phpunit.html "PHPUnit 用のテストの書き方")
+
+{% highlight php %}
+<?php
+
+namespace MyVendor\Task\Resource\Page;
+
+use BEAR\Resource\ResourceObject;
+use Koriym\DbAppPackage\AbstractDatabaseTestCase;
+
+class TaskTest extends AbstractDatabaseTestCase
+{
+    public function testOnPost()
+    {
+        $query = ['title' => 'shopping'];
+        $page = $this->resource->post->uri('app://self/task')->withQuery($query)->eager->request();
+        $this->assertSame(201, $page->code);
+        $this->assertArrayHasKey('Location', $page->headers);
+
+        return $page;
+    }
+
+    /**
+     * @depends testOnPost
+     */
+    public function testPatch(ResourceObject $page)
+    {
+        $uri = sprintf('app://self%s', $page->headers['Location']);
+        $page = $this->resource->patch->uri($uri)->eager->request();
+        $this->assertSame(200, $page->code);
+
+        return $page;
+    }
+
+    /**
+     * @depends testOnPost
+     */
+    public function testGet(ResourceObject $page)
+    {
+        $uri = sprintf('app://self%s', $page->headers['Location']);
+        $page = $this->resource->get->uri($uri)->eager->request();
+        $this->assertSame('shopping', $page->body['title']);
+        $this->assertSame('1', $page->body['completed']);
+    }
+}
+{% endhighlight %}
+
+実行します。
+
+```
+phpunit
+
+...
+OK (5 tests, 8 assertions)
+```
+
 ## スクリプト
 
 再度環境構築をするために`composer.json`の`scripts`に以下のコードを追加します。
