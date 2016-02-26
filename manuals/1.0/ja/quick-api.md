@@ -12,9 +12,9 @@ permalink: /manuals/1.0/ja/quick-api.html
 [API用のパッケージ](https://github.com/koriym/Koriym.DbAppPackage)と以下の４つのSQLファイルを使ってWeb APIを作成します。
 
 {% highlight sql %}
-INSERT task (title, completed, created) VALUES (:title, :completed, :created);
 SELECT id, title, completed FROM task;
 SELECT id, title, completed FROM task WHERE id = :id;
+INSERT task (title, completed, created) VALUES (:title, :completed, :created);
 UPDATE task SET completed = 1 WHERE id = :id;
 {% endhighlight %}
 
@@ -72,9 +72,8 @@ php vendor/bin/phinx create -c var/db/phinx.php MyNewMigration
 
 `var/db/20160222042911_my_new_migration.php`
 
-{% highlight php %}
+```php
 <?php
-
 use Phinx\Migration\AbstractMigration;
 use Phinx\Db\Adapter\MysqlAdapter;
 
@@ -90,8 +89,7 @@ class MyNewMigration extends AbstractMigration
             ->create();
     }
 }
-{% endhighlight %}
-
+```
 
 マイグレーションを実行します。
 
@@ -148,7 +146,6 @@ SQLを実行するリソースクラスを作成します。
 
 {% highlight php %}
 <?php
-
 class Task extends ResourceObject
 {
     use AuraSqlInject;
@@ -158,7 +155,7 @@ class Task extends ResourceObject
     public function onGet($id = null)
     {
         $this->body = $id ?
-            $this->pdo->fetchAssoc($this->query['task_item'], ['id' => $id]) :
+            $this->pdo->fetchOne($this->query['task_item'], ['id' => $id]) :
             $this->pdo->fetchAssoc($this->query['task_list']);
 
         return $this;
@@ -166,8 +163,12 @@ class Task extends ResourceObject
 
     public function onPost($title)
     {
-        $this->pdo->perform($this->query['task_inset'], ['title' => $title, 'created' => $this->now]);
-        // last ID
+        $params = [
+             'title' => $title,
+             'created' => $this->now,
+             'completed' => false
+        ];
+        $this->pdo->perform($this->query['task_insert'], $params);
         $id = $this->pdo->lastInsertId('id');
         $this->code = 201;
         $this->headers['Location'] = "/task?id={$id}";
@@ -177,13 +178,16 @@ class Task extends ResourceObject
 
     public function onPatch($id)
     {
-        $this->pdo->perform($this->query['task_update'], ['id' => $id]);
-        
+        $params = [
+            'id' => $id,
+            'completed' => true
+        ];
+        $this->pdo->perform($this->query['task_update'], $params);
+
         return $this;
     }
 }
 {% endhighlight %}
-
 
 # 実行
 
