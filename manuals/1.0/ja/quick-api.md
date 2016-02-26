@@ -218,7 +218,7 @@ curl -i -X GET http://127.0.0.1:8080/task/1
 
 ## テスト
 
-Taskリソースのテストコードを追加します。[[?]](https://phpunit.de/manual/current/ja/writing-tests-for-phpunit.html "PHPUnit 用のテストの書き方")
+Taskリソースのテストコードを`/tests/Resource/App/TaskTest.php`に追加します。[[?]](https://phpunit.de/manual/current/ja/writing-tests-for-phpunit.html "PHPUnit 用のテストの書き方")
 
 {% highlight php %}
 <?php
@@ -284,7 +284,7 @@ OK (5 tests, 8 assertions)
             "php vendor/bin/phinx migrate -c var/db/phinx.php"
         ],
 
-他の環境でもsetupコマンドで同じ環境が構築できます。
+setupコマンドで環境構築できます。
 
 ```
 composer setup
