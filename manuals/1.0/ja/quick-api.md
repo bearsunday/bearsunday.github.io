@@ -95,6 +95,7 @@ class MyNewMigration extends AbstractMigration
 
 ```
 php vendor/bin/phinx migrate -c var/db/phinx.php
+php vendor/bin/phinx migrate -c var/db/phinx.php -e test
 ```
 
 # ルーティング
