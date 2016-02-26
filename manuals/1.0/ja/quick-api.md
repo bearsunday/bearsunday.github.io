@@ -216,6 +216,22 @@ curl -i -X PATCH http://127.0.0.1:8080/task/1
 curl -i -X GET http://127.0.0.1:8080/task/1
 ```
 
+## スクリプト
+
+再度環境構築をするために`composer.json`の`scripts`に以下のコードを追加します。
+
+    "scripts": {
+        "setup": [
+            "php bin/create_db.php",
+            "php vendor/bin/phinx migrate -c var/db/phinx.php"
+        ],
+
+他の環境でもsetupコマンドで同じ環境が構築できます。
+
+```
+composer setup
+```
+
 ## まとめ
 
 DBの接続情報を`.env`で設定して、SQLのファイルをHTTPのURLにマップされたリソースから呼び出してWeb APIを作成しました。
