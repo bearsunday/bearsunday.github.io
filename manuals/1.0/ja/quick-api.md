@@ -203,10 +203,10 @@ class Task extends ResourceObject
 まずはリソースをコンソールで実行します。
 
 ```
-$ php bootstrap/api.php options /task
-$ php bootstrap/api.php post '/task?title=run'
-$ php bootstrap/api.php patch /task/1
-$ php bootstrap/api.php get /task/1
+php bootstrap/api.php options /task
+php bootstrap/api.php post '/task?title=run'
+php bootstrap/api.php patch /task/1
+php bootstrap/api.php get /task/1
 ```
 
 次に同じリソースをWebでアクセスするためにWebサーバーをスタートさせます。
@@ -273,13 +273,23 @@ class TaskTest extends AbstractDatabaseTestCase
 }
 {% endhighlight %}
 
-実行します。
+`phpunit`を実行します。
 
 ```
 phpunit
 
 ...
 OK (5 tests, 8 assertions)
+```
+
+`composer test`を実行するとコーディングスタイルをチェックする[phpcs](https://github.com/squizlabs/PHP_CodeSniffer/wiki), [phpmd](https://phpmd.org/about.html)も合わせて実行されます。
+
+```
+composer test
+
+> php vendor/phpmd/phpmd/src/bin/phpmd src text ./phpmd.xml
+> php vendor/squizlabs/php_codesniffer/scripts/phpcs
+> php vendor/phpunit/phpunit/phpunit
 ```
 
 ## スクリプト
