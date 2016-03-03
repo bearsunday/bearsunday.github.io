@@ -147,6 +147,14 @@ SQLを実行するリソースクラスを作成します。
 
 {% highlight php %}
 <?php
+
+namespace MyVendor\Task\Resource\App;
+
+use BEAR\Resource\ResourceObject;
+use Koriym\Now\NowInject;
+use Koriym\QueryLocator\QueryLocatorInject;
+use Ray\AuraSqlModule\AuraSqlInject;
+
 class Task extends ResourceObject
 {
     use AuraSqlInject;
@@ -165,9 +173,9 @@ class Task extends ResourceObject
     public function onPost($title)
     {
         $params = [
-             'title' => $title,
-             'created' => $this->now,
-             'completed' => false
+            'title' => $title,
+            'created' => $this->now,
+            'completed' => false
         ];
         $this->pdo->perform($this->query['task_insert'], $params);
         $id = $this->pdo->lastInsertId('id');
