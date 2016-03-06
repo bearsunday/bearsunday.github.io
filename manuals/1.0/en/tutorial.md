@@ -80,9 +80,34 @@ Let us fire the php server to make a web service for this
 php -S 127.0.0.1:8080 bootstrap/api.php
 {% endhighlight %}
 
-Send a `GET` request as `http://127.0.0.1:8080/weekday?year=2001&month=1&day=1` with a rest client like a Chrome [Advanced REST client](https://chrome.google.com/webstore/detail/advanced-rest-client/hgmloofddffdnphfgcellkdfbfbjeloo/).
+Send a `GET` request as `http://127.0.0.1:8080/weekday?year=2001&month=1&day=1` with `curl`
+
+```
+curl -i 'http://127.0.0.1:8080/weekday?year=2001&month=1&day=1'
+HTTP/1.1 200 OK
+Host: 127.0.0.1:8080
+Connection: close
+X-Powered-By: PHP/7.0.2
+content-type: application/hal+json
+
+{
+    "weekday": "Mon",
+    "_links": {
+        "self": {
+            "href": "/weekday?year=2001&month=1&day=1"
+        }
+    }
+}
+```
 
 This resource class only has a GET method, therefore `405 Method Not Allowed` will be returned with any other request. Try it out!.
+
+```
+curl -i -X POST 'http://127.0.0.1:8080/weekday?year=2001&month=1&day=1'
+
+HTTP/1.1 405 Method Not Allowed
+...
+```
 
 ## Routing
 
@@ -101,6 +126,7 @@ namespace MyVendor\Weekday\Module;
 
 use BEAR\Package\PackageModule;
 use Ray\Di\AbstractModule;
+use josegonzalez\Dotenv\Loader as Dotenv;
 use BEAR\Package\Provide\Router\AuraRouterModule; // add this line
 
 class AppModule extends AbstractModule
@@ -110,6 +136,10 @@ class AppModule extends AbstractModule
      */
     protected function configure()
     {
+        Dotenv::load([
+            'filepath' => dirname(dirname(__DIR__)) . '/.env',
+            'toEnv' => true
+        ]);
         $this->install(new PackageModule);
         $this->override(new AuraRouterModule); // add this line
     }
@@ -120,10 +150,9 @@ This module looks for a router script file at `var/conf/aura.route.php`.
 
 {% highlight php %}
 <?php
+/** @var $router \BEAR\Package\Provide\Router\AuraRoute */
 
-/** @var $router \Aura\Router\RouteCollection */
-
-$router->add('/weekday', '/weekday/{year}/{month}/{day}')->addValues(['path' => '/weekday']);
+$router->route('/weekday', '/weekday/{year}/{month}/{day}');
 {% endhighlight %}
 
 Let's try it out.

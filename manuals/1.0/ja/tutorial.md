@@ -79,10 +79,34 @@ Built-inサーバーを立ち上げます。
 php -S 127.0.0.1:8080 bootstrap/api.php
 {% endhighlight %}
 
-RESTクライアント（Chromeアプリの [Advanced REST client](https://chrome.google.com/webstore/detail/advanced-rest-client/hgmloofddffdnphfgcellkdfbfbjeloo/) など）で
-`http://127.0.0.1:8080/weekday?year=2001&month=1&day=1` にGETリクエストを送って確かめてみましょう。
+`curl`で`http://127.0.0.1:8080/weekday?year=2001&month=1&day=1` にGETリクエストを送って確かめてみましょう。
+
+```
+curl -i 'http://127.0.0.1:8080/weekday?year=2001&month=1&day=1'
+HTTP/1.1 200 OK
+Host: 127.0.0.1:8080
+Connection: close
+X-Powered-By: PHP/7.0.2
+content-type: application/hal+json
+
+{
+    "weekday": "Mon",
+    "_links": {
+        "self": {
+            "href": "/weekday?year=2001&month=1&day=1"
+        }
+    }
+}
+```
 
 このリソースクラスにはGET以外のメソッドは用意されていないので、他のメソッドを試すと`405 Method Not Allowed`が返されます。これも試してみましょう。
+
+```
+curl -i -X POST 'http://127.0.0.1:8080/weekday?year=2001&month=1&day=1'
+
+HTTP/1.1 405 Method Not Allowed
+...
+```
 
 ## ルーティング
 
@@ -103,6 +127,7 @@ namespace MyVendor\Weekday\Module;
 
 use BEAR\Package\PackageModule;
 use Ray\Di\AbstractModule;
+use josegonzalez\Dotenv\Loader as Dotenv;
 use BEAR\Package\Provide\Router\AuraRouterModule; // この行を追加
 
 class AppModule extends AbstractModule
@@ -112,6 +137,10 @@ class AppModule extends AbstractModule
      */
     protected function configure()
     {
+        Dotenv::load([
+            'filepath' => dirname(dirname(__DIR__)) . '/.env',
+            'toEnv' => true
+        ]);
         $this->install(new PackageModule);
         $this->override(new AuraRouterModule); // この行を追加
     }
@@ -122,10 +151,9 @@ class AppModule extends AbstractModule
 
 {% highlight php %}
 <?php
+/** @var $router \BEAR\Package\Provide\Router\AuraRoute */
 
-/** @var $router \Aura\Router\RouteCollection */
-
-$router->add('/weekday', '/weekday/{year}/{month}/{day}')->addValues(['path' => '/weekday']);
+$router->route('/weekday', '/weekday/{year}/{month}/{day}');
 {% endhighlight %}
 
 試してみましょう。
