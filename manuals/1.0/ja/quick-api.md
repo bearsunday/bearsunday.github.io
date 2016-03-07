@@ -40,11 +40,25 @@ What is the project name ?
 
 # データベース
 
+### 接続設定
+
 `.env`ファイルでデータベース接続を設定します。`DB_DSN`のフォーマットは[PDO](http://php.net/manual/ja/pdo.connections.php)です。環境に合わせて適宜変更します。
+
+
+MySQL
 
 ```
 DB_DSN=mysql:host=localhost;dbname=task
 DB_USER=root
+DB_PASS=
+DB_READ=
+```
+
+sqlite
+
+```
+DB_DSN=sqlite:/tmp/task.sq3
+DB_USER=
 DB_PASS=
 DB_READ=
 ```
@@ -54,6 +68,8 @@ DB_READ=
 ```
 DB_READ=slave1.example.com,slave2.example.com
 ```
+
+### 作成
 
 データベースを作成します。（`sqlite`の場合は必要ありません）
 
