@@ -286,10 +286,6 @@ OK (5 tests, 8 assertions)
 
 ```
 composer test
-
-> php vendor/phpmd/phpmd/src/bin/phpmd src text ./phpmd.xml
-> php vendor/squizlabs/php_codesniffer/scripts/phpcs
-> php vendor/phpunit/phpunit/phpunit
 ```
 
 ## スクリプト
