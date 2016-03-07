@@ -26,7 +26,7 @@ API用プロジェクトのスケルトン`dev-api`をcomposerインストール
 composer create-project bear/skeleton MyVendor.Task dev-api
 ```
 
-ベンダー名とパッケージ名を入力します。
+ベンダー名とパッケージ名をそれぞれ`MyVendor`、`Task`と入力します。
 
 ```
 What is the vendor name ?
@@ -141,9 +141,7 @@ UPDATE task SET completed = 1 WHERE id = :id;
 
 # リソース
 
-SQLを実行するリソースクラスを作成します。
-
-`src/Resource/App/Task.php`
+SQLを実行するリソースクラスを`src/Resource/App/Task.php`に作成します。
 
 {% highlight php %}
 <?php
