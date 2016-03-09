@@ -14,7 +14,7 @@ permalink: /manuals/1.0/ja/quick-api.html
 {% highlight sql %}
 SELECT id, title, completed FROM task;
 SELECT id, title, completed FROM task WHERE id = :id;
-INSERT task (title, completed, created) VALUES (:title, :completed, :created);
+INSERT INTO task (title, completed, created) VALUES (:title, :completed, :created);
 UPDATE task SET completed = 1 WHERE id = :id;
 {% endhighlight %}
 
@@ -26,7 +26,7 @@ API用プロジェクトのスケルトン`dev-api`をcomposerインストール
 composer create-project bear/skeleton MyVendor.Task dev-api
 ```
 
-ベンダー名とパッケージ名を入力します。
+ベンダー名とパッケージ名をそれぞれ`MyVendor`、`Task`と入力します。
 
 ```
 What is the vendor name ?
@@ -40,11 +40,25 @@ What is the project name ?
 
 # データベース
 
+### 接続設定
+
 `.env`ファイルでデータベース接続を設定します。`DB_DSN`のフォーマットは[PDO](http://php.net/manual/ja/pdo.connections.php)です。環境に合わせて適宜変更します。
+
+
+MySQL
 
 ```
 DB_DSN=mysql:host=localhost;dbname=task
 DB_USER=root
+DB_PASS=
+DB_READ=
+```
+
+sqlite
+
+```
+DB_DSN=sqlite:/tmp/task.sq3
+DB_USER=
 DB_PASS=
 DB_READ=
 ```
@@ -54,6 +68,8 @@ DB_READ=
 ```
 DB_READ=slave1.example.com,slave2.example.com
 ```
+
+### 作成
 
 データベースを作成します。（`sqlite`の場合は必要ありません）
 
@@ -130,7 +146,7 @@ SELECT id, title, completed FROM task WHERE id = :id;
 `var/db/sql/task_insert.sql`
 
 ```sql
-INSERT task (title, completed, created) VALUES (:title, :completed, :created);
+INSERT INTO task (title, completed, created) VALUES (:title, :completed, :created);
 ```
 
 `var/db/sql/task_update.sql`
@@ -141,9 +157,7 @@ UPDATE task SET completed = 1 WHERE id = :id;
 
 # リソース
 
-SQLを実行するリソースクラスを作成します。
-
-`src/Resource/App/Task.php`
+SQLを実行するリソースクラスを`src/Resource/App/Task.php`に作成します。
 
 {% highlight php %}
 <?php
@@ -286,10 +300,6 @@ OK (5 tests, 8 assertions)
 
 ```
 composer test
-
-> php vendor/phpmd/phpmd/src/bin/phpmd src text ./phpmd.xml
-> php vendor/squizlabs/php_codesniffer/scripts/phpcs
-> php vendor/phpunit/phpunit/phpunit
 ```
 
 ## スクリプト
