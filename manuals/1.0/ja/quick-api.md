@@ -314,5 +314,6 @@ DBの接続情報を`.env`で設定して、SQLのファイルをHTTPのURLに�
 
 `sql`フォルダに集められたSQLは一覧やテストも簡単ですがSQL文を直接リソースクラスに記述することもできます。条件によって動的に変わるSQLは[Aura.SqlQuery](http://bearsunday.github.io/manuals/1.0/ja/database.html#aurasqlquery)クエリービルダーを利用します。
 
+このチュートリアルで作成したプロジェクトの作成履歴はMyVendor.Taskの[commitログ](https://github.com/bearsunday/MyVendor.Task/commits/master)で見ることができます。
 
 *(この[マニュアル](https://github.com/bearsunday/bearsunday.github.io/blob/master/manuals/1.0/ja/quick-api.md)でわかりにくいところや、間違えているところがあれば[issue](https://github.com/bearsunday/bearsunday.github.io/issues)で教えてください。)*
