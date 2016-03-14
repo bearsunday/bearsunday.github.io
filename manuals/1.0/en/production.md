@@ -129,3 +129,7 @@ Confirmation
 composer show --platform
 ext-uri_template    1.0      The uri_template PHP extension
 ```
+
+## Deploy
+
+Please referer [BEAR.Sunday Deployer.php support](https://github.com/bearsunday/deploy) for deploy with [Deployer](http://deployer.org/).

@@ -116,7 +116,7 @@ route: {
 
 以下のPECLエクステンションをインストールするとパフォーマンスが最適化されます。
 
- * [PECL/uri_template](http://pecl.php.net/package/uri_template) URI Template
+ * [PECL/uri_template](http://pecl.php.net/package/uri_template) URI Template 
  * [PECL/igbinary](https://pecl.php.net/package/igbinary) シリアライズ最適化
 
 ```
@@ -130,3 +130,7 @@ pecl install igbinary
 composer show --platform
 ext-uri_template    1.0      The uri_template PHP extension
 ```
+
+## ディプロイ
+
+[Deployer](http://deployer.org/)のサポート[BEAR.Sunday Deployer.php support](https://github.com/bearsunday/deploy)をご覧ください。
