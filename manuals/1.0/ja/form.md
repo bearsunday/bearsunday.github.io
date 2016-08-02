@@ -101,12 +101,12 @@ class MyController
      * // または
      * @FormValidation(form="form", onFailure="onPostValidationFailed")
      */
-    public function onPost()
+    public function onPost($name, $age)
     {
         // validation success
     }
 
-    public function onPostValidationFailed()
+    public function onPostValidationFailed($name, $age)
     {
         // validation failed
     }
@@ -114,6 +114,8 @@ class MyController
 {% endhighlight %}
 
 `@FormValidation`アノテーションの`form`,`onValidationFailed`プロパティを変更して`form`プロパティの名前やメソッドの名前を明示的に指定こともできます。
+
+`onPostValidationFailed`にはサブミットされた値が渡されます。
 
 ### ビュー
 

@@ -102,12 +102,12 @@ class MyController
      * // or
      * @FormValidation(form="form", onFailure="onPostValidationFailed")
      */
-    public function onPost()
+    public function onPost($name, $age)
     {
         // validation success
     }
 
-    public function onPostValidationFailed()
+    public function onPostValidationFailed($name, $age)
     {
         // validation failed
     }
@@ -115,6 +115,8 @@ class MyController
 {% endhighlight %}
 
 We can explicitly specify the name and the method by changing the `form` property of `@FormValidation` annotation or the `onValidationFailed` property.
+
+The submit parameters will be passed to `onPostValidationFailed` method.
 
 ### View
 
