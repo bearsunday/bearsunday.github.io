@@ -61,7 +61,7 @@ php bootstrap/web.php get '/todo?id=1' // console Web access
 {% endhighlight %}
 
 {% highlight php %}
-php -S 127.0.0.1bootstrap/api.php // PHP sercer
+php -S 127.0.0.1bootstrap/api.php // PHP server
 {% endhighlight %}
 
 You can create your own boot file for different context.
