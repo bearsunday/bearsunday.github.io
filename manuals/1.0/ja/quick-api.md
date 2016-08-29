@@ -9,7 +9,7 @@ permalink: /manuals/1.0/ja/quick-api.html
 # クイックAPI
 
 
-[API用のパッケージ](https://github.com/koriym/Koriym.DbAppPackage)と以下の４つのSQLファイルを使ってWeb APIを作成します。
+このチュートリアルではデータベースを用いた[API用のパッケージ](https://github.com/koriym/Koriym.DbAppPackage)と以下の４つのSQLファイルを使ってWeb APIを作成します。
 
 {% highlight sql %}
 SELECT id, title, completed FROM task;
@@ -20,10 +20,10 @@ UPDATE task SET completed = 1 WHERE id = :id;
 
 # インストール
 
-API用プロジェクトのスケルトン`dev-api`をcomposerインストールします。　
+API用プロジェクトのスケルトンをcomposerインストールします。　
 
 ```
-composer create-project bear/skeleton MyVendor.Task dev-api
+composer create-project bear/skeleton MyVendor.Task
 ```
 
 ベンダー名とパッケージ名をそれぞれ`MyVendor`、`Task`と入力します。
@@ -40,7 +40,47 @@ What is the project name ?
 
 # データベース
 
-### 接続設定
+データベースパッケージをcomposerインストールします。
+
+```
+cd MyVendor.Task
+composer require koriym/db-app-package
+php vendor/koriym/db-app-package/bin/install.php
+```
+
+`AppModule::configure()`でインストールしている`PackageModule`を`DbAppPackage`に変更します。
+
+
+{% highlight php %}
+<?php
+class AppModule extends AbstractModule
+{
+    /**
+     * {@inheritdoc}
+     */
+    protected function configure()
+    {
+        Dotenv::load([
+            'filepath' => dirname(dirname(__DIR__)) . '/.env',
+            'toEnv' => true
+        ]);
+        $this->install(new DbAppPackage($_ENV['DB_DSN'], $_ENV['DB_USER'], $_ENV['DB_PASS'], $_ENV['DB_READ']));
+    }
+}
+{% endhighlight %}
+
+[`DbAppPackage`](https://github.com/koriym/Koriym.DbAppPackage)は`PackageModule`に以下の特定のパッケージを追加したものです。
+
+
+* [Aura.Router v2](https://github.com/auraphp/Aura.Router/tree/2.x) Webルーター
+* [Aura.Sql v2](https://github.com/auraphp/Aura.Sql) PDOを拡張したSQLアダプター
+* [Aura.SqlQuery v2](https://github.com/auraphp/Aura.SqlQuery) クエリービルダー
+* [Phinx](https://phinx.org/) データベースマイグレーション
+* [Koriym.QueryLocator](https://github.com/koriym/Koriym.QueryLocator) SQLロケーター
+* [Koriym.DevPdoDtatement](https://github.com/koriym/Koriym.DevPdoStatement) SQLクエリー調査のための開発用PDOStatement
+* [Koriym.Now](https://github.com/koriym/Koriym.Now) 現在時刻
+
+## 接続設定
 
 `.env`ファイルでデータベース接続を設定します。`DB_DSN`のフォーマットは[PDO](http://php.net/manual/ja/pdo.connections.php)です。環境に合わせて適宜変更します。
 
@@ -69,7 +109,7 @@ DB_READ=
 DB_READ=slave1.example.com,slave2.example.com
 ```
 
-### 作成
+## 作成
 
 データベースを作成します。（`sqlite`の場合は必要ありません）
 
@@ -226,7 +266,7 @@ php bootstrap/api.php get /task/1
 次に同じリソースをWebでアクセスするためにWebサーバーをスタートさせます。
 
 ```
-php -S 127.0.0.1:8080 bootstrap/api.php 
+php -S 127.0.0.1:8080 bootstrap/api.php
 ```
 
 `curl`コマンドでアクセスします。
