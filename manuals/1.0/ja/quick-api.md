@@ -280,7 +280,7 @@ curl -i -X GET http://127.0.0.1:8080/task/1
 
 ## テスト
 
-Taskリソースのテストコードを`/tests/Resource/App/TaskTest.php`に追加します。[[?]](https://phpunit.de/manual/current/ja/writing-tests-for-phpunit.html "PHPUnit 用のテストの書き方")
+リソースの操作をテストするためにTaskリソースのテストコードを`/tests/Resource/App/TaskTest.php`に追加します。[[?]](https://phpunit.de/manual/current/ja/writing-tests-for-phpunit.html "PHPUnit 用のテストの書き方")
 
 {% highlight php %}
 <?php
@@ -292,10 +292,12 @@ use Koriym\DbAppPackage\AbstractDatabaseTestCase;
 
 class TaskTest extends AbstractDatabaseTestCase
 {
+    const URI = 'app://self/task';
+    
     public function testOnPost()
     {
         $query = ['title' => 'shopping'];
-        $page = $this->resource->post->uri('app://self/task')->withQuery($query)->eager->request();
+        $page = $this->resource->post->uri(self::URI)->withQuery($query)->eager->request();
         $this->assertSame(201, $page->code);
         $this->assertArrayHasKey('Location', $page->headers);
 
