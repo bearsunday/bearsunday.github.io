@@ -201,6 +201,7 @@ SQLを実行するリソースクラスを`src/Resource/App/Task.php`に作成�
 
 {% highlight php %}
 <?php
+declare(strict_types=1);
 
 namespace MyVendor\Task\Resource\App;
 
@@ -215,7 +216,7 @@ class Task extends ResourceObject
     use NowInject;
     use QueryLocatorInject;
 
-    public function onGet($id = null)
+    public function onGet(string $id = null) : ResourceObject
     {
         $this->body = $id ?
             $this->pdo->fetchOne($this->query['task_item'], ['id' => $id]) :
@@ -224,7 +225,7 @@ class Task extends ResourceObject
         return $this;
     }
 
-    public function onPost($title)
+    public function onPost(string $title) : ResourceObject
     {
         $params = [
             'title' => $title,
@@ -239,7 +240,7 @@ class Task extends ResourceObject
         return $this;
     }
 
-    public function onPatch($id)
+    public function onPatch(string $id) : ResourceObject
     {
         $params = [
             'id' => $id,
@@ -344,6 +345,38 @@ OK (5 tests, 8 assertions)
 composer test
 ```
 
+### フィクスチャ
+
+[フィクスチャ](https://phpunit.de/manual/current/ja/database.html#database.set-up-fixture)とは、アプリケーションやデータベースの初期状態のことです。テストによっては特定のデータベースの状態を前提にしたいことがあります。MySql専用ですがフィクスチャの用意はを簡単です。
+
+まずDBUnitのための接続情報を`tests/phpunit.xml`に追加します
+
+{% highlight xml %}
+<phpunit bootstrap="tests/bootstrap.php">
+    <php>
+        <var name="DB_DSN" value="mysql:host=localhost" />
+        <var name="DB_USER" value="root" />
+        <var name="DB_PASSWD" value="" />
+        <var name="DB_DBNAME" value="task_test" />
+    </php>
+    ```
+{% endhighlight %}
+
+DBを保存したい状態にしておいて、テストクラスと同じ階層の`fixtures `ディレクトリに`mysqldump `コマンドで既存のデータベースの状態をdumpします。
+
+{% highlight sh %}
+mysqldump --xml -t -u [username] --password=[password] [database] > /path/to/file.xml
+{% endhighlight %}
+
+{% highlight sh %}
+├── TaskTest.php
+└── fixtures
+    ├── tag.xml
+    └── task.xml
+{% endhighlight %}
+
+複数のxmlは合成され１つのフィクスチャになり、テスト実行前のデータベース状態を再現できます。
+
 ## スクリプト
 
 再度環境構築をするために`composer.json`の`scripts`に以下のコードを追加します。
@@ -360,11 +393,167 @@ setupコマンドで環境構築できます。
 composer setup
 ```
 
-## まとめ
+## その他の方法
 
-DBの接続情報を`.env`で設定して、SQLのファイルをHTTPのURLにマップされたリソースから呼び出してWeb APIを作成しました。
+依存をコンストラクタではなく、メソッドのパラメーターで受け取る事もできます。（アシスティッドインジェクション）
 
-`sql`フォルダに集められたSQLは一覧やテストも簡単ですがSQL文を直接リソースクラスに記述することもできます。条件によって動的に変わるSQLは[Aura.SqlQuery](http://bearsunday.github.io/manuals/1.0/ja/database.html#aurasqlquery)クエリービルダーを利用します。
+{% highlight php %}
+<?php
+declare(strict_types=1);
+
+namespace MyVendor\Task\Resource\App;
+
+use Aura\Sql\ExtendedPdoInterface;
+use BEAR\Resource\ResourceObject;
+use Koriym\Now\NowInterface;
+use Koriym\QueryLocator\QueryLocatorInterface;
+use Ray\Di\Di\Assisted;
+
+class Task extends ResourceObject
+{
+    /**
+     * @Assisted({"pdo", "query"})
+     */
+    public function onGet(string $id = null, ExtendedPdoInterface $pdo = null, QueryLocatorInterface $query = null) : ResourceObject
+    {
+        $this->body = $id ?
+            $pdo->fetchOne($query['task_item'], ['id' => $id]) :
+            $pdo->fetchAssoc($query['task_list']);
+
+        return $this;
+    }
+
+    /**
+     * @Assisted({"pdo", "query", "now"})
+     */
+    public function onPost(string $title, ExtendedPdoInterface $pdo = null, QueryLocatorInterface $query = null, NowInterface $now = null) : ResourceObject
+    {
+        $params = [
+            'title' => $title,
+            'created' => (string) $now,
+            'completed' => false
+        ];
+        $pdo->perform($query['task_insert'], $params);
+        $id = $pdo->lastInsertId('id');
+        $this->code = 201;
+        $this->headers['Location'] = "/task?id={$id}";
+
+        return $this;
+    }
+
+    /**
+     * @Assisted({"pdo", "query"})
+     */
+    public function onPatch(string $id, ExtendedPdoInterface $pdo = null, QueryLocatorInterface $query = null) : ResourceObject
+    {
+        $params = [
+            'id' => $id,
+            'completed' => true
+        ];
+        $pdo->perform($query['task_update'], $params);
+
+        return $this;
+    }
+}
+{% endhighlight %}
+
+
+条件によって動的に変わるSQLは[Aura.SqlQuery](http://bearsunday.github.io/manuals/1.0/ja/database.html#aurasqlquery)クエリービルダーを利用するのが良いでしょう。
+
+{% highlight php %}
+<?php
+declare(strict_types=1);
+
+namespace MyVendor\Task\Resource\App;
+
+use Aura\Sql\ExtendedPdoInterface;
+use Aura\SqlQuery\Common\InsertInterface;
+use Aura\SqlQuery\Common\SelectInterface;
+use Aura\SqlQuery\Common\UpdateInterface;
+use BEAR\Resource\ResourceObject;
+use Koriym\Now\NowInterface;
+use Ray\Di\Di\Assisted;
+
+/**
+ * with assisted injection + query builder
+ */
+class TaskQb extends ResourceObject
+{
+    /**
+     * @Assisted({"pdo", "select"})
+     */
+    public function onGet(string $id = null, ExtendedPdoInterface $pdo = null, SelectInterface $select = null) : ResourceObject
+    {
+        $select->cols(['id', 'title', 'completed'])->from('task');
+        if ($id) {
+            return $this->onGetItem($id, $pdo, $select);
+        }
+        $sql = $select->getStatement();
+        $this->body = $pdo->fetchAssoc($sql);
+
+        return $this;
+    }
+
+    /**
+     * @Assisted({"pdo", "insert", "now"})
+     */
+    public function onPost(string $title, ExtendedPdoInterface $pdo = null, InsertInterface $insert = null, NowInterface $now = null) : ResourceObject
+    {
+        $params = [
+            'title' => $title,
+            'created' => (string) $now,
+            'completed' => false
+        ];
+        $insert
+            ->into('task')
+            ->cols(['title', 'completed', 'created'])
+            ->bindValues($params);
+        $pdo->perform($insert->getStatement(), $insert->getBindValues());
+        $name = $insert->getLastInsertIdName('id');
+        $id = $pdo->lastInsertId($name);
+        $this->code = 201;
+        $this->headers['Location'] = "/task?id={$id}";
+
+        return $this;
+    }
+
+    /**
+     * @Assisted({"pdo", "query"})
+     */
+    public function onPatch(string $id, ExtendedPdoInterface $pdo = null, UpdateInterface $update = null) : ResourceObject
+    {
+        $values = [
+            'id' => $id,
+            'completed' => true
+        ];
+        $update
+            ->table('task')
+            ->cols(['title', 'completed', 'created'])
+            ->where('id = :id')
+            ->bindValues($values);
+        $pdo->perform($update->getStatement(), $update->getBindValues());
+
+        return $this;
+    }
+
+    private function onGetItem(string $id, ExtendedPdoInterface $pdo, SelectInterface $select) : ResourceObject
+    {
+        $select->where('id = :id')->bindValue('id', $id);
+        $this->body = $pdo->fetchOne($select->getStatement(), $select->getBindValues());
+
+        return $this;
+    }
+}
+
+{% endhighlight %}
+
+# まとめ
+
+DBの接続情報を`.env`で設定して、SQLのファイルをHTTPのURLにマップされたリソースから呼び出してWeb APIを作成しました。テストでDB状態を復元するにはフィクスチャを使います。フィクスチャには`phpunit.xml`に接続情報が必要です。
+
+
+`sql`フォルダに集められたSQLは一覧性に優れ、SQL単体テストも容易ですがSQL文を直接リソースクラスに記述することもできます。動的に生成するSQLクエリーはクエリービルダーが向いています。依存はコンストラクタだけではなく、実行時のメソッドでも受け取れます。
+
 
 このチュートリアルで作成したプロジェクトの作成履歴はMyVendor.Taskの[commitログ](https://github.com/bearsunday/MyVendor.Task/commits/master)で見ることができます。
 
