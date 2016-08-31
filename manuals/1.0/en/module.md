@@ -67,7 +67,7 @@ $this->bindInterceptor(
     // In any class
     $this->matcher->any(),
     // Method(s) names that start with "delete"
-    $this->matcher->annotatedWith('delete'),
+    $this->matcher->startWith('delete'),
     // Bind a Logger interceptor
     [LoggerInterceptor::class]
 );
@@ -124,18 +124,18 @@ With the `MethodInvocation` object, you can access the target method's invocatio
  * [MethodInvocation::getArguments](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/Invocation.php) - Pet parameters
 
 Annotations can be obtained using the reflection API.
- 
+
 {% highlight php %}
 <?php
 $method = $invocation->getMethod();
 $class = $invocation->getMethod()->getDeclaringClass();
 {% endhighlight %}
- 
+
  * `$method->getAnnotations()`
  * `$method->getAnnotation($name)`
- * `$class->->getAnnotations()` 
+ * `$class->->getAnnotations()`
  * `$class->->getAnnotation($name)`
- 
+
 ## Environment Settings
 
 BEAR.Sunday does not have any special environment mode except `prod`.

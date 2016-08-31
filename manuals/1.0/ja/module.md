@@ -66,7 +66,7 @@ AOPはクラスとメソッドを`Matcher`で"検索"して、マッチするメ
 <?php
 $this->bindInterceptor(
     $this->matcher->any(),                   // どのクラスの
-    $this->matcher->annotatedWith('delete'), // "delete"で始まるメソッド名のメソッドには
+    $this->matcher->startsWith('delete'),    // "delete"で始まるメソッド名のメソッドには
     [Logger::class]                          // Loggerインターセプターを束縛
 );
 
@@ -102,14 +102,14 @@ class MyInterceptor implements MethodInterceptor
     {
         // メソッド実行前の処理
         // ...
-        
+
         // メソッド実行
         $result = $invocation->proceed();
-        
+
         // メソッド実行後の処理
         // ...
-        
-        return $result; 
+
+        return $result;
     }
 }
 {% endhighlight %}
@@ -120,16 +120,16 @@ class MyInterceptor implements MethodInterceptor
  * [MethodInvocation::getMethod](https://github.com/ray-di/Ray.Aop/blob/2.x/src/MethodInvocation.php) -  対象メソッドリフレクションの取得
  * [MethodInvocation::getThis](https://github.com/ray-di/Ray.Aop/blob/2.x/src/Joinpoint.php) - 対象オブジェクトの取得
  * [MethodInvocation::getArguments](https://github.com/ray-di/Ray.Aop/blob/2.x/src/Invocation.php) - 呼び出し引数配列の取得
- 
+
 
 リフレクションのメソッドでアノテーションを取得することができます。
- 
+
 {% highlight php %}
 <?php
 $method = $invocation->getMethod();
 $class = $invocation->getMethod()->getDeclaringClass();
 {% endhighlight %}
- 
+
  * `$method->getAnnotations()`     - メソッドアノテーションの取得
  * `$method->getAnnotation($name)`
  * `$class->->getAnnotations()`    - クラスアノテーションの取得
