@@ -52,7 +52,7 @@ phpcbf src
 
 リンクを持つリソースは`@Link`で示すことが推奨されます。
 
-{% highlight php startinline %}
+```
 /**
  * @param $id
  *
@@ -60,11 +60,10 @@ phpcbf src
  * @Link(rel="blog", href="app://self/blog{?id}")
  */
 public function onGet(string $id)
-{% endhighlight %}
+```
 
 リソースがリソースを含む時は`@Embed`が推奨されます。
 
-{% highlight php startinline %}
 ```
 /**
  * @Embed(rel="user", src="/user?{user_id}")
@@ -72,7 +71,6 @@ public function onGet(string $id)
 public function onGet(string $userId)
 {
 ```
-{% endhighlight %}
 
 ```
 /**
