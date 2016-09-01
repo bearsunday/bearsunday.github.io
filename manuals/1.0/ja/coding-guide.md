@@ -2,12 +2,12 @@
 layout: docs-ja
 title: 開発
 category: Manual
-permalink: /manuals/1.0/ja/style-guide.html
+permalink: /manuals/1.0/ja/coding-guide.html
 ---
 
-# BEAR.Sunday スタイルガイド
+# コーディングガイド
 
-## PSR
+## スタイル
 
 [PSR1](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-1-basic-coding-standard.md), [PSR2](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-2-coding-style-guide.md), [PSR4](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-4-autoloader.md)に準拠します。
 
@@ -26,7 +26,7 @@ permalink: /manuals/1.0/ja/style-guide.html
 
 アプリケーションコードが必要とする値は設定ファイルなどから取得するのではなく、基本的に全てインジェクトします。（設定ファイルはインジェクトのために使います）Web APIなど外部のシステムの値を利用する時には、クライアントクラスやWeb APIアクセスリソースなど１つにの場所に集中させDIやAOPでモッキングが容易にするようにします。
 
-## プログラミング一般
+## クラスとオブジェクト
 
 * インジェクション以外で[トレイト](http://php.net/manual/ja/language.oop5.traits.php)は推奨されません。
 * 親クラスのメソッドを子クラスが使うことは推奨されません。機能はクラスにして合成します。
@@ -50,25 +50,82 @@ phpcbf src
 
 ## リソース
 
+### コード
+
+適切なステータスコードを返します。
+
+* 200 OK (Default)
+* 201 Created
+* 202 Accepted
+* 204 No Content
+* 400 Bad Request
+* 404 Not Found
+
+### メソッド
+
+`onGet`メソッドはリソースの状態変更を含めません（アクセスカウンターなどの副作用を除きます）。
+
+`onPost`は冪等性の無いリソース操作を実装します。例えばオートインクリメント値でURIが決まるリソース作成です。`onPost`で作成したリソースのURIは`Location`ヘッダーで示します。
+
+```
+public function onPost(string $title) : ResourceObject
+{
+    // ...
+    $this->code = 201;
+    $this->headers['Location'] = "/task?id={$id}";
+
+    return $this;
+}
+```
+`onPut`は冪等性のあるリソース操作を実装します。例えばリソース内容の変更や、UIDなど指定したリソース作成です。
+
+`onPatch`はリソースの一部分の状態変更するときに実装します。
+
+### ハイパーリンク
+
 リンクを持つリソースは`@Link`で示すことが推奨されます。
 
 ```
-/**
- * @param $id
- *
- * @Link(rel="profile", href="/profile{?id}")
- * @Link(rel="blog", href="app://self/blog{?id}")
- */
-public function onGet(string $id)
+class User
+{
+    /**
+     * @Link(rel="profile", href="/profile{?id})
+     * @Link(rel="blog", href="/blog{?id})
+     */
+    public function onGet($id)
 ```
 
-リソースがリソースを含む時は`@Embed`が推奨されます。
+次のアクションを持つリソースリクエストは`href()`（ハイパーリファレンス）で辿る事が推奨されます。
+
+```
+class Order
+{
+    /**
+     * @Link(rel="payment", href="/payment{?order_id, credit_card_number}", method="put")
+     */
+    public function onPost($drink)
+```
+```
+// 上記の注文リソースを作成して支払いリソースにリクエストします
+$order = $this->resource
+    ->post
+    ->uri('app://self/order')
+    ->withQuery(['drink' => 'latte'])
+    ->eager
+    ->request();
+$payment = ['credit_card_number' => '123456789'];
+$response = $resource->href('payment', $payment);
+```
+
+### 埋め込みリソース
+
+リソースがリソースを含む時は`@Embed`で埋め込む事が推奨されます。
 
 ```
 /**
  * @Embed(rel="user", src="/user?{user_id}")
  */
-public function onGet(string $userId)
+public function onGet(string $userId) : ResourceObject
 {
 ```
 
@@ -81,31 +138,33 @@ public function onPost(string $userId, string $title) : ResourceObject
     $uid = $this['uid']()->body;
 ```
 
-`@Embed`するリソースのリクエストに必要なクエリーがメソッド無いで決定する時はパラメーターが含まれない不完全なリソースを`@Embed`しておいてクエリーを指定します。
+`@Embed`するリソースのリクエストに必要なクエリーがメソッド無いで決定する時はパラメーターが含まれない不完全なリソースを`@Embed`してからクエリーを指定します。
 
 ```
 /**
  * @Embed(rel="user", src="/user")
  */
-public function onGet()
+public function onGet() : ResourceObject
 {
     ...
     $query = ['userId' => $userId];
-    $user = $this['user']->withQuery($query)()->body; // app://self/user?user={$userId}
+    $user = $this['user']->withQuery($query)()->body; // /user?user={$userId}
 ```
 
-@Embedで指定したURIにクエリーに付加する時は`addQuery()`を使います。
+`@Embed`したURIにクエリーに付加する時は`addQuery()`を使います。
 
 ```
 /**
  * @Embed(rel="user", src="/user&category=1")
  */
-public function onGet()
+public function onGet() : ResourceObject
 {
     ...
     $query = ['userId' => $userId];
     $user = $this['user']->addQuery($query)()->body; // /user?category=1&user=$userId
 ```
+
+### 引数束縛
 
 `onGet`以外のメソッドで`_GET`の値を利用するには`@QueryParam`を使います。その他PHPのスーパーグローバル変数に格納される値は[Webコンテキストパラメーター
 ](https://github.com/ray-di/Ray.WebParamModule)で引数に束縛します。
@@ -114,7 +173,7 @@ public function onGet()
 /**
  * @QueryParam(key="id", param="userId")
  */
-public function foo($userId = null)
+public function foo($userId = null) : ResourceObject
 {
    // $userId = $_GET['id'];
 ```
@@ -125,22 +184,34 @@ public function foo($userId = null)
 /**
  * @ResourceParam(param=“name”, uri="/login#nickname")
  */
-public function onGet($name)
+public function onGet($name) : ResourceObject
 {
 ```  
 
 リソースクライアントは可能な限り使わないで `@Embed`で埋め込んだり`@Link`のリンクを使うようにします。埋め込まれたリソースは`toUri()`や`toUriWithMethod()`でリクエスト文字列になりテストが容易です。
 
-## Ray.Di
+## DI
 
  * ライブラリコードではセッターインジェクションは推奨されません。
  * `Provider`束縛を可能な限り避け`toConstructor`束縛を優先することが推奨されます。
  * `Module`で条件に応じて束縛をすることを避けます。 ([AvoidConditionalLogicInModules](https://github.com/google/guice/wiki/AvoidConditionalLogicInModules))
+ * モジュール無いから環境変数を参照することは推奨されません。コンストラクタで渡します。
 
 ## 環境
 
 Webだけでしか動作しないアプリケーションは推奨されません。テスト可能にするためにコンソールでも動作するようにします。
 
+`.env`ファイルをプロジェクトリポジトリに含まない事が推奨されます。
+
 ## テスト
 
 リソースクライアントを使ったリソーステストを基本にします。リソースの値を確認して、必要があれば表現(HTMLやJSON)のテストを加えます。
+
+## 開発ツール
+
+以下のPHPStormプラグインを推奨します。`PHPStorm > Preference > Plugins`で設定します。
+
+* [BEAR Sunday](https://github.com/kuma-guy/idea-php-bear-sunday-plugin)
+* [PHP Annotations](https://github.com/Haehnchen/idea-php-annotation-plugin)
+* PHP Advanced AutoComplete
+* Database Navigator
