@@ -13,13 +13,12 @@ permalink: /manuals/1.0/ja/coding-guide.html
 
 ## グローバル
 
-グローバルな値をリソースやアプリケーションのクラスで参照することは推奨されません。グローバルな値はモジュールでのみ使用します。
+グローバルな値をリソースやアプリケーションのクラスで参照することは推奨されません。(Modulesでのみ使用します)
 
 * [スーパーグローバル](http://php.net/manual/ja/language.variables.superglobals.php)の値を参照しない
 * [define](http://php.net/manual/ja/function.define.php)は使用しない
-* 設定値を保存するグローバルな`Config`クラスを使用しない
+* 設定値を保持する`Config`クラスを作成しない
 * グローバルなオブジェクトコンテナを使用しない
-* 他のクラスのスタティックプロパティの参照しない
 * [date](http://php.net/manual/ja/function.date.php)関数や[DateTime](http://php.net/manual/ja/class.datetime.php)クラスで現在時刻を直接取得することは推奨されません。[koriym/now](https://github.com/koriym/Koriym.Now)などを使って外部から時刻をインジェクトします。
 
 スタティックメソッドなどのグローバルなメソッドコールも推奨されません。
@@ -39,7 +38,7 @@ permalink: /manuals/1.0/ja/coding-guide.html
 
 ## コードチェック
 
-commit毎に以下のコマンドでコードのチェックすることを推奨します。
+commit毎に以下のコマンドでコードのチェックすることを推奨します。コマンドは[bear/qatools](https://github.com/bearsunday/BEAR.QATools)でインストールできます。
 
 ```
 phpcs src tests
@@ -63,7 +62,7 @@ phpcbf src
 
 ### メソッド
 
-`onGet`メソッドはリソースの状態変更を含めません（アクセスカウンターなどの副作用を除きます）。
+`onGet`メソッドはリソースの状態変更を含めません。（アクセスカウンターなどの副作用を除きます）
 
 `onPost`は冪等性の無いリソース操作を実装します。例えばオートインクリメント値でURIが決まるリソース作成です。`onPost`で作成したリソースのURIは`Location`ヘッダーで示します。
 
