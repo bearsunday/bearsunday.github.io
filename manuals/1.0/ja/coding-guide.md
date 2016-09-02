@@ -80,6 +80,10 @@ public function onPost(string $title) : ResourceObject
 
 `onPatch`はリソースの一部分の状態変更するときに実装します。
 
+### HTMLフォームでのメソッド
+
+BEAR.SundayはHTMLのWebフォームで`POST`リクエストの時に`X-HTTP-Method-Override`ヘッダーや`_method`パラメーターを用いてメソッドを上書きする事ができますが必ずしも推奨しているわけではありません。Pageリソースでは`onGet`と`onPost`以外を実装しない方針でも問題ありません。[[1]](http://programmers.stackexchange.com/questions/114156/why-are-there-are-no-put-and-delete-methods-on-html-forms),[[2]](http://roy.gbiv.com/untangled/2009/it-is-okay-to-use-post)
+
 ### ハイパーリンク
 
 リンクを持つリソースは`@Link`で示すことが推奨されます。
