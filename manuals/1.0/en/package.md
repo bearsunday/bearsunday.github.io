@@ -140,9 +140,10 @@ An optional PSR7 middleware package.
 
 ### Web
 
- * [madapaja/twig-module](http://bearsunday.github.io/manuals/1.0/ja/html.html) Twig
+ * [madapaja/twig-module](http://bearsunday.github.io/manuals/1.0/ja/html.html) [Twig](http://twig.sensiolabs.org/)
  * [ray/web-form-module](http://bearsunday.github.io/manuals/1.0/ja/form.html) Web form and validation
- * [ray/aura-web-module](https://github.com/Ray-Di/Ray.AuraWebModule) Aura.Web
+ * [ray/aura-web-module](https://github.com/Ray-Di/Ray.AuraWebModule) [Aura.Web](https://github.com/auraphp/Aura.Web)
+ * [ray/aura-session-module](https://github.com/ray-di/Ray.AuraSessionModule) [Aura.Session](https://github.com/auraphp/Aura.Session)
 
 ### Authorization and Authentication
 

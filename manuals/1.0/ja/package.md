@@ -150,9 +150,10 @@ composer require ray/cake-database-module
 
 ### Web
 
- * [madapaja/twig-module](http://bearsunday.github.io/manuals/1.0/ja/html.html) Twig テンプレートエンジン
+ * [madapaja/twig-module](http://bearsunday.github.io/manuals/1.0/ja/html.html) [Twigテンプレートエンジン](http://twig.sensiolabs.org/)
  * [ray/web-form-module](http://bearsunday.github.io/manuals/1.0/ja/form.html) Webフォーム & バリデーション
- * [ray/aura-web-module](https://github.com/Ray-Di/Ray.AuraWebModule) Aura.Web
+ * [ray/aura-web-module](https://github.com/Ray-Di/Ray.AuraWebModule) [Aura.Web](https://github.com/auraphp/Aura.Web)
+ * [ray/aura-session-module](https://github.com/ray-di/Ray.AuraSessionModule) [Aura.Session](https://github.com/auraphp/Aura.Session)
 
 ### 認証
 
