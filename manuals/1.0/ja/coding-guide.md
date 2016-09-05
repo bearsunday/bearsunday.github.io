@@ -1,6 +1,6 @@
 ---
 layout: docs-ja
-title: 開発
+title: コーディングガイド
 category: Manual
 permalink: /manuals/1.0/ja/coding-guide.html
 ---
@@ -51,14 +51,22 @@ phpcbf src
 
 ### コード
 
-適切なステータスコードを返します。
+適切なステータスコードを返します。テストが容易になり、botやクローラーにも正しい情報が伝えることができます。
 
-* 200 OK (Default)
-* 201 Created
-* 202 Accepted
-* 204 No Content
-* 400 Bad Request
-* 404 Not Found
+* `100` Continue 複数のリクエストの継続
+* `200` OK
+* `201` Created リソース作成
+* `202` Accepted キュー/バッチ 受付
+* `204` No Content bodyがない場合
+* `304` Not Modified 未更新
+* `400` Bad Request　リクエストに不備
+* `401` Unauthorized 認証が必要
+* `403` Forbidden 禁止
+* `404` Not Found
+* `405` Method Not Allowed
+* `503` Service Unavailable サーバーサイドでの一時的エラー
+
+`304`は`@Cacheable`アノテーションを使っていると自動設定されます。`404`はリソースクラスがない場合、`405`はリソースのメソッドがない場合に自動設定されます。またDBの接続エラーなどは必ず`503`で返しクローラーに伝えます。[[1]](https://googlewebmastercentral-ja.blogspot.jp/2011/02/blog-post.html)
 
 ### メソッド
 
@@ -80,7 +88,7 @@ public function onPost(string $title) : ResourceObject
 
 `onPatch`はリソースの一部分の状態変更するときに実装します。
 
-### HTMLフォームでのメソッド
+### HTMLのFormメソッド
 
 BEAR.SundayはHTMLのWebフォームで`POST`リクエストの時に`X-HTTP-Method-Override`ヘッダーや`_method`クエリーを用いてメソッドを上書きする事ができますが必ずしも推奨しているわけではありません。Pageリソースでは`onGet`と`onPost`以外を実装しない方針でも問題ありません。[[1]](http://programmers.stackexchange.com/questions/114156/why-are-there-are-no-put-and-delete-methods-on-html-forms),[[2]](http://roy.gbiv.com/untangled/2009/it-is-okay-to-use-post)
 
