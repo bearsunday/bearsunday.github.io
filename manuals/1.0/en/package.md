@@ -133,6 +133,7 @@ An optional PSR7 middleware package.
  * [ray/aura-sql-module](https://github.com/ray-di/Ray.AuraSqlModule) Aura.Sql v2
  * [ray/dbal-module](https://github.com/ray-di/Ray.DbalModule) Doctrine DBAL
  * [ray/cake-database-module](https://github.com/ray-di/Ray.CakeDbModule) CakePHP v3 database
+ * [ray/doctrine-orm-module](https://github.com/kawanamiyuu/Ray.DoctrineOrmModule) [Doctrine ORM](https://github.com/doctrine/doctrine2)
 
 ### Storage
 
@@ -144,6 +145,7 @@ An optional PSR7 middleware package.
  * [ray/web-form-module](http://bearsunday.github.io/manuals/1.0/ja/form.html) Web form and validation
  * [ray/aura-web-module](https://github.com/Ray-Di/Ray.AuraWebModule) [Aura.Web](https://github.com/auraphp/Aura.Web)
  * [ray/aura-session-module](https://github.com/ray-di/Ray.AuraSessionModule) [Aura.Session](https://github.com/auraphp/Aura.Session)
+ * [ray/symfony-session-module](https://github.com/kawanamiyuu/Ray.SymfonySessionModule) [Symfony Session](https://github.com/symfony/http-foundation/tree/master/Session)
 
 ### Authorization and Authentication
 
