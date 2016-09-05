@@ -7,6 +7,11 @@ permalink: /manuals/1.0/ja/coding-guide.html
 
 # コーディングガイド
 
+## プロジェクト
+
+`vendor`は会社の名前やチームの名前または個人の名前（`excite`,`koriym`等)を指定して、`package`にはアプリケーション（サービス）の名前（`blog`, `news`等)を指定します。
+プロジェクトはアプリケーション単位で作成し、Web APIとHTMLを別ホストでサービスする場合でも1つのプロジェクトにします。
+
 ## スタイル
 
 [PSR1](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-1-basic-coding-standard.md), [PSR2](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-2-coding-style-guide.md), [PSR4](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-4-autoloader.md)に準拠します。
@@ -134,7 +139,7 @@ $response = $resource->href('payment', $payment);
 
 ```
 /**
- * @Embed(rel="user", src="/user?{user_id}")
+ * @Embed(rel="user", src="/user{?user_id}")
  */
 public function onGet(string $userId) : ResourceObject
 {
