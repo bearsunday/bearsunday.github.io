@@ -213,6 +213,18 @@ public function onGet($name) : ResourceObject
  * `Module`で条件に応じて束縛をすることを避けます。 ([AvoidConditionalLogicInModules](https://github.com/google/guice/wiki/AvoidConditionalLogicInModules))
  * モジュール無いから環境変数を参照することは推奨されません。コンストラクタで渡します。
 
+## ルーター
+
+APIとHTMLなど複数のコンテキストでルーティングを変える場合はルーターファイル `route.aura.conf`では`$schemeHost`によってルーターファイルをコンテキスト別に`require`します。
+
+{% highlight bash %}
+<?php
+/* @var $router \BEAR\Package\Provide\Router\AuraRoute */
+/* @var $schemeHost string */
+
+require ($schemeHost === 'app://self') ? __DIR__ . '/app.route.conf' : __DIR__ . '/page.route.conf';
+{% endhighlight %}
+
 ## 環境
 
 Webだけでしか動作しないアプリケーションは推奨されません。テスト可能にするためにコンソールでも動作するようにします。

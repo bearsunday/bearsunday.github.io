@@ -151,7 +151,8 @@ class AppModule extends AbstractModule
 
 {% highlight php %}
 <?php
-/** @var $router \BEAR\Package\Provide\Router\AuraRoute */
+/* @var $router \BEAR\Package\Provide\Router\AuraRoute */
+/* @var $schemeHost string */
 
 $router->route('/weekday', '/weekday/{year}/{month}/{day}');
 {% endhighlight %}
@@ -520,7 +521,7 @@ require __DIR__ . '/bootstrap.php';
 <html>
 <body>
 {% raw %}The weekday of {{ year }}/{{ month }}/{{ day }} is {{ weekday.weekday }}.{% endraw %}
-</body> 
+</body>
 </html>
 {% endhighlight %}
 
@@ -555,7 +556,7 @@ require dirname(dirname(__DIR__)) . '/bootstrap/bootstrap.php';
 PHPサーバーを立ち上げてwebブラウザで[http://127.0.0.1:8080/?year=2001&month=1&day=1](http://127.0.0.1:8080/?year=2001&month=1&day=1)をアクセスして確認してみましょう。
 
 {% highlight bash %}
-php -S 127.0.0.1:8080 var/www/index.php 
+php -S 127.0.0.1:8080 var/www/index.php
 {% endhighlight %}
 
 コンテキストを変えるとアプリケーションの振る舞いも変わります。試してみましょう。
@@ -837,7 +838,7 @@ content-type: application/hal+json
 
 次にAPIサーバーを立ち上げます。
 {% highlight bash %}
-php -S 127.0.0.1:8081 bootstrap/api.php 
+php -S 127.0.0.1:8081 bootstrap/api.php
 {% endhighlight %}
 
 今度は`curl`コマンドでGETしてみましょう。
@@ -880,7 +881,7 @@ curl http://127.0.0.1:8081/todo -X PUT -d "id=2&todo=think"
 
 {% highlight bash %}
 curl http://127.0.0.1:8081/todo -X PUT -H 'Content-Type: application/json' -d '{"id": "2", "todo":"think" }'
-{% endhighlight %} 
+{% endhighlight %}
 
 再度GETを行うと`Last-Modified`が変わっているのが確認できます。
 
@@ -975,7 +976,7 @@ class Memo extends ResourceObject
 }
 {% endhighlight %}
 
-作成したMemoリソースをTodoリソースに埋め込みます。 
+作成したMemoリソースをTodoリソースに埋め込みます。
 
 {% highlight php %}
 <?php
@@ -1020,7 +1021,7 @@ content-type: application/hal+json
 {% endhighlight %}
 
 そのリンクを使ってMemoを`POST`してみます。
-        
+
 {% highlight bash %}
 php bootstrap/api.php post '/memo?todo_id=1&body=VERY IMPORTANT'
 {% endhighlight %}
@@ -1111,7 +1112,7 @@ use BEAR\Resource\ImportApp;
 use BEAR\Package\Context;
 
 $importConfig = [
-    new ImportApp('blog', 'Acme\Blog', 'prod-hal-app') // ホスト, 名前, コンテキスト 
+    new ImportApp('blog', 'Acme\Blog', 'prod-hal-app') // ホスト, 名前, コンテキスト
 ];
 $this->override(new ImportAppModule($importConfig , Context::class));
 {% endhighlight %}
@@ -1134,7 +1135,7 @@ class Import extends ResourceObject
     public function onGet()
     {
         $this['blog'] = $this->resource->get->uri('page://blog/index')->eager->request()->body['greeting'];
-        
+
         return $this;
     }
 }
@@ -1176,7 +1177,7 @@ $loader = require __DIR__ . '/vendor/autoload.php';
 AnnotationRegistry::registerLoader([$loader, 'loadClass']); // アノテーションのロード
 
 $app = (new Bootstrap)->getApp('MyVendor\Weekday', 'prod-hal-app'); // アプリケーションの取得
-$import = $app->resource->get->uri('app://self/import')->request(); 
+$import = $app->resource->get->uri('app://self/import')->request();
 
 echo $import['blog'] . PHP_EOL;
 
