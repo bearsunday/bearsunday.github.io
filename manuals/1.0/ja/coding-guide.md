@@ -18,7 +18,7 @@ permalink: /manuals/1.0/ja/coding-guide.html
 * [スーパーグローバル](http://php.net/manual/ja/language.variables.superglobals.php)の値を参照しない
 * [define](http://php.net/manual/ja/function.define.php)は使用しない
 * 設定値を保持する`Config`クラスを作成しない
-* グローバルなオブジェクトコンテナを使用しない
+* グローバルなオブジェクトコンテナ（サービスロケータ）を使用しない [[1]](http://koriym.github.io/adv10/), [[2]](http://blog.ploeh.dk/2010/02/03/ServiceLocatorisanAnti-Pattern/)
 * [date](http://php.net/manual/ja/function.date.php)関数や[DateTime](http://php.net/manual/ja/class.datetime.php)クラスで現在時刻を直接取得することは推奨されません。[koriym/now](https://github.com/koriym/Koriym.Now)などを使って外部から時刻をインジェクトします。
 
 スタティックメソッドなどのグローバルなメソッドコールも推奨されません。
@@ -28,8 +28,8 @@ permalink: /manuals/1.0/ja/coding-guide.html
 ## クラスとオブジェクト
 
 * インジェクション以外で[トレイト](http://php.net/manual/ja/language.oop5.traits.php)は推奨されません。
-* 親クラスのメソッドを子クラスが使うことは推奨されません。機能はクラスにして合成します。
-* メソッドが１つだけのクラスは機能をクラス名に反映してメソッドの名前を`__invoke`にします。
+* 親クラスのメソッドを子クラスが使うことは推奨されません。共通する機能は継承やtraitで共有するのではなくて専用のクラスにしてそれをインジェクトして使います。[継承より合成](https://en.wikipedia.org/wiki/Composition_over_inheritance)します。
+* メソッドが１つだけのクラスは機能をクラス名に反映してメソッドの名前を`__invoke()`にし関数アクセスできるようにします。
 
 ## スクリプトコマンド
 
@@ -82,7 +82,7 @@ public function onPost(string $title) : ResourceObject
 
 ### HTMLフォームでのメソッド
 
-BEAR.SundayはHTMLのWebフォームで`POST`リクエストの時に`X-HTTP-Method-Override`ヘッダーや`_method`パラメーターを用いてメソッドを上書きする事ができますが必ずしも推奨しているわけではありません。Pageリソースでは`onGet`と`onPost`以外を実装しない方針でも問題ありません。[[1]](http://programmers.stackexchange.com/questions/114156/why-are-there-are-no-put-and-delete-methods-on-html-forms),[[2]](http://roy.gbiv.com/untangled/2009/it-is-okay-to-use-post)
+BEAR.SundayはHTMLのWebフォームで`POST`リクエストの時に`X-HTTP-Method-Override`ヘッダーや`_method`クエリーを用いてメソッドを上書きする事ができますが必ずしも推奨しているわけではありません。Pageリソースでは`onGet`と`onPost`以外を実装しない方針でも問題ありません。[[1]](http://programmers.stackexchange.com/questions/114156/why-are-there-are-no-put-and-delete-methods-on-html-forms),[[2]](http://roy.gbiv.com/untangled/2009/it-is-okay-to-use-post)
 
 ### ハイパーリンク
 
