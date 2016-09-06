@@ -15,11 +15,10 @@ In the context starting with `prod-`, an `$app` application object will be cache
 
 Cache drivers like `ApcCache` or `FilesystemCache` will be selected in response to the environment automatically.
 
-{% highlight php %}
-<?php
+```php?start_inline
 $context = 'prod-app';
 require dirname(dirname(__DIR__)) . '/bootstrap/bootstrap.php';
-{% endhighlight %}
+```
 
 ## Cache settings
 
@@ -30,8 +29,7 @@ In `ProdModule` production module in `BEAR.Package`, `ApcCache` cache is designe
 As for multiple servers, we need to set shared cache storage.
 In that case, you can implement by creating application specific `ProdModule` to `src/Module/ProdModule.php`.
 
-{% highlight php %}
-<?php
+```php?start_inline
 namespace BEAR\HelloWorld\Module;
 
 use BEAR\RepositoryModule\Annotation\Storage;
@@ -58,10 +56,10 @@ class ProdModule extends AbstractModule
         $this->install(new PackageProdModule);
     }
 }
-{% endhighlight %}
+```
 `Cache` interface annotated with `@Storage` is defined for query repository and it is shared storage for web server.
 
-We cannot use `ApcCache` on multiple servers, however, we have options to use 
+We cannot use `ApcCache` on multiple servers, however, we have options to use
 [Redis](http://doctrine-orm.readthedocs.org/en/latest/reference/caching.html#redis) or other storage by creating adapter.
 ([memcached](http://doctrine-orm.readthedocs.org/en/latest/reference/caching.html#memcached) is also available, but be careful about the capacity and volatile because it is a memory storage.）
 
@@ -77,8 +75,7 @@ By using this `ETag`, we can return `304` (Not Modified) appropriate response wh
 
 To use `HttpCache` in script, we are going to inject `HttpCache` using `HttpCacheInject` trait in `App` class.
 
-{% highlight php %}
-<?php
+```php?start_inline
 
 namespace MyVendor\MyApi\Module;
 
@@ -90,15 +87,14 @@ class App extends AbstractApp
 {
     use HttpCacheInject; // Add this line
 }
-{% endhighlight %}
+```
 
 ### bootstrap
 
 Next, modify `route` section in `bootstrap/bootstrap.php` for returning `304` when the contents are not modified by adding
 `if` conditional statement.
 
-{% highlight php %}
-<?php
+```php?start_inline
 route: {
     $app = (new Bootstrap)->getApp(__NAMESPACE__, $context);
     if ($app->httpCache->isNotModified($_SERVER)) {
@@ -106,7 +102,7 @@ route: {
         exit(0);
     }
 
-{% endhighlight %}
+```
 
 `ETag` is also updated automatically,
 but you need to specify the relation of resource caches using `@Refresh` and `@Purge` annotations.

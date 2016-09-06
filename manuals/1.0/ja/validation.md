@@ -16,14 +16,13 @@ permalink: /manuals/1.0/ja/validation.html
 
 composerインストール
 
-{% highlight bash %}
+```bash
 composer require ray/validate-module
-{% endhighlight %}
+```
 
 アプリケーションモジュール`src/Module/AppModule.php`で`ValidateModule`をインストールします。
 
-{% highlight php %}
-<?php
+```php?start_inline
 use Ray\Validation\ValidateModule;
 
 class AppModule extends AbstractModule
@@ -34,7 +33,7 @@ class AppModule extends AbstractModule
         $this->install(new ValidateModule);
     }
 }
-{% endhighlight %}
+```
 
 ## アノテーション
 
@@ -43,8 +42,7 @@ class AppModule extends AbstractModule
 
 まず、バリデーションを行いたいメソッドに`@Valid`とアノテートします。
 
-{% highlight php %}
-<?php
+```php?start_inline
 use Ray\Validation\Annotation\Valid;
 // ...
     /**
@@ -52,12 +50,11 @@ use Ray\Validation\Annotation\Valid;
      */
     public function createUser($name)
     {
-{% endhighlight %}
+```
 
 `@OnValidate`とアノテートしたメソッドでバリデーションを行います。引数は元のメソッドと同じにします。メソッド名は自由です。
 
-{% highlight php %}
-<?php
+```php?start_inline
 use Ray\Validation\Annotation\OnValidate;
 // ...
     /**
@@ -72,15 +69,14 @@ use Ray\Validation\Annotation\OnValidate;
 
         return $validation;
     }
-{% endhighlight %}
+```
 
 バリデーション失敗した要素には`要素名`と`エラーメッセージ`を指定してValidationオブジェクトに`addError()`し、最後にValidationオブジェクトを返します。
 
 バリデーションが失敗すれば`Ray\Validation\Exception\InvalidArgumentException`例外が投げられますが、
 `@OnFailure`メソッドが用意されていればそのメソッドの結果が返されます。
 
-{% highlight php %}
-<?php
+```php?start_inline
 use Ray\Validation\Annotation\OnFailure;
 // ...
     /**
@@ -98,15 +94,14 @@ use Ray\Validation\Annotation\OnFailure;
             }
         }
     }
-{% endhighlight %}
+```
 `@OnFailure`メソッドには`$failure`が渡され`($failure->getMessages()`でエラーメッセージや`$failure->getInvocation()`でオリジナルメソッド実行のオブジェクトが取得できます。
 
 ## 複数のバリデーション
 
 １つのクラスに複数のバリデーションメソッドが必要なときは以下のようにバリデーションの名前を指定します。
 
-{% highlight php %}
-<?php
+```php?start_inline
 use Ray\Validation\Annotation\Valid;
 use Ray\Validation\Annotation\OnValidate;
 use Ray\Validation\Annotation\OnFailure;
@@ -129,7 +124,7 @@ use Ray\Validation\Annotation\OnFailure;
      */
     public function onFailureFoo(FailureInterface $failure)
     {
-{% endhighlight %}
+```
 
 ## その他のバリデーション
 

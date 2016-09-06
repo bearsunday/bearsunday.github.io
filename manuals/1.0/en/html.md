@@ -9,14 +9,13 @@ permalink: /manuals/1.0/en/html.html
 
 In order to have an HTML reprensentation lets install `madapaja/twig-module` with composer.
 
-{% highlight bash %}
+```bash
 composer require madapaja/twig-module
-{% endhighlight %}
+```
 
 Next create the context file `src/Module/HtmlModule.php` and install the `TwigModule`.
 
-{% highlight php %}
-<?php
+```php?start_inline
 
 namespace MyVendor\MyPackage\Module;
 
@@ -31,30 +30,30 @@ class HtmlModule extends AbstractModule
         $this->install(new TwigModule);
     }
 }
-{% endhighlight %}
+```
 
 Update the context in `bootstrap/web.php` and enable `html`.
 
-{% highlight bash %}
+```bash
 $context = 'cli-html-app';
-{% endhighlight %}
+```
 We prepare twig templates by placing them in the same directory as the `page resource` that you want to bind it to. Replace the `.php` suffix with `.html.twig`. So a template for the `Page/Index.php` resource would be `Page/Index.html.twig`.
 
-{% highlight html %}
+```hml
 {% raw %}
 <h1>{{ greeting }}</h1>
 {% endraw %}
-{% endhighlight %}
+```
 
 The `$body` in a resource is assigned to the template and then rendered.
 
-{% highlight bash %}
+```bash
 php bootstrap/web.php get /
 200 OK
 content-type: text/html; charset=utf-8
 
 <h1>Hello BEAR.Sunday</h1>
-{% endhighlight %}
+```
 
 By default partials and template files are found in `var/lib/twig`.
 
@@ -62,8 +61,7 @@ By default partials and template files are found in `var/lib/twig`.
 
 If you would like to change options depending on the context or add a template path, configuration values are bound to `@TwigPaths`and `@TwigOptions` annotations.
 
-{% highlight php %}
-<?php
+```php?start_inline
 
 namespace MyVendor\MyPackage\Module;
 
@@ -95,9 +93,8 @@ class AppModule extends AbstractModule
         $this->bind()->annotatedWith(TwigOptions::class)->toInstance($options);
     }
 }
-{% endhighlight %}
+```
 
 ## Other template engines
 
-You can not only select a template engine, but you can also provide multiple template engines and assign them to different resources. 
-
+You can not only select a template engine, but you can also provide multiple template engines and assign them to different resources.

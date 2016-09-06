@@ -16,8 +16,7 @@ Instead for each peice of functionality we set up DI and AOP by injecting config
 
 You can also override existing bindings by using `override()`.
 
-{% highlight php %}
-<?php
+```php?start_inline
 class AppModule extends AbstractModule
 {
     /**
@@ -32,14 +31,13 @@ class AppModule extends AbstractModule
         $this->install(new TwigModule));
     }
 }
-{% endhighlight %}
+```
 
 ## DI bindings
 
 `Ray.Di` is the core DI framework used in BEAR.Sunday. It binds interfaces to a class or factory to create an object graph.
 
-{% highlight php %}
-<?php
+```php?start_inline
 // Class binding
 $this->bind($interface)->to($class);
 // Provider (factory) binding
@@ -52,7 +50,7 @@ $this->bind($interface)->annotatedWith($annotation)->to($class);
 $this->bind($interface)->to($class)->in(Scope::SINGLETON);
 // Constructor binding
 $this->bind($interface)->toConstructor($class, $named);
-{% endhighlight %}
+```
 
 Bindings declared first take priority
 More info can be found at Ray.Di [README](https://github.com/ray-di/Ray.Di/blob/2.x/README.md)
@@ -61,8 +59,7 @@ More info can be found at Ray.Di [README](https://github.com/ray-di/Ray.Di/blob/
 
 We can "search" for classes and methods with a built-in `Matcher`, then interceptors can be bound to any found methods.
 
-{% highlight php %}
-<?php
+```php?start_inline
 $this->bindInterceptor(
     // In any class
     $this->matcher->any(),
@@ -80,7 +77,7 @@ $this->bindInterceptor(
     // Bind the AdminAuthenticationInterceptor
     [AdminAuthenticationInterceptor::class]
 );
-{% endhighlight %}
+```
 
 `Matcher` has various binding methods.
 
@@ -96,8 +93,7 @@ $this->bindInterceptor(
 
 In an interceptor a `MethodInvocation` object gets passed to the `invoke` method. We can the decorate the targetted instances so that you run computations before or after any methods on the target are invoked.
 
-{% highlight php %}
-<?php
+```php?start_inline
 class MyInterceptor implements MethodInterceptor
 {
     public function invoke(MethodInvocation $invocation)
@@ -114,7 +110,7 @@ class MyInterceptor implements MethodInterceptor
         return $result;
     }
 }
-{% endhighlight %}
+```
 
 With the `MethodInvocation` object, you can access the target method's invocation object, method's and parameters.
 
@@ -125,11 +121,10 @@ With the `MethodInvocation` object, you can access the target method's invocatio
 
 Annotations can be obtained using the reflection API.
 
-{% highlight php %}
-<?php
+```php?start_inline
 $method = $invocation->getMethod();
 $class = $invocation->getMethod()->getDeclaringClass();
-{% endhighlight %}
+```
 
  * `$method->getAnnotations()`
  * `$method->getAnnotation($name)`

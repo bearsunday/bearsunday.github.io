@@ -11,17 +11,17 @@ permalink: /manuals/1.0/ja/psr7.html
 
 以下のコマンドで`bear/middleware`を追加して、ミドルウエアとして動作させるための[bootstrapスクリプト](https://github.com/bearsunday/BEAR.Middleware/blob/1.x/bootstrap/bootstrap.php)に置き換えます。
 
-{% highlight bash %}
+```bash
 composer require bear/middleware
 cp vendor/bear/middleware/bootstrap/bootstrap.php bootstrap/bootstrap.php
-{% endhighlight %}
+```
 
 スクリプトの`__PACKAGE__\__VENDOR__`をアプリケーションの名前に変更して、
 通常のBEAR.Sundayアプリケーションと同様に公開Webディレクトリとして`var/www`を指定します。
 
-{% highlight bash %}
+```bash
 php -S 127.0.0.1:8080 -t var/www
-{% endhighlight %}
+```
 
 ## ストリーム
 
@@ -29,7 +29,7 @@ php -S 127.0.0.1:8080 -t var/www
 
 以下のスクリプトはimage.jpg画像ファイルをbase64エンコードしてHTTP出力します。
 
-{% highlight bash %}
+```bash
 <?php
     public function onGet($name = 'BEAR.Sunday')
     {
@@ -40,7 +40,7 @@ php -S 127.0.0.1:8080 -t var/www
 
         return $this;
     }
-{% endhighlight %}
+```
 
 $this['image']には[fopen](http://php.net/manual/ja/function.fopen.php)のファイルポインタリソースがアサインされているだけですが、
 他でアサインされた文字列（$this['greeting']）を含めて全てストリームに変換されて出力されます。
@@ -52,11 +52,11 @@ HTTP出力がストリーム出力に完全に対応していればPHPのメモ�
 
 新規でPSR7のプロジェクトを始める場合のパッケージが用意されています。
 
-{% highlight bash %}
+```bash
 composer create-project bear/project my-awesome-project
 cd my-awesome-project/
 php -S 127.0.0.1:8080 -t var/www/
-{% endhighlight %}
+```
 
 必要に応じて他のPSR7ミドルウエアを追加したり、Rayのモジュールを追加します。
 

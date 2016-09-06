@@ -11,12 +11,12 @@ permalink: /manuals/1.0/ja/quick-api.html
 
 このチュートリアルではデータベースを用いた[API用のパッケージ](https://github.com/koriym/Koriym.DbAppPackage)と以下の４つのSQLファイルを使ってWeb APIを作成します。
 
-{% highlight sql %}
+```sql
 SELECT id, title, completed FROM task;
 SELECT id, title, completed FROM task WHERE id = :id;
 INSERT INTO task (title, completed, created) VALUES (:title, :completed, :created);
 UPDATE task SET completed = 1 WHERE id = :id;
-{% endhighlight %}
+```
 
 # インストール
 
@@ -51,8 +51,7 @@ php vendor/koriym/db-app-package/bin/install.php
 `AppModule::configure()`でインストールしている`PackageModule`を`DbAppPackage`に変更します。
 
 
-{% highlight php %}
-<?php
+```php?start_inline
 class AppModule extends AbstractModule
 {
     /**
@@ -67,7 +66,7 @@ class AppModule extends AbstractModule
         $this->install(new DbAppPackage($_ENV['DB_DSN'], $_ENV['DB_USER'], $_ENV['DB_PASS'], $_ENV['DB_READ']));
     }
 }
-{% endhighlight %}
+```
 
 [`DbAppPackage`](https://github.com/koriym/Koriym.DbAppPackage)は`PackageModule`に以下の特定のパッケージを追加したものです。
 
@@ -160,11 +159,10 @@ php vendor/bin/phinx migrate -c var/db/phinx.php -e test
 を編集します。
 
 
-{% highlight php %}
-<?php
+```php?start_inline
 /** @var $router \BEAR\Package\Provide\Router\AuraRoute */
 $router->route('/task', '/task/{id}');
-{% endhighlight %}
+```
 
 `POST`や`PATCH`もそれぞ対応するメソッドにルートされます。
 
@@ -199,8 +197,7 @@ UPDATE task SET completed = 1 WHERE id = :id;
 
 SQLを実行するリソースクラスを`src/Resource/App/Task.php`に作成します。
 
-{% highlight php %}
-<?php
+```php?start_inline
 declare(strict_types=1);
 
 namespace MyVendor\Task\Resource\App;
@@ -251,7 +248,7 @@ class Task extends ResourceObject
         return $this;
     }
 }
-{% endhighlight %}
+```
 
 # 実行
 
@@ -283,8 +280,7 @@ curl -i -X GET http://127.0.0.1:8080/task/1
 
 リソースの操作をテストするためにTaskリソースのテストコードを`/tests/Resource/App/TaskTest.php`に追加します。[[?]](https://phpunit.de/manual/current/ja/writing-tests-for-phpunit.html "PHPUnit 用のテストの書き方")
 
-{% highlight php %}
-<?php
+```php?start_inline
 
 namespace MyVendor\Task\Resource\Page;
 
@@ -294,7 +290,7 @@ use Koriym\DbAppPackage\AbstractDatabaseTestCase;
 class TaskTest extends AbstractDatabaseTestCase
 {
     const URI = 'app://self/task';
-    
+
     public function testOnPost()
     {
         $query = ['title' => 'shopping'];
@@ -328,7 +324,7 @@ class TaskTest extends AbstractDatabaseTestCase
         $this->assertSame('1', $page->body['completed']);
     }
 }
-{% endhighlight %}
+```
 
 `phpunit`を実行します。
 
@@ -351,7 +347,7 @@ composer test
 
 まずDBUnitのための接続情報を`tests/phpunit.xml`に追加します
 
-{% highlight xml %}
+```xml
 <phpunit bootstrap="tests/bootstrap.php">
     <php>
         <var name="DB_DSN" value="mysql:host=localhost" />
@@ -360,20 +356,20 @@ composer test
         <var name="DB_DBNAME" value="task_test" />
     </php>
     ```
-{% endhighlight %}
+```
 
 DBを保存したい状態にしておいて、テストクラスと同じ階層の`fixtures `ディレクトリに`mysqldump `コマンドで既存のデータベースの状態をdumpします。
 
-{% highlight sh %}
+```bash
 mysqldump --xml -t -u [username] --password=[password] [database] > /path/to/file.xml
-{% endhighlight %}
+```
 
-{% highlight sh %}
+```bash
 ├── TaskTest.php
 └── fixtures
     ├── tag.xml
     └── task.xml
-{% endhighlight %}
+```
 
 複数のxmlは合成され１つのフィクスチャになり、テスト実行前のデータベース状態を再現できます。
 
@@ -397,8 +393,7 @@ composer setup
 
 依存をコンストラクタではなく、メソッドのパラメーターで受け取る事もできます。（アシスティッドインジェクション）
 
-{% highlight php %}
-<?php
+```php?start_inline
 declare(strict_types=1);
 
 namespace MyVendor\Task\Resource\App;
@@ -455,13 +450,12 @@ class Task extends ResourceObject
         return $this;
     }
 }
-{% endhighlight %}
+```
 
 
 条件によって動的に変わるSQLは[Aura.SqlQuery](http://bearsunday.github.io/manuals/1.0/ja/database.html#aurasqlquery)クエリービルダーを利用するのが良いでしょう。
 
-{% highlight php %}
-<?php
+```php?start_inline
 declare(strict_types=1);
 
 namespace MyVendor\Task\Resource\App;
@@ -545,7 +539,7 @@ class TaskQb extends ResourceObject
     }
 }
 
-{% endhighlight %}
+```
 
 # まとめ
 

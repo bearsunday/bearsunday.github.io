@@ -15,8 +15,7 @@ BEAR.Sundayでは設置場所や記述フォーマットが固定されている
 
 コンテキストに依存しない設定値はモジュールにそのまま記述し、環境により変更されるようなものやクレデンシャル情報は`$_ENV`値を使います。
 
-{% highlight php %}
-<?php
+```php?start_inline
 class AppModule extends AbstractModule
 {
     /**
@@ -31,14 +30,13 @@ class AppModule extends AbstractModule
         $this->install(new TwigModule));
     }
 }
-{% endhighlight %}
+```
 
 ## DIの設定
 
 BEAR.Sundayの使用するRay.Diでは、インターフェイスとクラスやそのクラスを生成するファクトリー等を束縛(バインド)してオブジェクトグラフを構成します。
 
-{% highlight php %}
-<?php
+```php?start_inline
 // クラスの束縛
 $this->bind($interface)->to($class);
 // プロバイダー（ファクトリー）の束縛
@@ -51,7 +49,7 @@ $this->bind($interface)->annotatedWith($annotation)->to($class);
 $this->bind($interface)->to($class)->in(Scope::SINGLETON);
 // コンストラクタ束縛
 $this->bind($interface)->toConstructor($class, $named);
-{% endhighlight %}
+```
 
 束縛は先にされたものが優先されますが、モジュールを`override`すると先にされた束縛を上書きすることができます。
 
@@ -62,8 +60,7 @@ $this->bind($interface)->toConstructor($class, $named);
 
 AOPはクラスとメソッドを`Matcher`で"検索"して、マッチするメソッドにインターセプターを束縛します。
 
-{% highlight php %}
-<?php
+```php?start_inline
 $this->bindInterceptor(
     $this->matcher->any(),                   // どのクラスの
     $this->matcher->startsWith('delete'),    // "delete"で始まるメソッド名のメソッドには
@@ -75,7 +72,7 @@ $this->bindInterceptor(
     $this->matcher->annotatedWith(Auth::class),      // @Authアノテーションがアノテートされているメソッドには
     [AdminAuthentication::class]                     // AdminAuthenticationインターセプターを束縛
 );
-{% endhighlight %}
+```
 
 `Matcher`は他にこのような指定もできます。
 
@@ -92,8 +89,7 @@ $this->bindInterceptor(
 インターセプターの`invoke`メソッドでは`MethodInvocation`（メソッド実行）変数を受け取り、メソッドの前後に処理を加えます。
 
 
-{% highlight php %}
-<?php
+```php?start_inline
 use Ray\Aop\MethodInvocation;
 
 class MyInterceptor implements MethodInterceptor
@@ -112,7 +108,7 @@ class MyInterceptor implements MethodInterceptor
         return $result;
     }
 }
-{% endhighlight %}
+```
 
 インターセプターに渡される`MethodInvocation`で対象のメソッド実行に関連するオブジェクトやメソッド、引数にアクセスすることができます。
 
@@ -124,11 +120,10 @@ class MyInterceptor implements MethodInterceptor
 
 リフレクションのメソッドでアノテーションを取得することができます。
 
-{% highlight php %}
-<?php
+```php?start_inline
 $method = $invocation->getMethod();
 $class = $invocation->getMethod()->getDeclaringClass();
-{% endhighlight %}
+```
 
  * `$method->getAnnotations()`     - メソッドアノテーションの取得
  * `$method->getAnnotation($name)`

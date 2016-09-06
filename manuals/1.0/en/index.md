@@ -25,13 +25,13 @@ Ray.Aop is an `Aspect Orietated Programming` framework that allows you to wrap o
 
 ### BEAR.Resource
 
-BEAR.Resource allows you to treat all entry points to your app as RESTful resources. Resources can then be consumed uniformly across your app. This can be done externally via HTTP or internally via the resource client. 
+BEAR.Resource allows you to treat all entry points to your app as RESTful resources. Resources can then be consumed uniformly across your app. This can be done externally via HTTP or internally via the resource client.
 
 Treating all of your data as a resource then simplifies the how you get to your app.
 
 ## Libraries
 
-BEAR.Sunday is not like other MVC frameworks and contains libraries that support databases, authentication or the like. 
+BEAR.Sunday is not like other MVC frameworks and contains libraries that support databases, authentication or the like.
 
 Instead just hook in any of the great libraries that are available on [Packagist](https://packagist.org/) like the [Aura](http://auraphp.com/) component libraries.
 

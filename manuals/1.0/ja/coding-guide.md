@@ -217,13 +217,13 @@ public function onGet($name) : ResourceObject
 
 APIとHTMLなど複数のコンテキストでルーティングを変える場合はルーターファイル `route.aura.conf`では`$schemeHost`によってルーターファイルをコンテキスト別に`require`します。
 
-{% highlight bash %}
+```bash
 <?php
 /* @var $router \BEAR\Package\Provide\Router\AuraRoute */
 /* @var $schemeHost string */
 
 require ($schemeHost === 'app://self') ? __DIR__ . '/app.route.conf' : __DIR__ . '/page.route.conf';
-{% endhighlight %}
+```
 
 ## 環境
 

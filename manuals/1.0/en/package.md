@@ -52,17 +52,17 @@ You can also install another BEAR.Sunday application package as dependency.
 
 You can access same resource through console input or web access with same boot file.
 
-{% highlight php %}
+```bash
 php bootstrap/api.php options '/self/todo' // console API access
-{% endhighlight %}
+```
 
-{% highlight php %}
+```bash
 php bootstrap/web.php get '/todo?id=1' // console Web access
-{% endhighlight %}
+```
 
-{% highlight php %}
+```bash
 php -S 127.0.0.1bootstrap/api.php // PHP server
-{% endhighlight %}
+```
 
 You can create your own boot file for different context.
 

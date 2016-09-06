@@ -13,8 +13,7 @@ BEAR.Sundayアプリケーションは[REST](http://ja.wikipedia.org/wiki/REST)�
 
 リソースクラスはHTTPのメソッドをPHPのメソッドにマップしてPHPのクラスをサービスとして扱います。
 
-{% highlight php %}
-<?php
+```php?start_inline
 class Index extends ResourceObject
 {
     public function onGet($a, $b)
@@ -25,10 +24,9 @@ class Index extends ResourceObject
         return $this;
     }
 }
-{% endhighlight %}
+```
 
-{% highlight php %}
-<?php
+```php?start_inline
 class Todo extends ResourceObject
 {
     public function onPost($id, $todo)
@@ -39,7 +37,7 @@ class Todo extends ResourceObject
         return $this;
     }
 }
-{% endhighlight %}
+```
 
 PHPのリソースクラスはWebのURIと同じような`app://self/blog/posts/?id=3`, `page://self/index`などのURIを持ち、HTTPのメソッドに準じた`onGet`, `onPost`, `onPut`, `onPatch`, `onDelete`インターフェイスを持ちます。
 
@@ -66,8 +64,7 @@ PHPのリソースクラスはWebのURIと同じような`app://self/blog/posts/
 
 リソースのリクエストにはリソースクライアントを使用します。
 
-{% highlight php %}
-<?php
+```php?start_inline
 
 use BEAR\Sunday\Inject\ResourceInject;
 
@@ -86,17 +83,16 @@ class Index extends ResourceObject
             ->request();
     }
 }
-{% endhighlight %}
+```
 
 このリクエストは`app://self/blog/posts`リソースに`?id=1`というクエリーでリクエストをすぐ`eager`に行います。
 
 リソースのリクエストはlazyとeagerがあります。リクエストにeagerがついてないものがlazyリクエストです。
 
-{% highlight php %}
-<?php
+```php?start_inline
 $posts = $this->resource->get->uri('app://self/posts')->request(); //lazy
 $posts = $this->resource->get->uri('app://self/posts')->eager->request(); // eager
-{% endhighlight %}
+```
 
 lazy `request()`で帰って来るオブジェクトは実行可能なリクエストオブジェクトです。`$posts()`で実行することができます。
 このリクエストをテンプレートやリソースに埋め込むと、その要素が使用されるときに評価されます。
@@ -105,8 +101,7 @@ lazy `request()`で帰って来るオブジェクトは実行可能なリクエ�
 
 クラインアントはハイパーリンクで接続されているリソースをリンクすることができます。
 
-{% highlight php %}
-<?php
+```php?start_inline
 $blog = $this
     ->resource
     ->get
@@ -115,7 +110,7 @@ $blog = $this
     ->linkSelf("blog")
     ->eager
     ->request()->body;
-{% endhighlight %}
+```
 
 リンクは３種類あります。`$rel`をキーにして元のリソースの`body`リンク先のリソースが埋め込まれます。
 
@@ -133,8 +128,7 @@ $blog = $this
 
 リンクを`rel`と`href`で指定します。`hal`コンテキストではHALのリンクフォーマットとして扱われます。
 
-{% highlight php %}
-<?php
+```php?start_inline
     /**
      * @Link(rel="profile", href="/profile{?id}")
      */
@@ -144,10 +138,10 @@ $blog = $this
 
         return $this;
     }
-{% endhighlight %}
+```
 
 `href`のURIの`{?id}`は`$body`の値です。[RFC6570 URI template](https://github.com/ioseb/uri-template)でURIが生成され、HALでの出力は以下のようになります。
-{% highlight json %}
+```json
 {
     "id": 10,
     "_links": {
@@ -159,20 +153,19 @@ $blog = $this
         }
     }
 }
-{% endhighlight %}
+```
 
 
 BEARのリソースリクエストでは`linkSelf()`, `linkNew`, `linkCrawl`の時にリソースリンクとして使われます。
 
-{% highlight php %}
-<?php
+```php?start_inline
 use BEAR\Resource\Annotation\Link;
 
 /**
  * @Link(crawl="post-tree", rel="post", href="app://self/post?author_id={id}")
  */
 public function onGet($id = null)
-{% endhighlight %}
+```
 
 `linkCrawl`は`crawl`の付いたリンクを[クロール](https://github.com/koriym/BEAR.Resource#crawl)してリソースを集めます。
 
@@ -180,8 +173,7 @@ public function onGet($id = null)
 
 リソースの中に`src`で指定した別のリソースを埋め込むことができます。
 
-{% highlight php %}
-<?php
+```php?start_inline
 use BEAR\Resource\Annotation\Embed;
 
 class News
@@ -191,12 +183,11 @@ class News
      * @Embed(rel="weater", src="/news/weather")
      */
     public function onGet()
-{% endhighlight %}
+```
 
 埋め込まれるのはリソース**リクエスト**です。レンダリングの時に実行されますが、その前に`addQuery()`メソッドで引数を加えたり`withQuery()`で引数を置き換えることができます。
 
-{% highlight php %}
-<?php
+```php?start_inline
     /**
      * @Embed(rel="website", src="/website{?id}")
      */
@@ -204,7 +195,7 @@ class News
     {
         // ...
         $this['website']->addQuery(['title' => $title]); // 引数追加
-{% endhighlight %}
+```
 
 [HAL](https://github.com/blongden/hal)レンダラーでは`_embedded `として扱われます。
 
@@ -217,8 +208,7 @@ class News
 `$_GET`や`$_COOKIE`などのPHPのスーパーグローバルの値をメソッド内で取得するのではなく、メソッドの引数に束縛することができます。
 
 キーの名前と引数の名前が同じ場合
-{% highlight php %}
-<?php
+```php?start_inline
 use Ray\WebContextParam\Annotation\QueryParam;
 
     /**
@@ -227,12 +217,11 @@ use Ray\WebContextParam\Annotation\QueryParam;
     public function foo($id = null)
     {
       // $id = $_GET['id'];
-{% endhighlight %}
+```
 
 
 キーの名前と引数の名前が違う場合は`key`と`param`で指定
-{% highlight php %}
-<?php
+```php?start_inline
 use Ray\WebContextParam\Annotation\CookieParam;
 
     /**
@@ -241,11 +230,10 @@ use Ray\WebContextParam\Annotation\CookieParam;
     public function foo($tokenId = null)
     {
       // $tokenId = $_COOKIE['id'];
-{% endhighlight %}
+```
 
 フルリスト
-{% highlight php %}
-<?php
+```php?start_inline
 
 use Ray\WebContextParam\Annotation\QueryParam;
 use Ray\WebContextParam\Annotation\CookieParam;
@@ -267,7 +255,7 @@ use Ray\WebContextParam\Annotation\ServerParam;
        // $app_mode = $_ENV['app_mode'];
        // $token    = $_POST['token'];
        // $server   = $_SERVER['SERVER_NAME'];
-{% endhighlight %}
+```
 
 この機能を使うためには引数のデフォルトに`null`が必要です。
 またクライアントが値を指定した時は指定した値が優先され、束縛した値は無効になります。
@@ -276,14 +264,13 @@ use Ray\WebContextParam\Annotation\ServerParam;
 
 `@ResourceParam`アノテーションを使えば他のリソースリクエストの結果をメソッドの引数に束縛できます。
 
-{% highlight php %}
-<?php
+```php?start_inline
 /**
  * @ResourceParam(param=“name”, uri="app://self//login#nickname")
  */
 public function onGet($name)
 {
-{% endhighlight %}
+```
 
 この例ではメソッドが呼ばれると`login`リソースに`get`リクエストを行い`$body['nickname']`を`$name`で受け取ります。
 
@@ -291,13 +278,12 @@ public function onGet($name)
 
 ### @Cacheable
 
-{% highlight php %}
-<?php
+```php?start_inline
 /**
  * @Cacheable
  */
 class User extends ResourceObject
-{% endhighlight %}
+```
 
 `@Cacheable`とアノテートすると`get`リクエストは読み込み用のレポジトリ`QueryRepository`が使われ、時間無制限のキャッシュとして機能します。
 `get`以外のリクエストがあると該当する`QueryRepository`のリソースが更新されます。
@@ -306,8 +292,7 @@ class User extends ResourceObject
 
 同一クラスの`onGet`以外のリクエストメソッドがリクエストされ引数を見てリソースが変更されたと判断すると`QueryRepository`の内容も更新されます。
 
-{% highlight php %}
-<?php
+```php?start_inline
 
 /**
  * @Cacheable
@@ -324,23 +309,23 @@ class Todo
         // update
     }
 }
-{% endhighlight %}
+```
 
 例えばこのクラスでは`->post(10, 'shopping')`というリクエストがあると`id=10`の`QueryRepository`の内容が更新されます。
 この自動更新を利用しない時は`update`をfalseにします。
 
-{% highlight php %}
+```php?start_inline
 /**
  * @Cacheable(update=false)
  */
-{% endhighlight %}
+```
 
 時間を指定するには、`expiry`を使って、`short`, `medium`あるいは`long`のいずれかを指定できます。
-{% highlight php %}
+```php?start_inline
 /**
  * @Cacheable(expiry="short")
  */
-{% endhighlight %}
+```
 
 
 ## @Purge @Refresh
@@ -348,37 +333,34 @@ class Todo
 もう１つの方法は`@Purge`アノテーションや、`@Refresh`アノテーションで更新対象のURIを指定することです。
 
 
-{% highlight php %}
-<?php
+```php?start_inline
 /**
  * @Purge(uri="app://self/user/friend?user_id={id}")
  * @Refresh(uri="app://self/user/profile?user_id={id}")
  */
 public function onPut($id, $name, $age)
-{% endhighlight %}
+```
 
 別のクラスのリソースや関連する複数のリソースの`QueryRepository`の内容を更新することができます。
 `@Purge`はリソースのキャッシュを消去し`@Refresh`はキャッシュの再生成をメソッド実行直後に行います。
 
 uri-templateに与えられる値は他と同様に`$body`にアサインした値が実引数に優先したものです。
 
-{% highlight php %}
-<?php
+```php?start_inline
 /**
  * @Refresh(uri="/user/profile{?id,name}")
  */
 public function onPut($id, $name)
 {
     $this['id'] = 5; // [1, 'bear']で呼ばれると /user/profile?id=5&name=bearを@Refresh
-{% endhighlight %}
+```
 
 
 ## クエリーリポジトリの直接操作
 
 クエリージポジトリに格納されているデータは`QueryRepositoryInterface`で受け取ったクライアントで直接`put`（保存）したり`get`したりすることができます。
 
-{% highlight php %}
-<?php
+```php?start_inline
 use BEAR\QueryRepository\QueryRepositoryInterface;
 
 class Foo
@@ -402,7 +384,7 @@ class Foo
         // 読み込み
         list($code, $headers, $body, $view) = $repository->get(new Uri('app://self/user'));
      }
-{% endhighlight %}
+```
 
 ## BEAR.Resource
 

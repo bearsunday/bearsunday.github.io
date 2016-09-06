@@ -16,14 +16,13 @@ permalink: /manuals/1.0/ja/database.html
 
 composerで`Ray.AuraSqlModule`をインストールします。
 
-{% highlight bash %}
+```bash
 composer require ray/aura-sql-module
-{% endhighlight %}
+```
 
 アプリケーションモジュール`src/Module/AppModule.php`で`AuraSqlModule`をインストールします。
 
-{% highlight php %}
-<?php
+```php?start_inline
 use BEAR\AppMeta\AppMeta;
 use BEAR\Package\PackageModule;
 use Ray\AuraSqlModule\AuraSqlModule; // この行を追加
@@ -37,12 +36,11 @@ class AppModule extends AbstractModule
         $this->install(new AuraSqlModule('mysql:host=localhost;dbname=test', 'username', 'password'));  // この行を追加
     }
 }
-{% endhighlight %}
+```
 
 これでDIの設定が整いました。コンストラクタや`AuraSqlInject`トレイトを利用してDBオブジェクトを受け取ります。
 
-{% highlight php %}
-<?php
+```php?start_inline
 
 use Aura\Sql\ExtendedPdoInterface;
 
@@ -53,11 +51,10 @@ class Index
         return $this->pdo; // \Aura\Sql\ExtendedPdo
     }
 }
-{% endhighlight %}
+```
 
 
-{% highlight php %}
-<?php
+```php?start_inline
 use Ray\AuraSqlModule\AuraSqlInject;
 
 class Index
@@ -69,7 +66,7 @@ class Index
         return $this->pdo; // \Aura\Sql\ExtendedPdo
     }
 }
-{% endhighlight %}
+```
 
 `Ray.AuraSqlModule`は[Aura.SqlQuery](https://github.com/auraphp/Aura.SqlQuery)を含んでいてMySQLやPostgresなどのSQLを組み立てるのに利用できます。
 
@@ -77,8 +74,7 @@ class Index
 
 マスター／スレーブの接続を自動で行うためには接続オブジェクト`$locator`を作成して`AuraSqlReplicationModule`をインストールします。
 
-{% highlight php %}
-<?php
+```php?start_inline
 use Ray\Di\AbstractModule;
 use Ray\AuraSqlModule\AuraSqlModule;
 use Ray\AuraSqlModule\Annotation\AuraSqlConfig;
@@ -96,12 +92,11 @@ class AppModule extends AbstractModule
     }
 }
 
-{% endhighlight %}
+```
 
 これでHTTPリクエストがGETの時がスレーブDB、その他のメソッドの時はマスターDBのDBオブジェクトがコンスタラクタに渡されます。
 
-{% highlight php %}
-<?php
+```php?start_inline
 
 use Aura\Sql\ExtendedPdoInterface;
 use BEAR\Resource\ResourceObject;
@@ -126,12 +121,11 @@ class User extends ResourceObject
          $this->pdo; // master db
     }
 }
-{% endhighlight %}
+```
 
 `@ReadOnlyConnection`、`@WriteConnection`でアノテートされたメソッドはメソッド名に関わらず、呼ばれた時にアノテーションに応じたDBオブジェクトが`$this->pdo`に上書きされます。
 
-{% highlight php %}
-<?php
+```php?start_inline
 use Ray\AuraSqlModule\Annotation\ReadOnlyConnection;  // important
 use Ray\AuraSqlModule\Annotation\WriteConnection;     // important
 
@@ -160,14 +154,13 @@ class User
          $this->pdo; // master db
     }
 }
-{% endhighlight %}
+```
 
 ## トランザクション
 
 `@Transactional`とアノテートしたメソッドはトランザクション管理されます。
 
-{% highlight php %}
-<?php
+```php?start_inline
 use Ray\AuraSqlModule\Annotation\Transactional;
 
 // ....
@@ -178,7 +171,7 @@ use Ray\AuraSqlModule\Annotation\Transactional;
     {
          // 例外発生したら\Ray\AuraSqlModule\Exception\RollbackExceptionに
     }
-{% endhighlight %}
+```
 
 # Aura.SqlQuery
 
@@ -186,19 +179,17 @@ use Ray\AuraSqlModule\Annotation\Transactional;
 
 データベースを指定してアプリケーションモジュール`src/Module/AppModule.php`でインストールします。
 
-{% highlight php %}
-<?php
+```php?start_inline
 // ...
 $this->install(new AuraSqlQueryModule('mysql')); // pgsql, sqlite, or sqlsrv
-{% endhighlight %}
+```
 
 ## SELECT
 
 リソースではDBクエリービルダオブジェクトを受け取り、下記のメソッドを使ってSELECTクエリーを組み立てます。
 メソッドに特定の順番はなく複数回呼ぶことこともできます。
 
-{% highlight php %}
-<?php
+```php?start_inline
 
 use Ray\AuraSqlModule\AuraSqlInject;
 use Ray\AuraSqlModule\AuraSqlSelectInject;
@@ -260,7 +251,7 @@ class User extend ResourceObject
         $result = $sth->fetch(\PDO::FETCH_ASSOC);
         // or
         // $result = $this->pdo->fetchAssoc($stm, $bind);
-{% endhighlight %}
+```
 
 組み立てたクエリーは`getStatement()`で文字列にしてクエリーを行います。
 
@@ -269,8 +260,7 @@ class User extend ResourceObject
 ### 単一行のINSERT
 
 
-{% highlight php %}
-<?php
+```php?start_inline
 
 use Ray\AuraSqlModule\AuraSqlInject;
 use Ray\AuraSqlModule\AuraSqlInsertInject;
@@ -303,12 +293,11 @@ class User extend ResourceObject
         // get the last insert ID
         $name = $insert->getLastInsertIdName('id');
         $id = $pdo->lastInsertId($name);
-{% endhighlight %}
+```
 
 `cols()`メソッドはキーがコラム名、値をバインドする値にした連想配列を渡すこともできます。
 
-{% highlight php %}
-<?php
+```php?start_inline
         $this->insert
             ->into('foo')                   // insert into this table
             ->cols([                        // insert these columns and bind these values
@@ -316,14 +305,13 @@ class User extend ResourceObject
                 'bar' => 'bar_value',
                 'baz' => 'baz_value',
             ]);
-{% endhighlight %}
+```
 
 ### 複数行のINSERT
 
 複数の行のINSERTを行うためには、最初の行の最後で`addRow()`メソッドを使います。その後に次のクエリーを組み立てます。
 
-{% highlight php %}
-<?php
+```php?start_inline
         // insert into this table
         $this->insert->into('foo');
 
@@ -352,13 +340,12 @@ class User extend ResourceObject
         $sth = $this->pdo->prepare($insert->getStatement());
         $sth->execute($insert->getBindValues());
 
-{% endhighlight %}
+```
 
 > 注:最初の行で始めて現れた列の値を指定しないで、行を追加しようとすると例外が投げられます。
 > `addRow()`に列の連想配列を渡すと次の行で使われます。つまり最初の行で`col()`や`cols()`を指定しないこともできます。
 
-{% highlight php %}
-<?php
+```php?start_inline
         // set up the first row
         $insert->addRow([
             'bar' => 'bar-0',
@@ -374,12 +361,11 @@ class User extend ResourceObject
         $insert->set('ts', 'NOW()');
 
         // etc.
-{% endhighlight %}
+```
 
 `addRows()`を使ってデータベースを一度にセットすることもできます。
 
-{% highlight php %}
-<?php
+```php?start_inline
         $rows = [
             [
                 'bar' => 'bar-0',
@@ -391,13 +377,12 @@ class User extend ResourceObject
             ],
         ];
         $this->insert->addRows($rows);
-{% endhighlight %}
+```
 
 ## UPDATE
 下記のメソッドを使ってUPDATEクエリーを組み立てます。 メソッドに特定の順番はなく複数回呼ぶことこともできます。
 
-{% highlight php %}
-<?php
+```php?start_inline
         $this->update
             ->table('foo')                  // update this table
             ->cols([                        // bind values as "SET bar = :bar"
@@ -418,12 +403,11 @@ class User extend ResourceObject
         $sth->execute($this->update->getBindValues());
         // or
         // $sth = $this->pdo->perform($this->update->getStatement(), $this->update->getBindValues());
-{% endhighlight %}
+```
 
 キーを列名、値をバインドされた値（RAW値ではなりません）にした連想配列を`cols()`に渡すこともできます。
 
-{% highlight php %}
-<?php
+```php?start_inline
 
         $this-update->table('foo')          // update this table
             ->cols([                        // update these columns and bind these values
@@ -432,12 +416,11 @@ class User extend ResourceObject
                 'baz' => 'baz_value',
             ]);
 ?>
-{% endhighlight %}
+```
 
 ## DELETE
 下記のメソッドを使ってDELETEクエリーを組み立てます。 メソッドに特定の順番はなく複数回呼ぶことこともできます。
-{% highlight php %}
-<?php
+```php?start_inline
         $this->delete
             ->from('foo')                   // FROM this table
             ->where('zim = :zim')           // AND WHERE these conditions
@@ -451,7 +434,7 @@ class User extend ResourceObject
             ]);
         $sth = $this->pdo->prepare($update->getStatement())
         $sth->execute($this->delete->getBindValues());
-{% endhighlight %}
+```
 
 ## パジネーション
 
@@ -460,22 +443,20 @@ class User extend ResourceObject
 
 ### Aura.Sql用
 AuraSqlPagerFactoryInterface
-{% highlight php %}
-<?php
+```php?start_inline
 /* @var $factory \Ray\AuraSqlModule\Pagerfanta\AuraSqlPagerFactoryInterface */
 $pager = $factory->newInstance($pdo, $sql, $params, 10, '/?page={page}&category=sports'); // 10 items per page
 $page = $pager[2]; // page 2
-{% endhighlight %}
+```
 
 ### Aura.SqlQuery用
 AuraSqlQueryPagerFactoryInterface
-{% highlight php %}
-<?php
+```php?start_inline
 // for Select
 /* @var $factory \Ray\AuraSqlModule\Pagerfanta\AuraSqlQueryPagerFactoryInterface */
 $pager = $factory->newInstance($pdo, $select, 10, '/?page={page}&category=sports');
 $page = $pager[2]; // page 2
-{% endhighlight %}
+```
 
 > 注：Aura.Sqlは生SQLを直接編集していますが現在MySql形式のLIMIT句しか対応していません。
 
@@ -485,14 +466,13 @@ $page = $pager[2]; // page 2
 
 composerで`Ray.DbalModule`をインストールします。
 
-{% highlight bash %}
+```bash
 composer require ray/dbal-module
-{% endhighlight %}
+```
 
 アプリケーションモジュールで`DbalModule`をインストールします。
 
-{% highlight php %}
-<?php
+```php?start_inline
 use Ray\DbalModule\DbalModule;
 use Ray\Di\AbstractModule;
 
@@ -503,13 +483,12 @@ class AppModule extends AbstractModule
         $this->install(new DbalModule('driver=pdo_sqlite&memory=true');
     }
 }
-{% endhighlight %}
+```
 
 これでDIの設定が整いました。
 `DbalInject`トレイトを利用すると`$this->db`にDBオブジェクトがインジェクトされます。
 
-{% highlight php %}
-<?php
+```php?start_inline
 use Ray\DbalModule\DbalInject;
 
 class Index
@@ -521,7 +500,7 @@ class Index
         return $this->db; // \Doctrine\DBAL\Driver\Connection
     }
 }
-{% endhighlight %}
+```
 
 [MasterSlaveConnection](http://www.doctrine-project.org/api/dbal/2.0/class-Doctrine.DBAL.Connections.MasterSlaveConnection.html)というリプリケーションのためのマスター／スレーブ接続が標準で用意されています。
 
@@ -536,9 +515,9 @@ class Index
 
 composerで`Ray.CakeDbModule`をインストールします。
 
-{% highlight bash %}
+```bash
 composer require ray/cake-database-module ~1.0
-{% endhighlight %}
+```
 
 インストールの方法については[Ray.CakeDbModule](https://github.com/ray-di/Ray.CakeDbModule)を、ORMの利用には[CakePHP3 Database Access & ORM](http://book.cakephp.org/3.0/en/orm.html)をご覧ください。
 

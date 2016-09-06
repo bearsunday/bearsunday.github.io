@@ -9,14 +9,13 @@ permalink: /manuals/1.0/ja/html.html
 
 HTML表示のためにcomposerで`madapaja/twig-module`をインストールします。
 
-{% highlight bash %}
+```bash
 composer require madapaja/twig-module
-{% endhighlight %}
+```
 
 次に`html`コンテキストファイル`src/Module/HtmlModule.php`を用意して`TwigModule`をインストールします。
 
-{% highlight php %}
-<?php
+```php?start_inline
 
 namespace MyVendor\MyPackage\Module;
 
@@ -31,31 +30,31 @@ class HtmlModule extends AbstractModule
         $this->install(new TwigModule);
     }
 }
-{% endhighlight %}
+```
 
 `bootstrap/web.php`のコンテキストを変更して`html`を有効にします。
 
-{% highlight bash %}
+```bash
 $context = 'cli-html-app';
-{% endhighlight %}
+```
 リソースのPHPファイル名に`.html.twig`拡張子をつけたファイルでテンプレートを用意します。
 `Page/Index.php`に対応するのは`Page/Index.html.twig`になります。
 
-{% highlight html %}
+```hml
 {% raw %}
 <h1>{{ greeting }}</h1>
 {% endraw %}
-{% endhighlight %}
+```
 
 `$body`がテンプレートにアサインされて出力されます。
 
-{% highlight bash %}
+```bash
 php bootstrap/web.php get /
 200 OK
 content-type: text/html; charset=utf-8
 
 <h1>Hello BEAR.Sunday</h1>
-{% endhighlight %}
+```
 
 レイアウトや部分的なテンプレートファイルは`var/lib/twig`に設置します。
 
@@ -64,8 +63,7 @@ content-type: text/html; charset=utf-8
 コンテンキストに応じてオプション等を設定したり、テンプレートのパスを追加したりする場合は
 `@TwigPaths`と`@TwigOptions`に設定値を束縛します。
 
-{% highlight php %}
-<?php
+```php?start_inline
 
 namespace MyVendor\MyPackage\Module;
 
@@ -97,7 +95,7 @@ class AppModule extends AbstractModule
         $this->bind()->annotatedWith(TwigOptions::class)->toInstance($options);
     }
 }
-{% endhighlight %}
+```
 
 ## 他のテンプレートエンジン
 

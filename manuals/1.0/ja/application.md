@@ -9,9 +9,9 @@ permalink: /manuals/1.0/ja/application.html
 
 アプリケーションは以下のような順番で実行されます。
 
-{% highlight php %}
+```php?start_inline
 boot -> compile -> request(route, method, interceptor) -> response(representation) -> exit
-{% endhighlight %}
+```
 
 
 ## 0. コンパイル
@@ -36,15 +36,14 @@ HTTPリクエストは`router`でアプリケーションのリソースへの�
 アプリケーションを実行するわずか２行のPHPスクリプトです。`var/www/index.php`や`bootstrap/api.php`等に設置してWebサーバーやコンソールアプリケーションのエントリーポイントにします。
 スクリプトではグローバル変数`$context`にコンテキストを指定して`bootstrap.php`ファイルを読み込むとアプリケーションが実行されます。
 
-{% highlight php %}
-<?php
+```php?start_inline
 $context = 'prod-api-hal-app'
 require 'pat/to/bootstrap.php';
-{% endhighlight %}
+```
 
 コンテキストに応じてbootファイルを選択します。
 
-{% highlight bash %}
+```bash
 // fire php server
 php -S 127.0.0.1:8080 var/www/index.php
 
@@ -53,7 +52,7 @@ php bootstrap/api.php get /user/1
 
 // web access
 php -S 127.0.0.1:8080 bootstrap/api.php
-{% endhighlight %}
+```
 
 ## <a name="context"></a>アプリケーションコンテキスト
 

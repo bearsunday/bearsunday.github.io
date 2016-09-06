@@ -13,8 +13,7 @@ An HTTP method is mapped to a PHP method in the `ResourceObject` class.
 
 Here are some examples of a resource object:
 
-{% highlight php %}
-<?php
+```php?start_inline
 class Index extends ResourceObject
 {
     public function onGet($a, $b)
@@ -26,10 +25,9 @@ class Index extends ResourceObject
         return $this;
     }
 }
-{% endhighlight %}
+```
 
-{% highlight php %}
-<?php
+```php?start_inline
 class Todo extends ResourceObject
 {
     public function onPost($id, $todo)
@@ -42,54 +40,51 @@ class Todo extends ResourceObject
         return $this;
     }
 }
-{% endhighlight %}
+```
 
 A resource has a URI just like a web URL.
-{% highlight bash %}
+```bash
 app://self/blog/posts/?id=3
-{% endhighlight %}
+```
 
-{% highlight bash %}
+```bash
 page://self/index
-{% endhighlight %}
+```
 
 It has methods that correspond to HTTP verbs `onGet`, `onPost`, `onPut`, `onPatch`, or `onDelete`.
 `$_GET` parameters are passed to the parameters of `onGet` method, as are `$_POST` parameters sent to the `onPost` method.
 
-{% highlight php %}
-<?php
+```php?start_inline
     class User
     {
         public function onGet($id, $todo)
         {
             // $id   <= $_GET['id']
             // $todo <= $_GET['todo']
-{% endhighlight %}
+```
 
 The format defined by `content-type` header will handle the passing of parameters to be sent to `onPut`,`onPatch` or `onDelete`.
 
-{% highlight php %}
-<?php
+```php?start_inline
     class User
     {
         public function onPut($id, $todo)
         {
             // `x-www-form-urlencoded` or `application/json`
             $id
-{% endhighlight %}
+```
 
 The resource state (`code`,`headers` or`body`) is handled by these method using the given parameters. Then the resource class returns itself(`$this`).
 
 ### Syntax sugar
 
 Access to the body property has some syntactic sugar.
-{% highlight php %}
-<?php
+```php?start_inline
 
 $this['price'] = 10;
 // is same as
 $this->body['price'] = 10;
-{% endhighlight %}
+```
 
 ## Scheme
 
@@ -138,8 +133,7 @@ Inspects which methods and parameters can be used on the resource. Just like `GE
 
 You need a **Resource Client** to request resource. In the following example a `ResourceInject` trait is used to inject a `Resource Client`.
 
-{% highlight php %}
-<?php
+```php?start_inline
 
 use BEAR\Sunday\Inject\ResourceInject;
 
@@ -158,16 +152,15 @@ class Index extends ResourceObject
             ->request();
     }
 }
-{% endhighlight %}
+```
 
 This code invokes a `GET` request to `app://self/blog/posts` App resource with the query `?id=1` .
 If you do not specify an `eager` option with the request, it is just hold the request. Request invocation will then be made when values are lazily output in the representation.
 
-{% highlight php %}
-<?php
+```php?start_inline
 $posts = $this->resource->get->uri('app://self/posts')->request(); //lazy
 $posts = $this->resource->get->uri('app://self/posts')->eager->request(); // eager
-{% endhighlight %}
+```
 
 A `request()` method without `eager` returns an invokable request object, which can be invoked by calling `$posts()`.
 You can assign this value to a template engine or embed it in another resource. It will then be lazily evaluated.
@@ -176,8 +169,7 @@ You can assign this value to a template engine or embed it in another resource. 
 
 Resources can be linked in various way.
 
-{% highlight php %}
-<?php
+```php?start_inline
 $blog = $this
     ->resource
     ->get
@@ -186,7 +178,7 @@ $blog = $this
     ->linkSelf("blog")
     ->eager
     ->request()->body;
-{% endhighlight %}
+```
 
 Three type of links are provided.
 
@@ -197,27 +189,25 @@ Three type of links are provided.
 ## Link Annotation
 
 ### @Link
-{% highlight php %}
-<?php
+```php?start_inline
     /**
      * @Link(rel="profile", href="/profile{?id}")
      */
     public function onGet($id)
-{% endhighlight %}
+```
 
 Set the link with `rel` key name and `href` resource URI.
 
  * NOTE: When using the `hal` context, `@Link` is used for a HAL link.
 
-{% highlight php %}
-<?php
+```php?start_inline
 use BEAR\Resource\Annotation\Link;
 
 /**
  * @Link(crawl="post-tree", rel="post", href="app://self/post?author_id={id}")
  */
 public function onGet($id = null)
-{% endhighlight %}
+```
 
 A `crawl` tagged link will then be [crawled](https://github.com/koriym/BEAR.Resource#crawl) with `linkCrawl`.
 
@@ -227,8 +217,7 @@ Find out more about the `@Link` annotation at  BEAR.Resource [README](https://gi
 
 You can embed another resource by using `src`.
 
-{% highlight php %}
-<?php
+```php?start_inline
 use BEAR\Resource\Annotation\Embed;
 
 class News
@@ -238,12 +227,11 @@ class News
      * @Embed(rel="weater", src="/news/weather")
      */
     public function onGet()
-{% endhighlight %}
+```
 
 The resource **request** is embeded. The request is invoked when rendering. You can add parameters or replace with `addQuery()` or `withQuery()`
 
-{% highlight php %}
-<?php
+```php?start_inline
     /**
      * @Embed(rel="website", src="/website{?id}")
      */
@@ -251,7 +239,7 @@ The resource **request** is embeded. The request is invoked when rendering. You 
     {
         // ...
         $this['website']->addQuery(['title' => $title]); // add parameters
-{% endhighlight %}
+```
 
  * NOTE: In the HAL renderer, this is used as `__embed`.
 
@@ -263,8 +251,7 @@ You can bind method parameters to an "external value". The external value might 
 
 For instance, Instead you "pull" `$_GET` or any global the web context values, You can bind PHP super global values to method parameters.
 
-{% highlight php %}
-<?php
+```php?start_inline
 use Ray\WebContextParam\Annotation\QueryParam;
 
     /**
@@ -273,13 +260,12 @@ use Ray\WebContextParam\Annotation\QueryParam;
     public function foo($id = null)
     {
       // $id = $_GET['id'];
-{% endhighlight %}
+```
 
 The above example is a case where a key name and the parameter name are the same.
 You can specify `key` and `param` values when they don't match.
 
-{% highlight php %}
-<?php
+```php?start_inline
 use Ray\WebContextParam\Annotation\CookieParam;
 
     /**
@@ -288,12 +274,11 @@ use Ray\WebContextParam\Annotation\CookieParam;
     public function foo($tokenId = null)
     {
       // $tokenId = $_COOKIE['id'];
-{% endhighlight %}
+```
 
 Full List
 
-{% highlight php %}
-<?php
+```php?start_inline
 
 use Ray\WebContextParam\Annotation\QueryParam;
 use Ray\WebContextParam\Annotation\CookieParam;
@@ -315,7 +300,7 @@ use Ray\WebContextParam\Annotation\ServerParam;
        // $app_mode = $_ENV['app_mode'];
        // $token    = $_POST['token'];
        // $server   = $_SERVER['SERVER_NAME'];
-{% endhighlight %}
+```
 
 This `bind parameter` is also very useful for testing.
 
@@ -323,14 +308,13 @@ This `bind parameter` is also very useful for testing.
 
 We can bind the status of another resource to a parameter with the `@ResourceParam` annotation.
 
-{% highlight php %}
-<?php
+```php?start_inline
 /**
  * @ResourceParam(param=“name”, uri="app://self//login#nickname")
  */
 public function onGet($name)
 {
-{% endhighlight %}
+```
 
 In this example, the `nickname` property of `app://self//login` is bound to `$name`.
 
@@ -338,21 +322,19 @@ In this example, the `nickname` property of `app://self//login` is bound to `$na
 
 ### @Cacheable
 
-{% highlight php %}
-<?php
+```php?start_inline
 /**
  * @Cacheable
  */
 class User extends ResourceObject
-{% endhighlight %}
+```
 
 `@Cacheable` annotated resource objects are cached without a time limit.
 The cache will be updated by any non-GET request on the same class  with no expiry time (unless you specify one). A parameter is inspected to determine identity of the resource.
 
 `@Cacheable` annotated resource objects will have `Last-Modified` and `ETag` headers added automatically.
 
-{% highlight php %}
-<?php
+```php?start_inline
 
 /**
  * @Cacheable
@@ -369,38 +351,37 @@ class Todo
         // update
     }
 }
-{% endhighlight %}
+```
 
 For example, when a request is made to `->post(10, 'shopping')`, the `?id=10` cache will be updated.
 
 Set `update` to false if you don't want to have this auto update.
 
-{% highlight php %}
+```php?start_inline
 /**
  * @Cacheable(update=false)
  */
-{% endhighlight %}
+```
 
 You can specify a cache life time as `short`, `medium` or `long` on the  `expiry` property.
 
-{% highlight php %}
+```php?start_inline
 /**
  * @Cacheable(expiry="short")
  */
-{% endhighlight %}
+```
 
 
 ### @Purge @Refresh
 
 You can also update caches with the `@Purge` and `@Refresh` annotation.
 
-{% highlight php %}
-<?php
+```php?start_inline
 /**
  * @Purge(uri="app://self/user/friend?user_id={id}")
  * @Refresh(uri="app://self/user/profile?user_id={id}")
  */
 public function onPut($id, $name, $age)
-{% endhighlight %}
+```
 
 You can update the cache for another resource class or even multiple resources at once. `@Purge` deletes a cache where `@Refresh` will recreate cache data.

@@ -54,17 +54,17 @@ permalink: /manuals/1.0/ja/package.html
 BEARのリソースはコンソール入力とWebの双方からアクセスできます。
 呼び出すスクリプトによってコンテキストが変わります。
 
-{% highlight php %}
-php bootstrap/api.php options '/self/todo' // APIアクセス
-{% endhighlight %}
+```bash
+php bootstrap/api.php options '/self/todo' # APIアクセス
+```
 
-{% highlight php %}
-php bootstrap/web.php get '/todo?id=1' // Webアクセス
-{% endhighlight %}
+```bash
+php bootstrap/web.php get '/todo?id=1' # Webアクセス
+```
 
-{% highlight php %}
-php -S 127.0.0.1bootstrap/api.php // PHPサーバー    
-{% endhighlight %}
+```bash
+php -S 127.0.0.1 bootstrap/api.php # PHPサーバー
+```
 
 コンテキストが変わるとアプリケーションの振る舞いが変わります。
 ユーザーは独自のコンテキストを作成することができます。
@@ -130,9 +130,9 @@ PSR7のミドルウエアのためのオプションパッケージです。
 
 例 CakePHPデータベースのインストール
 
-{% highlight bash %}
+```bash
 composer require ray/cake-database-module
-{% endhighlight %}
+```
 
 ### ルーター
 

@@ -18,14 +18,13 @@ Validation libraries are available such as [Aura.Filter](https://github.com/aura
 
 Install `Ray.ValidateModule` via composer.
 
-{% highlight bash %}
+```bash
 composer require ray/validate-module
-{% endhighlight %}
+```
 
 Installing `ValidateModule` in your application module `src/Module/AppModule.php`.
 
-{% highlight php %}
-<?php
+```php?start_inline
 use Ray\Validation\ValidateModule;
 
 class AppModule extends AbstractModule
@@ -36,7 +35,7 @@ class AppModule extends AbstractModule
         $this->install(new ValidateModule);
     }
 }
-{% endhighlight %}
+```
 
 ## Annotation
 
@@ -44,8 +43,7 @@ There are three annotations `@Valid`, `@OnValidate`, `@OnFailure` for validation
 
 First of all, annotate method that you want to validate with `@Valid`.
 
-{% highlight php %}
-<?php
+```php?start_inline
 use Ray\Validation\Annotation\Valid;
 // ...
     /**
@@ -53,14 +51,13 @@ use Ray\Validation\Annotation\Valid;
      */
     public function createUser($name)
     {
-{% endhighlight %}
+```
 
-Validation will be conducted in the method annotated with `@OnValidate`. 
+Validation will be conducted in the method annotated with `@OnValidate`.
 
 The arguments of the method should be the same as the original method. The method name is free.
 
-{% highlight php %}
-<?php
+```php?start_inline
 use Ray\Validation\Annotation\OnValidate;
 // ...
     /**
@@ -75,15 +72,14 @@ use Ray\Validation\Annotation\OnValidate;
 
         return $validation;
     }
-{% endhighlight %}
+```
 
 Add unvalidated elements to your validation object by `addError ()` with `element name` and` error message`, And return the validation object.
 
 When validation fail, the exception `Ray\Validation\Exception\InvalidArgumentException` will be thrown,
 but if you have method annotated with `@OnFailure`, it will be called instead of throwing exception.
 
-{% highlight php %}
-<?php
+```php?start_inline
 use Ray\Validation\Annotation\OnFailure;
 // ...
     /**
@@ -101,7 +97,7 @@ use Ray\Validation\Annotation\OnFailure;
             }
         }
     }
-{% endhighlight %}
+```
 
 In the method annotated with `@OnFailure`, you can access to the validated messages with `$failure->getMessages()`
 and also you can get the object of the original method with `$failure->getInvocation()`.
@@ -110,8 +106,7 @@ and also you can get the object of the original method with `$failure->getInvoca
 
 If you want to have various validation for a class, you can specify the name of validation like below.
 
-{% highlight php %}
-<?php
+```php?start_inline
 use Ray\Validation\Annotation\Valid;
 use Ray\Validation\Annotation\OnValidate;
 use Ray\Validation\Annotation\OnFailure;
@@ -134,11 +129,10 @@ use Ray\Validation\Annotation\OnFailure;
      */
     public function onFailureFoo(FailureInterface $failure)
     {
-{% endhighlight %}
+```
 
 ## Other validation
 
 If you need to implement the complex validation, you can have another class for validation and inject it.
 And then call in the method annotated with `onValidate`.
 You can also change your validation behavior by context with DI.
-

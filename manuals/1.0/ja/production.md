@@ -14,11 +14,10 @@ permalink: /manuals/1.0/ja/production.html
 コンテキストが`prod-`で始まるとアプリケーションオブジェクト`$app`がキャッシュされます。
 キャッシュドライバーは環境に応じて`ApcCache`か`FilesystemCache`が自動選択されます。
 
-{% highlight php %}
-<?php
+```php?start_inline
 $context = 'prod-app';
 require dirname(dirname(__DIR__)) . '/bootstrap/bootstrap.php';
-{% endhighlight %}
+```
 
 ## キャッシュの設定
 
@@ -31,8 +30,7 @@ webサーバー1台でキャッシュを全て`Apc`で使う場合にはその�
 この場合、アプリケーション固有の`ProdModule`を`src/Module/ProdModule.php`に用意して、
 サーバー間で共有するコンテンツ用キャッシュ`Doctrine\Common\Cache\CacheProvider:@BEAR\RepositoryModule\Annotation\Storage`インターフェイスとサーバー単位のキャッシュ`Doctrine\Common\Cache\Cache`インターフェイスを束縛します。
 
-{% highlight php %}
-<?php
+```php?start_inline
 namespace BEAR\HelloWorld\Module;
 
 use BEAR\RepositoryModule\Annotation\Storage;
@@ -61,7 +59,7 @@ class ProdModule extends AbstractModule
         $this->install(new PackageProdModule);
     }
 }
-{% endhighlight %}
+```
 `@Storage`とアノテートされた`Cache`インターフェイスは、クエリーリポジトリーのためのものでWebサーバーで共有されるストレージです。
 
 複数のWebサーバーで`ApcCache`を指定することはできないので、
@@ -79,8 +77,7 @@ class ProdModule extends AbstractModule
 
 `HttpCache`をスクリプトで使うために`App`クラスで`HttpCacheInject`のtraitを使って`HttpCache`をインジェクトします。
 
-{% highlight php %}
-<?php
+```php?start_inline
 
 namespace MyVendor\MyApi\Module;
 
@@ -92,15 +89,14 @@ class App extends AbstractApp
 {
     use HttpCacheInject; // この行を追加
 }
-{% endhighlight %}
+```
 
 ### bootstrap
 
 次に`bootstrap/bootstrap.php`の`route`のセクションで以下のように`if`文を追加して、
 与えらた`ETag`のコンテンツに変更がなければ`304`を返して終了するようにします。
 
-{% highlight php %}
-<?php
+```php?start_inline
 route: {
     $app = (new Bootstrap)->getApp(__NAMESPACE__, $context);
     if ($app->httpCache->isNotModified($_SERVER)) {
@@ -108,7 +104,7 @@ route: {
         exit(0);
     }
 
-{% endhighlight %}
+```
 
 `ETag`の更新は自動で行われますが、`@Refresh`や`@Purge`アノテーションを使ってリソースキャッシュの破棄の関係性を適切に指定しておかなければなりません。
 
@@ -116,7 +112,7 @@ route: {
 
 以下のPECLエクステンションをインストールするとパフォーマンスが最適化されます。
 
- * [PECL/uri_template](http://pecl.php.net/package/uri_template) URI Template 
+ * [PECL/uri_template](http://pecl.php.net/package/uri_template) URI Template
  * [PECL/igbinary](https://pecl.php.net/package/igbinary) シリアライズ最適化
 
 ```

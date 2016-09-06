@@ -44,15 +44,14 @@ An entry point for a web server or console application access is usually set to 
 As you can see below, we need to assign an application context to a global variable `$context` then require `bootstrap.php` to run the application.
 
 
-{% highlight php %}
-<?php
+```php?start_inline
 $context = 'prod-api-hal-app'
 require 'pat/to/bootstrap.php';
-{% endhighlight %}
+```
 
 Depending on your context choose a boot file.
 
-{% highlight bash %}
+```bash
 // Fire up built in php server
 php -S 127.0.0.1:8080 var/www/index.php
 
@@ -61,7 +60,7 @@ php bootstrap/api.php get /user/1
 
 // Web access for the api
 php -S 127.0.0.1:8080 bootstrap/api.php
-{% endhighlight %}
+```
 
 ## <a name="context"></a>Application Context
 
