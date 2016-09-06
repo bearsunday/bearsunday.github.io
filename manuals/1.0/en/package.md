@@ -122,43 +122,31 @@ An optional PSR7 middleware package.
 
 ## Library Package
 
+Optional library package can be installed with `composer require` command.
 
-
-### Router
-
- *  [bear/aura-router-module](https://github.com/bearsunday/BEAR.AuraRouterModule) Aura.Router v2
-
-### Database
-
- * [ray/aura-sql-module](https://github.com/ray-di/Ray.AuraSqlModule) Aura.Sql v2
- * [ray/dbal-module](https://github.com/ray-di/Ray.DbalModule) Doctrine DBAL
- * [ray/cake-database-module](https://github.com/ray-di/Ray.CakeDbModule) CakePHP v3 database
- * [ray/doctrine-orm-module](https://github.com/kawanamiyuu/Ray.DoctrineOrmModule) [Doctrine ORM](https://github.com/doctrine/doctrine2)
-
-### Storage
-
- * [bear/query-repository](https://github.com/bearsunday/BEAR.QueryRepository) r/w repository separation
-
-### Web
-
- * [madapaja/twig-module](http://bearsunday.github.io/manuals/1.0/ja/html.html) [Twig](http://twig.sensiolabs.org/)
- * [ray/web-form-module](http://bearsunday.github.io/manuals/1.0/ja/form.html) Web form and validation
- * [ray/aura-web-module](https://github.com/Ray-Di/Ray.AuraWebModule) [Aura.Web](https://github.com/auraphp/Aura.Web)
- * [ray/aura-session-module](https://github.com/ray-di/Ray.AuraSessionModule) [Aura.Session](https://github.com/auraphp/Aura.Session)
- * [ray/symfony-session-module](https://github.com/kawanamiyuu/Ray.SymfonySessionModule) [Symfony Session](https://github.com/symfony/http-foundation/tree/master/Session)
-
-### Authorization and Authentication
-
- * [ray/oauth-module](https://github.com/Ray-Di/Ray.OAuthModule) OAuth
- * [ray/role-module](https://github.com/ray-di/Ray.RoleModule) Zend Acl
-
-### Hypermedia
-
- * [kuma-guy/siren-module](https://github.com/kuma-guy/BEAR.SirenModule) Siren
-
-### 開発
-
- * [ray/fake-module](https://github.com/shingo-kumagai/Ray.FakeModule) Mocking
+| **Category** | **Composer package** | **Library** 
+| Router |
+| |[bear/aura-router-module](https://github.com/bearsunday/BEAR.AuraRouterModule) | Aura.Router v2 |
+| Database |
+|| [ray/aura-sql-module](https://github.com/ray-di/Ray.AuraSqlModule) | Aura.Sql v2
+|| [ray/dbal-module](https://github.com/ray-di/Ray.DbalModule) | Doctrine DBAL
+|| [ray/cake-database-module](https://github.com/ray-di/Ray.CakeDbModule) | CakePHP v3 database
+|| [ray/doctrine-orm-module](https://github.com/kawanamiyuu/Ray.DoctrineOrmModule) | [Doctrine ORM](https://github.com/doctrine/doctrine2)
+| Storage |
+||[bear/query-repository](https://github.com/bearsunday/BEAR.QueryRepository) | CQRS inspired repository
+| Web 
+| |[madapaja/twig-module](http://bearsunday.github.io/manuals/1.0/ja/html.html) | [Twig](http://twig.sensiolabs.org/)
+| |[ray/web-form-module](http://bearsunday.github.io/manuals/1.0/ja/form.html) | Web form
+| |[ray/aura-web-module](https://github.com/Ray-Di/Ray.AuraWebModule) | [Aura.Web](https://github.com/auraphp/Aura.Web)
+| |[ray/aura-session-module](https://github.com/ray-di/Ray.AuraSessionModule) | [Aura.Session](https://github.com/auraphp/Aura.Session)
+| |[ray/symfony-session-module](https://github.com/kawanamiyuu/Ray.SymfonySessionModule) | [Symfony Session](https://github.com/symfony/http-foundation/tree/master/Session)
+| Authorization and Authentication
+| |[ray/oauth-module](https://github.com/Ray-Di/Ray.OAuthModule) | OAuth
+| |[ray/role-module](https://github.com/ray-di/Ray.RoleModule) | Zend Acl
+| Hypermedia
+| |[kuma-guy/siren-module](https://github.com/kuma-guy/BEAR.SirenModule) | Siren
+|  Development
+| |[ray/fake-module](https://github.com/shingo-kumagai/Ray.FakeModule) | Mocking
 
 ## Semver
 
