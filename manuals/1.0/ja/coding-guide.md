@@ -79,7 +79,7 @@ phpcbf src
 
 `onPost`は冪等性の無いリソース操作を実装します。例えばオートインクリメント値でURIが決まるリソース作成です。`onPost`で作成したリソースのURIは`Location`ヘッダーで示します。
 
-```
+```php?start_inline
 public function onPost(string $title) : ResourceObject
 {
     // ...
@@ -101,7 +101,7 @@ BEAR.SundayはHTMLのWebフォームで`POST`リクエストの時に`X-HTTP-Met
 
 リンクを持つリソースは`@Link`で示すことが推奨されます。
 
-```
+```php?start_inline
 class User
 {
     /**
@@ -113,7 +113,7 @@ class User
 
 次のアクションを持つリソースリクエストは`href()`（ハイパーリファレンス）で辿る事が推奨されます。
 
-```
+```php?start_inline
 class Order
 {
     /**
@@ -121,7 +121,7 @@ class Order
      */
     public function onPost($drink)
 ```
-```
+```php?start_inline
 // 上記の注文リソースを作成して支払いリソースにリクエストします
 $order = $this->resource
     ->post
@@ -137,7 +137,7 @@ $response = $resource->href('payment', $payment);
 
 リソースがリソースを含む時は`@Embed`で埋め込む事が推奨されます。
 
-```
+```php?start_inline
 /**
  * @Embed(rel="user", src="/user{?user_id}")
  */
@@ -145,7 +145,7 @@ public function onGet(string $userId) : ResourceObject
 {
 ```
 
-```
+```php?start_inline
 /**
  * @Embed(rel="uid", src="/uid")
  */
@@ -156,7 +156,7 @@ public function onPost(string $userId, string $title) : ResourceObject
 
 `@Embed`するリソースのリクエストに必要なクエリーがメソッド無いで決定する時はパラメーターが含まれない不完全なリソースを`@Embed`してからクエリーを指定します。
 
-```
+```php?start_inline
 /**
  * @Embed(rel="user", src="/user")
  */
@@ -169,7 +169,7 @@ public function onGet() : ResourceObject
 
 `@Embed`したURIにクエリーに付加する時は`addQuery()`を使います。
 
-```
+```php?start_inline
 /**
  * @Embed(rel="user", src="/user&category=1")
  */
@@ -185,7 +185,7 @@ public function onGet() : ResourceObject
 `onGet`以外のメソッドで`_GET`の値を利用するには`@QueryParam`を使います。その他PHPのスーパーグローバル変数に格納される値は[Webコンテキストパラメーター
 ](https://github.com/ray-di/Ray.WebParamModule)で引数に束縛します。
 
-```
+```php?start_inline
 /**
  * @QueryParam(key="id", param="userId")
  */
@@ -196,7 +196,7 @@ public function foo($userId = null) : ResourceObject
 
 他のリソースの値を引数に利用する場合には`@ResourceParam`を使います。
 
-```
+```php?start_inline
 /**
  * @ResourceParam(param=“name”, uri="/login#nickname")
  */
@@ -217,7 +217,7 @@ public function onGet($name) : ResourceObject
 
 APIとHTMLなど複数のコンテキストでルーティングを変える場合はルーターファイル `route.aura.conf`では`$schemeHost`によってルーターファイルをコンテキスト別に`require`します。
 
-```bash
+```php?start_inline
 <?php
 /* @var $router \BEAR\Package\Provide\Router\AuraRoute */
 /* @var $schemeHost string */

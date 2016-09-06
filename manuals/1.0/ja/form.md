@@ -21,7 +21,6 @@ composer require ray/web-form-module
 アプリケーションモジュール`src/Module/AppModule.php`で`AuraInputModule`をインストールします。
 
 ```php?start_inline
-
 use Ray\Di\AbstractModule;
 use Ray\WebFormModule\WebFormModule;
 
@@ -127,10 +126,8 @@ class MyController
 テンプレートにTwigを使った場合でも同様です。
 
 ```php?start_inline
-{% raw %}
-{{ form.input('name') }}
-{{ form.error('name') }}
-{% endraw %}
+{% raw %}{{ form.input('name') }}
+{{ form.error('name') }}{% endraw %}
 ```
 
 ### クロスサイトリクエストフォージェリ（CSRF）対策

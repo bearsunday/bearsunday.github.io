@@ -16,7 +16,6 @@ composer require madapaja/twig-module
 次に`html`コンテキストファイル`src/Module/HtmlModule.php`を用意して`TwigModule`をインストールします。
 
 ```php?start_inline
-
 namespace MyVendor\MyPackage\Module;
 
 use BEAR\AppMeta\AppMeta;
@@ -40,10 +39,8 @@ $context = 'cli-html-app';
 リソースのPHPファイル名に`.html.twig`拡張子をつけたファイルでテンプレートを用意します。
 `Page/Index.php`に対応するのは`Page/Index.html.twig`になります。
 
-```hml
-{% raw %}
-<h1>{{ greeting }}</h1>
-{% endraw %}
+```
+{% raw %}<h1>{{ greeting }}</h1>{% endraw %}
 ```
 
 `$body`がテンプレートにアサインされて出力されます。
@@ -64,7 +61,6 @@ content-type: text/html; charset=utf-8
 `@TwigPaths`と`@TwigOptions`に設定値を束縛します。
 
 ```php?start_inline
-
 namespace MyVendor\MyPackage\Module;
 
 use Madapaja\TwigModule\Annotation\TwigOptions;

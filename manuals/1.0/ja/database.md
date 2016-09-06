@@ -41,7 +41,6 @@ class AppModule extends AbstractModule
 これでDIの設定が整いました。コンストラクタや`AuraSqlInject`トレイトを利用してDBオブジェクトを受け取ります。
 
 ```php?start_inline
-
 use Aura\Sql\ExtendedPdoInterface;
 
 class Index
@@ -97,7 +96,6 @@ class AppModule extends AbstractModule
 これでHTTPリクエストがGETの時がスレーブDB、その他のメソッドの時はマスターDBのDBオブジェクトがコンスタラクタに渡されます。
 
 ```php?start_inline
-
 use Aura\Sql\ExtendedPdoInterface;
 use BEAR\Resource\ResourceObject;
 use PDO;
@@ -190,7 +188,6 @@ $this->install(new AuraSqlQueryModule('mysql')); // pgsql, sqlite, or sqlsrv
 メソッドに特定の順番はなく複数回呼ぶことこともできます。
 
 ```php?start_inline
-
 use Ray\AuraSqlModule\AuraSqlInject;
 use Ray\AuraSqlModule\AuraSqlSelectInject;
 
@@ -261,7 +258,6 @@ class User extend ResourceObject
 
 
 ```php?start_inline
-
 use Ray\AuraSqlModule\AuraSqlInject;
 use Ray\AuraSqlModule\AuraSqlInsertInject;
 

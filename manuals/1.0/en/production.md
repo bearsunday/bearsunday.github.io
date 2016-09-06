@@ -76,7 +76,6 @@ By using this `ETag`, we can return `304` (Not Modified) appropriate response wh
 To use `HttpCache` in script, we are going to inject `HttpCache` using `HttpCacheInject` trait in `App` class.
 
 ```php?start_inline
-
 namespace MyVendor\MyApi\Module;
 
 use BEAR\QueryRepository\HttpCacheInject; // Add this line
@@ -100,7 +99,7 @@ route: {
     if ($app->httpCache->isNotModified($_SERVER)) {
         http_response_code(304);
         exit(0);
-    }
+}
 
 ```
 
@@ -112,11 +111,9 @@ but you need to specify the relation of resource caches using `@Refresh` and `@P
 Optimize performances by installing pecl extensions.
 
  * [PECL/uri_template](http://pecl.php.net/package/uri_template) URI Template
- * [PECL/igbinary](https://pecl.php.net/package/igbinary) Optimization for serializing
 
 ```
 pecl install uri_template
-pecl install igbinary
 ```
 
 Confirmation

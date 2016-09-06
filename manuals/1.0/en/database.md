@@ -49,7 +49,6 @@ class AppModule extends AbstractModule
 Now the `DI` bindings are ready. The db object will be injected via a constructor or the `AuraSqlInject` setter trait.
 
 ```php?start_inline
-
 use Aura\Sql\ExtendedPdoInterface;
 
 class Index
@@ -106,7 +105,6 @@ class AppModule extends AbstractModule
 You will now have a slave db connection when using HTTP GET, or a master db connection in other HTTP methods.
 
 ```php?start_inline
-
 use Aura\Sql\ExtendedPdoInterface;
 use BEAR\Resource\ResourceObject;
 use PDO;
@@ -233,7 +231,6 @@ Installing `Ray.CakeDbModule` with composer.
 
 ```bash
 composer require ray/cake-database-module ~1.0
-
 ```
 
 Then see more details at [Ray.CakeDbModule](https://github.com/ray-di/Ray.CakeDbModule) and [CakePHP3 Database Access & ORM](http://book.cakephp.org/3.0/en/orm.html).

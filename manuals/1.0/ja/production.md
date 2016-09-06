@@ -78,7 +78,6 @@ class ProdModule extends AbstractModule
 `HttpCache`をスクリプトで使うために`App`クラスで`HttpCacheInject`のtraitを使って`HttpCache`をインジェクトします。
 
 ```php?start_inline
-
 namespace MyVendor\MyApi\Module;
 
 use BEAR\QueryRepository\HttpCacheInject; // この行を追加

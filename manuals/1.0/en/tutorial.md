@@ -477,6 +477,7 @@ composer require madapaja/twig-module ~1.0
 ```
 
 Create `src/Module/HtmlModule.php`.
+
 ```php
 <?php
 
@@ -495,6 +496,7 @@ class HtmlModule extends AbstractModule
 ```
 
 Change `bootstrap/web.php`
+
 ```php?start_inline
 
 $context = 'cli-html-app';
@@ -515,7 +517,6 @@ In this way `text/html` media output can be set. Lastly save your twig template 
 Set up is now complete. Check in the console that this kind of HTML is output.
 
 ```bash
-
 php bootstrap/web.php get '/?year=1991&month=8&day=1'
 200 OK
 content-type: text/html; charset=utf-8
@@ -531,7 +532,6 @@ The weekday of 1991/8/1 is <b>Thu</b>.
 In order to run the web service we need make a change to `var/www/index.php`.
 
 ```php?start_inline
-
 $context = 'prod-html-app';
 require dirname(dirname(__DIR__)) . '/bootstrap/bootstrap.php';
 ```
@@ -545,7 +545,7 @@ php -S 127.0.0.1:8080 var/www/index.php
 As the [context](/manuals/1.0/en/application.html#context) changes so does the behaviour of the application. Let's try it.
 
 ```php?start_inline
-$context = 'app';           // JSON Application
+$context = 'app';           // JSON Application (Minimal)
 $context = 'prod-hal-app';  // HAL application for production
 ```
 
@@ -578,7 +578,6 @@ composer require ray/cake-database-module ~1.0
 In `src/Module/AppModule::configure()` we install the module.
 
 ```bash
-
 use Ray\CakeDbModule\CakeDbModule;
 
 ...
@@ -639,7 +638,6 @@ class Todo extends ResourceObject
 Let's try a `POST`.
 
 ```bash
-
 php bootstrap/api.php post '/todo?todo=shopping'
 
 201 Created
@@ -680,7 +678,6 @@ The HyperMedia API is now complete.
 In order to implement transactional behavior on the `POST` action we use the `@Transactional` annotation.
 
 ```bash
-
 <?php
 
 use Ray\CakeDbModule\Annotation\Transactional;
@@ -697,8 +694,8 @@ use Ray\CakeDbModule\Annotation\Transactional;
 A resource cache is created by annotating a resource class with `@cachable`. This cache data is created when the `onPost` action has been invoked, not only the resource properties but the HTML and JSON is also cached.
 
 ```bash
-
 <?php
+
 use BEAR\RepositoryModule\Annotation\Cacheable;
 // ...
 
@@ -995,4 +992,4 @@ Does it display `Hello BEAR.Sunday`?
 
 Unique data identifier URIs, a consistent interface, stateless access, powerful caching system, hyperlinks, layered system, and self-descriptive messages. A resource built with BEAR.Sunday implements all of these REST features.
 
-You can connect to data from other applications using hyperlinks, creating an API to be consumed from another CMS or framework is easy. The resource object is completely decoupled from any rendering!
+You can connect to data from other applications using hyperlinks, creating an API to be consumed from another CMS or framework is easy. The resource object is completely decoupled from any rendering !

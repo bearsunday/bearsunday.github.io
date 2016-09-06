@@ -21,8 +21,6 @@ composer require ray/web-form-module
 Installing `AuraInputModule` in our application module `src/Module/AppModule.php`.
 
 ```php?start_inline
-<?php
-
 use Ray\Di\AbstractModule;
 use Ray\WebFormModule\WebFormModule;
 
@@ -41,7 +39,6 @@ Create **a form class** that defines the registration and the rules of the form 
 The method runs only when the sent data is validated.
 
 ```php?start_inline
-<?php
 use Ray\WebFormModule\AbstractForm;
 use Ray\WebFormModule\SetAntiCsrfTrait;
 
@@ -130,10 +127,8 @@ Specify the element name to get the `input` elements and error messages.
 The same applies to Twig template
 
 ```php?start_inline
-{% raw %}
-{{ form.input('name') }}
-{{ form.error('name') }}
-{% endraw %}
+{% raw %}{{ form.input('name') }}
+{{ form.error('name') }}{% endraw %}
 ```
 
 ### Cross site request forgeries（CSRF）Protections
@@ -194,7 +189,6 @@ will throw an exception in the same way as the method annotated with `@InputVali
 We can use the page resources as API.
 
 ```php?start_inline
-<?php
 use BEAR\Package\Provide\Error\VndErrorModule;
 use Ray\Di\AbstractModule;
 

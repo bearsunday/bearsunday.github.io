@@ -45,7 +45,9 @@ First of all, annotate method that you want to validate with `@Valid`.
 
 ```php?start_inline
 use Ray\Validation\Annotation\Valid;
-// ...
+
+class News
+{
     /**
      * @Valid
      */
@@ -59,7 +61,9 @@ The arguments of the method should be the same as the original method. The metho
 
 ```php?start_inline
 use Ray\Validation\Annotation\OnValidate;
-// ...
+
+class News
+{
     /**
      * @OnValidate
      */
@@ -81,7 +85,9 @@ but if you have method annotated with `@OnFailure`, it will be called instead of
 
 ```php?start_inline
 use Ray\Validation\Annotation\OnFailure;
-// ...
+
+class News
+{
     /**
      * @OnFailure
      */
@@ -110,8 +116,9 @@ If you want to have various validation for a class, you can specify the name of 
 use Ray\Validation\Annotation\Valid;
 use Ray\Validation\Annotation\OnValidate;
 use Ray\Validation\Annotation\OnFailure;
-// ...
 
+class News
+{
     /**
      * @Valid("foo")
      */

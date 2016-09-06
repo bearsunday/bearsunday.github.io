@@ -62,10 +62,9 @@ PHPのリソースクラスはWebのURIと同じような`app://self/blog/posts/
 
 # クライアント
 
-リソースのリクエストにはリソースクライアントを使用します。
+リソースクライアントを使用して他のリソースのリクエストをします。
 
 ```php?start_inline
-
 use BEAR\Sunday\Inject\ResourceInject;
 
 class Index extends ResourceObject
@@ -188,6 +187,10 @@ class News
 埋め込まれるのはリソース**リクエスト**です。レンダリングの時に実行されますが、その前に`addQuery()`メソッドで引数を加えたり`withQuery()`で引数を置き換えることができます。
 
 ```php?start_inline
+use BEAR\Resource\Annotation\Embed;
+
+class News
+{
     /**
      * @Embed(rel="website", src="/website{?id}")
      */
@@ -208,9 +211,12 @@ class News
 `$_GET`や`$_COOKIE`などのPHPのスーパーグローバルの値をメソッド内で取得するのではなく、メソッドの引数に束縛することができます。
 
 キーの名前と引数の名前が同じ場合
+
 ```php?start_inline
 use Ray\WebContextParam\Annotation\QueryParam;
 
+class News
+{
     /**
      * @QueryParam("id")
      */
@@ -219,11 +225,13 @@ use Ray\WebContextParam\Annotation\QueryParam;
       // $id = $_GET['id'];
 ```
 
-
 キーの名前と引数の名前が違う場合は`key`と`param`で指定
+
 ```php?start_inline
 use Ray\WebContextParam\Annotation\CookieParam;
 
+class News
+{
     /**
      * @CookieParam(key="id", param="tokenId")
      */
@@ -233,14 +241,16 @@ use Ray\WebContextParam\Annotation\CookieParam;
 ```
 
 フルリスト
-```php?start_inline
 
+```php?start_inline
 use Ray\WebContextParam\Annotation\QueryParam;
 use Ray\WebContextParam\Annotation\CookieParam;
 use Ray\WebContextParam\Annotation\EnvParam;
 use Ray\WebContextParam\Annotation\FormParam;
 use Ray\WebContextParam\Annotation\ServerParam;
 
+class News
+{
     /**
      * @QueryParam(key="id", param="userId")
      * @CookieParam(key="id", param="tokenId")
@@ -248,10 +258,10 @@ use Ray\WebContextParam\Annotation\ServerParam;
      * @FormParam("token")
      * @ServerParam(key="SERVER_NAME", param="server")
      */
-    public function foo($userId = null, $tokenId = null, $app_mode = null, $token = null, $server = null)
+    public function foo($userId = null, $tokenId = "0000", $app_mode = null, $token = null, $server = null)
     {
        // $userId   = $_GET['id'];
-       // $tokenId  = $_COOKIE['id'];
+       // $tokenId  = $_COOKIE['id'] or "0000" when unset;
        // $app_mode = $_ENV['app_mode'];
        // $token    = $_POST['token'];
        // $server   = $_SERVER['SERVER_NAME'];
@@ -265,11 +275,15 @@ use Ray\WebContextParam\Annotation\ServerParam;
 `@ResourceParam`アノテーションを使えば他のリソースリクエストの結果をメソッドの引数に束縛できます。
 
 ```php?start_inline
-/**
- * @ResourceParam(param=“name”, uri="app://self//login#nickname")
- */
-public function onGet($name)
+use BEAR\Resource\Annotation\ResourceParam;
+
+class News
 {
+    /**
+     * @ResourceParam(param=“name”, uri="app://self//login#nickname")
+     */
+    public function onGet($name)
+    {
 ```
 
 この例ではメソッドが呼ばれると`login`リソースに`get`リクエストを行い`$body['nickname']`を`$name`で受け取ります。
@@ -279,6 +293,8 @@ public function onGet($name)
 ### @Cacheable
 
 ```php?start_inline
+use BEAR\RepositoryModule\Annotation\Cacheable;
+
 /**
  * @Cacheable
  */
@@ -292,7 +308,9 @@ class User extends ResourceObject
 
 同一クラスの`onGet`以外のリクエストメソッドがリクエストされ引数を見てリソースが変更されたと判断すると`QueryRepository`の内容も更新されます。
 
+
 ```php?start_inline
+use BEAR\RepositoryModule\Annotation\Cacheable;
 
 /**
  * @Cacheable
@@ -334,11 +352,16 @@ class Todo
 
 
 ```php?start_inline
-/**
- * @Purge(uri="app://self/user/friend?user_id={id}")
- * @Refresh(uri="app://self/user/profile?user_id={id}")
- */
-public function onPut($id, $name, $age)
+use BEAR\RepositoryModule\Annotation\Purge;
+use BEAR\RepositoryModule\Annotation\Refresh;
+
+class News
+{
+  /**
+   * @Purge(uri="app://self/user/friend?user_id={id}")
+   * @Refresh(uri="app://self/user/profile?user_id={id}")
+   */
+   public function onPut($id, $name, $age)
 ```
 
 別のクラスのリソースや関連する複数のリソースの`QueryRepository`の内容を更新することができます。
@@ -347,14 +370,17 @@ public function onPut($id, $name, $age)
 uri-templateに与えられる値は他と同様に`$body`にアサインした値が実引数に優先したものです。
 
 ```php?start_inline
-/**
- * @Refresh(uri="/user/profile{?id,name}")
- */
-public function onPut($id, $name)
-{
-    $this['id'] = 5; // [1, 'bear']で呼ばれると /user/profile?id=5&name=bearを@Refresh
-```
+use BEAR\RepositoryModule\Annotation\Purge;
+use BEAR\RepositoryModule\Annotation\Refresh;
 
+class News
+{
+  /**
+   * @Purge(uri="app://self/user/friend?user_id={id}")
+   * @Refresh(uri="app://self/user/profile?user_id={id}")
+   */
+   public function onPut($id, $name, $age)
+```
 
 ## クエリーリポジトリの直接操作
 

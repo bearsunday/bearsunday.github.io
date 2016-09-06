@@ -15,8 +15,8 @@ composer create-project -n bear/skeleton MyVendor.MyProject
 Next, let's create a `page resource`. A page resource is a class which is corresponds to a web page.
 Create your own basic page resource in `MyVendor.MyPackage/src/Resource/Page/Hello.php`
 
-```php?start_inline
-
+```php
+<?php
 namespace MyVendor\MyProject\Resource\Page;
 
 use BEAR\Resource\ResourceObject;

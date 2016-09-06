@@ -36,22 +36,22 @@ BEAR.Sunday supports http body of a message output in a [stream](http://php.net/
 In `ResourceObject`, you can mix with stream and normal string. The output is conveted to single stream.
 
 ```php?start_inline
-    public function onGet($name = 'BEAR.Sunday')
-    {
-        $fp = fopen(__DIR__ . '/image.jpg', 'r');
-        stream_filter_append($fp, 'convert.base64-encode');
-        $this['greeting'] = 'Hello ' . $name;
-        $this['image'] = $fp; // image in base64 format
+public function onGet($name = 'BEAR.Sunday')
+{
+    $fp = fopen(__DIR__ . '/image.jpg', 'r');
+    stream_filter_append($fp, 'convert.base64-encode');
+    $this['greeting'] = 'Hello ' . $name;
+    $this['image'] = $fp; // image in base64 format
 
-        return $this;
-    }
+    return $this;
+}
 ```
 
 ## New Project
 
 You can create BEAR.Sunday PSR7 project with `bear/project`.
 
-```bash
+```
 composer create-project bear/project my-awesome-project
 cd my-awesome-project/
 php -S 127.0.0.1:8080 -t var/www/

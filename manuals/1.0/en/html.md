@@ -16,7 +16,6 @@ composer require madapaja/twig-module
 Next create the context file `src/Module/HtmlModule.php` and install the `TwigModule`.
 
 ```php?start_inline
-
 namespace MyVendor\MyPackage\Module;
 
 use BEAR\AppMeta\AppMeta;
@@ -40,9 +39,7 @@ $context = 'cli-html-app';
 We prepare twig templates by placing them in the same directory as the `page resource` that you want to bind it to. Replace the `.php` suffix with `.html.twig`. So a template for the `Page/Index.php` resource would be `Page/Index.html.twig`.
 
 ```hml
-{% raw %}
-<h1>{{ greeting }}</h1>
-{% endraw %}
+{% raw %}<h1>{{ greeting }}</h1>{% endraw %}
 ```
 
 The `$body` in a resource is assigned to the template and then rendered.
@@ -62,7 +59,6 @@ By default partials and template files are found in `var/lib/twig`.
 If you would like to change options depending on the context or add a template path, configuration values are bound to `@TwigPaths`and `@TwigOptions` annotations.
 
 ```php?start_inline
-
 namespace MyVendor\MyPackage\Module;
 
 use Madapaja\TwigModule\Annotation\TwigOptions;

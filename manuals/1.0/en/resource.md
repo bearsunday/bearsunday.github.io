@@ -190,10 +190,10 @@ Three type of links are provided.
 
 ### @Link
 ```php?start_inline
-    /**
-     * @Link(rel="profile", href="/profile{?id}")
-     */
-    public function onGet($id)
+/**
+ * @Link(rel="profile", href="/profile{?id}")
+ */
+public function onGet($id)
 ```
 
 Set the link with `rel` key name and `href` resource URI.
@@ -232,6 +232,10 @@ class News
 The resource **request** is embeded. The request is invoked when rendering. You can add parameters or replace with `addQuery()` or `withQuery()`
 
 ```php?start_inline
+use BEAR\Resource\Annotation\Embed;
+
+class News
+{
     /**
      * @Embed(rel="website", src="/website{?id}")
      */
@@ -254,6 +258,8 @@ For instance, Instead you "pull" `$_GET` or any global the web context values, Y
 ```php?start_inline
 use Ray\WebContextParam\Annotation\QueryParam;
 
+class News
+{
     /**
      * @QueryParam("id")
      */
@@ -268,6 +274,8 @@ You can specify `key` and `param` values when they don't match.
 ```php?start_inline
 use Ray\WebContextParam\Annotation\CookieParam;
 
+class News
+{
     /**
      * @CookieParam(key="id", param="tokenId")
      */
@@ -286,6 +294,8 @@ use Ray\WebContextParam\Annotation\EnvParam;
 use Ray\WebContextParam\Annotation\FormParam;
 use Ray\WebContextParam\Annotation\ServerParam;
 
+class News
+{
     /**
      * @QueryParam(key="id", param="userId")
      * @CookieParam(key="id", param="tokenId")
@@ -309,11 +319,15 @@ This `bind parameter` is also very useful for testing.
 We can bind the status of another resource to a parameter with the `@ResourceParam` annotation.
 
 ```php?start_inline
-/**
- * @ResourceParam(param=“name”, uri="app://self//login#nickname")
- */
-public function onGet($name)
+use BEAR\Resource\Annotation\ResourceParam;
+
+class News
 {
+    /**
+     * @ResourceParam(param=“name”, uri="app://self//login#nickname")
+     */
+    public function onGet($name)
+    {
 ```
 
 In this example, the `nickname` property of `app://self//login` is bound to `$name`.
@@ -323,6 +337,8 @@ In this example, the `nickname` property of `app://self//login` is bound to `$na
 ### @Cacheable
 
 ```php?start_inline
+use BEAR\RepositoryModule\Annotation\Cacheable;
+
 /**
  * @Cacheable
  */
@@ -335,6 +351,7 @@ The cache will be updated by any non-GET request on the same class  with no expi
 `@Cacheable` annotated resource objects will have `Last-Modified` and `ETag` headers added automatically.
 
 ```php?start_inline
+use BEAR\RepositoryModule\Annotation\Cacheable;
 
 /**
  * @Cacheable
@@ -377,11 +394,16 @@ You can specify a cache life time as `short`, `medium` or `long` on the  `expiry
 You can also update caches with the `@Purge` and `@Refresh` annotation.
 
 ```php?start_inline
-/**
- * @Purge(uri="app://self/user/friend?user_id={id}")
- * @Refresh(uri="app://self/user/profile?user_id={id}")
- */
-public function onPut($id, $name, $age)
+use BEAR\RepositoryModule\Annotation\Purge;
+use BEAR\RepositoryModule\Annotation\Refresh;
+
+class News
+{
+  /**
+   * @Purge(uri="app://self/user/friend?user_id={id}")
+   * @Refresh(uri="app://self/user/profile?user_id={id}")
+   */
+   public function onPut($id, $name, $age)
 ```
 
 You can update the cache for another resource class or even multiple resources at once. `@Purge` deletes a cache where `@Refresh` will recreate cache data.

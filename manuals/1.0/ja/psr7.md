@@ -29,17 +29,16 @@ php -S 127.0.0.1:8080 -t var/www
 
 以下のスクリプトはimage.jpg画像ファイルをbase64エンコードしてHTTP出力します。
 
-```bash
-<?php
-    public function onGet($name = 'BEAR.Sunday')
-    {
-        $fp = fopen(__DIR__ . '/image.jpg', 'r');
-        stream_filter_append($fp, 'convert.base64-encode');
-        $this['greeting'] = 'Hello ' . $name;
-        $this['image'] = $fp; // image in base64 format
+```php?start_inline
+public function onGet($name = 'BEAR.Sunday')
+{
+    $fp = fopen(__DIR__ . '/image.jpg', 'r');
+    stream_filter_append($fp, 'convert.base64-encode');
+    $this['greeting'] = 'Hello ' . $name;
+    $this['image'] = $fp; // image in base64 format
 
-        return $this;
-    }
+    return $this;
+}
 ```
 
 $this['image']には[fopen](http://php.net/manual/ja/function.fopen.php)のファイルポインタリソースがアサインされているだけですが、
@@ -52,7 +51,7 @@ HTTP出力がストリーム出力に完全に対応していればPHPのメモ�
 
 新規でPSR7のプロジェクトを始める場合のパッケージが用意されています。
 
-```bash
+```
 composer create-project bear/project my-awesome-project
 cd my-awesome-project/
 php -S 127.0.0.1:8080 -t var/www/
