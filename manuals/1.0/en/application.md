@@ -5,7 +5,7 @@ category: Manual
 permalink: /manuals/1.0/en/application.html
 ---
 
-# Application
+# <a name="app"></a>Application
 
 A BEAR.Sunday application transfers the state of a resource that can be represented (REST)
 using a script found in `bootstrap/bootstrap.php`.
@@ -26,7 +26,7 @@ An application resource request and resource object is created based on the HTTP
 
 A resource object which has methods that respond to `onGet`, `onPost` etc upon request sets the `code` or `body` property of it's own resource state.
 
-The resource object can then `@Embed` or `@Link` other resource objects. 
+The resource object can then `@Embed` or `@Link` other resource objects.
 
 Methods on the resource object are only for changing the resources state and have no interest in the representation itself (HTML, JSON etc).
 
@@ -37,7 +37,7 @@ A `Renderer` is injected into the resource object, then the state of resource is
  <img src="/images/screen/diagram.png" style="max-width: 100%;height: auto;"/>
 
 
-# Boot File
+# <a name="boot"></a>Boot File
 
 To run an application, we need just two lines of code.
 An entry point for a web server or console application access is usually set to `var/www/index.php` or `bootstrap/api.php`.
@@ -63,11 +63,11 @@ php bootstrap/api.php get /user/1
 php -S 127.0.0.1:8080 bootstrap/api.php
 {% endhighlight %}
 
-## Application Context
+## <a name="context"></a>Application Context
 
 The composition of the application object `$app` changes in response to the defined context, so that application behavior changes.
 
-Depending on the defined context the building of the application object `$app` changes, altering the overall behavior. 
+Depending on the defined context the building of the application object `$app` changes, altering the overall behavior.
 
 
 For example, `WebRouter` is bound to `RouterInterface` by default.

@@ -5,7 +5,7 @@ category: Manual
 permalink: /manuals/1.0/ja/application.html
 ---
 
-# アプリケーション
+# <a name="app"></a>アプリケーション
 
 アプリケーションは以下のような順番で実行されます。
 
@@ -26,12 +26,12 @@ HTTPリクエストは`router`でアプリケーションのリソースへの�
 ## 2. レスポンス
 
 リソースのレンダラーが**リソースの状態**を**表現**(JSONやHTML)にして、クライアントに**転送**します。
-(**RE**presentational **S**tate **T**ransfer) 
+(**RE**presentational **S**tate **T**ransfer)
 
  <img src="/images/screen/diagram.png" style="max-width: 100%;height: auto;"/>
 
 
-# bootファイル
+# <a name="boot"></a>bootファイル
 
 アプリケーションを実行するわずか２行のPHPスクリプトです。`var/www/index.php`や`bootstrap/api.php`等に設置してWebサーバーやコンソールアプリケーションのエントリーポイントにします。
 スクリプトではグローバル変数`$context`にコンテキストを指定して`bootstrap.php`ファイルを読み込むとアプリケーションが実行されます。
@@ -55,7 +55,7 @@ php bootstrap/api.php get /user/1
 php -S 127.0.0.1:8080 bootstrap/api.php
 {% endhighlight %}
 
-## アプリケーションコンテキスト
+## <a name="context"></a>アプリケーションコンテキスト
 
 コンテキストに応じてアプリケーションオブジェクト`$app`の構成が変わり、振る舞いが変更されます。
 例えばデフォルトの設定では`RouterInterface`に`WebRouter`が束縛されていますが、`Cli`では`RouterInterface`に`CliRouter`が束縛され(HTTPリクエストの代わりに)コンソールの入力値が入力値になります。
