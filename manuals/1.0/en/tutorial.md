@@ -183,7 +183,7 @@ Get it with [composer](http://getcomposer.org) first.
 composer require monolog/monolog ~1.0
 {% endhighlight %}
 
-You instantiating `monolog` object with the `new` operator is *strongly discouraged*, 
+You instantiating `monolog` object with the `new` operator is *strongly discouraged*,
 you "receive" a created instance as a dependency instead. This is called the [DI pattern](http://en.wikipedia.org/wiki/Dependency_injection).
 
 To do this make a `MonologLoggerProvider` dependency provider in `src/Module/MonologLoggerProvider.php`
@@ -345,7 +345,7 @@ final class BenchMark
 }
 {% endhighlight %}
 
-We then need to bind the target method to the benchmarking interceptor in `AppModule` with a matcher. 
+We then need to bind the target method to the benchmarking interceptor in `AppModule` with a matcher.
 
 {% highlight php %}
 <?php
@@ -386,7 +386,7 @@ cat var/log/weekday.log
 
 ## HTML
 
-Next let's turn this API application into an HTML application. Go ahead and create a new `page` resource at `src/Resource/Page/Index.php`. Even though `page` resources and `app` resources are effectively the same class their role and location differs. 
+Next let's turn this API application into an HTML application. Go ahead and create a new `page` resource at `src/Resource/Page/Index.php`. Even though `page` resources and `app` resources are effectively the same class their role and location differs.
 
 {% highlight php %}
 <?php
@@ -515,7 +515,7 @@ In this way `text/html` media output can be set. Lastly save your twig template 
 <html>
 <body>
 {% raw %}The weekday of {{ year }}/{{ month }}/{{ day }} is {{ weekday.weekday }}.{% endraw %}
-</body> 
+</body>
 </html>
 {% endhighlight %}
 
@@ -547,10 +547,10 @@ require dirname(dirname(__DIR__)) . '/bootstrap/bootstrap.php';
 Boot up the PHP web server and check it out by accessing [http://127.0.0.1:8080/?year=2001&month=1&day=1](http://127.0.0.1:8080/?year=2001&month=1&day=1).
 
 {% highlight bash %}
-php -S 127.0.0.1:8080 var/www/index.php 
+php -S 127.0.0.1:8080 var/www/index.php
 {% endhighlight %}
 
-As the context changes so does the behaviour of the application. Let's try it.
+As the [context](/manuals/1.0/en/application.html#context) changes so does the behaviour of the application. Let's try it.
 
 {% highlight php %}
 <?php
@@ -686,7 +686,7 @@ The HyperMedia API is now complete.
 
 ## Transactions
 
-In order to implement transactional behavior on the `POST` action we use the `@Transactional` annotation. 
+In order to implement transactional behavior on the `POST` action we use the `@Transactional` annotation.
 
 {% highlight bash %}
 
@@ -737,12 +737,12 @@ Last-Modified: Sat, 02 May 2015 17:26:42 GMT
 // ...
 {% endhighlight %}
 
-`Last-Modified` changes upon each request, but this is because currently cache settings have been disabled. When `prod` is added to the context it becomes enabled. 
+`Last-Modified` changes upon each request, but this is because currently cache settings have been disabled. When `prod` is added to the context it becomes enabled.
 
 On the `@Cacheable` annotation if no `expiry` is set then it will be cached forever. However when updates `onPut($id, $todo)` or deletes `onDelete($id)` occur on the resource then the cache will be updated on the corresponding id.
 
  So a GET request just uses the saved cache data, logic contained in the `onGet` method is not invoked.
- 
+
  Just like this todo resource the timing of update or deletion of the cache is effective as it is completely contained within the resource itself. Invoke an `onPut` or `onDelete` method to give it a try.
 
 ## Auto-Updating the Cache via the resource method
@@ -830,7 +830,7 @@ content-type: application/hal+json
 
 Next we start up the API server.
 {% highlight bash %}
-php -S 127.0.0.1:8081 bootstrap/api.php 
+php -S 127.0.0.1:8081 bootstrap/api.php
 {% endhighlight %}
 
 This time do a get with a `curl` command.
@@ -873,7 +873,7 @@ If you would rather send a JSON body with the PUT request you can run the follow
 
 {% highlight bash %}
 curl http://127.0.0.1:8081/todo -X PUT -H 'Content-Type: application/json' -d '{"id": "2", "todo":"think" }'
-{% endhighlight %} 
+{% endhighlight %}
 
 This time when you perform a `GET` you can see that the `Last-Modified` has been updated.
 
@@ -889,7 +889,7 @@ When you use `@Cacheable` the resource content is also saved in a separate `quer
 
 Resources created with BEAR.Sunday have unrivaled re-usability. Let's try using a resource in another application.
 
-So for this tutorial let's create a new `my-vendor` and manually add it to the auto loader. (Normally you would set up the new application as a package). 
+So for this tutorial let's create a new `my-vendor` and manually add it to the auto loader. (Normally you would set up the new application as a package).
 
 {% highlight bash %}
 mkdir my-vendor
@@ -916,7 +916,7 @@ composer dump-autoload
 
 With this the configuration for the `Acme\Blog` application is complete.
 
-Next in order to import the application in `src/Module/AppModule.php` we use the `ImportAppModule` in `src/Module/AppModule.php` to install as an override. 
+Next in order to import the application in `src/Module/AppModule.php` we use the `ImportAppModule` in `src/Module/AppModule.php` to install as an override.
 
 {% highlight php %}
 <?php
@@ -925,7 +925,7 @@ use BEAR\Resource\ImportApp;
 use BEAR\Package\Context;
 
 $importConfig = [
-    new ImportApp('blog', 'Acme\Blog', 'prod-hal-app') // host, name, context 
+    new ImportApp('blog', 'Acme\Blog', 'prod-hal-app') // host, name, context
 ];
 $this->override(new ImportAppModule($importConfig , Context::class));
 {% endhighlight %}
@@ -948,7 +948,7 @@ class Import extends ResourceObject
     public function onGet()
     {
         $this['blog'] = $this->resource->get->uri('page://blog/index')->eager->request()->body['greeting'];
-        
+
         return $this;
     }
 }
@@ -990,7 +990,7 @@ $loader = require __DIR__ . '/vendor/autoload.php';
 AnnotationRegistry::registerLoader([$loader, 'loadClass']); // Annotation load
 
 $app = (new Bootstrap)->getApp('MyVendor\Weekday', 'prod-hal-app'); // Fetch the application
-$import = $app->resource->get->uri('app://self/import')->request(); 
+$import = $app->resource->get->uri('app://self/import')->request();
 
 echo $import['blog'] . PHP_EOL;
 
@@ -1006,5 +1006,4 @@ Does it display `Hello BEAR.Sunday`?
 
 Unique data identifier URIs, a consistent interface, stateless access, powerful caching system, hyperlinks, layered system, and self-descriptive messages. A resource built with BEAR.Sunday implements all of these REST features.
 
-You can connect to data from other applications using hyperlinks, creating an API to be consumed from another CMS or framework is easy. The resource object is completely decoupled from any rendering! 
-
+You can connect to data from other applications using hyperlinks, creating an API to be consumed from another CMS or framework is easy. The resource object is completely decoupled from any rendering!
