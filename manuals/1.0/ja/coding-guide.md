@@ -49,8 +49,8 @@ class Entry extends ResourceObject
     }
 
     /**
-     * @Link(rel="next_act", href="/next_act_uri")
-     * @Link(rel="next_act2", href="/next_act_uri2")
+     * @Link(rel="next_act", href="/act1")
+     * @Link(rel="next_act2", href="/act2")
      */
     public function onPost (
         string $tile,
