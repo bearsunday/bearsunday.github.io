@@ -16,6 +16,74 @@ permalink: /manuals/1.0/ja/coding-guide.html
 
 [PSR1](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-1-basic-coding-standard.md), [PSR2](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-2-coding-style-guide.md), [PSR4](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-4-autoloader.md)に準拠します。
 
+```php
+<?php
+declare (strict_types = 1);
+
+namespace Koriym\Blog\Resource\App;
+
+use BEAR\RepositoryModule\Annotation\Cacheable;
+use BEAR\Resource\Annotation\Embed;
+use BEAR\Resource\Annotation\Link;
+use BEAR\Resource\Code;
+use BEAR\Resource\ResourceObject;
+use BEAR\Sunday\Inject\ResourceInject;
+use Ray\AuraSqlModule\AuraSqlInject;
+
+/**
+ * @Cacheable
+ */
+class Entry extends ResourceObject
+{
+    use AuraSqlInject;
+    use ResourceInject;
+
+    /**
+     * @Embed(rel="author", src="/author{?author_id}")
+     */
+    public function onGet(string $author_id, string $slug) : ResourceObject
+    {
+        // ...
+
+        return $this;
+    }
+
+    /**
+     * @Link(rel="next_act", href="/next_act_uri")
+     * @Link(rel="next_act2", href="/next_act_uri2")
+     */
+    public function onPost (
+        string $tile,
+        string $body,
+        string $uid,
+        string $slug
+    ) : ResourceObject {
+        // ...
+        $this->code = Code::CREATED;
+
+        return $this;
+    }
+}
+```
+
+リソースの[docBlockコメント]([https://phpdoc.org/docs/latest/getting-started/your-first-set-of-documentation.html])はオプションです。リソースURIや引数名だけで説明不十分な時にメソッドの要約（一行）、説明（複数行可）、`@params`を付加します。`@params`の後は空行を空けカスタムアノテーションはその後に記述します。
+
+```php?start_inline
+/**
+ * A summary informing the user what the associated element does.
+ *
+ * A *description*, that can span multiple lines, to go _in-depth_ into the details of this element
+ * and to provide some background information or textual references.
+ *
+ * @param string $arg1 *description*
+ * @param string $arg2 *description*
+ * @param string $arg3 *description*
+ *
+ * @Link(rel="next_act", href="/next_act_uri")
+ * @Link(rel="next_act2", href="/next_act_uri2")
+*/
+```
+
 ## グローバル
 
 グローバルな値をリソースやアプリケーションのクラスで参照することは推奨されません。(Modulesでのみ使用します)
