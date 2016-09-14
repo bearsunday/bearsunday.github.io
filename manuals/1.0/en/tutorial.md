@@ -232,6 +232,7 @@ $this->bind(LoggerInterface::class)->toProvider(MonologLoggerProvider::class)->i
 ```
 
 You may need the following code to resolve the full class name.
+
 ```php?start_inline
 use Psr\Log\LoggerInterface;
 use Ray\Di\Scope;
