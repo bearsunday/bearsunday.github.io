@@ -823,13 +823,13 @@ php -S 127.0.0.1:8081 bootstrap/api.php
 ```
 
 This time do a get with a `curl` command.
+
 ```bash
 curl -i 'http://127.0.0.1:8081/todo?id=2'
 
 HTTP/1.1 200 OK
 Host: 127.0.0.1:8081
 Connection: close
-X-Powered-By: PHP/5.6.6
 content-type: application/hal+json
 ETag: 3134272297
 Last-Modified: Tue, 26 May 2015 04:08:59 GMT
