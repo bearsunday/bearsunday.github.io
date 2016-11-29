@@ -99,7 +99,7 @@ We do not recommend referencing global values in resource or application classes
 * Do not use [define](http://php.net/manual/en/function.define.php)
 * Do not create `Config` class to hold set values.
 * Do not use global object container (service locator) [[1]](http://koriym.github.io/adv10/), [[2]](http://blog.ploeh.dk/2010/02/03/ServiceLocatorisanAnti-Pattern/)
-* [Date] (http://php.net/manual/en/function.date.php) function and [DateTime](http://php.net/manual/en/class.datetime.php) class now It is not recommended to get the time directly. Inject the time from outside using [koriym/now](https://github.com/koriym/Koriym.Now).
+* [Date](http://php.net/manual/en/function.date.php) function and [DateTime](http://php.net/manual/en/class.datetime.php) class now It is not recommended to get the time directly. Inject the time from outside using [koriym/now](https://github.com/koriym/Koriym.Now).
 
 Global method calls such as static methods are also not recommended.
 
