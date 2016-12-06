@@ -122,6 +122,8 @@ The values required by the application code are all injected. The setting files 
 
 * It is recommended to end the setup by using the `composer setup` command. This script includes the necessary database initialization and library checking. If manual operation such as `.env` setting is required, it is recommended that the procedure be displayed on the screen.
 * It is recommended that all application caches and logs are cleared with `composer cleanup` command.
+* It is recommended that all executable test (phpinit/phpcs/phpmd ..) are invoked with `composer test` command.
+* It is recommended an application is deployed with `composer deploy` command.
 
 ## Code check
 
