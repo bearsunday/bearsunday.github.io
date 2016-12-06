@@ -45,4 +45,4 @@ permalink: /contributors.html
 [<img alt="77web" src="https://avatars.githubusercontent.com/u/296615?v=3&s=117" width="117">](https://github.com/77web)
 [<img alt="hum2" src="https://avatars.githubusercontent.com/u/9448804?v=3&s=117" width="117">](https://github.com/hum2)
 [<img alt="kilica" src="https://avatars.githubusercontent.com/u/298665?v=3&s=117" width="117">](https://github.com/kilica)
-[<img alt="OdelGreg" https://avatars0.githubusercontent.com/u/24292161?v=3&s=117" width="117">](https://github.com/kilica)
+[<img alt="OdelGreg" src="https://avatars0.githubusercontent.com/u/24292161?v=3&s=117" width="117">](https://github.com/kilica)
