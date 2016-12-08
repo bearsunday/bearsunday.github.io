@@ -20,7 +20,7 @@ Ray.Di is a modern and powerful `Dependency Injection` framework that enables th
 
 ### Ray.Aop
 
-Ray.Aop is an `Aspect Orietated Programming` framework that allows you to wrap objects with other objects by binding them together. This is great when your core business logic should have no knowledge that it is being wrapped by for example an authentication or logging aspect.
+Ray.Aop is an `Aspect Orientated Programming` framework that allows you to wrap objects with other objects by binding them together. This is great when your core business logic should have no knowledge that it is being wrapped by for example an authentication or logging aspect.
 
 
 ### BEAR.Resource
@@ -31,9 +31,9 @@ Treating all of your data as a resource then simplifies the how you get to your 
 
 ## Libraries
 
-BEAR.Sunday is not like other MVC frameworks and contains libraries that support databases, authentication or the like.
+BEAR.Sunday is not like other MVC frameworks that contains libraries that support databases, authentication or the likes.
 
-Instead just hook in any of the great libraries that are available on [Packagist](https://packagist.org/) like the [Aura](http://auraphp.com/) component libraries.
+Instead, you can hook your own great libraries that are available on [Packagist](https://packagist.org/) like the [Aura](http://auraphp.com/) component libraries.
 
 ## Resource Orientated Pattern
 

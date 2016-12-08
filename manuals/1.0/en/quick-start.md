@@ -4,7 +4,7 @@ title: Quick Start
 category: Manual
 permalink: /manuals/1.0/en/quick-start.html
 ---
-# Quick Satrt
+# Quick Start
 
 Installation is done via [composer](http://getcomposer.org)
 
@@ -12,7 +12,7 @@ Installation is done via [composer](http://getcomposer.org)
 composer create-project -n bear/skeleton MyVendor.MyProject
 ```
 
-Next, let's create a `page resource`. A page resource is a class which is corresponds to a web page.
+Next, let's create a `page resource`. A page resource is a class which corresponds to a web page.
 Create your own basic page resource in `MyVendor.MyPackage/src/Resource/Page/Hello.php`
 
 ```php
