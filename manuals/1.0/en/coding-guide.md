@@ -5,8 +5,6 @@ category: Manual
 permalink: /manuals/1.0/en/coding-guide.html
 ---
 
-*[This document](https://github.com/bearsunday/bearsunday.github.io/blob/master/manuals/1.0/en/coding-guide.md) needs to be proofread by an English speaker. If interested please send me a pull request. Thank you.*
-
 # Coding Guide
 
 ## Project
