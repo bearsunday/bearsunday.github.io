@@ -5,11 +5,9 @@ category: Manual
 permalink: /manuals/1.0/en/package.html
 ---
 
-*[This document](https://github.com/bearsunday/bearsunday.github.io/blob/master/manuals/1.0/en/psr7.md) needs to be proofread by an English speaker. If interested please send me a pull request. Thank you.*
-
 # Package
 
-BEAR.Sunday application is an composer package taking BEAR.Sunday framework as dependency package.
+BEAR.Sunday application is a composer package taking BEAR.Sunday framework as dependency package.
 You can also install another BEAR.Sunday application package as dependency.
 
 ## Application organization
@@ -44,7 +42,7 @@ You can also install another BEAR.Sunday application package as dependency.
 
  1. Console input or web router file call `boot file` such as `api.php` or `web.php`.
  3. `$app` application object is created by `$context` in `boostrap.php`.
- 4. A rounter in `$app` convert external resource request to internal resource request.
+ 4. A router in `$app` convert external resource request to internal resource request.
  4. A resource request is invoked. The representation of the result transfered to a client.
 
 
