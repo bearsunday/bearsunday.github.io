@@ -33,7 +33,7 @@ composer create-project bear/skeleton MyVendor.MyRedux
 次に`BEAR.ReactJsModule`をインストールします。
 
 ```bash
-cd MyVendor.MyReactJsApp
+cd MyVendor.MyRedux
 composer require bear/reactjs-module
 ```
 
