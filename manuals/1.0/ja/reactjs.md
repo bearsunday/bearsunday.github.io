@@ -172,3 +172,5 @@ yarn run dev
  * `{"title":"To BEAR.Sunday","message":"Hello BEAR.Sunday"}`などとメッセージが出た場合はレンダラーのインジェクションが行われずJson Rendererが使用されています。
  * `Unexpected key "{key}" found in preloadedState`の例外は存在しないResouceObject::$bodyのキーを指定していることを示しています。
  * 500エラーが帰ってくる場合は`var/log`や`curl` にアクセスしてレスポンス詳細を見てみましょう
+
+ このチュートリアルで作成したアプリケーションは[MyVendor.MyRedux](https://github.com/bearsunday/MyVendor.MyRedux)で参照できます。
