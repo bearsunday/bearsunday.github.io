@@ -106,9 +106,9 @@ class AppModule extends AbstractModule
 }
 ```
 
-## レンダラーの変更
+## リソースの作成
 
-リソースオブジェクトのレンダラーをRedux UIにするために`src/Resource/Page/Index.php`で`setRenderer`セッターインジェクションにアノテートします。`@Named`の値は`ReduxModule`で指定したJSアプリケーションの名前と同じにします。
+既存の`src/Resource/Page/Index.php`を変更します。リソースオブジェクトのレンダラーをRedux UIにするために`setRenderer`セッターインジェクションに`@Inject`と`@Named`をアノテートします。`@Named`の値は`ReduxModule`で指定したJSアプリケーションの名前と同じにします。
 
 ```php?start_inline
 <?php
@@ -172,26 +172,26 @@ EOT;
 
 ## 実行
 
-`start`コマンドwebpackが実行され`127.0.0.1:8080`でWebサーバーが実行されます。
+`start`コマンドを実行するとwebpackが実行され`127.0.0.1:8080`でWebサーバーが実行されます。
 
 ```
 yarn run start
 ```
 
-開発用に`dev`コマンドを実行すると`phpcs`/`phpmd`監視や[HMR](https://github.com/gaearon/react-hot-loader)、[browserSync](https://browsersync.io/)に対応したモードでWebサーバーが実行されます。
+開発用に`dev`コマンドを実行すると`phpcs`/`phpmd`監視や[HMR](https://github.com/gaearon/react-hot-loader)、[browserSync](https://browsersync.io/)の機能と共に`start`が実行されます。
 
 ```
 yarn run dev
 ```
 
-### デバック
+## デバック
  * `{"title":"To BEAR.Sunday","message":"Hello BEAR.Sunday"}`などとJSONが出力された場合はレンダラーのインジェクションが行われていなくて、Json Rendererが使用されています。
  * `Unexpected key "{key}" found in preloadedState`の例外は存在しないResouceObject::$bodyのキーを指定していることを示しています。
  * 500エラーが帰ってくる場合は`var/log`や`curl` にアクセスしてレスポンス詳細を見てみましょう
 
  このチュートリアルで作成したアプリケーションは[MyVendor.MyRedux](https://github.com/bearsunday/MyVendor.MyRedux)で参照できます。
 
- ## リファレンス
+## リファレンス
 
  * (Airbnb JavaScript スタイルガイド)[http://mitsuruog.github.io/javascript-style-guide/]
  * [readux](https://github.com/reactjs/redux) [Documentation](http://redux.js.org/)
