@@ -75,17 +75,32 @@ yarn run test
 yarn run build
 ```
 
-`AppModule`にモジュールをインストールします。
+`src/Module/AppModule.php`にモジュールをインストールします。
 
 ```php?start_inline
-use BEAR\ReactJsModule\ReactJsModule;
+<?php
+
+namespace MyVendor\MyRedux\Module;
+
+use BEAR\Package\PackageModule;
+use BEAR\ReactJsModule\ReduxModule;
+use Ray\Di\AbstractModule;
+use josegonzalez\Dotenv\Loader as Dotenv;
 
 class AppModule extends AbstractModule
 {
+    /**
+     * {@inheritdoc}
+     */
     protected function configure()
     {
+        Dotenv::load([
+            'filepath' => dirname(dirname(__DIR__)) . '/.env',
+            'toEnv' => true
+        ]);
+        $this->install(new PackageModule);
         //configure()に追加
-        $distDir = dirname(__DIR__, 2) . '/var/dist';
+        $distDir = dirname(__DIR__, 2) . '/var/www/dist';
         $this->install(new ReduxModule($distDir, 'ssr_hello'));
     }
 }
@@ -93,9 +108,7 @@ class AppModule extends AbstractModule
 
 ## レンダラーの変更
 
-リソースオブジェクトのレンダラーをRedux UIにするために`setRenderer`セッターインジェクションにアノテートします。
-`@Named`の値は`ReduxModule`で指定したJSアプリケーションの名前と同じにします。
-
+リソースオブジェクトのレンダラーをRedux UIにするために`src/Resource/Page/Index.php`で`setRenderer`セッターインジェクションにアノテートします。`@Named`の値は`ReduxModule`で指定したJSアプリケーションの名前と同じにします。
 
 ```php?start_inline
 <?php
@@ -132,8 +145,7 @@ class Index extends ResourceObject
 
 ## テンプレートの作成
 
-リソースオブジェクトの中から`preloadedState`として使う値のキーだけを指定して`render()`します。
-上記リソースから**ページのタイトル**に`title`、**ReduxのpreloadedState**に`hello`を使用します。
+リソースのテンプレート`src/Resource/Page/Index.html.php `を作成します。
 
 ```php?start_inline
 <?php
@@ -156,21 +168,30 @@ return <<<"EOT"
 EOT;
 ```
 
+リソースオブジェクトから`preloadedState`として使う値のキーだけを指定して`render()`します。上記リソースから**ページのタイトル**に`title`、**ReduxのpreloadedState**に`hello`を使用します。
+
 ## 実行
+
+`start`コマンドwebpackが実行され`127.0.0.1:8080`でWebサーバーが実行されます。
 
 ```
 yarn run start
 ```
 
-phpcs/phpmd監視やHMR/live-syncに対応した開発用には`dev`を実行します。
+開発用に`dev`コマンドを実行すると`phpcs`/`phpmd`監視や[HMR](https://github.com/gaearon/react-hot-loader)、[browserSync](https://browsersync.io/)に対応したモードでWebサーバーが実行されます。
 
 ```
 yarn run dev
 ```
 
 ### デバック
- * `{"title":"To BEAR.Sunday","message":"Hello BEAR.Sunday"}`などとメッセージが出た場合はレンダラーのインジェクションが行われずJson Rendererが使用されています。
+ * `{"title":"To BEAR.Sunday","message":"Hello BEAR.Sunday"}`などとJSONが出力された場合はレンダラーのインジェクションが行われていなくて、Json Rendererが使用されています。
  * `Unexpected key "{key}" found in preloadedState`の例外は存在しないResouceObject::$bodyのキーを指定していることを示しています。
  * 500エラーが帰ってくる場合は`var/log`や`curl` にアクセスしてレスポンス詳細を見てみましょう
 
  このチュートリアルで作成したアプリケーションは[MyVendor.MyRedux](https://github.com/bearsunday/MyVendor.MyRedux)で参照できます。
+
+ ## リファレンス
+
+ * (Airbnb JavaScript スタイルガイド)[http://mitsuruog.github.io/javascript-style-guide/]
+ * [readux](https://github.com/reactjs/redux) [Documentation](http://redux.js.org/)
