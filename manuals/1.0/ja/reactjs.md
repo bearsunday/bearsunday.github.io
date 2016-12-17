@@ -193,5 +193,13 @@ yarn run dev
 
 ## リファレンス
 
- * (Airbnb JavaScript スタイルガイド)[http://mitsuruog.github.io/javascript-style-guide/]
- * [readux](https://github.com/reactjs/redux) [Documentation](http://redux.js.org/)
+ * [Airbnb JavaScript スタイルガイド](http://mitsuruog.github.io/javascript-style-guide/)
+ * [React](https://facebook.github.io/react/)
+ * [Redux](http://redux.js.org/)
+ * [Redux github](https://github.com/reactjs/redux)
+ * [Redux devtools](https://github.com/gaearon/redux-devtools)
+ * [Karma test runner](http://karma-runner.github.io/1.0/index.html)
+ * [Mocha test framework](https://mochajs.org/)
+ * [Chai assertion library](http://chaijs.com/)
+ * [Yarn package manager](https://yarnpkg.com/)
+ * [Webapack module bunduler](https://webpack.github.io/)
