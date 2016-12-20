@@ -178,13 +178,14 @@ EOT;
 yarn run start
 ```
 
-開発用に`dev`コマンドを実行すると`phpcs`/`phpmd`監視や[HMR](https://github.com/gaearon/react-hot-loader)、[browserSync](https://browsersync.io/)の機能と共に`start`が実行されます。
+開発用に`dev`コマンドを実行すると`phpcs`/`phpmd`監視や[HMR](https://github.com/gaearon/react-hot-loader)、[browserSync](https://browsersync.io/)の機能と共に`start`が実行されます。 注) HMRはpure functionのコンポーネントには[対応していないようです](https://github.com/gaearon/react-transform-hmr/issues/6)。
 
 ```
 yarn run dev
 ```
 
 ## デバック
+ * Chromeプラグイン [React developer tools](https://chrome.google.com/webstore/detail/react-developer-tools/fmkadmapgofadopljbjfkapdkoienihi)、[Redux devTools]( https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd)が利用できます。
  * `{"title":"To BEAR.Sunday","message":"Hello BEAR.Sunday"}`などとJSONが出力された場合はレンダラーのインジェクションが行われていなくて、Json Rendererが使用されています。
  * `Unexpected key "{key}" found in preloadedState`の例外は存在しないResouceObject::$bodyのキーを指定していることを示しています。
  * 500エラーが帰ってくる場合は`var/log`や`curl` にアクセスしてレスポンス詳細を見てみましょう
