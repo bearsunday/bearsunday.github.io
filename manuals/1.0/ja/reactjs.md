@@ -72,6 +72,7 @@ lintやtest、buildを試してみましょう。（必須ではありません�
 ```
 yarn run lint
 yarn run test
+^C
 yarn run build
 ```
 
