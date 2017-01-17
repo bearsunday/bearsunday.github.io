@@ -2,9 +2,10 @@
 layout: docs-ja
 title: ReactJS
 category: Manual
-permalink: /manuals/1.0/ja/reactjs.html
+permalink: /manuals/1.0/ja/reactjs-deprecated.html
 ---
 
+このマニュアルはphp7.0のみに対応したものです。php7.1以上では[reactjs.html](reactjs.html)をご覧ください。
 
 # Redux UIチュートリアル
 
@@ -15,12 +16,10 @@ permalink: /manuals/1.0/ja/reactjs.html
 
 ## 前提条件
 
- * php7.1
- * V8Js(オプション)
+ * php7.0
+ * V8Js
  * node
  * yarn
-
-　※ php7.0での実行は[reactjs-deprecated.html](reactjs-deprecated.html)をご覧ください。
 
 ## インストール
 
@@ -35,10 +34,10 @@ composer create-project bear/skeleton MyVendor.MyRedux
 
 ```bash
 cd MyVendor.MyRedux
-composer require bear/reactjs-module ~1.1
+composer require bear/reactjs-module　~0.3
 ```
 
-Reduxのスケルトンアプリををインストールします。
+Reduxのスケルトンアプリをインストールします。
 
 ```bash
 cp -r vendor/bear/reactjs-module/ui-skeleton/redux/ui .
@@ -68,7 +67,7 @@ module.exports = {
 };
 ```
 
-lintやtest、buildを試してみましょう。
+lintやtest、buildを試してみましょう。（必須ではありません）
 
 ```
 yarn run lint
@@ -106,14 +105,6 @@ class AppModule extends AbstractModule
         $this->install(new ReduxModule($distDir, 'ssr_hello'));
     }
 }
-```
-
-## V8Jsなしの環境で開発する場合
-
-V8Jsが無い環境でクライアントレンダリングのみでの開発もできます。その場合は以下のように`VoidV8Module`をインストールしてください。
-
-```php?start_inline
-$this->install(new VoidV8Module(new ReduxModule($distDir, 'ssr_hello')));
 ```
 
 ## リソースの作成
@@ -160,7 +151,7 @@ class Index extends ResourceObject
 ```php?start_inline
 <?php
 /* @var $ssr BEAR\ReactJsModule\Ssr */
-$view = $ssr->render(['hello']);
+list($markup, $script) = $ssr->render(['hello']);
 
 return <<<"EOT"
 <!doctype>
@@ -169,10 +160,10 @@ return <<<"EOT"
   <title>{$ssr->escape('title')}</title>
 </head>
 <body>
-  <div id="root">{$view->markup}</div>
+  <div id="root">{$markup}</div>
   <script src="build/react.bundle.js"></script>
   <script src="build/hello.bundle.js"></script>
-  <script>{$view->js}</script>
+  <script>{$script}</script>
 </body>
 </html>
 EOT;
