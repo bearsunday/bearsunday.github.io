@@ -2,10 +2,11 @@
 layout: docs-ja
 title: Javascrript UI
 category: Manual
-permalink: /manuals/1.0/ja/ssr.html
+permalink: /manuals/1.0/ja/js-ui.html
 ---
 
-*work in progress*
+*Work In Progress*
+*以前のReact JSページは[ReactJs](reactjs.html)へ*
 
 # Javascript UI
 
