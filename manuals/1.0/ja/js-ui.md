@@ -155,7 +155,7 @@ class AppModule extends AbstractModule
 }
 ```
 
-`$build`フォルダにwebpackでバンドルされたjsやcssファイルが出力されます。
+`$build`フォルダはJSのファイルがあるディレクトリです。(`ui/ui.config.js`で指定するwebpackの出力先)
 
 ## @Ssrアノテーション
 
@@ -224,7 +224,7 @@ module.exports = {
 };
 ```
 
-# PHPアプリケーションの実行
+## PHPアプリケーションの実行
 
 ```
 yarn run dev
@@ -235,10 +235,30 @@ PHPファイルの変更があれば自動でリロードされ、Reactのコン
 
 `lint`や`test`などの他のコマンドは[コマンド](https://github.com/koriym/Koriym.JsUiSkeleton/blob/1.x/README.ja.md#コマンド)をご覧ください。
 
+## パフォーマンス
+
+V8のスナップショットをApc保存する機能を使ってパフォーマンスの大幅な向上が可能です。
+`prod`コンテキストで`ApcSsrModule`をインストールしてください。
+ReactJsやアプリケーションのスナップショットが`APCu`に保存され再利用されます。V8jsが必要です。
+
+```
+$this->install(new ApcSsrModule($build));
+```
+
+Apc以外のキャッシュを利用するには`ApcSsrModule`のコードを参考にモジュールを作成してください。
+PSR16対応のキャッシュが利用可能です。
+
+さらなる高速化のためにはV8をコンパイルする時点でJSコード(ReactJsなど）のスナップショットを取り込みます。
+詳しくは以下をご覧ください。
+
+ * [20x performance boost with V8Js snapshots](http://stesie.github.io/2016/02/snapshot-performance)
+ * [v8js - Possibility to Improve Performance with Precompiled Templates/Classes ?](https://github.com/phpv8/v8js/issues/205)
+
 ## デバック
 
  * Chromeプラグイン [React developer tools](https://chrome.google.com/webstore/detail/react-developer-tools/fmkadmapgofadopljbjfkapdkoienihi)、[Redux devTools]( https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd)が利用できます。
  * 500エラーが帰ってくる場合は`var/log`や`curl` でアクセスしてレスポンス詳細を見てみましょう
+
 
 ## リファレンス
 
@@ -253,11 +273,14 @@ PHPファイルの変更があれば自動でリロードされ、Reactのコン
  * [Yarn package manager](https://yarnpkg.com/)
  * [Webapack module bunduler](https://webpack.github.io/)
 
-## その他JSテンプレートエンジン
+## その他ビューライブラリ
 
-  * [Handlesbar](http://handlebarsjs.com/)
-  * [Hogan](http://twitter.github.io/hogan.js/) (Twitter)
-  * [dust.js](http://www.dustjs.com/) (LinkedIn)
+  * [Vue.js](https://jp.vuejs.org/)
+  * [Handlesbar.js](http://handlebarsjs.com/)
+  * [mustache.js](https://github.com/janl/mustache.js)
   * [doT.js](http://olado.github.io/doT/index.html)
   * [pug](https://pugjs.org/api/getting-started.html)
-  * [Nunjucks](https://mozilla.github.io/nunjucks/)
+  * [Hogan](http://twitter.github.io/hogan.js/) (Twitter)
+  * [Nunjucks](https://mozilla.github.io/nunjucks/)(Mozilla)
+  * [dust.js](http://www.dustjs.com/) (LinkedIn)
+  * [marko](http://markojs.com/) (Ebay)
