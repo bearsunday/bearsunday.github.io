@@ -10,7 +10,7 @@ permalink: /manuals/1.0/ja/js-ui.html
 
 # Javascript UI
 
-ビューのレンダリングをTwigなどのPHPのテンプレートエンジン等が行う代わりに、サーバーサイドのJavascript(V8)が行います。特定のリソースにバインドされたJSのUIアプリケーションがhtml全体をレンダリングします。
+ビューのレンダリングをTwigなどのPHPのテンプレートエンジン等が行う代わりに、サーバーサイドのJavascriptが行います。特定のリソースにバインドされたJSのUIアプリケーションがhtml全体をレンダリングします。
 
 ## 前提条件
 
@@ -82,13 +82,14 @@ Note: Javascriptや本体のPHPアプリケーションを変更しないでUI�
 
 ## UIアプリケーションの作成
 
-UIアプリケーションではPHPから渡された引数を使ってレンダリングします。
+PHPから渡された引数を使ってレンダリングした文字列を返す**render**関数を作成します。
 
 ```
 const render = (state, metas) => (
-  __SUPER_AWESOME_UI__ // SSR対応のライブラリやテンプレートエンジンを使って文字列を返す
+  __AWESOME_UI__ // SSR対応のライブラリやJSのテンプレートエンジンを使って文字列を返す
 )
 ```
+
 `state`はドキュメントルートに必要な値、`metas`はそれ以外の値、例えば<head>で使う値などです。`render`という関数名は固定です。
 
 ここでは名前を受け取って挨拶を返す関数を作成します。
@@ -107,7 +108,9 @@ module.exports = {
 };
 ```
 
-この`hello`アプリケーションを実行するためのファイルを`ui/dev/config/myapp.php`に作成します。
+これで`hello.bundle.js`というバンドルされたファイルが出力されるようになりました。
+
+この`hello`アプリケーションをテスト実行するためのファイルを`ui/dev/config/myapp.php`に作成します。
 
 ```php?
 <?php
@@ -122,10 +125,14 @@ return [$app, $state, $metas];
 
 以上です！ヴラウザをリロードして試してください。
 
-今回は単純なテンプレート文字列を使っただけの合成でしたが、`render`関数の中の処理を`Redux React`や`Vue.js`などのUIフレームワークを使ってよりリッチなUIを作成できます。
+`render`関数の中の処理を`Redux React`や`Vue.js`などのUIフレームワークを使ってリッチなUIを作成できます。通常のアプリケーションでは依存を最小限にするために`server.js`エントリーファイルは以下のように`render`モジュールを読み込むようにします。
 
-引数の名前は変更することができますが、`render`という名前のglobel関数名は**変更ができません**。
-ここまでPHPアプリケーションにノータッチです。SSRのアプリケーション開発はPHP開発と独立して行うことができます。
+```javascript
+import render from './render';
+global.render = render;
+```
+
+ここまでPHP側の作業はありません。SSRのアプリケーション開発はPHP開発と独立して行うことができます。
 
 # PHP
 
@@ -233,11 +240,6 @@ PHPファイルの変更があれば自動でリロードされ、Reactのコン
  * Chromeプラグイン [React developer tools](https://chrome.google.com/webstore/detail/react-developer-tools/fmkadmapgofadopljbjfkapdkoienihi)、[Redux devTools]( https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd)が利用できます。
  * 500エラーが帰ってくる場合は`var/log`や`curl` でアクセスしてレスポンス詳細を見てみましょう
 
-## JS ビューライブラリ / テンプレートエンジン
-
- * [Vue.js](https://jp.vuejs.org/)
- * [Dust.js](http://www.dustjs.com/) (LinkedIn)
-
 ## リファレンス
 
  * [Airbnb JavaScript スタイルガイド](http://mitsuruog.github.io/javascript-style-guide/)
@@ -250,3 +252,12 @@ PHPファイルの変更があれば自動でリロードされ、Reactのコン
  * [Chai assertion library](http://chaijs.com/)
  * [Yarn package manager](https://yarnpkg.com/)
  * [Webapack module bunduler](https://webpack.github.io/)
+
+ ## その他JSテンプレートエンジン
+
+  * [Handlesbar](http://handlebarsjs.com/)
+  * [Hogan](http://twitter.github.io/hogan.js/) (Twitter)
+  * [dust.js](http://www.dustjs.com/) (LinkedIn)
+  * [doT.js](http://olado.github.io/doT/index.html)
+  * [pug](https://pugjs.org/api/getting-started.html)
+  * [Nunjucks](https://mozilla.github.io/nunjucks/)
