@@ -10,21 +10,14 @@ permalink: /manuals/1.0/ja/js-ui.html
 
 # Javascript UI
 
-ビューのレンダリングをTwigなどのPHPのテンプレートエンジン等が行う代わりにサーバーサイドまたはサーバーサイドのJavascriptが行います。
-
-以下の順で説明します。
-
-1. JS UIアプリケーションの作成
-2. リソースの作成
-3. リソースの値とJS UIをバインドするための`@Ssr`アノテート
-
+ビューのレンダリングをTwigなどのPHPのテンプレートエンジン等が行う代わりに、サーバーサイドのJavascript(V8)が行います。特定のリソースにバインドされたJSのUIアプリケーションがhtml全体をレンダリングします。
 
 ## 前提条件
 
  * PHP 7.1
- * Node.js
- * yarn
- * V8Js (開発ではオプション)
+ * [Node.js](https://nodejs.org/ja/)
+ * [yarn](https://yarnpkg.com/)
+ * [V8Js](http://php.net/manual/ja/book.v8js.php) (開発ではオプション)
 
 Note: V8JsがインストールされていないとNode.jsでJSが実行されます。
 
@@ -89,8 +82,16 @@ Note: Javascriptや本体のPHPアプリケーションを変更しないでUI�
 
 ## UIアプリケーションの作成
 
+UIアプリケーションではPHPから渡された引数を使ってレンダリングします。
 
-名前を受け取って挨拶を返す関数を`render`という名前（固定）の関数で作成します。
+```
+const render = (state, metas) => (
+  __SUPER_AWESOME_UI__ // SSR対応のライブラリやテンプレートエンジンを使って文字列を返す
+)
+```
+`state`はドキュメントルートに必要な値、`metas`はそれ以外の値、例えば<head>で使う値などです。`render`という関数名は固定です。
+
+ここでは名前を受け取って挨拶を返す関数を作成します。
 
 ```
 const render = state => (
@@ -122,12 +123,6 @@ return [$app, $state, $metas];
 以上です！ヴラウザをリロードして試してください。
 
 今回は単純なテンプレート文字列を使っただけの合成でしたが、`render`関数の中の処理を`Redux React`や`Vue.js`などのUIフレームワークを使ってよりリッチなUIを作成できます。
-
-```
-const render = (state, metas) => (
-  __SUPER_AWESOME_UI__ // SSR対応のライブラリで文字列を返す
-)
-```
 
 引数の名前は変更することができますが、`render`という名前のglobel関数名は**変更ができません**。
 ここまでPHPアプリケーションにノータッチです。SSRのアプリケーション開発はPHP開発と独立して行うことができます。
@@ -206,7 +201,7 @@ public function onGet()
 }
 ```
 
-実際`state`と`metas`をどのようにして渡してSSRを実現するかは`ui/src/page/index/server`のサンプルアプリケーションをご覧ください。
+実際`state`と`metas`をどのようにして渡してSSRを実現するかは`ui/src/page/index/server`のサンプルアプリケーションをご覧ください。影響を受けるのはアノテートしたメソッドだけで、APIやHTMLのレンダリングの設定はそのままです。
 
 # PHPアプリケーションの実行設定
 
@@ -237,6 +232,11 @@ PHPファイルの変更があれば自動でリロードされ、Reactのコン
 
  * Chromeプラグイン [React developer tools](https://chrome.google.com/webstore/detail/react-developer-tools/fmkadmapgofadopljbjfkapdkoienihi)、[Redux devTools]( https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd)が利用できます。
  * 500エラーが帰ってくる場合は`var/log`や`curl` でアクセスしてレスポンス詳細を見てみましょう
+
+## JS ビューライブラリ / テンプレートエンジン
+
+ * [Vue.js](https://jp.vuejs.org/)
+ * [Dust.js](http://www.dustjs.com/) (LinkedIn)
 
 ## リファレンス
 
