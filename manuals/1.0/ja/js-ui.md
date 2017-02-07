@@ -253,7 +253,7 @@ PHPファイルの変更があれば自動でリロードされ、Reactのコン
  * [Yarn package manager](https://yarnpkg.com/)
  * [Webapack module bunduler](https://webpack.github.io/)
 
- ## その他JSテンプレートエンジン
+## その他JSテンプレートエンジン
 
   * [Handlesbar](http://handlebarsjs.com/)
   * [Hogan](http://twitter.github.io/hogan.js/) (Twitter)
