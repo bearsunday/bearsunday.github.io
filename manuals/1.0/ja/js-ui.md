@@ -10,7 +10,10 @@ permalink: /manuals/1.0/ja/js-ui.html
 
 # Javascript UI
 
-ビューのレンダリングをTwigなどのPHPのテンプレートエンジン等が行う代わりに、サーバーサイドのJavascriptが行います。特定のリソースにバインドされたJSのUIアプリケーションがhtml全体をレンダリングします。
+ビューのレンダリングをTwigなどのPHPのテンプレートエンジン等が行う代わりに、サーバーサイドのJavaScriptが行います。
+PHP側は認証/認可/初期状態/APIの提供を行い、JSがUIをレンダリングします。
+
+既存のプロジェクトの構造で、アノテートされたリソースのみに適用されるので導入が容易です。
 
 ## 前提条件
 
@@ -30,14 +33,15 @@ Note: V8JsがインストールされていないとNode.jsでJSが実行され�
 
 ## インストール
 
-BEAR.Sundayプロジェクトに`koriym/ssr-module`をインストールします。
+プロジェクトに`koriym/ssr-module`をインストールします。
 
 ```bash
-cd /path/to/MyVedor.MyApp
+// composer create-project bear/skeleton // 新規の場合
+// cd MyVedor.MyApp
 composer require bear/ssr-module 1.x-dev
 ```
 
-Reduxのスケルトンアプリ`koriym/js-ui-skeleto`をインストールします。
+UIスケルトンアプリ`koriym/js-ui-skeleton`をインストールします。
 
 ```bash
 composer require koriym/js-ui-skeleton 1.x-dev
@@ -76,8 +80,10 @@ cp ui/dev/config/index.php ui/dev/config/myapp.php
 ```
 
 ブラウザをリロードして新しい設定を試します。
+このようにJavascriptや本体のPHPアプリケーションを変更しないでUIのデータを変更して動作を確認することができます。
 
-Note: Javascriptや本体のPHPアプリケーションを変更しないでUIのデータを変更できます。
+このセクションで編集したPHPの設定ファイルはあくまで`yarn run ui`で実行する時のみに使用されます。
+PHP側が必要とするのはバンドルされて出力されたJSのみです。
 
 
 ## UIアプリケーションの作成
@@ -110,7 +116,7 @@ module.exports = {
 
 これで`hello.bundle.js`というバンドルされたファイルが出力されるようになりました。
 
-この`hello`アプリケーションをテスト実行するためのファイルを`ui/dev/config/myapp.php`に作成します。
+このhelloアプリケーションをテスト実行するためのファイルを`ui/dev/config/myapp.php`に作成します。
 
 ```php?
 <?php
@@ -125,7 +131,8 @@ return [$app, $state, $metas];
 
 以上です！ヴラウザをリロードして試してください。
 
-`render`関数の中の処理を`Redux React`や`Vue.js`などのUIフレームワークを使ってリッチなUIを作成できます。通常のアプリケーションでは依存を最小限にするために`server.js`エントリーファイルは以下のように`render`モジュールを読み込むようにします。
+render関数の中の処理をReactやVue.jsなどのUIフレームワークを使ってリッチなUIを作成できます。
+通常のアプリケーションでは依存を最小限にするために`server.js`エントリーファイルは以下のようにrenderモジュールを読み込むようにします。
 
 ```javascript
 import render from './render';
@@ -238,11 +245,11 @@ PHPファイルの変更があれば自動でリロードされ、Reactのコン
 ## パフォーマンス
 
 V8のスナップショットをApc保存する機能を使ってパフォーマンスの大幅な向上が可能です。
-`prod`コンテキストで`ApcSsrModule`をインストールしてください。
+`ProdModle`で`ApcSsrModule`をインストールしてください。
 ReactJsやアプリケーションのスナップショットが`APCu`に保存され再利用されます。V8jsが必要です。
 
-```
-$this->install(new ApcSsrModule($build));
+```php?start_inline
+$this->install(new ApcSsrModule);
 ```
 
 Apc以外のキャッシュを利用するには`ApcSsrModule`のコードを参考にモジュールを作成してください。
@@ -262,6 +269,7 @@ PSR16対応のキャッシュが利用可能です。
 
 ## リファレンス
 
+ * [ECMAScript 6](http://postd.cc/es6-cheatsheet/)
  * [Airbnb JavaScript スタイルガイド](http://mitsuruog.github.io/javascript-style-guide/)
  * [React](https://facebook.github.io/react/)
  * [Redux](http://redux.js.org/)
@@ -277,7 +285,6 @@ PSR16対応のキャッシュが利用可能です。
 
   * [Vue.js](https://jp.vuejs.org/)
   * [Handlesbar.js](http://handlebarsjs.com/)
-  * [mustache.js](https://github.com/janl/mustache.js)
   * [doT.js](http://olado.github.io/doT/index.html)
   * [pug](https://pugjs.org/api/getting-started.html)
   * [Hogan](http://twitter.github.io/hogan.js/) (Twitter)
