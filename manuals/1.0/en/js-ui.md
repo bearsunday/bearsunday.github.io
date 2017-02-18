@@ -1,6 +1,6 @@
 ---
 layout: docs-en
-title: Javascrript UI
+title: Javascript UI
 category: Manual
 permalink: /manuals/1.0/en/js-ui.html
 ---
