@@ -245,7 +245,7 @@ PHPファイルの変更があれば自動でリロードされ、Reactのコン
 ## パフォーマンス
 
 V8のスナップショットをApc保存する機能を使ってパフォーマンスの大幅な向上が可能です。
-`ProdModle`で`ApcSsrModule`をインストールしてください。
+`ProdModule`で`ApcSsrModule`をインストールしてください。
 ReactJsやアプリケーションのスナップショットが`APCu`に保存され再利用されます。V8jsが必要です。
 
 ```php?start_inline
