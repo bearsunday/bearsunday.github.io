@@ -20,7 +20,7 @@ Currently within our project architecture, we will only be making changes to ann
 
 Note: If you do not install V8Js then JS will be run using Node.js.
 
-## Termanology
+## Terminology
 
  * **CSR** Client Side Rendering (via Web Browser)
  * **SSR** Server Side Rendering (via V8 or Node.js)
@@ -33,7 +33,7 @@ Install `koriym/ssr-module` into the project.
 
 ```bash
 // composer create-project bear/skeleton // When a new project
-// cd MyVedor.MyApp
+// cd MyVendor.MyApp
 composer require bear/ssr-module 1.x-dev
 ```
 
@@ -78,7 +78,7 @@ Reload the browser and try out the new settings.
 
 In this way without changing the JavaScript or core PHP application we can alter the UI data and check that it is working.
 
-The PHP configuration files that have been edied in this section are only used when executing `yarn run ui`.
+The PHP configuration files that have been edited in this section are only used when executing `yarn run ui`.
 All the PHP side needs is the output bundled JS file.
 
 
@@ -103,7 +103,7 @@ const render = state => (
 )
 ```
 
-Save this as `ui/src/page/index/hello/server.js` and register this as a webpack entry point in`ui/entry.js`.
+Save this as `ui/src/page/index/hello/server.js` and register this as a Webpack entry point in`ui/entry.js`.
 
 ```javascript?start_inline
 module.exports = {
@@ -164,7 +164,7 @@ The `$build` directory is where the JS files live.(The Webpack output location s
 
 ## @Ssr Annotation
 
-Annotate the resource funtion to be SSR'd with `@Ssr`. The JS application name is required in `app`.
+Annotate the resource function to be SSR'd with `@Ssr`. The JS application name is required in `app`.
 
 ```php?start_inline
 <?php
@@ -237,12 +237,12 @@ yarn run dev
 Run using live updating.
 When the PHP file is changed it will be automatically reloaded, if there is a change in a React component without hitting refresh the component will update. If you want to run the app without live updating you can by running `yarn run start`.
 
-For other commands such `lint` or `test` etc please see [commands](https://github.com/koriym/Koriym.JsUiSkeleton/blob/1.x/README.md#command).
+For other commands such `lint` or `test` etc. please see [commands](https://github.com/koriym/Koriym.JsUiSkeleton/blob/1.x/README.md#command).
 
 ## Performance
 
 The ability to save the V8 Snapshot into APC means we can see dramatic performance benefits. In `ProdModule` install `ApcSsrModule`.
-ReactJs or your application snapshop is saved in `APCu` and can be reused. V8 is required. 
+ReactJs or your application snapshot is saved in `APCu` and can be reused. V8 is required. 
 
 ```php?start_inline
 $this->install(new ApcSsrModule);
@@ -264,7 +264,7 @@ For more info please see the following.
 ## References
 
  * [ECMAScript 6](http://postd.cc/es6-cheatsheet/)
- * [Airbnb JavaScript スタイルガイド](http://mitsuruog.github.io/javascript-style-guide/)
+ * [Airbnb JavaScript Styleguide](http://mitsuruog.github.io/javascript-style-guide/)
  * [React](https://facebook.github.io/react/)
  * [Redux](http://redux.js.org/)
  * [Redux github](https://github.com/reactjs/redux)
@@ -273,7 +273,7 @@ For more info please see the following.
  * [Mocha test framework](https://mochajs.org/)
  * [Chai assertion library](http://chaijs.com/)
  * [Yarn package manager](https://yarnpkg.com/)
- * [Webapack module bunduler](https://webpack.github.io/)
+ * [Webpack module bundler](https://webpack.github.io/)
 
 ## Other view libraries
 

@@ -37,7 +37,7 @@ Note: V8JsがインストールされていないとNode.jsでJSが実行され�
 
 ```bash
 // composer create-project bear/skeleton // 新規の場合
-// cd MyVedor.MyApp
+// cd MyVendor.MyApp
 composer require bear/ssr-module 1.x-dev
 ```
 
@@ -279,7 +279,7 @@ PSR16対応のキャッシュが利用可能です。
  * [Mocha test framework](https://mochajs.org/)
  * [Chai assertion library](http://chaijs.com/)
  * [Yarn package manager](https://yarnpkg.com/)
- * [Webapack module bunduler](https://webpack.github.io/)
+ * [Webpack module bundler](https://webpack.github.io/)
 
 ## その他ビューライブラリ
 
