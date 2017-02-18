@@ -275,7 +275,7 @@ For more info please see the following.
  * [Yarn package manager](https://yarnpkg.com/)
  * [Webapack module bunduler](https://webpack.github.io/)
 
-## Other view libtraries
+## Other view libraries
 
   * [Vue.js](https://jp.vuejs.org/)
   * [Handlesbar.js](http://handlebarsjs.com/)
