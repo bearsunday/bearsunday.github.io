@@ -9,7 +9,7 @@ permalink: /manuals/1.0/en/js-ui.html
 
 Instead of rendering views with PHP termplate engines such Twig etc, we will be doing so using server-side JavaScript. On the PHP side we will be carrying out the authorisation, authentication, initialization and API delivery then we will do the rendering of the UI using JS.
 
-Currently within our project architecture, we will only be making changes to annotated resources so should be simple. 
+Currently within our project architecture, we will only be making changes to annotated resources so should be simple.
 
 ## Prerequisites
 
@@ -49,7 +49,7 @@ yarn install
 ## Running the UI application
 
 Lets start by running the demo application.
-From the displayed web page lets select the rendering engine and run the JS application. 
+From the displayed web page lets select the rendering engine and run the JS application.
 
 ```
 yarn run ui
@@ -113,7 +113,7 @@ module.exports = {
 
 Having done this a `hello.bundle.js` bundled file is created for us.
 
-Create a file at `ui/dev/config/myapp.php` to test run this application. 
+Create a file at `ui/dev/config/myapp.php` to test run this application.
 
 ```php?
 <?php
@@ -242,14 +242,14 @@ For other commands such `lint` or `test` etc. please see [commands](https://gith
 ## Performance
 
 The ability to save the V8 Snapshot into APC means we can see dramatic performance benefits. In `ProdModule` install `ApcSsrModule`.
-ReactJs or your application snapshot is saved in `APCu` and can be reused. V8 is required. 
+ReactJs or your application snapshot is saved in `APCu` and can be reused. V8 is required.
 
 ```php?start_inline
 $this->install(new ApcSsrModule);
 ```
 To use caches other than APC look at  the code in `ApcSsrModule` as a reference to make your own module. It is possible to use a cache compatible with PSR16.
 
-In order to tune performance at compile time pulling in your JS code (and ReactJs etc) into the V8 snapshot can give you further performance improvements. 
+In order to tune performance at compile time pulling in your JS code (and ReactJs etc) into the V8 snapshot can give you further performance improvements.
 For more info please see the following.
 
  * [20x performance boost with V8Js snapshots](http://stesie.github.io/2016/02/snapshot-performance)
@@ -264,7 +264,7 @@ For more info please see the following.
 ## References
 
  * [ECMAScript 6](http://postd.cc/es6-cheatsheet/)
- * [Airbnb JavaScript Styleguide](http://mitsuruog.github.io/javascript-style-guide/)
+ * [Airbnb JavaScript Styleguide](https://github.com/airbnb/javascript)
  * [React](https://facebook.github.io/react/)
  * [Redux](http://redux.js.org/)
  * [Redux github](https://github.com/reactjs/redux)
@@ -273,11 +273,11 @@ For more info please see the following.
  * [Mocha test framework](https://mochajs.org/)
  * [Chai assertion library](http://chaijs.com/)
  * [Yarn package manager](https://yarnpkg.com/)
- * [Webpack module bundler](https://webpack.github.io/)
+ * [Webpack module bundler](https://webpack.js.org/)
 
 ## Other view libraries
 
-  * [Vue.js](https://jp.vuejs.org/)
+  * [Vue.js](https://vuejs.org/)
   * [Handlesbar.js](http://handlebarsjs.com/)
   * [doT.js](http://olado.github.io/doT/index.html)
   * [pug](https://pugjs.org/api/getting-started.html)
