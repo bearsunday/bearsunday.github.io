@@ -5,9 +5,6 @@ category: Manual
 permalink: /manuals/1.0/ja/js-ui.html
 ---
 
-*Work In Progress*
-*以前のReact JSページは[ReactJs](reactjs.html)へ*
-
 # Javascript UI
 
 ビューのレンダリングをTwigなどのPHPのテンプレートエンジン等が行う代わりに、サーバーサイドのJavaScriptが行います。
@@ -291,3 +288,5 @@ PSR16対応のキャッシュが利用可能です。
   * [Nunjucks](https://mozilla.github.io/nunjucks/)(Mozilla)
   * [dust.js](http://www.dustjs.com/) (LinkedIn)
   * [marko](http://markojs.com/) (Ebay)
+
+* 以前のReact JSページは[ReactJs](reactjs.html)へ*
