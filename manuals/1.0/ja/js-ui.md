@@ -279,7 +279,7 @@ PSR16対応のキャッシュが利用可能です。
  * [Mocha test framework](https://mochajs.org/)
  * [Chai assertion library](http://chaijs.com/)
  * [Yarn package manager](https://yarnpkg.com/)
- * [Webpack module bundler](https://webpack.github.io/)
+ * [Webpack module bundler](https://webpack.js.org/)
 
 ## その他ビューライブラリ
 
