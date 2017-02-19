@@ -1,6 +1,6 @@
 ---
 layout: docs-ja
-title: Javascrript UI
+title: Javascript UI
 category: Manual
 permalink: /manuals/1.0/ja/js-ui.html
 ---
@@ -37,7 +37,7 @@ Note: V8JsがインストールされていないとNode.jsでJSが実行され�
 
 ```bash
 // composer create-project bear/skeleton // 新規の場合
-// cd MyVedor.MyApp
+// cd MyVendor.MyApp
 composer require bear/ssr-module 1.x-dev
 ```
 
@@ -245,7 +245,7 @@ PHPファイルの変更があれば自動でリロードされ、Reactのコン
 ## パフォーマンス
 
 V8のスナップショットをApc保存する機能を使ってパフォーマンスの大幅な向上が可能です。
-`ProdModle`で`ApcSsrModule`をインストールしてください。
+`ProdModule`で`ApcSsrModule`をインストールしてください。
 ReactJsやアプリケーションのスナップショットが`APCu`に保存され再利用されます。V8jsが必要です。
 
 ```php?start_inline
@@ -279,7 +279,7 @@ PSR16対応のキャッシュが利用可能です。
  * [Mocha test framework](https://mochajs.org/)
  * [Chai assertion library](http://chaijs.com/)
  * [Yarn package manager](https://yarnpkg.com/)
- * [Webapack module bunduler](https://webpack.github.io/)
+ * [Webpack module bundler](https://webpack.github.io/)
 
 ## その他ビューライブラリ
 
