@@ -212,7 +212,7 @@ use Ray\AuraSqlModule\Annotation\Transactional;
     }
 ```
 
-To do transactions on multiple connected databases, specify properties in the `@ Transactional` annotation.
+To do transactions on multiple connected databases, specify properties in the `@Transactional` annotation.
 If not specified, it becomes `{"pdo"}`.
 
 ```php?start_inline
@@ -354,7 +354,7 @@ class User extend ResourceObject
         $id = $pdo->lastInsertId($name);
 ```
 
-The `cols()` method can also pass an associative array with the column name as a key and the value is a bind value.
+The `cols()` method allows you to pass an array of key-value pairs where the key is the column name and the value is a bind value (not a raw value).
 
 ```php?start_inline
         $this->insert
@@ -629,6 +629,6 @@ Please refer to [Ray.CakeDbModule](https://github.com/ray-di/Ray.CakeDbModule) f
 
 Ray.CakeDbModule is provided by Jose ([@lorenzo](https://github.com/lorenzo)) who developed the ORM of CakePHP3.
 
-# The changing of the connection destination depending on the environment
+# Connection settings
 
 Use the [phpdotenv](https://github.com/vlucas/phpdotenv) library etc. to set the connection according to the environment destination. Please see the [Ex.Package](https://github.com/BEARSunday/Ex.Package) for implementation.
