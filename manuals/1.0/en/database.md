@@ -5,7 +5,7 @@ category: Manual
 permalink: /manuals/1.0/en/database.html
 ---
 
-# Databse
+# Database
 
 `Aura.Sql`、`Doctrine DBAL`, `CakeDB` modules are available for database connections.
 
