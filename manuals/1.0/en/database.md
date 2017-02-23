@@ -317,7 +317,7 @@ The created queries are queried as strings with the `getStatement()`.
 
 ## INSERT
 
-### 単一行のINSERT
+### Single row INSERT
 
 
 ```php?start_inline
@@ -366,7 +366,7 @@ The `cols()` method can also pass an associative array with the column name as a
             ]);
 ```
 
-### 複数行のINSERT
+### Multi-line INSERT
 
 To do a multiple row INSERT, use the `addRow ()` method at the end of the first line. Then build the following query.
 
