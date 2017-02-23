@@ -494,22 +494,58 @@ class User extend ResourceObject
 
 ### Aura.Sql用
 AuraSqlPagerFactoryInterface
+
 ```php?start_inline
 /* @var $factory \Ray\AuraSqlModule\Pagerfanta\AuraSqlPagerFactoryInterface */
 $pager = $factory->newInstance($pdo, $sql, $params, 10, '/?page={page}&category=sports'); // 10 items per page
 $page = $pager[2]; // page 2
+/* @var $page \Ray\AuraSqlModule\Pagerfanta\Page */
+// $page->data // sliced data (array|\Traversable)
+// $page->current; (int)
+// $page->total (int)
+// $page->hasNext (bool)
+// $page->hasPrevious (bool)
+// $page->maxPerPage; (int)
+// (string) $page // pager html (string)
 ```
 
 ### Aura.SqlQuery用
 AuraSqlQueryPagerFactoryInterface
+
 ```php?start_inline
 // for Select
 /* @var $factory \Ray\AuraSqlModule\Pagerfanta\AuraSqlQueryPagerFactoryInterface */
 $pager = $factory->newInstance($pdo, $select, 10, '/?page={page}&category=sports');
 $page = $pager[2]; // page 2
+/* @var $page \Ray\AuraSqlModule\Pagerfanta\Page */
 ```
-
 > 注：Aura.Sqlは生SQLを直接編集していますが現在MySql形式のLIMIT句しか対応していません。
+
+`$page`はイテレータブルです。
+
+```php?start_inline
+foreach ($page as $row) {
+ // 各行の処理
+}
+```
+ページャーのリンクHTMLのテンプレートを変更するには`TemplateInterface`の束縛を変更します。
+テンプレート詳細に関しては[Pagerfanta](https://github.com/whiteoctober/Pagerfanta#views)をご覧ください。
+
+```php?start_inline
+use Pagerfanta\View\Template\TemplateInterface;
+use Pagerfanta\View\Template\TwitterBootstrap3Template;
+use Ray\AuraSqlModule\Annotation\PagerViewOption;
+
+class AppModule extends AbstractModule
+{
+    protected function configure()
+    {
+        // ..
+        $this->bind(TemplateInterface::class)->to(TwitterBootstrap3Template::class);
+        $this->bind()->annotatedWith(PagerViewOption::class)->toInstance($pagerViewOption);
+    }
+}
+```
 
 # Doctrine DBAL
 
