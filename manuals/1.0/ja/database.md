@@ -553,12 +553,24 @@ class Index
 }
 ```
 
+## 複数のデータベースに接続
+
+複数のデータベースの接続には二番目の引数に識別子を指定します。
+
+```php?start_inline
+$this->install(new DbalModule($logDsn, 'log_db');
+$this->install(new DbalModule($jobDsn, 'job_db');
+```
+
+```php?start_inline
+/**
+ * @Inject
+ * @Named("log_db")
+ */
+public function setLogDb(Connection $logDb)
+```
+
 [MasterSlaveConnection](http://www.doctrine-project.org/api/dbal/2.0/class-Doctrine.DBAL.Connections.MasterSlaveConnection.html)というリプリケーションのためのマスター／スレーブ接続が標準で用意されています。
-
-## 環境による接続先の変更
-
-[phpdotenv](https://github.com/vlucas/phpdotenv)ライブラリなどを利用して環境先に応じた接続先を設定します。実装例の[Ex.Package](https://github.com/BEARSunday/Ex.Package)をご覧ください。
-
 
 # CakeDb
 
@@ -573,3 +585,7 @@ composer require ray/cake-database-module ~1.0
 インストールの方法については[Ray.CakeDbModule](https://github.com/ray-di/Ray.CakeDbModule)を、ORMの利用には[CakePHP3 Database Access & ORM](http://book.cakephp.org/3.0/en/orm.html)をご覧ください。
 
 Ray.CakeDbModuleはCakePHP3のORMを開発したJose([@lorenzo](https://github.com/lorenzo))さんにより提供されています。
+
+# 環境による接続先の変更
+
+[phpdotenv](https://github.com/vlucas/phpdotenv)ライブラリなどを利用して環境先に応じた接続先を設定します。実装例の[Ex.Package](https://github.com/BEARSunday/Ex.Package)をご覧ください。
