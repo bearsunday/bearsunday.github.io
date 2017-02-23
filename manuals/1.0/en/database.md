@@ -163,10 +163,9 @@ class User
 }
 ```
 
-## 複数のデータベースに接続
+## Connect to multiple databases
 
-接続先の違う複数の`PdoExtendedInterface`オブジェクトを受け取るためには
-`@Named`アノテーションで指定します。
+To receive multiple `PdoExtendedInterface` objects with different connection destinations, use `@Named` annotation.
 
 ```php?start_inline
 /**
@@ -179,14 +178,14 @@ public function setLoggerDb(ExtendedPdoInterface $pdo)
 }
 ```
 
-`NamedPdoModule`で識別子を指定して束縛します。
+Specify an identifier with `NamedPdoModule` and bind it.
 
 ```php?start_inline
 $this->install(new NamedPdoModule('log_db', 'mysql:host=localhost;dbname=log', 'username',
 $this->install(new NamedPdoModule('job_db', 'mysql:host=localhost;dbname=job', 'username',
 ```
 
-リプリケーションの場合には二番目の引数に識別子を指定します。
+In the case of replication, specify the identifier as the second argument.
 
 ```php?start_inline
 $logDblocator = new ConnectionLocator;
@@ -213,8 +212,8 @@ use Ray\AuraSqlModule\Annotation\Transactional;
     }
 ```
 
-複数接続したデータベースのトランザクションを行うためには`@Transactional`アノテーションにプロパティを指定します。
-指定しない場合は`{"pdo"}`になります。
+To do transactions on multiple connected databases, specify properties in the `@ Transactional` annotation.
+If not specified, it becomes `{"pdo"}`.
 
 ```php?start_inline
 /**
@@ -223,7 +222,7 @@ use Ray\AuraSqlModule\Annotation\Transactional;
 public function write()
 ```
 
-以下のように実行されます。
+It is run as follows.
 
 ```php?start_inline
 $this->pdo->beginTransaction()
@@ -237,9 +236,9 @@ $this->userDb->commit();
 
 # Aura.SqlQuery
 
-[Aura.Sql](https://github.com/auraphp/Aura.Sql)はPDOを拡張したライブラリですが、[Aura.SqlQuery](https://github.com/auraphp/Aura.SqlQuery)は MySQL、Postgres,、SQLiteあるいは Microsoft SQL Serverといったデータベース固有のSQLのビルダーを提供します。
+[Aura.Sql](https://github.com/auraphp/Aura.Sql) is an extension of PDO. [Aura.SqlQuery](https://github.com/auraphp/Aura.SqlQuery) provides database-specific SQL builder for MySQL, Postgres, SQLite or Microsoft SQL Server.
 
-データベースを指定してアプリケーションモジュール`src/Module/AppModule.php`でインストールします。
+Specify the database and install it with the application module `src/Module/AppModule.php`.
 
 ```php?start_inline
 // ...
@@ -248,8 +247,8 @@ $this->install(new AuraSqlQueryModule('mysql')); // pgsql, sqlite, or sqlsrv
 
 ## SELECT
 
-リソースではDBクエリービルダオブジェクトを受け取り、下記のメソッドを使ってSELECTクエリーを組み立てます。
-メソッドに特定の順番はなく複数回呼ぶことこともできます。
+The resource receives the DB Query Builder object and constructs a SELECT query using the following methods.
+You can also call the method multiple times in any order.
 
 ```php?start_inline
 use Ray\AuraSqlModule\AuraSqlInject;
@@ -314,7 +313,7 @@ class User extend ResourceObject
         // $result = $this->pdo->fetchAssoc($stm, $bind);
 ```
 
-組み立てたクエリーは`getStatement()`で文字列にしてクエリーを行います。
+The created queries are queried as strings with the `getStatement()`.
 
 ## INSERT
 
@@ -355,7 +354,7 @@ class User extend ResourceObject
         $id = $pdo->lastInsertId($name);
 ```
 
-`cols()`メソッドはキーがコラム名、値をバインドする値にした連想配列を渡すこともできます。
+The `cols()` method can also pass an associative array with the column name as a key and the value is a bind value.
 
 ```php?start_inline
         $this->insert
@@ -369,7 +368,7 @@ class User extend ResourceObject
 
 ### 複数行のINSERT
 
-複数の行のINSERTを行うためには、最初の行の最後で`addRow()`メソッドを使います。その後に次のクエリーを組み立てます。
+To do a multiple row INSERT, use the `addRow ()` method at the end of the first line. Then build the following query.
 
 ```php?start_inline
         // insert into this table
@@ -402,8 +401,8 @@ class User extend ResourceObject
 
 ```
 
-> 注:最初の行で始めて現れた列の値を指定しないで、行を追加しようとすると例外が投げられます。
-> `addRow()`に列の連想配列を渡すと次の行で使われます。つまり最初の行で`col()`や`cols()`を指定しないこともできます。
+> Note: If you try to add a row without specifying the value of the first column in the first row, an exception will be thrown.
+> Passing an associative array of columns to `addRow()` will be used on the next line. That is, you can not specify `col()` or `cols()` on the first line.
 
 ```php?start_inline
         // set up the first row
@@ -423,7 +422,7 @@ class User extend ResourceObject
         // etc.
 ```
 
-`addRows()`を使ってデータベースを一度にセットすることもできます。
+You can also set the database at once using `addRows()`.
 
 ```php?start_inline
         $rows = [
@@ -440,7 +439,7 @@ class User extend ResourceObject
 ```
 
 ## UPDATE
-下記のメソッドを使ってUPDATEクエリーを組み立てます。 メソッドに特定の順番はなく複数回呼ぶことこともできます。
+Use the following methods to construct an UPDATE query. You can also call the method multiple times in any order.
 
 ```php?start_inline
         $this->update
@@ -465,7 +464,7 @@ class User extend ResourceObject
         // $sth = $this->pdo->perform($this->update->getStatement(), $this->update->getBindValues());
 ```
 
-キーを列名、値をバインドされた値（RAW値ではなりません）にした連想配列を`cols()`に渡すこともできます。
+You can also pass an associative array to `cols()` with the key as the column name and the value as the bound value (not the RAW value).
 
 ```php?start_inline
 
@@ -479,7 +478,7 @@ class User extend ResourceObject
 ```
 
 ## DELETE
-下記のメソッドを使ってDELETEクエリーを組み立てます。 メソッドに特定の順番はなく複数回呼ぶことこともできます。
+Use the following methods to construct a DELETE query. You can also call the method multiple times in any order.
 ```php?start_inline
         $this->delete
             ->from('foo')                   // FROM this table
@@ -496,12 +495,12 @@ class User extend ResourceObject
         $sth->execute($this->delete->getBindValues());
 ```
 
-## パジネーション
+## Pagination
 
-[ray/aura-sql-module](https://packagist.org/packages/ray/aura-sql-module)はRay.Sqlの生SQL、Ray.AuraSqlQueryのクエリービルダー双方でパジネーション（ページ分割）をサポートしています。
-バインドする値と１ページあたりのアイテム数、それに{page}をページ番号にしたuri_templateでページャーファクトリーを`newInstance()`で生成して、ページ番号で配列アクセスします。
+[ray/aura-sql-module](https://packagist.org/packages/ray/aura-sql-module) supports pagination (page splitting) in both Ray.Sql raw SQL and Ray.AuraSqlQuery query builder.
+We create a pager using the `newInstance()` with a uri_template, binding values and the number of items per page. You can access the page by $page[$number].
 
-### Aura.Sql用
+### Aura.Sql
 AuraSqlPagerFactoryInterface
 
 ```php?start_inline
@@ -518,7 +517,7 @@ $page = $pager[2]; // page 2
 // (string) $page // pager html (string)
 ```
 
-### Aura.SqlQuery用
+### Aura.SqlQuery
 AuraSqlQueryPagerFactoryInterface
 
 ```php?start_inline
@@ -528,17 +527,17 @@ $pager = $factory->newInstance($pdo, $select, 10, '/?page={page}&category=sports
 $page = $pager[2]; // page 2
 /* @var $page \Ray\AuraSqlModule\Pagerfanta\Page */
 ```
-> 注：Aura.Sqlは生SQLを直接編集していますが現在MySql形式のLIMIT句しか対応していません。
+> Note: Although the Aura.Sql edits the raw SQL directly, it currently only supports the MySQL LIMIT clause format.
 
-`$page`はイテレータブルです。
+`$page` is iterable.
 
 ```php?start_inline
 foreach ($page as $row) {
- // 各行の処理
+ // Process each row
 }
 ```
-ページャーのリンクHTMLのテンプレートを変更するには`TemplateInterface`の束縛を変更します。
-テンプレート詳細に関しては[Pagerfanta](https://github.com/whiteoctober/Pagerfanta#views)をご覧ください。
+To change the pager HTML template, change the binding of `TemplateInterface`.
+For details about templates, please see [Pagerfanta](https://github.com/whiteoctober/Pagerfanta#views).
 
 ```php?start_inline
 use Pagerfanta\View\Template\TemplateInterface;
@@ -597,9 +596,9 @@ class Index
 }
 ```
 
-## 複数のデータベースに接続
+## Connect to multiple databases
 
-複数のデータベースの接続には二番目の引数に識別子を指定します。
+To connect to multiple databases, specify the identifier as the second argument.
 
 ```php?start_inline
 $this->install(new DbalModule($logDsn, 'log_db');
@@ -618,12 +617,18 @@ public function setLogDb(Connection $logDb)
 
 # CakeDb
 
-**CakeDb** is the database access module for the CakePHP3 Database library. This module is provided by [@lorenzo](https://github.com/lorenzo) ( original author of CakeDb).
+**CakeDb** is an ORM using the active record and data mapper pattern idea. It is the same as the one provided in CakePHP3.
 
-Installing `Ray.CakeDbModule` with composer.
+Install `Ray.CakeDbModule` with composer.
 
 ```bash
 composer require ray/cake-database-module ~1.0
 ```
 
-Then see more details at [Ray.CakeDbModule](https://github.com/ray-di/Ray.CakeDbModule) and [CakePHP3 Database Access & ORM](http://book.cakephp.org/3.0/en/orm.html).
+Please refer to [Ray.CakeDbModule](https://github.com/ray-di/Ray.CakeDbModule) for installation and refer to [CakePHP3 Database Access & ORM](http://book.cakephp.org/3.0/en/orm.html) for the ORM usage.
+
+Ray.CakeDbModule is provided by Jose ([@lorenzo](https://github.com/lorenzo)) who developed the ORM of CakePHP3.
+
+# The changing of the connection destination depending on the environment
+
+Use the [phpdotenv](https://github.com/vlucas/phpdotenv) library etc. to set the connection according to the environment destination. Please see the [Ex.Package](https://github.com/BEARSunday/Ex.Package) for implementation.
