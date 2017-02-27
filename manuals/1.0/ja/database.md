@@ -162,9 +162,9 @@ class User
 ```php?start_inline
 /**
  * @Inject
- * @Named("user_db")
+ * @Named("log_db")
  */
-public function setUserDb(ExtendedPdoInterface $pdo)
+public function setLoggerDb(ExtendedPdoInterface $pdo)
 {
     // ...
 }
@@ -173,29 +173,19 @@ public function setUserDb(ExtendedPdoInterface $pdo)
 `NamedPdoModule`で識別子を指定して束縛します。
 
 ```php?start_inline
-$this->install(new NamedPdoModule('user_db', 'mysql:host=localhost;dbname=user', 'username',
 $this->install(new NamedPdoModule('log_db', 'mysql:host=localhost;dbname=log', 'username',
+$this->install(new NamedPdoModule('job_db', 'mysql:host=localhost;dbname=job', 'username',
 ```
-
 
 リプリケーションの場合には二番目の引数に識別子を指定します。
 
 ```php?start_inline
-$this->install(new AuraSqlModule('mysql:host=localhost;dbname=master'));
-$locator = new ConnectionLocator();
-$locator->setWrite('master', new Connection('mysql:host=localhost;dbname=master', 'id', 'pass'));
-$locator->setRead('slave1',  new Connection('mysql:host=localhost;dbname=slave1', 'id', 'pass'));
-$locator->setRead('slave2',  new Connection('mysql:host=localhost;dbname=slave2', 'id', 'pass'));
-$this->install(new AuraSqlReplicationModule($locator));
-$userDbLocator = new ConnectionLocator;
-$userDbLocator->setWrite('master', new Connection('mysql:host=localhost;dbname=user_master', 'id', 'pass'));
-$userDbLocator->setRead('slave1',  new Connection('mysql:host=localhost;dbname=user_slave1', 'id', 'pass'));
-$userDbLocator->setRead('slave2',  new Connection('mysql:host=localhost;dbname=user_slave2', 'id', 'pass'));
-$this->install(new AuraSqlReplicationModule($userDbLocator, 'user_db'));
+$logDblocator = new ConnectionLocator;
+$logDblocator->setWrite('master', new Connection('mysql:host=localhost;dbname=master', 'id', 'pass'));
+$logDblocator->setRead('slave1',  new Connection('mysql:host=localhost;dbname=slave1', 'id', 'pass'));
+$logDblocator->setRead('slave2',  new Connection('mysql:host=localhost;dbname=slave2', 'id', 'pass'));
+$this->install(new AuraSqlReplicationModule($logDblocator, 'log_db'));
 ```
-
-識別子(`@Named`)の利用に関わらず、`AuraSqlModule`と`AuraSqlReplicationModule`(識別子なし)のインストールは必要です。
-
 
 ## トランザクション
 
