@@ -170,9 +170,9 @@ To receive multiple `PdoExtendedInterface` objects with different connection des
 ```php?start_inline
 /**
  * @Inject
- * @Named("log_db")
+ * @Named("user_db")
  */
-public function setLoggerDb(ExtendedPdoInterface $pdo)
+public function setUserDb(ExtendedPdoInterface $pdo)
 {
     // ...
 }
@@ -188,12 +188,20 @@ $this->install(new NamedPdoModule('job_db', 'mysql:host=localhost;dbname=job', '
 In the case of replication, specify the identifier as the second argument.
 
 ```php?start_inline
-$logDblocator = new ConnectionLocator;
-$logDblocator->setWrite('master', new Connection('mysql:host=localhost;dbname=master', 'id', 'pass'));
-$logDblocator->setRead('slave1',  new Connection('mysql:host=localhost;dbname=slave1', 'id', 'pass'));
-$logDblocator->setRead('slave2',  new Connection('mysql:host=localhost;dbname=slave2', 'id', 'pass'));
-$this->install(new AuraSqlReplicationModule($logDblocator, 'log_db'));
+$this->install(new AuraSqlModule('mysql:host=localhost;dbname=master'));
+$locator = new ConnectionLocator();
+$locator->setWrite('master', new Connection('mysql:host=localhost;dbname=master', 'id', 'pass'));
+$locator->setRead('slave1',  new Connection('mysql:host=localhost;dbname=slave1', 'id', 'pass'));
+$locator->setRead('slave2',  new Connection('mysql:host=localhost;dbname=slave2', 'id', 'pass'));
+$this->install(new AuraSqlReplicationModule($locator));
+$userDbLocator = new ConnectionLocator;
+$userDbLocator->setWrite('master', new Connection('mysql:host=localhost;dbname=user_master', 'id', 'pass'));
+$userDbLocator->setRead('slave1',  new Connection('mysql:host=localhost;dbname=user_slave1', 'id', 'pass'));
+$userDbLocator->setRead('slave2',  new Connection('mysql:host=localhost;dbname=user_slave2', 'id', 'pass'));
+$this->install(new AuraSqlReplicationModule($userDbLocator, 'user_db'));
 ```
+
+Regardless of the use of identifier (`@Named`), installation of` AuraSqlModule` and `AuraSqlReplicationModule` (no identifier) is necessary.
 
 ## Transactions
 
