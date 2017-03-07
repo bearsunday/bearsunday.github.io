@@ -80,26 +80,17 @@ class Index
 
 ## Replication
 
-Installing `AuraSqlReplicationModule` using a `connection locator` for master/slave connections.
+To automatically perform master / slave connection, specify the IP of the slave DB as the fourth argument.
 
 ```php?start_inline
-use Ray\Di\AbstractModule;
-use Ray\AuraSqlModule\AuraSqlModule;
-use Ray\AuraSqlModule\Annotation\AuraSqlConfig;
-use Aura\Sql\ConnectionLocator;
-
-class AppModule extends AbstractModule
-{
-    protected function configure()
-    {
-        $locator = new ConnectionLocator;
-        $locator->setWrite('master', new Connection('mysql:host=localhost;dbname=master', 'id', 'pass'));
-        $locator->setRead('slave1',  new Connection('mysql:host=localhost;dbname=slave1', 'id', 'pass'));
-        $locator->setRead('slave2',  new Connection('mysql:host=localhost;dbname=slave2', 'id', 'pass'));
-        $this->install(new AuraSqlReplicationModule($locator));
-    }
-}
-
+$this->install(
+  new AuraSqlModule(
+    'mysql:host=localhost;dbname=test',
+    'username',
+    'password',
+    'slave1,slave2' // specify slave IP as a comma separated value
+  )
+);
 ```
 
 You will now have a slave db connection when using HTTP GET, or a master db connection in other HTTP methods.
@@ -185,14 +176,18 @@ $this->install(new NamedPdoModule('log_db', 'mysql:host=localhost;dbname=log', '
 $this->install(new NamedPdoModule('job_db', 'mysql:host=localhost;dbname=job', 'username',
 ```
 
-In the case of replication, specify the identifier as the second argument.
+In the module, you specify an identifier in `NamedPdoModule` and bind it.
 
 ```php?start_inline
-$logDblocator = new ConnectionLocator;
-$logDblocator->setWrite('master', new Connection('mysql:host=localhost;dbname=master', 'id', 'pass'));
-$logDblocator->setRead('slave1',  new Connection('mysql:host=localhost;dbname=slave1', 'id', 'pass'));
-$logDblocator->setRead('slave2',  new Connection('mysql:host=localhost;dbname=slave2', 'id', 'pass'));
-$this->install(new AuraSqlReplicationModule($logDblocator, 'log_db'));
+$this->install(
+  new NamedPdoModule(
+    'log_db', // Type of database specified by @Named
+    'mysql:host=localhost;dbname=log',
+    'username',
+    'pass',
+    'slave1,slave2' // specify slave IP as a comma separated value
+  )
+);
 ```
 
 ## Transactions
