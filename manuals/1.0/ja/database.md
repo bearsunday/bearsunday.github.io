@@ -33,7 +33,13 @@ class AppModule extends AbstractModule
     protected function configure()
     {
         $this->install(new PackageModule));
-        $this->install(new AuraSqlModule('mysql:host=localhost;dbname=test', 'username', 'password'));  // この行を追加
+        $this->install(
+          new AuraSqlModule(
+            'mysql:host=localhost;dbname=test',
+            'username',
+            'password'
+          )
+        );  // この行を追加
     }
 }
 ```
@@ -71,26 +77,17 @@ class Index
 
 ## リプリケーションのための接続
 
-マスター／スレーブの接続を自動で行うためには接続オブジェクト`$locator`を作成して`AuraSqlReplicationModule`をインストールします。
+マスター／スレーブの接続を自動で行うためには4つ目の引数にスレーブDBのIPを指定します。
 
 ```php?start_inline
-use Ray\Di\AbstractModule;
-use Ray\AuraSqlModule\AuraSqlModule;
-use Ray\AuraSqlModule\Annotation\AuraSqlConfig;
-use Aura\Sql\ConnectionLocator;
-
-class AppModule extends AbstractModule
-{
-    protected function configure()
-    {
-        $locator = new ConnectionLocator;
-        $locator->setWrite('master', new Connection('mysql:host=localhost;dbname=master', 'id', 'pass'));
-        $locator->setRead('slave1',  new Connection('mysql:host=localhost;dbname=slave1', 'id', 'pass'));
-        $locator->setRead('slave2',  new Connection('mysql:host=localhost;dbname=slave2', 'id', 'pass'));
-        $this->install(new AuraSqlReplicationModule($locator));
-    }
-}
-
+$this->install(
+  new AuraSqlModule(
+    'mysql:host=localhost;dbname=test',
+    'username',
+    'password',
+    'slave1,slave2' // スレーブIPをカンマ区切りで指定
+  )
+);
 ```
 
 これでHTTPリクエストがGETの時がスレーブDB、その他のメソッドの時はマスターDBのDBオブジェクトがコンスタラクタに渡されます。
@@ -170,21 +167,18 @@ public function setLoggerDb(ExtendedPdoInterface $pdo)
 }
 ```
 
-`NamedPdoModule`で識別子を指定して束縛します。
+モジュールでは`NamedPdoModule`で識別子を指定して束縛します。
 
 ```php?start_inline
-$this->install(new NamedPdoModule('log_db', 'mysql:host=localhost;dbname=log', 'username',
-$this->install(new NamedPdoModule('job_db', 'mysql:host=localhost;dbname=job', 'username',
-```
-
-リプリケーションの場合には二番目の引数に識別子を指定します。
-
-```php?start_inline
-$logDblocator = new ConnectionLocator;
-$logDblocator->setWrite('master', new Connection('mysql:host=localhost;dbname=master', 'id', 'pass'));
-$logDblocator->setRead('slave1',  new Connection('mysql:host=localhost;dbname=slave1', 'id', 'pass'));
-$logDblocator->setRead('slave2',  new Connection('mysql:host=localhost;dbname=slave2', 'id', 'pass'));
-$this->install(new AuraSqlReplicationModule($logDblocator, 'log_db'));
+$this->install(
+  new NamedPdoModule(
+    'log_db', // @Namedで指定するデータベースの種類
+    'mysql:host=localhost;dbname=log',
+    'username',
+    'pass',
+    'slave1,slave12'
+  )
+);
 ```
 
 ## トランザクション
