@@ -1,6 +1,6 @@
 ---
 layout: docs-en
-title: コーディングガイド
+title: Coding Guide
 category: Manual
 permalink: /manuals/1.0/en/coding-guide.html
 ---
