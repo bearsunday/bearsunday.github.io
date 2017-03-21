@@ -71,7 +71,7 @@ php -S 127.0.0.1:8080 bootstrap/api.php
 
  コンテキストは組み合わせて使う事ができます。
 
- * `app`は素のアプリケーションです。
+ * `app`は基本のアプリケーションです。リソースはJSONでレンダリングされます。
  * `api`はデフォルトのリソースをpageリソースから**appリソース**に変更します。`page://self/`にマップされているWebのルートアクセス(`GET /`)は`app://self/`へのアクセスになります。
  * `cli-app`にするとコンソールアプリケーションになり、`prod-hal-api-app`だと[HAL](http://stateless.co/hal_specification.html)メディアタイプを使ったプロダクション用のAPIアプリケーションになります。
 
