@@ -173,7 +173,7 @@ Resources can be linked in various way.
 $blog = $this
     ->resource
     ->get
-    ->uri('app://self/User')
+    ->uri('app://self/user')
     ->withQuery(['id' => 1])
     ->linkSelf("blog")
     ->eager

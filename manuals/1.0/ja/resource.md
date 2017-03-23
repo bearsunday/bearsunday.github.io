@@ -104,7 +104,7 @@ lazy `request()`で帰って来るオブジェクトは実行可能なリクエ�
 $blog = $this
     ->resource
     ->get
-    ->uri('app://self/User')
+    ->uri('app://self/user')
     ->withQuery(['id' => 1])
     ->linkSelf("blog")
     ->eager
