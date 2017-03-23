@@ -418,3 +418,156 @@ class News
 ```
 
 You can update the cache for another resource class or even multiple resources at once. `@Purge` deletes a cache where `@Refresh` will recreate cache data.
+
+## Best Practice
+
+In the real world of REST, resources are connected with other resources.
+The use of the link makes the code simpler and makes it easier to read and test and change. 
+
+### @Embed
+
+Embed resources with `@Embed` instead of `get` the state of other resources.
+
+```php?start_inline
+// OK but not the best
+class Index extends ResourceObject
+{
+    use ResourceInject;
+
+    public function onGet($status)
+    {
+        $this['todos'] = $this->resource
+            ->get
+            ->uri('app://self/todos')
+            ->withQuery(['status' => $status])
+            ->eager
+            ->request();
+
+        return $this;
+    }
+}
+
+// Better
+class Index extends ResourceObject
+{
+    /**
+     * @Embed(rel="todos", src="app://self/todos{?status}")
+     */
+    public function onGet(string $status) : ResourceObject
+    {
+        return $this;
+    }
+}
+```
+
+### @Link
+
+When changing the state of another resource we will follow the next action indicated with `@Link` using `href()` (href = hyper reference).
+```php?start_inline
+// OK but not the best
+class Todo extends ResourceObject
+{
+    use ResourceInject;
+    
+    public function onPost(string $title) : ResourceObject
+    {
+        $this->resource
+            ->post
+            ->uri('app://self/todo')
+            ->withQuery(['title' => $title])
+            ->eager
+            ->request();
+        $this->code = StatusCode::MOVED_PERMANENTLY;
+        $this->headers[ResponseHeader::LOCATION] = '/';
+
+        return $this;
+    }
+}
+
+// Better
+class Todo extends ResourceObject
+{
+    use ResourceInject;
+    
+    /**
+     * @Link(rel="create", href="app://self/todo", method="post")
+     */
+    public function onPost(string $title) : ResourceObject
+    {
+        $this->resource->href('create', ['title' => $title]);
+        $this->code = StatusCode::MOVED_PERMANENTLY;
+        $this->headers[ResponseHeader::LOCATION] = '/';
+
+        return $this;
+    }
+}
+```
+
+### ＠ResourceParam
+
+If you need other resource results to request other resources, use `@ResourceParam`.
+
+```php?start_inline
+// OK but not the best
+class User extends ResourceObject
+{
+    use ResourceInject;
+
+    public function onGet($id)
+    {
+        $nickname = $this->resource
+            ->get
+            ->uri('app://self/login-user')
+            ->withQuery(['id' => $id])
+            ->eager
+            ->request()
+            ->body['nickname'];
+        $this['profile'] = $this->resource
+            ->get
+            ->uri('app://self/profile')
+            ->withQuery(['name' => $nickname])
+            ->eager
+            ->request()
+            ->body;
+        
+        return $this;
+    }
+}
+
+// Better
+class User extends ResourceObject
+{
+    use ResourceInject;
+
+    /**
+     * @ResourceParam(param=“name”, uri="app://self//login-user#nickname")
+     */
+    public function onGet($id, $name = null)
+    {
+        $this['profile'] = $this->resource
+            ->get
+            ->uri('app://self/profile')
+            ->withQuery(['name' => $name])
+            ->eager
+            ->request()
+            ->body;
+        
+        return $this;
+    }
+}
+
+// Best
+class User extends ResourceObject
+{
+    /**
+     * @ResourceParam(param=“name”, uri="app://self//login-user#nickname")
+     * @Embed(rel="profile", src="app://self/profile")
+     */
+    public function onGet($id, $name = null)
+    {
+        $this['profile']->addQuery(['name'=>$name]);
+        
+        return $this;
+    }
+}
+```

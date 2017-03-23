@@ -421,6 +421,159 @@ class Foo
      }
 ```
 
+## ベストプラクティス
+
+RESTではリソースは他のリソースと接続されています。リンクをうまく使うとコードは簡潔になり、読みやすくテストや変更が容易なコードになります。 
+ 
+### @Embed
+
+他のリソースの状態を`get`する代わりに`@Embed`でリソースを埋め込みます。
+
+```php?start_inline
+// OK but not the best
+class Index extends ResourceObject
+{
+    use ResourceInject;
+
+    public function onGet($status)
+    {
+        $this['todos'] = $this->resource
+            ->get
+            ->uri('app://self/todos')
+            ->withQuery(['status' => $status])
+            ->eager
+            ->request();
+
+        return $this;
+    }
+}
+
+// Better
+class Index extends ResourceObject
+{
+    /**
+     * @Embed(rel="todos", src="app://self/todos{?status}")
+     */
+    public function onGet(string $status) : ResourceObject
+    {
+        return $this;
+    }
+}
+```
+
+### @Link
+
+他のリソースの状態を変えるときに`@Link`で示された次のアクションを`href()`（ハイパーリファレンス）を使って辿ります。
+
+```php?start_inline
+// OK but not the best
+class Todo extends ResourceObject
+{
+    use ResourceInject;
+    
+    public function onPost(string $title) : ResourceObject
+    {
+        $this->resource
+            ->post
+            ->uri('app://self/todo')
+            ->withQuery(['title' => $title])
+            ->eager
+            ->request();
+        $this->code = StatusCode::MOVED_PERMANENTLY;
+        $this->headers[ResponseHeader::LOCATION] = '/';
+
+        return $this;
+    }
+}
+
+// Better
+class Todo extends ResourceObject
+{
+    use ResourceInject;
+    
+    /**
+     * @Link(rel="create", href="app://self/todo", method="post")
+     */
+    public function onPost(string $title) : ResourceObject
+    {
+        $this->resource->href('create', ['title' => $title]);
+        $this->code = StatusCode::MOVED_PERMANENTLY;
+        $this->headers[ResponseHeader::LOCATION] = '/';
+
+        return $this;
+    }
+}
+```
+
+### ＠ResourceParam
+
+他のリソースをリクエストするために他のリソース結果が必要な場合は`＠ResourceParam`を使います。
+
+```php?start_inline
+// OK but not the best
+class User extends ResourceObject
+{
+    use ResourceInject;
+
+    public function onGet($id)
+    {
+        $nickname = $this->resource
+            ->get
+            ->uri('app://self/login-user')
+            ->withQuery(['id' => $id])
+            ->eager
+            ->request()
+            ->body['nickname'];
+        $this['profile'] = $this->resource
+            ->get
+            ->uri('app://self/profile')
+            ->withQuery(['name' => $nickname])
+            ->eager
+            ->request()
+            ->body;
+        
+        return $this;
+    }
+}
+
+// Better
+class User extends ResourceObject
+{
+    use ResourceInject;
+
+    /**
+     * @ResourceParam(param=“name”, uri="app://self//login-user#nickname")
+     */
+    public function onGet($id, $name = null)
+    {
+        $this['profile'] = $this->resource
+            ->get
+            ->uri('app://self/profile')
+            ->withQuery(['name' => $name])
+            ->eager
+            ->request()
+            ->body;
+        
+        return $this;
+    }
+}
+
+// Best
+class User extends ResourceObject
+{
+    /**
+     * @ResourceParam(param=“name”, uri="app://self//login-user#nickname")
+     * @Embed(rel="profile", src="app://self/profile")
+     */
+    public function onGet($id, $name = null)
+    {
+        $this['profile']->addQuery(['name'=>$name]);
+        
+        return $this;
+    }
+}
+```
+
 ## BEAR.Resource
 
 リソースクラスに関するより詳しい情報はBEAR.Resourceの[README](https://github.com/bearsunday/BEAR.Resource/blob/1.x/README.ja.md)もご覧ください。
