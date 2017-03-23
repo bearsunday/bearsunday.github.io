@@ -165,6 +165,17 @@ $posts = $this->resource->get->uri('app://self/posts')->eager->request(); // eag
 A `request()` method without `eager` returns an invokable request object, which can be invoked by calling `$posts()`.
 You can assign this value to a template engine or embed it in another resource. It will then be lazily evaluated.
 
+## Syntax Sugar
+
+Syntax sugar can be used for eager request. The following requests are all the same.　(php7)
+
+```php?start_inline
+$this->resource->get->uri('app://self/user')->withQuery(['id' => 1])->eager->request()->body;
+$this->resource->get->uri('app://self/user')(['id' => 1])->body;
+$this->resource->uri('app://self/user')(['id' => 1])->body; // "get" can be omitted.
+$this->resource->uri('app://self/user?id=1')()->body;
+```
+
 ## Link request
 
 Resources can be linked in various way.

@@ -117,7 +117,16 @@ $blog = $this
  * `linkNew($rel)` リンク先のリソースがリンク元のリソースに追加されます
  * `linkCrawl($rel)` リンクをクロールして"リソースツリー"を作成します。
 
+## シンタックスシュガー
 
+eagerリクエストの場合はシンタックスシュガーが利用できます。以下のリクエストは全て同じです。(php7)
+
+```php?start_inline
+$this->resource->get->uri('app://self/user')->withQuery(['id' => 1])->eager->request()->body;
+$this->resource->get->uri('app://self/user')(['id' => 1])->body;
+$this->resource->uri('app://self/user')(['id' => 1])->body; // getは省略化
+$this->resource->uri('app://self/user?id=1')()->body;
+```
 
 ## リンクアノテーション
 
