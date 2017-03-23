@@ -275,6 +275,10 @@ public function onGet($name) : ResourceObject
 
 リソースクライアントは可能な限り使わないで `@Embed`で埋め込んだり`@Link`のリンクを使うようにします。埋め込まれたリソースは`toUri()`や`toUriWithMethod()`でリクエスト文字列になりテストが容易です。
 
+## リソース
+
+リソースのベストプラクティスは[リソースベストプラクティス](/manuals/1.0/ja/resource.html#best-practice)もご覧ください。
+
 ## DI
 
  * ライブラリコードではセッターインジェクションは推奨されません。

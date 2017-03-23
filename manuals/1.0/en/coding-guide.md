@@ -287,6 +287,10 @@ public function onGet($name) : ResourceObject
 
 Resource clients should embed them with `@Embed` and use `@Link` as much as possible. Embedded resources become request strings with `toUri()` and `toUriWithMethod ()`, which makes testing easier.
 
+## Resource
+
+Please also refer to [Resouce best practice](/manuals/1.0/en/resource.html#best-practice).
+
 ## DI
 
  * Setter injection is not recommended for library code.

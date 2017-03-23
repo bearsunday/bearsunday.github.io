@@ -419,7 +419,7 @@ class News
 
 You can update the cache for another resource class or even multiple resources at once. `@Purge` deletes a cache where `@Refresh` will recreate cache data.
 
-## Best Practice
+## Best Practice<a name="best-practice"></a>
 
 In the real world of REST, resources are connected with other resources.
 The use of the link makes the code simpler and makes it easier to read and test and change. 
