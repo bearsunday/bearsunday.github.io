@@ -128,7 +128,7 @@ PSR7のミドルウエアのためのオプションパッケージです。
 
 必要なライブラリ・パッケージを`composer`インストールします。
 
-| **Category** | **Composer package** | **Library** 
+| **Category** | **Composer package** | **Library**
 | ルーター |
 | |[bear/aura-router-module](https://github.com/bearsunday/BEAR.AuraRouterModule) | Aura.Router v2 |
 | データベース |
@@ -138,7 +138,7 @@ PSR7のミドルウエアのためのオプションパッケージです。
 || [ray/doctrine-orm-module](https://github.com/kawanamiyuu/Ray.DoctrineOrmModule) | [Doctrine ORM](https://github.com/doctrine/doctrine2)
 | ストレージ |
 ||[bear/query-repository](https://github.com/bearsunday/BEAR.QueryRepository) | 読み書きリポジトリの分離
-| Web 
+| Web
 | |[madapaja/twig-module](http://bearsunday.github.io/manuals/1.0/ja/html.html) | [Twigテンプレートエンジン](http://twig.sensiolabs.org/)
 | |[ray/web-form-module](http://bearsunday.github.io/manuals/1.0/ja/form.html) | Webフォーム & バリデーション
 | |[ray/aura-web-module](https://github.com/Ray-Di/Ray.AuraWebModule) | [Aura.Web](https://github.com/auraphp/Aura.Web)
@@ -159,10 +159,3 @@ PSR7のミドルウエアのためのオプションパッケージです。
 
 [Koriym.DbAppPackage](https://github.com/koriym/Koriym.DbAppPackage)はマイグレーションツールのPhinxやAuraPHPのコンポーネントなどをセットにして、設定ファイルや実行ファイルを添付したDBを使ったWeb APIアプリ用のパッケージです。
 カスタムパッケージを作る時の参考に。
-
-# Semver
-
-BEAR.Sundayはパッケージの依存管理のために[セマンティックバージョニング](http://semver.org/lang/ja/)に従います。
-
-各パッケージのメジャーバージョン番号は「後方互換性を失う」以外の特別な意味はありません。
-全体のバージョンをロックする機構を持たず、バージョンアップは個別に行われます。

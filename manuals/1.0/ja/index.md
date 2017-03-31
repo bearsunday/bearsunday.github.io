@@ -6,9 +6,8 @@ permalink: /manuals/1.0/ja/
 ---
 # BEAR.Sundayとは
 
-BEAR.SundayとはPHP5.5+に対応したWebアプリケーションフレームワークです。
+BEAR.SundayとはPHPのWebアプリケーションフレームワークです。
 BEAR.Sundayの目標は、標準に準拠し高品質で疎結合なRESTfulアプリケーションの**フレームワーク**を提供することです。
-
 
 ## フレームワーク
 
