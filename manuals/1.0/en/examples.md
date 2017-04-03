@@ -11,7 +11,7 @@ This example application is built on the principles described in the [Coding Gui
 
 ## [Todos](https://github.com/koriym/Polidog.Todo)
 
-`Todos` is a basic CRUD application. We are accessing DB with SQL file in `var / sql` directory. REST API using hyperlinks and testing, as well as form validation tests.
+`Todos` is a basic CRUD application. The DB is accessed using the static　SQL file in the `var/sql` directory. Includes REST API using hyperlinks and testing, as well as form validation tests.
 
   * [ray/aura-sql-module](https://github.com/ray-di/Ray.AuraSqlModule) - Extended PDO ([Aura.Sql](https://github.com/auraphp/Aura.Sql))
   * [ray/web-form-module](https://github.com/ray-di/Ray.WebFormModule) - Web form ([Aura.Input](https://github.com/auraphp/Aura.Input))
