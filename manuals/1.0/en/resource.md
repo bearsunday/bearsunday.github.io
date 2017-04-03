@@ -422,7 +422,7 @@ You can update the cache for another resource class or even multiple resources a
 ## Best Practice<a name="best-practice"></a>
 
 In the real world of REST, resources are connected with other resources.
-The use of the link makes the code simpler and makes it easier to read and test and change. 
+The use of the link makes the code simpler and makes it easier to read and test and change.
 
 ### @Embed
 
@@ -468,7 +468,7 @@ When changing the state of another resource we will follow the next action indic
 class Todo extends ResourceObject
 {
     use ResourceInject;
-    
+
     public function onPost(string $title) : ResourceObject
     {
         $this->resource
@@ -477,7 +477,7 @@ class Todo extends ResourceObject
             ->withQuery(['title' => $title])
             ->eager
             ->request();
-        $this->code = StatusCode::MOVED_PERMANENTLY;
+        $this->code = 301;
         $this->headers[ResponseHeader::LOCATION] = '/';
 
         return $this;
@@ -488,14 +488,14 @@ class Todo extends ResourceObject
 class Todo extends ResourceObject
 {
     use ResourceInject;
-    
+
     /**
      * @Link(rel="create", href="app://self/todo", method="post")
      */
     public function onPost(string $title) : ResourceObject
     {
         $this->resource->href('create', ['title' => $title]);
-        $this->code = StatusCode::MOVED_PERMANENTLY;
+        $this->code = 301;
         $this->headers[ResponseHeader::LOCATION] = '/';
 
         return $this;
@@ -529,7 +529,7 @@ class User extends ResourceObject
             ->eager
             ->request()
             ->body;
-        
+
         return $this;
     }
 }
@@ -551,7 +551,7 @@ class User extends ResourceObject
             ->eager
             ->request()
             ->body;
-        
+
         return $this;
     }
 }
@@ -566,7 +566,7 @@ class User extends ResourceObject
     public function onGet($id, $name = null)
     {
         $this['profile']->addQuery(['name'=>$name]);
-        
+
         return $this;
     }
 }

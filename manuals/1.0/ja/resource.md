@@ -423,8 +423,8 @@ class Foo
 
 ## ベストプラクティス<a name="best-practice"></a>
 
-RESTではリソースは他のリソースと接続されています。リンクをうまく使うとコードは簡潔になり、読みやすくテストや変更が容易なコードになります。 
- 
+RESTではリソースは他のリソースと接続されています。リンクをうまく使うとコードは簡潔になり、読みやすくテストや変更が容易なコードになります。
+
 ### @Embed
 
 他のリソースの状態を`get`する代わりに`@Embed`でリソースを埋め込みます。
@@ -470,7 +470,7 @@ class Index extends ResourceObject
 class Todo extends ResourceObject
 {
     use ResourceInject;
-    
+
     public function onPost(string $title) : ResourceObject
     {
         $this->resource
@@ -479,7 +479,7 @@ class Todo extends ResourceObject
             ->withQuery(['title' => $title])
             ->eager
             ->request();
-        $this->code = StatusCode::MOVED_PERMANENTLY;
+        $this->code = 301;
         $this->headers[ResponseHeader::LOCATION] = '/';
 
         return $this;
@@ -490,14 +490,14 @@ class Todo extends ResourceObject
 class Todo extends ResourceObject
 {
     use ResourceInject;
-    
+
     /**
      * @Link(rel="create", href="app://self/todo", method="post")
      */
     public function onPost(string $title) : ResourceObject
     {
         $this->resource->href('create', ['title' => $title]);
-        $this->code = StatusCode::MOVED_PERMANENTLY;
+        $this->code = 301;
         $this->headers[ResponseHeader::LOCATION] = '/';
 
         return $this;
@@ -531,7 +531,7 @@ class User extends ResourceObject
             ->eager
             ->request()
             ->body;
-        
+
         return $this;
     }
 }
@@ -553,7 +553,7 @@ class User extends ResourceObject
             ->eager
             ->request()
             ->body;
-        
+
         return $this;
     }
 }
@@ -568,7 +568,7 @@ class User extends ResourceObject
     public function onGet($id, $name = null)
     {
         $this['profile']->addQuery(['name'=>$name]);
-        
+
         return $this;
     }
 }
