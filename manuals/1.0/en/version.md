@@ -19,7 +19,7 @@ End of life ([EOL](http://php.net/eol.php))
 
 * `5.5.*` (21 Jul 2016)
 
-The new optional package will be developed based on the current stable PHP. We encourage you to use the current stable PHP for security and performance and security.
+The new optional package will be developed based on the current stable PHP. We encourage you to use the current stable PHP for quality and performance and security.
 
 You can check the install version detail at [BEAR.SupportedVersions](https://travis-ci.org/bearsunday/BEAR.SupportedVersions).
 
