@@ -18,8 +18,6 @@ permalink: /manuals/1.0/ja/coding-guide.html
 
 ```php
 <?php
-declare (strict_types = 1);
-
 namespace Koriym\Blog\Resource\App;
 
 use BEAR\RepositoryModule\Annotation\Cacheable;
