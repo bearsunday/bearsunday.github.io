@@ -23,24 +23,20 @@ require dirname(dirname(__DIR__)) . '/bootstrap/bootstrap.php';
 
 ## ProdModule
 
-`BEAR.Package`のプロダクション用のモジュール`ProdModule`はwebサーバー1台を前提にしている`ApcCache`になっています。
-webサーバー1台でキャッシュを全て`Apc`で使う場合にはそのまま使用できます。
-
+デフォルトの`ProdModule`はwebサーバー1台を前提にしている`ApcCache`になっています。
 複数のWebサーバーを構成するためには共有のキャッシュストレージを設定する必要があります。
-この場合、アプリケーション固有の`ProdModule`を`src/Module/ProdModule.php`に用意して、
-サーバー間で共有するコンテンツ用キャッシュ`Doctrine\Common\Cache\CacheProvider:@BEAR\RepositoryModule\Annotation\Storage`インターフェイスとサーバー単位のキャッシュ`Doctrine\Common\Cache\Cache`インターフェイスを束縛します。
+
+アプリケーション用の`ProdModule`を`src/Module/ProdModule.php`に用意して、サーバー間で共有するコンテンツ用キャッシュのストレージのモジュール（[memcached](http://php.net/manual/ja/book.memcached.php)または[Redis](https://redis.io)）をインストールします。
+
+### memcached
 
 ```php?start_inline
 namespace BEAR\HelloWorld\Module;
 
-use BEAR\RepositoryModule\Annotation\Storage;
+use BEAR\QueryRepository\StorageMemcachedModule;
 use BEAR\Package\Context\ProdModule as PackageProdModule;
-use Doctrine\Common\Cache\Cache;
-use Doctrine\Common\Cache\CacheProvider;
 use Ray\Di\AbstractModule;
 use Ray\Di\Scope;
-
-use Doctrine\Common\Cache\ApcCache;
 
 class ProdModule extends AbstractModule
 {
@@ -49,22 +45,36 @@ class ProdModule extends AbstractModule
      */
     protected function configure()
     {
-        $cache = ApcCache::class;
-        // 共有キャッシュ
-        $this->bind(CacheProvider::class)->annotatedWith(Storage::class)->to($cache)->in(Scope::SINGLETON);
-        // サーバー単位のキャッシュ
-        $this->bind(Cache::class)->to($cache)->in(Scope::SINGLETON);
+        // memcache
+        // {host}:{port}:{weight},...
+        $memcachedServers = 'mem1.domain.com:11211:33,mem2.domain.com:11211:67';
+        $this->install(new StorageMemcachedModule(memcachedServers);
 
-        // ProdModule パッケージのインストール
+        // デフォルトのProdModuleのインストール
         $this->install(new PackageProdModule);
     }
 }
 ```
-`@Storage`とアノテートされた`Cache`インターフェイスは、クエリーリポジトリーのためのものでWebサーバーで共有されるストレージです。
 
-複数のWebサーバーで`ApcCache`を指定することはできないので、
-[Redis](http://doctrine-orm.readthedocs.org/en/latest/reference/caching.html#redis)を指定するか、永続化可能な他のストレージを使ったアダプターを作成して束縛します。
-([memcached](http://doctrine-orm.readthedocs.org/en/latest/reference/caching.html#memcached)も指定できますが、メモリなので容量と揮発性に注意する必要があります。）
+### Redis
+
+```php?start_inline
+// redis
+$redisServer = 'localhost:6379'; // {host}:{port}
+$this->install(new StorageRedisModule($redisServer);
+```
+
+### キャッシュ時間の指定
+
+デフォルトのTTLを変更する場合
+
+```php?start_inline
+// Cache time
+$short = 60;
+$medium = 3600;
+$long = 24 * 3600;
+$this->install(new StorageExpiryModule($short, $medium, $long);
+```
 
 ## HTTP Cache
 
@@ -96,36 +106,17 @@ class App extends AbstractApp
 与えらた`ETag`のコンテンツに変更がなければ`304`を返して終了するようにします。
 
 ```php?start_inline
-route: {
-    $app = (new Bootstrap)->getApp(__NAMESPACE__, $context);
-    if ($app->httpCache->isNotModified($_SERVER)) {
-        http_response_code(304);
-        exit(0);
-    }
+
+$app = (new Bootstrap)->getApp('BEAR\HelloWorld', $context, dirname(__DIR__));
+if ($app->httpCache->isNotModified($_SERVER)) {
+    http_response_code(304);
+    exit(0);
+}
 
 ```
 
 `ETag`の更新は自動で行われますが、`@Refresh`や`@Purge`アノテーションを使ってリソースキャッシュの破棄の関係性を適切に指定しておかなければなりません。
 
-## エクステンション
-
-以下のPECLエクステンションをインストールするとパフォーマンスが最適化されます。
-
- * [PECL/uri_template](http://pecl.php.net/package/uri_template) URI Template
- * [PECL/igbinary](https://pecl.php.net/package/igbinary) シリアライズ最適化
-
-```
-pecl install uri_template
-pecl install igbinary
-```
-
-確認
-
-```
-composer show --platform
-ext-uri_template    1.0      The uri_template PHP extension
-```
-
-## ディプロイ
+## デプロイ
 
 [Deployer](http://deployer.org/)のサポート[BEAR.Sunday Deployer.php support](https://github.com/bearsunday/deploy)をご覧ください。
