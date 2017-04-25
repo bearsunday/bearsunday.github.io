@@ -102,8 +102,7 @@ class App extends AbstractApp
 
 ### bootstrap
 
-次に`bootstrap/bootstrap.php`の`route`のセクションで以下のように`if`文を追加して、
-与えらた`ETag`のコンテンツに変更がなければ`304`を返して終了するようにします。
+`bootstrap/bootstrap.php`で以下のように`if`文を追加して、`ETag`のコンテンツに変更がなければ`304 (NotModified)`を出力するようにします。
 
 ```php?start_inline
 
