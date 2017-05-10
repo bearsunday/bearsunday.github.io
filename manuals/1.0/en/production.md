@@ -7,13 +7,13 @@ permalink: /manuals/1.0/en/production.html
 
 # Production
 
-In this section, we'll cover how to set cache and script for production environment.
+In this section, we will cover how to setup the cache and the system for production environment.
 
 ## Boot file
 
-In the context starting with `prod-`, an `$app` application object will be cached.
+If the context is prefixed with `prod-`, the `$app` application object will be cached.
 
-Cache drivers like `ApcCache` or `FilesystemCache` will be selected in response to the environment automatically.
+Cache drivers like `ApcCache` or `FilesystemCache` will be used in response to the environment automatically.
 
 ```php?start_inline
 $context = 'prod-app';
@@ -24,10 +24,9 @@ require dirname(dirname(__DIR__)) . '/bootstrap/bootstrap.php';
 
 ## ProdModule
 
-In `ProdModule` production module in `BEAR.Package`, `ApcCache` cache is designed for one single web server.
+In the default `ProdModule` of `BEAR.Package`, `ApcCache` is designed for one single web server.
 
-As for multiple servers, we need to set shared cache storage.
-In that case, you can implement by creating application specific `ProdModule` to `src/Module/ProdModule.php`.
+For multiple servers, you need to set the shared cache storage. You can implement application specific src/Module/ProdModule.php.
 
 ```php?start_inline
 namespace BEAR\HelloWorld\Module;
@@ -57,19 +56,19 @@ class ProdModule extends AbstractModule
     }
 }
 ```
-`Cache` interface annotated with `@Storage` is defined for query repository and it is shared storage for web server.
+`Cache` interface annotated with `@Storage` is defined for query repository and it is a shared storage for web servers.
 
-We cannot use `ApcCache` on multiple servers, however, we have options to use
-[Redis](http://doctrine-orm.readthedocs.org/en/latest/reference/caching.html#redis) or other storage by creating adapter.
-([memcached](http://doctrine-orm.readthedocs.org/en/latest/reference/caching.html#memcached) is also available, but be careful about the capacity and volatile because it is a memory storage.）
+We cannot use `ApcCache` on multiple servers, however, we have the options to use
+[Redis](http://doctrine-orm.readthedocs.org/en/latest/reference/caching.html#redis) or other storage by creating an adapter.
+([memcached](http://doctrine-orm.readthedocs.org/en/latest/reference/caching.html#memcached) is also available, but be careful about the capacity and volatility because it is stored in memory.）
 
 ## HTTP Cache
 
-The resource annotated with `@Cacheable` cacheable, outputs `ETag` entity tag.
+The resource annotated with the `@Cacheable`, outputs an `ETag` entity tag.
 
-By using this `ETag`, we can return `304` (Not Modified) appropriate response when the resource is not modified.
+By using this `ETag`, we can return a `304` (Not Modified) appropriate response when the resource is not modified.
 
-（In this time, we can save not only cpu cost but also transfer cost of network.）
+（Therefore, we can save not only the cpu cost but also the network transfer cost.）
 
 ### App
 
@@ -90,8 +89,7 @@ class App extends AbstractApp
 
 ### bootstrap
 
-Next, modify `route` section in `bootstrap/bootstrap.php` for returning `304` when the contents are not modified by adding
-`if` conditional statement.
+Next, modify the `route` section in `bootstrap/bootstrap.php` to return a `304` when the contents are not modified by adding an `if` conditional statement.
 
 ```php?start_inline
 route: {
@@ -103,8 +101,7 @@ route: {
 
 ```
 
-`ETag` is also updated automatically,
-but you need to specify the relation of resource caches using `@Refresh` and `@Purge` annotations.
+`ETag` is also updated automatically, but you need to specify the relation of the resource caches using `@Refresh` and `@Purge` annotations.
 
 ## Extension
 
@@ -125,4 +122,4 @@ ext-uri_template    1.0      The uri_template PHP extension
 
 ## Deploy
 
-Please referer [BEAR.Sunday Deployer.php support](https://github.com/bearsunday/deploy) for deploy with [Deployer](http://deployer.org/).
+Please refer to [BEAR.Sunday Deployer.php support](https://github.com/bearsunday/deploy) for deploying with [Deployer](http://deployer.org/).
