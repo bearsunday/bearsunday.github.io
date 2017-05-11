@@ -32,9 +32,8 @@ Note: If you do not install V8Js then JS will be run using Node.js.
 Install `koriym/ssr-module` into the project.
 
 ```bash
-// composer create-project bear/skeleton // When a new project
-// cd MyVendor.MyApp
-composer require bear/ssr-module 1.x-dev
+// composer create-project bear/skeleton MyVendor.MyProject; cd MyVendor.MyProject // When a new project
+composer require bear/ssr-module
 ```
 
 Install the UI skeleton app `koriym/js-ui-skeleton`.

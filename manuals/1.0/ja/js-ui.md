@@ -33,9 +33,8 @@ Note: V8JsがインストールされていないとNode.jsでJSが実行され�
 プロジェクトに`koriym/ssr-module`をインストールします。
 
 ```bash
-// composer create-project bear/skeleton // 新規の場合
-// cd MyVendor.MyApp
-composer require bear/ssr-module 1.x-dev
+// composer create-project bear/skeleton MyVendor.MyProject; cd MyVendor.MyProject // 新規の場合
+composer require bear/ssr-module
 ```
 
 UIスケルトンアプリ`koriym/js-ui-skeleton`をインストールします。
