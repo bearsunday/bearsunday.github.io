@@ -44,6 +44,9 @@ use Ray\WebFormModule\SetAntiCsrfTrait;
 
 class MyForm extends AbstractForm
 {
+    /**
+     * {@inheritdoc}
+     */
     public function init()
     {
         // set input fields
@@ -59,37 +62,6 @@ class MyForm extends AbstractForm
 ```
 
 フォームクラスの`init()`メソッドでフォームのinput要素を登録し、バリデーションのフィルターやサニタイズのルールを適用します。バリデーションルールに関してはAura.Filterの[Rules To Validate Fields](https://github.com/auraphp/Aura.Filter/blob/2.x/docs/validate.md)、サニタイズに関しては[Rules To Sanitize Fields](https://github.com/auraphp/Aura.Filter/blob/2.x/docs/sanitize.md)をご覧ください。
-
-`ResourceObject`からデータを渡したい時にはフォームを作成するメソッドを実装して`ResourceObject`から呼び出します。
-
-
-```php?start_inline
-class MyDynamicForm extends AbstractForm
-{
-    public function init()
-　  {
-    }
-
-    public function build(string $defaultName)
-    {
-        // set dynamic input fields
-        $this->setField('name', 'text')
-             ->setValue($defaultName);
-    }
-}
-```
-
-`ResourceObject`からメソッドを呼び出します。
-
-```
-public function onPost($name, $age)
-{
-    // ....
-    $this->form->build($defaultName)
-}
-```
-
-`init()`は明示的にコールしないでもコンストラクタで実行されるので以上の例では`init()`, `build($id)`が呼ばれます。
 
 メソッドの引数を連想配列にしたもをバリデーションします。入力を変更したいときは
 `SubmitInterface`インターフェイスの`submit()メソッド`を実装して入力にする値を返します。
