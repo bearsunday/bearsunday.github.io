@@ -293,10 +293,18 @@ Please also refer to [Resouce best practice](/manuals/1.0/en/resource.html#best-
 
 ## DI
 
+ * Do not inject the value itself of the execution context (prod, dev etc). Instead, we inject instances according to the context. The application does not know in which context it is running.
  * Setter injection is not recommended for library code.
  * It is recommended that you override the `toConstructor` bindings instead and avoid the `Provider` bindings as much as possible.
  * Avoid binding by `Module` according to conditions. [AvoidConditionalLogicInModules](https://github.com/google/guice/wiki/AvoidConditionalLogicInModules)
  * It is not recommended to reference environmental variables since there is no module. Pass it in the constructor.
+
+## AOP
+
+ * Do not make interceptor mandatory. We will make the program work even without an interceptor. (For example, if you remove `@Transactional` interceptor, the function of transaction will be lost, but "core concers" will work without issue.)
+ * Prevent the interceptor from injecting dependencies in methods. Values that can only be determined at implementation time are injected into arguments via `@Assisted` injection.
+ * If there are multiple interceptors, do not depend on the execution order.
+ * If it is an interceptor unconditionally applied to all methods, consider the description in `bootstrap.php`.
 
 ## Router
 
