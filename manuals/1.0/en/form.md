@@ -64,36 +64,6 @@ class MyForm extends AbstractForm
 We can register the input elements in the `init()` method of the form class, and apply the rules of validation and sanitize.
 Please refer to [Rules To Validate Fields](https://github.com/auraphp/Aura.Filter/blob/2.x/docs/validate.md) of Aura.Filter with respect to validation rules, and [Rules To Sanitize Fields](https://github.com/auraphp/Aura.Filter/blob/2.x/docs/sanitize.md) with respect to sanitize rules.
 
-If you want to pass data from `ResourceObject`, implement a method to create a form and call it from` ResourceObject`.
- 
-
-```php?start_inline
-class MyDynamicForm extends AbstractForm
-{
-    public function init()
-　  {
-    }
-
-    public function build(string $defaultName)
-    {
-        // set dynamic input fields
-        $this->setField('name', 'text')
-             ->setValue($defaultName);
-    }
-}
-```
-
-Build the form in `ResourceObject`.
-
-```
-public function onPost($name, $age)
-{
-    // ....
-    $this->form->build($defaultName)
-}
-
-Since init () does not explicitly call it, it is executed in the constructor, so init (), build ($ id) is called in the above example.
-
 We validate an associative array of the argument of the method.
 If we want to change the input, we can set the values by implementing `submit()` method of `SubmitInterface` interface.
 
