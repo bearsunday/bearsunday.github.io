@@ -145,6 +145,8 @@ allow: GET
         ]
     }
 }
+```
+
 ## Routing
 
 A default router is set to `WebRouter` which simply maps URL's to the resource class directory.
