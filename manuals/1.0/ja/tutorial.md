@@ -122,7 +122,7 @@ curl -i -X OPTIONS 'http://127.0.0.1:8080/weekday'
 HTTP/1.1 200 OK
 ...
 Content-Type: application/json
-allow: GET
+Allow: GET
 
 {
     "GET": {
