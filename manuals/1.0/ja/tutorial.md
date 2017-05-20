@@ -19,7 +19,6 @@ composer create-project bear/skeleton MyVendor.Weekday
 
 ```php
 <?php
-
 namespace MyVendor\Weekday\Resource\App;
 
 use BEAR\Resource\ResourceObject;
@@ -29,7 +28,7 @@ class Weekday extends ResourceObject
     public function onGet($year, $month, $day)
     {
         $date = \DateTime::createFromFormat('Y-m-d', "$year-$month-$day");
-        $this['weekday'] = $date->format("D");
+        $this['weekday'] = $date->format('D');
 
         return $this;
     }
@@ -79,10 +78,13 @@ Built-inサーバーを立ち上げます。
 php -S 127.0.0.1:8080 bootstrap/api.php
 ```
 
-`curl`で`http://127.0.0.1:8080/weekday?year=2001&month=1&day=1` にGETリクエストを送って確かめてみましょう。
+`curl`でHTTPの`GET`リクエストを行って確かめてみましょう。
 
 ```
 curl -i 'http://127.0.0.1:8080/weekday?year=2001&month=1&day=1'
+```
+
+```
 HTTP/1.1 200 OK
 Host: 127.0.0.1:8080
 Connection: close
@@ -103,11 +105,46 @@ content-type: application/hal+json
 
 ```
 curl -i -X POST 'http://127.0.0.1:8080/weekday?year=2001&month=1&day=1'
+```
 
+```
 HTTP/1.1 405 Method Not Allowed
 ...
 ```
 
+HTTP `OPTIONS` メソッドリクエストで利用可能なHTTPメソッドと必要なパラメーターを調べることができます。([RFC7231](https://tools.ietf.org/html/rfc7231#section-4.3.7))
+
+```
+curl -i -X OPTIONS 'http://127.0.0.1:8080/weekday'
+```
+
+```
+HTTP/1.1 200 OK
+...
+Content-Type: application/json
+allow: GET
+
+{
+    "GET": {
+        "parameters": {
+            "year": {
+                "type": "integer"
+            },
+            "month": {
+                "type": "integer"
+            },
+            "day": {
+                "type": "integer"
+            }
+        },
+        "required": [
+            "year",
+            "month",
+            "day"
+        ]
+    }
+}
+```
 ## ルーティング
 
 デフォルトのルーターはURLをディレクトリにマップする`WebRouter`です。

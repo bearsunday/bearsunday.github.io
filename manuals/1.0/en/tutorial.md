@@ -20,7 +20,6 @@ Add the first application resource file at `src/Resource/App/Weekday.php`
 
 ```php
 <?php
-
 namespace MyVendor\Weekday\Resource\App;
 
 use BEAR\Resource\ResourceObject;
@@ -30,7 +29,7 @@ class Weekday extends ResourceObject
     public function onGet($year, $month, $day)
     {
         $date = \DateTime::createFromFormat('Y-m-d', "$year-$month-$day");
-        $this['weekday'] = $date->format("D");
+        $this['weekday'] = $date->format('D');
 
         return $this;
     }
@@ -80,10 +79,12 @@ Let us fire the php server to make a web service for this
 php -S 127.0.0.1:8080 bootstrap/api.php
 ```
 
-Send a `GET` request as `http://127.0.0.1:8080/weekday?year=2001&month=1&day=1` with `curl`
+Send a HTTP `GET` request with `curl`
 
 ```
 curl -i 'http://127.0.0.1:8080/weekday?year=2001&month=1&day=1'
+```
+```
 HTTP/1.1 200 OK
 Host: 127.0.0.1:8080
 Connection: close
@@ -104,11 +105,46 @@ This resource class only has a GET method, therefore `405 Method Not Allowed` wi
 
 ```
 curl -i -X POST 'http://127.0.0.1:8080/weekday?year=2001&month=1&day=1'
+```
 
+
+```
 HTTP/1.1 405 Method Not Allowed
 ...
 ```
 
+
+You can use the OPTIONS method to examine the HTTP methods available and the required parameters in the request. ([RFC7231](https://tools.ietf.org/html/rfc7231#section-4.3.7))
+```
+curl -i -X OPTIONS 'http://127.0.0.1:8080/weekday'
+```
+
+```
+HTTP/1.1 200 OK
+...
+Content-Type: application/json
+allow: GET
+
+{
+    "GET": {
+        "parameters": {
+            "year": {
+                "type": "integer"
+            },
+            "month": {
+                "type": "integer"
+            },
+            "day": {
+                "type": "integer"
+            }
+        },
+        "required": [
+            "year",
+            "month",
+            "day"
+        ]
+    }
+}
 ## Routing
 
 A default router is set to `WebRouter` which simply maps URL's to the resource class directory.
