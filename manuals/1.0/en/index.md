@@ -65,7 +65,7 @@ Each resource have have the representation of its current state rendered through
 
 1. A web handler transforms a client request into an application resource request.
 
-1. The `Method` that recieved the `Resource` request then constructs itself (the resource).
+1. The `Method` that received the `Resource` request then constructs itself (the resource).
 
 1. The resources assigned `Renderer` then renders the string value `Representation` of that resources state.
 
