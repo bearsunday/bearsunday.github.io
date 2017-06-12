@@ -46,4 +46,5 @@ permalink: /contributors.html
 [<img alt="hum2" src="https://avatars.githubusercontent.com/u/9448804?v=3&s=117" width="117">](https://github.com/hum2)
 [<img alt="kilica" src="https://avatars.githubusercontent.com/u/298665?v=3&s=117" width="117">](https://github.com/kilica)
 [<img alt="OdelGreg" src="https://avatars0.githubusercontent.com/u/24292161?v=3&s=117" width="117">](https://github.com/OdelGreg)
-[<img alt="OdelGreg" src="https://avatars3.githubusercontent.com/u/284778?v=3&s=117" width="117">](https://github.com/polidog)
+[<img alt="Polidog" src="https://avatars3.githubusercontent.com/u/284778?v=3&s=117" width="117">](https://github.com/polidog)
+[<img alt="bakura10" src="https://avatars3.githubusercontent.com/u/1198915?v=3&s=117" width="117">](https://github.com/bakura10)
