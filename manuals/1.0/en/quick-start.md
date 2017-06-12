@@ -12,7 +12,8 @@ Installation is done via [composer](http://getcomposer.org)
 composer create-project -n bear/skeleton MyVendor.MyProject
 ```
 
-Next, let's create a `page resource`. A page resource is a class which corresponds to a web page.
+Next, let's create a new resource. A resource is a class which corresponds, for instance, to a JSON payload (if working with an API-first driven model) 
+or a web page.
 Create your own basic page resource in `MyVendor.MyPackage/src/Resource/Page/Hello.php`
 
 ```php
