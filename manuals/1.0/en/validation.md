@@ -7,14 +7,104 @@ permalink: /manuals/1.0/en/validation.html
 
 # Validation
 
-In this section, we'll cover how to implement validation using AOP in BEAR.Sunday.
+[JSON Schema](http://json-schema.org/) is a vocabulary that allows you to annotate and validate JSON documents.
+Validation with the `@Valid` annotation validates the input value with the user's PHP code.
+For Web form validation, Please visit [Form](form.html) .
 
-Using `@Valid` annotation, you can set up validation as AOP for your method.
+
+## JSON Schema
+
+When annotating the resource object of BEAR.Sunday as `@JsonSchema`, the resource object `body` (resource state) is verified by the JSON schema.
+At this time, the data representation need not be JSON.
+
+### Install
+
+If you want to validate in all contexts, including production, create `AppModule`, if validation is done only during development, create `DevModule` and install within it.
+
+
+```php?start_inline
+use BEAR\Resource\Module\JsonSchemalModule; // Add this line
+use Ray\Di\AbstractModule;
+
+class AppModule extends AbstractModule
+{
+    protected function configure()
+    {
+        // ...
+        $this->install(new JsonSchemalModule);  // Add this line
+    }
+}
+```
+
+### @JsonSchema annotation
+
+Annotate as `@JsonSchema` in the `onGet` method of the class to validate.
+
+**Person.php**
+
+```php?start_inline
+
+use BEAR\Resource\Annotation\JsonSchema; // Add this line
+
+class Person extends ResourceObject
+{
+    /**
+     * @JsonSchema
+     */
+    public function onGet()
+    {
+        $this->body = [
+            'firstName' => 'mucha',
+            'lastName' => 'alfons',
+            'age' => 12
+        ];
+
+        return $this;
+    }
+}
+```
+
+Write the JSON schema with the extension `json` in the same directory.
+
+
+**Person.json**
+
+```json
+{
+  "title": "Person",
+  "type": "object",
+  "properties": {
+    "firstName": {
+      "type": "string"
+    },
+    "lastName": {
+      "type": "string"
+    },
+    "age": {
+      "description": "Age in years",
+      "type": "integer",
+      "minimum": 20
+    }
+  },
+  "required": ["firstName", "lastName"],
+  "additionalProperties": false
+}
+```
+
+By using the standardized JSON schema instead of leaving the data format that the developer outputs in its own document,
+the restriction can be understood by both humans and machines.
+You can make sure the declared schema is correct.
+
+
+## @Valid annotation
+
+The `@Valid` annotation is a validation for input. 
+You can set up validation as AOP for your method.
 By separating validation logic from the method, the code will be readable and testable.
 
 Validation libraries are available such as [Aura.Filter](https://github.com/auraphp/Aura.Filter), [Respect\Validation](https://github.com/Respect/Validation), and [PHP Standard Filter](http://php.net/manual/en/book.filter.php)
 
-## Install
+### Install
 
 Install `Ray.ValidateModule` via composer.
 
@@ -37,7 +127,7 @@ class AppModule extends AbstractModule
 }
 ```
 
-## Annotation
+### Annotation
 
 There are three annotations `@Valid`, `@OnValidate`, `@OnFailure` for validation.
 
@@ -108,7 +198,7 @@ class News
 In the method annotated with `@OnFailure`, you can access to the validated messages with `$failure->getMessages()`
 and also you can get the object of the original method with `$failure->getInvocation()`.
 
-## Various validation
+### Various validation
 
 If you want to have various validation for a class, you can specify the name of validation like below.
 
@@ -138,7 +228,7 @@ class News
     {
 ```
 
-## Other validation
+### Other validation
 
 If you need to implement the complex validation, you can have another class for validation and inject it.
 And then call in the method annotated with `onValidate`.

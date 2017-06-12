@@ -7,12 +7,102 @@ permalink: /manuals/1.0/ja/validation.html
 
 # バリデーション
 
-`@Valid`アノテーションを使用すると、メソッドの実行前にバリデーションメソッドが自動的に実行されるようになります。
-エラーを検知すると例外が発生しますが、代わりに別のメソッドを呼ぶこともできます。
+[JSONスキーマ](http://json-schema.org/)はJSONデータの構造を検証するための強力なツールです。
+リソースがどのような制約を持つデータなのかを規定することができます。
+
+`@Valid`アノテーションによるバリデーションは入力値をユーザーのPHPコードで検証します。
+Webフォームによりバリデーションは[フォーム](form.html)をご覧ください。
+
+## JSONスキーマ
+
+BEAR.Sundayのリソースオブジェクトを`＠JsonSchema`とアノテートするとリソースオブジェクトの`body`（リソース状態）にJSONスキーマによる検証が行われます。
+この時、データ表現はJSONである必要はありません。
+
+### インストール
+
+プロダクション含めてすべてのコンテキストでバリデーションを行うなら`AppModule`、開発中のみバリデーションを行うなら例えば`DevModule`を作成してその中でインストールします。
+
+```php?start_inline
+use BEAR\Resource\Module\JsonSchemalModule; // この行を追加
+use Ray\Di\AbstractModule;
+
+class AppModule extends AbstractModule
+{
+    protected function configure()
+    {
+        // ...
+        $this->install(new JsonSchemalModule);  // この行を追加
+    }
+}
+```
+
+### @JsonSchema アノテーション
+
+検証を行うクラスの`onGet`メソッドで`@JsonSchema`とアノテートします。
+
+**Person.php**
+
+```php?start_inline
+
+use BEAR\Resource\Annotation\JsonSchema; // この行を追加
+
+class Person extends ResourceObject
+{
+    /**
+     * @JsonSchema
+     */
+    public function onGet()
+    {
+        $this->body = [
+            'firstName' => 'mucha',
+            'lastName' => 'alfons',
+            'age' => 12
+        ];
+
+        return $this;
+    }
+}
+```
+
+同じディレクトリで拡張子を`json`にしてJSONスキーマを記述します。
+
+**Person.json**
+
+```json
+{
+  "title": "Person",
+  "type": "object",
+  "properties": {
+    "firstName": {
+      "type": "string"
+    },
+    "lastName": {
+      "type": "string"
+    },
+    "age": {
+      "description": "Age in years",
+      "type": "integer",
+      "minimum": 20
+    }
+  },
+  "required": ["firstName", "lastName"],
+  "additionalProperties": false
+}
+```
+
+このようにJSONスキーマはリクエストしたリソースがどのような制約を持ったリソースなのかを規程することができます。
+
+開発者が出力されるデータフォーマットを独自のドキュメントに残す代わりに標準化されたJSONスキーマを利用することで、その制約が**人間にもマシンにも理解できるものとなり
+宣言されたスキーマが確実に正しい**と確証を得ることができます。
+
+## @Validアノテーション
+
+`@Valid`アノテーションは入力のためのバリデーションです。メソッドの実行前にバリデーションメソッドが実行され、
+エラーを検知すると例外が発生されエラー処理のためのメソッドを呼ぶこともできます。
 
 分離したバリデーションのコードは可読性に優れテストが容易です。バリデーションのライブラリは[Aura.Filter](https://github.com/auraphp/Aura.Filter)や[Respect\Validation](https://github.com/Respect/Validation)、あるいは[PHP標準のFilter](http://php.net/manual/ja/book.filter.php)を使います。
 
-## インストール
+### インストール
 
 composerインストール
 
@@ -35,7 +125,7 @@ class AppModule extends AbstractModule
 }
 ```
 
-## アノテーション
+### アノテーション
 
 バリデーションのために`@Valid`、`@OnValidate`、`@OnFailure`の３つのアノテーションが用意されています。
 
@@ -97,7 +187,7 @@ use Ray\Validation\Annotation\OnFailure;
 ```
 `@OnFailure`メソッドには`$failure`が渡され`($failure->getMessages()`でエラーメッセージや`$failure->getInvocation()`でオリジナルメソッド実行のオブジェクトが取得できます。
 
-## 複数のバリデーション
+### 複数のバリデーション
 
 １つのクラスに複数のバリデーションメソッドが必要なときは以下のようにバリデーションの名前を指定します。
 
@@ -126,6 +216,6 @@ use Ray\Validation\Annotation\OnFailure;
     {
 ```
 
-## その他のバリデーション
+### その他のバリデーション
 
 複雑なバリデーションの時は別にバリデーションクラスをインジェクトして、`onValidate`メソッドから呼び出してバリデーションを行います。DIなのでコンテキストによってバリデーションを変えることもできます。
