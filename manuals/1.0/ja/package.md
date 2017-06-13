@@ -138,18 +138,21 @@ PSR7のミドルウエアのためのオプションパッケージです。
 || [ray/doctrine-orm-module](https://github.com/kawanamiyuu/Ray.DoctrineOrmModule) | [Doctrine ORM](https://github.com/doctrine/doctrine2)
 | ストレージ |
 ||[bear/query-repository](https://github.com/bearsunday/BEAR.QueryRepository) | 読み書きリポジトリの分離
-| Web
+| Web |
 | |[madapaja/twig-module](http://bearsunday.github.io/manuals/1.0/ja/html.html) | [Twigテンプレートエンジン](http://twig.sensiolabs.org/)
 | |[ray/web-form-module](http://bearsunday.github.io/manuals/1.0/ja/form.html) | Webフォーム & バリデーション
 | |[ray/aura-web-module](https://github.com/Ray-Di/Ray.AuraWebModule) | [Aura.Web](https://github.com/auraphp/Aura.Web)
 | |[ray/aura-session-module](https://github.com/ray-di/Ray.AuraSessionModule) | [Aura.Session](https://github.com/auraphp/Aura.Session)
 | |[ray/symfony-session-module](https://github.com/kawanamiyuu/Ray.SymfonySessionModule) | [Symfony Session](https://github.com/symfony/http-foundation/tree/master/Session)
-| 認証
+| バリデーション |
+| |[ray/validate-module](https://github.com/ray-di/Ray.ValidateModule)
+| |[satomif/extra-aura-filter-module](https://github.com/satomif/ExtraAuraFilterModule)
+| 認証 |
 | |[ray/oauth-module](https://github.com/Ray-Di/Ray.OAuthModule) | OAuth
 | |[ray/role-module](https://github.com/ray-di/Ray.RoleModule) | Zend Acl
-| ハイパーメディア
+| ハイパーメディア |
 | |[kuma-guy/siren-module](https://github.com/kuma-guy/BEAR.SirenModule) | Siren
-|  開発
+|  開発 |
 | |[ray/fake-module](https://github.com/shingo-kumagai/Ray.FakeModule) | モッキング
 
 ## ベンダー・パッケージ

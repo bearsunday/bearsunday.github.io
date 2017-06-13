@@ -138,6 +138,9 @@ Optional library package can be installed with `composer require` command.
 | |[ray/aura-web-module](https://github.com/Ray-Di/Ray.AuraWebModule) | [Aura.Web](https://github.com/auraphp/Aura.Web)
 | |[ray/aura-session-module](https://github.com/ray-di/Ray.AuraSessionModule) | [Aura.Session](https://github.com/auraphp/Aura.Session)
 | |[ray/symfony-session-module](https://github.com/kawanamiyuu/Ray.SymfonySessionModule) | [Symfony Session](https://github.com/symfony/http-foundation/tree/master/Session)
+| Validation |
+| |[ray/validate-module](https://github.com/ray-di/Ray.ValidateModule)
+| |[satomif/extra-aura-filter-module](https://github.com/satomif/ExtraAuraFilterModule)
 | Authorization and Authentication
 | |[ray/oauth-module](https://github.com/Ray-Di/Ray.OAuthModule) | OAuth
 | |[ray/role-module](https://github.com/ray-di/Ray.RoleModule) | Zend Acl
