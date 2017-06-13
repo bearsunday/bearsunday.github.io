@@ -12,7 +12,7 @@ permalink: /contributors.html
 [<img alt="vlakarados" src="https://avatars.githubusercontent.com/u/386678?v=3&s=117" width="117">](https://github.com/vlakarados)
 [<img alt="tomverran" src="https://avatars.githubusercontent.com/u/1388226?v=3&s=117" width="117">](https://github.com/tomverran)
 [<img alt="tanakahisateru" src="https://avatars.githubusercontent.com/u/403893?v=3&s=117" width="117">](https://github.com/tanakahisateru)
-[<img alt="shingo-kumagai" src="https://avatars.githubusercontent.com/u/7978290?v=3&s=117" width="117">](https://github.com/shingo-kumagai)
+[<img alt="kuma-guy" src="https://avatars.githubusercontent.com/u/7978290?v=3&s=117" width="117">](https://github.com/kuma-guy)
 [<img alt="sasezaki" src="https://avatars.githubusercontent.com/u/42755?v=3&s=117" width="117">](https://github.com/sasezaki)
 [<img alt="remore" src="https://avatars.githubusercontent.com/u/424277?v=3&s=117" width="117">](https://github.com/remore)
 [<img alt="qckanemoto" src="https://avatars.githubusercontent.com/u/4360663?v=3&s=117" width="117">](https://github.com/qckanemoto)
