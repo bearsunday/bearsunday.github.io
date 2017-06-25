@@ -301,6 +301,7 @@ class Weekday extends ResourceObject
     {
         $date = \DateTime::createFromFormat('Y-m-d', "$year-$month-$day");
         $this['weekday'] = $date->format('D');
+        $this->logger->info("$year-$month-$day {$this['weekday']}");
 
         return $this;
     }
