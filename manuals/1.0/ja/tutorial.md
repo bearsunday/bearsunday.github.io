@@ -308,11 +308,11 @@ class Weekday extends ResourceObject
 }
 ```
 
-実行して`var/log/weekday.log`に結果が出力されていることを確認しましょう。
+実行して`var/log/cli-hal-api-app/weekday.log`に結果が出力されていることを確認しましょう。
 
 ```bash
 php bootstrap/api.php get '/weekday/2011/05/23'
-cat var/log/weekday.log
+cat var/log/cli-hal-api-app/weekday.log
 ```
 
 ## AOP

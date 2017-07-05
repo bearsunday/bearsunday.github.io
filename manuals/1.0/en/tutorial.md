@@ -311,11 +311,11 @@ class Weekday extends ResourceObject
 }
 ```
 
-Let's check `var/log/weekday.log` to see if our logger worked.
+Let's check `var/log/cli-hal-api-app/weekday.log` to see if our logger worked.
 
 ```bash
 php bootstrap/api.php get '/weekday/2011/05/23'
-cat var/log/weekday.log
+cat var/log/cli-hal-api-app/weekday.log
 ```
 
 ## AOP
