@@ -7,26 +7,54 @@ permalink: /manuals/1.0/ja/production.html
 
 # プロダクション
 
-プロダクション環境用の構成のためにキャッシュの設定やスクリプトの変更を行います。
+アプリケーションの[ディプロイされる環境](https://en.wikipedia.org/wiki/Deployment_environment)に応じてキャッシュの設定や束縛の変更を行います。
 
 ## bootファイル
 
-コンテキストが`prod-`で始まるとアプリケーションオブジェクト`$app`がキャッシュされます。
-キャッシュドライバーは環境に応じて`ApcCache`か`FilesystemCache`が自動選択されます。
+コンテキストが`prod-`または`stage-`で始まるとアプリケーションオブジェクト`$app`がキャッシュされます。（`prod`は実際に運用するプロダクションサイトで`stage`は`prod`のミラーサイトです）
 
 ```php?start_inline
 $context = 'prod-app';
 require dirname(dirname(__DIR__)) . '/bootstrap/bootstrap.php';
 ```
 
-## キャッシュの設定
 
 ## ProdModule
 
-デフォルトの`ProdModule`はwebサーバー1台を前提にしている`ApcCache`になっています。
-複数のWebサーバーを構成するためには共有のキャッシュストレージを設定する必要があります。
+アプリケーション用の`ProdModule`を`src/Module/ProdModule.php`に用意してプロダクション用の束縛をカスタマイズします。
 
-アプリケーション用の`ProdModule`を`src/Module/ProdModule.php`に用意して、サーバー間で共有するコンテンツ用キャッシュのストレージのモジュール（[memcached](http://php.net/manual/ja/book.memcached.php)または[Redis](https://redis.io)）をインストールします。
+```php
+<?php
+namespace Polidog\Todo\Module;
+
+use BEAR\Package\Context\ProdModule as PackageProdModule;
+use BEAR\QueryRepository\CacheVersionModule;
+use BEAR\Resource\Module\OptionsMethodModule;
+use Ray\Di\AbstractModule;
+
+class ProdModule extends AbstractModule
+{
+    /**
+     * {@inheritdoc}
+     */
+    protected function configure()
+    {
+        $this->install(new PackageProdModule);       // デフォルトのprod設定
+        $this->install(new OptionsMethodModule);     // OPTIONSメソッドをプロダクションでも有効に
+        $this->install(new CacheVersionModule('1')); // リソースキャッシュのバージョン指定
+    }
+}
+```
+
+## キャッシュ
+
+キャッシュは複数のWebサーバー間でシェアをしないローカルキャッシュと、シェアをする共有キャッシュの２種類あります。ローカルキャッシュはdeploy後に変更のないキャシュ例えばアノテーション等に使われ、共有キャッシュはリソース状態の保存に使われます。
+
+どちらのキャッシュもデフォルトでは「APCuキャッシュ+ファイルキャッシュ」のチェーンキャッシュです。リードはAPCuが優先して使用されライトは両方のストレージに行われます。
+
+### リソースキャッシュ
+
+複数のWebサーバーを構成するためには共有のキャッシュストレージを設定する必要があり、（[memcached](http://php.net/manual/ja/book.memcached.php)または[Redis](https://redis.io)）のモジュールをインストールします。
 
 ### memcached
 
@@ -64,9 +92,11 @@ $redisServer = 'localhost:6379'; // {host}:{port}
 $this->install(new StorageRedisModule($redisServer);
 ```
 
+上記以外のストレージを利用する場合には、それぞれのモジュールを参考に新たにモジュールを作成します。
+
 ### キャッシュ時間の指定
 
-デフォルトのTTLを変更する場合
+デフォルトのTTLを変更する場合`StorageExpiryModule`をインストールします。
 
 ```php?start_inline
 // Cache time
@@ -75,8 +105,17 @@ $medium = 3600;
 $long = 24 * 3600;
 $this->install(new StorageExpiryModule($short, $medium, $long);
 ```
+### キャッシュバージョンの指定
 
-## HTTP Cache
+リソースキャッシュの互換性が失われるdeployの時にはキャッシュバージョンを変更します。
+
+```
+$this->install(new CacheVersionModule($cacheVersion));
+```
+
+deployの度にリソースキャッシュを破棄したい場合は`$cacheVersion`に時刻や乱数の値を割り当てます。
+
+## HTTP キャッシュ
 
 キャッシュ可能(`@Cacheable`)とアノテートしたリソースはエンティティタグ`ETag`を出力します。
 
@@ -118,4 +157,39 @@ if ($app->httpCache->isNotModified($_SERVER)) {
 
 ## デプロイ
 
-[Deployer](http://deployer.org/)のサポート[BEAR.Sunday Deployer.php support](https://github.com/bearsunday/deploy)をご覧ください。
+### ⚠️ 上書き更新を避ける
+
+駆動中のプロジェクトフォルダを`rsync`などで上書きするのはリソースキャッシュの不一致や`tmp/`に作成される自動生成のクラスファイルと実際のクラスとの不一致になるリスクがあります。高負荷のサイトではキャッシュ作成やopcode作成などの大量のジョブが一気に実行されサイトのパフォーマンスのキャパシティを超える可能性もあります。
+
+別のディレクトリでセットアップを行いそのセットアップが問題なければ切り替えるようにします。
+
+### コンパイルを推奨
+
+セットアップを行う際に`vendor/bin/bear.compile`スクリプトを使ってプロジェクトを**ウオームアップ**することができます。コンパイルスクリプトはDI/AOP用の動的に作成されるファイルやアノテーションなどの静的なキャッシュファイルを全て事前に作成します。
+
+全てのクラスでインジェクションを行うのでランタイムでDIのエラーが出ることもありません。また`.env`には一般にAPIキーやパスワードなどのクレデンシャル情報が含まれますが、内容は全てPHPファイルに取り込まれるのでコンパイル後に消去可能です。コンパイルはdeployをより高速で安全にします。
+
+例）コンソールで実行
+
+```
+vendor/bin/bear.compile 'Polidog\Todo' prod-html-app /path/to/prject
+```
+例) PHPスクリプトで実行
+
+```
+use BEAR\Package\Compiler;
+use Doctrine\Common\Annotations\AnnotationRegistry;
+
+$appName = 'Polidog\Todo';
+$context = 'prod-html-app';
+$appDir = '/path/to/project';
+
+$loader = require $appDir . '/vendor/autoload.php';
+AnnotationRegistry::registerLoader([$loader, 'loadClass']);
+(new Compiler)->__invoke($appName, $context, $appDir);
+```
+
+
+### Deployerサポート
+
+[Deployer](http://deployer.org/)の[BEAR.Sundayレシピ](https://github.com/bearsunday/deploy)を利用が便利で安全です。他のサーバー構成ツールを利用する場合でも参考にしたりDeployerスクリプトを実行することを検討してください。
