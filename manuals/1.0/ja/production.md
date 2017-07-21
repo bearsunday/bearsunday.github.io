@@ -7,7 +7,7 @@ permalink: /manuals/1.0/ja/production.html
 
 # プロダクション
 
-アプリケーションの[ディプロイされる環境](https://en.wikipedia.org/wiki/Deployment_environment)に応じてキャッシュの設定や束縛の変更を行います。
+アプリケーションの[ディプロイ環境](https://en.wikipedia.org/wiki/Deployment_environment)に応じてキャッシュの設定や束縛の変更を行います。
 
 ## コンテキスト
 
