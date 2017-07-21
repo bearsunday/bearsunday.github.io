@@ -9,15 +9,16 @@ permalink: /manuals/1.0/ja/production.html
 
 アプリケーションの[ディプロイされる環境](https://en.wikipedia.org/wiki/Deployment_environment)に応じてキャッシュの設定や束縛の変更を行います。
 
-## bootファイル
+## コンテキスト
 
-コンテキストが`prod-`または`stage-`で始まるとアプリケーションオブジェクト`$app`がキャッシュされます。（`prod`は実際に運用するプロダクションサイトで`stage`は`prod`のミラーサイトです）
+bootファイルで指定するコンテキストが`prod-`または`stage-`で始まるとアプリケーションオブジェクト`$app`がキャッシュされます。（`prod`は実際に運用するプロダクションサイトで`stage`は`prod`のミラーサイトです）
 
 ```php?start_inline
 $context = 'prod-app';
 require dirname(dirname(__DIR__)) . '/bootstrap/bootstrap.php';
 ```
 
+deploy後にキャッシュを再生成するにはwebサーバーを再起動するか、`src/`ディレクトリのタイムスタンプを変更します。
 
 ## ProdModule
 
