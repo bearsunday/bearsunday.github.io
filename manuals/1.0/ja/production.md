@@ -59,7 +59,8 @@ class ProdModule extends AbstractModule
 
 ### memcached
 
-```php?start_inline
+```php
+<?php
 namespace BEAR\HelloWorld\Module;
 
 use BEAR\QueryRepository\StorageMemcachedModule;
@@ -177,7 +178,8 @@ vendor/bin/bear.compile 'Polidog\Todo' prod-html-app /path/to/prject
 ```
 例) PHPスクリプトで実行
 
-```
+```php
+<?php
 use BEAR\Package\Compiler;
 use Doctrine\Common\Annotations\AnnotationRegistry;
 
