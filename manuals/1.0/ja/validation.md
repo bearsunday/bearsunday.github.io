@@ -48,7 +48,9 @@ mkdir var/json_validate
 
 リソースクラスのメソッドで`@JsonSchema`とアノテートします。`shcema`プロパティにはJSONスキーマファイル名を指定します。
 
-**User.php**
+### shcema
+
+src/Resource/App/User.php
 
 ```php?start_inline
 
@@ -74,7 +76,7 @@ class User extends ResourceObject
 
 JSONスキーマを設置します。
 
-**/var/json_schema/user.json**
+/var/json_schema/user.json
 
 
 
@@ -91,6 +93,8 @@ JSONスキーマを設置します。
   "required": ["username"]
 }
 ```
+
+### key
 
 bodyにインデックスキーがある場合にはアノテーションの`key`プロパティで指定します。
 
@@ -118,8 +122,9 @@ class Person extends ResourceObject
 }
 ```
 
+### params
 
-入力のスキーマは`params`プロパティで指定します。
+`params `プロパティには引数のバリデーションのためのJSONスキーマファイル名を指定します。
 
 
 ```php?start_inline
@@ -133,6 +138,10 @@ class Todo extends ResourceObject
      */
     public function onPost(string $title)
 ```
+
+JSONスキーマを設置します。
+
+**/var/json_validate/todo.post.json**
 
 ```json
 {
