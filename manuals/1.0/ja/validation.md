@@ -7,20 +7,18 @@ permalink: /manuals/1.0/ja/validation.html
 
 # バリデーション
 
-[JSONスキーマ](http://json-schema.org/)はJSONデータの構造を検証するための強力なツールです。
-リソースがどのような制約を持つデータなのかを規定することができます。
 
-`@Valid`アノテーションによるバリデーションは入力値をユーザーのPHPコードで検証します。
-Webフォームによりバリデーションは[フォーム](form.html)をご覧ください。
+ * JSONスキーマでリソースAPIを定義する事ができます。
+ * `@Valid`, `@onVlidate`アノテーションでバリデーションコードを分離する事ができます。
+ * Webフォームによるバリデーションは[フォーム](form.html)をご覧ください。
 
-## JSONスキーマ
+# JSONスキーマ
 
-BEAR.Sundayのリソースオブジェクトを`＠JsonSchema`とアノテートするとリソースオブジェクトの`body`（リソース状態）にJSONスキーマによる検証が行われます。
-データ表現はJSONである必要はありません。
+[JSON スキーマ](http://json-schema.org/)とは、JSON objectの記述と検証のための標準です。`＠JsonSchema`とアノテートされたリソースクラスのメソッドが返すリソース`body`に対してJSONスキーマによる検証が行われます。
 
 ### インストール
 
-プロダクション含めてすべてのコンテキストでバリデーションを行うなら`AppModule`、開発中のみバリデーションを行うなら例えば`DevModule`を作成してその中でインストールします。
+全てのコンテキストで常にバリデーションを行うなら`AppModule`、開発中のみバリデーションを行うなら`DevModule`などのクラスを作成してその中でインストールします。
 
 ```php?start_inline
 use BEAR\Resource\Module\JsonSchemalModule; // この行を追加
@@ -31,25 +29,35 @@ class AppModule extends AbstractModule
     protected function configure()
     {
         // ...
-        $this->install(new JsonSchemalModule);  // この行を追加
+        $this->install(new JsonSchemalModule($appDir . '/var/json_schema', $appDir . '/var/json_validate'));  // この行を追加
+
     }
 }
 ```
 
+ディレクトリ作成
+
+```bash
+mkdir var/json_schema
+mkdir var/json_validate
+```
+
+`var/json_schema/`にリソースのbodyの仕様となるJSONスキーマファイル、`var/json_validate/`には入力バリデーションのためのJSONスキーマファイルを格納します。
+
 ### @JsonSchema アノテーション
 
-検証を行うクラスの`onGet`メソッドで`@JsonSchema`とアノテートします。
+リソースクラスのメソッドで`@JsonSchema`とアノテートします。`shcema`プロパティにはJSONスキーマファイル名を指定します。
 
-**Person.php**
+**User.php**
 
 ```php?start_inline
 
 use BEAR\Resource\Annotation\JsonSchema; // この行を追加
 
-class Person extends ResourceObject
+class User extends ResourceObject
 {
     /**
-     * @JsonSchema
+     * @JsonSchema(shcema="user.json")
      */
     public function onGet()
     {
@@ -64,36 +72,89 @@ class Person extends ResourceObject
 }
 ```
 
-同じディレクトリで拡張子を`json`にしてJSONスキーマを記述します。
+JSONスキーマを設置します。
 
-**Person.json**
+**/var/json_schema/user.json**
+
+
 
 ```json
 {
-  "title": "Person",
   "type": "object",
   "properties": {
-    "firstName": {
-      "type": "string"
-    },
-    "lastName": {
-      "type": "string"
-    },
-    "age": {
-      "description": "Age in years",
-      "type": "integer",
-      "minimum": 20
+    "username": {
+      "type": "string",
+      "maxLength": 30,
+      "pattern": "[a-z\\d~+-]+"
     }
   },
-  "required": ["firstName", "lastName"],
-  "additionalProperties": false
+  "required": ["username"]
 }
 ```
 
-このようにJSONスキーマはリクエストしたリソースがどのような制約を持ったリソースなのかを規定することができます。
+bodyにインデックスキーがある場合にはアノテーションの`key`プロパティで指定します。
 
-開発者が出力されるデータフォーマットを独自のドキュメントに残す代わりに標準化されたJSONスキーマを利用することで、その制約が**人間にもマシンにも理解できるものとなり
-宣言されたスキーマが確実に正しい**と確証を得ることができます。
+
+```php?start_inline
+
+use BEAR\Resource\Annotation\JsonSchema; // この行を追加
+
+class Person extends ResourceObject
+{
+    /**
+     * @JsonSchema(key="user", shcema="user.json")
+     */
+    public function onGet()
+    {
+        
+        $this['user'] = [
+            'firstName' => 'mucha',
+            'lastName' => 'alfons',
+            'age' => 12
+        ];        
+
+        return $this;
+    }
+}
+```
+
+
+入力のスキーマは`params`プロパティで指定します。
+
+
+```php?start_inline
+
+use BEAR\Resource\Annotation\JsonSchema; // この行を追加
+
+class Todo extends ResourceObject
+{
+    /**
+     *@JsonSchema(key="user", shcema="user.json", params="todo.post.json")
+     */
+    public function onPost(string $title)
+```
+
+```json
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "/todo POST request validation",
+  "properties": {
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 40
+    }
+}
+
+```
+
+独自ドキュメントの代わりに標準化された方法で常に検証することで、その仕様が**人間にもマシンにも理解できる**確実なものになります。
+
+###  関連リンク
+
+ * [Example](http://json-schema.org/examples.html)
+ * [Understanding JSON Schema](https://spacetelescope.github.io/understanding-json-schema/)
+ * [JSON Schema Generator](https://jsonschema.net/#/editor)
 
 ## @Validアノテーション
 
