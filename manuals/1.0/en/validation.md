@@ -7,15 +7,14 @@ permalink: /manuals/1.0/en/validation.html
 
 # Validation
 
-[JSON Schema](http://json-schema.org/) is a vocabulary that allows you to annotate and validate JSON documents.
-Validation with the `@Valid` annotation validates the input value with the user's PHP code.
-For Web form validation, Please visit [Form](form.html) .
+ * You can define resource APIs in the JSON schema.
+ * You can separate the validation code with `@Valid`, `@onVlidate` annotation.
+ * Please see the form for validation by web form.
 
+# JSON Schema
 
-## JSON Schema
+The [JSON Schema](http://json-schema.org/) is the standard for describing and validating JSON objects. `@JsonSchema` and the resource body returned by the method of annotated resource class are validated by JSON schema.
 
-When annotating the resource object of BEAR.Sunday as `@JsonSchema`, the resource object `body` (resource state) is verified by the JSON schema.
-At this time, the data representation need not be JSON.
 
 ### Install
 
@@ -31,25 +30,40 @@ class AppModule extends AbstractModule
     protected function configure()
     {
         // ...
-        $this->install(new JsonSchemalModule);  // Add this line
+        $this->install(
+            new JsonSchemalModule(
+                $appDir . '/var/json_schema',
+                $appDir . '/var/json_validate'
+            )
+        );  // Add this line
     }
 }
 ```
+Create directories for JSON shema files.
+
+```bash
+mkdir var/json_schema
+mkdir var/json_validate
+```
+
+In the `var/json_schema/`, store the JSON schema file which is the specification of the body of the resource, and the `var/json_validate/` stores the JSON schema file for input validation.
 
 ### @JsonSchema annotation
 
-Annotate as `@JsonSchema` in the `onGet` method of the class to validate.
+It annotates `@JsonSchema` in the method of the resource class. For the `shcema` property, specify the JSON schema file name.
 
-**Person.php**
+### shcema
+
+src/Resource/App/User.php
 
 ```php?start_inline
 
 use BEAR\Resource\Annotation\JsonSchema; // Add this line
 
-class Person extends ResourceObject
+class User extends ResourceObject
 {
     /**
-     * @JsonSchema
+     * @JsonSchema(shcema="user.json")
      */
     public function onGet()
     {
@@ -64,37 +78,91 @@ class Person extends ResourceObject
 }
 ```
 
-Write the JSON schema with the extension `json` in the same directory.
-
-
-**Person.json**
+We will set up the JSON schema to `/var/json_schema/user.json`
 
 ```json
 {
-  "title": "Person",
   "type": "object",
   "properties": {
-    "firstName": {
-      "type": "string"
-    },
-    "lastName": {
-      "type": "string"
-    },
-    "age": {
-      "description": "Age in years",
-      "type": "integer",
-      "minimum": 20
+    "username": {
+      "type": "string",
+      "maxLength": 30,
+      "pattern": "[a-z\\d~+-]+"
     }
   },
-  "required": ["firstName", "lastName"],
-  "additionalProperties": false
+  "required": ["username"]
 }
 ```
 
-By using the standardized JSON schema instead of leaving the data format that the developer outputs in its own document,
-the restriction can be understood by both humans and machines.
-You can make sure the declared schema is correct.
+### key
 
+If the body has an index key, specify it with the key property of the annotation.
+
+```php?start_inline
+
+use BEAR\Resource\Annotation\JsonSchema; // Add this line
+
+class Person extends ResourceObject
+{
+    /**
+     * @JsonSchema(key="user", shcema="user.json")
+     */
+    public function onGet()
+    {
+        
+        $this['user'] = [
+            'firstName' => 'mucha',
+            'lastName' => 'alfons',
+            'age' => 12
+        ];        
+
+        return $this;
+    }
+}
+```
+
+### params
+
+The `params` property specifies the JSON schema file name for argument validation.
+
+
+```php?start_inline
+
+use BEAR\Resource\Annotation\JsonSchema; // Add this line
+
+class Todo extends ResourceObject
+{
+    /**
+     *@JsonSchema(key="user", shcema="user.json", params="todo.post.json")
+     */
+    public function onPost(string $title)
+```
+
+We place JSON schema file.
+
+**/var/json_validate/todo.post.json**
+
+```json
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "/todo POST request validation",
+  "properties": {
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 40
+    }
+}
+
+```
+
+By constantly verifying in a standardized way instead of proprietary documentation, the specification is **reliable and understandable** to both humans and machines.
+
+### Related Links
+
+ * [Example](http://json-schema.org/examples.html)
+ * [Understanding JSON Schema](https://spacetelescope.github.io/understanding-json-schema/)
+ * [JSON Schema Generator](https://jsonschema.net/#/editor)
 
 ## @Valid annotation
 
