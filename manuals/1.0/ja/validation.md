@@ -29,8 +29,12 @@ class AppModule extends AbstractModule
     protected function configure()
     {
         // ...
-        $this->install(new JsonSchemalModule($appDir . '/var/json_schema', $appDir . '/var/json_validate'));  // この行を追加
-
+        $this->install(
+            new JsonSchemalModule(
+                $appDir . '/var/json_schema',
+                $appDir . '/var/json_validate'
+            )
+        );   // この行を追加
     }
 }
 ```
