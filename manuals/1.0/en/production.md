@@ -103,23 +103,25 @@ route: {
 
 `ETag` is also updated automatically, but you need to specify the relation of the resource caches using `@Refresh` and `@Purge` annotations.
 
-## Extension
-
-Optimize performances by installing pecl extensions.
-
- * [PECL/uri_template](http://pecl.php.net/package/uri_template) URI Template
-
-```
-pecl install uri_template
-```
-
-Confirmation
-
-```
-composer show --platform
-ext-uri_template    1.0      The uri_template PHP extension
-```
 
 ## Deploy
 
-Please refer to [BEAR.Sunday Deployer.php support](https://github.com/bearsunday/deploy) for deploying with [Deployer](http://deployer.org/).
+### ⚠️ Avoid overwriting updates
+
+Overwriting a running project folder with `rsync` or the like has a risk of inconsistency between the resource cache and automatic generation class file created in　`tmp/` and the actual class. On heavily loaded sites, it is possible that multiple jobs such as cache creation and opcode creation are executed at the same time, exceeding the performance capacity of the site.
+
+Set up in a different directory and switch (by symlink) it if the setup is OK.
+
+### 👍🏻 Compilation recommended
+
+When setting up, you can warm up the project using the `vendor/bin/bear.compile` script. The compilation script prepares all static cache files such as dynamically created files and annotations for DI / AOP in advance.
+
+Since injection is done in all classes, there is no problem of DI error at runtime. In addition, although `.env` generally contains credential information such as API key and password, all contents are imported into PHP file and can be deleted after compilation. Compilation makes deploy faster and safer.
+
+**Execution at the console**
+
+```
+vendor/bin/bear.compile 'Polidog\Todo' prod-html-app /path/to/prject
+```
+
+Deployer's [BEAR.Sunday recipe]((https://github.com/bearsunday/deploy)) is convenient and safe to use. Consider using the other server configuration tool as well as referring or running the Deployer script.
