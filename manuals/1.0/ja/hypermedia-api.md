@@ -7,21 +7,17 @@ permalink: /manuals/1.0/ja/hypermedia-api.html
 
 # ハイパーメディアAPI
 
-
 ## HAL
 
-BEAR.Sundayは[HAL](https://en.wikipedia.org/wiki/Hypertext_Application_Language)(Hypertext Application Language)をサポートします。
+BEAR.Sundayは[HAL](https://en.wikipedia.org/wiki/Hypertext_Application_Language)ハイパーメディア(`application/hal+json`)APIをサポートします。
 
-HALリソースモデルは以下の要素で構成されます。
+HALのリソースモデルは以下の要素で構成されます。
 
  * リンク
  * 埋め込みリソース
  * 状態
 
-従来のリソース状態のみを表すJSONにリンクの`_links`と他リソースを埋め込む(内包する)`_embedded`を加えたものがHALです。HALの[REST API](http://roy.gbiv.com/untangled/2008/rest-apis-must-be-hypertext-driven)は従来のURIベースの[CRUD Web API](https://www.infoq.com/jp/news/2009/08/CRUDREST) (RESTish API)とも互換性があり併用可能です。
-
-HALはAPIを探索可能にしそのAPIドキュメントをAPI自体から発見することができます。
-
+HALは従来のリソースの状態のみを表すJSONにリンクの`_links`と他リソースを埋め込む`_embedded`を加えたものです。HALはAPIを探索可能にしてそのAPIドキュメントをAPI自体から発見することができます。
 
 ### Links
 
@@ -38,7 +34,7 @@ HALはAPIを探索可能にしそのAPIドキュメントをAPI自体から発�
 ### Link Relations
 
 
-リンクには`rel`（関係）があり、リンクの意味を示します。`rel`は、リソースのリンクを区別します。 
+リンクには`rel`（関係）があり、リンクの意味を示します。`rel`は、リソースのリンクを区別します。Webページと同じようにリソースに関連する他のリソースやリソースに対する操作をリンクします。
 
 ```
 {
@@ -48,11 +44,11 @@ HALはAPIを探索可能にしそのAPIドキュメントをAPI自体から発�
 }
 ```
 
-HALについてさらに詳しくは http://stateless.co/hal_specification.html をご覧ください。
+HALについてさらに詳しくは[http://stateless.co/hal_specification.html](http://stateless.co/hal_specification.html)をご覧ください。
 
 ## リソースクラス
 
-リソースクラスから他のリソースにリンクを貼ったり、他のリソースを埋め込むことはアノテーションを用いて簡単にできます。
+アノテーションでリンクを貼ったり他のリソースを埋め込むことができます。
 
 ### @Link
 
@@ -106,7 +102,6 @@ $this->body['_embedded']['todos'] = $this->resource->uri('app://self/todos');
 
 APIの見つけやすさ(API Discoverability)を実現するために`HAL`は[CURIEs]()を使います。
 
-
 それぞれのAPIのドキュメントへのリンクを貼った`index.json`、またはこのようなリソースクラスをルートに設置します。
 
 ```php
@@ -148,9 +143,9 @@ class Index extends ResourceObject
 
 ## APIドキュメントサービス
 
-Curiesの設置されたAPIサーバーをAPIドキュメントサーバーにもすることができます。APIドキュメントには作成の手間や実際のAPIとのずれ、その検証、メンテナンスといった問題がつきまといますがその問題を解決します。
+Curiesの設置されたAPIサーバーをAPIドキュメントサーバーにもすることができます。APIドキュメントの作成の手間や実際のAPIとのずれやその検証、メンテナンスといった問題を解決します。
 
-サービスするためには`bear/api-doc`をインストールして`BEAR\ApiDoc\ApiDoc`ページクラスをドキュメントをサービスしたいリソースで継承します。
+サービスするためには`bear/api-doc`をインストールして`BEAR\ApiDoc\ApiDoc`ページクラスを継承して設置します。
 
 ```
 composer require bear/api-doc
@@ -187,3 +182,6 @@ WebベースのHAL BrowserやコンソールのCURLコマンドでWebサイト�
  * [hyperagent.js](https://weluse.github.io/hyperagent/)
 
 
+# Siren
+
+[Siren](https://github.com/kevinswiber/siren)ハイパーメディア(`application/vnd.siren+json`)をサポートした[Sirenモジュール](https://github.com/kuma-guy/BEAR.SirenModule) も利用可能です。
