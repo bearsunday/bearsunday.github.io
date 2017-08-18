@@ -1,8 +1,8 @@
 ---
-layout: docs-ja
+layout: docs-en
 title: ハイパーメディアAPI
 category: Manual
-permalink: /manuals/1.0/ja/hyper-media-api.html
+permalink: /manuals/1.0/en/hypermedia-api.html
 ---
 
 # ハイパーメディアAPI
