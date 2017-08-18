@@ -150,7 +150,11 @@ class Index extends ResourceObject
 
 Curiesの設置されたAPIサーバーをAPIドキュメントサーバーにもすることができます。APIドキュメントには作成の手間や実際のAPIとのずれ、その検証、メンテナンスといった問題がつきまといますがその問題を解決します。
 
-サービスするためには、`BEAR\ApiDoc\ApiDoc`ページクラスをドキュメントをサービスしたいリソースで継承します。
+サービスするためには`bear/api-doc`をインストールして`BEAR\ApiDoc\ApiDoc`ページクラスをドキュメントをサービスしたいリソースで継承します。
+
+```
+composer require bear/api-doc
+```
 
 ```php
 <?php
