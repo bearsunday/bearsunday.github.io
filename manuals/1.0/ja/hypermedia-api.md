@@ -18,9 +18,10 @@ HALリソースモデルは以下の要素で構成されます。
  * 埋め込みリソース
  * 状態
 
-従来のリソース状態のみを表すJSONに、リンクの`_links`と他リソースを埋め込む(内包する)`_embedded`を加えたものがHALです。従来のJSONと互換性があります。HALはAPIを探索可能にし、そのドキュメントをAPI自体から発見することができます。
+従来のリソース状態のみを表すJSONにリンクの`_links`と他リソースを埋め込む(内包する)`_embedded`を加えたものがHALです。HALの[REST API](http://roy.gbiv.com/untangled/2008/rest-apis-must-be-hypertext-driven)は従来のURIベースの[CRUD Web API](https://www.infoq.com/jp/news/2009/08/CRUDREST) (RESTish API)とも互換性があり併用可能です。
 
-HALの[REST API](http://roy.gbiv.com/untangled/2008/rest-apis-must-be-hypertext-driven)は従来のURIベースの[CRUD Web API](https://www.infoq.com/jp/news/2009/08/CRUDREST) (RESTish API)とも互換性があり併用可能です。
+HALはAPIを探索可能にしそのAPIドキュメントをAPI自体から発見することができます。
+
 
 ### Links
 
