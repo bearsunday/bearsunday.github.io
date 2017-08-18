@@ -1,30 +1,30 @@
 ---
 layout: docs-en
-title: ハイパーメディアAPI
+title: Hypermedia API
 category: Manual
 permalink: /manuals/1.0/en/hypermedia-api.html
 ---
 
-# ハイパーメディアAPI
-
+# Hypermedia API
 
 ## HAL
 
-BEAR.Sundayは[HAL](https://en.wikipedia.org/wiki/Hypertext_Application_Language)(Hypertext Application Language)をサポートします。
+BEAR.Sunday supports the [HAL](https://en.wikipedia.org/wiki/Hypertext_Application_Language) hypermedia (`application/hal+json`) API.
 
-HALリソースモデルは以下の要素で構成されます。
 
- * リンク
- * 埋め込みリソース
- * 状態
+The HAL resource model consists of the following elements.
 
-従来のリソース状態のみを表すJSONに、リンクの`_links`と他リソースを埋め込む(内包する)`_embedded`を加えたものがHALです。従来のJSONと互換性があります。HALはAPIを探索可能にし、そのドキュメントをAPI自体から発見することができます。
+ * Link
+ * Embedded resources
+ * State
 
-HALの[REST API](http://roy.gbiv.com/untangled/2008/rest-apis-must-be-hypertext-driven)は従来のURIベースの[CRUD Web API](https://www.infoq.com/jp/news/2009/08/CRUDREST) (RESTish API)とも互換性があり併用可能です。
+HAL is the JSON which represents only the state of the conventional resource plus the link `_links` plus `_embedded` to embed other resources. HAL makes API searchable and can find its API document from the API itself.
+
 
 ### Links
 
-以下は有効なHALの例です。自身(`self`)のURIへのリンクを持っています。
+
+Resources should have a `self` URI
 
 ```
 {
@@ -36,8 +36,9 @@ HALの[REST API](http://roy.gbiv.com/untangled/2008/rest-apis-must-be-hypertext-
 
 ### Link Relations
 
+Link rels are the main way of distinguishing between a resource's links.
 
-リンクには`rel`（関係）があり、リンクの意味を示します。`rel`は、リソースのリンクを区別します。 
+The link has a `rel` (relationship), which indicates the meaning of the link. `Rel` distinguishes resource links. As with Web pages, link operations to other resources and resources related to resources.
 
 ```
 {
@@ -47,15 +48,15 @@ HALの[REST API](http://roy.gbiv.com/untangled/2008/rest-apis-must-be-hypertext-
 }
 ```
 
-HALについてさらに詳しくは http://stateless.co/hal_specification.html をご覧ください。
+For more information about HAL please visit [http://stateless.co/hal_specification.html](http://stateless.co/hal_specification.html).
 
-## リソースクラス
+## Resoure Class
 
-リソースクラスから他のリソースにリンクを貼ったり、他のリソースを埋め込むことはアノテーションを用いて簡単にできます。
+You can annotate links and embed other resources.
 
 ### @Link
 
-リンクが静的なものは`@Link`アノテーションで表し、動的なものは`body['_links']`に代入します。宣言的に記述できる`@Link`アノテーションが良いでしょう。
+You can declaratively describe the `@Link` annotation, or dynamic ones are assigned to `body['_links']`. 
 
 ```
 /**
@@ -69,7 +70,6 @@ or
 
 ```
 public function onGet() {
-    // 権限のある場合のみリンクを貼る
     if ($hasCommentPrivilege) {
         $this->body += [
             '_links' => [
@@ -84,7 +84,7 @@ public function onGet() {
 ```
 ### @Embeded
 
-他のリソースを静的に埋め込むには`@Embeded`アノテーションを使い、動的に埋め込むには`body`にリクエストを代入します。
+To embed other resources statically, use the `@ Embeded` annotation, and to embed it dynamically, assign the "request" to` body`.
 
 ```
 /**
@@ -103,10 +103,9 @@ $this->body['_embedded']['todos'] = $this->resource->uri('app://self/todos');
 
 ## CURIEs
 
-APIの見つけやすさ(API Discoverability)を実現するために`HAL`は[CURIEs]()を使います。
+"CURIE"s help providing links to resource documentation.　Place `index.json` with a link to each API documentation, or such a resource class at the root.
 
 
-それぞれのAPIのドキュメントへのリンクを貼った`index.json`、またはこのようなリソースクラスをルートに設置します。
 
 ```php
 <?php
@@ -141,15 +140,19 @@ class Index extends ResourceObject
 }
 ```
 
-`_links`内で`curies`というドキュメントを定義する特別なトークンを指定します。`curies`では、リソースのドキュメントURIを示す`href`とその名前を`name`で指定します。
+In `_links`, specify a special token that defines the document` curies`. In `curies`, specify` href` which indicates the document URI of the resource and its name with `name`.
 
-この例では`todo`リソースに関するドキュメントを取得するためには`http://apidoc.example.com/rels/?rel=todo` URLにアクセスすれば良いと分かります。
+In this example you will find that you can access the `http: // quickoc.example.com/rels/? rel = todo` URL to get documentation on the` todo` resource.
 
-## APIドキュメントサービス
+## API document service
 
-Curiesの設置されたAPIサーバーをAPIドキュメントサーバーにもすることができます。APIドキュメントには作成の手間や実際のAPIとのずれ、その検証、メンテナンスといった問題がつきまといますがその問題を解決します。
+The API server can also be an API document server. It solves problems such as the time required to create API document, deviation from actual API, verification, maintenance.
 
-サービスするためには、`BEAR\ApiDoc\ApiDoc`ページクラスをドキュメントをサービスしたいリソースで継承します。
+In order to service it install `bear/api-doc` and install it by inheriting the `BEAR\ApiDoc\ApiDoc` page class.
+
+```
+composer require bear/api-doc
+```
 
 ```php
 <?php
@@ -162,23 +165,27 @@ class Index extends ApiDoc
 }
 ```
 
-Json Schemaのフォルダをwebに公開します。
+Publish the folder of Json Schema to the web.
 
 ```
 ln -s var/json_schema public/schemas
 ```
 
-DocblockコメントとJson Shcemaを使ってAPIドキュメントが自動生成されます。ページクラスは独自のレンダラーを持ち`$context`の影響を受けないで、人のためのドキュメント(`text/html`) をサービスします。`$context`の影響を受けないので`App`、`Page`どちらでも設置可能です。
+API Documents are automatically generated using Docblock comments and Json Shcema. The page class has its own renderer and is not affected by `$context`, it serves a document (`text/html`) for people. Since it is not affected by `$context`, you can install either` App` or `Page`.
 
-CURIEsがルートに設置されていれば、API自体がハイパーメディアではない生JSONの場合でも利用可能です。リアルタイムに生成されるドキュメントは常にプロパティ情報やバリデーション制約が正確に反映されます。
+If CURIEs is installed at the root, the API itself can be used even for raw JSON which is not hypermedia. Documents generated in real time always accurately reflect property information and validation constraints.
 
-## ブラウズ可能
 
-HALで記述されたAPIセットは**ヘッドレスのRESTアプリケーション**として機能します。
+## Browsable
 
-WebベースのHAL BrowserやコンソールのCURLコマンドでWebサイトと同じようにルートからリンクを辿って始めて全てのリソースにアクセスできます。
+The API set written in HAL functions as **headless REST application**.
+
+You can access all the resources by following the link from the root like the web site with the Web based HAL Browser or the CURL command of the console.
 
  * [HAL Browser](https://github.com/mikekelly/hal-browser) - [example](http://haltalk.herokuapp.com/explorer/browser.html#/)
  * [hyperagent.js](https://weluse.github.io/hyperagent/)
 
 
+# Siren
+
+[Siren Module](https://github.com/kuma-guy/BEAR.SirenModule) is also available for [Siren](https://github.com/kevinswiber/siren) hypermedia (`application/vnd.siren+json`) type.
