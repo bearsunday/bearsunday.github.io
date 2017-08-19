@@ -54,7 +54,7 @@ HALについてさらに詳しくは[http://stateless.co/hal_specification.html]
 
 リンクが静的なものは`@Link`アノテーションで表し、動的なものは`body['_links']`に代入します。宣言的に記述できる`@Link`アノテーションが良いでしょう。
 
-```
+```php?start_inline
 /**
  * @Link(rel="user", href="/user")
  * @Link(rel="latest-post", href="/latest-post", title="latest post entrty")
@@ -64,7 +64,7 @@ public function onGet()
 
 or
 
-```
+```php?start_inline
 public function onGet() {
     // 権限のある場合のみリンクを貼る
     if ($hasCommentPrivilege) {
@@ -79,11 +79,12 @@ public function onGet() {
 }
 
 ```
+
 ### @Embeded
 
 他のリソースを静的に埋め込むには`@Embeded`アノテーションを使い、動的に埋め込むには`body`にリクエストを代入します。
 
-```
+```php?start_inline
 /**
  * @Embed(rel="todos", src="/todos{?status}")
  * @Embed(rel="me", src="/me")
@@ -94,7 +95,7 @@ public function onGet() : ResourceObject
 
 or
 
-```
+```php?start_inline
 $this->body['_embedded']['todos'] = $this->resource->uri('app://self/todos');
 ```
 
@@ -171,6 +172,18 @@ ln -s var/json_schema public/schemas
 DocblockコメントとJson Shcemaを使ってAPIドキュメントが自動生成されます。ページクラスは独自のレンダラーを持ち`$context`の影響を受けないで、人のためのドキュメント(`text/html`) をサービスします。`$context`の影響を受けないので`App`、`Page`どちらでも設置可能です。
 
 CURIEsがルートに設置されていれば、API自体がハイパーメディアではない生JSONの場合でも利用可能です。リアルタイムに生成されるドキュメントは常にプロパティ情報やバリデーション制約が正確に反映されます。
+
+### デモ
+
+```
+git clone https://github.com/koriym/Polidog.Todo.git
+cd Polidog.Todo/
+composer install
+composer setup
+composer serve
+```
+
+`http://127.0.0.1:8080/rels/`でAPI docページが開きます。
 
 ## ブラウズ可能
 

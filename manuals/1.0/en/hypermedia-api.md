@@ -50,7 +50,7 @@ The link has a `rel` (relationship), which indicates the meaning of the link. `R
 
 For more information about HAL please visit [http://stateless.co/hal_specification.html](http://stateless.co/hal_specification.html).
 
-## Resoure Class
+## Resource Class
 
 You can annotate links and embed other resources.
 
@@ -58,7 +58,7 @@ You can annotate links and embed other resources.
 
 You can declaratively describe the `@Link` annotation, or dynamic ones are assigned to `body['_links']`. 
 
-```
+```php?start_inline
 /**
  * @Link(rel="user", href="/user")
  * @Link(rel="latest-post", href="/latest-post", title="latest post entrty")
@@ -68,7 +68,7 @@ public function onGet()
 
 or
 
-```
+```php?start_inline
 public function onGet() {
     if ($hasCommentPrivilege) {
         $this->body += [
@@ -82,11 +82,12 @@ public function onGet() {
 }
 
 ```
+
 ### @Embeded
 
-To embed other resources statically, use the `@ Embeded` annotation, and to embed it dynamically, assign the "request" to` body`.
+To embed other resources statically, use the `@Embeded` annotation, and to embed it dynamically, assign the "request" to` body`.
 
-```
+```php?start_inline
 /**
  * @Embed(rel="todos", src="/todos{?status}")
  * @Embed(rel="me", src="/me")
@@ -97,7 +98,7 @@ public function onGet() : ResourceObject
 
 or
 
-```
+```php?start_inline
 $this->body['_embedded']['todos'] = $this->resource->uri('app://self/todos');
 ```
 
@@ -142,7 +143,7 @@ class Index extends ResourceObject
 
 In `_links`, specify a special token that defines the document` curies`. In `curies`, specify` href` which indicates the document URI of the resource and its name with `name`.
 
-In this example you will find that you can access the `http: // quickoc.example.com/rels/? rel = todo` URL to get documentation on the` todo` resource.
+In this example you will find that you can access the `http://apidoc.example.com/rels/?rel=todo` URL to get documentation on the` todo` resource.
 
 ## API document service
 
@@ -175,6 +176,17 @@ API Documents are automatically generated using Docblock comments and Json Shcem
 
 If CURIEs is installed at the root, the API itself can be used even for raw JSON which is not hypermedia. Documents generated in real time always accurately reflect property information and validation constraints.
 
+### Run demo
+
+```
+git clone https://github.com/koriym/Polidog.Todo.git
+cd Polidog.Todo/
+composer install
+composer setup
+composer serve
+```
+
+Open `http://127.0.0.1:8080/rels/` to see API doc page.
 
 ## Browsable
 
