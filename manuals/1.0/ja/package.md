@@ -153,7 +153,7 @@ PSR7のミドルウエアのためのオプションパッケージです。
 | ハイパーメディア |
 | |[kuma-guy/siren-module](https://github.com/kuma-guy/BEAR.SirenModule) | Siren
 |  開発 |
-| |[ray/fake-module](https://github.com/shingo-kumagai/Ray.FakeModule) | モッキング
+| |[ray/test-double](https://github.com/ray-di/Ray.TestDouble) | モッキング
 
 ## ベンダー・パッケージ
 
