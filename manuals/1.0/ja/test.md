@@ -9,6 +9,16 @@ permalink: /manuals/1.0/ja/test.html
 
 *Working in progress*
 
+「全てがリソース」のBEAR.Sundayではリソースクライントでリソースを操作することがテストの基本になります。
+
+AppリソースでCRUDテストはここを参考にしてください。
+
+ * [App/TodoTest](https://github.com/koriym/Polidog.Todo/blob/master/tests/Resource/App/TodoTest.php)
+
+Pageリソースのテストはここを参考にしてください。
+
+ * [Page/Index](https://github.com/koriym/Polidog.Todo/blob/master/tests/Resource/Page/IndexTest.php)
+
 ## アプリケーション・インジェクター
 
 AppInjector(アプリケーションインジェクター)はアプリケーションで利用するすべてのクラスのインスタンスを特定のコンテキストを指定して生成することができ、リソースオブジェクトやその依存を直接テストすることができます。
