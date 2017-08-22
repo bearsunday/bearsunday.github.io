@@ -176,22 +176,6 @@ if ($app->httpCache->isNotModified($_SERVER)) {
 ```
 vendor/bin/bear.compile 'Polidog\Todo' prod-html-app /path/to/prject
 ```
-例) PHPスクリプトで実行
-
-```php
-<?php
-use BEAR\Package\Compiler;
-use Doctrine\Common\Annotations\AnnotationRegistry;
-
-$appName = 'Polidog\Todo';
-$context = 'prod-html-app';
-$appDir = '/path/to/project';
-
-$loader = require $appDir . '/vendor/autoload.php';
-AnnotationRegistry::registerLoader([$loader, 'loadClass']);
-(new Compiler)->__invoke($appName, $context, $appDir);
-```
-
 
 ### Deployerサポート
 

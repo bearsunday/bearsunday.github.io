@@ -7,17 +7,20 @@ permalink: /manuals/1.0/ja/
 # BEAR.Sundayとは
 
 BEAR.SundayとはPHPのWebアプリケーションフレームワークです。
-BEAR.Sundayの目標は、標準に準拠し高品質で疎結合なRESTfulアプリケーションの**フレームワーク**を提供することです。
+BEAR.Sundayの目標は、標準に準拠し高品質で**API中心**のRESTfulアプリケーションの**フレームワーク**を提供することです。
 
 ## フレームワーク
 
 **BEAR.Sunday**は3つのオブジェクトフレームワークで構成されています。
 
-`Ray.Di`は[依存関係逆転の原則](http://en.wikipedia.org/wiki/Dependency_inversion_principle)に基づいてオブジェクトを結びます。インターフェイスに対するプログラミングは、コンテキストによる振る舞いや将来の変更に柔軟です。
+`Ray.Di`は[依存関係逆転の原則](http://en.wikipedia.org/wiki/Dependency_inversion_principle)に基づいてオブジェクトをインターフェイスで結びます。
 
-`Ray.Aop`は[アスペクト指向プログラミング](http://en.wikipedia.org/wiki/Aspect-oriented_programming)で本質的関心と横断的関心を結びます。アノテーションでログや認証を指定することができます。
+`Ray.Aop`は[アスペクト指向プログラミング](http://en.wikipedia.org/wiki/Aspect-oriented_programming)で本質的関心と横断的関心を結びます。
 
-`BEAR.Resource`は情報をリソースにして、ハイパーメディア制約で結びます。アプリケーション内部の情報もWebの世界と同じように統一されたURIとメソッドで扱うことができます。
+`BEAR.Resource`はアプリケーションの情報や機能をリソースにして[REST制約](https://en.wikipedia.org/wiki/Representational_state_transfer)で結びます。
+
+アプリケーションもWebと同じように統一されたメソッドとURIでリソースを操作します。強力なDIとAOPでREST API中心に構築されたクリーンなアプリケーションは変更に強く拡張性に優れます。
+
 
 ## ライブラリ
 
@@ -37,7 +40,8 @@ BEAR.SundayはMVCパターンではなく、RESTfulアプリケーション用�
 ### Resource
 
 WebのリソースをオブジェクトにしたものがResourceです。アプリケーション内で固有のURIやHTTPに準じたリクエストインターフェイスを持ち、オブジェクトはサービスとして機能します。
-ハイパーメディアとして他のリソースを`@Embed`したり`@Link`することができます。
+
+他のリソースを`@Embed`したり`@Link`することでハイパーメディアとして機能します。
 
 ### Method
 
