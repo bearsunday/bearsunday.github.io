@@ -122,7 +122,7 @@ An optional PSR7 middleware package.
 
 Optional library package can be installed with `composer require` command.
 
-| **Category** | **Composer package** | **Library** 
+| **Category** | **Composer package** | **Library**
 | Router |
 | |[bear/aura-router-module](https://github.com/bearsunday/BEAR.AuraRouterModule) | Aura.Router v2 |
 | Database |
@@ -132,7 +132,7 @@ Optional library package can be installed with `composer require` command.
 || [ray/doctrine-orm-module](https://github.com/kawanamiyuu/Ray.DoctrineOrmModule) | [Doctrine ORM](https://github.com/doctrine/doctrine2)
 | Storage |
 ||[bear/query-repository](https://github.com/bearsunday/BEAR.QueryRepository) | CQRS inspired repository
-| Web 
+| Web
 | |[madapaja/twig-module](http://bearsunday.github.io/manuals/1.0/ja/html.html) | [Twig](http://twig.sensiolabs.org/)
 | |[ray/web-form-module](http://bearsunday.github.io/manuals/1.0/ja/form.html) | Web form
 | |[ray/aura-web-module](https://github.com/Ray-Di/Ray.AuraWebModule) | [Aura.Web](https://github.com/auraphp/Aura.Web)
@@ -147,7 +147,7 @@ Optional library package can be installed with `composer require` command.
 | Hypermedia
 | |[kuma-guy/siren-module](https://github.com/kuma-guy/BEAR.SirenModule) | Siren
 |  Development
-| |[ray/fake-module](https://github.com/shingo-kumagai/Ray.FakeModule) | Mocking
+| |[ray/test-double](https://github.com/ray-di/Ray.TestDouble) | Mocking
 
 ## Semver
 
