@@ -11,13 +11,47 @@ permalink: /manuals/1.0/ja/test.html
 
 「全てがリソース」のBEAR.Sundayではリソースクライントでリソースを操作することがテストの基本になります。
 
-AppリソースでCRUDテストはここを参考にしてください。
+## テスト実行
+`vendor/bin/phpunit`または`composer test`コマンドでテストを実行します。
 
- * [App/TodoTest](https://github.com/koriym/Polidog.Todo/blob/master/tests/Resource/App/TodoTest.php)
+他にもこのようなcomposerコマンドがあります。
 
-Pageリソースのテストはここを参考にしてください。
+```
+composer coverge  // testカバレッジ
+composer cs       // コーディングスタンダード検査
+composer cs-fix   // コーディングスタンダード修復
+```
 
- * [Page/Index](https://github.com/koriym/Polidog.Todo/blob/master/tests/Resource/Page/IndexTest.php)
+## リソース	テストケース作成
+
+インストールしたプロジェクトの`tests/Resrouce/Page/IndexTest.php`にページテストのサンプルがあるのでこれを改変して使ってみましょう。
+
+これは`Myvendor\MyProject`アプリを`html-app`コンテキストで実行して、`page://self/todo`リソースに`POST`すれば`201 (Created)`が返ってくることをテストするコードです。
+
+```php
+<?php
+
+class TodoTest extends TestCase
+{
+    /**
+     * @var \BEAR\Resource\ResourceInterface
+     */
+    private $resource;
+    protected function setUp()
+    {
+        $this->resource = (new AppInjector('Myvendor\MyProject', 'html-app'))->getInstance(ResourceInterface::class);
+    }
+    public function testOnPost()
+    {
+        $page = $this->resource->post->uri('page://self/todo')(['title' => 'test']);
+        /* @var $page ResourceObject */
+        $this->assertSame(StatusCode::CREATED, $page->code);
+    }
+}
+```
+
+ * AppリソースでCRUDテストは[App/TodoTest](https://github.com/koriym/Polidog.Todo/blob/master/tests/Resource/App/TodoTest.php)を参考にしてください。
+ * Pageリソースのテストは[Page/Index](https://github.com/koriym/Polidog.Todo/blob/master/tests/Resource/Page/IndexTest.php)を参考にしてください。
 
 ## アプリケーション・インジェクター
 
