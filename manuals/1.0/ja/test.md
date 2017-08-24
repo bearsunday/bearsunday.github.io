@@ -9,7 +9,9 @@ permalink: /manuals/1.0/ja/test.html
 
 *Working in progress*
 
-「全てがリソース」のBEAR.Sundayではリソースクライントでリソースを操作することがテストの基本になります。
+適切なテストを書くことはより良いソフトウェアを書くのに役立ちます。
+
+全ての依存がインジェクトされ、横断的関心事がAOPで提供されるクリーンなBEAR.Sundayのアプリケーションはフレームワーク固有の密結合したベースクラスやヘルパーメソッドなしにphpunitのみで高いカバレッジのテストを記述することができます。
 
 ## テスト実行
 `vendor/bin/phpunit`または`composer test`コマンドでテストを実行します。
@@ -24,9 +26,9 @@ composer cs-fix   // コーディングスタンダード修復
 
 ## リソース	テストケース作成
 
-インストールしたプロジェクトの`tests/Resrouce/Page/IndexTest.php`にページテストのサンプルがあるのでこれを改変して使ってみましょう。
+「全てがリソース」のBEAR.Sundayではリソース操作がテストの基本です。
 
-これは`Myvendor\MyProject`アプリを`html-app`コンテキストで実行して、`page://self/todo`リソースに`POST`すれば`201 (Created)`が返ってくることをテストするコードです。
+インストールしたプロジェクトの`tests/Resrouce/Page/IndexTest.php`にページテストのサンプルがあるのでこれを改変して使ってみましょう。これは`Myvendor\MyProject`アプリを`html-app`コンテキストで実行して、`page://self/todo`リソースに`POST`すれば`201 (Created)`が返ってくることをテストするコードです。
 
 ```php
 <?php
@@ -60,18 +62,18 @@ AppInjector(アプリケーションインジェクター)はアプリケーシ�
 ```php?start_inline
 $injector = new AppInjector('MyVendor\MyProject', 'test-app'));
 
-// resource client
+// リソースクライアント
 $resource = $injector->getInstance(ResourceInterface::class);
 $index = $resource->uri('page://self/index')();
 /* @var $index Index */
 $this->assertSame(StatusCode::OK, $page->code);
 $todos = $page->body['todos'];
 
-// resource classを直接取得
+// リソースクラスを直接生成して直接コール
 $user = $injector->getInstance(User::class);
 $name = $index->onGet(1)->body['name']; // BEAR
 
-// formのバリデーション検査
+// フォームのバリデーション検査
 $form = $injector->getInstance(TodoForm::class);
 $submit = ['name' => 'BEAR'];
 $isValid = $this->form->apply($submit); // true
@@ -79,12 +81,12 @@ $isValid = $this->form->apply($submit); // true
 
 ## テストダブル
 
-[テストダブル](https://ja.wikipedia.org/wiki/%E3%83%86%E3%82%B9%E3%83%88%E3%83%80%E3%83%96%E3%83%AB) (Test Double) とは、ソフトウェアテストでテスト対象が依存しているコンポーネントを置き換える代用品のことです。以下のテストダブルのパターンをサポートします。
+[テストダブル](https://ja.wikipedia.org/wiki/%E3%83%86%E3%82%B9%E3%83%88%E3%83%80%E3%83%96%E3%83%AB) (Test Double) とは、ソフトウェアテストでテスト対象が依存しているコンポーネントを置き換える代用品のことです。テストダブルは以下のパターンがあります。
 
- * スタブ (テスト対象に「間接的な入力」を提供するために使う)
- * モック (テスト対象からの「間接的な出力」を検証するために使う)
+ * スタブ (テスト対象にダミーデータを与える)
+ * モック (下位モジュールを正しく利用しているかを実際のモジュールを用いないで検証)
  * フェイク (実際のオブジェクトに近い働きをするがより単純な実装を使う)
- * スパイ (入出力の記録しておいて、テスト実行後に値を取り出して検証できる)
+ * スパイ (実際のオブジェクトに対する入出力の記録を検証)
 
 サービスロケーターを使わず全ての依存がインジェクトされるBEAR.SundayではDIでテストダブルを実現することは容易ですが、テストダブルフレームワーク[Ray.TestDouble](https://github.com/ray-di/Ray.TestDouble)を使うとさらに便利になり**スパイ**もできるようになります。
 
@@ -151,7 +153,16 @@ class FakeFoo extend Foo
 ```php?start_inline
 $resource = (new AppInjector('MyVendor\MyProject', 'test-app'))->getInstance(ResourceInterface::class);
 ```
-Fakeクラスに`@JsonSchema`をアノテートして検証することができます。
+Fakeクラスに`@JsonSchema`をアノテートして**テストダブルに対する入力**を検証することもできます。
+
+```php?start_inline
+class FakeFoo
+{
+	/**
+	 * @JsonSchema(params="mock_input_rule.json")
+	 */
+	public function onGet(string $id) : ResourceObject
+```
 
 # スパイ
 
@@ -195,16 +206,18 @@ public function testSpy()
 }
 ```
 
-テストダブルもスパイできます。実クラスの呼び出しを検査するスパイと違いテストダブルの呼び出しを検査する[モック](https://ja.wikipedia.org/wiki/%E3%83%A2%E3%83%83%E3%82%AF%E3%82%AA%E3%83%96%E3%82%B8%E3%82%A7%E3%82%AF%E3%83%88)です。
+Fakeクラスをスパイしてテストダブルへの呼び出しを
 
 ```php?start_inline
 /**
  * @Spy
  */
-class FakeFoo extend Foo
+class FakeUserRole extend UserRole
 {
-    public function getDate() {
-        return '20170801';
+    public function getRoleById(string $id) : string
+    {
+        // ...条件
+        return $role
     }
 }
 ```
