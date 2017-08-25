@@ -7,16 +7,12 @@ permalink: /manuals/1.0/ja/test.html
 
 # テスト
 
-*Working in progress*
-
 適切なテストを書くことはより良いソフトウェアを書くのに役立ちます。
 
-全ての依存がインジェクトされ、横断的関心事がAOPで提供されるクリーンなBEAR.Sundayのアプリケーションはフレームワーク固有の密結合したベースクラスやヘルパーメソッドなしにphpunitのみで高いカバレッジのテストを記述することができます。
+全ての依存がインジェクトされ、横断的関心事がAOPで提供されるクリーンなBEAR.Sundayのアプリケーションはテストフレンドリーです。フレームワーク固有の密結合したベースクラスやヘルパーメソッドなしで高いカバレッジのテストを記述することができます。
 
 ## テスト実行
-`vendor/bin/phpunit`または`composer test`コマンドでテストを実行します。
-
-他にもこのようなcomposerコマンドがあります。
+`vendor/bin/phpunit`または`composer test`コマンドで`phpmd`や`phpcs`と共にテストを実行します。他にもこのようなcomposerコマンドがあります。
 
 ```
 composer coverge  // testカバレッジ
@@ -26,9 +22,9 @@ composer cs-fix   // コーディングスタンダード修復
 
 ## リソース	テストケース作成
 
-「全てがリソース」のBEAR.Sundayではリソース操作がテストの基本です。
+**全てがリソース**のBEAR.Sundayではリソース操作がテストの基本です。
 
-インストールしたプロジェクトの`tests/Resrouce/Page/IndexTest.php`にページテストのサンプルがあるのでこれを改変して使ってみましょう。これは`Myvendor\MyProject`アプリを`html-app`コンテキストで実行して、`page://self/todo`リソースに`POST`すれば`201 (Created)`が返ってくることをテストするコードです。
+これは`Myvendor\MyProject`アプリを`html-app`コンテキストで実行して、`page://self/todo`リソースに`POST`すれば`201 (Created)`が返ってくることをテストするコードです。
 
 ```php
 <?php
@@ -70,6 +66,8 @@ $this->assertSame(StatusCode::OK, $page->code);
 $todos = $page->body['todos'];
 
 // リソースクラスを直接生成して直接コール
+$user = $resource->newInstance('app://self/user');
+// or
 $user = $injector->getInstance(User::class);
 $name = $index->onGet(1)->body['name']; // BEAR
 
@@ -88,7 +86,7 @@ $isValid = $this->form->apply($submit); // true
  * フェイク (実際のオブジェクトに近い働きをするがより単純な実装を使う)
  * スパイ (実際のオブジェクトに対する入出力の記録を検証)
 
-サービスロケーターを使わず全ての依存がインジェクトされるBEAR.SundayではDIでテストダブルを実現することは容易ですが、テストダブルフレームワーク[Ray.TestDouble](https://github.com/ray-di/Ray.TestDouble)を使うとさらに便利になり**スパイ**もできるようになります。
+全ての依存がインジェクトされるBEAR.SundayではDIでテストダブルを実現することは容易ですが、テストダブルフレームワーク[Ray.TestDouble](https://github.com/ray-di/Ray.TestDouble)を使うとさらに便利になり**スパイ**もできるようになります。
 
 composerインストール
 
@@ -127,7 +125,7 @@ class Foo
 }
 ```
 
-代用のクラスには`Fake`プリフェックスをつけて`tests/fake-src`フォルダに保存します。元クラスを`extend`して入れ替えるクラスだけを実装します。
+テストダブルのクラスには`Fake`プリフェックスをつけて`tests/fake-src`フォルダに保存します。元クラスを`extend`して入れ替えるクラスだけを実装します。
 
 ```php?start_inline
 class FakeFoo extend Foo
@@ -153,20 +151,10 @@ class FakeFoo extend Foo
 ```php?start_inline
 $resource = (new AppInjector('MyVendor\MyProject', 'test-app'))->getInstance(ResourceInterface::class);
 ```
-Fakeクラスに`@JsonSchema`をアノテートして**テストダブルに対する入力**を検証することもできます。
-
-```php?start_inline
-class FakeFoo
-{
-	/**
-	 * @JsonSchema(params="mock_input_rule.json")
-	 */
-	public function onGet(string $id) : ResourceObject
-```
 
 # スパイ
 
-**スパイ**するクラスに`@Spy`とアノテートします。
+入出力を記録して**スパイ**するクラスに`@Spy`とアノテートします。
 
 ```php
 <?php
@@ -184,7 +172,7 @@ class Calc
 }
 ```
 
-`Spy`クラスから(クラス名,メソッド名)で指定するとメソッドの引数や実行結果が保存されている`SpyLog`値オブジェクトが取得でき、`@Spy`とアノテートしたクラスの入出力や呼び出し回数をテストすることができます。
+`Spy`クラスから(クラス名,メソッド名)を指定して`getLogs()`するとメソッドの引数や実行結果が保存されている`SpyLog`値オブジェクトが取得できます。そのオブジェクトを使って`@Spy`とアノテートしたクラスの入出力や呼び出し回数をテストすることができます。
 
 ```php?start_inline
 public function testSpy()
@@ -206,7 +194,7 @@ public function testSpy()
 }
 ```
 
-Fakeクラスをスパイしてテストダブルへの呼び出しを
+Fakeクラスをスパイしてテストダブルへの呼び出しを検査することもできます。
 
 ```php?start_inline
 /**
@@ -221,3 +209,66 @@ class FakeUserRole extend UserRole
     }
 }
 ```
+
+## 無名クラスを使った束縛
+
+PHPの無名クラスを使って一時的に依存を束縛することができます。
+
+```
+public function testAnonymousClassBinding()
+    $injector = new AppInjector('FakeVendor\HelloWorld', 'hal-public function testAnonymousClasse()
+    $module = new class extends AbstractModule {
+        protected function configure()
+        {
+            $this->bind(FooInterface::class)->to(Foo::class);
+        }
+    };
+app');
+    $index = $injector->getOverrideInstance($module, Index::class);
+    $name = $index(['id' => 1])->body['name'];
+    $this->assertSame('BEAR', $name);
+}
+```
+
+## スタブを束縛
+
+phpunitの`createMock()`メソッドなどのモッキングツールでスタブを作成してそのインスタンスと束縛することもできます。
+
+```
+public function testStub()
+{
+    $injector = new AppInjector('FakeVendor\HelloWorld', 'hal-app');
+    $stub = $this->createMock(FooInterface::class);
+    $stub->method('doSomething')
+    　　　　->willReturn('foo');
+    $module = new class($stub) extends AbstractModule {
+
+        private $stub;
+
+        public function __construct(FooInterface $stub)
+        {
+            $this->stub = $stub;
+        }
+
+        protected function configure()
+        {
+            $this->bind(FooInterface::class)->toInstance($this->mock);
+        }
+    };
+    $index = $injector->getOverrideInstance($module, Index::class);
+    $name = $index(['id' => 1])->body['name'];
+    $this->assertSame('BEAR', $name);
+}
+```
+
+## ベストプラクティス
+
+ * 実装ではなく、インターフェイスをテストする
+ * フェイククラスを好む。スタブはOK。モックには批判的な意見もあり複雑なものを避ける。
+
+参考URL
+
+ * [Stop mocking, start testing]()
+ * [Why is it so bad to mock classes?](https://stackoverflow.com/questions/1595166/why-is-it-so-bad-to-mock-classes)	
+ * [Why is mocking/stubbing dangerous?](https://www.thoughtworks.com/insights/blog/mockists-are-dead-long-live-classicists)
+ * [All About Mocking with PHPUnit](https://code.tutsplus.com/tutorials/all-about-mocking-with-phpunit--net-27252)
