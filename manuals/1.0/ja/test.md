@@ -216,7 +216,7 @@ PHPの無名クラスを使って一時的に依存を束縛することがで�
 
 ```
 public function testAnonymousClassBinding()
-    $injector = new AppInjector('FakeVendor\HelloWorld', 'hal-public function testAnonymousClasse()
+    $injector = new AppInjector('FakeVendor\HelloWorld', 'hal-app');
     $module = new class extends AbstractModule {
         protected function configure()
         {
@@ -269,6 +269,6 @@ public function testStub()
 参考URL
 
  * [Stop mocking, start testing]()
- * [Why is it so bad to mock classes?](https://stackoverflow.com/questions/1595166/why-is-it-so-bad-to-mock-classes)	
+ * [Why is it so bad to mock classes?](https://stackoverflow.com/questions/1595166/why-is-it-so-bad-to-mock-classes)
  * [Why is mocking/stubbing dangerous?](https://www.thoughtworks.com/insights/blog/mockists-are-dead-long-live-classicists)
  * [All About Mocking with PHPUnit](https://code.tutsplus.com/tutorials/all-about-mocking-with-phpunit--net-27252)

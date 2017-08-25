@@ -213,7 +213,7 @@ You can temporarily bind dependencies with PHP's anonymous class.
 
 ```
 public function testAnonymousClassBinding()
-    $injector = new AppInjector('FakeVendor\HelloWorld', 'hal-public function testAnonymousClasse()
+    $injector = new AppInjector('FakeVendor\HelloWorld', 'hal-app');
     $module = new class extends AbstractModule {
         protected function configure()
         {
@@ -260,7 +260,7 @@ public function testStub()
 
 ## Best Practice
 
- * Test the interface, not the implementation. 
+ * Test the interface, not the implementation.
  * Prefer fake class. The stub is ok. Mock should be avoid in complicated usage.
 
 Reference
