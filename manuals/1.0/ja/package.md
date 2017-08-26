@@ -122,7 +122,7 @@ AOPアライアンスに準拠したAOPフレームワークです。
 [![Code Coverage](https://scrutinizer-ci.com/g/bearsunday/BEAR.Middleware/badges/coverage.png?b=1.x)](https://scrutinizer-ci.com/g/bearsunday/BEAR.Middleware/?branch=1.x)
 [![Build Status](https://travis-ci.org/bearsunday/BEAR.Middleware.svg?branch=1.x)](https://travis-ci.org/bearsunday/BEAR.Middleware)
 
-PSR7のミドルウエアのためのオプションパッケージです。
+PSR-7のミドルウエアのためのオプションパッケージです。
 
 ## ライブラリ・パッケージ
 

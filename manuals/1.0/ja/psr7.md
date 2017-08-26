@@ -1,13 +1,13 @@
 ---
 layout: docs-ja
-title: PSR7
+title: PSR-7
 category: Manual
 permalink: /manuals/1.0/ja/psr7.html
 ---
 
-# PSR7
+# PSR-7
 
-既存のBEAR.Sundayアプリケーションは特別な変更無しに[PSR7](http://www.php-fig.org/psr/psr-7/)ミドルウエアとして動作させることができます。
+既存のBEAR.Sundayアプリケーションは特別な変更無しに[PSR-7](http://www.php-fig.org/psr/psr-7/)ミドルウエアとして動作させることができます。
 
 以下のコマンドで`bear/middleware`を追加して、ミドルウエアとして動作させるための[bootstrapスクリプト](https://github.com/bearsunday/BEAR.Middleware/blob/1.x/bootstrap/bootstrap.php)に置き換えます。
 
@@ -20,7 +20,7 @@ cp vendor/bear/middleware/bootstrap/bootstrap.php bootstrap/bootstrap.php
 通常のBEAR.Sundayアプリケーションと同様に公開Webディレクトリとして`var/www`を指定します。
 
 ```bash
-php -S 127.0.0.1:8080 -t var/www
+php -S 127.0.0.1:8080 -t public
 ```
 
 ## ストリーム
@@ -49,15 +49,15 @@ HTTP出力がストリーム出力に完全に対応していればPHPのメモ�
 
 ## 新規プロジェクト
 
-新規でPSR7のプロジェクトを始める場合のパッケージが用意されています。
+新規でPSR-7のプロジェクトを始める場合のパッケージが用意されています。
 
 ```
 composer create-project bear/project my-awesome-project
 cd my-awesome-project/
-php -S 127.0.0.1:8080 -t var/www/
+php -S 127.0.0.1:8080 -t public
 ```
 
-必要に応じて他のPSR7ミドルウエアを追加したり、Rayのモジュールを追加します。
+必要に応じて他のPSR-7ミドルウエアを追加したり、Rayのモジュールを追加します。
 
  * [oscarotero/psr7-middlewares](https://github.com/oscarotero/psr7-middlewares)
  * [Packages from Ray](https://packagist.org/packages/ray/)

@@ -1,14 +1,14 @@
 ---
 layout: docs-en
-title: PSR7
+title: PSR-7
 category: Manual
 permalink: /manuals/1.0/en/psr7.html
 ---
 
-# PSR7
+# PSR-7
 
 An existing BEAR.Sunday application can work as
-a [PSR7](http://www.php-fig.org/psr/psr-7/) middleware with these easy steps:
+a [PSR-7](http://www.php-fig.org/psr/psr-7/) middleware with these easy steps:
 
 1) Add `bear/middleware` package then replace [bootstrap.php](https://github.com/bearsunday/BEAR.Middleware/blob/1.x/bootstrap/bootstrap.php) script.
 
@@ -24,7 +24,7 @@ cp vendor/bear/middleware/bootstrap/bootstrap.php bootstrap/bootstrap.php
 Stat the server.
 
 ```bash
-php -S 127.0.0.1:8080 -t var/www
+php -S 127.0.0.1:8080 -t public
 ```
 
 ## Stream
@@ -47,12 +47,12 @@ public function onGet($name = 'BEAR.Sunday')
 
 ## New Project
 
-You can create a BEAR.Sunday PSR7 project with `bear/project`.
+You can create a BEAR.Sunday PSR-7 project with `bear/project`.
 
 ```
 composer create-project bear/project my-awesome-project
 cd my-awesome-project/
-php -S 127.0.0.1:8080 -t var/www/
+php -S 127.0.0.1:8080 -t public
 ```
 
 And you can add other middlewares or Ray.Di modules as you need from these sources:

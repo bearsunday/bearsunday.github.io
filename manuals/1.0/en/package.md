@@ -116,7 +116,7 @@ An aspect oriented framework based on Java AOP Alliance API.
 [![Code Coverage](https://scrutinizer-ci.com/g/bearsunday/BEAR.Middleware/badges/coverage.png?b=1.x)](https://scrutinizer-ci.com/g/bearsunday/BEAR.Middleware/?branch=1.x)
 [![Build Status](https://travis-ci.org/bearsunday/BEAR.Middleware.svg?branch=1.x)](https://travis-ci.org/bearsunday/BEAR.Middleware)
 
-An optional PSR7 middleware package.
+An optional PSR-7 middleware package.
 
 ## Library Package
 
