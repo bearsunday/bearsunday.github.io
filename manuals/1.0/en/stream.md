@@ -9,7 +9,7 @@ permalink: /manuals/1.0/en/stream.html
 
 Normally, resources are rendered by renderers into one string and finally `echo`ed out, but then you can not output content whose size exceeds the memory limit of PHP. With `StreamRnderer` you can stream HTTP output and you can output large size content while keeping memory consumption low. Stream output can also be used in coexistence with existing renderers.
 
-# Change Transfer and Renderer
+## Change Transferer and Renderer
 
 Use the [StreamTransferInject](https://github.com/bearsunday/BEAR.Streamer/blob/1.x/src/StreamTransferInject.php) trait on the page to render and respond to the stream output I will. In the example of this download page, since `$body` is made to be a resource variable of the stream, the injected renderer is ignored and the resource is streamed.
 
