@@ -75,3 +75,5 @@ class Image extends ResourceObject
 ```
 
 ストリーミングのバンドワイズやタイミングをコントロールしたり、クラウドにアップロードしたり等ストリーミングを更にコントロールする場合には[StreamResponder](https://github.com/bearsunday/BEAR.Streamer/blob/1.x/src/StreamResponder.php#L45-L48)を参考にして作成して束縛します。
+
+ストリーム出力のdemoが[MyVendor.Stream](https://github.com/bearsunday/MyVendor.Stream)にあります。
