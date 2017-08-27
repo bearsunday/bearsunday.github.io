@@ -32,31 +32,18 @@ php -S 127.0.0.1:8080 -t public
 BEAR.Sunday supports http body of a message output in a [stream](http://php.net/manual/ja/intro.stream.php).
 
 In `ResourceObject`, you can mix stream with a normal string. The output is converted to a single stream.
-
-```php?start_inline
-public function onGet($name = 'BEAR.Sunday')
-{
-    $fp = fopen(__DIR__ . '/image.jpg', 'r');
-    stream_filter_append($fp, 'convert.base64-encode');
-    $this['greeting'] = 'Hello ' . $name;
-    $this['image'] = $fp; // image in base64 format
-
-    return $this;
-}
-```
+`StreamTransfer` is default http transfer. Seem more at [Stream Response](http://bearsunday.github.io/manuals/1.0/en/stream.html).
 
 ## New Project
 
-You can create a BEAR.Sunday PSR-7 project with `bear/project`.
+You can alo create a BEAR.Sunday PSR-7 project with `bear/project` from scatch.
 
 ```
-composer create-project bear/project my-awesome-project
-cd my-awesome-project/
+composer create-project bear/project my-psr7-project
+cd my-psr7-project/
 php -S 127.0.0.1:8080 -t public
 ```
 
-And you can add other middlewares or Ray.Di modules as you need from these sources:
+## PSR-7 middleware
 
  * [oscarotero/psr7-middlewares](https://github.com/oscarotero/psr7-middlewares)
- * [Ray packages](https://packagist.org/packages/ray/)
- * [BEAR packages](https://packagist.org/packages/bear/)
