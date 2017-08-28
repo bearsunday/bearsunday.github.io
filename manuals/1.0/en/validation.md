@@ -50,9 +50,9 @@ In the `var/json_schema/`, store the JSON schema file which is the specification
 
 ### @JsonSchema annotation
 
-It annotates `@JsonSchema` in the method of the resource class. For the `shcema` property, specify the JSON schema file name.
+It annotates `@JsonSchema` in the method of the resource class. For the `schema` property, specify the JSON schema file name.
 
-### shcema
+### schema
 
 src/Resource/App/User.php
 
@@ -63,7 +63,7 @@ use BEAR\Resource\Annotation\JsonSchema; // Add this line
 class User extends ResourceObject
 {
     /**
-     * @JsonSchema(shcema="user.json")
+     * @JsonSchema(schema="user.json")
      */
     public function onGet()
     {
@@ -105,11 +105,11 @@ use BEAR\Resource\Annotation\JsonSchema; // Add this line
 class Person extends ResourceObject
 {
     /**
-     * @JsonSchema(key="user", shcema="user.json")
+     * @JsonSchema(key="user", schema="user.json")
      */
     public function onGet()
     {
-        
+
         $this['user'] = [
             'firstName' => 'mucha',
             'lastName' => 'alfons',
@@ -133,7 +133,7 @@ use BEAR\Resource\Annotation\JsonSchema; // Add this line
 class Todo extends ResourceObject
 {
     /**
-     *@JsonSchema(key="user", shcema="user.json", params="todo.post.json")
+     *@JsonSchema(key="user", schema="user.json", params="todo.post.json")
      */
     public function onPost(string $title)
 ```
@@ -166,7 +166,7 @@ By constantly verifying in a standardized way instead of proprietary documentati
 
 ## @Valid annotation
 
-The `@Valid` annotation is a validation for input. 
+The `@Valid` annotation is a validation for input.
 You can set up validation as AOP for your method.
 By separating validation logic from the method, the code will be readable and testable.
 

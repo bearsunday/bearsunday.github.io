@@ -50,9 +50,9 @@ mkdir var/json_validate
 
 ### @JsonSchema アノテーション
 
-リソースクラスのメソッドで`@JsonSchema`とアノテートします。`shcema`プロパティにはJSONスキーマファイル名を指定します。
+リソースクラスのメソッドで`@JsonSchema`とアノテートします。`schema`プロパティにはJSONスキーマファイル名を指定します。
 
-### shcema
+### schema
 
 src/Resource/App/User.php
 
@@ -63,7 +63,7 @@ use BEAR\Resource\Annotation\JsonSchema; // この行を追加
 class User extends ResourceObject
 {
     /**
-     * @JsonSchema(shcema="user.json")
+     * @JsonSchema(schema="user.json")
      */
     public function onGet()
     {
@@ -110,11 +110,11 @@ use BEAR\Resource\Annotation\JsonSchema; // この行を追加
 class Person extends ResourceObject
 {
     /**
-     * @JsonSchema(key="user", shcema="user.json")
+     * @JsonSchema(key="user", schema="user.json")
      */
     public function onGet()
     {
-        
+
         $this['user'] = [
             'firstName' => 'mucha',
             'lastName' => 'alfons',
@@ -138,7 +138,7 @@ use BEAR\Resource\Annotation\JsonSchema; // この行を追加
 class Todo extends ResourceObject
 {
     /**
-     *@JsonSchema(key="user", shcema="user.json", params="todo.post.json")
+     *@JsonSchema(key="user", schema="user.json", params="todo.post.json")
      */
     public function onPost(string $title)
 ```
