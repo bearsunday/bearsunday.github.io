@@ -306,18 +306,6 @@ Please also refer to [Resouce best practice](/manuals/1.0/en/resource.html#best-
  * If there are multiple interceptors, do not depend on the execution order.
  * If it is an interceptor unconditionally applied to all methods, consider the description in `bootstrap.php`.
 
-## Router
-
-When you need to change the router according to different contexts, like for API or HTML, then you can include your own router file by adding it accordingly in the `route.aura.conf` file on `$schemeHost`.
-
-```php?start_inline
-<?php
-/* @var $router \BEAR\Package\Provide\Router\AuraRoute */
-/* @var $schemeHost string */
-
-require ($schemeHost === 'app://self') ? __DIR__ . '/app.route.conf' : __DIR__ . '/page.route.conf';
-```
-
 ## Environment
 
 To make applications testable, it should also work on the console, and not only on the Web.

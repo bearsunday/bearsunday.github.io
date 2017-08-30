@@ -291,18 +291,7 @@ public function onGet($name) : ResourceObject
  * メソッド内の依存をインターセプターがインジェクトしないようにします。メソッド実装時にしか決定できない値は`@Assisted`インジェクションで引数にインジェクトします。
  * 複数のインタセプターがある場合にその実行順に依存しないようにします。
  * 無条件に全メソッドに適用するインターセプターであれば`bootstrap.php`での記述を考慮してください。
-
-## ルーター
-
-APIとHTMLなど複数のコンテキストでルーティングを変える場合はルーターファイル `route.aura.conf`では`$schemeHost`によってルーターファイルをコンテキスト別に`require`します。
-
-```php?start_inline
-<?php
-/* @var $router \BEAR\Package\Provide\Router\AuraRoute */
-/* @var $schemeHost string */
-
-require ($schemeHost === 'app://self') ? __DIR__ . '/app.route.conf' : __DIR__ . '/page.route.conf';
-```
+ * 横断的関心事と、本質的関心事を分けるために使われるものです。特定のメソッドのhackのためにインターセプトするような使い方は推奨されません。
 
 ## 環境
 
