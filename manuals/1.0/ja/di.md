@@ -25,11 +25,10 @@ Ray.Diには以下の機能があります。
 
 - 名前付きインターフェイス
 
-- インジェクション先のメタデータの取得
+- インジェクションポイントメタデータ
 
 - アノテーション([Doctrine Annotation](http://docs.doctrine-project.org/projects/doctrine-common/en/latest/reference/annotations.html))はオプション
 
-- [AOP Alliance](http://aopalliance.sourceforge.net/)に準拠したアスペクト指向プログラミング
 
 ## 注入
 
