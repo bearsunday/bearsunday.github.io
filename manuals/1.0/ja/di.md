@@ -262,7 +262,7 @@ protected function configure()
 
 ## コンストラクタ束縛
 
-`@Inject`アノテーションのないサードパーティーのクラスやアノテーションを使わない場合には**コンストラクタ束縛で束縛することができます。
+`@Inject`アノテーションのないサードパーティーのクラスやアノテーションを使わない場合には**コンストラクタ束縛**で束縛することができます。
 最初の引数にはクラス名前、２番目の引数の`変数名`=>`名前`の名前束縛、３番目の引数にセッターインジェクションを指定します。
 
 ```php
@@ -286,9 +286,9 @@ protected function configure()
 ```
 この例では`Car`クラスでは`EngineInterface $engine, $carName`と二つの引数が必要ですが、それぞれの変数名に`Named binding`束縛を行い依存解決をしています。
 
-＃## PDO Example
+### PDO Example
 
-[PDO](http://php.net/manual/ja/pdo.construct.php)クラスの束縛の例です.
+[PDO](http://php.net/manual/ja/pdo.construct.php)クラスの束縛の例です.`$username`と`$password`に名前をつけて束縛しています。
 
 ```php?start_inline
 public PDO::__construct ( string $dsn [, string $username [, string $password [, array $options ]]] )
@@ -449,7 +449,7 @@ class Psr3LoggerProvider implements ProviderInterface
 $ip->getClass();      // \ReflectionClass
 $ip->getMethod();     // \ReflectionMethod
 $ip->getParameter();  // \ReflectionParameter
-$ip->getQualifiers(); // (array) $qualifierAnnotation[]
+$ip->getQualifiers(); // (array) $qualifierAnnotations[]
 ```
 
 ## インスタンス束縛
