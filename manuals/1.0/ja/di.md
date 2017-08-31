@@ -7,7 +7,7 @@ permalink: /manuals/1.0/ja/di.html
 # DI
 
 依存性の注入(Dependency Injection)とはクラスが必要とするサービスや値などのインスタンス（依存性）を、
-サービス自身が取得したり生成するのではなく外部から渡す(注入）デザインパターンのことです。
+サービス自身が取得したり生成するのではなく外部から渡す（注入）デザインパターンのことです。
 
 **Ray.Di**はGoogleの[Guice](http://code.google.com/p/google-guice/wiki/Motivation?tm=6)の主要な機能を持つPHPのDIフレームワークでBEAR.SundayはDIにRay.Diを使っています。
 
@@ -87,7 +87,7 @@ class Index
 ## 束縛
 
 インジェクタの仕事はオブジェクトグラフを作成することです。
-型を指定してインスタンスを要求し、依存関係を解決し、すべてを結びつけます。 依存関係の解決方法を指定するにバインディングを設定します。
+型を指定してインスタンスを要求し、依存関係を解決し、すべてを結びつけます。 依存関係の解決方法を指定するにはバインディングを設定します。
 
 | オブジェクトグラフとは？
 |
@@ -279,7 +279,7 @@ protected function configure()
             (new InjectionPoints)                       // $setter_injection
                 ->addMethod('setWheel', "right")
                 ->addOptionalMethod('setTurboCharger'),
-                'initialize'                            // $postCosntruct
+            'initialize'                                // $postCosntruct
         );
 }
 ```
@@ -310,7 +310,7 @@ protected function configure()
 }
 ```
 
-PDOのどのインターフェイスがないので`toConstructor()`メソッドの二番目の引数の名前束縛でP束縛しています
+PDOのインターフェイスがないので`toConstructor()`メソッドの二番目の引数の名前束縛でP束縛しています
 
 ## プロバイダ束縛
 
@@ -359,7 +359,7 @@ class DatabaseTransactionLogProvider implements Provider
 同じプロバイダーでコンテキスト別にオブジェクトを生成したい場合があります。例えば接続先の違う複数のDBオブジェクトを同じインターフェイスでインジェクトしたい場合などです。そういう場合には`toProvider()`でコンテキスト（文字列）を指定して束縛をします。
 
 ```php?start_inline
-$dbConfig = ['user' => $userDsn, 'job'=> $jobDsn, 'log' => $logDsn];
+$dbConfig = ['user' => $userDsn, 'job' => $jobDsn, 'log' => $logDsn];
 $this->bind()->annotatedWith('db_config')->toInstance(dbConfig);
 $this->bind(Connection::class)->annotatedWith('usr_db')->toProvider(DbalProvider::class, 'user');
 $this->bind(Connection::class)->annotatedWith('job_db')->toProvider(DbalProvider::class, 'job');
@@ -576,7 +576,7 @@ class HorizontalScaleDbProvider implements ProviderInterface
 
 ## デバック
 
-複雑は束縛も最終的には単純なPHPのファクトリーコードにコンパイルされて`var/tmp/{context}`フォルダに出力されます。
+複雑な束縛も最終的には単純なPHPのファクトリーコードにコンパイルされて`var/tmp/{context}`フォルダに出力されます。
 生成されたファイルを見ればどのセッターメソッドが有効でどの依存をどのように(Singleton ?)注入したかが分かります。
 
 ファイル名は`{インターフェイス}-{名前}`で中身はこのようなコードです。
