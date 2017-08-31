@@ -100,7 +100,7 @@ use Ray\Aop\Matcher;
 /**
  * 特定の文字列が含まれているか
  */
-class IsContainsMatcher extends AbstractMatcher
+class ContainsMatcher extends AbstractMatcher
 {
     /**
      * {@inheritdoc}
@@ -133,7 +133,7 @@ class AppModule extends AbstractModule
     {
         $this->bindInterceptor(
             $this->matcher->any(),
-            new FakeContains('user'), // 'user'がメソッド名に含まれてるか
+            new ContainsMatcher('user'), // 'user'がメソッド名に含まれてるか
             [UserLogger::class]
         );
     }
