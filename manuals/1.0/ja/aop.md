@@ -14,7 +14,7 @@ BEAR.Sundayは[AOP Alliance](http://aopalliance.sourceforge.net/)に準拠した
 ## インターセプター
 
 インターセプターの`invoke`メソッドで`$invocation`メソッド実行変数を受け取り、メソッドの前後に処理を加えます。
-このインターセプター元メソッドを実行するだけのインタセプターです。前後にログやトランザクションなどの横断的処理を記述します。
+この変数は、インターセプター元メソッドを実行するためだけの変数です。前後にログやトランザクションなどの横断的処理を記述します。
 
 ```php?start_inline
 use Ray\Aop\MethodInvocation;
@@ -91,7 +91,7 @@ $class = $invocation->getMethod()->getDeclaringClass();
 独自のカスタムマッチャーを作成するためには`AbstractMatcher`の`matchesClass`と`matchesMethod`を実装したクラスを作成します。
 
 `contains` マッチャーを作成するためには、２つのメソッドを持つクラスを提供する必要があります。
-１つはクラスのマッチを行う`matchesClass`メソッド、もう１つはメソッドのマッチを行う`matchesMethod`です。いずれもマッチしたかどうかをboolで返します。
+１つはクラスのマッチを行う`matchesClass`メソッド、もう１つはメソッドのマッチを行う`matchesMethod`メソッドです。いずれもマッチしたかどうかをboolで返します。
 
 ```php?start_inline
 use Ray\Aop\AbstractMatcher;
