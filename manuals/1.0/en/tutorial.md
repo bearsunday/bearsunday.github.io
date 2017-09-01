@@ -194,7 +194,7 @@ This module looks for a router script file at `var/conf/aura.route.php`.
 ```php?start_inline
 <?php
 /* @var $router \BEAR\Package\Provide\Router\AuraRoute */
-    
+
 $router->route('/weekday', '/weekday/{year}/{month}/{day}');
 ```
 
@@ -716,6 +716,10 @@ class Todo extends ResourceObject
 ```
 
 Let's try a `POST`.
+
+```bash
+php bootstrap/api.php post '/todo?todo=shopping'
+```
 
 ```bash
 201 Created
