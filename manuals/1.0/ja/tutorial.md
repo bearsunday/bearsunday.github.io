@@ -28,7 +28,9 @@ class Weekday extends ResourceObject
     public function onGet(int $year, int $month, int $day) : ResourceObject
     {
         $date = \DateTime::createFromFormat('Y-m-d', "$year-$month-$day");
-        $this['weekday'] = $date->format('D');
+        $this->body = [
+            'weekday' => $date->format('D')
+        ];
 
         return $this;
     }
@@ -41,6 +43,10 @@ class Weekday extends ResourceObject
 
 コンソールでアクセスしてみましょう。まずはエラーを試してみます。
 
+```bash
+php bootstrap/api.php get /weekday
+```
+
 ```
 404 Not Found
 content-type: application/vnd.error+json
@@ -51,13 +57,13 @@ content-type: application/vnd.error+json
 ...
 ```
 
-
-400はリクエストに問題があるエラーコードです。
-次は引数をつけて正しいリクエストを試します。
+400はリクエストに問題があるエラーコードです。（エラーは`lofref`IDがつけられ`var/log/`でエラーの詳しい内容を参照することができます）次は引数をつけて正しいリクエストを試します。
 
 ```bash
 php bootstrap/api.php get '/weekday?year=2001&month=1&day=1'
+```
 
+```bash
 200 OK
 Content-Type: application/hal+json
 
@@ -89,9 +95,9 @@ curl -i 'http://127.0.0.1:8080/weekday?year=2001&month=1&day=1'
 ```
 HTTP/1.1 200 OK
 Host: 127.0.0.1:8080
-Date: Sun, 04 Jun 2017 19:48:09 +0200
+Date: Fri, 01 Sep 2017 09:31:13 +0200
 Connection: close
-X-Powered-By: PHP/7.1.4
+X-Powered-By: PHP/7.1.8
 content-type: application/hal+json
 
 {
@@ -118,7 +124,7 @@ HTTP/1.1 405 Method Not Allowed
 HTTP `OPTIONS` メソッドリクエストで利用可能なHTTPメソッドと必要なパラメーターを調べることができます。([RFC7231](https://tools.ietf.org/html/rfc7231#section-4.3.7))
 
 ```
-curl -i -X OPTIONS 'http://127.0.0.1:8080/weekday'
+curl -i -X OPTIONS http://127.0.0.1:8080/weekday
 ```
 
 ```
@@ -156,7 +162,7 @@ Allow: GET
 
 最初にcompoerでインストールします。
 ```bash
-composer require bear/aura-router-module ~1.0
+composer require bear/aura-router-module ^1.0
 ```
 
 次に`src/Module/AppModule.php`で`AuraRouterModule`を上書き(override)インストールします。
@@ -166,30 +172,33 @@ composer require bear/aura-router-module ~1.0
 namespace MyVendor\Weekday\Module;
 
 use BEAR\Package\PackageModule;
-use Ray\Di\AbstractModule;
+use BEAR\Package\Provide\Router\AuraRouterModule; // 追加
 use josegonzalez\Dotenv\Loader as Dotenv;
-use BEAR\Package\Provide\Router\AuraRouterModule; // この行を追加
+use Ray\Di\AbstractModule;
 
 class AppModule extends AbstractModule
 {
+    /**
+     * {@inheritdoc}
+     */
     protected function configure()
     {
+        $appDir = dirname(dirname(__DIR__));
         Dotenv::load([
             'filepath' => dirname(dirname(__DIR__)) . '/.env',
             'toEnv' => true
         ]);
         $this->install(new PackageModule);
-        $this->override(new AuraRouterModule); // この行を追加
+        $this->override(new AuraRouterModule($appDir . '/var/conf/aura.route.conf')); // 追加
     }
 }
 ```
 
 ルータースクリプトファイルを`var/conf/aura.route.php`に設置します。
 
-```php?start_inline
+```php
 <?php
 /* @var $router \BEAR\Package\Provide\Router\AuraRoute */
-/* @var $schemeHost string */
 
 $router->route('/weekday', '/weekday/{year}/{month}/{day}');
 ```
@@ -198,6 +207,9 @@ $router->route('/weekday', '/weekday/{year}/{month}/{day}');
 
 ```bash
 php bootstrap/api.php get '/weekday/1981/09/08'
+```
+
+```bash
 200 OK
 Content-Type: application/hal+json
 
@@ -217,7 +229,7 @@ Content-Type: application/hal+json
 [composer](http://getcomposer.org)で取得します。
 
 ```bash
-composer require monolog/monolog ~1.0
+composer require monolog/monolog ^1.0
 ```
 
 monologログオブジェクトは`new`で直接作成しないで、作成されたログオブジェクトを受け取るようにします。
@@ -265,14 +277,12 @@ class MonologLoggerProvider implements ProviderInterface
 `src/Modules/AppModule.php`の`configure`メソッドに以下を追加します。
 
 ```php?start_inline
-$this->bind(LoggerInterface::class)->toProvider(MonologLoggerProvider::class)->in(Scope::SINGLETON);
-```
-
-classキーワードでクラス名を解決するために以下のuse文も必要です。
-
-```php?start_inline
 use Psr\Log\LoggerInterface;
 use Ray\Di\Scope;
+```
+
+```php?start_inline
+$this->bind(LoggerInterface::class)->toProvider(MonologLoggerProvider::class)->in(Scope::SINGLETON);
 ```
 
 どのクラスでもコンストラクタでmonologオブジェクトを受け取ることができるようになりました。
@@ -299,9 +309,11 @@ class Weekday extends ResourceObject
 
     public function onGet(int $year, int $month, int $day) : ResourceObject
     {
-        $date = \DateTime::createFromFormat('Y-m-d', "$year-$month-$day");
-        $this['weekday'] = $date->format('D');
-        $this->logger->info("$year-$month-$day {$this['weekday']}");
+        $weekday = \DateTime::createFromFormat('Y-m-d', "$year-$month-$day")->format('D');
+        $this->body = [
+            'weekday' => $weekday
+        ];
+        $this->logger->info("$year-$month-$day {$weekday}");
 
         return $this;
     }
@@ -311,7 +323,10 @@ class Weekday extends ResourceObject
 実行して`var/log/cli-hal-api-app/weekday.log`に結果が出力されていることを確認しましょう。
 
 ```bash
-php bootstrap/api.php get '/weekday/2011/05/23'
+php bootstrap/api.php get /weekday/2011/05/23
+```
+
+```bash
 cat var/log/cli-hal-api-app/weekday.log
 ```
 
@@ -418,7 +433,10 @@ class Weekday
 
 ```bash
 php bootstrap/api.php get '/weekday/2015/05/28'
-cat var/log/weekday.log
+```
+
+```bash
+cat var/log/cli-hal-api-app/weekday.log
 ```
 
 ## HTML
@@ -442,23 +460,28 @@ class Index extends ResourceObject
      */
     public function onGet(int $year, int $month, int $day) : ResourceObject
     {
-        $this['year'] = $year;
-        $this['month'] = $month;
-        $this['day'] = $day;
+        $this->body += [
+            'year' => $year,
+            'month' => $month,
+            'day' => $day
+        ];
 
         return $this;
     }
 }
 ```
 
-`@Embed`アノテーションで`app://self/weekday`リソースをbodyの`weekday`キーに埋め込んでいます。その際にクエリーを[RFC6570 URI template](https://github.com/ioseb/uri-template)を使って`{?year,month,day}`として同じものを渡しています。下記の２つのURI templateは同じURIを示しています。
+`@Embed`アノテーションで`app://self/weekday`リソースをbodyのweekdayキーに埋め込んでいます。**+=**で配列をmergeしているのはonGet実行前に`@Embed`でbodyに埋め込まれたweekdayと合成するためです
+
+その際にクエリーを**URI template** ([RFC6570](https://github.com/ioseb/uri-template))を使って`{?year,month,day}`として同じものを渡しています。
+下記の２つのURI templateは同じURIを示しています。
 
  * `app://self/weekday{?year,month,day}`
  * `app://self/weekday?year={year},month={month},day={day}`
 
 `<iframe>`や`<img>`タグで他のリソースを含むページをイメージしてください。これらもHTMLページが画像や他のHTMLなどのリソースを自身に埋め込んでいます。
 
-上記のページクラスは下記のページクラスと同じものです。こちらは`@Embed`でリソースを埋め込むかわりに` use ResourceInject;`で`resource`リソースクライアントをインジェクトしてそのクラインアトでappリソースをセットしています。
+`@Embed`でリソースを埋め込むかわりに` use ResourceInject;`で`resource`リソースクライアントをインジェクトしてそのクラインアトでappリソースをセットすることもできます。
 
 ```php
  <?php
@@ -467,22 +490,18 @@ namespace MyVendor\Weekday\Resource\Page;
 use BEAR\Resource\ResourceObject;
 use BEAR\Sunday\Inject\ResourceInject;
 
-class Index extends ResourceObject
+class Weekday extends ResourceObject
 {
     use ResourceInject;
 
     public function onGet(int $year, int $month, int $day) : ResourceObject
     {
-        $this['year'] = $year;
-        $this['month'] = $month;
-        $this['day'] = $day;
-        $this['weekday'] = $this->resource
-            ->get
-            ->uri('app://self/weekday')
-            ->withQuery(['year' => $year, 'month' => $month, 'day' => $day])
-            ->request();
+      $params = get_defined_vars(); // ['year' => $year, 'month' => $month, 'day' => $day]
+      $this->body = $params + [
+          'weekday' => $this->resource->uri('app://self/weekday')($params)
+      ];
 
-        return $this;
+      return $this;
     }
 }
 ```
@@ -492,7 +511,7 @@ class Index extends ResourceObject
 このリソースがどのような表現になるのか試してみましょう。
 
 ```bash
-php bootstrap/web.php get '/?year=2000&month=1&day=1'
+php bootstrap/web.php get '/?year=2000&month=1&day=1'   
 ```
 
 ```
@@ -625,7 +644,7 @@ sqlite> .exit
 ここではCakePHP3でも使われているCakeDBをインストールしてみましょう。
 
 ```bash
-composer require ray/cake-database-module ~1.0
+composer require ray/cake-database-module ^1.0
 ```
 
 `src/Module/AppModule::configure()`でモジュールのインストールをします。
@@ -636,7 +655,7 @@ use Ray\CakeDbModule\CakeDbModule;
 
 $dbConfig = [
     'driver' => 'Cake\Database\Driver\Sqlite',
-    'database' => dirname(dirname(__DIR__)) . '/var/db/todo.sqlite3'
+    'database' => $appDir . '/var/db/todo.sqlite3'
 ];
 $this->install(new CakeDbModule($dbConfig));
 ```
@@ -705,7 +724,7 @@ class Todo extends ResourceObject
         $this->db->update(
             'todo',
             ['todo' => $todo],
-            ['id' => (int) $id]
+            ['id' => $id]
         );
         $this->headers['Location'] = '/todo/?id=' . $id;
         // status code

@@ -29,7 +29,9 @@ class Weekday extends ResourceObject
     public function onGet(int $year, int $month, int $day) : ResourceObject
     {
         $date = \DateTime::createFromFormat('Y-m-d', "$year-$month-$day");
-        $this['weekday'] = $date->format('D');
+        $this->body = [
+            'weekday' => $date->format('D')
+        ];
 
         return $this;
     }
@@ -61,7 +63,9 @@ Next make request with the expected parameters.
 
 ```bash
 php bootstrap/api.php get '/weekday?year=2001&month=1&day=1'
+```
 
+```bash
 200 OK
 Content-Type: application/hal+json
 
@@ -86,7 +90,7 @@ php -S 127.0.0.1:8080 bootstrap/api.php
 Send a HTTP `GET` request with `curl`
 
 ```
-curl -i 'http://127.0.0.1:8080/weekday?year=2001&month=1&day=1'
+curl -i http://127.0.0.1:8080/weekday?year=2001&month=1&day=1
 ```
 ```
 HTTP/1.1 200 OK
@@ -109,7 +113,7 @@ content-type: application/hal+json
 This resource class only has a GET method, therefore `405 Method Not Allowed` will be returned with any other request. Try it out!.
 
 ```
-curl -i -X POST 'http://127.0.0.1:8080/weekday?year=2001&month=1&day=1'
+curl -i -X POST http://127.0.0.1:8080/weekday?year=2001&month=1&day=1
 ```
 
 
@@ -121,7 +125,7 @@ HTTP/1.1 405 Method Not Allowed
 
 You can use the OPTIONS method to examine the HTTP methods available and the required parameters in the request. ([RFC7231](https://tools.ietf.org/html/rfc7231#section-4.3.7))
 ```
-curl -i -X OPTIONS 'http://127.0.0.1:8080/weekday'
+curl -i -X OPTIONS http://127.0.0.1:8080/weekday
 ```
 
 ```
@@ -159,7 +163,7 @@ To receive a dynamic parameter in URI path, we can use `AuraRouter`. This can be
 Get it with [composer](http://getcomposer.org) first.
 
 ```bash
-composer require bear/aura-router-module ~1.0
+composer require bear/aura-router-module ^1.0
 ```
 
 ```php
@@ -190,8 +194,7 @@ This module looks for a router script file at `var/conf/aura.route.php`.
 ```php?start_inline
 <?php
 /* @var $router \BEAR\Package\Provide\Router\AuraRoute */
-/* @var $schemeHost string */
-
+    
 $router->route('/weekday', '/weekday/{year}/{month}/{day}');
 ```
 
@@ -220,7 +223,7 @@ Let's log a result with [monolog](https://github.com/Seldaek/monolog) logger.
 Get it with [composer](http://getcomposer.org) first.
 
 ```bash
-composer require monolog/monolog ~1.0
+composer require monolog/monolog ^1.0
 ```
 
 You instantiating `monolog` object with the `new` operator is *strongly discouraged*,
@@ -302,9 +305,11 @@ class Weekday extends ResourceObject
 
     public function onGet(int $year, int $month, int $day) : ResourceObject
     {
-        $date = \DateTime::createFromFormat('Y-m-d', "$year-$month-$day");
-        $this['weekday'] = $date->format('D');
-        $this->logger->info("$year-$month-$day {$this['weekday']}");
+        $weekday = \DateTime::createFromFormat('Y-m-d', "$year-$month-$day")->format('D');
+        $this->body = [
+            'weekday' => $weekday
+        ];
+        $this->logger->info("$year-$month-$day {$weekday}");
 
         return $this;
     }
@@ -440,11 +445,13 @@ class Index extends ResourceObject
     /**
      * @Embed(rel="weekday", src="app://self/weekday{?year,month,day}")
      */
-    public function onGet($year, $month, $day)
+    public function onGet(int $year, int $month, int $day) : ResourceObject
     {
-        $this['year'] = $year;
-        $this['month'] = $month;
-        $this['day'] = $day;
+        $this->body += [
+            'year' => $year,
+            'month' => $month,
+            'day' => $day
+        ];
 
         return $this;
     }
@@ -472,14 +479,10 @@ class Index extends ResourceObject
 
     public function onGet(int $year, int $month, int $day) : ResourceObject
     {
-        $this['year'] = $year;
-        $this['month'] = $month;
-        $this['day'] = $day;
-        $this['weekday'] = $this->resource
-            ->get
-            ->uri('app://self/weekday')
-            ->withQuery(['year' => $year, 'month' => $month, 'day' => $day])
-            ->request();
+        $params = get_defined_vars(); // ['year' => $year, 'month' => $month, 'day' => $day]
+        $this->body = $params + [
+            'weekday' => $this->resource->uri('app://self/weekday')($params)
+        ];
 
         return $this;
     }
@@ -699,7 +702,7 @@ class Todo extends ResourceObject
         $this->db->update(
             'todo',
             ['todo' => $todo],
-            ['id' => (int) $id]
+            ['id' => $id]
         );
         $this->headers['Location'] = '/todo/?id=' . $id;
         // status code
@@ -800,7 +803,7 @@ php bootstrap/api.php get '/todo?id=1'
 
 ```bash
 HTTP/1.1 200 OK
-Host: 127.0.0.1:8081
+Host: 127.0.0.1:8080
 Date: Sun, 04 Jun 2017 18:02:55 +0200
 Connection: close
 X-Powered-By: PHP/7.1.4
@@ -910,18 +913,18 @@ content-type: application/hal+json
 
 Next we start up the API server.
 ```bash
-php -S 127.0.0.1:8081 bootstrap/api.php
+php -S 127.0.0.1:8080 bootstrap/api.php
 ```
 
 This time do a get with a `curl` command.
 
 ```bash
-curl -i 'http://127.0.0.1:8081/todo?id=2'
+curl -i 'http://127.0.0.1:8080/todo?id=2'
 ```
 
 ```
 HTTP/1.1 200 OK
-Host: 127.0.0.1:8081
+Host: 127.0.0.1:8080
 Connection: close
 content-type: application/hal+json
 ETag: 3134272297
@@ -948,19 +951,19 @@ Make a request several times and check that the `Last-Modified` time stamp doesn
 Next we update the resource with a `PUT`.
 
 ```bash
-curl -i http://127.0.0.1:8081/todo -X PUT -d "id=2&todo=think"
+curl -i http://127.0.0.1:8080/todo -X PUT -d "id=2&todo=think"
 ```
 
 If you would rather send a JSON body with the PUT request you can run the following.
 
 ```bash
-curl -i http://127.0.0.1:8081/todo -X PUT -H 'Content-Type: application/json' -d '{"id": "2", "todo":"think" }'
+curl -i http://127.0.0.1:8080/todo -X PUT -H 'Content-Type: application/json' -d '{"id": "2", "todo":"think" }'
 ```
 
 This time when you perform a `GET` you can see that the `Last-Modified` has been updated.
 
 ```bash
-curl -i 'http://127.0.0.1:8081/todo?id=2'
+curl -i 'http://127.0.0.1:8080/todo?id=2'
 ```
 
 This `Last-Modified` time stamp has been provided by `@Cacheable`. No need to provide any special application admin or database columns.
