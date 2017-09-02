@@ -130,11 +130,11 @@ PSR-7のミドルウエアのためのオプションパッケージです。
 
 | **Category** | **Composer package** | **Library**
 | ルーター |
-| |[bear/aura-router-module](https://github.com/bearsunday/BEAR.AuraRouterModule) | Aura.Router v2 |
+| |[bear/aura-router-module](https://github.com/bearsunday/BEAR.AuraRouterModule) | [Aura.Router v2](https://github.com/auraphp/Aura.Router/tree/2.x) |
 | データベース |
-|| [ray/aura-sql-module](https://github.com/ray-di/Ray.AuraSqlModule) | Aura.Sql v2
-|| [ray/dbal-module](https://github.com/ray-di/Ray.DbalModule) | Doctrine DBAL
-|| [ray/cake-database-module](https://github.com/ray-di/Ray.CakeDbModule) | CakePHP v3 database
+|| [ray/aura-sql-module](https://github.com/ray-di/Ray.AuraSqlModule) | [Aura.Sql v2](https://github.com/auraphp/Aura.Sql/tree/2.x)
+|| [ray/dbal-module](https://github.com/ray-di/Ray.DbalModule) | [Doctrine DBAL](https://github.com/doctrine/dbal)
+|| [ray/cake-database-module](https://github.com/ray-di/Ray.CakeDbModule) | [CakePHP v3 database](https://github.com/cakephp/database)
 || [ray/doctrine-orm-module](https://github.com/kawanamiyuu/Ray.DoctrineOrmModule) | [Doctrine ORM](https://github.com/doctrine/doctrine2)
 | ストレージ |
 ||[bear/query-repository](https://github.com/bearsunday/BEAR.QueryRepository) | 読み書きリポジトリの分離
@@ -149,11 +149,12 @@ PSR-7のミドルウエアのためのオプションパッケージです。
 | |[satomif/extra-aura-filter-module](https://github.com/satomif/ExtraAuraFilterModule) | [Aura.Filter](https://github.com/auraphp/Aura.Filter)
 | 認証 |
 | |[ray/oauth-module](https://github.com/Ray-Di/Ray.OAuthModule) | OAuth
-| |[ray/role-module](https://github.com/ray-di/Ray.RoleModule) | Zend Acl
+| |[kuma-guy/jwt-auth-module](https://github.com/kuma-guy/BEAR.JwtAuthModule) | JSON Web Token
+| |[ray/role-module](https://github.com/ray-di/Ray.RoleModule) | [Zend Acl](https://github.com/zendframework/zend-permissions-acl)
 | ハイパーメディア |
 | |[kuma-guy/siren-module](https://github.com/kuma-guy/BEAR.SirenModule) | Siren
 |  開発 |
-| |[ray/test-double](https://github.com/ray-di/Ray.TestDouble) | モッキング
+| |[ray/test-double](https://github.com/ray-di/Ray.TestDouble) | テストダブル
 
 ## ベンダー・パッケージ
 
