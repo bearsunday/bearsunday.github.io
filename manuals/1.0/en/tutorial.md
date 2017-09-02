@@ -270,15 +270,20 @@ Dependency is provided via `get` method.
 To bind the [logger interface](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-3-logger-interface.md) to the factory class,
 Add the following code to the `configure` method in `src/Modules/AppModule.php`.
 
-```php?start_inline
-$this->bind(LoggerInterface::class)->toProvider(MonologLoggerProvider::class)->in(Scope::SINGLETON);
-```
+```php
+<?php
+// ...
+use Psr\Log\LoggerInterface; // add this line
+use Ray\Di\Scope; // add this line
 
-You may need the following code to resolve the full class name.
-
-```php?start_inline
-use Psr\Log\LoggerInterface;
-use Ray\Di\Scope;
+class AppModule extends AbstractModule
+{
+    protected function configure()
+    {
+        // ...
+        $this->bind(LoggerInterface::class)->toProvider(MonologLoggerProvider::class)->in(Scope::SINGLETON);
+    }
+}
 ```
 
 Now we can expect to have a `monolog` object injected into any constructor.
@@ -392,6 +397,26 @@ final class BenchMark
 ```
 
 We then need to bind the target method to the benchmarking interceptor in `AppModule` with a matcher.
+
+```php
+<?php
+// ...
+use MyVendor\Weekday\Annotation\BenchMark; // Add this line
+use MyVendor\Weekday\Interceptor\BenchMarker; // Add this line
+
+class AppModule extends AbstractModule
+{
+    protected function configure()
+    {
+        // ...
+        $this->bindInterceptor(
+            $this->matcher->any(),                           // in any class
+            $this->matcher->annotatedWith(BenchMark::class), // which annotated as @BenchMark
+            [BenchMarker::class]                             // apply BenchMarker interceptor
+        );
+    }
+}
+```
 
 ```php?start_inline
 use MyVendor\Weekday\Annotation\BenchMark;
@@ -544,8 +569,8 @@ class HtmlModule extends AbstractModule
 
 Change `bootstrap/web.php`
 
-```php?start_inline
-
+```php
+<?php
 $context = 'cli-html-app';
 require __DIR__ . '/bootstrap.php';
 ```
@@ -581,8 +606,9 @@ The weekday of 1991/8/1 is Thu.
 
 In order to run the web service we need make a change to `var/www/index.php`.
 
-```php?start_inline
-$context = 'prod-html-app';
+```php
+<?php
+$context = 'html-app';
 require dirname(dirname(__DIR__)) . '/bootstrap/bootstrap.php';
 ```
 
@@ -627,15 +653,24 @@ composer require ray/cake-database-module ~1.0
 
 In `src/Module/AppModule::configure()` we install the module.
 
-```bash
-use Ray\CakeDbModule\CakeDbModule;
+```php
+<?php
+// ...
+use Psr\Log\LoggerInterface; // add this line
+use Ray\Di\Scope; // add this line
 
-...
-$dbConfig = [
-    'driver' => 'Cake\Database\Driver\Sqlite',
-    'database' => dirname(dirname(__DIR__)) . '/var/db/todo.sqlite3'
-];
-$this->install(new CakeDbModule($dbConfig));
+class AppModule extends AbstractModule
+{
+    protected function configure()
+    {
+        // ...
+        $dbConfig = [
+            'driver' => 'Cake\Database\Driver\Sqlite',
+            'database' => $appDir . '/var/db/todo.sqlite3'
+        ];
+        $this->install(new CakeDbModule($dbConfig));
+    }
+}
 ```
 
 Now if we `use` the setter method trait `DatabaseInject` we have the CakeDB object available to us in `$this->db`.
@@ -976,9 +1011,12 @@ When you use `@Cacheable` the resource content is also saved in a separate `quer
 
 ## Application Import
 
-Resources created with BEAR.Sunday have unrivaled re-usability. Let's try using a resource in another application.
+Resources created with BEAR.Sunday have unrivaled re-usability.
+You can run multiple applications at the same time and use resources of other applications. You do not need to set up separate web servers.
 
-So for this tutorial let's create a new `my-vendor` and manually add it to the auto loader. (Normally you would set up the new application as a package).
+Let's try using a resource in another application.
+
+Normally you would set up the new application as a package, For this tutorial let's create a new `my-vendor` and manually add it to the auto loader. .
 
 ```bash
 mkdir my-vendor
@@ -987,8 +1025,8 @@ composer create-project bear/skeleton Acme.Blog ~1.0@dev
 ```
 
 In the `composer.json` in the `autoload` section add `Acme\\Blog`.
-```bash
 
+```json
 "autoload": {
     "psr-4": {
         "MyVendor\\Weekday\\": "src/",
@@ -1007,16 +1045,27 @@ With this the configuration for the `Acme\Blog` application is complete.
 
 Next in order to import the application in `src/Module/AppModule.php` we use the `ImportAppModule` in `src/Module/AppModule.php` to install as an override.
 
-```php?start_inline
-use BEAR\Resource\Module\ImportAppModule;
-use BEAR\Resource\ImportApp;
-use BEAR\Package\Context;
+```php
+<?php
+// ...
+use BEAR\Resource\Module\ImportAppModule; // add this line
+use BEAR\Resource\ImportApp; // add this line
+use BEAR\Package\Context; // add this line
 
-$importConfig = [
-    new ImportApp('blog', 'Acme\Blog', 'prod-hal-app') // host, name, context
-];
-$this->override(new ImportAppModule($importConfig , Context::class));
+class AppModule extends AbstractModule
+{
+    protected function configure()
+    {
+        // ...
+        $dbConfig = [
+            'driver' => 'Cake\Database\Driver\Sqlite',
+            'database' => $appDir . '/var/db/todo.sqlite3'
+        ];
+        $this->install(new CakeDbModule($dbConfig));
+    }
+}
 ```
+
 With this a Acme\Blog` application using a `prod-hal-app` context can create resources that will be available to the `blog` host.
 
 Let's check it works by creating an Import resource in `src/Resource/App/Import.php`.

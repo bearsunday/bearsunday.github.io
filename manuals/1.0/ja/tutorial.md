@@ -35,7 +35,6 @@ class Weekday extends ResourceObject
         return $this;
     }
 }
-
 ```
 
 この`MyVendor\Weekday\Resource\App\Weekday`リソースクラスは`/weekday`というパスでアクセスすることができます。
@@ -172,7 +171,7 @@ composer require bear/aura-router-module ^1.0
 namespace MyVendor\Weekday\Module;
 
 use BEAR\Package\PackageModule;
-use BEAR\Package\Provide\Router\AuraRouterModule; // 追加
+use BEAR\Package\Provide\Router\AuraRouterModule; // add this line
 use josegonzalez\Dotenv\Loader as Dotenv;
 use Ray\Di\AbstractModule;
 
@@ -276,13 +275,20 @@ class MonologLoggerProvider implements ProviderInterface
 次に[ロガーインターフェイス](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-3-logger-interface.md)と、この依存を生成するファクトリークラスを結びつけます。
 `src/Modules/AppModule.php`の`configure`メソッドに以下を追加します。
 
-```php?start_inline
-use Psr\Log\LoggerInterface;
-use Ray\Di\Scope;
-```
+```php
+<?php
+// ...
+use Psr\Log\LoggerInterface; // add this line
+use Ray\Di\Scope; // add this line
 
-```php?start_inline
-$this->bind(LoggerInterface::class)->toProvider(MonologLoggerProvider::class)->in(Scope::SINGLETON);
+class AppModule extends AbstractModule
+{
+    protected function configure()
+    {
+        // ...
+        $this->bind(LoggerInterface::class)->toProvider(MonologLoggerProvider::class)->in(Scope::SINGLETON);
+    }
+}
 ```
 
 どのクラスでもコンストラクタでmonologオブジェクトを受け取ることができるようになりました。
@@ -397,16 +403,24 @@ final class BenchMark
 
 `AppModule`で**Matcher**を使ってインターセプターを適用するメソッドを束縛（バインド）します。
 
-```php?start_inline
-use MyVendor\Weekday\Annotation\BenchMark;
-use MyVendor\Weekday\Interceptor\BenchMarker;
+```php
+<?php
+// ...
+use MyVendor\Weekday\Annotation\BenchMark; // add this line
+use MyVendor\Weekday\Interceptor\BenchMarker; // add this line
 
-// configure()に追加します。
-$this->bindInterceptor(
-    $this->matcher->any(),                           // どのクラスでも
-    $this->matcher->annotatedWith(BenchMark::class), // @BenchMarkとアノテートされているメソッドに
-    [BenchMarker::class]                             // BenchMarkerインターセプターを適用
-);
+class AppModule extends AbstractModule
+{
+    protected function configure()
+    {
+        // ...
+        $this->bindInterceptor(
+            $this->matcher->any(),                           // どのクラスでも
+            $this->matcher->annotatedWith(BenchMark::class), // @BenchMarkとアノテートされているメソッドに
+            [BenchMarker::class]                             // BenchMarkerインターセプターを適用
+        );
+    }
+}
 ```
 
 ベンチマークを行いたいメソッドに`@BenchMark`とアノテートします。
@@ -564,7 +578,8 @@ class HtmlModule extends AbstractModule
 
 `bootstrap/web.php`を変更
 
-```php?start_inline
+```php
+<?php
 $context = 'cli-html-app';
 require __DIR__ . '/bootstrap.php';
 ```
@@ -601,10 +616,11 @@ The weekday of 1991/8/1 is Thu.
 もしこの時htmlが表示されなければ、テンプレートエンジンのエラーが発生しています。
 その時はログファイル(`var/log/app.cli-html-app.log`)でエラーを確認しましょう。
 
-次にWebサービスを行うために`public/index.php`を変更します。
+次にWebサービスを行うために`public/index.php`も変更します。
 
-```php?start_inline
-$context = 'prod-html-app';
+```php
+<?php
+$context = 'html-app';
 require dirname(dirname(__DIR__)) . '/bootstrap/bootstrap.php';
 ```
 
@@ -649,15 +665,24 @@ composer require ray/cake-database-module ^1.0
 
 `src/Module/AppModule::configure()`でモジュールのインストールをします。
 
-```php?start_inline
-use Ray\CakeDbModule\CakeDbModule;
+```php
+<?php
 // ...
+use Psr\Log\LoggerInterface; // add this line
+use Ray\Di\Scope; // add this line
 
-$dbConfig = [
-    'driver' => 'Cake\Database\Driver\Sqlite',
-    'database' => $appDir . '/var/db/todo.sqlite3'
-];
-$this->install(new CakeDbModule($dbConfig));
+class AppModule extends AbstractModule
+{
+    protected function configure()
+    {
+        // ...
+        $dbConfig = [
+            'driver' => 'Cake\Database\Driver\Sqlite',
+            'database' => $appDir . '/var/db/todo.sqlite3'
+        ];
+        $this->install(new CakeDbModule($dbConfig));
+    }
+}
 ```
 
 セッターメソッドのtrait `DatabaseInject`を使うと`$this->db`でCakeDBオブジェクトを使えます。
@@ -854,22 +879,21 @@ curl -i 'http://127.0.0.1:8081/todo?id=1'
 
 ## アプリケーションのインポート
 
-BEAR.Sundayで作られたリソースは再利用性に優れています。
-他のアプリケーションのリソースを利用してみましょう。
+BEAR.Sundayで作られたリソースは再利用性に優れています。複数のアプリケーションを同時に動作させ、他のアプリケーションのリソースを利用することができます。別々のWebサーバーを立てる必要はありません。
 
-ここではチュートリアルのために`my-vendor`に新規でアプリケーションを作成して手動でオートローダーを設定します。
-（通常はアプリケーションをパッケージとして利用します）
+他のアプリケーションのリソースを利用して見ましょう。
+
+通常はアプリケーションをパッケージとして利用しますが、ここではチュートリアルのために`my-vendor`に新規でアプリケーションを作成して手動でオートローダーを設定します。
 
 ```bash
 mkdir my-vendor
 cd my-vendor
-composer create-project bear/skeleton Acme.Blog ~1.0@dev
+composer create-project bear/skeleton Acme.Blog
 ```
 
 `composer.json`で`autoload`のセクションに`Acme\\Blog`を追加します。
 
-```bash
-
+```json
 "autoload": {
     "psr-4": {
         "MyVendor\\Weekday\\": "src/",
@@ -888,16 +912,26 @@ composer dump-autoload
 
 次にアプリケーションをインポートするために`src/Module/AppModule.php`で`ImportAppModule`を上書き(override)インストールします。
 
-```php?start_inline
-use BEAR\Resource\Module\ImportAppModule;
-use BEAR\Resource\ImportApp;
-use BEAR\Package\Context;
+```php
+<?php
+// ...
+use BEAR\Resource\Module\ImportAppModule; // add this line
+use BEAR\Resource\ImportApp; // add this line
+use BEAR\Package\Context; // add this line
 
-$importConfig = [
-    new ImportApp('blog', 'Acme\Blog', 'prod-hal-app') // ホスト, 名前, コンテキスト
-];
-$this->override(new ImportAppModule($importConfig , Context::class));
+class AppModule extends AbstractModule
+{
+    protected function configure()
+    {
+        // ...
+        $importConfig = [
+            new ImportApp('blog', 'Acme\Blog', 'prod-hal-app') // host, name, context
+        ];
+        $this->override(new ImportAppModule($importConfig , Context::class));
+    }
+}
 ```
+
 これは`Acme\Blog`アプリケーションを`prod-hal-app`コンテキストで作成したリソースを`blog`というホストで使用することができます。
 
 `src/Resource/App/Import.php`にImportリソースを作成して確かめてみましょう。
