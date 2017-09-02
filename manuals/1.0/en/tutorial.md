@@ -1083,7 +1083,9 @@ class Import extends ResourceObject
 
     public function onGet()
     {
-        $this['blog'] = $this->resource->uri('page://blog/index')['greeting'];
+        $this->body =[
+            'blog' => $this->resource->uri('page://blog/index')['greeting']
+        ];
 
         return $this;
     }
@@ -1118,13 +1120,14 @@ The combined application is now seen as 1 layer of a single application. A
 Next lets look at how we use a resource in a system that is not BEAR.Sunday based. We create an app.php. You can place this anywhere but be careful that it picks up `autoload.php` path correctly.
 
 ```php?start_inline
-<?php
 use BEAR\Package\Bootstrap;
 
 require __DIR__ . '/autoload.php';
 
-$app = (new Bootstrap)->getApp('MyVendor\Weekday', 'prod-hal-app');
-echo $app->resource->uri('app://self/import')['blog'] . PHP_EOL;
+$api = (new Bootstrap)->getApp('MyVendor\Weekday', 'prod-hal-app');
+
+$blog = $api->resource->uri('app://self/import')['blog'];
+var_dump($blog);
 ```
 
 Let's try it..
@@ -1134,11 +1137,51 @@ php bint/test.php
 ```
 
 ```
-Hello BEAR.Sunday
+string(17) "Hello BEAR.Sunday"
 ```
 
-## Because everything is a resource
+Other examples..
 
-Unique data identifier URIs, a consistent interface, stateless access, powerful caching system, hyperlinks, layered system, and self-descriptive messages. A resource built with BEAR.Sunday implements all of these REST features.
+```php?start_inline
+$weekday = $api->resource->uri('app://self/weekday')(['year' => 2000, 'month'=>1, 'day'=>1]);
+var_dump($weekday->body); // as array
+//array(1) {
+//    ["weekday"]=>
+//  string(3) "Sat"
+//}
+
+echo $weekday; // as string
+//{
+//    "weekday": "Sat",
+//    "_links": {
+//    "self": {
+//        "href": "/weekday/2000/1/1"
+//        }
+//    }
+//}
+```
+
+```php?start_inline
+$html = (new Bootstrap)->getApp('MyVendor\Weekday', 'prod-html-app');
+$index = $html->resource->uri('page://self/index')(['year' => 2000, 'month'=>1, 'day'=>1]);
+var_dump($index->code);
+//int(200)
+
+echo $index;
+//<!DOCTYPE html>
+//<html>
+//<body>
+//The weekday of 2000/1/1 is Sat.
+//</body>
+//</html>
+```
+
+Response is returned with a stateless request REST's resource is like a PHP function. You can get the value in `body` or you can express it like JSON or HTML with `(string)`. You can operate on any resource of the application with two lines except autoload, one line script if you concatenate it.
+
+In this way, resources created with BEAR.Sunday can be easily used from other CMS and framework. You can handle the values of multiple applications at once.
+
+## Because Everything is A Resource
+
+Uniform resource identifier(URI), a consistent interface, stateless access, powerful caching system, hyperlinks, layered system, and self-descriptive messages. A resource built with BEAR.Sunday implements all of these REST features.
 
 You can connect to data from other applications using hyperlinks, creating an API to be consumed from another CMS or framework is easy. The resource object is completely decoupled from any rendering !

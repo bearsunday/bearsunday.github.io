@@ -949,15 +949,16 @@ class Import extends ResourceObject
 
     public function onGet()
     {
-        $this['blog'] = $this->resource->uri('page://blog/index')['greeting'];
+        $this->body =[
+            'blog' => $this->resource->uri('page://blog/index')['greeting']
+        ];
 
         return $this;
     }
 }
 ```
-(`$this->resource->uri('page://blog/index')['greeting'];`は`$this->resource->get->uri('page://blog/index')->eager->request()->body['greeting']`と同じです。)
 
-`page://blog/index`リソースが`blog`に代入されているはずです。`@Embed`も同様に使えます。
+`page://blog/index`リソースの`greeting`が`blog`に代入されているはずです。`@Embed`も同様に使えます。
 
 ```bash
 php bootstrap/api.php get /import
@@ -982,35 +983,75 @@ content-type: application/hal+json
 合成されたアプリケーションも他からみたら１つのアプリケーションの１つのレイヤーです。
 [レイヤードシステム](http://en.wikipedia.org/wiki/Representational_state_transfer#Layered_system)はRESTの特徴の１つです。
 
-次にBEAR.Sundayでは無いシステムからこのリソースを利用してみましょう。
-`bin/test.php`を作成します。
+それでは最後に作成したアプリケーションのリソースを呼び出す最小限のスクリプトをコーディングして見ましょう。`bin/test.php`を作成します。
+
 
 ```php?start_inline
-<?php
 use BEAR\Package\Bootstrap;
 
 require __DIR__ . '/autoload.php';
 
-$app = (new Bootstrap)->getApp('MyVendor\Weekday', 'prod-hal-app');
-echo $app->resource->uri('app://self/import')['blog'] . PHP_EOL;
+$api = (new Bootstrap)->getApp('MyVendor\Weekday', 'prod-hal-app');
+
+$blog = $api->resource->uri('app://self/import')['blog'];
+var_dump($blog);
 ```
 
-試してみます。
+`MyVendor\Weekday`アプリを`prod-hal-app`で起動して`app://self/import`リソースの`blog`をvar_dumpするコードです。
 
-```bash
+試して見ましょう。
+
+```
 php bint/test.php
 ```
-
 ```
-Hello BEAR.Sunday
+string(17) "Hello BEAR.Sunday"
 ```
 
-このようにBEAR.Sundayで作られたリソースは他のCMSやフレームワークからも簡単に再利用することができます。
+他にも
+
+```php?start_inline
+$weekday = $api->resource->uri('app://self/weekday')(['year' => 2000, 'month'=>1, 'day'=>1]);
+var_dump($weekday->body); // as array
+//array(1) {
+//    ["weekday"]=>
+//  string(3) "Sat"
+//}
+
+echo $weekday; // as string
+//{
+//    "weekday": "Sat",
+//    "_links": {
+//    "self": {
+//        "href": "/weekday/2000/1/1"
+//        }
+//    }
+//}
+```
+
+```php?start_inline
+$html = (new Bootstrap)->getApp('MyVendor\Weekday', 'prod-html-app');
+$index = $html->resource->uri('page://self/index')(['year' => 2000, 'month'=>1, 'day'=>1]);
+var_dump($index->code);
+//int(200)
+
+echo $index;
+//<!DOCTYPE html>
+//<html>
+//<body>
+//The weekday of 2000/1/1 is Sat.
+//</body>
+//</html>
+```
+
+ステートレスなリクエストでレスポンスが返ってくるRESTのリソースはPHPの関数のようなものです。`body`で値を取得したり`(string)`でJSONやHTMLなどの表現にすることができます。autoloadの部分を除けば二行、連結すればたった一行のスクリプトで  アプリケーションのどのリソースでも操作することができます。
+
+このようにBEAR.Sundayで作られたリソースは他のCMSやフレームワークからも簡単に利用することができます。複数のアプリケーションの値を一度に扱うことができます。
 
 
-## Because everything is a resource
+## Because Everything is A Resource
 
-情報の識別子URI、統一されたインターフェイス、ステートテレスなアクセス、強力なキャッシュシステム、ハイパーリンク、レイヤードシステム、自己記述性。
+リソースの識別子URI、統一されたインターフェイス、ステートテレスなアクセス、強力なキャッシュシステム、ハイパーリンク、レイヤードシステム、自己記述性。
 BEAR.SundayアプリケーションのリソースはこれらのRESTの特徴を備えたもので、再利用性に優れています。
 
 異なるアプリケーションの情報もハイパーリンクで接続することができ、他のCMSやフレームワークからの利用やAPIサイトにすることも容易です。
