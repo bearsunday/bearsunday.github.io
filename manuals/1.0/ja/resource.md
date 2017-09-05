@@ -20,7 +20,7 @@ class Index extends ResourceObject
     public $code = 200;
     public $headers = [];
 
-    public function onGet($a, $b)
+    public function onGet(int $a, int $b) : ResourceObject
     {
         $this->body = [
             'result' => $a + $b  // $_GET['a'] + $_GET['b']
@@ -34,7 +34,7 @@ class Index extends ResourceObject
 ```php?start_inline
 class Todo extends ResourceObject
 {
-    public function onPost($id, $todo)
+    public function onPost(string $id, string $todo) : ResourceOjbect
     {
         $this->code = 201; // ステータスコード
         $this->headers['Location'] = '/todo/new_id'; // ヘッダー
@@ -147,6 +147,9 @@ or
 ```php?start_inline
 class Index
 {
+    /**
+     * @Inject
+     */
     public function setRenderer(RenderInterface $renderer)
     {
         $this->renderer = new class implements RenderInterface {
@@ -196,7 +199,7 @@ class Index extends ResourceObject
 {
     use ResourceInject;
 
-    public function onGet($a, $b)
+    public function onGet() : ResourceOjbect
     {
         $this['post'] = $this
             ->resource
@@ -265,7 +268,7 @@ class Index extends ResourceObject
 {
     use ResourceInject;
 
-    public function onGet($a, $b)
+    public function onGet() : ResourceOjbect
     {
         $this->body = [
             'post' => $this->uri('app://self/blog/posts')(['id' => 1])
@@ -286,7 +289,7 @@ class Index extends ResourceObject
     /**
      * @Link(rel="profile", href="/profile{?id}")
      */
-    public function onGet($id)
+    public function onGet($id) : ResourceOjbect
     {
         $this->body = [
             'id' => 10
@@ -320,7 +323,7 @@ use BEAR\Resource\Annotation\Link;
 /**
  * @Link(crawl="post-tree", rel="post", href="app://self/post?author_id={id}")
  */
-public function onGet($id = null)
+public function onGet($id = null) : ResourceOjbect
 ```
 
 `linkCrawl`は`crawl`の付いたリンクを[クロール](https://github.com/koriym/BEAR.Resource#crawl)してリソースを集めます。
@@ -338,7 +341,7 @@ class News
      * @Embed(rel="sports", src="/news/sports")
      * @Embed(rel="weater", src="/news/weather")
      */
-    public function onGet()
+    public function onGet() : ResourceOjbect
 ```
 
 埋め込まれるのはリソース**リクエスト**です。レンダリングの時に実行されますが、その前に`addQuery()`メソッドで引数を加えたり`withQuery()`で引数を置き換えることができます。
@@ -351,7 +354,7 @@ class News
     /**
      * @Embed(rel="website", src="/website{?id}")
      */
-    public function onGet($id)
+    public function onGet(string $id) : ResourceOjbect
     {
         // ...
         $this['website']->addQuery(['title' => $title]); // 引数追加
@@ -377,7 +380,7 @@ class News
     /**
      * @QueryParam("id")
      */
-    public function foo($id = null)
+    public function foo(strin $id) : ResourceOjbect
     {
       // $id = $_GET['id'];
 ```
@@ -392,7 +395,7 @@ class News
     /**
      * @CookieParam(key="id", param="tokenId")
      */
-    public function foo($tokenId = null)
+    public function foo(string $tokenId) : ResourceOjbect
     {
       // $tokenId = $_COOKIE['id'];
 ```
@@ -415,13 +418,13 @@ class News
      * @FormParam("token")
      * @ServerParam(key="SERVER_NAME", param="server")
      */
-    public function foo($userId = null, $tokenId = "0000", $app_mode = null, $token = null, $server = null)
-    {
-       // $userId   = $_GET['id'];
-       // $tokenId  = $_COOKIE['id'] or "0000" when unset;
-       // $app_mode = $_ENV['app_mode'];
-       // $token    = $_POST['token'];
-       // $server   = $_SERVER['SERVER_NAME'];
+    public function foo(
+        string $userId,           // $_GET['id'];
+        string $tokenId = "0000", // $_COOKIE['id'] or "0000" when unset;
+        string $app_mode,         // $_ENV['app_mode'];
+        string $token,            // $_POST['token'];
+        string $server            // $_SERVER['SERVER_NAME'];
+    ) : ResourceOjbect {
 ```
 
 この機能を使うためには引数のデフォルトに`null`が必要です。
@@ -439,7 +442,7 @@ class News
     /**
      * @ResourceParam(param=“name”, uri="app://self//login#nickname")
      */
-    public function onGet($name)
+    public function onGet(string $name) : ResoureObject
     {
 ```
 
@@ -474,12 +477,12 @@ use BEAR\RepositoryModule\Annotation\Cacheable;
  */
 class Todo
 {
-    public function onGet($id)
+    public function onGet(string $id) : ResoureObject
     {
         // read
     }
 
-    public function onPost($id, $name)
+    public function onPost(string $id, string $name) : ResoureObject
     {
         // update
     }
@@ -518,7 +521,7 @@ class News
    * @Purge(uri="app://self/user/friend?user_id={id}")
    * @Refresh(uri="app://self/user/profile?user_id={id}")
    */
-   public function onPut($id, $name, $age)
+   public function onPut(string $id, string $name, int $age)
 ```
 
 別のクラスのリソースや関連する複数のリソースの`QueryRepository`の内容を更新することができます。
@@ -536,7 +539,7 @@ class News
    * @Purge(uri="app://self/user/friend?user_id={id}")
    * @Refresh(uri="app://self/user/profile?user_id={id}")
    */
-   public function onPut($id, $name, $age)
+   public function onPut($id, $name, $age) : ResoureObject
 ```
 
 ## クエリーリポジトリの直接操作
@@ -583,7 +586,7 @@ class Index extends ResourceObject
 {
     use ResourceInject;
 
-    public function onGet($status)
+    public function onGet(string $status) : ResoureObject
     {
         $this['todos'] = $this->resource
             ->get
@@ -663,7 +666,7 @@ class User extends ResourceObject
 {
     use ResourceInject;
 
-    public function onGet($id)
+    public function onGet(string $id) : ResoureObject
     {
         $nickname = $this->resource
             ->uri('app://self/login-user')
@@ -691,7 +694,7 @@ class User extends ResourceObject
     /**
      * @ResourceParam(param=“name”, uri="app://self//login-user#nickname")
      */
-    public function onGet($id, $name = null)
+    public function onGet(string $id, string $name) : ResoureObject
     {
         $this['profile'] = $this->resource
             ->get
@@ -712,7 +715,7 @@ class User extends ResourceObject
      * @ResourceParam(param=“name”, uri="app://self//login-user#nickname")
      * @Embed(rel="profile", src="app://self/profile")
      */
-    public function onGet($id, $name = null)
+    public function onGet(string $id, string $name) : ResoureObject
     {
         $this['profile']->addQuery(['name'=>$name]);
 

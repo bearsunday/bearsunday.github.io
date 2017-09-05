@@ -23,7 +23,7 @@ class Index extends ResourceObject
     public $code = 200;
     public $headers = [];
 
-    public function onGet($a, $b)
+    public function onGet(int $a, int $b) : ResourceObject
     {
         $this->body = [
             'result' => $a + $b // $_GET['a'] + $_GET['b']
@@ -37,7 +37,7 @@ class Index extends ResourceObject
 ```php?start_inline
 class Todo extends ResourceObject
 {
-    public function onPost($id, $todo)
+    public function onPost(string $id, string $todo) : ResourceOjbect
     {
         // status code
         $this->code = 201;
@@ -148,8 +148,12 @@ or
 ```php?start_inline
 class Index
 {
+    /**
+     * @Inject
+     */
     public function setRenderer(RenderInterface $renderer)
     {
+        unset($renderer);
         $this->renderer = new class implements RenderInterface {
             public function render(ResourceObject $ro)
             {
@@ -197,7 +201,7 @@ class Index extends ResourceObject
 {
     use ResourceInject;
 
-    public function onGet($a, $b)
+    public function onGet()
     {
         $this['post'] = $this
             ->resource
@@ -244,7 +248,7 @@ class Index extends ResourceObject
 {
     use ResourceInject;
 
-    public function onGet($a, $b)
+    public function onGet() : ResourceOjbect
     {
         $this->body = [
             'post' => $this->uri('app://self/blog/posts')(['id' => 1])
@@ -282,7 +286,7 @@ Three type of links are provided.
 /**
  * @Link(rel="profile", href="/profile{?id}")
  */
-public function onGet($id)
+public function onGet($id) : ResourceOjbect
 ```
 
 Set the link with `rel` key name and `href` resource URI.
@@ -315,7 +319,7 @@ class News
      * @Embed(rel="sports", src="/news/sports")
      * @Embed(rel="weater", src="/news/weather")
      */
-    public function onGet()
+    public function onGet() : ResourceOjbect
 ```
 
 The resource **request** is embeded. The request is invoked when rendering. You can add parameters or replace with `addQuery()` or `withQuery()`
@@ -328,7 +332,7 @@ class News
     /**
      * @Embed(rel="website", src="/website{?id}")
      */
-    public function onGet($id)
+    public function onGet(string $id) : ResourceOjbect
     {
         // ...
         $this['website']->addQuery(['title' => $title]); // add parameters
@@ -352,7 +356,7 @@ class News
     /**
      * @QueryParam("id")
      */
-    public function foo($id = null)
+    public function foo(strin $id) : ResoureObject
     {
       // $id = $_GET['id'];
 ```
@@ -368,7 +372,7 @@ class News
     /**
      * @CookieParam(key="id", param="tokenId")
      */
-    public function foo($tokenId = null)
+    public function foo(string $tokenId) : ResoureObject
     {
       // $tokenId = $_COOKIE['id'];
 ```
@@ -392,13 +396,13 @@ class News
      * @FormParam("token")
      * @ServerParam(key="SERVER_NAME", param="server")
      */
-    public function foo($userId = null, $tokenId = "0000", $app_mode = null, $token = null, $server = null)
-    {
-       // $userId   = $_GET['id'];
-       // $tokenId  = $_COOKIE['id'] or "0000" when unset;
-       // $app_mode = $_ENV['app_mode'];
-       // $token    = $_POST['token'];
-       // $server   = $_SERVER['SERVER_NAME'];
+    public function foo(
+        string $userId,           // $_GET['id'];
+        string $tokenId = "0000", // $_COOKIE['id'] or "0000" when unset;
+        string $app_mode,         // $_ENV['app_mode'];
+        string $token,            // $_POST['token'];
+        string $server            // $_SERVER['SERVER_NAME'];
+    ) : ResourceOjbect {
 ```
 
 This `bind parameter` is also very useful for testing.
@@ -415,7 +419,7 @@ class News
     /**
      * @ResourceParam(param=“name”, uri="app://self//login#nickname")
      */
-    public function onGet($name)
+    public function onGet(string $name) : ResourceOjbect
     {
 ```
 
@@ -447,12 +451,12 @@ use BEAR\RepositoryModule\Annotation\Cacheable;
  */
 class Todo
 {
-    public function onGet($id)
+    public function onGet(string $id) : ResoureObject
     {
         // read
     }
 
-    public function onPost($id, $name)
+    public function onPost(string $id, string $name) : ResoureObject
     {
         // update
     }
@@ -492,7 +496,7 @@ class News
    * @Purge(uri="app://self/user/friend?user_id={id}")
    * @Refresh(uri="app://self/user/profile?user_id={id}")
    */
-   public function onPut($id, $name, $age)
+   public function onPut(string $id, string $name, int $age) : ResoureObject
 ```
 
 You can update the cache for another resource class or even multiple resources at once. `@Purge` deletes a cache where `@Refresh` will recreate cache data.
@@ -512,7 +516,7 @@ class Index extends ResourceObject
 {
     use ResourceInject;
 
-    public function onGet($status)
+    public function onGet(string $status) : ResoureObject
     {
         $this['todos'] = $this->resource
             ->get
@@ -592,7 +596,7 @@ class User extends ResourceObject
 {
     use ResourceInject;
 
-    public function onGet($id)
+    public function onGet(string $id) : ResoureObject
     {
         $nickname = $this->resource
             ->get
@@ -621,7 +625,7 @@ class User extends ResourceObject
     /**
      * @ResourceParam(param=“name”, uri="app://self//login-user#nickname")
      */
-    public function onGet($id, $name = null)
+    public function onGet(string $id, string $name) : ResoureObject
     {
         $this['profile'] = $this->resource
             ->get
@@ -642,7 +646,7 @@ class User extends ResourceObject
      * @ResourceParam(param=“name”, uri="app://self//login-user#nickname")
      * @Embed(rel="profile", src="app://self/profile")
      */
-    public function onGet($id, $name = null)
+    public function onGet(string $id, string $name) : ResoureObject
     {
         $this['profile']->addQuery(['name'=>$name]);
 
