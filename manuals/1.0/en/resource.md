@@ -5,22 +5,29 @@ category: Manual
 permalink: /manuals/1.0/en/resource.html
 ---
 
+# Resource
+
+A BEAR.Sunday application is [RESTful](http://en.wikipedia.org/wiki/Representational_state_transfer) and is made up of a collection of resources connected by links.
+
 # Object as a service
 
-A BEAR.Sunday application is [RESTful](http://en.wikipedia.org/wiki/Representational_state_transfer) and is made up of a collection of resources.
-
 An HTTP method is mapped to a PHP method in the `ResourceObject` class.
+It transfers its resource state as a resource representation from stateless request.
+([Representational State Transfer)](http://en.wikipedia.org/wiki/REST)
 
 Here are some examples of a resource object:
 
 ```php?start_inline
 class Index extends ResourceObject
 {
+    public $code = 200;
+    public $headers = [];
+
     public function onGet($a, $b)
     {
-        $this->code = 200; // optional, the default value is 200
-        // $_GET['a'] + $_GET['b']
-        $this['result'] = $a + $b;
+        $this->body = [
+            'result' => $a + $b // $_GET['a'] + $_GET['b']
+        ] ;
 
         return $this;
     }
@@ -42,45 +49,17 @@ class Todo extends ResourceObject
 }
 ```
 
-A resource has a URI just like a web URL.
-```bash
-app://self/blog/posts/?id=3
-```
+The PHP resource class has URIs such as `app://self/blog/posts/?id=3`, `page://self/index` similar to the URI of the web, and conforms to the HTTP method `onGet`,` onPost`, `onPut`,` onPatch`, `onDelete` interface.
 
-```bash
-page://self/index
-```
-
-It has methods that correspond to HTTP verbs `onGet`, `onPost`, `onPut`, `onPatch`, or `onDelete`.
-`$_GET` parameters are passed to the parameters of `onGet` method, as are `$_POST` parameters sent to the `onPost` method.
-
-```php?start_inline
-    class User
-    {
-        public function onGet($id, $todo)
-        {
-            // $id   <= $_GET['id']
-            // $todo <= $_GET['todo']
-```
-
-The format defined by `content-type` header will handle the passing of parameters to be sent to `onPut`,`onPatch` or `onDelete`.
-
-```php?start_inline
-    class User
-    {
-        public function onPut($id, $todo)
-        {
-            // `x-www-form-urlencoded` or `application/json`
-            $id
-```
+$_GET for `onGet` and $_POST for `onPost` are passed to the arguments of the method depending on the variable name, and the methods of `onPut`,` onPatch`, `onDelete` are content The value that can be handled according to `content-type`(`x-www-form-urlencoded` or `application/json`) is an argument.
 
 The resource state (`code`,`headers` or`body`) is handled by these method using the given parameters. Then the resource class returns itself(`$this`).
 
 ### Syntax sugar
 
 Access to the body property has some syntactic sugar.
-```php?start_inline
 
+```php?start_inline
 $this['price'] = 10;
 // is same as
 $this->body['price'] = 10;
@@ -100,34 +79,111 @@ The `page` resource carries out a similar role as a page controller which is als
 
 Resources have 6 interfaces conforming to HTTP methods.
 
-| **method** | **description**|
-|--------|------------|
-| GET | Resource retrieval |
-| PUT | Resource update and creation |
-| PATCH | Resource update |
-| POST | Resource creation |
-| DELETE | Resource delete |
-| OPTIONS | Resource access method query |
-
-#### GET
+### GET
 Reads resources. This method does not provide any changing of the resource state. A safe method with no possible side affects.
 
-#### PUT
+### PUT
 Performs creation and updates of a resource. This method has the benefit that running it once or many more times will have no more effect. This is referred to as [Idempotence](http://en.wikipedia.org/wiki/Idempotence).
 
-#### PATCH
+### PATCH
 
 Performs resource updates, but unlike PUT, it applies a delta rather than replacing the entire resource.
 
-#### POST
+### POST
 Performs resource creation. If you run a request multiple times the resource will be created as many times. A method with no idempotence.
 
-#### DELETE
+### DELETE
 Resource deletion. Has idempotence just like PUT.
 
-#### OPTIONS
-Inspects which methods and parameters can be used on the resource. Just like `GET` there is no effect on the resource.
+### OPTIONS
+Get information on parameters and responses required for resource request. It is as secure as GET method.
 
+# Rendering
+
+The request method of the `ResourceObject` class (such as `onGet`) has no interest in expressions such as whether the resource is represented in HTML or JSON.
+Depending on the context, the resource renderer injected into `ResourceObject` renders it to JSON or HTML and makes it a resource representation (view).
+
+Rendering is done when a resource is string evaluated.
+
+```php?start_inline
+
+$weekday = $api->resource->uri('app://self/weekday')(['year' => 2000, 'month'=>1, 'day'=>1]);
+var_dump($weekday->body); // as array
+//array(1) {
+//    ["weekday"]=>
+//  string(3) "Sat"
+//}
+
+echo $weekday; // as string
+//{
+//    "weekday": "Sat",
+//    "_links": {
+//    "self": {
+//        "href": "/weekday/2000/1/1"
+//        }
+//    }
+//}
+```
+
+It is injected according to the context so you do not usually need to be aware.
+When a resource specific expression is required, we inject our own renderer as follows.
+
+```php?start_inline
+class Index
+{
+    // ...
+    /**
+     * @Inject
+     * @Named("my_renderer")
+     */
+    public function setRenderer(RenderInterface $renderer)
+    {
+        parent::setRenderer($renderer);
+    }
+}
+```
+
+or
+
+```php?start_inline
+class Index
+{
+    public function setRenderer(RenderInterface $renderer)
+    {
+        $this->renderer = new class implements RenderInterface {
+            public function render(ResourceObject $ro)
+            {
+                $ro->headers['content-type'] = 'application/json;';
+                $ro->view = json_encode($ro->body);
+
+                return $ro->view;
+            }
+        };
+    }
+}
+```
+
+# Transfer
+
+The transponder forwards the representation (view) to the client (console or web client).
+Transfer is mostly done simply by simple `header()` function or `echo`, but it can be transferred with [stream output](stream.html).
+
+Like a renderer, you do not have to be aware of it normally.
+
+When doing a resource specific specific transfer, override the following method.
+
+```php?start_inline
+class Index
+{
+    // ...
+    public function transfer(TransferInterface $responder, array $server)
+    {
+        $responder($this, $server);
+    }
+}
+```
+
+In this way, each class has a function to **change its own resource state** by request, **transfer** it by **rendering** it.
 
 ## Client
 
@@ -150,6 +206,7 @@ class Index extends ResourceObject
             ->withQuery(['id' => 1])
             ->eager
             ->request();
+        ];
     }
 }
 ```
@@ -169,11 +226,31 @@ You can assign this value to a template engine or embed it in another resource. 
 
 Syntax sugar can be used for eager request. The following requests are all the same.　(php7)
 
+
 ```php?start_inline
 $this->resource->get->uri('app://self/user')->withQuery(['id' => 1])->eager->request()->body;
 $this->resource->get->uri('app://self/user')(['id' => 1])->body;
 $this->resource->uri('app://self/user')(['id' => 1])->body; // "get" can be omitted.
 $this->resource->uri('app://self/user?id=1')()->body;
+```
+
+For PHP7.0 and up, You can code examples in the client like this
+
+```php
+<?php
+use BEAR\Sunday\Inject\ResourceInject;
+
+class Index extends ResourceObject
+{
+    use ResourceInject;
+
+    public function onGet($a, $b)
+    {
+        $this->body = [
+            'post' => $this->uri('app://self/blog/posts')(['id' => 1])
+        ];
+    }
+}
 ```
 
 ## Link request
@@ -188,7 +265,8 @@ $blog = $this
     ->withQuery(['id' => 1])
     ->linkSelf("blog")
     ->eager
-    ->request()->body;
+    ->request()
+    ->body;
 ```
 
 Three type of links are provided.
@@ -463,6 +541,7 @@ class Index extends ResourceObject
 ### @Link
 
 When changing the state of another resource we will follow the next action indicated with `@Link` using `href()` (href = hyper reference).
+
 ```php?start_inline
 // OK but not the best
 class Todo extends ResourceObject

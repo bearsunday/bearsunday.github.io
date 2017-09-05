@@ -7,19 +7,24 @@ permalink: /manuals/1.0/ja/resource.html
 
 # リソース
 
-BEAR.Sundayアプリケーションは[REST](http://ja.wikipedia.org/wiki/REST)リソースの集合です。
+BEAR.Sundayアプリケーションはリンクで接続されたリソースの集合です。
 
 ## サービスとしてのオブジェクト
 
-リソースクラスはHTTPのメソッドをPHPのメソッドにマップしてPHPのクラスをサービスとして扱います。
+`ResourceObject`はHTTPのメソッドがPHPのメソッドにマップされたサービスとしてのオブジェクト (Object as a servie)です。ステートレスなリクエストで自身のリソース状態を表現にして転送します。
+([Representational State Transfer)](http://ja.wikipedia.org/wiki/REST)
 
 ```php?start_inline
 class Index extends ResourceObject
 {
+    public $code = 200;
+    public $headers = [];
+
     public function onGet($a, $b)
     {
-        $this->code = 200; // 省略可
-        $this['result'] = $a + $b; // $_GET['a'] + $_GET['b']
+        $this->body = [
+            'result' => $a + $b  // $_GET['a'] + $_GET['b']
+        ];
 
         return $this;
     }
@@ -41,13 +46,22 @@ class Todo extends ResourceObject
 
 PHPのリソースクラスはWebのURIと同じような`app://self/blog/posts/?id=3`, `page://self/index`などのURIを持ち、HTTPのメソッドに準じた`onGet`, `onPost`, `onPut`, `onPatch`, `onDelete`インターフェイスを持ちます。
 
-メソッドの引数には`onGet`には$_GET、`onPost`には$_POSTが変数名に応じて渡されます、それ以外の`onPut`,`onPatch`, `onDelete`のメソッドには`content-type`に応じて対応可能な値が引数になります。
+メソッドの引数には`onGet`には$_GET、`onPost`には$_POSTが変数名に応じて渡されます、それ以外の`onPut`,`onPatch`, `onDelete`のメソッドには`content-type`(`x-www-form-urlencoded` or `application/json`)に応じた値が引数になります。
 
-メソッドでは引数に応じて自身のリソース状態`code`,`headers`,`body`を変更し`$this`を返します。
+メソッドでは自身のリソース状態`code`,`headers`,`body`を変更し`$this`を返します。
 
-`body`のアクセスは`$this->body['price'] = 10;`を`$this['price'] = 10;`と短く記述することができます。
 
-## リソースの種類
+### bodyのシンタックスシュガー
+
+`$this`へのarrayアクセスは`$this->body`のアクセスになります。
+
+```php?start_inline
+$this['price'] = 10;
+// is same as
+$this->body['price'] = 10;
+```
+
+## スキーマ
 
 | URI | Class |
 |-----+-------|
@@ -60,11 +74,122 @@ PHPのリソースクラスはWebのURIと同じような`app://self/blog/posts/
 標準ではリソースは二種類用意されています。１つは`App`リソースでアプリケーションのプログラミングインタフェース(**API**)です。
 もう１つは`Page`リソースでHTTPに近いレイヤーのリソースです。`Page`リソースは`App`リソースを利用してWebページを作成します。
 
-# クライアント
+## メソッド
+
+リソースはHTTPのメソッドに対応した6つのメソッドでアクセスすることができます。
+
+### GET
+リソースの読み込み。このメソッドではリソースの状態(body)を変えてはいけません。安全なメソッドでサイドエフェクトがありません。
+
+### PUT
+リソースの作成または変更を行います。メソッドには[冪等性](https://ja.wikipedia.org/wiki/%E5%86%AA%E7%AD%89)があり、メソッドを何度実行しても結果は同じです。
+
+### PATCH
+部分的な更新を行います。
+
+### POST
+リソースの作成を行います。メソッドには冪等性はありません。リクエストの回数分、リソースが作成されます。
+
+### DELETE
+リソースの削除をします。PUTと同じで冪等性があります。
+
+### OPTIONS
+リソースのリクエストに必要なパラメーターとレスポンスに関する情報を取得します。GETと同じように安全なメソッドです。
+
+# レンダリング
+
+`ResourceObject`クラスのリクエストメソッド(`onGet`など）はリソースがHTMLで表現されるかJSONで表現されるかなどの表現に対して関心を持ちません。
+コンテキストによって`ResourceObject`にインジェクトされたリソースレンダラーがJSONやHTMLにレンダリングしてリソース表現(view)にします。
+
+レンダリングはリソースが文字列評価された時に行われます。
+
+```php?start_inline
+
+$weekday = $api->resource->uri('app://self/weekday')(['year' => 2000, 'month'=>1, 'day'=>1]);
+var_dump($weekday->body); // as array
+//array(1) {
+//    ["weekday"]=>
+//  string(3) "Sat"
+//}
+
+echo $weekday; // as string
+//{
+//    "weekday": "Sat",
+//    "_links": {
+//    "self": {
+//        "href": "/weekday/2000/1/1"
+//        }
+//    }
+//}
+```
+
+コンテキストに応じてインジェクトされるので普段は意識する必要はありません。
+
+リソース特有の表現が必要な時は以下のように独自のレンダラーをインジェクトします。
+
+```php?start_inline
+class Index
+{
+    // ...
+    /**
+     * @Inject
+     * @Named("my_renderer")
+     */
+    public function setRenderer(RenderInterface $renderer)
+    {
+        parent::setRenderer($renderer);
+    }
+}
+```
+
+or
+
+```php?start_inline
+class Index
+{
+    public function setRenderer(RenderInterface $renderer)
+    {
+        $this->renderer = new class implements RenderInterface {
+            public function render(ResourceObject $ro)
+            {
+                $ro->headers['content-type'] = 'application/json;';
+                $ro->view = json_encode($ro->body);
+
+                return $ro->view;
+            }
+        };
+    }
+}
+```
+
+# 転送
+
+トランスポンダーが表現(view)をクライント（コンソールやWebクライアント）に転送します。
+転送は単に`header`関数や`echo`で行われることがほとんどですが、[ストリーム出力](stream.html)で転送することもできます。
+
+レンダラーと同じように普段は意識する必要はありません。
+
+リソース特有の特有の転送を行う時は以下のメソッドをオーバーライドします。
+
+```php?start_inline
+class Index
+{
+    // ...
+    public function transfer(TransferInterface $responder, array $server)
+    {
+        $responder($this, $server);
+    }
+}
+```
+
+このようにリソースはリクエストによって自身のリソース状態を変更、それを表現にして転送する機能を各クラスが持っています。
+
+## クライアント
 
 リソースクライアントを使用して他のリソースのリクエストをします。
 
 ```php?start_inline
+
 use BEAR\Sunday\Inject\ResourceInject;
 
 class Index extends ResourceObject
@@ -80,6 +205,7 @@ class Index extends ResourceObject
             ->withQuery(['id' => 1])
             ->eager
             ->request();
+        ];
     }
 }
 ```
@@ -108,7 +234,8 @@ $blog = $this
     ->withQuery(['id' => 1])
     ->linkSelf("blog")
     ->eager
-    ->request()->body;
+    ->request()
+    ->body;
 ```
 
 リンクは３種類あります。`$rel`をキーにして元のリソースの`body`リンク先のリソースが埋め込まれます。
@@ -128,6 +255,25 @@ $this->resource->uri('app://self/user')(['id' => 1])->body; // getは省略化
 $this->resource->uri('app://self/user?id=1')()->body;
 ```
 
+PHP7ではクライントでのコードはこのように記述できます。
+
+```php
+<?php
+use BEAR\Sunday\Inject\ResourceInject;
+
+class Index extends ResourceObject
+{
+    use ResourceInject;
+
+    public function onGet($a, $b)
+    {
+        $this->body = [
+            'post' => $this->uri('app://self/blog/posts')(['id' => 1])
+        ];
+    }
+}
+```
+
 ## リンクアノテーション
 
 他のリソースをハイパーリンクする`@Link`と他のリソースを内部に埋め込む`@Embed`アノテーションが利用できます。
@@ -142,7 +288,9 @@ $this->resource->uri('app://self/user?id=1')()->body;
      */
     public function onGet($id)
     {
-        $this['id'] = 10;
+        $this->body = [
+            'id' => 10
+        ];
 
         return $this;
     }
@@ -518,7 +666,6 @@ class User extends ResourceObject
     public function onGet($id)
     {
         $nickname = $this->resource
-            ->get
             ->uri('app://self/login-user')
             ->withQuery(['id' => $id])
             ->eager
