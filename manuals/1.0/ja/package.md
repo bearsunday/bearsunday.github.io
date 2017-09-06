@@ -15,7 +15,10 @@ permalink: /manuals/1.0/ja/package.html
 
 ### 構造
 
+BEAR.Sundayアプリケーションのファイルレイアウトは[php-pds/skeleton](https://github.com/php-pds/skeleton)に準拠しています。
+
 ```
+├── (bin)
 ├── bootstrap
 │   ├── api.php
 │   ├── bootstrap.php
@@ -23,24 +26,24 @@ permalink: /manuals/1.0/ja/package.html
 ├── composer.json
 ├── composer.lock
 ├── phpunit.xml.dist
+├── public
+│   └── index.php
 ├── src
 │   ├── (Annotation)
 │   ├── (Interceptor)
 │   ├── Module
 │   └── Resource
 ├── tests
+│   ├── (Fake)
 │   ├── bootstrap.php
 │   └── tmp
 ├── var
 │   ├── (conf)
 │   ├── log
-│   ├── tmp
-│   └── www
+│   └── tmp
 └── vendor
-
-*カッコで囲まれたフォルダは必要があれば作成します
-
 ```
+
 
 ### 実行シークエンス
 
@@ -69,9 +72,17 @@ php -S 127.0.0.1 bootstrap/api.php # PHPサーバー
 コンテキストが変わるとアプリケーションの振る舞いが変わります。
 ユーザーは独自のコンテキストを作成することができます。
 
+### bin/
+
+スクリプトで実行可能なコマンドを設置します。
+
 ### src/
 
 アプリケーション固有のクラスファイルを設置します。
+
+### publc/
+
+Web公開フォルダ
 
 ### var/
 

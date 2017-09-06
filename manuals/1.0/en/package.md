@@ -12,8 +12,10 @@ You can also install another BEAR.Sunday application package as dependency.
 
 ## Application organization
 
+The file layout of the BEAR.Sunday application conforms to [php-pds/skeleton] (https://github.com/php-pds/skeleton).
 
 ```
+├── (bin)
 ├── bootstrap
 │   ├── api.php
 │   ├── bootstrap.php
@@ -21,19 +23,21 @@ You can also install another BEAR.Sunday application package as dependency.
 ├── composer.json
 ├── composer.lock
 ├── phpunit.xml.dist
+├── public
+│   └── index.php
 ├── src
 │   ├── (Annotation)
 │   ├── (Interceptor)
 │   ├── Module
 │   └── Resource
 ├── tests
+│   ├── (Fake)
 │   ├── bootstrap.php
 │   └── tmp
 ├── var
 │   ├── (conf)
 │   ├── log
-│   ├── tmp
-│   └── www
+│   └── tmp
 └── vendor
 
 ```
@@ -64,14 +68,21 @@ php -S 127.0.0.1bootstrap/api.php // PHP server
 
 You can create your own boot file for different context.
 
+### bin/
+
+Plavce command-line executable files.
+ 
 ### src/
 
 Place application class file.
 
+### publc/
+
+Web public folder.
+
 ### var/
 
 `log` and `tmp` folder need write permission.
-`var/www`is web public folder.
 
 ## Framework Package
 
