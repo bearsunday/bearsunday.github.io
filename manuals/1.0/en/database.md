@@ -77,6 +77,160 @@ class Index
 
 `Ray.AuraSqlModule` contains [Aura.SqlQuery](https://github.com/auraphp/Aura.SqlQuery) to help you build sql queries.
 
+### The `perform()` Method
+
+The new `perform()` method will prepare a query with bound values in a single
+step.  Also, because the native _PDO_ does not deal with bound array values,
+`perform()` modifies the query string to replace array-bound placeholders with
+the quoted array.  Note that this is *not* the same thing as binding:
+the query string itself is modified before passing to the database for value
+binding.
+
+```php
+<?php
+// the array to be quoted
+$array = array('foo', 'bar', 'baz');
+
+// the statement to prepare
+$stm = 'SELECT * FROM test WHERE foo IN (:foo)'
+
+// the native PDO way does not work (PHP Notice:  Array to string conversion)
+$pdo = new ExtendedPdo(...);
+$sth = $pdo->prepare($stm);
+$sth->bindValue('foo', $array);
+
+// the ExtendedPdo way allows a single call to prepare and execute the query.
+// it quotes the array and replaces the array placeholder directly in the
+// query string
+$pdo = new ExtendedPdo(...);
+$bind_values = array('foo' => $array);
+$sth = $pdo->perform($stm, $bind_values);
+echo $sth->queryString;
+// the query string has been modified by ExtendedPdo to become
+// "SELECT * FROM test WHERE foo IN ('foo', 'bar', 'baz')"
+?>
+```
+
+Finally, note that array quoting works only via the `perform()` method,
+not on returned _PDOStatement_ instances.
+
+
+### The `fetch*()` Methods
+
+_ExtendedPdo_ comes with `fetch*()` methods to help reduce boilerplate code.
+Instead of issuing `prepare()`, a series of `bindValue()` calls, `execute()`,
+and then `fetch*()` on a _PDOStatement_, you can bind values and fetch results
+in one call on _ExtendedPdo_ directly.  (The `fetch*()` methods use `perform()`
+internally, so quoting-and-replacement of array placeholders is supported.)
+
+```php
+<?php
+$stm  = 'SELECT * FROM test WHERE foo = :foo AND bar = :bar';
+$bind = array('foo' => 'baz', 'bar' => 'dib');
+
+// the native PDO way to "fetch all" where the result is a sequential array
+// of rows, and the row arrays are keyed on the column names
+$pdo = new PDO(...);
+$sth = $pdo->prepare($stm);
+$sth->execute($bind);
+$result = $sth->fetchAll(PDO::FETCH_ASSOC);
+
+// the ExtendedPdo way to do the same kind of "fetch all"
+$pdo = new ExtendedPdo(...);
+$result = $pdo->fetchAll($stm, $bind);
+
+// fetchAssoc() returns an associative array of all rows where the key is the
+// first column, and the row arrays are keyed on the column names
+$result = $pdo->fetchAssoc($stm, $bind);
+
+// fetchGroup() is like fetchAssoc() except that the values aren't wrapped in
+// arrays. Instead, single column values are returned as a single dimensional
+// array and multiple columns are returned as an array of arrays
+// Set style to PDO::FETCH_NAMED when values are an array
+// (i.e. there are more than two columns in the select)
+$result = $pdo->fetchGroup($stm, $bind, $style = PDO::FETCH_COLUMN)
+
+// fetchObject() returns the first row as an object of your choosing; the
+// columns are mapped to object properties. an optional 4th parameter array
+// provides constructor arguments when instantiating the object.
+$result = $pdo->fetchObject($stm, $bind, 'ClassName', array('ctor_arg_1'));
+
+// fetchObjects() returns an array of objects of your choosing; the
+// columns are mapped to object properties. an optional 4th parameter array
+// provides constructor arguments when instantiating the object.
+$result = $pdo->fetchObjects($stm, $bind, 'ClassName', array('ctor_arg_1'));
+
+// fetchOne() returns the first row as an associative array where the keys
+// are the column names
+$result = $pdo->fetchOne($stm, $bind);
+
+// fetchPairs() returns an associative array where each key is the first
+// column and each value is the second column
+$result = $pdo->fetchPairs($stm, $bind);
+
+// fetchValue() returns the value of the first row in the first column
+$result = $pdo->fetchValue($stm, $bind);
+
+// fetchAffected() returns the number of affected rows
+$stm = "UPDATE test SET incr = incr + 1 WHERE foo = :foo AND bar = :bar";
+$row_count = $pdo->fetchAffected($stm, $bind);
+?>
+```
+
+The methods `fetchAll()`, `fetchAssoc()`, `fetchCol()`, and `fetchPairs()`
+take an optional third parameter, a callable, to apply to each row of the
+results before returning.
+
+```php
+<?php
+$result = $pdo->fetchAssoc($stm, $bind, function (&$row) {
+    // add a column to the row
+    $row['my_new_col'] = 'Added this column from the callable.';
+});
+?>
+```
+
+### The `yield*()` Methods
+
+_ExtendedPdo_ comes with `yield*()` methods to help reduce memory usage. Whereas
+many `fetch*()` methods collect all the query result rows before returning them
+all at once, the equivalent `yield*()` methods return an iterator that generates
+one result row at a time. For example:
+
+```php
+$stm  = 'SELECT * FROM test WHERE foo = :foo AND bar = :bar';
+$bind = array('foo' => 'baz', 'bar' => 'dib');
+
+// like fetchAll(), each row is an associative array
+foreach ($pdo->yieldAll($stm, $bind) as $row) {
+    // ...
+}
+
+// like fetchAssoc(), each key is the first column,
+// and the row is an associative array
+foreach ($pdo->yieldAssoc($stm, $bind) as $key => $row) {
+    // ...
+}
+
+// like fetchCol(), each result is a value from the first column
+foreach ($pdo->yieldCol($stm, $bind) as $val) {
+    // ...
+}
+
+// like fetchObjects(), each result is an object; pass an optional
+// class name and optional array of constructor arguments.
+$class = 'ClassName';
+$args = ['arg0', 'arg1', 'arg2'];
+foreach ($pdo->yieldCol($stm, $bind, $class, $args) as $object) {
+    // ...
+}
+
+// like fetchPairs(), each result is a key-value pair from the
+// first and second columns
+foreach ($pdo->yieldPairs($stm, $bind) as $key => $val) {
+    // ...
+}
+```
 
 ## Replication
 
