@@ -1,57 +1,49 @@
 ---
-layout: docs-ja
+layout: docs-en
 title: DI
 category: Manual
 permalink: /manuals/1.0/en/di.html
 ---
 # DI
 
-Dependency injection is an instance (dependency) of services and values required by a class,
-It is a design pattern that the service itself does not acquire or generate but it passes from the outside (injection).
+Dependency injection is basically providing the objects that an object needs (its dependencies) instead of having it construct them itself.
 
-**Ray.Di**はGoogleの[Guice](http://code.google.com/p/google-guice/wiki/Motivation?tm=6)の主要な機能を持つPHPのDIフレームワークでBEAR.SundayはDIにRay.Diを使っています。
+With dependency injection, objects accept dependencies in their constructors. To construct an object, you first build its dependencies. But to build each dependency, you need its dependencies, and so on. So when you build an object, you really need to build an object graph.
 
-## 概要
+Building object graphs by hand is labour intensive, error prone, and makes testing difficult. Instead, **Dependency Injector** ([Ray.Di](https://github.com/ray-di/Ray.Di)) can build the object graph for you. 
 
-Ray.Di has the following functions.
+| What is object graph ?
+| Object-oriented applications contain complex webs of interrelated objects. Objects are linked to each other by one object either owning or containing another object or holding a reference to another object. This web of objects is called an object graph and it is the more abstract structure that can be used in discussing an application's state. - [wikipedia](http://en.wikipedia.org/wiki/Object_graph)
 
-- Constructor Injection and Setter Injection
 
-- Automatic injection
+Ray.Di is the core DI framework used in BEAR.Sunday, which is heavily inspired by Google [Guice](http://code.google.com/p/google-guice/wiki/Motivation?tm=6) DI framework.
 
-- initialization method specification after the constructor (`@PostConstruct`)
+## Overview
 
-- PHP factory code generation for speeding up
+The Ray.Di package provides a dependency injector with the following features:
 
-- Named interface
+- constructor and setter injection
 
-- Injection point metadata
+- automatic injection 
+
+- post-construct initialization
+
+- raw PHP factory code compiler
+
+- dependency naming
+
+- injection point meta data
+
+- instance factories
 
 - Optional Annotation ([Doctrine Annotation](http://docs.doctrine-project.org/projects/doctrine-common/en/latest/reference/annotations.html))
 
-Ray.Diには以下の機能があります。
+## Injection
 
-- コンストラクタインジェクションとセッターインジェクション
+There are three types of dependence classes, constructors, setter methods, and execution methods, which are called injection points.
+Implantation in the constructor is mandatory, but the setter method requires the `@Injet` annotation mark to distinguish it from regular methods.
 
-- 自動インジェクション
-
-- コンストラクタの後の初期化メソッド指定(`@PostConstruct`)
-
-- 高速化のためPHPのファクトリーコード生成
-
-- 名前付きインターフェイス
-
-- インジェクションポイントメタデータ
-
-- アノテーション([Doctrine Annotation](http://docs.doctrine-project.org/projects/doctrine-common/en/latest/reference/annotations.html))はオプション
-
-
-## 注入
-
-クラスが依存を受け取る箇所はコンストラクタ、セッターメソッド、実行メソッドの三種類がありそれをインジェクションポイントと呼びます。
-コンストラクタでの注入は必須ですが、セッターメソッドには通常のメソッドと区別するための`@Injet`アノテーションの印が必要です。
-
-コンストラクターインジェクション
+Constructor Injection
 
 ```php?start_inline
 use Ray\Di\Di\Inject;
@@ -66,7 +58,7 @@ class Index
     }
 ```
 
-セッターインジェクション
+Setter Injection
 
 ```php?start_inline
 use Ray\Di\Di\Inject;
@@ -84,7 +76,7 @@ class Index
     }
 ```
 
-アシスティッドインジェクション
+Assisted Injection (Method Injection)
 
 ```php?start_inline
 use Ray\Di\Di\Assisted;
@@ -100,18 +92,12 @@ class Index
     }
 ```
 
-## 束縛
+## Bindings
 
-インジェクタの仕事はオブジェクトグラフを作成することです。
-型を指定してインスタンスを要求し、依存関係を解決し、すべてを結びつけます。 依存関係の解決方法を指定するにはバインディングを設定します。
+To create bindings, extend AbstractModule and override its configure method. In the method body, call bind() to specify each binding. These methods are type checked in compile can report errors if you use the wrong types. Once you've created your modules, pass them as arguments to Injector to build an injector.
 
-| オブジェクトグラフとは？
-|
-| オブジェクト指向のアプリケーションは**相互に関係のある複雑なオブジェクト網**を持ちます。オブジェクトはあるオブジェクトから所有されているか、他のオブジェクト（またはそのリファレンス）を含んでいるか、そのどちらかでお互いに接続されています。このオブジェクト網をオブジェクトグラフと呼びます。
+Use modules to create linked bindings, instance bindings, provider bindings, constructor bindings and untargetted bindings.
 
-## 束縛作成
-
-束縛を作るには`AbstractModule`クラスを拡張して、`configure`メソッドをオーバーライドします。メソッド内では`bind()`でそれぞれの束縛をします。
 
 ```php?start_inline
 class Tweet
@@ -127,47 +113,47 @@ extends AbstractModule
 }
 ```
 
-モジュールでは以下のいずれかの束縛を行います。
+There are different types of bonds.
 
- * リンク束縛
+ * Linked Bindings
 
 ```php?start_inline
  $this->bind($interface)->to($class);
 ```
 
-* 名前付き束縛
+* Named Bindings
 
 ```php?start_inline
 $this->bind($interface)->annotatedWith($name)->to($class);
 ```
 
- * コンストラクタ束縛
+ * Constructor Bindings
 
 ```php?start_inline
 $this->bind($interface)->toConstructor($class, [$varName => $name]);
 ```
 
- * アンターゲット束縛
+ * Untarget Bindings
 
 ```php?start_inline
 $this->bind($class);
 ```
 
- * プロバイダー束縛
+ * Provider Bindings
 
 ```php?start_inline
 $this->bind($interface)->toProvider($provider);
 ```
 
- * インスタンス束縛
+ * Instance Bindings
 
 ```php?start_inline
 $this->bind($interface)->toInstance($instance);
 ```
 
-## リンク束縛
+## Linked Bindings
 
-リンク束縛は最も基本の束縛です。インターフェイスとその実装クラスを束縛します。
+Linked bindings map a type to its implementation.
 
 ```php?start_inline
 class ListerModule extends AbstractModule
@@ -179,9 +165,9 @@ class ListerModule extends AbstractModule
 }
 ```
 
-## 名前付き束縛
+## Named Bindings
 
-１つのインターフェイスに複数の実装クラスがあったり、インターフェイスを持たないスカラータイプの依存の場合に依存に名前をつけて束縛します。
+If there is more than one implementation class on one interface, or in the case of a scalar type dependency that does not have an interface, we **name** the dependency  in order to select the right class to be instantiated.
 
 ```php?start_inline
 class ListerModule extends AbstractModule
@@ -194,7 +180,7 @@ class ListerModule extends AbstractModule
 }
 ```
 
-名前付き束縛で束縛した依存は`@Named`アノテーションで指定して受け取ります。
+Dependencies bound by named bindings are received with the `@Named` annotation.
 
 ```php?start_inline
 use Ray\Di\Di\Inject;
@@ -214,7 +200,7 @@ class Index
     }
 ```
 
-定数の代わりにアノテーションにすることもできます。
+It can also be used `Qualifer` annotation instead of constant with `@Named` annotation.
 
 ```php?start_inline
 /**
@@ -248,8 +234,7 @@ class Index
     }
 ```
 
-引数が複数の場合は`変数名=名前`のペアでカンマ区切りの文字列を指定します。
-
+If there are multiple arguments, specify a comma separated string with '{variable name}={dependency name}' pair.
 
 ```php?start_inline
 /**
@@ -260,9 +245,10 @@ public __construct(LoggerInterface $paymentLogger, LoggerInterface $debugLogger)
 {
 ```
 
-## アンターゲット束縛
+## Untargeted Bindings
+   
 
-インターフェイスなしのクラスの束縛に使います。
+You may create bindings without specifying a target. This is most useful for concrete classes. An untargetted binding informs the injector about a type, so it may prepare dependencies eagerly. Untargetted bindings have no to clause, like so:
 
 ```php
 
@@ -273,37 +259,87 @@ protected function configure()
 }
 ```
 
-リソースクラスは全てアンターゲット束縛されていて使用しないリソースでも依存解決に問題があるとエラーになります。
+Note: All BEAR.Sunday resource classes are bound with "Untargeted Bindings". So if there is a problem with dependency resolution on even an unused resource, an Unbound exception is raised.
 
-## コンストラクタ束縛
 
-`@Inject`アノテーションのないサードパーティーのクラスやアノテーションを使わない場合には**コンストラクタ束縛**で束縛することができます。
-最初の引数にはクラス名前、２番目の引数の`変数名`=>`名前`の名前束縛、３番目の引数にセッターインジェクションを指定します。
+## Constructor Bindings
+
+When @Inject annotation cannot be applied to the target constructor or setter method because it is a third party class, Or you simply don't like to use annotations. Provider Binding provide the solution to this problem. By calling your target constructor explicitly, you don't need reflection and its associated pitfalls. But there are limitations of that approach: manually constructed instances do not participate in AOP.
+
+To address this, Ray.Di has toConstructor bindings.
+
+The first argument is the class name, the second argument `{variable name}=>{dependency name}` name binding, and the third argument is setter injection.
+
+```php
+<?php
+class WebApi implements WebApiInterface
+{
+    private $id;
+    private $password;
+    private $client;
+    private $token;
+
+    /**
+     * @Named("id=user_id,password=user_password")
+     */
+    public function __construct(string $id, string $password)
+    {
+        $this->id = $id;
+        $this->password = $password;
+    }
+    
+    /**
+     * @Inject
+     */
+    public function setGuzzle(ClientInterface $client)
+    {
+        $this->client = $client;
+    }
+
+    /**
+     * @Inect(optional=true)
+     * @Named("token")
+     */
+    public function setOptionalToken(string $token)
+    {
+        $this->token = $token;
+    }
+
+    /**
+     * @PostConstruct
+     */
+    public function initialize()
+    {
+    }
+```
+
+All annotation in dependent above can be removed by following `toConstructor` binding.
 
 ```php
 <?php
 protected function configure()
 {
     $this
-        ->bind(CarInterface::class)
+        ->bind(WebApiInterface::class)
         ->toConstructor(
-            Car::class,                                 // $class_name
+            WebApi::class,                              // string $class_name
             [
-                ['enginne' => 'na'],                    // $name
-                ['number' => 'registrtion_number']
+                ['id' => 'user_id'],                    // array $name
+                ['passowrd' => 'user_password']
             ],
-            (new InjectionPoints)                       // $setter_injection
-                ->addMethod('setWheel', "right")
-                ->addOptionalMethod('setTurboCharger'),
-            'initialize'                                // $postCosntruct
+            (new InjectionPoints)                       // InjectionPoints　$setter_injection
+                ->addMethod('setGuzzle', 'token')
+                ->addOptionalMethod('setOptionalToken'),
+            'initialize'                                // string $postCostruct
         );
+    $this->bind()->annotated('user_id')->toInstance($_ENV['user_id']);
+    $this->bind()->annotated('user_password')->toInstance($_ENV['user_password']);
 }
 ```
-この例では`Car`クラスでは`EngineInterface $engine, $carName`と二つの引数が必要ですが、それぞれの変数名に`Named binding`束縛を行い依存解決をしています。
 
-### PDO Example
+## PDO Example
 
-[PDO](http://php.net/manual/ja/pdo.construct.php)クラスの束縛の例です.`$username`と`$password`に名前をつけて束縛しています。
+Here is the example for the native [PDO](http://php.net/manual/ja/pdo.construct.php) class. 
 
 ```php?start_inline
 public PDO::__construct ( string $dsn [, string $username [, string $password [, array $options ]]] )
@@ -326,12 +362,16 @@ protected function configure()
 }
 ```
 
-PDOのインターフェイスがないので`toConstructor()`メソッドの二番目の引数の名前束縛でP束縛しています
+## Provier Bindings
 
-## プロバイダ束縛
+Provider bindings map a type to its provider(factory).
 
-インターフェイスとインスタンスの**プロバイダー**を束縛します。
-プロバイダーは依存のファクトリーです。`get`メソッドで依存を返します。
+```php?start_inline
+$this->bind(TransactionLogInterface::class)->toProvider(DatabaseTransactionLogProvider::class);
+```
+
+The provider class implements `ProviderInterface` interface, which is a simple, general interface for supplying values:
+
 
 ```php?start_inline
 use Ray\Di\ProviderInterface;
@@ -342,7 +382,8 @@ interface ProviderInterface
 }
 ```
 
-プロバイダーにも依存は注入できます。
+Provider can take dependency.
+
 
 ```php?start_inline
 use Ray\Di\ProviderInterface;
@@ -368,11 +409,11 @@ class DatabaseTransactionLogProvider implements Provider
 }
 ```
 
-注意：get()内で`new`して生成したインスタンスはAOPできません。この束縛は他の束縛でできない時にのみするべきです。
+AOP is not possible with Provider Bindings. You should only do this binding when you can not do with other bindings.
 
-### コンテンキストプロバイダ束縛
+### Context Provider Bindings
 
-同じプロバイダーでコンテキスト別にオブジェクトを生成したい場合があります。例えば接続先の違う複数のDBオブジェクトを同じインターフェイスでインジェクトしたい場合などです。そういう場合には`toProvider()`でコンテキスト（文字列）を指定して束縛をします。
+You may want to create an object using the context when binding with Provider. For example, you want to inject different connection destinations on the same DB interface. In such a case, we bind it by specifying the context (string) with toProvider().
 
 ```php?start_inline
 $dbConfig = ['user' => $userDsn, 'job' => $jobDsn, 'log' => $logDsn];
@@ -382,7 +423,7 @@ $this->bind(Connection::class)->annotatedWith('job_db')->toProvider(DbalProvider
 $this->bind(Connection::class)->annotatedWith('log_db')->toProvider(DbalProvider::class, 'log');
 ```
 
-プロバイダーはコンテキスト別に生成します。
+Providers are created for each context.
 
 ```php?start_inline
 class DbalProvider implements ProviderInterface, SetContextInterface
@@ -414,7 +455,7 @@ class DbalProvider implements ProviderInterface, SetContextInterface
     }
 }
 ```
-同じインターフェイスですが、接続先の違う別々のDBオブジェクトを受け取ります。
+It is the same interface, but you can receive different connections made by Provider.
 
 ```php?start_inline
 /**
@@ -426,10 +467,13 @@ public function __construct(Connection $userDb, Connection $jobDb, Connection $l
 }
 ```
 
-### インジェクションポイント
+### Injection Point
+    
 
-プロバイダでは`InjectionPointInterface`で依存が注入されるインジェクションポイントの情報を受け取ることができます。
-この例では`Logger`の引数の最初に「注入先のクラス名」を指定しています。
+An InjectionPoint is a class that has information about an injection point. It provides access to metadata via \ReflectionParameter or an annotation in Provider.
+
+For example, the following get() method of Psr3LoggerProvider class creates injectable Loggers. The log category of a Logger depends upon the class of the object into which it is injected.
+
 
 ```php?start_inline
 class Psr3LoggerProvider implements ProviderInterface
@@ -457,8 +501,8 @@ class Psr3LoggerProvider implements ProviderInterface
     }
 }
 ```
-`InjectionPointInterface`は以下のメソッドがありインジェクション先のアノテーションを読むこともできます。
-インジェクションポイントに応じたインスタンスを用意することができます。
+
+InjectionPointInterface provides following methods.
 
 ```php?start_inline
 $ip->getClass();      // \ReflectionClass
@@ -467,9 +511,10 @@ $ip->getParameter();  // \ReflectionParameter
 $ip->getQualifiers(); // (array) $qualifierAnnotations[]
 ```
 
-## インスタンス束縛
+## Instance Bindings
+   
 
-`toInstance()`で値を直接束縛します。定数の束縛に使います。
+You can bind a type to an instance of that type. This is usually only useful for objects that don't have dependencies of their own, such as value objects:
 
 ```php?start_inline
 protected function configure()
@@ -478,14 +523,14 @@ protected function configure()
 }
 ```
 
-定数をまとめて束縛する時は`NamedModule`を使います。
+Use `NamedModule` in order to bind multiple constants at once,
 
 ```php?start_inline
 protected function configure()
 {
     $names = [
-        'lang' => 'ja',
-        'message' => 'こんにちは'
+        'lang' => 'en',
+        'message' => 'Hello'
     ];
     $this->install(new NamedModule($names));
 }
@@ -495,24 +540,23 @@ protected function configure()
 /**
  * @Named("message")
  */
-public function setMessage(string $message) // こんにちは
+public function setMessage(string $message) // Hello
 {
 ```
 
-オブジェクトも束縛できますが、単純な値オブジェクトだけにするべきです。
+Objects can also be bound, but should only be **value objects**.
 
 ```php?start_inline
 protected function configure()
 {
-    $this->bind(UserInterface::class)->toInstance(new User); // シリアライズして保存されます
+    $this->bind(UserInterface::class)->toInstance(new User); // Serialized to save
 }
 ```
 
-## オブジェクトライフサイクル
+## Object life cycle
 
-`@PostConstruct`でアノテートしたメソッドはコンストラクタインジェクション、セッターインジェクションが全て完了した後に呼ばれます。
-依存注入後の初期化に使用します。
-ある場合などでも全ての必要な依存が注入された前提にすることができます。
+`@PostConstruct` is used on methods that need to get executed after dependency injection has finalized to perform any extra initialization.
+
 
 ```php?start_inline
 use Ray\Di\Di\PostConstruct;
@@ -526,17 +570,15 @@ public function onInit()
 }
 ```
 
-まとめ：メソッドは以下の順番で呼ばれます。
+Methods are called in the following order.
 
- * コンストラクタ
- * セッターメソッド（順不同）
- * `@PostConstruct`メソッド
- * デストラクタ
+ * Constructor
+ * Setter methods (randam order)
+ * `@PostConstruct` method
 
+## Scopes
 
-## スコープ
-
-デフォルトでは、Rayは毎回新しいインスタンスを生成します（＝プロトタイプ）がシングルトンに変更するには`in`で指定します。
+By default, Ray returns a new instance each time it supplies a value. This behaviour is configurable via scopes.
 
 ```php?start_inline
 use Ray\Di\Scope;
@@ -547,9 +589,9 @@ protected function configure()
 }
 ```
 
-## アシスティッドインジェクション
-
-メソッドが実行されるタイミングでメソッドの引数に依存を渡すことができます。そのためには依存を受け取る引数を引数を`@Assisted`で指定し、引数リストの終わり（右）に移動して`null`をディフォルトとして与える必要があります。
+## Assisted Injection
+   
+It is also possible to inject dependencies directly in the invoke method parameter(s). When doing this, add the dependency to the end of the arguments and annotate the method with @Assisted with having assisted parameter(s). You need null default for that parameter.
 
 ```php?start_inline
 use Ray\Di\Di\Assisted;
@@ -565,7 +607,7 @@ class Index
     }
 ```
 
-`@Assisted`で提供される依存は、その時に渡された他の引数を参照して決定することもできます。そのためには依存を`プロバイダーバインディング`で束縛して、その[プロバイダー束縛](#provider-bidning)は`MethodInvocationProvider`を依存として受け取るようにします。`get()`メソッドでメソッド実行オブジェクト [MethodInvocation](https://github.com/ray-di/Ray.Aop/blob/2.x/src/MethodInvocation.php) を取得することができ、引数の値や対象のメソッドのプロパティにアクセスすることができます。
+You can also provide dependency which depends on other dynamic parameter in method invocation. `MethodInvocationProvider` provides [MethodInvocation](https://github.com/ray-di/Ray.Aop/blob/2.x/src/MethodInvocation.php) object.
 
 ```php?start_inline
 class HorizontalScaleDbProvider implements ProviderInterface
@@ -585,17 +627,17 @@ class HorizontalScaleDbProvider implements ProviderInterface
         $methodInvocation = $this->invocationProvider->get();
         list($id) = methodInvocation->getArguments()->getArrayCopy();
 
-        return new UserDb($id); // $idによって接続データベースを切り替えます
+        return new UserDb($id); // $id for database choice.
     }
 }
 ```
 
-## デバック
+## Debug
 
-複雑な束縛も最終的には単純なPHPのファクトリーコードにコンパイルされて`var/tmp/{context}`フォルダに出力されます。
-生成されたファイルを見ればどのセッターメソッドが有効でどの依存をどのように(Singleton ?)注入したかが分かります。
+Complex bindings are eventually compiled into simple PHP factory code and output to the `var/tmp/{context}` folder.
+By looking at the generated file, you can see which setter method is effective and which dependency and how (Singleton?) Was injected.
 
-ファイル名は`{インターフェイス}-{名前}`で中身はこのようなコードです。
+The file name is `{interface} - {name}` and its contents are such code.
 
 ```
 <?php
@@ -608,6 +650,6 @@ $instance->bindings = array('onGet' => array($singleton('BEAR\\Resource\\Interce
 return $instance;
 ```
 
- * `MyVendor_Todo_Resource_App_Todos_c0kmGJA` という語尾に文字列がつく生成されたクラス名はAOPがバインドされていることを表します。
- * `$singleton('BEAR\\Resource\\RenderInterface-')`は`RenderInterface`インターフェイスに束縛されてあるインスタンスをシングルトンで取得するという意味です。
- * `$instance->bindings`の`[{メソッド名} => {インターセプター}]`の配列がインターセプターの束縛を表します。
+ * `MyVendor_Todo_Resource_App_Todos_c0kmGJA` Postfixed with generated string class is "aspect" bound class.
+ * `$singleton('BEAR\\Resource\\RenderInterface-')` having singleton instance which bound `RenderInterface` interface.
+ * `$instance->bindings` has `[{method name} => {interceptor}]` intercept information array.
