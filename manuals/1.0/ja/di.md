@@ -266,24 +266,70 @@ protected function configure()
 
 ```php
 <?php
+class WebApi implements WebApiInterface
+{
+    private $id;
+    private $password;
+    private $client;
+    private $token;
+
+    /**
+     * @Named("id=user_id,password=user_password")
+     */
+    public function __construct(string $id, string $password)
+    {
+        $this->id = $id;
+        $this->password = $password;
+    }
+    
+    /**
+     * @Inject
+     */
+    public function setGuzzle(ClientInterface $client)
+    {
+        $this->client = $client;
+    }
+
+    /**
+     * @Inect(optional=true)
+     * @Named("token")
+     */
+    public function setOptionalToken(string $token)
+    {
+        $this->token = $token;
+    }
+
+    /**
+     * @PostConstruct
+     */
+    public function initialize()
+    {
+    }
+```
+
+上記のWebApiクラスをアノテーションなしでWebApiInterfaceにコンストラクタ束縛する場合は以下のようになります。
+
+```php
+<?php
 protected function configure()
 {
     $this
-        ->bind(CarInterface::class)
+        ->bind(WebApiInterface::class)
         ->toConstructor(
-            Car::class,                                 // $class_name
+            WebApi::class,                              // string $class_name
             [
-                ['enginne' => 'na'],                    // $name
-                ['number' => 'registrtion_number']
+                ['id' => 'user_id'],                    // array $name
+                ['passowrd' => 'user_password']
             ],
-            (new InjectionPoints)                       // $setter_injection
-                ->addMethod('setWheel', "right")
-                ->addOptionalMethod('setTurboCharger'),
-            'initialize'                                // $postCosntruct
+            (new InjectionPoints)                       // InjectionPoints　$setter_injection
+                ->addMethod('setGuzzle', 'token')
+                ->addOptionalMethod('setOptionalToken'),
+            'initialize'                                // string $postCostruct
         );
+    $this->bind()->annotated('user_id')->toInstance($_ENV['user_id']);
+    $this->bind()->annotated('user_password')->toInstance($_ENV['user_password']);
 }
 ```
-この例では`Car`クラスでは`EngineInterface $engine, $carName`と二つの引数が必要ですが、それぞれの変数名に`Named binding`束縛を行い依存解決をしています。
 
 ### PDO Example
 

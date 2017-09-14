@@ -83,8 +83,8 @@ $class = $invocation->getMethod()->getDeclaringClass();
 
  * `$method->getAnnotations()`     - メソッドアノテーションの取得
  * `$method->getAnnotation($name)`
- * `$class->->getAnnotations()`    - クラスアノテーションの取得
- * `$class->->getAnnotation($name)`
+ * `$class->getAnnotations()`    - クラスアノテーションの取得
+ * `$class->getAnnotation($name)`
 
 ## カスタムマッチャー
 
