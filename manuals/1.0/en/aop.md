@@ -1,20 +1,22 @@
 ---
-layout: docs-ja
+layout: docs-en
 title: AOP
 category: Manual
 permalink: /manuals/1.0/en/aop.html
 ---
 # AOP
 
-アスペクト指向プログラミングは、**横断的関心事**の問題を解決します。対象メソッドの前後に任意の処理をインターセプターで織り込むことができます。
-対象となるメソッドはビジネスロジックなど本質的関心事のみに関心を払い、インターセプターはログや検証などの横断的関心事に関心を払います。
+BEAR.Sunday **AOP** enables you to write code that is executed each time a matching method is invoked. It's suited for cross cutting concerns ("aspects"), such as transactions, security and logging. Because interceptors divide a problem into aspects rather than objects, their use is called Aspect Oriented Programming (AOP).
 
-BEAR.Sundayは[AOP Alliance](http://aopalliance.sourceforge.net/)に準拠したアスペクト指向プログラミングをサポートします。
+The method interceptor API implemented is a part of a public specification called [AOP Alliance](http://aopalliance.sourceforge.net/).
 
-## インターセプター
+## Interceptor
 
-インターセプターの`invoke`メソッドで`$invocation`メソッド実行変数を受け取り、メソッドの前後に処理を加えます。
-この変数は、インターセプター元メソッドを実行するためだけの変数です。前後にログやトランザクションなどの横断的処理を記述します。
+[MethodInterceptors](https://github.com/ray-di/Ray.Aop/blob/2.x/src/MethodInterceptor.php) are executed whenever a matching method is invoked.
+They have the opportunity to inspect the call: the method, its arguments, and the receiving instance.
+They can perform their cross-cutting logic and then delegate to the underlying method.
+Finally, they may inspect the return value or exception and return. Since interceptors may be applied to many methods and will receive many calls, their implementation should be efficient and unintrusive.
+
 
 ```php?start_inline
 use Ray\Aop\MethodInvocation;
@@ -23,13 +25,13 @@ class MyInterceptor implements MethodInterceptor
 {
     public function invoke(MethodInvocation $invocation)
     {
-        // メソッド実行前の処理
+        // Process before method invocation
         // ...
 
-        // メソッド実行
+        // Original method invocation
         $result = $invocation->proceed();
 
-        // メソッド実行後の処理
+        // Process after method invocation
         // ...
 
         return $result;
@@ -37,69 +39,64 @@ class MyInterceptor implements MethodInterceptor
 }
 ```
 
-## 束縛
+## Bindings
 
-[モジュール](module.html)で対象となるクラスとメソッドを`Matcher`で"検索"して、マッチするメソッドにインターセプターを束縛します。
+"Find" the target class and method with `Matcher` and bind the interceptor to the matching method in [Module](module.html).
 
 ```php?start_inline
 $this->bindInterceptor(
-    $this->matcher->any(),                   // どのクラスでも
-    $this->matcher->startsWith('delete'),    // "delete"で始まるメソッド名のメソッドには
-    [Logger::class]                          // Loggerインターセプターを束縛
+    $this->matcher->any(),                   // In any class,
+    $this->matcher->startsWith('delete'),    // Method(s) names that start with "delete",
+    [Logger::class]                          // Bind a Logger interceptor
 );
 
 $this->bindInterceptor(
-    $this->matcher->SubclassesOf(AdminPage::class),  // AdminPageの継承または実装クラスの
-    $this->matcher->annotatedWith(Auth::class),      // @Authアノテーションがアノテートされているメソッドには
-    [AdminAuthentication::class]                     // AdminAuthenticationインターセプターを束縛
+    $this->matcher->SubclassesOf(AdminPage::class),  // Of the AdminPage class or a class inherited from it
+    $this->matcher->annotatedWith(Auth::class),      // Annotated method with the @Auth annotation
+    [AdminAuthentication::class]                     //Bind the AdminAuthenticationInterceptor
 );
 ```
 
-`Matcher`は他にこのような指定もできます。
+There are various matchers.
 
- * [Matcher::any](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/MatcherInterface.php#L16) - 無制限
- * [Matcher::annotatedWith](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/MatcherInterface.php#L23) - アノテーション
- * [Matcher::subclassesOf](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/MatcherInterface.php#L30) - 継承または実装されたクラス
- * [Matcher::startsWith](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/MatcherInterface.php#L37) - 名前の始めの文字列
- * [Matcher::logicalOr](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/MatcherInterface.php#L44) - OR条件
- * [Matcher::logicalAnd](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/MatcherInterface.php#L51) - AND条件
- * [Matcher::logicalNot](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/MatcherInterface.php#L58) - NOT条件
+ * [Matcher::any](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/MatcherInterface.php#L16) 
+ * [Matcher::annotatedWith](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/MatcherInterface.php#L23) 
+ * [Matcher::subclassesOf](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/MatcherInterface.php#L30)
+ * [Matcher::startsWith](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/MatcherInterface.php#L37)
+ * [Matcher::logicalOr](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/MatcherInterface.php#L44)
+ * [Matcher::logicalAnd](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/MatcherInterface.php#L51)
+ * [Matcher::logicalNot](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/MatcherInterface.php#L58) 
 ```
 
-インターセプターに渡される`MethodInvocation`で対象のメソッド実行に関連するオブジェクトやメソッド、引数にアクセスすることができます。
+With the `MethodInvocation` object, you can access the target method's invocation object, method's and parameters.
 
- * [MethodInvocation::proceed](https://github.com/ray-di/Ray.Aop/blob/2.x/src/Joinpoint.php) - 対象メソッド実行
- * [MethodInvocation::getMethod](https://github.com/ray-di/Ray.Aop/blob/2.x/src/MethodInvocation.php) -  対象メソッドリフレクションの取得
- * [MethodInvocation::getThis](https://github.com/ray-di/Ray.Aop/blob/2.x/src/Joinpoint.php) - 対象オブジェクトの取得
- * [MethodInvocation::getArguments](https://github.com/ray-di/Ray.Aop/blob/2.x/src/Invocation.php) - 呼び出し引数配列の取得
+ * [MethodInvocation::proceed](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/Joinpoint.php#L39) - Invoke method
+ * [MethodInvocation::getMethod](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/MethodInvocation.php) -  Get method reflection
+ * [MethodInvocation::getThis](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/Joinpoint.php#L48) - Get object
+ * [MethodInvocation::getArguments](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/Invocation.php) - Pet parameters
 
-
-リフレクションのメソッドでアノテーションを取得することができます。
+Annotations can be obtained using the reflection API.
 
 ```php?start_inline
 $method = $invocation->getMethod();
 $class = $invocation->getMethod()->getDeclaringClass();
 ```
 
- * `$method->getAnnotations()`     - メソッドアノテーションの取得
+ * `$method->getAnnotations()`    // get method annotations
  * `$method->getAnnotation($name)`
- * `$class->->getAnnotations()`    - クラスアノテーションの取得
- * `$class->->getAnnotation($name)`
+ * `$class->getAnnotations()`     // get class annotations
+ * `$class->getAnnotation($name)`
 
-## カスタムマッチャー
-
-独自のカスタムマッチャーを作成するためには`AbstractMatcher`の`matchesClass`と`matchesMethod`を実装したクラスを作成します。
-
-`contains` マッチャーを作成するためには、２つのメソッドを持つクラスを提供する必要があります。
-１つはクラスのマッチを行う`matchesClass`メソッド、もう１つはメソッドのマッチを行う`matchesMethod`メソッドです。いずれもマッチしたかどうかをboolで返します。
+## Own matcher
+   
+You can have your own matcher.
+To create `contains` matcher, You need to provide a class which have two method. One is `matchesClass` for class match.
+The other one is `matchesMethod` method match. Both return the boolean result of matched.
 
 ```php?start_inline
 use Ray\Aop\AbstractMatcher;
 use Ray\Aop\Matcher;
 
-/**
- * 特定の文字列が含まれているか
- */
 class ContainsMatcher extends AbstractMatcher
 {
     /**
@@ -124,7 +121,7 @@ class ContainsMatcher extends AbstractMatcher
 }
 ```
 
-モジュール
+Module
 
 ```php?start_inline
 class AppModule extends AbstractModule
@@ -132,9 +129,9 @@ class AppModule extends AbstractModule
     protected function configure()
     {
         $this->bindInterceptor(
-            $this->matcher->any(),
-            new ContainsMatcher('user'), // 'user'がメソッド名に含まれてるか
-            [UserLogger::class]
+            $this->matcher->any(),       // In any class,
+            new ContainsMatcher('user'), // When 'user' contained in method name
+            [UserLogger::class]          // Bind UserLogger class
         );
     }
 };
