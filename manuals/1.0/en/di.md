@@ -10,10 +10,10 @@ Dependency injection is basically providing the objects that an object needs (it
 
 With dependency injection, objects accept dependencies in their constructors. To construct an object, you first build its dependencies. But to build each dependency, you need its dependencies, and so on. So when you build an object, you really need to build an object graph.
 
-Building object graphs by hand is labour intensive, error prone, and makes testing difficult. Instead, **Dependency Injector** ([Ray.Di](https://github.com/ray-di/Ray.Di)) can build the object graph for you. 
+Building object graphs by hand are labor intensive, error prone, and makes testing difficult. Instead, **Dependency Injector** ([Ray.Di](https://github.com/ray-di/Ray.Di)) can build the object graph for you. 
 
 | What is object graph ?
-| Object-oriented applications contain complex webs of interrelated objects. Objects are linked to each other by one object either owning or containing another object or holding a reference to another object. This web of objects is called an object graph and it is the more abstract structure that can be used in discussing an application's state. - [wikipedia](http://en.wikipedia.org/wiki/Object_graph)
+| Object-oriented applications contain complex webs of interrelated objects. Objects are linked to each other by one object either owning or containing another object or holding a reference to another object. This web of objects is called an object graph and it is the more abstract structure that can be used in discussing an application's state. - [Wikipedia](http://en.wikipedia.org/wiki/Object_graph)
 
 
 Ray.Di is the core DI framework used in BEAR.Sunday, which is heavily inspired by Google [Guice](http://code.google.com/p/google-guice/wiki/Motivation?tm=6) DI framework.
@@ -40,8 +40,8 @@ The Ray.Di package provides a dependency injector with the following features:
 
 ## Injection
 
-There are three types of dependence classes, constructors, setter methods, and execution methods, which are called injection points.
-Implantation in the constructor is mandatory, but the setter method requires the `@Injet` annotation mark to distinguish it from regular methods.
+There are three types of dependency classes, constructors, setter methods, and execution methods, which are called injection points.
+Implantation in the constructor is mandatory, but the setter method requires the `@Inject` annotation mark to distinguish it from regular methods.
 
 Constructor Injection
 
@@ -94,9 +94,9 @@ class Index
 
 ## Bindings
 
-To create bindings, extend AbstractModule and override its configure method. In the method body, call bind() to specify each binding. These methods are type checked in compile can report errors if you use the wrong types. Once you've created your modules, pass them as arguments to Injector to build an injector.
+To create bindings, extend AbstractModule and override its configure method. In the method body, call bind() to specify each binding. These methods are type checked in compile time and will report errors if you use the wrong types. Once you've created your modules, pass them as arguments to Injector to build an injector.
 
-Use modules to create linked bindings, instance bindings, provider bindings, constructor bindings and untargetted bindings.
+Use modules to create linked bindings, instance bindings, provider bindings, constructor bindings and untargeted bindings.
 
 
 ```php?start_inline
@@ -167,7 +167,7 @@ class ListerModule extends AbstractModule
 
 ## Named Bindings
 
-If there is more than one implementation class on one interface, or in the case of a scalar type dependency that does not have an interface, we **name** the dependency  in order to select the right class to be instantiated.
+If there is more than one implementation class on an interface, or in the case of a scalar type dependency that does not have an interface, we **name** the dependency  in order to select the right class to be instantiated.
 
 ```php?start_inline
 class ListerModule extends AbstractModule
@@ -200,7 +200,7 @@ class Index
     }
 ```
 
-It can also be used `Qualifer` annotation instead of constant with `@Named` annotation.
+The `Qualifier` annotation can be used instead of a constant with `@Named` annotation.
 
 ```php?start_inline
 /**
@@ -248,7 +248,7 @@ public __construct(LoggerInterface $paymentLogger, LoggerInterface $debugLogger)
 ## Untargeted Bindings
    
 
-You may create bindings without specifying a target. This is most useful for concrete classes. An untargetted binding informs the injector about a type, so it may prepare dependencies eagerly. Untargetted bindings have no to clause, like so:
+You may create bindings without specifying a target. This is most useful for concrete classes. An untargeted binding informs the injector about a type, so it may prepare dependencies eagerly. Untargeted bindings have no to a clause, like so:
 
 ```php
 
@@ -264,7 +264,7 @@ Note: All BEAR.Sunday resource classes are bound with "Untargeted Bindings". So 
 
 ## Constructor Bindings
 
-When @Inject annotation cannot be applied to the target constructor or setter method because it is a third party class, Or you simply don't like to use annotations. Provider Binding provide the solution to this problem. By calling your target constructor explicitly, you don't need reflection and its associated pitfalls. But there are limitations of that approach: manually constructed instances do not participate in AOP.
+When @Inject annotation cannot be applied to the target constructor or setter method because it is a third party class, Or you simply don't like to use annotations. Provider Binding provides the solution to this problem. By calling your target constructor explicitly, you don't need reflection and its associated pitfalls. But there are limitations of that approach: manually constructed instances do not participate in AOP.
 
 To address this, Ray.Di has toConstructor bindings.
 
@@ -502,7 +502,7 @@ class Psr3LoggerProvider implements ProviderInterface
 }
 ```
 
-InjectionPointInterface provides following methods.
+InjectionPointInterface provides the following methods:
 
 ```php?start_inline
 $ip->getClass();      // \ReflectionClass
@@ -570,7 +570,7 @@ public function onInit()
 }
 ```
 
-Methods are called in the following order.
+Methods are called in the following order:
 
  * Constructor
  * Setter methods (randam order)
@@ -578,7 +578,7 @@ Methods are called in the following order.
 
 ## Scopes
 
-By default, Ray returns a new instance each time it supplies a value. This behaviour is configurable via scopes.
+By default, Ray returns a new instance each time it supplies a value. This behavior is configurable via scopes.
 
 ```php?start_inline
 use Ray\Di\Scope;
@@ -591,7 +591,7 @@ protected function configure()
 
 ## Assisted Injection
    
-It is also possible to inject dependencies directly in the invoke method parameter(s). When doing this, add the dependency to the end of the arguments and annotate the method with @Assisted with having assisted parameter(s). You need null default for that parameter.
+It is also possible to inject dependencies directly in the invoke method parameter(s). When doing this, add the dependency to the end of the arguments and annotate the method with @Assisted with having assisted parameter(s). You need the null default for that parameter.
 
 ```php?start_inline
 use Ray\Di\Di\Assisted;
@@ -607,7 +607,7 @@ class Index
     }
 ```
 
-You can also provide dependency which depends on other dynamic parameter in method invocation. `MethodInvocationProvider` provides [MethodInvocation](https://github.com/ray-di/Ray.Aop/blob/2.x/src/MethodInvocation.php) object.
+You can also provide dependency which depends on other dynamic parameters in the method invocation. `MethodInvocationProvider` provides [MethodInvocation](https://github.com/ray-di/Ray.Aop/blob/2.x/src/MethodInvocation.php) object.
 
 ```php?start_inline
 class HorizontalScaleDbProvider implements ProviderInterface
@@ -634,8 +634,8 @@ class HorizontalScaleDbProvider implements ProviderInterface
 
 ## Debug
 
-Complex bindings are eventually compiled into simple PHP factory code and output to the `var/tmp/{context}` folder.
-By looking at the generated file, you can see which setter method is effective and which dependency and how (Singleton?) Was injected.
+Complex bindings are eventually compiled into simple PHP factory code and outputted to the `var/tmp/{context}` folder.
+By looking at the generated file, you can see which setter method is effective and which dependency and how (Singleton?) it was injected.
 
 The file name is `{interface} - {name}` and its contents are such code.
 
@@ -650,6 +650,6 @@ $instance->bindings = array('onGet' => array($singleton('BEAR\\Resource\\Interce
 return $instance;
 ```
 
- * `MyVendor_Todo_Resource_App_Todos_c0kmGJA` Postfixed with generated string class is "aspect" bound class.
+ * `MyVendor_Todo_Resource_App_Todos_c0kmGJA` postfixed with a generated string class is "aspect" bound class.
  * `$singleton('BEAR\\Resource\\RenderInterface-')` having singleton instance which bound `RenderInterface` interface.
  * `$instance->bindings` has `[{method name} => {interceptor}]` intercept information array.
