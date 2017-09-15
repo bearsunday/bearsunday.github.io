@@ -7,12 +7,176 @@ permalink: /manuals/1.0/ja/validation.html
 
 # バリデーション
 
-`@Valid`アノテーションを使用すると、メソッドの実行前にバリデーションメソッドが自動的に実行されるようになります。
-エラーを検知すると例外が発生しますが、代わりに別のメソッドを呼ぶこともできます。
+
+ * JSONスキーマでリソースAPIを定義する事ができます。
+ * `@Valid`, `@onVlidate`アノテーションでバリデーションコードを分離する事ができます。
+ * Webフォームによるバリデーションは[フォーム](form.html)をご覧ください。
+
+# JSONスキーマ
+
+[JSON スキーマ](http://json-schema.org/)とは、JSON objectの記述と検証のための標準です。`＠JsonSchema`とアノテートされたリソースクラスのメソッドが返すリソース`body`に対してJSONスキーマによる検証が行われます。
+
+### インストール
+
+全てのコンテキストで常にバリデーションを行うなら`AppModule`、開発中のみバリデーションを行うなら`DevModule`などのクラスを作成してその中でインストールします。
+
+```php?start_inline
+use BEAR\Resource\Module\JsonSchemalModule; // この行を追加
+use Ray\Di\AbstractModule;
+
+class AppModule extends AbstractModule
+{
+    protected function configure()
+    {
+        // ...
+        $this->install(
+            new JsonSchemalModule(
+                $appDir . '/var/json_schema',
+                $appDir . '/var/json_validate'
+            )
+        );   // この行を追加
+    }
+}
+```
+
+ディレクトリ作成
+
+```bash
+mkdir var/json_schema
+mkdir var/json_validate
+```
+
+`var/json_schema/`にリソースのbodyの仕様となるJSONスキーマファイル、`var/json_validate/`には入力バリデーションのためのJSONスキーマファイルを格納します。
+
+### @JsonSchema アノテーション
+
+リソースクラスのメソッドで`@JsonSchema`とアノテートします。`schema`プロパティにはJSONスキーマファイル名を指定します。
+
+### schema
+
+src/Resource/App/User.php
+
+```php?start_inline
+
+use BEAR\Resource\Annotation\JsonSchema; // この行を追加
+
+class User extends ResourceObject
+{
+    /**
+     * @JsonSchema(schema="user.json")
+     */
+    public function onGet()
+    {
+        $this->body = [
+            'firstName' => 'mucha',
+            'lastName' => 'alfons',
+            'age' => 12
+        ];
+
+        return $this;
+    }
+}
+```
+
+JSONスキーマを設置します。
+
+/var/json_schema/user.json
+
+
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "username": {
+      "type": "string",
+      "maxLength": 30,
+      "pattern": "[a-z\\d~+-]+"
+    }
+  },
+  "required": ["username"]
+}
+```
+
+### key
+
+bodyにインデックスキーがある場合にはアノテーションの`key`プロパティで指定します。
+
+
+```php?start_inline
+
+use BEAR\Resource\Annotation\JsonSchema; // この行を追加
+
+class Person extends ResourceObject
+{
+    /**
+     * @JsonSchema(key="user", schema="user.json")
+     */
+    public function onGet()
+    {
+
+        $this['user'] = [
+            'firstName' => 'mucha',
+            'lastName' => 'alfons',
+            'age' => 12
+        ];        
+
+        return $this;
+    }
+}
+```
+
+### params
+
+`params `プロパティには引数のバリデーションのためのJSONスキーマファイル名を指定します。
+
+
+```php?start_inline
+
+use BEAR\Resource\Annotation\JsonSchema; // この行を追加
+
+class Todo extends ResourceObject
+{
+    /**
+     *@JsonSchema(key="user", schema="user.json", params="todo.post.json")
+     */
+    public function onPost(string $title)
+```
+
+JSONスキーマを設置します。
+
+**/var/json_validate/todo.post.json**
+
+```json
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "/todo POST request validation",
+  "properties": {
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 40
+    }
+}
+
+```
+
+独自ドキュメントの代わりに標準化された方法で常に検証することで、その仕様が**人間にもマシンにも理解できる**確実なものになります。
+
+###  関連リンク
+
+ * [Example](http://json-schema.org/examples.html)
+ * [Understanding JSON Schema](https://spacetelescope.github.io/understanding-json-schema/)
+ * [JSON Schema Generator](https://jsonschema.net/#/editor)
+
+## @Validアノテーション
+
+`@Valid`アノテーションは入力のためのバリデーションです。メソッドの実行前にバリデーションメソッドが実行され、
+エラーを検知すると例外が発生されエラー処理のためのメソッドを呼ぶこともできます。
 
 分離したバリデーションのコードは可読性に優れテストが容易です。バリデーションのライブラリは[Aura.Filter](https://github.com/auraphp/Aura.Filter)や[Respect\Validation](https://github.com/Respect/Validation)、あるいは[PHP標準のFilter](http://php.net/manual/ja/book.filter.php)を使います。
 
-## インストール
+### インストール
 
 composerインストール
 
@@ -35,7 +199,7 @@ class AppModule extends AbstractModule
 }
 ```
 
-## アノテーション
+### アノテーション
 
 バリデーションのために`@Valid`、`@OnValidate`、`@OnFailure`の３つのアノテーションが用意されています。
 
@@ -97,7 +261,7 @@ use Ray\Validation\Annotation\OnFailure;
 ```
 `@OnFailure`メソッドには`$failure`が渡され`($failure->getMessages()`でエラーメッセージや`$failure->getInvocation()`でオリジナルメソッド実行のオブジェクトが取得できます。
 
-## 複数のバリデーション
+### 複数のバリデーション
 
 １つのクラスに複数のバリデーションメソッドが必要なときは以下のようにバリデーションの名前を指定します。
 
@@ -126,6 +290,6 @@ use Ray\Validation\Annotation\OnFailure;
     {
 ```
 
-## その他のバリデーション
+### その他のバリデーション
 
 複雑なバリデーションの時は別にバリデーションクラスをインジェクトして、`onValidate`メソッドから呼び出してバリデーションを行います。DIなのでコンテキストによってバリデーションを変えることもできます。

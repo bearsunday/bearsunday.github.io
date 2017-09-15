@@ -5,7 +5,7 @@ category: Manual
 permalink: /manuals/1.0/en/database.html
 ---
 
-# Databse
+# Database
 
 `Aura.Sql`、`Doctrine DBAL`, `CakeDB` modules are available for database connections.
 
@@ -77,29 +77,174 @@ class Index
 
 `Ray.AuraSqlModule` contains [Aura.SqlQuery](https://github.com/auraphp/Aura.SqlQuery) to help you build sql queries.
 
+### The `perform()` Method
+
+The new `perform()` method will prepare a query with bound values in a single
+step.  Also, because the native _PDO_ does not deal with bound array values,
+`perform()` modifies the query string to replace array-bound placeholders with
+the quoted array.  Note that this is *not* the same thing as binding:
+the query string itself is modified before passing to the database for value
+binding.
+
+```php
+<?php
+// the array to be quoted
+$array = array('foo', 'bar', 'baz');
+
+// the statement to prepare
+$stm = 'SELECT * FROM test WHERE foo IN (:foo)'
+
+// the native PDO way does not work (PHP Notice:  Array to string conversion)
+$pdo = new ExtendedPdo(...);
+$sth = $pdo->prepare($stm);
+$sth->bindValue('foo', $array);
+
+// the ExtendedPdo way allows a single call to prepare and execute the query.
+// it quotes the array and replaces the array placeholder directly in the
+// query string
+$pdo = new ExtendedPdo(...);
+$bind_values = array('foo' => $array);
+$sth = $pdo->perform($stm, $bind_values);
+echo $sth->queryString;
+// the query string has been modified by ExtendedPdo to become
+// "SELECT * FROM test WHERE foo IN ('foo', 'bar', 'baz')"
+?>
+```
+
+Finally, note that array quoting works only via the `perform()` method,
+not on returned _PDOStatement_ instances.
+
+
+### The `fetch*()` Methods
+
+_ExtendedPdo_ comes with `fetch*()` methods to help reduce boilerplate code.
+Instead of issuing `prepare()`, a series of `bindValue()` calls, `execute()`,
+and then `fetch*()` on a _PDOStatement_, you can bind values and fetch results
+in one call on _ExtendedPdo_ directly.  (The `fetch*()` methods use `perform()`
+internally, so quoting-and-replacement of array placeholders is supported.)
+
+```php
+<?php
+$stm  = 'SELECT * FROM test WHERE foo = :foo AND bar = :bar';
+$bind = array('foo' => 'baz', 'bar' => 'dib');
+
+// the native PDO way to "fetch all" where the result is a sequential array
+// of rows, and the row arrays are keyed on the column names
+$pdo = new PDO(...);
+$sth = $pdo->prepare($stm);
+$sth->execute($bind);
+$result = $sth->fetchAll(PDO::FETCH_ASSOC);
+
+// the ExtendedPdo way to do the same kind of "fetch all"
+$pdo = new ExtendedPdo(...);
+$result = $pdo->fetchAll($stm, $bind);
+
+// fetchAssoc() returns an associative array of all rows where the key is the
+// first column, and the row arrays are keyed on the column names
+$result = $pdo->fetchAssoc($stm, $bind);
+
+// fetchGroup() is like fetchAssoc() except that the values aren't wrapped in
+// arrays. Instead, single column values are returned as a single dimensional
+// array and multiple columns are returned as an array of arrays
+// Set style to PDO::FETCH_NAMED when values are an array
+// (i.e. there are more than two columns in the select)
+$result = $pdo->fetchGroup($stm, $bind, $style = PDO::FETCH_COLUMN)
+
+// fetchObject() returns the first row as an object of your choosing; the
+// columns are mapped to object properties. an optional 4th parameter array
+// provides constructor arguments when instantiating the object.
+$result = $pdo->fetchObject($stm, $bind, 'ClassName', array('ctor_arg_1'));
+
+// fetchObjects() returns an array of objects of your choosing; the
+// columns are mapped to object properties. an optional 4th parameter array
+// provides constructor arguments when instantiating the object.
+$result = $pdo->fetchObjects($stm, $bind, 'ClassName', array('ctor_arg_1'));
+
+// fetchOne() returns the first row as an associative array where the keys
+// are the column names
+$result = $pdo->fetchOne($stm, $bind);
+
+// fetchPairs() returns an associative array where each key is the first
+// column and each value is the second column
+$result = $pdo->fetchPairs($stm, $bind);
+
+// fetchValue() returns the value of the first row in the first column
+$result = $pdo->fetchValue($stm, $bind);
+
+// fetchAffected() returns the number of affected rows
+$stm = "UPDATE test SET incr = incr + 1 WHERE foo = :foo AND bar = :bar";
+$row_count = $pdo->fetchAffected($stm, $bind);
+?>
+```
+
+The methods `fetchAll()`, `fetchAssoc()`, `fetchCol()`, and `fetchPairs()`
+take an optional third parameter, a callable, to apply to each row of the
+results before returning.
+
+```php
+<?php
+$result = $pdo->fetchAssoc($stm, $bind, function (&$row) {
+    // add a column to the row
+    $row['my_new_col'] = 'Added this column from the callable.';
+});
+?>
+```
+
+### The `yield*()` Methods
+
+_ExtendedPdo_ comes with `yield*()` methods to help reduce memory usage. Whereas
+many `fetch*()` methods collect all the query result rows before returning them
+all at once, the equivalent `yield*()` methods return an iterator that generates
+one result row at a time. For example:
+
+```php
+$stm  = 'SELECT * FROM test WHERE foo = :foo AND bar = :bar';
+$bind = array('foo' => 'baz', 'bar' => 'dib');
+
+// like fetchAll(), each row is an associative array
+foreach ($pdo->yieldAll($stm, $bind) as $row) {
+    // ...
+}
+
+// like fetchAssoc(), each key is the first column,
+// and the row is an associative array
+foreach ($pdo->yieldAssoc($stm, $bind) as $key => $row) {
+    // ...
+}
+
+// like fetchCol(), each result is a value from the first column
+foreach ($pdo->yieldCol($stm, $bind) as $val) {
+    // ...
+}
+
+// like fetchObjects(), each result is an object; pass an optional
+// class name and optional array of constructor arguments.
+$class = 'ClassName';
+$args = ['arg0', 'arg1', 'arg2'];
+foreach ($pdo->yieldCol($stm, $bind, $class, $args) as $object) {
+    // ...
+}
+
+// like fetchPairs(), each result is a key-value pair from the
+// first and second columns
+foreach ($pdo->yieldPairs($stm, $bind) as $key => $val) {
+    // ...
+}
+```
 
 ## Replication
 
-Installing `AuraSqlReplicationModule` using a `connection locator` for master/slave connections.
+To automatically perform master / slave connection, specify the IP of the slave DB as the fourth argument.
 
 ```php?start_inline
-use Ray\Di\AbstractModule;
-use Ray\AuraSqlModule\AuraSqlModule;
-use Ray\AuraSqlModule\Annotation\AuraSqlConfig;
-use Aura\Sql\ConnectionLocator;
-
-class AppModule extends AbstractModule
-{
-    protected function configure()
-    {
-        $locator = new ConnectionLocator;
-        $locator->setWrite('master', new Connection('mysql:host=localhost;dbname=master', 'id', 'pass'));
-        $locator->setRead('slave1',  new Connection('mysql:host=localhost;dbname=slave1', 'id', 'pass'));
-        $locator->setRead('slave2',  new Connection('mysql:host=localhost;dbname=slave2', 'id', 'pass'));
-        $this->install(new AuraSqlReplicationModule($locator));
-    }
-}
-
+$this->install(
+  new AuraSqlModule(
+    'mysql:host=localhost;dbname=test',
+    'username',
+    'password',
+    'slave1,slave2' // specify slave IP as a comma separated value
+  )
+);
 ```
 
 You will now have a slave db connection when using HTTP GET, or a master db connection in other HTTP methods.
@@ -163,6 +308,42 @@ class User
 }
 ```
 
+## Connect to multiple databases
+
+To receive multiple `PdoExtendedInterface` objects with different connection destinations, use `@Named` annotation.
+
+```php?start_inline
+/**
+ * @Inject
+ * @Named("log_db")
+ */
+public function setLoggerDb(ExtendedPdoInterface $pdo)
+{
+    // ...
+}
+```
+
+Specify an identifier with `NamedPdoModule` and bind it.
+
+```php?start_inline
+$this->install(new NamedPdoModule('log_db', 'mysql:host=localhost;dbname=log', 'username',
+$this->install(new NamedPdoModule('job_db', 'mysql:host=localhost;dbname=job', 'username',
+```
+
+In the module, you specify an identifier in `NamedPdoModule` and bind it.
+
+```php?start_inline
+$this->install(
+  new NamedPdoModule(
+    'log_db', // Type of database specified by @Named
+    'mysql:host=localhost;dbname=log',
+    'username',
+    'pass',
+    'slave1,slave2' // specify slave IP as a comma separated value
+  )
+);
+```
+
 ## Transactions
 
 Using the `@Transactional` annotation wraps methods with a transaction.
@@ -178,6 +359,349 @@ use Ray\AuraSqlModule\Annotation\Transactional;
     {
          // \Ray\AuraSqlModule\Exception\RollbackException thrown if it failed.
     }
+```
+
+To do transactions on multiple connected databases, specify properties in the `@Transactional` annotation.
+If not specified, it becomes `{"pdo"}`.
+
+```php?start_inline
+/**
+ * @Transactional({"pdo", "userDb"})
+ */
+public function write()
+```
+
+It is run as follows.
+
+```php?start_inline
+$this->pdo->beginTransaction()
+$this->userDb->beginTransaction()
+
+// ...
+
+$this->pdo->commit();
+$this->userDb->commit();
+```
+
+# Aura.SqlQuery
+
+[Aura.Sql](https://github.com/auraphp/Aura.Sql) is an extension of PDO. [Aura.SqlQuery](https://github.com/auraphp/Aura.SqlQuery) provides database-specific SQL builder for MySQL, Postgres, SQLite or Microsoft SQL Server.
+
+Specify the database and install it with the application module `src/Module/AppModule.php`.
+
+```php?start_inline
+// ...
+$this->install(new AuraSqlQueryModule('mysql')); // pgsql, sqlite, or sqlsrv
+```
+
+## SELECT
+
+The resource receives the DB Query Builder object and constructs a SELECT query using the following methods.
+You can also call the method multiple times in any order.
+
+```php?start_inline
+use Ray\AuraSqlModule\AuraSqlInject;
+use Ray\AuraSqlModule\AuraSqlSelectInject;
+
+class User extend ResourceObject
+{
+    use AuraSqlInject;
+    use AuraSqlSelectInject;
+
+    public function onGet()
+    {
+        $this->select
+            ->distinct()                    // SELECT DISTINCT
+            ->cols([                        // select these columns
+                'id',                       // column name
+                'name AS namecol',          // one way of aliasing
+                'col_name' => 'col_alias',  // another way of aliasing
+                'COUNT(foo) AS foo_count'   // embed calculations directly
+            ])
+            ->from('foo AS f')              // FROM these tables
+            ->fromSubselect(                // FROM sub-select AS my_sub
+                'SELECT ...',
+                'my_sub'
+            )
+            ->join(                         // JOIN ...
+                'LEFT',                     // left/inner/natural/etc
+                'doom AS d'                 // this table name
+                'foo.id = d.foo_id'         // ON these conditions
+            )
+            ->joinSubSelect(                // JOIN to a sub-select
+                'INNER',                    // left/inner/natural/etc
+                'SELECT ...',               // the subselect to join on
+                'subjoin'                   // AS this name
+                'sub.id = foo.id'           // ON these conditions
+            )
+            ->where('bar > :bar')           // AND WHERE these conditions
+            ->where('zim = ?', 'zim_val')   // bind 'zim_val' to the ? placeholder
+            ->orWhere('baz < :baz')         // OR WHERE these conditions
+            ->groupBy(['dib'])              // GROUP BY these columns
+            ->having('foo = :foo')          // AND HAVING these conditions
+            ->having('bar > ?', 'bar_val')  // bind 'bar_val' to the ? placeholder
+            ->orHaving('baz < :baz')        // OR HAVING these conditions
+            ->orderBy(['baz'])              // ORDER BY these columns
+            ->limit(10)                     // LIMIT 10
+            ->offset(40)                    // OFFSET 40
+            ->forUpdate()                   // FOR UPDATE
+            ->union()                       // UNION with a followup SELECT
+            ->unionAll()                    // UNION ALL with a followup SELECT
+            ->bindValue('foo', 'foo_val')   // bind one value to a placeholder
+            ->bindValues([                  // bind these values to named placeholders
+                'bar' => 'bar_val',
+                'baz' => 'baz_val',
+            ]);
+
+        $sth = $this->pdo->prepare($this->select->getStatement());
+
+        // bind the values and execute
+        $sth->execute($this->select->getBindValues());
+        $result = $sth->fetch(\PDO::FETCH_ASSOC);
+        // or
+        // $result = $this->pdo->fetchAssoc($stm, $bind);
+```
+
+The created queries are queried as strings with the `getStatement()`.
+
+## INSERT
+
+### Single row INSERT
+
+
+```php?start_inline
+use Ray\AuraSqlModule\AuraSqlInject;
+use Ray\AuraSqlModule\AuraSqlInsertInject;
+
+class User extend ResourceObject
+{
+    use AuraSqlInject;
+    use AuraSqlInsertInject;
+
+    public function onPost()
+    {
+        $this->insert
+            ->into('foo')                   // INTO this table
+            ->cols([                        // bind values as "(col) VALUES (:col)"
+                'bar',
+                'baz',
+            ])
+            ->set('ts', 'NOW()')            // raw value as "(ts) VALUES (NOW())"
+            ->bindValue('foo', 'foo_val')   // bind one value to a placeholder
+            ->bindValues([                  // bind these values
+                'bar' => 'foo',
+                'baz' => 'zim',
+            ]);
+
+        $sth = $this->pdo->prepare($this->insert->getStatement());
+        $sth->execute($this->insert->getBindValues());
+        // or
+        // $sth = $this->pdo->perform($this->insert->getStatement(), this->insert->getBindValues());
+
+        // get the last insert ID
+        $name = $insert->getLastInsertIdName('id');
+        $id = $pdo->lastInsertId($name);
+```
+
+The `cols()` method allows you to pass an array of key-value pairs where the key is the column name and the value is a bind value (not a raw value).
+
+```php?start_inline
+        $this->insert
+            ->into('foo')                   // insert into this table
+            ->cols([                        // insert these columns and bind these values
+                'foo' => 'foo_value',
+                'bar' => 'bar_value',
+                'baz' => 'baz_value',
+            ]);
+```
+
+### Multi-line INSERT
+
+To do a multiple row INSERT, use the `addRow ()` method at the end of the first line. Then build the following query.
+
+```php?start_inline
+        // insert into this table
+        $this->insert->into('foo');
+
+        // set up the first row
+        $this->insert->cols([
+            'bar' => 'bar-0',
+            'baz' => 'baz-0'
+        ]);
+        $this->insert->set('ts', 'NOW()');
+
+        // set up the second row. the columns here are in a different order
+        // than in the first row, but it doesn't matter; the INSERT object
+        // keeps track and builds them the same order as the first row.
+        $this->insert->addRow();
+        $this->insert->set('ts', 'NOW()');
+        $this->insert->cols([
+            'bar' => 'bar-1',
+            'baz' => 'baz-1'
+        ]);
+
+        // set up further rows ...
+        $this->insert->addRow();
+        // ...
+
+        // execute a bulk insert of all rows
+        $sth = $this->pdo->prepare($insert->getStatement());
+        $sth->execute($insert->getBindValues());
+
+```
+
+> Note: If you try to add a row without specifying the value of the first column in the first row, an exception will be thrown.
+> Passing an associative array of columns to `addRow()` will be used on the next line. That is, you can not specify `col()` or `cols()` on the first line.
+
+```php?start_inline
+        // set up the first row
+        $insert->addRow([
+            'bar' => 'bar-0',
+            'baz' => 'baz-0'
+        ]);
+        $insert->set('ts', 'NOW()');
+
+        // set up the second row
+        $insert->addRow([
+            'bar' => 'bar-1',
+            'baz' => 'baz-1'
+        ]);
+        $insert->set('ts', 'NOW()');
+
+        // etc.
+```
+
+You can also set the database at once using `addRows()`.
+
+```php?start_inline
+        $rows = [
+            [
+                'bar' => 'bar-0',
+                'baz' => 'baz-0'
+            ],
+            [
+                'bar' => 'bar-1',
+                'baz' => 'baz-1'
+            ],
+        ];
+        $this->insert->addRows($rows);
+```
+
+## UPDATE
+Use the following methods to construct an UPDATE query. You can also call the method multiple times in any order.
+
+```php?start_inline
+        $this->update
+            ->table('foo')                  // update this table
+            ->cols([                        // bind values as "SET bar = :bar"
+                'bar',
+                'baz',
+            ])
+            ->set('ts', 'NOW()')            // raw value as "(ts) VALUES (NOW())"
+            ->where('zim = :zim')           // AND WHERE these conditions
+            ->where('gir = ?', 'doom')      // bind this value to the condition
+            ->orWhere('gir = :gir')         // OR WHERE these conditions
+            ->bindValue('bar', 'bar_val')   // bind one value to a placeholder
+            ->bindValues([                  // bind these values to the query
+                'baz' => 99,
+                'zim' => 'dib',
+                'gir' => 'doom',
+            ]);
+        $sth = $this->pdo->prepare($update->getStatement())
+        $sth->execute($this->update->getBindValues());
+        // or
+        // $sth = $this->pdo->perform($this->update->getStatement(), $this->update->getBindValues());
+```
+
+You can also pass an associative array to `cols()` with the key as the column name and the value as the bound value (not the RAW value).
+
+```php?start_inline
+
+        $this-update->table('foo')          // update this table
+            ->cols([                        // update these columns and bind these values
+                'foo' => 'foo_value',
+                'bar' => 'bar_value',
+                'baz' => 'baz_value',
+            ]);
+?>
+```
+
+## DELETE
+Use the following methods to construct a DELETE query. You can also call the method multiple times in any order.
+```php?start_inline
+        $this->delete
+            ->from('foo')                   // FROM this table
+            ->where('zim = :zim')           // AND WHERE these conditions
+            ->where('gir = ?', 'doom')      // bind this value to the condition
+            ->orWhere('gir = :gir')         // OR WHERE these conditions
+            ->bindValue('bar', 'bar_val')   // bind one value to a placeholder
+            ->bindValues([                  // bind these values to the query
+                'baz' => 99,
+                'zim' => 'dib',
+                'gir' => 'doom',
+            ]);
+        $sth = $this->pdo->prepare($update->getStatement())
+        $sth->execute($this->delete->getBindValues());
+```
+
+## Pagination
+
+[ray/aura-sql-module](https://packagist.org/packages/ray/aura-sql-module) supports pagination (page splitting) in both Ray.Sql raw SQL and Ray.AuraSqlQuery query builder.
+We create a pager using the `newInstance()` with a uri_template, binding values and the number of items per page. You can access the page by $page[$number].
+
+### Aura.Sql
+AuraSqlPagerFactoryInterface
+
+```php?start_inline
+/* @var $factory \Ray\AuraSqlModule\Pagerfanta\AuraSqlPagerFactoryInterface */
+$pager = $factory->newInstance($pdo, $sql, $params, 10, '/?page={page}&category=sports'); // 10 items per page
+$page = $pager[2]; // page 2
+/* @var $page \Ray\AuraSqlModule\Pagerfanta\Page */
+// $page->data // sliced data (array|\Traversable)
+// $page->current; (int)
+// $page->total (int)
+// $page->hasNext (bool)
+// $page->hasPrevious (bool)
+// $page->maxPerPage; (int)
+// (string) $page // pager html (string)
+```
+
+### Aura.SqlQuery
+AuraSqlQueryPagerFactoryInterface
+
+```php?start_inline
+// for Select
+/* @var $factory \Ray\AuraSqlModule\Pagerfanta\AuraSqlQueryPagerFactoryInterface */
+$pager = $factory->newInstance($pdo, $select, 10, '/?page={page}&category=sports');
+$page = $pager[2]; // page 2
+/* @var $page \Ray\AuraSqlModule\Pagerfanta\Page */
+```
+> Note: Although the Aura.Sql edits the raw SQL directly, it currently only supports the MySQL LIMIT clause format.
+
+`$page` is iterable.
+
+```php?start_inline
+foreach ($page as $row) {
+ // Process each row
+}
+```
+To change the pager HTML template, change the binding of `TemplateInterface`.
+For details about templates, please see [Pagerfanta](https://github.com/whiteoctober/Pagerfanta#views).
+
+```php?start_inline
+use Pagerfanta\View\Template\TemplateInterface;
+use Pagerfanta\View\Template\TwitterBootstrap3Template;
+use Ray\AuraSqlModule\Annotation\PagerViewOption;
+
+class AppModule extends AbstractModule
+{
+    protected function configure()
+    {
+        // ..
+        $this->bind(TemplateInterface::class)->to(TwitterBootstrap3Template::class);
+        $this->bind()->annotatedWith(PagerViewOption::class)->toInstance($pagerViewOption);
+    }
+}
 ```
 
 # Doctrine DBAL
@@ -221,16 +745,39 @@ class Index
 }
 ```
 
+## Connect to multiple databases
+
+To connect to multiple databases, specify the identifier as the second argument.
+
+```php?start_inline
+$this->install(new DbalModule($logDsn, 'log_db');
+$this->install(new DbalModule($jobDsn, 'job_db');
+```
+
+```php?start_inline
+/**
+ * @Inject
+ * @Named("log_db")
+ */
+public function setLogDb(Connection $logDb)
+```
+
 [MasterSlaveConnection](http://www.doctrine-project.org/api/dbal/2.0/class-Doctrine.DBAL.Connections.MasterSlaveConnection.html) is provided for master/slave connections.
 
 # CakeDb
 
-**CakeDb** is the database access module for the CakePHP3 Database library. This module is provided by [@lorenzo](https://github.com/lorenzo) ( original author of CakeDb).
+**CakeDb** is an ORM using the active record and data mapper pattern idea. It is the same as the one provided in CakePHP3.
 
-Installing `Ray.CakeDbModule` with composer.
+Install `Ray.CakeDbModule` with composer.
 
 ```bash
 composer require ray/cake-database-module ~1.0
 ```
 
-Then see more details at [Ray.CakeDbModule](https://github.com/ray-di/Ray.CakeDbModule) and [CakePHP3 Database Access & ORM](http://book.cakephp.org/3.0/en/orm.html).
+Please refer to [Ray.CakeDbModule](https://github.com/ray-di/Ray.CakeDbModule) for installation and refer to [CakePHP3 Database Access & ORM](http://book.cakephp.org/3.0/en/orm.html) for the ORM usage.
+
+Ray.CakeDbModule is provided by Jose ([@lorenzo](https://github.com/lorenzo)) who developed the ORM of CakePHP3.
+
+# Connection settings
+
+Use the [phpdotenv](https://github.com/vlucas/phpdotenv) library etc. to set the connection according to the environment destination. Please see the [Ex.Package](https://github.com/BEARSunday/Ex.Package) for implementation.

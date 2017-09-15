@@ -52,10 +52,9 @@
 
             <nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
                 <ul class="nav navbar-nav navbar-right">
-                    <li class="{% if page.layout  == 'docs-en' %}active{% endif %}"><a href="/manuals/1.0/en">En</a></li>
-                    <li class="{% if page.layout  == 'docs-ja' %}active{% endif %}"><a href="/manuals/1.0/ja">Ja</a></li>
+                    <li class="{% if page.layout  == 'docs-en' %}active{% endif %}"><a href="{{ page.permalink | replace: '/ja/', '/en/' }}">English</a></li>
+                    <li class="{% if page.layout  == 'docs-ja' %}active{% endif %}"><a href="{{ page.permalink | replace: '/en/', '/ja/' }}">Japanese</a></li>
                 </ul>
-
             </nav>
         </div>
     </div>

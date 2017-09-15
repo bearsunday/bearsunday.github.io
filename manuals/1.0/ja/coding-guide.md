@@ -18,8 +18,6 @@ permalink: /manuals/1.0/ja/coding-guide.html
 
 ```php
 <?php
-declare (strict_types = 1);
-
 namespace Koriym\Blog\Resource\App;
 
 use BEAR\RepositoryModule\Annotation\Cacheable;
@@ -108,6 +106,7 @@ class Entry extends ResourceObject
 
 * `composer setup`コマンドでアプリケーションのセットアップが完了することが推奨されます。このスクリプトではデータベースの初期化、必要ライブラリの確認が含まれます。`.env`の設定などマニュアルな操作が必要な場合はその手順が画面表示されることが推奨されます。
 * `composer cleanup`コマンドでアプリケーションのキャッシュやログが全てクリアされることが推奨されます。
+* `composer deploy`コマンドでアプリケーションのdeployが行われることが推奨されます。
 
 ## コードチェック
 
@@ -274,24 +273,25 @@ public function onGet($name) : ResourceObject
 
 リソースクライアントは可能な限り使わないで `@Embed`で埋め込んだり`@Link`のリンクを使うようにします。埋め込まれたリソースは`toUri()`や`toUriWithMethod()`でリクエスト文字列になりテストが容易です。
 
+## リソース
+
+リソースのベストプラクティスは[リソースベストプラクティス](/manuals/1.0/ja/resource.html#best-practice)もご覧ください。
+
 ## DI
 
+ * 実行コンテキスト(prod, devなど)の値そのものをインジェクトしてはいけません。代わりにコンテキストに応じたインスタンスをインジェクトします。アプリケーションはどのコンテキストで動作しているのか無知にします。
  * ライブラリコードではセッターインジェクションは推奨されません。
  * `Provider`束縛を可能な限り避け`toConstructor`束縛を優先することが推奨されます。
  * `Module`で条件に応じて束縛をすることを避けます。 ([AvoidConditionalLogicInModules](https://github.com/google/guice/wiki/AvoidConditionalLogicInModules))
- * モジュール無いから環境変数を参照することは推奨されません。コンストラクタで渡します。
+ * モジュールの`configure()`から環境変数を参照しないで、コンストラクタインジェクションにします。
 
-## ルーター
+## AOP
 
-APIとHTMLなど複数のコンテキストでルーティングを変える場合はルーターファイル `route.aura.conf`では`$schemeHost`によってルーターファイルをコンテキスト別に`require`します。
-
-```php?start_inline
-<?php
-/* @var $router \BEAR\Package\Provide\Router\AuraRoute */
-/* @var $schemeHost string */
-
-require ($schemeHost === 'app://self') ? __DIR__ . '/app.route.conf' : __DIR__ . '/page.route.conf';
-```
+ * インターセプターの適用を必須にしてはいけません。例えば`@Log`や`@Transactional`などのインターセプターを外しても、ログやトランザクションなどの横断的な機能は失われますがプログラムの本質的な動作しますがこのようにします。
+ * メソッド内の依存をインターセプターがインジェクトしないようにします。メソッド実装時にしか決定できない値は`@Assisted`インジェクションで引数にインジェクトします。
+ * 複数のインタセプターがある場合にその実行順に依存しないようにします。
+ * 無条件に全メソッドに適用するインターセプターであれば`bootstrap.php`での記述を考慮してください。
+ * 横断的関心事と、本質的関心事を分けるために使われるものです。特定のメソッドのhackのためにインターセプトするような使い方は推奨されません。
 
 ## 環境
 

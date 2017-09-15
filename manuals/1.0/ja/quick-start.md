@@ -12,11 +12,12 @@ permalink: /manuals/1.0/ja/quick-start.html
 
 ```bash
 composer create-project -n bear/skeleton MyVendor.MyProject
+cd MyVendor.MyProject
 ```
 
-次にPageリソースを作成します。PageリソースはWebページに対応したクラスです。 `MyVendor.MyProject/src/Resource/Page/Hello.php`に作成します。
+次にPageリソースを作成します。PageリソースはWebページに対応したクラスです。 `src/Resource/Page/Hello.php`に作成します。
 
-```php?start_inline
+```php
 <?php
 
 namespace MyVendor\MyProject\Resource\Page;
@@ -25,9 +26,11 @@ use BEAR\Resource\ResourceObject;
 
 class Hello extends ResourceObject
 {
-    public function onGet($name = 'BEAR.Sunday')
+    public function onGet(string $name = 'BEAR.Sunday') : ResourceObject
     {
-        $this['greeting'] = 'Hello ' . $name;
+        $this->body = [
+            'greeting' => 'Hello ' . $name
+        ];
 
         return $this;
     }
@@ -40,8 +43,10 @@ GETメソッドでリクエストされると`$name`に`$_GET['name']`が渡さ�
 
 ```bash
 php bootstrap/web.php get /hello
-php bootstrap/web.php get '/hello?name=World'
+php bootstrap/web.php get /hello?name=World
+```
 
+```bash
 200 OK
 Content-Type: application/hal+json
 
@@ -55,12 +60,14 @@ Content-Type: application/hal+json
 }
 ```
 
-ビルトインウェブサーバーを起動し、 `http://127.0.0.1:8080/hello` にアクセスします。
+ビルトインウェブサーバーを起動し
 
 ```bash
-php -S 127.0.0.1:8080 var/www/index.php
+php -S 127.0.0.1:8080 public/index.php
 ```
 
-# クイックAPI
+webブラウザまたはcurlコマンドで[http://127.0.0.1:8080/hello](http://127.0.0.1:8080/hello)をリクエストします。
 
-API用パッケージのスケルトンを使った[クイックAPI](quick-api.html)チュートリアルもお試しください。
+```bash
+curl -i 127.0.0.1:8080/hello
+```

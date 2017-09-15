@@ -1,24 +1,24 @@
 ---
 layout: docs-en
-title: コーディングガイド
+title: Coding Guide
 category: Manual
 permalink: /manuals/1.0/en/coding-guide.html
 ---
-
-*[This document](https://github.com/bearsunday/bearsunday.github.io/blob/master/manuals/1.0/en/coding-guide.md) needs to be proofread by an English speaker. If interested please send me a pull request. Thank you.*
 
 # Coding Guide
 
 ## Project
 
-`Vendor` specifies the company name, team name or personal name (` excite`, `koriym` etc.),` package` specifies the name of the application (service) ( `blog`,` news` etc. ) Is specified.
-Projects are created on a per application basis, and even when Web API and HTML are served on different hosts, they are made into one project.
+`Vendor` should be the company name, team name or the owner (`excite`, `koriym` etc.).
+`Package` is the name of the application or service (`blog`, `news` etc.).
+Projects must be created on a per application basis. Even when you create a Web API and an HTML from different hosts, they are considered one project.
+
 
 ## Style
 
-Follow PSR style.
+BEAR.Sunday follows the PSR style.
 
-  *  [PSR1](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-1-basic-coding-standard.md)
+  * [PSR1](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-1-basic-coding-standard.md)
   * [PSR2](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-2-coding-style-guide.md)
   * [PSR4](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-4-autoloader.md)
 
@@ -73,7 +73,11 @@ class Entry extends ResourceObject
 }
 ```
 
-A [DocBlock comment]([https://phpdoc.org/docs/latest/getting-started/your-first-set-of-documentation.html]) is optionable. Append a method summary (one line), a description (multiple lines allowed), `@params` when it is insufficient to explain with just the resource URI or argument name. After `@params`, empty blank lines and write custom annotations after that.
+A [DocBlock comment]([https://phpdoc.org/docs/latest/getting-started/your-first-set-of-documentation.html]) is optional. A DocBlock contains the method summary in one line.
+Then followed by the description, which can be a multiple lines.
+We should also put @params and @Link after description if possible.
+
+
 
 ```php?start_inline
 /**
@@ -93,32 +97,35 @@ A [DocBlock comment]([https://phpdoc.org/docs/latest/getting-started/your-first-
 
 ## Globals
 
-We do not recommend referencing global values in resource or application classes. Only used with Modules.
+We do not recommend referencing global values in resources or application classes. It is only used with Modules.
 
 * Do not refer to the value of [Superglobal](http://php.net/manual/ja/language.variables.superglobals.php)
 * Do not use [define](http://php.net/manual/en/function.define.php)
 * Do not create `Config` class to hold set values.
 * Do not use global object container (service locator) [[1]](http://koriym.github.io/adv10/), [[2]](http://blog.ploeh.dk/2010/02/03/ServiceLocatorisanAnti-Pattern/)
-* [Date](http://php.net/manual/en/function.date.php) function and [DateTime](http://php.net/manual/en/class.datetime.php) class now It is not recommended to get the time directly. Inject the time from outside using [koriym/now](https://github.com/koriym/Koriym.Now).
+* Use [Date](http://php.net/manual/en/function.date.php) function and [DateTime](http://php.net/manual/en/class.datetime.php) class. It is not recommended to get the time directly. Inject the time from outside using [koriym/now](https://github.com/koriym/Koriym.Now).
+
 
 Global method calls such as static methods are also not recommended.
 
-The values required by the application code are basically all injected, not from the configuration file etc. (The setting file is used for injecting) When using external system values such as Web API, concentrate it on one place such as client class and Web API access resource and make it easier for DI and AOP to mock I will do.
+The values required by the application code are all injected. The setting files are used for injecting. When you need an external value such as Web API, make a special gateway class for all requests. Then you can mock that special class with DI or AOP.
 
-## Classe and object
+## Classes and object
 
 * Trait(http://php.net/manual/ja/language.oop5.traits.php) is not recommended except for injection.
-* It is not recommended that child classes use parent class methods. Common functions are not shared by inheritance and trait, they are dedicated classes and they are injected and used. [Composite from inheritance](https://en.wikipedia.org/wiki/Composition_over_inheritance).
-* A class with only one method reflects the function to the class name and sets the name of the method to `__invoke ()` so that function access can be made.
+* It is not recommended for the child classes to use the parent class methods. Common functions are not shared by inheritance and trait, they are dedicated classes and they are injected and used. [Composite from inheritance](https://en.wikipedia.org/wiki/Composition_over_inheritance).
+* A class with only one method should reflect the function to the class name and should set the name of the method to `__invoke ()` so that function access can be made.
 
 ## Script command
 
-* It is recommended that setup of the application is completed with `composer setup` command. This script includes database initialization and necessary library checking. If manual operation such as `.env` setting is required, it is recommended that the procedure be displayed on the screen.
+* It is recommended to end the setup by using the `composer setup` command. This script includes the necessary database initialization and library checking. If manual operation such as `.env` setting is required, it is recommended that the procedure be displayed on the screen.
 * It is recommended that all application caches and logs are cleared with `composer cleanup` command.
+* It is recommended that all executable test (phpinit/phpcs/phpmd ..) are invoked with `composer test` command.
+* It is recommended an application is deployed with `composer deploy` command.
 
 ## Code check
 
-It is recommended to check the code with the following command for each commit. Commands can be installed with [bear/qatools](https://github.com/bearsunday/BEAR.QATools).
+It is recommended to check the codes for each commit with the following commands. These commands can be installed with [bear/qatools](https://github.com/bearsunday/BEAR.QATools).
 
 ```
 phpcs src tests
@@ -146,7 +153,7 @@ Returns the appropriate status code. Testing is easier, and the correct informat
 * `405` Method Not Allowed
 * `503` Service Unavailable Temporary error on server side
 
-`OnPut` implements idempotent resource operations. For example, it is change of resource contents, creation of specified resource such as UID.
+In `OnPut` method, you deal with the resource state with idempotence. For example, resource creation with UUID or update resource state.
 
 `OnPatch` is implemented when changing the state of a part of a resource.
 
@@ -181,7 +188,7 @@ public function onPost(string $title) : ResourceObject
 }
 ```
 
-`OnPut` implements idempotent resource operations. For example, it is change of resource contents, creation of specified resource such as UID.
+In `OnPut` method, you deal with the resource state with idempotence. For example, resource creation with UUID or update resource state.
 
 `OnPatch` is implemented when changing the state of a part of a resource.
 
@@ -210,7 +217,7 @@ $response = $resource->href('payment', $payment);
 
 ### Embedded Resources
 
-If the resource contains resources, it is recommended to embed it with `@Embed`.
+If the resource refers to other resources, it is advisable to include it with `@Embed`.
 
 ```php?start_inline
 /**
@@ -229,7 +236,7 @@ public function onPost(string $userId, string $title) : ResourceObject
     $uid = $this['uid']()->body;
 ```
 
-When determining the required query for a request for a resource to be `@Embed` without a method, specify the query after` @Embed` an incomplete resource without parameters.
+You may need to add queries for a resource request. Even if you still don't know the specific parameters, you can already add it by `@Embed`.
 
 ```php?start_inline
 /**
@@ -242,7 +249,7 @@ public function onGet() : ResourceObject
     $user = $this['user']->withQuery($query)()->body; // /user?user={$userId}
 ```
 
-Use `addQuery ()` to append to a query in a `@ Embed` URI.
+Then use `addQuery ()` to append to a query in a `@ Embed` URI.
 
 ```php?start_inline
 /**
@@ -257,8 +264,7 @@ public function onGet() : ResourceObject
 
 ### Argument binding
 
-To use the value of `$_GET` in a method other than `onGet` use `@QueryParam`. Other values stored in superglobal variables of PHP are [Web Context Parameters
-](https://github.com/ray-di/Ray.WebParamModule) to bind to the argument.
+To use the value of `$_GET` on a different method other than onGet, use `@QueryParam`. Superglobal variables like $_POST and $_SERVER are [Web Context Parameters](https://github.com/ray-di/Ray.WebParamModule) that you should bind to an argument.
 
 ```php?start_inline
 /**
@@ -279,36 +285,37 @@ public function onGet($name) : ResourceObject
 {
 ```  
 
-Resource clients should try to embed them with `@Embed` and use`@Link` links as much as possible. Embedded resources become request strings with `toUri()` and `toUriWithMethod ()`, which makes testing easier.
+Resource clients should embed them with `@Embed` and use `@Link` as much as possible. Embedded resources become request strings with `toUri()` and `toUriWithMethod ()`, which makes testing easier.
+
+## Resource
+
+Please also refer to [Resouce best practice](/manuals/1.0/en/resource.html#best-practice).
 
 ## DI
 
+ * Do not inject the value itself of the execution context (prod, dev etc). Instead, we inject instances according to the context. The application does not know in which context it is running.
  * Setter injection is not recommended for library code.
- * It is recommended that you override `toConstructor` bindings as much as possible by avoiding` Provider` bindings.
- * Avoid binding by `Module` according to conditions. ([AvoidConditionalLogicInModules] (https://github.com/google/guice/wiki/AvoidConditionalLogicInModules))
+ * It is recommended that you override the `toConstructor` bindings instead and avoid the `Provider` bindings as much as possible.
+ * Avoid binding by `Module` according to conditions. [AvoidConditionalLogicInModules](https://github.com/google/guice/wiki/AvoidConditionalLogicInModules)
  * It is not recommended to reference environmental variables since there is no module. Pass it in the constructor.
 
-## Router
+## AOP
 
-When routing is changed in multiple contexts such as API and HTML, the router file `route.aura.conf` requires for each context by `$schemeHost`.
-
-```php?start_inline
-<?php
-/* @var $router \BEAR\Package\Provide\Router\AuraRoute */
-/* @var $schemeHost string */
-
-require ($schemeHost === 'app://self') ? __DIR__ . '/app.route.conf' : __DIR__ . '/page.route.conf';
-```
+ * Do not make interceptor mandatory. We will make the program work even without an interceptor. (For example, if you remove `@Transactional` interceptor, the function of transaction will be lost, but "core concers" will work without issue.)
+ * Prevent the interceptor from injecting dependencies in methods. Values that can only be determined at implementation time are injected into arguments via `@Assisted` injection.
+ * If there are multiple interceptors, do not depend on the execution order.
+ * If it is an interceptor unconditionally applied to all methods, consider the description in `bootstrap.php`.
 
 ## Environment
 
-Applications that only work on the Web are not recommended. We will also work on the console to make it testable.
+To make applications testable, it should also work on the console, and not only on the Web.
 
 It is recommended not to include the `.env` file in the project repository.
 
 ## Test
 
-It is based on resource test using resource client. Check the value of the resource and test it if necessary (HTML or JSON).
+Basically you test resources with resource client. You request a resource then examine the returned response value.
+If you need to test the representation part, such as HTML or JSON, you may add an additional test for it.
 
 ## Development tools
 

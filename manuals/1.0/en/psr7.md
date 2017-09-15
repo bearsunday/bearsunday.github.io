@@ -1,16 +1,14 @@
 ---
 layout: docs-en
-title: PSR7
+title: PSR-7
 category: Manual
 permalink: /manuals/1.0/en/psr7.html
 ---
 
-*[This document](https://github.com/bearsunday/bearsunday.github.io/blob/master/manuals/1.0/en/psr7.md) needs to be proofread by an English speaker. If interested please send me a pull request. Thank you.*
-
-# PSR7
+# PSR-7
 
 An existing BEAR.Sunday application can work as
-[PSR7](http://www.php-fig.org/psr/psr-7/) middleware with easy step.
+a [PSR-7](http://www.php-fig.org/psr/psr-7/) middleware with these easy steps:
 
 1) Add `bear/middleware` package then replace [bootstrap.php](https://github.com/bearsunday/BEAR.Middleware/blob/1.x/bootstrap/bootstrap.php) script.
 
@@ -26,39 +24,26 @@ cp vendor/bear/middleware/bootstrap/bootstrap.php bootstrap/bootstrap.php
 Stat the server.
 
 ```bash
-php -S 127.0.0.1:8080 -t var/www
+php -S 127.0.0.1:8080 -t public
 ```
 
 ## Stream
 
 BEAR.Sunday supports http body of a message output in a [stream](http://php.net/manual/ja/intro.stream.php).
 
-In `ResourceObject`, you can mix with stream and normal string. The output is conveted to single stream.
-
-```php?start_inline
-public function onGet($name = 'BEAR.Sunday')
-{
-    $fp = fopen(__DIR__ . '/image.jpg', 'r');
-    stream_filter_append($fp, 'convert.base64-encode');
-    $this['greeting'] = 'Hello ' . $name;
-    $this['image'] = $fp; // image in base64 format
-
-    return $this;
-}
-```
+In `ResourceObject`, you can mix stream with a normal string. The output is converted to a single stream.
+`StreamTransfer` is default http transfer. Seem more at [Stream Response](http://bearsunday.github.io/manuals/1.0/en/stream.html).
 
 ## New Project
 
-You can create BEAR.Sunday PSR7 project with `bear/project`.
+You can alo create a BEAR.Sunday PSR-7 project with `bear/project` from scatch.
 
 ```
-composer create-project bear/project my-awesome-project
-cd my-awesome-project/
-php -S 127.0.0.1:8080 -t var/www/
+composer create-project bear/project my-psr7-project
+cd my-psr7-project/
+php -S 127.0.0.1:8080 -t public
 ```
 
-Add other middleware or Ray.Di modules upon your request.
+## PSR-7 middleware
 
  * [oscarotero/psr7-middlewares](https://github.com/oscarotero/psr7-middlewares)
- * [Ray packages](https://packagist.org/packages/ray/)
- * [BEAR packages](https://packagist.org/packages/bear/)

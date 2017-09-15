@@ -7,40 +7,31 @@ permalink: /manuals/1.0/ja/production.html
 
 # プロダクション
 
-プロダクション環境用の構成のためにキャッシュの設定やスクリプトの変更を行います。
+アプリケーションの[ディプロイ環境](https://en.wikipedia.org/wiki/Deployment_environment)に応じてキャッシュの設定や束縛の変更を行います。
 
-## bootファイル
+## コンテキスト
 
-コンテキストが`prod-`で始まるとアプリケーションオブジェクト`$app`がキャッシュされます。
-キャッシュドライバーは環境に応じて`ApcCache`か`FilesystemCache`が自動選択されます。
+bootファイルで指定するコンテキストが`prod-`または`stage-`で始まるとアプリケーションオブジェクト`$app`がキャッシュされます。（`prod`は実際に運用するプロダクションサイトで`stage`は`prod`のミラーサイトです）
 
 ```php?start_inline
 $context = 'prod-app';
 require dirname(dirname(__DIR__)) . '/bootstrap/bootstrap.php';
 ```
 
-## キャッシュの設定
+deploy後にキャッシュを再生成するにはwebサーバーを再起動するか、`src/`ディレクトリのタイムスタンプを変更します。
 
 ## ProdModule
 
-`BEAR.Package`のプロダクション用のモジュール`ProdModule`はwebサーバー1台を前提にしている`ApcCache`になっています。
-webサーバー1台でキャッシュを全て`Apc`で使う場合にはそのまま使用できます。
+アプリケーション用の`ProdModule`を`src/Module/ProdModule.php`に用意してプロダクション用の束縛をカスタマイズします。
 
-複数のWebサーバーを構成するためには共有のキャッシュストレージを設定する必要があります。
-この場合、アプリケーション固有の`ProdModule`を`src/Module/ProdModule.php`に用意して、
-サーバー間で共有するコンテンツ用キャッシュ`Doctrine\Common\Cache\CacheProvider:@BEAR\RepositoryModule\Annotation\Storage`インターフェイスとサーバー単位のキャッシュ`Doctrine\Common\Cache\Cache`インターフェイスを束縛します。
+```php
+<?php
+namespace Polidog\Todo\Module;
 
-```php?start_inline
-namespace BEAR\HelloWorld\Module;
-
-use BEAR\RepositoryModule\Annotation\Storage;
 use BEAR\Package\Context\ProdModule as PackageProdModule;
-use Doctrine\Common\Cache\Cache;
-use Doctrine\Common\Cache\CacheProvider;
+use BEAR\QueryRepository\CacheVersionModule;
+use BEAR\Resource\Module\OptionsMethodModule;
 use Ray\Di\AbstractModule;
-use Ray\Di\Scope;
-
-use Doctrine\Common\Cache\ApcCache;
 
 class ProdModule extends AbstractModule
 {
@@ -49,24 +40,84 @@ class ProdModule extends AbstractModule
      */
     protected function configure()
     {
-        $cache = ApcCache::class;
-        // 共有キャッシュ
-        $this->bind(CacheProvider::class)->annotatedWith(Storage::class)->to($cache)->in(Scope::SINGLETON);
-        // サーバー単位のキャッシュ
-        $this->bind(Cache::class)->to($cache)->in(Scope::SINGLETON);
+        $this->install(new PackageProdModule);       // デフォルトのprod設定
+        $this->install(new OptionsMethodModule);     // OPTIONSメソッドをプロダクションでも有効に
+        $this->install(new CacheVersionModule('1')); // リソースキャッシュのバージョン指定
+    }
+}
+```
 
-        // ProdModule パッケージのインストール
+## キャッシュ
+
+キャッシュは複数のWebサーバー間でシェアをしないローカルキャッシュと、シェアをする共有キャッシュの２種類あります。ローカルキャッシュはdeploy後に変更のないキャシュ例えばアノテーション等に使われ、共有キャッシュはリソース状態の保存に使われます。
+
+どちらのキャッシュもデフォルトでは「APCuキャッシュ+ファイルキャッシュ」のチェーンキャッシュです。リードはAPCuが優先して使用されライトは両方のストレージに行われます。
+
+### リソースキャッシュ
+
+複数のWebサーバーを構成するためには共有のキャッシュストレージを設定する必要があり、（[memcached](http://php.net/manual/ja/book.memcached.php)または[Redis](https://redis.io)）のモジュールをインストールします。
+
+### memcached
+
+```php
+<?php
+namespace BEAR\HelloWorld\Module;
+
+use BEAR\QueryRepository\StorageMemcachedModule;
+use BEAR\Package\Context\ProdModule as PackageProdModule;
+use Ray\Di\AbstractModule;
+use Ray\Di\Scope;
+
+class ProdModule extends AbstractModule
+{
+    /**
+     * {@inheritdoc}
+     */
+    protected function configure()
+    {
+        // memcache
+        // {host}:{port}:{weight},...
+        $memcachedServers = 'mem1.domain.com:11211:33,mem2.domain.com:11211:67';
+        $this->install(new StorageMemcachedModule(memcachedServers);
+
+        // デフォルトのProdModuleのインストール
         $this->install(new PackageProdModule);
     }
 }
 ```
-`@Storage`とアノテートされた`Cache`インターフェイスは、クエリーリポジトリーのためのものでWebサーバーで共有されるストレージです。
 
-複数のWebサーバーで`ApcCache`を指定することはできないので、
-[Redis](http://doctrine-orm.readthedocs.org/en/latest/reference/caching.html#redis)を指定するか、永続化可能な他のストレージを使ったアダプターを作成して束縛します。
-([memcached](http://doctrine-orm.readthedocs.org/en/latest/reference/caching.html#memcached)も指定できますが、メモリなので容量と揮発性に注意する必要があります。）
+### Redis
 
-## HTTP Cache
+```php?start_inline
+// redis
+$redisServer = 'localhost:6379'; // {host}:{port}
+$this->install(new StorageRedisModule($redisServer);
+```
+
+上記以外のストレージを利用する場合には、それぞれのモジュールを参考に新たにモジュールを作成します。
+
+### キャッシュ時間の指定
+
+デフォルトのTTLを変更する場合`StorageExpiryModule`をインストールします。
+
+```php?start_inline
+// Cache time
+$short = 60;
+$medium = 3600;
+$long = 24 * 3600;
+$this->install(new StorageExpiryModule($short, $medium, $long);
+```
+### キャッシュバージョンの指定
+
+リソースキャッシュの互換性が失われるdeployの時にはキャッシュバージョンを変更します。
+
+```
+$this->install(new CacheVersionModule($cacheVersion));
+```
+
+deployの度にリソースキャッシュを破棄したい場合は`$cacheVersion`に時刻や乱数の値を割り当てます。
+
+## HTTP キャッシュ
 
 キャッシュ可能(`@Cacheable`)とアノテートしたリソースはエンティティタグ`ETag`を出力します。
 
@@ -92,40 +143,40 @@ class App extends AbstractApp
 
 ### bootstrap
 
-次に`bootstrap/bootstrap.php`の`route`のセクションで以下のように`if`文を追加して、
-与えらた`ETag`のコンテンツに変更がなければ`304`を返して終了するようにします。
+`bootstrap/bootstrap.php`で以下のように`if`文を追加して、`ETag`のコンテンツに変更がなければ`304 (NotModified)`を出力するようにします。
 
 ```php?start_inline
-route: {
-    $app = (new Bootstrap)->getApp(__NAMESPACE__, $context);
-    if ($app->httpCache->isNotModified($_SERVER)) {
-        http_response_code(304);
-        exit(0);
-    }
+
+$app = (new Bootstrap)->getApp('BEAR\HelloWorld', $context, dirname(__DIR__));
+if ($app->httpCache->isNotModified($_SERVER)) {
+    http_response_code(304);
+    exit(0);
+}
 
 ```
 
 `ETag`の更新は自動で行われますが、`@Refresh`や`@Purge`アノテーションを使ってリソースキャッシュの破棄の関係性を適切に指定しておかなければなりません。
 
-## エクステンション
+## デプロイ
 
-以下のPECLエクステンションをインストールするとパフォーマンスが最適化されます。
+### ⚠️ 上書き更新を避ける
 
- * [PECL/uri_template](http://pecl.php.net/package/uri_template) URI Template
- * [PECL/igbinary](https://pecl.php.net/package/igbinary) シリアライズ最適化
+駆動中のプロジェクトフォルダを`rsync`などで上書きするのはリソースキャッシュの不一致や`tmp/`に作成される自動生成のクラスファイルと実際のクラスとの不一致になるリスクがあります。高負荷のサイトではキャッシュ作成やopcode作成などの大量のジョブが同時に複数実行されサイトのパフォーマンスのキャパシティを超える可能性もあります。
+
+別のディレクトリでセットアップを行いそのセットアップが問題なければ切り替えるようにします。
+
+### コンパイルを推奨
+
+セットアップを行う際に`vendor/bin/bear.compile`スクリプトを使ってプロジェクトを**ウオームアップ**することができます。コンパイルスクリプトはDI/AOP用の動的に作成されるファイルやアノテーションなどの静的なキャッシュファイルを全て事前に作成します。
+
+全てのクラスでインジェクションを行うのでランタイムでDIのエラーが出ることもありません。また`.env`には一般にAPIキーやパスワードなどのクレデンシャル情報が含まれますが、内容は全てPHPファイルに取り込まれるのでコンパイル後に消去可能です。コンパイルはdeployをより高速で安全にします。
+
+例）コンソールで実行
 
 ```
-pecl install uri_template
-pecl install igbinary
+vendor/bin/bear.compile 'Polidog\Todo' prod-html-app /path/to/prject
 ```
 
-確認
+### Deployerサポート
 
-```
-composer show --platform
-ext-uri_template    1.0      The uri_template PHP extension
-```
-
-## ディプロイ
-
-[Deployer](http://deployer.org/)のサポート[BEAR.Sunday Deployer.php support](https://github.com/bearsunday/deploy)をご覧ください。
+[Deployer](http://deployer.org/)の[BEAR.Sundayレシピ](https://github.com/bearsunday/deploy)を利用が便利で安全です。他のサーバー構成ツールを利用する場合でも参考にしたりDeployerスクリプトを実行することを検討してください。

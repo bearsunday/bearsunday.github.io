@@ -33,12 +33,18 @@ class AppModule extends AbstractModule
     protected function configure()
     {
         $this->install(new PackageModule));
-        $this->install(new AuraSqlModule('mysql:host=localhost;dbname=test', 'username', 'password'));  // この行を追加
+        $this->install(
+          new AuraSqlModule(
+            'mysql:host=localhost;dbname=test',
+            'username',
+            'password'
+          )
+        );  // この行を追加
     }
 }
 ```
 
-これでDIの設定が整いました。コンストラクタや`AuraSqlInject`トレイトを利用してDBオブジェクトを受け取ります。
+これでDIの設定が整いました。コンストラクタや`AuraSqlInject`トレイトを利用して`PDO`を拡張したDBオブジェクト`ExtendedPDO`を受け取ります。
 
 ```php?start_inline
 use Aura\Sql\ExtendedPdoInterface;
@@ -69,28 +75,135 @@ class Index
 
 `Ray.AuraSqlModule`は[Aura.SqlQuery](https://github.com/auraphp/Aura.SqlQuery)を含んでいてMySQLやPostgresなどのSQLを組み立てるのに利用できます。
 
-## リプリケーションのための接続
+## perform() メソッド
 
-マスター／スレーブの接続を自動で行うためには接続オブジェクト`$locator`を作成して`AuraSqlReplicationModule`をインストールします。
+`perform()`メソッドは、1つのプレイスホルダーしかないSQLに配列の値をバインドすることが出来ます。
 
 ```php?start_inline
-use Ray\Di\AbstractModule;
-use Ray\AuraSqlModule\AuraSqlModule;
-use Ray\AuraSqlModule\Annotation\AuraSqlConfig;
-use Aura\Sql\ConnectionLocator;
+$stm = 'SELECT * FROM test WHERE foo IN (:foo)'
+$array = ['foo', 'bar', 'baz'];
+```
 
-class AppModule extends AbstractModule
-{
-    protected function configure()
-    {
-        $locator = new ConnectionLocator;
-        $locator->setWrite('master', new Connection('mysql:host=localhost;dbname=master', 'id', 'pass'));
-        $locator->setRead('slave1',  new Connection('mysql:host=localhost;dbname=slave1', 'id', 'pass'));
-        $locator->setRead('slave2',  new Connection('mysql:host=localhost;dbname=slave2', 'id', 'pass'));
-        $this->install(new AuraSqlReplicationModule($locator));
-    }
+既存のPDOの場合
+
+```php?start_inline
+// the native PDO way does not work (PHP Notice:  Array to string conversion)
+// ネイティブのPDOでは`:foo`に配列を指定することは出来ません
+$sth = $pdo->prepare($stm);
+$sth->bindValue('foo', $array);
+```
+
+Aura.SqlのExtendedPDOの場合
+
+```php?start_inline
+$stm = 'SELECT * FROM test WHERE foo IN (:foo)'
+$values = ['foo' => ['foo', 'bar', 'baz']];
+$sth = $pdo->perform($stm, $values);
+```
+
+`:foo`に`['foo', 'bar', 'baz']`がバインドがされます。`queryString`で実際のクエリーを調べることが出来ます。
+
+```php?start_inline
+echo $sth->queryString;
+// the query string has been modified by ExtendedPdo to become
+// "SELECT * FROM test WHERE foo IN ('foo', 'bar', 'baz')"
+```
+
+## fetch*() メソッド
+
+`prepare()`、`bindValue()`、 `execute()`を繰り返してデータベースから値を取得する代わりに`fetch*()`メソッドを使うとボイラープレートコードを減らすことができます。
+（内部では`perform()`メソッドを実行しているので配列のプレースフォルもサポートしています）
+
+```php?start_inline
+$stm  = 'SELECT * FROM test WHERE foo = :foo AND bar = :bar';
+$bind = array('foo' => 'baz', 'bar' => 'dib');
+// ネイティブのPDOで"fetch all"を行う場合
+$pdo = new PDO(...);
+$sth = $pdo->prepare($stm);
+$sth->execute($bind);
+$result = $sth->fetchAll(PDO::FETCH_ASSOC);
+
+// ExtendedPdoで"fetch all"を行う場合
+$pdo = new ExtendedPdo(...);
+$result = $pdo->fetchAll($stm, $bind);
+
+// fetchAssoc()は全ての行がコラム名のキーを持つ連想配列が返ります。
+$result = $pdo->fetchAssoc($stm, $bind);
+
+// fetchGroup() is like fetchAssoc() except that the values aren't wrapped in
+// arrays. Instead, single column values are returned as a single dimensional
+// array and multiple columns are returned as an array of arrays
+// Set style to PDO::FETCH_NAMED when values are an array
+// (i.e. there are more than two columns in the select)
+$result = $pdo->fetchGroup($stm, $bind, $style = PDO::FETCH_COLUMN)
+
+// fetchOne()は最初の行をキーをコラム名にした連想配列で返します。
+$result = $pdo->fetchOne($stm, $bind);
+
+// fetchPairs()は最初の列の値をキーに二番目の列の値を値にした連想配列を返します  
+$result = $pdo->fetchPairs($stm, $bind);
+
+// fetchValue()は最初の列の値を返します。
+$result = $pdo->fetchValue($stm, $bind);
+
+// fetchAffected()は影響を受けた行数を返します。
+$stm = "UPDATE test SET incr = incr + 1 WHERE foo = :foo AND bar = :bar";
+$row_count = $pdo->fetchAffected($stm, $bind);
+?>
+```
+
+`fetchAll()`, `fetchAssoc()`, `fetchCol()`, 及び `fetchPairs()`のメソッドは三番目のオプションの引数に、それぞれの列に適用されるコールバックを指定することができます。
+
+```php?start_inline
+$result = $pdo->fetchAssoc($stm, $bind, function (&$row) {
+    // add a column to the row
+    $row['my_new_col'] = 'Added this column from the callable.';
+});
+?>
+```
+## yield*() メソッド
+
+メモリを節約するために`yield*()`メソッドを使うことができます。 `fetch*()`メソッドは全ての行を一度に取得しますが、
+`yield*()`メソッドはイテレーターが返ります。
+
+```php
+$stm  = 'SELECT * FROM test WHERE foo = :foo AND bar = :bar';
+$bind = array('foo' => 'baz', 'bar' => 'dib');
+
+// fetchAll()のように行は連想配列です
+foreach ($pdo->yieldAll($stm, $bind) as $row) {
+    // ...
 }
 
+// fetchAssoc()のようにキーが最初の列名で行が連想配列です。
+foreach ($pdo->yieldAssoc($stm, $bind) as $key => $row) {
+    // ...
+}
+
+// fetchCol()のように最初の列が値になった値を返します。
+foreach ($pdo->yieldCol($stm, $bind) as $val) {
+    // ...
+}
+
+// fetchPairs()と同様に最初の列からキー/バリューのペアの値を返します。
+foreach ($pdo->yieldPairs($stm, $bind) as $key => $val) {
+    // ...
+}
+```
+
+## リプリケーションのための接続
+
+マスター／スレーブの接続を自動で行うためには4つ目の引数にスレーブDBのIPを指定します。
+
+```php?start_inline
+$this->install(
+  new AuraSqlModule(
+    'mysql:host=localhost;dbname=test',
+    'username',
+    'password',
+    'slave1,slave2' // スレーブIPをカンマ区切りで指定
+  )
+);
 ```
 
 これでHTTPリクエストがGETの時がスレーブDB、その他のメソッドの時はマスターDBのDBオブジェクトがコンスタラクタに渡されます。
@@ -154,6 +267,36 @@ class User
 }
 ```
 
+## 複数のデータベースに接続
+
+接続先の違う複数の`PdoExtendedInterface`オブジェクトを受け取るためには
+`@Named`アノテーションで指定します。
+
+```php?start_inline
+/**
+ * @Inject
+ * @Named("log_db")
+ */
+public function setLoggerDb(ExtendedPdoInterface $pdo)
+{
+    // ...
+}
+```
+
+モジュールでは`NamedPdoModule`で識別子を指定して束縛します。
+
+```php?start_inline
+$this->install(
+  new NamedPdoModule(
+    'log_db', // @Namedで指定するデータベースの種類
+    'mysql:host=localhost;dbname=log',
+    'username',
+    'pass',
+    'slave1,slave12'
+  )
+);
+```
+
 ## トランザクション
 
 `@Transactional`とアノテートしたメソッドはトランザクション管理されます。
@@ -169,6 +312,28 @@ use Ray\AuraSqlModule\Annotation\Transactional;
     {
          // 例外発生したら\Ray\AuraSqlModule\Exception\RollbackExceptionに
     }
+```
+
+複数接続したデータベースのトランザクションを行うためには`@Transactional`アノテーションにプロパティを指定します。
+指定しない場合は`{"pdo"}`になります。
+
+```php?start_inline
+/**
+ * @Transactional({"pdo", "userDb"})
+ */
+public function write()
+```
+
+以下のように実行されます。
+
+```php?start_inline
+$this->pdo->beginTransaction()
+$this->userDb->beginTransaction()
+
+// ...
+
+$this->pdo->commit();
+$this->userDb->commit();
 ```
 
 # Aura.SqlQuery
@@ -439,22 +604,58 @@ class User extend ResourceObject
 
 ### Aura.Sql用
 AuraSqlPagerFactoryInterface
+
 ```php?start_inline
 /* @var $factory \Ray\AuraSqlModule\Pagerfanta\AuraSqlPagerFactoryInterface */
 $pager = $factory->newInstance($pdo, $sql, $params, 10, '/?page={page}&category=sports'); // 10 items per page
 $page = $pager[2]; // page 2
+/* @var $page \Ray\AuraSqlModule\Pagerfanta\Page */
+// $page->data // sliced data (array|\Traversable)
+// $page->current; (int)
+// $page->total (int)
+// $page->hasNext (bool)
+// $page->hasPrevious (bool)
+// $page->maxPerPage; (int)
+// (string) $page // pager html (string)
 ```
 
 ### Aura.SqlQuery用
 AuraSqlQueryPagerFactoryInterface
+
 ```php?start_inline
 // for Select
 /* @var $factory \Ray\AuraSqlModule\Pagerfanta\AuraSqlQueryPagerFactoryInterface */
 $pager = $factory->newInstance($pdo, $select, 10, '/?page={page}&category=sports');
 $page = $pager[2]; // page 2
+/* @var $page \Ray\AuraSqlModule\Pagerfanta\Page */
 ```
-
 > 注：Aura.Sqlは生SQLを直接編集していますが現在MySql形式のLIMIT句しか対応していません。
+
+`$page`はイテレータブルです。
+
+```php?start_inline
+foreach ($page as $row) {
+ // 各行の処理
+}
+```
+ページャーのリンクHTMLのテンプレートを変更するには`TemplateInterface`の束縛を変更します。
+テンプレート詳細に関しては[Pagerfanta](https://github.com/whiteoctober/Pagerfanta#views)をご覧ください。
+
+```php?start_inline
+use Pagerfanta\View\Template\TemplateInterface;
+use Pagerfanta\View\Template\TwitterBootstrap3Template;
+use Ray\AuraSqlModule\Annotation\PagerViewOption;
+
+class AppModule extends AbstractModule
+{
+    protected function configure()
+    {
+        // ..
+        $this->bind(TemplateInterface::class)->to(TwitterBootstrap3Template::class);
+        $this->bind()->annotatedWith(PagerViewOption::class)->toInstance($pagerViewOption);
+    }
+}
+```
 
 # Doctrine DBAL
 
@@ -498,12 +699,24 @@ class Index
 }
 ```
 
+## 複数のデータベースに接続
+
+複数のデータベースの接続には二番目の引数に識別子を指定します。
+
+```php?start_inline
+$this->install(new DbalModule($logDsn, 'log_db');
+$this->install(new DbalModule($jobDsn, 'job_db');
+```
+
+```php?start_inline
+/**
+ * @Inject
+ * @Named("log_db")
+ */
+public function setLogDb(Connection $logDb)
+```
+
 [MasterSlaveConnection](http://www.doctrine-project.org/api/dbal/2.0/class-Doctrine.DBAL.Connections.MasterSlaveConnection.html)というリプリケーションのためのマスター／スレーブ接続が標準で用意されています。
-
-## 環境による接続先の変更
-
-[phpdotenv](https://github.com/vlucas/phpdotenv)ライブラリなどを利用して環境先に応じた接続先を設定します。実装例の[Ex.Package](https://github.com/BEARSunday/Ex.Package)をご覧ください。
-
 
 # CakeDb
 
@@ -518,3 +731,7 @@ composer require ray/cake-database-module ~1.0
 インストールの方法については[Ray.CakeDbModule](https://github.com/ray-di/Ray.CakeDbModule)を、ORMの利用には[CakePHP3 Database Access & ORM](http://book.cakephp.org/3.0/en/orm.html)をご覧ください。
 
 Ray.CakeDbModuleはCakePHP3のORMを開発したJose([@lorenzo](https://github.com/lorenzo))さんにより提供されています。
+
+# 環境による接続先の変更
+
+[phpdotenv](https://github.com/vlucas/phpdotenv)ライブラリなどを利用して環境先に応じた接続先を設定します。実装例の[Ex.Package](https://github.com/BEARSunday/Ex.Package)をご覧ください。

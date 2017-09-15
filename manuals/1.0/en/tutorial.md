@@ -20,17 +20,18 @@ Add the first application resource file at `src/Resource/App/Weekday.php`
 
 ```php
 <?php
-
 namespace MyVendor\Weekday\Resource\App;
 
 use BEAR\Resource\ResourceObject;
 
 class Weekday extends ResourceObject
 {
-    public function onGet($year, $month, $day)
+    public function onGet(int $year, int $month, int $day) : ResourceObject
     {
         $date = \DateTime::createFromFormat('Y-m-d', "$year-$month-$day");
-        $this['weekday'] = $date->format("D");
+        $this->body = [
+            'weekday' => $date->format('D')
+        ];
 
         return $this;
     }
@@ -44,11 +45,15 @@ Let's access it in console and check the error code first.
 
 ```bash
 php bootstrap/api.php get '/weekday'
+```
 
-400 Bad Request
-Content-Type: application/vnd.error+json
+```
+404 Not Found
+content-type: application/vnd.error+json
 
-{"message":"Bad Request"}
+{
+    "message": "Not Found",
+    "logref": "466fa1ee",
 ...
 ```
 
@@ -58,7 +63,9 @@ Next make request with the expected parameters.
 
 ```bash
 php bootstrap/api.php get '/weekday?year=2001&month=1&day=1'
+```
 
+```bash
 200 OK
 Content-Type: application/hal+json
 
@@ -80,21 +87,24 @@ Let us fire the php server to make a web service for this
 php -S 127.0.0.1:8080 bootstrap/api.php
 ```
 
-Send a `GET` request as `http://127.0.0.1:8080/weekday?year=2001&month=1&day=1` with `curl`
+Send a HTTP `GET` request with `curl`
 
 ```
-curl -i 'http://127.0.0.1:8080/weekday?year=2001&month=1&day=1'
+curl -i http://127.0.0.1:8080/weekday?year=2001&month=1&day=1
+```
+```
 HTTP/1.1 200 OK
 Host: 127.0.0.1:8080
+Date: Sun, 04 Jun 2017 19:48:09 +0200
 Connection: close
-X-Powered-By: PHP/7.0.2
+X-Powered-By: PHP/7.1.4
 content-type: application/hal+json
 
 {
     "weekday": "Mon",
     "_links": {
         "self": {
-            "href": "/weekday?year=2001&month=1&day=1"
+            "href": "/weekday/2001/1/1"
         }
     }
 }
@@ -103,10 +113,47 @@ content-type: application/hal+json
 This resource class only has a GET method, therefore `405 Method Not Allowed` will be returned with any other request. Try it out!.
 
 ```
-curl -i -X POST 'http://127.0.0.1:8080/weekday?year=2001&month=1&day=1'
+curl -i -X POST http://127.0.0.1:8080/weekday?year=2001&month=1&day=1
+```
 
+
+```
 HTTP/1.1 405 Method Not Allowed
 ...
+```
+
+
+You can use the OPTIONS method to examine the HTTP methods available and the required parameters in the request. ([RFC7231](https://tools.ietf.org/html/rfc7231#section-4.3.7))
+```
+curl -i -X OPTIONS http://127.0.0.1:8080/weekday
+```
+
+```
+HTTP/1.1 200 OK
+...
+Content-Type: application/json
+Allow: GET
+
+{
+    "GET": {
+        "parameters": {
+            "year": {
+                "type": "integer"
+            },
+            "month": {
+                "type": "integer"
+            },
+            "day": {
+                "type": "integer"
+            }
+        },
+        "required": [
+            "year",
+            "month",
+            "day"
+        ]
+    }
+}
 ```
 
 ## Routing
@@ -116,12 +163,11 @@ To receive a dynamic parameter in URI path, we can use `AuraRouter`. This can be
 Get it with [composer](http://getcomposer.org) first.
 
 ```bash
-composer require bear/aura-router-module ~1.0
+composer require bear/aura-router-module ^1.0
 ```
 
 ```php
 <?php
-
 namespace MyVendor\Weekday\Module;
 
 use BEAR\Package\PackageModule;
@@ -131,9 +177,6 @@ use BEAR\Package\Provide\Router\AuraRouterModule; // add this line
 
 class AppModule extends AbstractModule
 {
-    /**
-     * {@inheritdoc}
-     */
     protected function configure()
     {
         Dotenv::load([
@@ -149,7 +192,8 @@ class AppModule extends AbstractModule
 This module looks for a router script file at `var/conf/aura.route.php`.
 
 ```php?start_inline
-/** @var $router \BEAR\Package\Provide\Router\AuraRoute */
+<?php
+/* @var $router \BEAR\Package\Provide\Router\AuraRoute */
 
 $router->route('/weekday', '/weekday/{year}/{month}/{day}');
 ```
@@ -179,7 +223,7 @@ Let's log a result with [monolog](https://github.com/Seldaek/monolog) logger.
 Get it with [composer](http://getcomposer.org) first.
 
 ```bash
-composer require monolog/monolog ~1.0
+composer require monolog/monolog ^1.0
 ```
 
 You instantiating `monolog` object with the `new` operator is *strongly discouraged*,
@@ -189,7 +233,6 @@ To do this make a `MonologLoggerProvider` dependency provider in `src/Module/Mon
 
 ```php
 <?php
-
 namespace MyVendor\Weekday\Module;
 
 use BEAR\AppMeta\AbstractAppMeta;
@@ -227,15 +270,20 @@ Dependency is provided via `get` method.
 To bind the [logger interface](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-3-logger-interface.md) to the factory class,
 Add the following code to the `configure` method in `src/Modules/AppModule.php`.
 
-```php?start_inline
-$this->bind(LoggerInterface::class)->toProvider(MonologLoggerProvider::class)->in(Scope::SINGLETON);
-```
+```php
+<?php
+// ...
+use Psr\Log\LoggerInterface; // add this line
+use Ray\Di\Scope; // add this line
 
-You may need the following code to resolve the full class name.
-
-```php?start_inline
-use Psr\Log\LoggerInterface;
-use Ray\Di\Scope;
+class AppModule extends AbstractModule
+{
+    protected function configure()
+    {
+        // ...
+        $this->bind(LoggerInterface::class)->toProvider(MonologLoggerProvider::class)->in(Scope::SINGLETON);
+    }
+}
 ```
 
 Now we can expect to have a `monolog` object injected into any constructor.
@@ -243,7 +291,6 @@ Add some code in `src/Resource/App/Weekday.php` to be able to start logging.
 
 ```php
 <?php
-
 namespace MyVendor\Weekday\Resource\App;
 
 use BEAR\Resource\ResourceObject;
@@ -251,6 +298,9 @@ use Psr\Log\LoggerInterface;
 
 class Weekday extends ResourceObject
 {
+    /**
+     * @var LoggerInterface
+     */
     private $logger;
 
     public function __construct(LoggerInterface $logger)
@@ -258,23 +308,24 @@ class Weekday extends ResourceObject
         $this->logger = $logger;
     }
 
-    public function onGet($year, $month, $day)
+    public function onGet(int $year, int $month, int $day) : ResourceObject
     {
-        $date = \DateTime::createFromFormat('Y-m-d', "$year-$month-$day");
-        $this['weekday'] = $date->format("D");
-        $this->logger->info("$year-$month-$day {$this['weekday']}");
+        $weekday = \DateTime::createFromFormat('Y-m-d', "$year-$month-$day")->format('D');
+        $this->body = [
+            'weekday' => $weekday
+        ];
+        $this->logger->info("$year-$month-$day {$weekday}");
 
         return $this;
     }
 }
-
 ```
 
-Let's check `var/log/weekday.log` to see if our logger worked.
+Let's check `var/log/cli-hal-api-app/weekday.log` to see if our logger worked.
 
 ```bash
 php bootstrap/api.php get '/weekday/2011/05/23'
-cat var/log/weekday.log
+cat var/log/cli-hal-api-app/weekday.log
 ```
 
 ## AOP
@@ -294,7 +345,6 @@ First, make a **interceptor** which intercepts the target method for benchmarkin
 
 ```php
 <?php
-
 namespace MyVendor\Weekday\Interceptor;
 
 use Psr\Log\LoggerInterface;
@@ -303,6 +353,9 @@ use Ray\Aop\MethodInvocation;
 
 class BenchMarker implements MethodInterceptor
 {
+    /**
+     * @var LoggerInterface
+     */
     private $logger;
 
     public function __construct(LoggerInterface $logger)
@@ -310,10 +363,13 @@ class BenchMarker implements MethodInterceptor
         $this->logger = $logger;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function invoke(MethodInvocation $invocation)
     {
         $start = microtime(true);
-        $result = $invocation->proceed(); // original method invocation
+        $result = $invocation->proceed(); // invoke original method
         $time = microtime(true) - $start;
         $msg = sprintf("%s: %s", $invocation->getMethod()->getName(), $time);
         $this->logger->info($msg);
@@ -321,7 +377,6 @@ class BenchMarker implements MethodInterceptor
         return $result;
     }
 }
-
 ```
 
 You can invoke the original method with `$invocation->proceed();` inside an `invoke` method.
@@ -331,7 +386,6 @@ Next, provide an [annotation](http://docs.doctrine-project.org/projects/doctrine
 
 ```php
 <?php
-
 namespace MyVendor\Weekday\Annotation;
 
 /**
@@ -343,6 +397,26 @@ final class BenchMark
 ```
 
 We then need to bind the target method to the benchmarking interceptor in `AppModule` with a matcher.
+
+```php
+<?php
+// ...
+use MyVendor\Weekday\Annotation\BenchMark; // Add this line
+use MyVendor\Weekday\Interceptor\BenchMarker; // Add this line
+
+class AppModule extends AbstractModule
+{
+    protected function configure()
+    {
+        // ...
+        $this->bindInterceptor(
+            $this->matcher->any(),                           // in any class
+            $this->matcher->annotatedWith(BenchMark::class), // which annotated as @BenchMark
+            [BenchMarker::class]                             // apply BenchMarker interceptor
+        );
+    }
+}
+```
 
 ```php?start_inline
 use MyVendor\Weekday\Annotation\BenchMark;
@@ -396,11 +470,13 @@ class Index extends ResourceObject
     /**
      * @Embed(rel="weekday", src="app://self/weekday{?year,month,day}")
      */
-    public function onGet($year, $month, $day)
+    public function onGet(int $year, int $month, int $day) : ResourceObject
     {
-        $this['year'] = $year;
-        $this['month'] = $month;
-        $this['day'] = $day;
+        $this->body += [
+            'year' => $year,
+            'month' => $month,
+            'day' => $day
+        ];
 
         return $this;
     }
@@ -417,7 +493,6 @@ Both methods are equally valid, however the `@Embed` declaration is concise and 
 
 ```php
 <?php
-
 namespace MyVendor\Weekday\Resource\Page;
 
 use BEAR\Resource\ResourceObject;
@@ -427,16 +502,12 @@ class Index extends ResourceObject
 {
     use ResourceInject;
 
-    public function onGet($year, $month, $day)
+    public function onGet(int $year, int $month, int $day) : ResourceObject
     {
-        $this['year'] = $year;
-        $this['month'] = $month;
-        $this['day'] = $day;
-        $this['weekday'] = $this->resource
-            ->get
-            ->uri('app://self/weekday')
-            ->withQuery(['year' => $year, 'month' => $month, 'day' => $day])
-            ->request();
+        $params = get_defined_vars(); // ['year' => $year, 'month' => $month, 'day' => $day]
+        $this->body = $params + [
+            'weekday' => $this->resource->uri('app://self/weekday')($params)
+        ];
 
         return $this;
     }
@@ -446,25 +517,25 @@ class Index extends ResourceObject
 At this stage let's check how this resource is rendered.
 
 ```bash
-php bootstrap/web.php get '/?year=1991&month=8&day=1'
+php bootstrap/web.php get '/?year=2000&month=1&day=1'
+```
 
+```
 200 OK
-Content-Type: application/hal+json
+content-type: application/hal+json
 
 {
+    "year": 2000,
+    "month": 1,
+    "day": 1,
     "_embedded": {
         "weekday": {
-            "weekday": "Thu",
-            "_links": {
-                "self": {
-                    "href": "/weekday/1991/8/1"
-                }
-            }
+            "weekday": "Sat"
         }
     },
     "_links": {
         "self": {
-            "href": "/?year=1991&month=8&day=1"
+            "href": "/index?year=2000&month=1&day=1"
         }
     }
 }
@@ -473,15 +544,15 @@ Content-Type: application/hal+json
 We can see that the other resource has been included in the `_embedded` node.  Because there is no change to the resource renderer an `application/hal+json` media type is output. In order to output the HTML(text/html) media we need to install an HTML Module.
 
 Composer Install
+
 ```bash
-composer require madapaja/twig-module ~1.0
+composer require madapaja/twig-module ^1.0
 ```
 
 Create `src/Module/HtmlModule.php`.
 
 ```php
 <?php
-
 namespace MyVendor\Weekday\Module;
 
 use Madapaja\TwigModule\TwigModule;
@@ -498,8 +569,8 @@ class HtmlModule extends AbstractModule
 
 Change `bootstrap/web.php`
 
-```php?start_inline
-
+```php
+<?php
 $context = 'cli-html-app';
 require __DIR__ . '/bootstrap.php';
 ```
@@ -519,21 +590,25 @@ Set up is now complete. Check in the console that this kind of HTML is output.
 
 ```bash
 php bootstrap/web.php get '/?year=1991&month=8&day=1'
+```
+
+```bash
 200 OK
 content-type: text/html; charset=utf-8
 
 <!DOCTYPE html>
 <html>
 <body>
-The weekday of 1991/8/1 is <b>Thu</b>.
+The weekday of 1991/8/1 is Thu.
 </body>
 </html>
 ```
 
 In order to run the web service we need make a change to `var/www/index.php`.
 
-```php?start_inline
-$context = 'prod-html-app';
+```php
+<?php
+$context = 'html-app';
 require dirname(dirname(__DIR__)) . '/bootstrap/bootstrap.php';
 ```
 
@@ -578,15 +653,24 @@ composer require ray/cake-database-module ~1.0
 
 In `src/Module/AppModule::configure()` we install the module.
 
-```bash
-use Ray\CakeDbModule\CakeDbModule;
+```php
+<?php
+// ...
+use Psr\Log\LoggerInterface; // add this line
+use Ray\Di\Scope; // add this line
 
-...
-$dbConfig = [
-    'driver' => 'Cake\Database\Driver\Sqlite',
-    'database' => dirname(dirname(__DIR__)) . '/var/db/todo.sqlite3'
-];
-$this->install(new CakeDbModule($dbConfig));
+class AppModule extends AbstractModule
+{
+    protected function configure()
+    {
+        // ...
+        $dbConfig = [
+            'driver' => 'Cake\Database\Driver\Sqlite',
+            'database' => $appDir . '/var/db/todo.sqlite3'
+        ];
+        $this->install(new CakeDbModule($dbConfig));
+    }
+}
 ```
 
 Now if we `use` the setter method trait `DatabaseInject` we have the CakeDB object available to us in `$this->db`.
@@ -595,31 +679,40 @@ Build up the `src/Resource/App/Todo.php` resource.
 
 ```php
 <?php
-
 namespace MyVendor\Weekday\Resource\App;
 
+use BEAR\Package\Annotation\ReturnCreatedResource;
+use BEAR\RepositoryModule\Annotation\Cacheable;
 use BEAR\Resource\ResourceObject;
+use Ray\CakeDbModule\Annotation\Transactional;
 use Ray\CakeDbModule\DatabaseInject;
 
+/**
+ * @Cacheable
+ */
 class Todo extends ResourceObject
 {
     use DatabaseInject;
 
-    public function onGet($id)
+    public function onGet(int $id) : ResourceObject
     {
-        $this['todo'] = $this
+        $this->body = $this
             ->db
             ->newQuery()
             ->select('*')
             ->from('todo')
             ->where(['id' => $id])
             ->execute()
-            ->fetchAll('assoc');
+            ->fetch('assoc');
 
         return $this;
     }
 
-    public function onPost($todo)
+    /**
+     * @Transactional
+     * @ReturnCreatedResource
+     */
+    public function onPost(string $todo) : ResourceObject
     {
         $statement = $this->db->insert(
             'todo',
@@ -627,9 +720,30 @@ class Todo extends ResourceObject
             ['created' => 'datetime']
         );
         // hyper link
-        $this->headers['Location'] = '/todo/?id=' . $statement->lastInsertId();
+        $id = $statement->lastInsertId();
         // status code
         $this->code = 201;
+        // created resource
+        $this->headers['Location'] = '/todo?id=' . $id;
+
+        return $this;
+    }
+
+    /**
+     * @Transactional
+     */
+    public function onPut(int $id, string $todo) : ResourceObject
+    {
+        $this->db->update(
+            'todo',
+            ['todo' => $todo],
+            ['id' => $id]
+        );
+        $this->headers['Location'] = '/todo/?id=' . $id;
+        // status code
+        $this->code = 204;
+
+        $this->body = (string) $this->onGet($id);
 
         return $this;
     }
@@ -640,36 +754,50 @@ Let's try a `POST`.
 
 ```bash
 php bootstrap/api.php post '/todo?todo=shopping'
-
-201 Created
-Location: /todo/?id=1
 ```
 
-We can see that with a `201` response, a new resource `/todo/?id=6` has been created.
-
-Next we will do a `GET`.
-
 ```bash
-php bootstrap/api.php get '/todo?id=1'
-
-200 OK
-content-type: application/hal+json
+201 Created
+Location: /todo?id=1
 
 {
-    "todo": [
-        {
-            "id": "1",
-            "todo": "shopping",
-            "created": "2015-05-03 01:58:17"
-        }
-    ],
+    "id": "1",
+    "todo": "shopping",
+    "created": "2017-06-04 15:58:03",
     "_links": {
         "self": {
             "href": "/todo?id=1"
         }
     }
 }
+```
 
+We can see that with a `201` response, a new resource `/todo/?id=1` has been created.　[RFC7231 Section-6.3.2](https://tools.ietf.org/html/rfc7231#section-6.3.2)
+
+Since it has been announced with `@ ReturnCreatedResource`, return the resource created in the body.
+
+Next we will do a `GET`.
+
+```bash
+php bootstrap/api.php get '/todo?id=1'
+```
+
+```
+200 OK
+ETag: 2527085682
+Last-Modified: Sun, 04 Jun 2017 15:23:39 GMT
+content-type: application/hal+json
+
+{
+    "id": "1",
+    "todo": "shopping",
+    "created": "2017-06-04 15:58:03",
+    "_links": {
+        "self": {
+            "href": "/todo?id=1"
+        }
+    }
+}
 ```
 
 The HyperMedia API is now complete.
@@ -692,7 +820,7 @@ use Ray\CakeDbModule\Annotation\Transactional;
 
 ## Query Repository
 
-A resource cache is created by annotating a resource class with `@cachable`. This cache data is created when the `onPost` action has been invoked, not only the resource properties but the HTML and JSON is also cached.
+A resource cache is created by annotating a resource class with `@Cachable`. This cache data is created when the `onPost` action has been invoked, not only the resource properties but the HTML and JSON is also cached.
 
 ```bash
 <?php
@@ -710,22 +838,29 @@ Let's try it. Unlike last time an `Etag` and `Last-Modified` header has been add
 
 ```bash
 php bootstrap/api.php get '/todo?id=1'
-
-200 OK
-content-type: application/hal+json
-Etag: 2105959211
-Last-Modified: Sat, 02 May 2015 17:26:42 GMT
-
-
-{
-    "todo": [
-        {
-            "id": "1",
-            "todo": "shopping",
-            "created": "2015-05-03 01:58:17"
-// ...
 ```
 
+```bash
+HTTP/1.1 200 OK
+Host: 127.0.0.1:8080
+Date: Sun, 04 Jun 2017 18:02:55 +0200
+Connection: close
+X-Powered-By: PHP/7.1.4
+ETag: 2527085682
+Last-Modified: Sun, 04 Jun 2017 16:02:55 GMT
+content-type: application/hal+json
+
+{
+    "id": "1",
+    "todo": "shopping",
+    "created": "2017-06-04 15:58:03",
+    "_links": {
+        "self": {
+            "href": "/todo?id=1"
+        }
+    }
+}
+```
 `Last-Modified` changes upon each request, but this is because currently cache settings have been disabled. When `prod` is added to the context it becomes enabled.
 
 On the `@Cacheable` annotation if no `expiry` is set then it will be cached forever. However when updates `onPut($id, $todo)` or deletes `onDelete($id)` occur on the resource then the cache will be updated on the corresponding id.
@@ -740,7 +875,6 @@ Let's implement the `onPut` method in the `todo` resource.
 
 ```php
 <?php
-
 namespace MyVendor\Weekday\Resource\App;
 
 use BEAR\RepositoryModule\Annotation\Cacheable;
@@ -755,7 +889,7 @@ class Todo extends ResourceObject
 {
     use DatabaseInject;
 
-    public function onGet($id)
+    public function onGet(int $id) : ResourceObject
     {
         $this['todo'] = $this
             ->db
@@ -772,7 +906,7 @@ class Todo extends ResourceObject
     /**
      * @Transactional
      */
-    public function onPost($todo)
+    public function onPost(string $todo) : ResourceObject
     {
         $statement = $this->db->insert(
             'todo',
@@ -787,11 +921,10 @@ class Todo extends ResourceObject
         return $this;
     }
 
-
     /**
      * @Transactional
      */
-    public function onPut($id, $todo)
+    public function onPut(int $id, string $todo) : ResourceObject
     {
         $this->db->update(
             'todo',
@@ -819,16 +952,18 @@ content-type: application/hal+json
 
 Next we start up the API server.
 ```bash
-php -S 127.0.0.1:8081 bootstrap/api.php
+php -S 127.0.0.1:8080 bootstrap/api.php
 ```
 
 This time do a get with a `curl` command.
 
 ```bash
-curl -i 'http://127.0.0.1:8081/todo?id=2'
+curl -i 'http://127.0.0.1:8080/todo?id=2'
+```
 
+```
 HTTP/1.1 200 OK
-Host: 127.0.0.1:8081
+Host: 127.0.0.1:8080
 Connection: close
 content-type: application/hal+json
 ETag: 3134272297
@@ -855,19 +990,19 @@ Make a request several times and check that the `Last-Modified` time stamp doesn
 Next we update the resource with a `PUT`.
 
 ```bash
-curl http://127.0.0.1:8081/todo -X PUT -d "id=2&todo=think"
+curl -i http://127.0.0.1:8080/todo -X PUT -d "id=2&todo=think"
 ```
 
 If you would rather send a JSON body with the PUT request you can run the following.
 
 ```bash
-curl http://127.0.0.1:8081/todo -X PUT -H 'Content-Type: application/json' -d '{"id": "2", "todo":"think" }'
+curl -i http://127.0.0.1:8080/todo -X PUT -H 'Content-Type: application/json' -d '{"id": "2", "todo":"think" }'
 ```
 
 This time when you perform a `GET` you can see that the `Last-Modified` has been updated.
 
 ```bash
-curl -i 'http://127.0.0.1:8081/todo?id=2'
+curl -i 'http://127.0.0.1:8080/todo?id=2'
 ```
 
 This `Last-Modified` time stamp has been provided by `@Cacheable`. No need to provide any special application admin or database columns.
@@ -876,9 +1011,12 @@ When you use `@Cacheable` the resource content is also saved in a separate `quer
 
 ## Application Import
 
-Resources created with BEAR.Sunday have unrivaled re-usability. Let's try using a resource in another application.
+Resources created with BEAR.Sunday have unrivaled re-usability.
+You can run multiple applications at the same time and use resources of other applications. You do not need to set up separate web servers.
 
-So for this tutorial let's create a new `my-vendor` and manually add it to the auto loader. (Normally you would set up the new application as a package).
+Let's try using a resource in another application.
+
+Normally you would set up the new application as a package, For this tutorial let's create a new `my-vendor` and manually add it to the auto loader. .
 
 ```bash
 mkdir my-vendor
@@ -887,8 +1025,8 @@ composer create-project bear/skeleton Acme.Blog ~1.0@dev
 ```
 
 In the `composer.json` in the `autoload` section add `Acme\\Blog`.
-```bash
 
+```json
 "autoload": {
     "psr-4": {
         "MyVendor\\Weekday\\": "src/",
@@ -907,23 +1045,33 @@ With this the configuration for the `Acme\Blog` application is complete.
 
 Next in order to import the application in `src/Module/AppModule.php` we use the `ImportAppModule` in `src/Module/AppModule.php` to install as an override.
 
-```php?start_inline
-use BEAR\Resource\Module\ImportAppModule;
-use BEAR\Resource\ImportApp;
-use BEAR\Package\Context;
+```php
+<?php
+// ...
+use BEAR\Resource\Module\ImportAppModule; // add this line
+use BEAR\Resource\ImportApp; // add this line
+use BEAR\Package\Context; // add this line
 
-$importConfig = [
-    new ImportApp('blog', 'Acme\Blog', 'prod-hal-app') // host, name, context
-];
-$this->override(new ImportAppModule($importConfig , Context::class));
+class AppModule extends AbstractModule
+{
+    protected function configure()
+    {
+        // ...
+        $dbConfig = [
+            'driver' => 'Cake\Database\Driver\Sqlite',
+            'database' => $appDir . '/var/db/todo.sqlite3'
+        ];
+        $this->install(new CakeDbModule($dbConfig));
+    }
+}
 ```
+
 With this a Acme\Blog` application using a `prod-hal-app` context can create resources that will be available to the `blog` host.
 
 Let's check it works by creating an Import resource in `src/Resource/App/Import.php`.
 
 ```php
 <?php
-
 namespace MyVendor\Weekday\Resource\App;
 
 use BEAR\Resource\ResourceObject;
@@ -935,7 +1083,9 @@ class Import extends ResourceObject
 
     public function onGet()
     {
-        $this['blog'] = $this->resource->get->uri('page://blog/index')->eager->request()->body['greeting'];
+        $this->body =[
+            'blog' => $this->resource->uri('page://blog/index')['greeting']
+        ];
 
         return $this;
     }
@@ -944,9 +1094,11 @@ class Import extends ResourceObject
 
 The `page://blog/index` resource should now be assigned to `blog`. `@Embed` can be used in the same way.
 
-
 ```bash
 php bootstrap/api.php get /import
+```
+
+```bash
 200 OK
 content-type: application/hal+json
 
@@ -968,29 +1120,68 @@ The combined application is now seen as 1 layer of a single application. A
 Next lets look at how we use a resource in a system that is not BEAR.Sunday based. We create an app.php. You can place this anywhere but be careful that it picks up `autoload.php` path correctly.
 
 ```php?start_inline
-
 use BEAR\Package\Bootstrap;
-use Doctrine\Common\Annotations\AnnotationRegistry;
 
-/** @var $loader \Composer\Autoload\ClassLoader */
-$loader = require __DIR__ . '/vendor/autoload.php';
-AnnotationRegistry::registerLoader([$loader, 'loadClass']); // Annotation load
+require __DIR__ . '/autoload.php';
 
-$app = (new Bootstrap)->getApp('MyVendor\Weekday', 'prod-hal-app'); // Fetch the application
-$import = $app->resource->get->uri('app://self/import')->request();
+$api = (new Bootstrap)->getApp('MyVendor\Weekday', 'prod-hal-app');
 
-echo $import['blog'] . PHP_EOL;
-
+$blog = $api->resource->uri('app://self/import')['blog'];
+var_dump($blog);
 ```
 
 Let's try it..
+
 ```bash
-php app.php
+php bint/test.php
 ```
-Does it display `Hello BEAR.Sunday`?
 
-## Because everything is a resource
+```
+string(17) "Hello BEAR.Sunday"
+```
 
-Unique data identifier URIs, a consistent interface, stateless access, powerful caching system, hyperlinks, layered system, and self-descriptive messages. A resource built with BEAR.Sunday implements all of these REST features.
+Other examples..
+
+```php?start_inline
+$weekday = $api->resource->uri('app://self/weekday')(['year' => 2000, 'month'=>1, 'day'=>1]);
+var_dump($weekday->body); // as array
+//array(1) {
+//    ["weekday"]=>
+//  string(3) "Sat"
+//}
+
+echo $weekday; // as string
+//{
+//    "weekday": "Sat",
+//    "_links": {
+//    "self": {
+//        "href": "/weekday/2000/1/1"
+//        }
+//    }
+//}
+```
+
+```php?start_inline
+$html = (new Bootstrap)->getApp('MyVendor\Weekday', 'prod-html-app');
+$index = $html->resource->uri('page://self/index')(['year' => 2000, 'month'=>1, 'day'=>1]);
+var_dump($index->code);
+//int(200)
+
+echo $index;
+//<!DOCTYPE html>
+//<html>
+//<body>
+//The weekday of 2000/1/1 is Sat.
+//</body>
+//</html>
+```
+
+Response is returned with a stateless request REST's resource is like a PHP function. You can get the value in `body` or you can express it like JSON or HTML with `(string)`. You can operate on any resource of the application with two lines except autoload, one line script if you concatenate it.
+
+In this way, resources created with BEAR.Sunday can be easily used from other CMS and framework. You can handle the values of multiple applications at once.
+
+## Because Everything is A Resource
+
+Uniform resource identifier(URI), a consistent interface, stateless access, powerful caching system, hyperlinks, layered system, and self-descriptive messages. A resource built with BEAR.Sunday implements all of these REST features.
 
 You can connect to data from other applications using hyperlinks, creating an API to be consumed from another CMS or framework is easy. The resource object is completely decoupled from any rendering !

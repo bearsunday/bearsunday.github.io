@@ -1,13 +1,13 @@
 ---
 layout: docs-ja
-title: PSR7
+title: PSR-7
 category: Manual
 permalink: /manuals/1.0/ja/psr7.html
 ---
 
-# PSR7
+# PSR-7
 
-既存のBEAR.Sundayアプリケーションは特別な変更無しに[PSR7](http://www.php-fig.org/psr/psr-7/)ミドルウエアとして動作させることができます。
+既存のBEAR.Sundayアプリケーションは特別な変更無しに[PSR-7](http://www.php-fig.org/psr/psr-7/)ミドルウエアとして動作させることができます。
 
 以下のコマンドで`bear/middleware`を追加して、ミドルウエアとして動作させるための[bootstrapスクリプト](https://github.com/bearsunday/BEAR.Middleware/blob/1.x/bootstrap/bootstrap.php)に置き換えます。
 
@@ -16,49 +16,28 @@ composer require bear/middleware
 cp vendor/bear/middleware/bootstrap/bootstrap.php bootstrap/bootstrap.php
 ```
 
-スクリプトの`__PACKAGE__\__VENDOR__`をアプリケーションの名前に変更して、
-通常のBEAR.Sundayアプリケーションと同様に公開Webディレクトリとして`var/www`を指定します。
+次にスクリプトの`__PACKAGE__\__VENDOR__`をアプリケーションの名前に変更すれば完了です。
 
 ```bash
-php -S 127.0.0.1:8080 -t var/www
+php -S 127.0.0.1:8080 -t public
 ```
 
 ## ストリーム
 
 ミドルウエアに対応したBEAR.Sundayのリソースは[ストリーム](http://php.net/manual/ja/intro.stream.php)の出力に対応しています。
 
-以下のスクリプトはimage.jpg画像ファイルをbase64エンコードしてHTTP出力します。
-
-```php?start_inline
-public function onGet($name = 'BEAR.Sunday')
-{
-    $fp = fopen(__DIR__ . '/image.jpg', 'r');
-    stream_filter_append($fp, 'convert.base64-encode');
-    $this['greeting'] = 'Hello ' . $name;
-    $this['image'] = $fp; // image in base64 format
-
-    return $this;
-}
-```
-
-$this['image']には[fopen](http://php.net/manual/ja/function.fopen.php)のファイルポインタリソースがアサインされているだけですが、
-他でアサインされた文字列（$this['greeting']）を含めて全てストリームに変換されて出力されます。
-
-HTTP出力がストリーム出力に完全に対応していればPHPのメモリ制限を受けないで巨大なファイルを出力することができます。
-大きなサイズのファイルダウンロードに向いています。
+HTTP出力は`StreamTransfer`が標準です。詳しくは[ストリーム出力](http://bearsunday.github.io/manuals/1.0/ja/stream.html)をご覧ください。
 
 ## 新規プロジェクト
 
-新規でPSR7のプロジェクトを始める場合のパッケージが用意されています。
+新規でPSR-7のプロジェクトを始めることもできます。
 
 ```
 composer create-project bear/project my-awesome-project
 cd my-awesome-project/
-php -S 127.0.0.1:8080 -t var/www/
+php -S 127.0.0.1:8080 -t public
 ```
 
-必要に応じて他のPSR7ミドルウエアを追加したり、Rayのモジュールを追加します。
+## PSR-7ミドルウエア
 
  * [oscarotero/psr7-middlewares](https://github.com/oscarotero/psr7-middlewares)
- * [Packages from Ray](https://packagist.org/packages/ray/)
- * [Packages from BEAR](https://packagist.org/packages/bear/)

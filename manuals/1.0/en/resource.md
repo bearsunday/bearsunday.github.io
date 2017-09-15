@@ -5,22 +5,29 @@ category: Manual
 permalink: /manuals/1.0/en/resource.html
 ---
 
+# Resource
+
+A BEAR.Sunday application is [RESTful](http://en.wikipedia.org/wiki/Representational_state_transfer) and is made up of a collection of resources connected by links.
+
 # Object as a service
 
-A BEAR.Sunday application is [RESTful](http://en.wikipedia.org/wiki/Representational_state_transfer) and is made up of a collection of resources.
-
 An HTTP method is mapped to a PHP method in the `ResourceObject` class.
+It transfers its resource state as a resource representation from stateless request.
+([Representational State Transfer)](http://en.wikipedia.org/wiki/REST)
 
 Here are some examples of a resource object:
 
 ```php?start_inline
 class Index extends ResourceObject
 {
-    public function onGet($a, $b)
+    public $code = 200;
+    public $headers = [];
+
+    public function onGet(int $a, int $b) : ResourceObject
     {
-        $this->code = 200; // optional, the default value is 200
-        // $_GET['a'] + $_GET['b']
-        $this['result'] = $a + $b;
+        $this->body = [
+            'result' => $a + $b // $_GET['a'] + $_GET['b']
+        ] ;
 
         return $this;
     }
@@ -30,7 +37,7 @@ class Index extends ResourceObject
 ```php?start_inline
 class Todo extends ResourceObject
 {
-    public function onPost($id, $todo)
+    public function onPost(string $id, string $todo) : ResourceOjbect
     {
         // status code
         $this->code = 201;
@@ -42,45 +49,17 @@ class Todo extends ResourceObject
 }
 ```
 
-A resource has a URI just like a web URL.
-```bash
-app://self/blog/posts/?id=3
-```
+The PHP resource class has URIs such as `app://self/blog/posts/?id=3`, `page://self/index` similar to the URI of the web, and conforms to the HTTP method `onGet`,` onPost`, `onPut`,` onPatch`, `onDelete` interface.
 
-```bash
-page://self/index
-```
-
-It has methods that correspond to HTTP verbs `onGet`, `onPost`, `onPut`, `onPatch`, or `onDelete`.
-`$_GET` parameters are passed to the parameters of `onGet` method, as are `$_POST` parameters sent to the `onPost` method.
-
-```php?start_inline
-    class User
-    {
-        public function onGet($id, $todo)
-        {
-            // $id   <= $_GET['id']
-            // $todo <= $_GET['todo']
-```
-
-The format defined by `content-type` header will handle the passing of parameters to be sent to `onPut`,`onPatch` or `onDelete`.
-
-```php?start_inline
-    class User
-    {
-        public function onPut($id, $todo)
-        {
-            // `x-www-form-urlencoded` or `application/json`
-            $id
-```
+$_GET for `onGet` and $_POST for `onPost` are passed to the arguments of the method depending on the variable name, and the methods of `onPut`,` onPatch`, `onDelete` are content The value that can be handled according to `content-type`(`x-www-form-urlencoded` or `application/json`) is an argument.
 
 The resource state (`code`,`headers` or`body`) is handled by these method using the given parameters. Then the resource class returns itself(`$this`).
 
 ### Syntax sugar
 
 Access to the body property has some syntactic sugar.
-```php?start_inline
 
+```php?start_inline
 $this['price'] = 10;
 // is same as
 $this->body['price'] = 10;
@@ -100,34 +79,115 @@ The `page` resource carries out a similar role as a page controller which is als
 
 Resources have 6 interfaces conforming to HTTP methods.
 
-| **method** | **description**|
-|--------|------------|
-| GET | Resource retrieval |
-| PUT | Resource update and creation |
-| PATCH | Resource update |
-| POST | Resource creation |
-| DELETE | Resource delete |
-| OPTIONS | Resource access method query |
-
-#### GET
+### GET
 Reads resources. This method does not provide any changing of the resource state. A safe method with no possible side affects.
 
-#### PUT
+### PUT
 Performs creation and updates of a resource. This method has the benefit that running it once or many more times will have no more effect. This is referred to as [Idempotence](http://en.wikipedia.org/wiki/Idempotence).
 
-#### PATCH
+### PATCH
 
 Performs resource updates, but unlike PUT, it applies a delta rather than replacing the entire resource.
 
-#### POST
+### POST
 Performs resource creation. If you run a request multiple times the resource will be created as many times. A method with no idempotence.
 
-#### DELETE
+### DELETE
 Resource deletion. Has idempotence just like PUT.
 
-#### OPTIONS
-Inspects which methods and parameters can be used on the resource. Just like `GET` there is no effect on the resource.
+### OPTIONS
+Get information on parameters and responses required for resource request. It is as secure as GET method.
 
+# Rendering
+
+The request method of the `ResourceObject` class (such as `onGet`) has no interest in expressions such as whether the resource is represented in HTML or JSON.
+Depending on the context, the resource renderer injected into `ResourceObject` renders it to JSON or HTML and makes it a resource representation (view).
+
+Rendering is done when a resource is string evaluated.
+
+```php?start_inline
+
+$weekday = $api->resource->uri('app://self/weekday')(['year' => 2000, 'month'=>1, 'day'=>1]);
+var_dump($weekday->body); // as array
+//array(1) {
+//    ["weekday"]=>
+//  string(3) "Sat"
+//}
+
+echo $weekday; // as string
+//{
+//    "weekday": "Sat",
+//    "_links": {
+//    "self": {
+//        "href": "/weekday/2000/1/1"
+//        }
+//    }
+//}
+```
+
+It is injected according to the context so you do not usually need to be aware.
+When a resource specific expression is required, we inject our own renderer as follows.
+
+```php?start_inline
+class Index
+{
+    // ...
+    /**
+     * @Inject
+     * @Named("my_renderer")
+     */
+    public function setRenderer(RenderInterface $renderer)
+    {
+        parent::setRenderer($renderer);
+    }
+}
+```
+
+or
+
+```php?start_inline
+class Index
+{
+    /**
+     * @Inject
+     */
+    public function setRenderer(RenderInterface $renderer)
+    {
+        unset($renderer);
+        $this->renderer = new class implements RenderInterface {
+            public function render(ResourceObject $ro)
+            {
+                $ro->headers['content-type'] = 'application/json;';
+                $ro->view = json_encode($ro->body);
+
+                return $ro->view;
+            }
+        };
+    }
+}
+```
+
+# Transfer
+
+The transponder forwards the representation (view) to the client (console or web client).
+Transfer is mostly done simply by simple `header()` function or `echo`, but it can be transferred with [stream output](stream.html).
+
+Like a renderer, you do not have to be aware of it normally.
+
+When doing a resource specific specific transfer, override the following method.
+
+```php?start_inline
+class Index
+{
+    // ...
+    public function transfer(TransferInterface $responder, array $server)
+    {
+        $responder($this, $server);
+    }
+}
+```
+
+In this way, each class has a function to **change its own resource state** by request, **transfer** it by **rendering** it.
 
 ## Client
 
@@ -141,7 +201,7 @@ class Index extends ResourceObject
 {
     use ResourceInject;
 
-    public function onGet($a, $b)
+    public function onGet()
     {
         $this['post'] = $this
             ->resource
@@ -150,6 +210,7 @@ class Index extends ResourceObject
             ->withQuery(['id' => 1])
             ->eager
             ->request();
+        ];
     }
 }
 ```
@@ -165,6 +226,37 @@ $posts = $this->resource->get->uri('app://self/posts')->eager->request(); // eag
 A `request()` method without `eager` returns an invokable request object, which can be invoked by calling `$posts()`.
 You can assign this value to a template engine or embed it in another resource. It will then be lazily evaluated.
 
+## Syntax Sugar
+
+Syntax sugar can be used for eager request. The following requests are all the same.　(php7)
+
+
+```php?start_inline
+$this->resource->get->uri('app://self/user')->withQuery(['id' => 1])->eager->request()->body;
+$this->resource->get->uri('app://self/user')(['id' => 1])->body;
+$this->resource->uri('app://self/user')(['id' => 1])->body; // "get" can be omitted.
+$this->resource->uri('app://self/user?id=1')()->body;
+```
+
+For PHP7.0 and up, You can code examples in the client like this
+
+```php
+<?php
+use BEAR\Sunday\Inject\ResourceInject;
+
+class Index extends ResourceObject
+{
+    use ResourceInject;
+
+    public function onGet() : ResourceOjbect
+    {
+        $this->body = [
+            'post' => $this->uri('app://self/blog/posts')(['id' => 1])
+        ];
+    }
+}
+```
+
 ## Link request
 
 Resources can be linked in various way.
@@ -173,11 +265,12 @@ Resources can be linked in various way.
 $blog = $this
     ->resource
     ->get
-    ->uri('app://self/User')
+    ->uri('app://self/user')
     ->withQuery(['id' => 1])
     ->linkSelf("blog")
     ->eager
-    ->request()->body;
+    ->request()
+    ->body;
 ```
 
 Three type of links are provided.
@@ -193,7 +286,7 @@ Three type of links are provided.
 /**
  * @Link(rel="profile", href="/profile{?id}")
  */
-public function onGet($id)
+public function onGet($id) : ResourceOjbect
 ```
 
 Set the link with `rel` key name and `href` resource URI.
@@ -226,7 +319,7 @@ class News
      * @Embed(rel="sports", src="/news/sports")
      * @Embed(rel="weater", src="/news/weather")
      */
-    public function onGet()
+    public function onGet() : ResourceOjbect
 ```
 
 The resource **request** is embeded. The request is invoked when rendering. You can add parameters or replace with `addQuery()` or `withQuery()`
@@ -239,7 +332,7 @@ class News
     /**
      * @Embed(rel="website", src="/website{?id}")
      */
-    public function onGet($id)
+    public function onGet(string $id) : ResourceOjbect
     {
         // ...
         $this['website']->addQuery(['title' => $title]); // add parameters
@@ -263,7 +356,7 @@ class News
     /**
      * @QueryParam("id")
      */
-    public function foo($id = null)
+    public function foo(strin $id) : ResoureObject
     {
       // $id = $_GET['id'];
 ```
@@ -279,7 +372,7 @@ class News
     /**
      * @CookieParam(key="id", param="tokenId")
      */
-    public function foo($tokenId = null)
+    public function foo(string $tokenId) : ResoureObject
     {
       // $tokenId = $_COOKIE['id'];
 ```
@@ -303,13 +396,13 @@ class News
      * @FormParam("token")
      * @ServerParam(key="SERVER_NAME", param="server")
      */
-    public function foo($userId = null, $tokenId = "0000", $app_mode = null, $token = null, $server = null)
-    {
-       // $userId   = $_GET['id'];
-       // $tokenId  = $_COOKIE['id'] or "0000" when unset;
-       // $app_mode = $_ENV['app_mode'];
-       // $token    = $_POST['token'];
-       // $server   = $_SERVER['SERVER_NAME'];
+    public function foo(
+        string $userId,           // $_GET['id'];
+        string $tokenId = "0000", // $_COOKIE['id'] or "0000" when unset;
+        string $app_mode,         // $_ENV['app_mode'];
+        string $token,            // $_POST['token'];
+        string $server            // $_SERVER['SERVER_NAME'];
+    ) : ResourceOjbect {
 ```
 
 This `bind parameter` is also very useful for testing.
@@ -326,7 +419,7 @@ class News
     /**
      * @ResourceParam(param=“name”, uri="app://self//login#nickname")
      */
-    public function onGet($name)
+    public function onGet(string $name) : ResourceOjbect
     {
 ```
 
@@ -358,12 +451,12 @@ use BEAR\RepositoryModule\Annotation\Cacheable;
  */
 class Todo
 {
-    public function onGet($id)
+    public function onGet(string $id) : ResoureObject
     {
         // read
     }
 
-    public function onPost($id, $name)
+    public function onPost(string $id, string $name) : ResoureObject
     {
         // update
     }
@@ -403,7 +496,161 @@ class News
    * @Purge(uri="app://self/user/friend?user_id={id}")
    * @Refresh(uri="app://self/user/profile?user_id={id}")
    */
-   public function onPut($id, $name, $age)
+   public function onPut(string $id, string $name, int $age) : ResoureObject
 ```
 
 You can update the cache for another resource class or even multiple resources at once. `@Purge` deletes a cache where `@Refresh` will recreate cache data.
+
+## Best Practice<a name="best-practice"></a>
+
+In the real world of REST, resources are connected with other resources.
+The use of the link makes the code simpler and makes it easier to read and test and change.
+
+### @Embed
+
+Embed resources with `@Embed` instead of `get` the state of other resources.
+
+```php?start_inline
+// OK but not the best
+class Index extends ResourceObject
+{
+    use ResourceInject;
+
+    public function onGet(string $status) : ResoureObject
+    {
+        $this['todos'] = $this->resource
+            ->get
+            ->uri('app://self/todos')
+            ->withQuery(['status' => $status])
+            ->eager
+            ->request();
+
+        return $this;
+    }
+}
+
+// Better
+class Index extends ResourceObject
+{
+    /**
+     * @Embed(rel="todos", src="app://self/todos{?status}")
+     */
+    public function onGet(string $status) : ResourceObject
+    {
+        return $this;
+    }
+}
+```
+
+### @Link
+
+When changing the state of another resource we will follow the next action indicated with `@Link` using `href()` (href = hyper reference).
+
+```php?start_inline
+// OK but not the best
+class Todo extends ResourceObject
+{
+    use ResourceInject;
+
+    public function onPost(string $title) : ResourceObject
+    {
+        $this->resource
+            ->post
+            ->uri('app://self/todo')
+            ->withQuery(['title' => $title])
+            ->eager
+            ->request();
+        $this->code = 301;
+        $this->headers[ResponseHeader::LOCATION] = '/';
+
+        return $this;
+    }
+}
+
+// Better
+class Todo extends ResourceObject
+{
+    use ResourceInject;
+
+    /**
+     * @Link(rel="create", href="app://self/todo", method="post")
+     */
+    public function onPost(string $title) : ResourceObject
+    {
+        $this->resource->href('create', ['title' => $title]);
+        $this->code = 301;
+        $this->headers[ResponseHeader::LOCATION] = '/';
+
+        return $this;
+    }
+}
+```
+
+### ＠ResourceParam
+
+If you need other resource results to request other resources, use `@ResourceParam`.
+
+```php?start_inline
+// OK but not the best
+class User extends ResourceObject
+{
+    use ResourceInject;
+
+    public function onGet(string $id) : ResoureObject
+    {
+        $nickname = $this->resource
+            ->get
+            ->uri('app://self/login-user')
+            ->withQuery(['id' => $id])
+            ->eager
+            ->request()
+            ->body['nickname'];
+        $this['profile'] = $this->resource
+            ->get
+            ->uri('app://self/profile')
+            ->withQuery(['name' => $nickname])
+            ->eager
+            ->request()
+            ->body;
+
+        return $this;
+    }
+}
+
+// Better
+class User extends ResourceObject
+{
+    use ResourceInject;
+
+    /**
+     * @ResourceParam(param=“name”, uri="app://self//login-user#nickname")
+     */
+    public function onGet(string $id, string $name) : ResoureObject
+    {
+        $this['profile'] = $this->resource
+            ->get
+            ->uri('app://self/profile')
+            ->withQuery(['name' => $name])
+            ->eager
+            ->request()
+            ->body;
+
+        return $this;
+    }
+}
+
+// Best
+class User extends ResourceObject
+{
+    /**
+     * @ResourceParam(param=“name”, uri="app://self//login-user#nickname")
+     * @Embed(rel="profile", src="app://self/profile")
+     */
+    public function onGet(string $id, string $name) : ResoureObject
+    {
+        $this['profile']->addQuery(['name'=>$name]);
+
+        return $this;
+    }
+}
+```

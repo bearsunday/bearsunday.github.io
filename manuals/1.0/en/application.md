@@ -83,7 +83,7 @@ There are built-in and custom contexts that can be used in an application.
 
  You can also use a combination of these built-in contexts and add your own custom contexts.
 
- * `app` is the default application context.
+ * `app` is the default application context. It will be rendered in JSON.
  * `api` modifies page resources to an **app resource** by default. Also any web root access (`GET /`) that is usually mapped to `page://self/` will is re-mapped to `app://self/`.
  * `cli-app` represents a console application. If you set the context to `prod-hal-api-app` your application will run as an API application in production mode using the [HAL](http://stateless.co/hal_specification.html) media type.
 

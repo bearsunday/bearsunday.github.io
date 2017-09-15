@@ -7,19 +7,24 @@ permalink: /manuals/1.0/ja/resource.html
 
 # リソース
 
-BEAR.Sundayアプリケーションは[REST](http://ja.wikipedia.org/wiki/REST)リソースの集合です。
+BEAR.Sundayアプリケーションはリンクで接続されたリソースの集合です。
 
 ## サービスとしてのオブジェクト
 
-リソースクラスはHTTPのメソッドをPHPのメソッドにマップしてPHPのクラスをサービスとして扱います。
+`ResourceObject`はHTTPのメソッドがPHPのメソッドにマップされたサービスとしてのオブジェクト (Object as a servie)です。ステートレスなリクエストで自身のリソース状態を表現にして転送します。
+([Representational State Transfer)](http://ja.wikipedia.org/wiki/REST)
 
 ```php?start_inline
 class Index extends ResourceObject
 {
-    public function onGet($a, $b)
+    public $code = 200;
+    public $headers = [];
+
+    public function onGet(int $a, int $b) : ResourceObject
     {
-        $this->code = 200; // 省略可
-        $this['result'] = $a + $b; // $_GET['a'] + $_GET['b']
+        $this->body = [
+            'result' => $a + $b  // $_GET['a'] + $_GET['b']
+        ];
 
         return $this;
     }
@@ -29,7 +34,7 @@ class Index extends ResourceObject
 ```php?start_inline
 class Todo extends ResourceObject
 {
-    public function onPost($id, $todo)
+    public function onPost(string $id, string $todo) : ResourceOjbect
     {
         $this->code = 201; // ステータスコード
         $this->headers['Location'] = '/todo/new_id'; // ヘッダー
@@ -41,13 +46,22 @@ class Todo extends ResourceObject
 
 PHPのリソースクラスはWebのURIと同じような`app://self/blog/posts/?id=3`, `page://self/index`などのURIを持ち、HTTPのメソッドに準じた`onGet`, `onPost`, `onPut`, `onPatch`, `onDelete`インターフェイスを持ちます。
 
-メソッドの引数には`onGet`には$_GET、`onPost`には$_POSTが変数名に応じて渡されます、それ以外の`onPut`,`onPatch`, `onDelete`のメソッドには`content-type`に応じて対応可能な値が引数になります。
+メソッドの引数には`onGet`には$_GET、`onPost`には$_POSTが変数名に応じて渡されます、それ以外の`onPut`,`onPatch`, `onDelete`のメソッドには`content-type`(`x-www-form-urlencoded` or `application/json`)に応じた値が引数になります。
 
-メソッドでは引数に応じて自身のリソース状態`code`,`headers`,`body`を変更し`$this`を返します。
+メソッドでは自身のリソース状態`code`,`headers`,`body`を変更し`$this`を返します。
 
-`body`のアクセスは`$this->body['price'] = 10;`を`$this['price'] = 10;`と短く記述することができます。
 
-## リソースの種類
+### bodyのシンタックスシュガー
+
+`$this`へのarrayアクセスは`$this->body`のアクセスになります。
+
+```php?start_inline
+$this['price'] = 10;
+// is same as
+$this->body['price'] = 10;
+```
+
+## スキーマ
 
 | URI | Class |
 |-----+-------|
@@ -60,18 +74,132 @@ PHPのリソースクラスはWebのURIと同じような`app://self/blog/posts/
 標準ではリソースは二種類用意されています。１つは`App`リソースでアプリケーションのプログラミングインタフェース(**API**)です。
 もう１つは`Page`リソースでHTTPに近いレイヤーのリソースです。`Page`リソースは`App`リソースを利用してWebページを作成します。
 
-# クライアント
+## メソッド
+
+リソースはHTTPのメソッドに対応した6つのメソッドでアクセスすることができます。
+
+### GET
+リソースの読み込み。このメソッドではリソースの状態(body)を変えてはいけません。安全なメソッドでサイドエフェクトがありません。
+
+### PUT
+リソースの作成または変更を行います。メソッドには[冪等性](https://ja.wikipedia.org/wiki/%E5%86%AA%E7%AD%89)があり、メソッドを何度実行しても結果は同じです。
+
+### PATCH
+部分的な更新を行います。
+
+### POST
+リソースの作成を行います。メソッドには冪等性はありません。リクエストの回数分、リソースが作成されます。
+
+### DELETE
+リソースの削除をします。PUTと同じで冪等性があります。
+
+### OPTIONS
+リソースのリクエストに必要なパラメーターとレスポンスに関する情報を取得します。GETと同じように安全なメソッドです。
+
+# レンダリング
+
+`ResourceObject`クラスのリクエストメソッド(`onGet`など）はリソースがHTMLで表現されるかJSONで表現されるかなどの表現に対して関心を持ちません。
+コンテキストによって`ResourceObject`にインジェクトされたリソースレンダラーがJSONやHTMLにレンダリングしてリソース表現(view)にします。
+
+レンダリングはリソースが文字列評価された時に行われます。
+
+```php?start_inline
+
+$weekday = $api->resource->uri('app://self/weekday')(['year' => 2000, 'month'=>1, 'day'=>1]);
+var_dump($weekday->body); // as array
+//array(1) {
+//    ["weekday"]=>
+//  string(3) "Sat"
+//}
+
+echo $weekday; // as string
+//{
+//    "weekday": "Sat",
+//    "_links": {
+//    "self": {
+//        "href": "/weekday/2000/1/1"
+//        }
+//    }
+//}
+```
+
+コンテキストに応じてインジェクトされるので普段は意識する必要はありません。
+
+リソース特有の表現が必要な時は以下のように独自のレンダラーをインジェクトします。
+
+```php?start_inline
+class Index
+{
+    // ...
+    /**
+     * @Inject
+     * @Named("my_renderer")
+     */
+    public function setRenderer(RenderInterface $renderer)
+    {
+        parent::setRenderer($renderer);
+    }
+}
+```
+
+or
+
+```php?start_inline
+class Index
+{
+    /**
+     * @Inject
+     */
+    public function setRenderer(RenderInterface $renderer)
+    {
+        $this->renderer = new class implements RenderInterface {
+            public function render(ResourceObject $ro)
+            {
+                $ro->headers['content-type'] = 'application/json;';
+                $ro->view = json_encode($ro->body);
+
+                return $ro->view;
+            }
+        };
+    }
+}
+```
+
+# 転送
+
+トランスポンダーが表現(view)をクライント（コンソールやWebクライアント）に転送します。
+転送は単に`header`関数や`echo`で行われることがほとんどですが、[ストリーム出力](stream.html)で転送することもできます。
+
+レンダラーと同じように普段は意識する必要はありません。
+
+リソース特有の特有の転送を行う時は以下のメソッドをオーバーライドします。
+
+```php?start_inline
+class Index
+{
+    // ...
+    public function transfer(TransferInterface $responder, array $server)
+    {
+        $responder($this, $server);
+    }
+}
+```
+
+このようにリソースはリクエストによって自身のリソース状態を変更、それを表現にして転送する機能を各クラスが持っています。
+
+## クライアント
 
 リソースクライアントを使用して他のリソースのリクエストをします。
 
 ```php?start_inline
+
 use BEAR\Sunday\Inject\ResourceInject;
 
 class Index extends ResourceObject
 {
     use ResourceInject;
 
-    public function onGet($a, $b)
+    public function onGet() : ResourceOjbect
     {
         $this['post'] = $this
             ->resource
@@ -80,6 +208,7 @@ class Index extends ResourceObject
             ->withQuery(['id' => 1])
             ->eager
             ->request();
+        ];
     }
 }
 ```
@@ -104,11 +233,12 @@ lazy `request()`で帰って来るオブジェクトは実行可能なリクエ�
 $blog = $this
     ->resource
     ->get
-    ->uri('app://self/User')
+    ->uri('app://self/user')
     ->withQuery(['id' => 1])
     ->linkSelf("blog")
     ->eager
-    ->request()->body;
+    ->request()
+    ->body;
 ```
 
 リンクは３種類あります。`$rel`をキーにして元のリソースの`body`リンク先のリソースが埋め込まれます。
@@ -117,7 +247,35 @@ $blog = $this
  * `linkNew($rel)` リンク先のリソースがリンク元のリソースに追加されます
  * `linkCrawl($rel)` リンクをクロールして"リソースツリー"を作成します。
 
+## シンタックスシュガー
 
+eagerリクエストの場合はシンタックスシュガーが利用できます。以下のリクエストは全て同じです。(php7)
+
+```php?start_inline
+$this->resource->get->uri('app://self/user')->withQuery(['id' => 1])->eager->request()->body;
+$this->resource->get->uri('app://self/user')(['id' => 1])->body;
+$this->resource->uri('app://self/user')(['id' => 1])->body; // getは省略化
+$this->resource->uri('app://self/user?id=1')()->body;
+```
+
+PHP7ではクライントでのコードはこのように記述できます。
+
+```php
+<?php
+use BEAR\Sunday\Inject\ResourceInject;
+
+class Index extends ResourceObject
+{
+    use ResourceInject;
+
+    public function onGet() : ResourceOjbect
+    {
+        $this->body = [
+            'post' => $this->uri('app://self/blog/posts')(['id' => 1])
+        ];
+    }
+}
+```
 
 ## リンクアノテーション
 
@@ -131,9 +289,11 @@ $blog = $this
     /**
      * @Link(rel="profile", href="/profile{?id}")
      */
-    public function onGet($id)
+    public function onGet($id) : ResourceOjbect
     {
-        $this['id'] = 10;
+        $this->body = [
+            'id' => 10
+        ];
 
         return $this;
     }
@@ -163,7 +323,7 @@ use BEAR\Resource\Annotation\Link;
 /**
  * @Link(crawl="post-tree", rel="post", href="app://self/post?author_id={id}")
  */
-public function onGet($id = null)
+public function onGet($id = null) : ResourceOjbect
 ```
 
 `linkCrawl`は`crawl`の付いたリンクを[クロール](https://github.com/koriym/BEAR.Resource#crawl)してリソースを集めます。
@@ -181,7 +341,7 @@ class News
      * @Embed(rel="sports", src="/news/sports")
      * @Embed(rel="weater", src="/news/weather")
      */
-    public function onGet()
+    public function onGet() : ResourceOjbect
 ```
 
 埋め込まれるのはリソース**リクエスト**です。レンダリングの時に実行されますが、その前に`addQuery()`メソッドで引数を加えたり`withQuery()`で引数を置き換えることができます。
@@ -194,7 +354,7 @@ class News
     /**
      * @Embed(rel="website", src="/website{?id}")
      */
-    public function onGet($id)
+    public function onGet(string $id) : ResourceOjbect
     {
         // ...
         $this['website']->addQuery(['title' => $title]); // 引数追加
@@ -220,7 +380,7 @@ class News
     /**
      * @QueryParam("id")
      */
-    public function foo($id = null)
+    public function foo(strin $id) : ResourceOjbect
     {
       // $id = $_GET['id'];
 ```
@@ -235,7 +395,7 @@ class News
     /**
      * @CookieParam(key="id", param="tokenId")
      */
-    public function foo($tokenId = null)
+    public function foo(string $tokenId) : ResourceOjbect
     {
       // $tokenId = $_COOKIE['id'];
 ```
@@ -258,13 +418,13 @@ class News
      * @FormParam("token")
      * @ServerParam(key="SERVER_NAME", param="server")
      */
-    public function foo($userId = null, $tokenId = "0000", $app_mode = null, $token = null, $server = null)
-    {
-       // $userId   = $_GET['id'];
-       // $tokenId  = $_COOKIE['id'] or "0000" when unset;
-       // $app_mode = $_ENV['app_mode'];
-       // $token    = $_POST['token'];
-       // $server   = $_SERVER['SERVER_NAME'];
+    public function foo(
+        string $userId,           // $_GET['id'];
+        string $tokenId = "0000", // $_COOKIE['id'] or "0000" when unset;
+        string $app_mode,         // $_ENV['app_mode'];
+        string $token,            // $_POST['token'];
+        string $server            // $_SERVER['SERVER_NAME'];
+    ) : ResourceOjbect {
 ```
 
 この機能を使うためには引数のデフォルトに`null`が必要です。
@@ -282,7 +442,7 @@ class News
     /**
      * @ResourceParam(param=“name”, uri="app://self//login#nickname")
      */
-    public function onGet($name)
+    public function onGet(string $name) : ResoureObject
     {
 ```
 
@@ -317,12 +477,12 @@ use BEAR\RepositoryModule\Annotation\Cacheable;
  */
 class Todo
 {
-    public function onGet($id)
+    public function onGet(string $id) : ResoureObject
     {
         // read
     }
 
-    public function onPost($id, $name)
+    public function onPost(string $id, string $name) : ResoureObject
     {
         // update
     }
@@ -361,7 +521,7 @@ class News
    * @Purge(uri="app://self/user/friend?user_id={id}")
    * @Refresh(uri="app://self/user/profile?user_id={id}")
    */
-   public function onPut($id, $name, $age)
+   public function onPut(string $id, string $name, int $age)
 ```
 
 別のクラスのリソースや関連する複数のリソースの`QueryRepository`の内容を更新することができます。
@@ -379,7 +539,7 @@ class News
    * @Purge(uri="app://self/user/friend?user_id={id}")
    * @Refresh(uri="app://self/user/profile?user_id={id}")
    */
-   public function onPut($id, $name, $age)
+   public function onPut($id, $name, $age) : ResoureObject
 ```
 
 ## クエリーリポジトリの直接操作
@@ -410,6 +570,158 @@ class Foo
         // 読み込み
         list($code, $headers, $body, $view) = $repository->get(new Uri('app://self/user'));
      }
+```
+
+## ベストプラクティス<a name="best-practice"></a>
+
+RESTではリソースは他のリソースと接続されています。リンクをうまく使うとコードは簡潔になり、読みやすくテストや変更が容易なコードになります。
+
+### @Embed
+
+他のリソースの状態を`get`する代わりに`@Embed`でリソースを埋め込みます。
+
+```php?start_inline
+// OK but not the best
+class Index extends ResourceObject
+{
+    use ResourceInject;
+
+    public function onGet(string $status) : ResoureObject
+    {
+        $this['todos'] = $this->resource
+            ->get
+            ->uri('app://self/todos')
+            ->withQuery(['status' => $status])
+            ->eager
+            ->request();
+
+        return $this;
+    }
+}
+
+// Better
+class Index extends ResourceObject
+{
+    /**
+     * @Embed(rel="todos", src="app://self/todos{?status}")
+     */
+    public function onGet(string $status) : ResourceObject
+    {
+        return $this;
+    }
+}
+```
+
+### @Link
+
+他のリソースの状態を変えるときに`@Link`で示された次のアクションを`href()`（ハイパーリファレンス）を使って辿ります。
+
+```php?start_inline
+// OK but not the best
+class Todo extends ResourceObject
+{
+    use ResourceInject;
+
+    public function onPost(string $title) : ResourceObject
+    {
+        $this->resource
+            ->post
+            ->uri('app://self/todo')
+            ->withQuery(['title' => $title])
+            ->eager
+            ->request();
+        $this->code = 301;
+        $this->headers[ResponseHeader::LOCATION] = '/';
+
+        return $this;
+    }
+}
+
+// Better
+class Todo extends ResourceObject
+{
+    use ResourceInject;
+
+    /**
+     * @Link(rel="create", href="app://self/todo", method="post")
+     */
+    public function onPost(string $title) : ResourceObject
+    {
+        $this->resource->href('create', ['title' => $title]);
+        $this->code = 301;
+        $this->headers[ResponseHeader::LOCATION] = '/';
+
+        return $this;
+    }
+}
+```
+
+### ＠ResourceParam
+
+他のリソースをリクエストするために他のリソース結果が必要な場合は`＠ResourceParam`を使います。
+
+```php?start_inline
+// OK but not the best
+class User extends ResourceObject
+{
+    use ResourceInject;
+
+    public function onGet(string $id) : ResoureObject
+    {
+        $nickname = $this->resource
+            ->uri('app://self/login-user')
+            ->withQuery(['id' => $id])
+            ->eager
+            ->request()
+            ->body['nickname'];
+        $this['profile'] = $this->resource
+            ->get
+            ->uri('app://self/profile')
+            ->withQuery(['name' => $nickname])
+            ->eager
+            ->request()
+            ->body;
+
+        return $this;
+    }
+}
+
+// Better
+class User extends ResourceObject
+{
+    use ResourceInject;
+
+    /**
+     * @ResourceParam(param=“name”, uri="app://self//login-user#nickname")
+     */
+    public function onGet(string $id, string $name) : ResoureObject
+    {
+        $this['profile'] = $this->resource
+            ->get
+            ->uri('app://self/profile')
+            ->withQuery(['name' => $name])
+            ->eager
+            ->request()
+            ->body;
+
+        return $this;
+    }
+}
+
+// Best
+class User extends ResourceObject
+{
+    /**
+     * @ResourceParam(param=“name”, uri="app://self//login-user#nickname")
+     * @Embed(rel="profile", src="app://self/profile")
+     */
+    public function onGet(string $id, string $name) : ResoureObject
+    {
+        $this['profile']->addQuery(['name'=>$name]);
+
+        return $this;
+    }
+}
 ```
 
 ## BEAR.Resource

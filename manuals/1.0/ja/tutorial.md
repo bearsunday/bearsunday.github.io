@@ -5,7 +5,7 @@ category: Manual
 permalink: /manuals/1.0/ja/tutorial.html
 ---
 
-## チュートリアル
+# チュートリアル
 
 年月日を入力すると曜日を返すWebサービスを作成してみましょう。
 まずプロジェクトを作成します。
@@ -19,17 +19,18 @@ composer create-project bear/skeleton MyVendor.Weekday
 
 ```php
 <?php
-
 namespace MyVendor\Weekday\Resource\App;
 
 use BEAR\Resource\ResourceObject;
 
 class Weekday extends ResourceObject
 {
-    public function onGet($year, $month, $day)
+    public function onGet(int $year, int $month, int $day) : ResourceObject
     {
         $date = \DateTime::createFromFormat('Y-m-d', "$year-$month-$day");
-        $this['weekday'] = $date->format("D");
+        $this->body = [
+            'weekday' => $date->format('D')
+        ];
 
         return $this;
     }
@@ -42,21 +43,26 @@ class Weekday extends ResourceObject
 コンソールでアクセスしてみましょう。まずはエラーを試してみます。
 
 ```bash
-php bootstrap/api.php get '/weekday'
+php bootstrap/api.php get /weekday
+```
 
-400 Bad Request
-Content-Type: application/vnd.error+json
+```
+404 Not Found
+content-type: application/vnd.error+json
 
-{"message":"Bad Request"}
+{
+    "message": "Not Found",
+    "logref": "466fa1ee",
 ...
 ```
 
-400はリクエストに問題があるエラーコードです。
-次は引数をつけて正しいリクエストを試します。
+400はリクエストに問題があるエラーコードです。（エラーは`lofref`IDがつけられ`var/log/`でエラーの詳しい内容を参照することができます）次は引数をつけて正しいリクエストを試します。
 
 ```bash
 php bootstrap/api.php get '/weekday?year=2001&month=1&day=1'
+```
 
+```bash
 200 OK
 Content-Type: application/hal+json
 
@@ -79,21 +85,25 @@ Built-inサーバーを立ち上げます。
 php -S 127.0.0.1:8080 bootstrap/api.php
 ```
 
-`curl`で`http://127.0.0.1:8080/weekday?year=2001&month=1&day=1` にGETリクエストを送って確かめてみましょう。
+`curl`でHTTPの`GET`リクエストを行って確かめてみましょう。
 
 ```
 curl -i 'http://127.0.0.1:8080/weekday?year=2001&month=1&day=1'
+```
+
+```
 HTTP/1.1 200 OK
 Host: 127.0.0.1:8080
+Date: Fri, 01 Sep 2017 09:31:13 +0200
 Connection: close
-X-Powered-By: PHP/7.0.2
+X-Powered-By: PHP/7.1.8
 content-type: application/hal+json
 
 {
     "weekday": "Mon",
     "_links": {
         "self": {
-            "href": "/weekday?year=2001&month=1&day=1"
+            "href": "/weekday/2001/1/1"
         }
     }
 }
@@ -103,9 +113,45 @@ content-type: application/hal+json
 
 ```
 curl -i -X POST 'http://127.0.0.1:8080/weekday?year=2001&month=1&day=1'
+```
 
+```
 HTTP/1.1 405 Method Not Allowed
 ...
+```
+
+HTTP `OPTIONS` メソッドリクエストで利用可能なHTTPメソッドと必要なパラメーターを調べることができます。([RFC7231](https://tools.ietf.org/html/rfc7231#section-4.3.7))
+
+```
+curl -i -X OPTIONS http://127.0.0.1:8080/weekday
+```
+
+```
+HTTP/1.1 200 OK
+...
+Content-Type: application/json
+Allow: GET
+
+{
+    "GET": {
+        "parameters": {
+            "year": {
+                "type": "integer"
+            },
+            "month": {
+                "type": "integer"
+            },
+            "day": {
+                "type": "integer"
+            }
+        },
+        "required": [
+            "year",
+            "month",
+            "day"
+        ]
+    }
+}
 ```
 
 ## ルーティング
@@ -115,20 +161,19 @@ HTTP/1.1 405 Method Not Allowed
 
 最初にcompoerでインストールします。
 ```bash
-composer require bear/aura-router-module ~1.0
+composer require bear/aura-router-module ^1.0
 ```
 
 次に`src/Module/AppModule.php`で`AuraRouterModule`を上書き(override)インストールします。
 
 ```php
 <?php
-
 namespace MyVendor\Weekday\Module;
 
 use BEAR\Package\PackageModule;
-use Ray\Di\AbstractModule;
+use BEAR\Package\Provide\Router\AuraRouterModule; // add this line
 use josegonzalez\Dotenv\Loader as Dotenv;
-use BEAR\Package\Provide\Router\AuraRouterModule; // この行を追加
+use Ray\Di\AbstractModule;
 
 class AppModule extends AbstractModule
 {
@@ -137,21 +182,22 @@ class AppModule extends AbstractModule
      */
     protected function configure()
     {
+        $appDir = dirname(dirname(__DIR__));
         Dotenv::load([
             'filepath' => dirname(dirname(__DIR__)) . '/.env',
             'toEnv' => true
         ]);
         $this->install(new PackageModule);
-        $this->override(new AuraRouterModule); // この行を追加
+        $this->override(new AuraRouterModule($appDir . '/var/conf/aura.route.conf')); // 追加
     }
 }
 ```
 
 ルータースクリプトファイルを`var/conf/aura.route.php`に設置します。
 
-```php?start_inline
+```php
+<?php
 /* @var $router \BEAR\Package\Provide\Router\AuraRoute */
-/* @var $schemeHost string */
 
 $router->route('/weekday', '/weekday/{year}/{month}/{day}');
 ```
@@ -160,6 +206,9 @@ $router->route('/weekday', '/weekday/{year}/{month}/{day}');
 
 ```bash
 php bootstrap/api.php get '/weekday/1981/09/08'
+```
+
+```bash
 200 OK
 Content-Type: application/hal+json
 
@@ -179,7 +228,7 @@ Content-Type: application/hal+json
 [composer](http://getcomposer.org)で取得します。
 
 ```bash
-composer require monolog/monolog ~1.0
+composer require monolog/monolog ^1.0
 ```
 
 monologログオブジェクトは`new`で直接作成しないで、作成されたログオブジェクトを受け取るようにします。
@@ -189,7 +238,6 @@ monologログオブジェクトは`new`で直接作成しないで、作成さ�
 
 ```php
 <?php
-
 namespace MyVendor\Weekday\Module;
 
 use BEAR\AppMeta\AbstractAppMeta;
@@ -227,13 +275,20 @@ class MonologLoggerProvider implements ProviderInterface
 次に[ロガーインターフェイス](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-3-logger-interface.md)と、この依存を生成するファクトリークラスを結びつけます。
 `src/Modules/AppModule.php`の`configure`メソッドに以下を追加します。
 
-```php?start_inline
-$this->bind(LoggerInterface::class)->toProvider(MonologLoggerProvider::class)->in(Scope::SINGLETON);
-```
-classキーワードでクラス名を解決するために以下のuse文も必要です。
-```php?start_inline
-use Psr\Log\LoggerInterface;
-use Ray\Di\Scope;
+```php
+<?php
+// ...
+use Psr\Log\LoggerInterface; // add this line
+use Ray\Di\Scope; // add this line
+
+class AppModule extends AbstractModule
+{
+    protected function configure()
+    {
+        // ...
+        $this->bind(LoggerInterface::class)->toProvider(MonologLoggerProvider::class)->in(Scope::SINGLETON);
+    }
+}
 ```
 
 どのクラスでもコンストラクタでmonologオブジェクトを受け取ることができるようになりました。
@@ -241,7 +296,6 @@ use Ray\Di\Scope;
 
 ```php
 <?php
-
 namespace MyVendor\Weekday\Resource\App;
 
 use BEAR\Resource\ResourceObject;
@@ -249,6 +303,9 @@ use Psr\Log\LoggerInterface;
 
 class Weekday extends ResourceObject
 {
+    /**
+     * @var LoggerInterface
+     */
     private $logger;
 
     public function __construct(LoggerInterface $logger)
@@ -256,23 +313,27 @@ class Weekday extends ResourceObject
         $this->logger = $logger;
     }
 
-    public function onGet($year, $month, $day)
+    public function onGet(int $year, int $month, int $day) : ResourceObject
     {
-        $date = \DateTime::createFromFormat('Y-m-d', "$year-$month-$day");
-        $this['weekday'] = $date->format("D");
-        $this->logger->info("$year-$month-$day {$this['weekday']}");
+        $weekday = \DateTime::createFromFormat('Y-m-d', "$year-$month-$day")->format('D');
+        $this->body = [
+            'weekday' => $weekday
+        ];
+        $this->logger->info("$year-$month-$day {$weekday}");
 
         return $this;
     }
 }
-
 ```
 
-実行して`var/log/weekday.log`に結果が出力されていることを確認しましょう。
+実行して`var/log/cli-hal-api-app/weekday.log`に結果が出力されていることを確認しましょう。
 
 ```bash
-php bootstrap/api.php get '/weekday/2011/05/23'
-cat var/log/weekday.log
+php bootstrap/api.php get /weekday/2011/05/23
+```
+
+```bash
+cat var/log/cli-hal-api-app/weekday.log
 ```
 
 ## AOP
@@ -292,7 +353,6 @@ $time = microtime(true) - $start;
 
 ```php
 <?php
-
 namespace MyVendor\Weekday\Interceptor;
 
 use Psr\Log\LoggerInterface;
@@ -301,6 +361,9 @@ use Ray\Aop\MethodInvocation;
 
 class BenchMarker implements MethodInterceptor
 {
+    /**
+     * @var LoggerInterface
+     */
     private $logger;
 
     public function __construct(LoggerInterface $logger)
@@ -319,7 +382,6 @@ class BenchMarker implements MethodInterceptor
         return $result;
     }
 }
-
 ```
 
 元のメソッドを横取りしたインターセプターの`invoke`メソッドでは、元メソッドの実行を`$invocation->proceed();`で行うことができます。
@@ -329,7 +391,6 @@ class BenchMarker implements MethodInterceptor
 
 ```php
 <?php
-
 namespace MyVendor\Weekday\Annotation;
 
 /**
@@ -340,44 +401,56 @@ final class BenchMark
 }
 ```
 
-`AppModule`ではインターセプターを適用するメソッドを**Matcher**を使って束縛（バインド）します。
+`AppModule`で**Matcher**を使ってインターセプターを適用するメソッドを束縛（バインド）します。
 
-```php?start_inline
-use MyVendor\Weekday\Annotation\BenchMark;
-use MyVendor\Weekday\Interceptor\BenchMarker;
+```php
+<?php
+// ...
+use MyVendor\Weekday\Annotation\BenchMark; // add this line
+use MyVendor\Weekday\Interceptor\BenchMarker; // add this line
 
-// configure()に追加します。
-$this->bindInterceptor(
-    $this->matcher->any(),                           // どのクラスでも
-    $this->matcher->annotatedWith(BenchMark::class), // @BenchMarkとアノテートされているメソッドに
-    [BenchMarker::class]                             // BenchMarkerインターセプターを適用
-);
+class AppModule extends AbstractModule
+{
+    protected function configure()
+    {
+        // ...
+        $this->bindInterceptor(
+            $this->matcher->any(),                           // どのクラスでも
+            $this->matcher->annotatedWith(BenchMark::class), // @BenchMarkとアノテートされているメソッドに
+            [BenchMarker::class]                             // BenchMarkerインターセプターを適用
+        );
+    }
+}
 ```
 
 ベンチマークを行いたいメソッドに`@BenchMark`とアノテートします。
 
 ```php
 <?php
-
 use MyVendor\Weekday\Annotation\BenchMark;
 
-/**
- * @BenchMark
- */
-public function onGet($year, $month, $day)
+class Weekday
 {
+    /**
+     * @BenchMark
+     */
+    public function onGet($year, $month, $day)
+    {
 ```
 
 これで計測したいメソッドに`@BenchMark`とアノテートすればいつでもベンチマークできるようになりました。
 
-対象メソッドや、メソッドを呼ぶ側に変更はありません。アノテーションはそのままでも束縛を外せばベンチマークを行いません。
-`production`では外したり、開発時に特定の秒数を越すと警告を行うことができます。
+アノテーションとインターセプターによる機能追加は柔軟です。対象メソッドやメソッドを呼ぶ側に変更はありません。
+アノテーションはそのままでも束縛を外せばベンチマークを行いません。例えば、開発時にのみ束縛を行い特定の秒数を越すと警告を行うこともできます。
 
 実行して`var/log/weekday.log`に実行時間のログが出力されることを確認しましょう。
 
 ```bash
 php bootstrap/api.php get '/weekday/2015/05/28'
-cat var/log/weekday.log
+```
+
+```bash
+cat var/log/cli-hal-api-app/weekday.log
 ```
 
 ## HTML
@@ -389,107 +462,106 @@ cat var/log/weekday.log
 
 ```php
 <?php
-
 namespace MyVendor\Weekday\Resource\Page;
 
-use BEAR\Resource\ResourceObject;
 use BEAR\Resource\Annotation\Embed;
+use BEAR\Resource\ResourceObject;
 
 class Index extends ResourceObject
 {
     /**
      * @Embed(rel="weekday", src="app://self/weekday{?year,month,day}")
      */
-    public function onGet($year, $month, $day)
+    public function onGet(int $year, int $month, int $day) : ResourceObject
     {
-        $this['year'] = $year;
-        $this['month'] = $month;
-        $this['day'] = $day;
+        $this->body += [
+            'year' => $year,
+            'month' => $month,
+            'day' => $day
+        ];
 
         return $this;
     }
 }
 ```
 
-`@Embed`アノテーションで`app://self/weekday`リソースを自身の`weekday`スロットに埋め込んでいます。
+`@Embed`アノテーションで`app://self/weekday`リソースをbodyのweekdayキーに埋め込んでいます。**+=**で配列をmergeしているのはonGet実行前に`@Embed`でbodyに埋め込まれたweekdayと合成するためです
 
-`<iframe>`や`<img>`タグで他のリソースを含むページをイメージしてください。他のリソースを自身のリソースに埋め込んでいます。
-その際にPageリソースに与えられたクエリーを[RFC6570 URI template](https://github.com/ioseb/uri-template)を使って`{?year,month,day}`としてそのまま渡しています。
+その際にクエリーを**URI template** ([RFC6570](https://github.com/ioseb/uri-template))を使って`{?year,month,day}`として同じものを渡しています。
+下記の２つのURI templateは同じURIを示しています。
 
-上記のページクラスは下記のページクラスと同じものです。こちらは`@Embed`でリソースを埋め込むかわりに` use ResourceInject;`で`resource`としてリソースクライアントをインジェクトして他のリソースを埋め込んでいます。
+ * `app://self/weekday{?year,month,day}`
+ * `app://self/weekday?year={year},month={month},day={day}`
 
-どちらの方法も有効ですが`@Embed`表記は簡潔でリソースがどのリソースに含まれているかをよく表しています。
+`<iframe>`や`<img>`タグで他のリソースを含むページをイメージしてください。これらもHTMLページが画像や他のHTMLなどのリソースを自身に埋め込んでいます。
+
+`@Embed`でリソースを埋め込むかわりに` use ResourceInject;`で`resource`リソースクライアントをインジェクトしてそのクラインアトでappリソースをセットすることもできます。
 
 ```php
  <?php
-
 namespace MyVendor\Weekday\Resource\Page;
 
 use BEAR\Resource\ResourceObject;
 use BEAR\Sunday\Inject\ResourceInject;
 
-class Index extends ResourceObject
+class Weekday extends ResourceObject
 {
     use ResourceInject;
 
-    public function onGet($year, $month, $day)
+    public function onGet(int $year, int $month, int $day) : ResourceObject
     {
-        $this['year'] = $year;
-        $this['month'] = $month;
-        $this['day'] = $day;
-        $this['weekday'] = $this->resource
-            ->get
-            ->uri('app://self/weekday')
-            ->withQuery(['year' => $year, 'month' => $month, 'day' => $day])
-            ->request();
+      $params = get_defined_vars(); // ['year' => $year, 'month' => $month, 'day' => $day]
+      $this->body = $params + [
+          'weekday' => $this->resource->uri('app://self/weekday')($params)
+      ];
 
-        return $this;
+      return $this;
     }
 }
 ```
+最初の`@Embed`を使った方法は[宣言型プログラミング(Declative Programming)
+](https://ja.wikipedia.org/wiki/%E5%AE%A3%E8%A8%80%E5%9E%8B%E3%83%97%E3%83%AD%E3%82%B0%E3%83%A9%E3%83%9F%E3%83%B3%E3%82%B0)、後者は[命令型プログラミング(Imperative Programming)](https://ja.wikipedia.org/wiki/%E5%91%BD%E4%BB%A4%E5%9E%8B%E3%83%97%E3%83%AD%E3%82%B0%E3%83%A9%E3%83%9F%E3%83%B3%E3%82%B0)です。`@Embed`を使った前者は簡潔で可読性が高くリソースの関係を良く表しています。
 
-
-この段階でこのページリソースがどのようなリソース表現をするのか試してみましょう。
+このリソースがどのような表現になるのか試してみましょう。
 
 ```bash
-php bootstrap/web.php get '/?year=1991&month=8&day=1'
+php bootstrap/web.php get '/?year=2000&month=1&day=1'   
+```
 
+```
 200 OK
-Content-Type: application/hal+json
+content-type: application/hal+json
 
 {
+    "year": 2000,
+    "month": 1,
+    "day": 1,
     "_embedded": {
         "weekday": {
-            "weekday": "Thu",
-            "_links": {
-                "self": {
-                    "href": "/weekday/1991/8/1"
-                }
-            }
+            "weekday": "Sat"
         }
     },
     "_links": {
         "self": {
-            "href": "/?year=1991&month=8&day=1"
+            "href": "/index?year=2000&month=1&day=1"
         }
     }
 }
 ```
 
 他のリソースが`_embedded`されているのが確認できます。
-リソースのレンダラーに変更がないので`application/hal+json`メディアタイプで出力されていますが、これをHTML(text/html)で出力するために[HTMLのマニュアル](/manuals/1.0/ja/html.html)に従ってHTMLモジュールをインストールします。
+リソースは`application/hal+json`メディアタイプで出力されていますが、これをHTML(text/html)で出力するためにHTMLモジュールをインストールします。[HTMLのマニュアル](/manuals/1.0/ja/html.html)参照。
 
 composerインストール
 
 ```bash
-composer require madapaja/twig-module ~1.0
+composer require madapaja/twig-module ^1.0
 ```
 
 `src/Module/HtmlModule.php`を作成
 
 ```php
 <?php
-
 namespace MyVendor\Weekday\Module;
 
 use Madapaja\TwigModule\TwigModule;
@@ -506,7 +578,8 @@ class HtmlModule extends AbstractModule
 
 `bootstrap/web.php`を変更
 
-```php?start_inline
+```php
+<?php
 $context = 'cli-html-app';
 require __DIR__ . '/bootstrap.php';
 ```
@@ -526,7 +599,9 @@ require __DIR__ . '/bootstrap.php';
 
 ```bash
 php bootstrap/web.php get '/?year=1991&month=8&day=1'
+```
 
+```bash
 200 OK
 content-type: text/html; charset=utf-8
 
@@ -541,18 +616,18 @@ The weekday of 1991/8/1 is Thu.
 もしこの時htmlが表示されなければ、テンプレートエンジンのエラーが発生しています。
 その時はログファイル(`var/log/app.cli-html-app.log`)でエラーを確認しましょう。
 
-次にWebサービスを行うために`var/www/index.php`を変更します。
+次にWebサービスを行うために`public/index.php`も変更します。
 
-```php?start_inline
-
-$context = 'prod-html-app';
+```php
+<?php
+$context = 'html-app';
 require dirname(dirname(__DIR__)) . '/bootstrap/bootstrap.php';
 ```
 
 PHPサーバーを立ち上げてwebブラウザで[http://127.0.0.1:8080/?year=2001&month=1&day=1](http://127.0.0.1:8080/?year=2001&month=1&day=1)をアクセスして確認してみましょう。
 
 ```bash
-php -S 127.0.0.1:8080 var/www/index.php
+php -S 127.0.0.1:8080 public/index.php
 ```
 
 [コンテキスト](/manuals/1.0/ja/application.html#context)はアプリケーションの実行モードのようなもので、複数指定できます。試してみましょう。
@@ -585,53 +660,71 @@ sqlite> .exit
 ここではCakePHP3でも使われているCakeDBをインストールしてみましょう。
 
 ```bash
-composer require ray/cake-database-module ~1.0
+composer require ray/cake-database-module ^1.0
 ```
 
 `src/Module/AppModule::configure()`でモジュールのインストールをします。
 
-```php?start_inline
-use Ray\CakeDbModule\CakeDbModule;
+```php
+<?php
 // ...
+use Psr\Log\LoggerInterface; // add this line
+use Ray\Di\Scope; // add this line
 
-$dbConfig = [
-    'driver' => 'Cake\Database\Driver\Sqlite',
-    'database' => dirname(dirname(__DIR__)) . '/var/db/todo.sqlite3'
-];
-$this->install(new CakeDbModule($dbConfig));
+class AppModule extends AbstractModule
+{
+    protected function configure()
+    {
+        // ...
+        $dbConfig = [
+            'driver' => 'Cake\Database\Driver\Sqlite',
+            'database' => $appDir . '/var/db/todo.sqlite3'
+        ];
+        $this->install(new CakeDbModule($dbConfig));
+    }
+}
 ```
 
-これでセッターメソッドのtrait `DatabaseInject`をuseすると`$this->db`でCakeDBオブジェクトが利用できます。
+セッターメソッドのtrait `DatabaseInject`を使うと`$this->db`でCakeDBオブジェクトを使えます。
 
 Todoリソースを`src/Resource/App/Todo.php`に設置します。
 
 ```php
 <?php
-
 namespace MyVendor\Weekday\Resource\App;
 
+use BEAR\Package\Annotation\ReturnCreatedResource;
+use BEAR\RepositoryModule\Annotation\Cacheable;
 use BEAR\Resource\ResourceObject;
+use Ray\CakeDbModule\Annotation\Transactional;
 use Ray\CakeDbModule\DatabaseInject;
 
+/**
+ * @Cacheable
+ */
 class Todo extends ResourceObject
 {
     use DatabaseInject;
 
-    public function onGet($id)
+    public function onGet(int $id) : ResourceObject
     {
-        $this['todo'] = $this
+        $this->body = $this
             ->db
             ->newQuery()
             ->select('*')
             ->from('todo')
             ->where(['id' => $id])
             ->execute()
-            ->fetchAll('assoc');
+            ->fetch('assoc');
 
         return $this;
     }
 
-    public function onPost($todo)
+    /**
+     * @Transactional
+     * @ReturnCreatedResource
+     */
+    public function onPost(string $todo) : ResourceObject
     {
         $statement = $this->db->insert(
             'todo',
@@ -639,189 +732,89 @@ class Todo extends ResourceObject
             ['created' => 'datetime']
         );
         // hyper link
-        $this->headers['Location'] = '/todo/?id=' . $statement->lastInsertId();
+        $id = $statement->lastInsertId();
         // status code
         $this->code = 201;
+        // created resource
+        $this->headers['Location'] = '/todo?id=' . $id;
+
+        return $this;
+    }
+
+    /**
+     * @Transactional
+     */
+    public function onPut(int $id, string $todo) : ResourceObject
+    {
+        $this->db->update(
+            'todo',
+            ['todo' => $todo],
+            ['id' => $id]
+        );
+        $this->headers['Location'] = '/todo/?id=' . $id;
+        // status code
+        $this->code = 204;
+
+        $this->body = (string) $this->onGet($id);
 
         return $this;
     }
 }
 ```
+アノテーションに注目してください。クラスに付いている`@Cacheable`はこのリソースのGETメソッドがキャッシュ可能なことを示しています。`OnPost`や`onPut`の`@Transactional`はデータベースアクセスのトランザクションを示し、`onPost`の
+
 
 `POST`してみましょう。
 
 ```bash
 php bootstrap/api.php post '/todo?todo=shopping'
-
-201 Created
-Location: /todo/?id=1
 ```
 
-`201`は`created`、新しいリソースが`/todo/?id=1`に作成されました。
-次にこのリソースを`GET`します。
-
 ```bash
-php bootstrap/api.php get '/todo?id=1'
-
-200 OK
-content-type: application/hal+json
+201 Created
+Location: /todo?id=1
 
 {
-    "todo": [
-        {
-            "id": "1",
-            "todo": "shopping",
-            "created": "2015-05-03 01:58:17"
-        }
-    ],
+    "id": "1",
+    "todo": "shopping",
+    "created": "2017-06-04 15:58:03",
     "_links": {
         "self": {
             "href": "/todo?id=1"
         }
     }
 }
-
 ```
 
-ハイパーメディアAPIの完成です。
+ステータスコード(`201 Created`)と`Location`ヘッダーで新しいリソースが`/todo/?id=1`に作成された事がわかります。[RFC7231 Section-6.3.2](https://tools.ietf.org/html/rfc7231#section-6.3.2) [日本語訳](https://triple-underscore.github.io/RFC7231-ja.html#section-6.3.2)
 
-## トランザクション
+`@ReturnCreatedResource`とアノテートされているのでボディに作成されたリソースを返します。
 
-POSTメソッドにトランザクションを適用するにはメソッドに`@Transactional`とアノテートします。
-
-```php?start_inline
-use Ray\CakeDbModule\Annotation\Transactional;
-
-class Foo
-{
-    /**
-     * @Transactional
-     */
-    public function onPost($todo="shopping")
-```
-
-## クエリーリポジトリ
-
-クラスに`@Cacheable`とアノテートすることでリソースのキャッシュが作られるようになります。このキャッシュデータは`onPost`が完了したタイミングで作られ、値だけでなくHTMLやJSONなどの表現もキャッシュされます。
-
-```php?start_inline
-use BEAR\RepositoryModule\Annotation\Cacheable;
-
-/**
- * @Cacheable
- */
-class Todo extends ResourceObject
-```
-
-試してみましょう。前回のリクエストと違って`Etag`や`Last-Modified`がヘッダーで表されるようになります。
+次にこのリソースを`GET`します。
 
 ```bash
 php bootstrap/api.php get '/todo?id=1'
-
-200 OK
-content-type: application/hal+json
-Etag: 2105959211
-Last-Modified: Sat, 02 May 2015 17:26:42 GMT
-
-
-{
-    "todo": [
-        {
-            "id": "1",
-            "todo": "shopping",
-            "created": "2015-05-03 01:58:17"
-// ...
 ```
 
-`Last-Modified`はリクエストの度に変わってますが、これは現在のキャッシュの設定が無効になってるためでprod環境では有効になります。
+```
+200 OK
+ETag: 2527085682
+Last-Modified: Sun, 04 Jun 2017 15:23:39 GMT
+content-type: application/hal+json
 
-
-`@Cacheable`で`expiry`を指定していない限り無期限にキャッシュされます。しかしリソースの変更や削除が`onPut($id, $todo)`や`onDelete($id)`で行われたときは該当するする同じ`$id`のリソースキャッシュが更新されます。
-（つまりGETリクエストのときは生成されたキャッシュデータが使われるだけで`onGet`メソッドの中の処理は実行されません。）
-
-このtodoリソースのように、更新や削除のタイミングが完全にリソース内で閉じているリソースにとても効果的です。
-
-## メソッドによるキャッシュ更新
-
-`todo`リソースに`onPut`メソッドを実装して確かめてみましょう。
-
-```php
-<?php
-
-namespace MyVendor\Weekday\Resource\App;
-
-use BEAR\RepositoryModule\Annotation\Cacheable;
-use BEAR\Resource\ResourceObject;
-use Ray\CakeDbModule\Annotation\Transactional;
-use Ray\CakeDbModule\DatabaseInject;
-
-/**
- * @Cacheable
- */
-class Todo extends ResourceObject
 {
-    use DatabaseInject;
-
-    public function onGet($id)
-    {
-        $this['todo'] = $this
-            ->db
-            ->newQuery()
-            ->select('*')
-            ->from('todo')
-            ->where(['id' => $id])
-            ->execute()
-            ->fetchAll('assoc');
-
-        return $this;
-    }
-
-    /**
-     * @Transactional
-     */
-    public function onPost($todo)
-    {
-        $statement = $this->db->insert(
-            'todo',
-            ['todo' => $todo, 'created' => new \DateTime('now')],
-            ['created' => 'datetime']
-        );
-        // hyper link
-        $this->headers['Location'] = '/todo/?id=' . $statement->lastInsertId();
-        // status code
-        $this->code = 201;
-
-        return $this;
-    }
-
-
-    /**
-     * @Transactional
-     */
-    public function onPut($id, $todo)
-    {
-        $this->db->update(
-            'todo',
-            ['todo' => $todo],
-            ['id' => (int) $id]
-        );
-        $this->headers['location'] = '/todo/?id=' . $id;
-
-        return $this;
+    "id": "1",
+    "todo": "shopping",
+    "created": "2017-06-04 15:58:03",
+    "_links": {
+        "self": {
+            "href": "/todo?id=1"
+        }
     }
 }
 ```
 
-まずはコンソールでPOSTしてデータを作成します。
-
-```bash
-php bootstrap/api.php post '/todo?todo=run'
-
-201 Created
-location: /todo/?id=2
-content-type: application/hal+json
-
-```
+ハイパーメディアAPIの完成です！
 
 次にAPIサーバーを立ち上げます。
 
@@ -832,26 +825,26 @@ php -S 127.0.0.1:8081 bootstrap/api.php
 今度は`curl`コマンドでGETしてみましょう。
 
 ```bash
-curl -i 'http://127.0.0.1:8081/todo?id=2'
+curl -i 'http://127.0.0.1:8081/todo?id=1'
+```
 
+```bash
 HTTP/1.1 200 OK
 Host: 127.0.0.1:8081
+Date: Sun, 04 Jun 2017 18:02:55 +0200
 Connection: close
+X-Powered-By: PHP/7.1.4
+ETag: 2527085682
+Last-Modified: Sun, 04 Jun 2017 16:02:55 GMT
 content-type: application/hal+json
-ETag: 3134272297
-Last-Modified: Tue, 26 May 2015 04:08:59 GMT
 
 {
-    "todo": [
-        {
-            "id": "2",
-            "todo": "run",
-            "created": "2015-05-04 03:51:50"
-        }
-    ],
+    "id": "1",
+    "todo": "shopping",
+    "created": "2017-06-04 15:58:03",
     "_links": {
         "self": {
-            "href": "/todo?id=2"
+            "href": "/todo?id=1"
         }
     }
 }
@@ -862,19 +855,19 @@ Last-Modified: Tue, 26 May 2015 04:08:59 GMT
 次に`PUT`メソッドでこのリソースを変更します。
 
 ```bash
-curl http://127.0.0.1:8081/todo -X PUT -d "id=2&todo=think"
+curl -i http://127.0.0.1:8081/todo -X PUT -d "id=1&todo=think"
 ```
 
  `Content-Type` ヘッダーを使ってJSONでも指定することができます。
 
 ```bash
-curl http://127.0.0.1:8081/todo -X PUT -H 'Content-Type: application/json' -d '{"id": "2", "todo":"think" }'
+curl -i http://127.0.0.1:8081/todo -X PUT -H 'Content-Type: application/json' -d '{"id": "1", "todo":"think" }'
 ```
 
 再度GETを行うと`Last-Modified`が変わっているのが確認できます。
 
 ```bash
-curl -i 'http://127.0.0.1:8081/todo?id=2'
+curl -i 'http://127.0.0.1:8081/todo?id=1'
 ```
 
 この`Last-Modified`の日付は`@Cacheable`で提供されるものです。
@@ -882,203 +875,25 @@ curl -i 'http://127.0.0.1:8081/todo?id=2'
 
 `@Cacheable`を使うと、リソースコンテンツは書き込み用のデータベースとは違うリソースの保存専用の「クエリーリポジトリ」で管理され、データの更新や`Etag`や`Last-Modified`のヘッダーの付加が透過的に行われます。
 
-## ハイパーリンク
 
-次はリソースとリソースをリンクするハイパーリンクを作成します。
-
-追加のDBを作成して
-
-```bash
-sqlite3 var/db/post.sqlite3
-
-sqlite> create table memo(id integer primary key, todo_id integer, body);
-sqlite> .exit
-```
-
-今度は[Aura.Sql](https://github.com/auraphp/Aura.Sql)を使ってみましょう。
-
-```bash
-composer require ray/aura-sql-module ~1.0
-```
-
-同じように`AppModule::configure()`でインストールします。
-
-```php?start_inline
-use Ray\AuraSqlModule\AuraSqlModule; // この行を追加
-
-class AppModule extends AbstractModule
-{
-    protected function configure()
-    {
-        // ...
-        $dbConfig = 'sqlite:' . dirname(dirname(__DIR__)). '/var/db/post.sqlite3';
-        $this->install(new AuraSqlModule($dbConfig));```
-```
-
-`todo`リソースにメモをつけることができるように`Memo`リソースを追加します。
-
-```php
-<?php
-
-namespace MyVendor\Weekday\Resource\App;
-
-use BEAR\RepositoryModule\Annotation\Cacheable;
-use BEAR\RepositoryModule\Annotation\Refresh;
-use BEAR\Resource\ResourceObject;
-use Ray\AuraSqlModule\AuraSqlInject;
-
-/**
- * @Cacheable
- */
-class Memo extends ResourceObject
-{
-    use AuraSqlInject;
-
-    public function onGet($todo_id)
-    {
-        $sql  = 'SELECT * FROM memo WHERE todo_id = :todo_id';
-        $bind = ['todo_id' => $todo_id];
-        $this->body = $this->pdo->fetchAll($sql, $bind);
-
-        return $this;
-    }
-
-    /**
-     * @Refresh(uri="app://self/todo?id={todo_id}")
-     */
-    public function onPost($todo_id, $body)
-    {
-        $this['todo_id'] = $todo_id;
-        $sql = 'INSERT INTO memo (todo_id, body) VALUES(:todo_id, :body)';
-        $statement = $this->pdo->prepare($sql);
-        $bind = [
-            'todo_id' => $todo_id,
-            'body' => $body
-        ];
-        $statement->execute($bind);
-        $id = $this->pdo->lastInsertId();
-
-        $this->code = 201;
-        $this->headers['Location'] = "/comment?id={$id}";
-
-        return $this;
-    }
-}
-```
-
-作成したMemoリソースをTodoリソースに埋め込みます。
-
-```php?start_inline
-    /**
-     * @Embed(rel="memo", src="/memo?todo_id={id}")
-     * @Link(rel="memo", href="/memo?todo_id={id}")
-     */
-    public function onGet($id)
-    {
-        $this['id'] = $id;
-```
-
-Todoを`GET`した時に、対応するmemoリソースの`POST`先リンクがわかるように`@Link`でmemoリソースのリンクもアノテートします。同じスキーマ`app://self`の時は省略してパスだけを`src`や`href`に指定することができます。
-
-Todoリソースを取得するとMemoリソースのリンクが表示されるようになりました。
-
-```bash
-php bootstrap/api.php get '/todo?id=1'
-
-200 OK
-Etag: 0
-Last-Modified: Tue, 26 May 2015 08:18:18 GMT
-content-type: application/hal+json
-
-{
-    "id": "1",
-    "todo": [
-        {
-            "id": "1",
-            "todo": "shopping",
-            "created": "2015-05-04 03:51:33"
-        }
-    ],
-    "_links": {
-        "self": {
-            "href": "/todo?id=1"
-        },
-        "memo": {
-            "href": "app://self/memo?todo_id=1"
-        }
-    }
-}
-```
-
-そのリンクを使ってMemoを`POST`してみます。
-
-```bash
-php bootstrap/api.php post '/memo?todo_id=1&body=VERY IMPORTANT'
-```
-
-再びAppリソースを読み込むとメモが埋め込まれています。
-
-```bash
-php bootstrap/api.php get '/todo?id=1'
-
-content-type: application/hal+json
-ETag: 1105179874
-Last-Modified: Tue, 26 May 2015 15:33:28 GMT
-
-{
-    "id": "1",
-    "todo": [
-        {
-            "id": "1",
-            "todo": "shopping",
-            "created": "2015-05-26 23:49:11"
-        }
-    ],
-    "_embedded": {
-        "memo": {
-            "0": {
-                "id": "1",
-                "todo_id": "1",
-                "body": "VERY IMPORTANT"
-            },
-            "_links": {
-                "self": {
-                    "href": "/memo?todo_id=1"
-                }
-            }
-        }
-    },
-    "_links": {
-        "self": {
-            "href": "/todo?id=1"
-        },
-        "memo": {
-            "href": "app://self/memo?todo_id=1"
-        }
-    }
-}
-```
-
-このTodoリソースは自身の1)`PUT`メソッドを使うか、2)`@Refresh`でリンクしたMemoを`POST`したときのみキャッシュが再生成されます。
 
 ## アプリケーションのインポート
 
-BEAR.Sundayで作られたリソースは再利用性が優れています。
-他のアプリケーションのリソースを利用してみましょう。
+BEAR.Sundayで作られたリソースは再利用性に優れています。複数のアプリケーションを同時に動作させ、他のアプリケーションのリソースを利用することができます。別々のWebサーバーを立てる必要はありません。
 
-ここではチュートリアルのために`my-vendor`に新規でアプリケーションを作成して手動でオートローダーを設定します。
-（通常はアプリケーションをパッケージとして利用します）
+他のアプリケーションのリソースを利用して見ましょう。
+
+通常はアプリケーションをパッケージとして利用しますが、ここではチュートリアルのために`my-vendor`に新規でアプリケーションを作成して手動でオートローダーを設定します。
 
 ```bash
 mkdir my-vendor
 cd my-vendor
-composer create-project bear/skeleton Acme.Blog ~1.0@dev
+composer create-project bear/skeleton Acme.Blog
 ```
 
 `composer.json`で`autoload`のセクションに`Acme\\Blog`を追加します。
 
-```bash
-
+```json
 "autoload": {
     "psr-4": {
         "MyVendor\\Weekday\\": "src/",
@@ -1097,23 +912,32 @@ composer dump-autoload
 
 次にアプリケーションをインポートするために`src/Module/AppModule.php`で`ImportAppModule`を上書き(override)インストールします。
 
-```php?start_inline
-use BEAR\Resource\Module\ImportAppModule;
-use BEAR\Resource\ImportApp;
-use BEAR\Package\Context;
+```php
+<?php
+// ...
+use BEAR\Resource\Module\ImportAppModule; // add this line
+use BEAR\Resource\ImportApp; // add this line
+use BEAR\Package\Context; // add this line
 
-$importConfig = [
-    new ImportApp('blog', 'Acme\Blog', 'prod-hal-app') // ホスト, 名前, コンテキスト
-];
-$this->override(new ImportAppModule($importConfig , Context::class));
+class AppModule extends AbstractModule
+{
+    protected function configure()
+    {
+        // ...
+        $importConfig = [
+            new ImportApp('blog', 'Acme\Blog', 'prod-hal-app') // host, name, context
+        ];
+        $this->override(new ImportAppModule($importConfig , Context::class));
+    }
+}
 ```
+
 これは`Acme\Blog`アプリケーションを`prod-hal-app`コンテキストで作成したリソースを`blog`というホストで使用することができます。
 
 `src/Resource/App/Import.php`にImportリソースを作成して確かめてみましょう。
 
 ```php
 <?php
-
 namespace MyVendor\Weekday\Resource\App;
 
 use BEAR\Resource\ResourceObject;
@@ -1125,17 +949,22 @@ class Import extends ResourceObject
 
     public function onGet()
     {
-        $this['blog'] = $this->resource->get->uri('page://blog/index')->eager->request()->body['greeting'];
+        $this->body =[
+            'blog' => $this->resource->uri('page://blog/index')['greeting']
+        ];
 
         return $this;
     }
 }
 ```
 
-`page://blog/index`リソースが`blog`に代入されているはずです。`@Embed`も同様に使えます。
+`page://blog/index`リソースの`greeting`が`blog`に代入されているはずです。`@Embed`も同様に使えます。
 
 ```bash
 php bootstrap/api.php get /import
+```
+
+```bash
 200 OK
 content-type: application/hal+json
 
@@ -1154,32 +983,75 @@ content-type: application/hal+json
 合成されたアプリケーションも他からみたら１つのアプリケーションの１つのレイヤーです。
 [レイヤードシステム](http://en.wikipedia.org/wiki/Representational_state_transfer#Layered_system)はRESTの特徴の１つです。
 
-次にBEAR.Sundayでは無いシステムからこのリソースを利用してみましょう。
-`app.php`を作成します。どこに設置してもかまいませんが`autoload.php`のパスが通るように注意しましょう。
+それでは最後に作成したアプリケーションのリソースを呼び出す最小限のスクリプトをコーディングして見ましょう。`bin/test.php`を作成します。
+
 
 ```php?start_inline
 use BEAR\Package\Bootstrap;
-use Doctrine\Common\Annotations\AnnotationRegistry;
 
-/** @var $loader \Composer\Autoload\ClassLoader */
-$loader = require __DIR__ . '/vendor/autoload.php';
-AnnotationRegistry::registerLoader([$loader, 'loadClass']); // アノテーションのロード
+require __DIR__ . '/autoload.php';
 
-$app = (new Bootstrap)->getApp('MyVendor\Weekday', 'prod-hal-app'); // アプリケーションの取得
-$import = $app->resource->get->uri('app://self/import')->request();
+$api = (new Bootstrap)->getApp('MyVendor\Weekday', 'prod-hal-app');
 
-echo $import['blog'] . PHP_EOL;
+$blog = $api->resource->uri('app://self/import')['blog'];
+var_dump($blog);
 ```
 
-試してみます。
-```bash
-php app.php
+`MyVendor\Weekday`アプリを`prod-hal-app`で起動して`app://self/import`リソースの`blog`をvar_dumpするコードです。
+
+試して見ましょう。
+
 ```
-`Hello BEAR.Sunday`が表示されたでしょうか？
+php bint/test.php
+```
+```
+string(17) "Hello BEAR.Sunday"
+```
 
-## Because everything is a resource
+他にも
 
-情報の識別子URI、統一されたインターフェイス、ステートテレスなアクセス、強力なキャッシュシステム、ハイパーリンク、レイヤードシステム、自己記述性。
+```php?start_inline
+$weekday = $api->resource->uri('app://self/weekday')(['year' => 2000, 'month'=>1, 'day'=>1]);
+var_dump($weekday->body); // as array
+//array(1) {
+//    ["weekday"]=>
+//  string(3) "Sat"
+//}
+
+echo $weekday; // as string
+//{
+//    "weekday": "Sat",
+//    "_links": {
+//    "self": {
+//        "href": "/weekday/2000/1/1"
+//        }
+//    }
+//}
+```
+
+```php?start_inline
+$html = (new Bootstrap)->getApp('MyVendor\Weekday', 'prod-html-app');
+$index = $html->resource->uri('page://self/index')(['year' => 2000, 'month'=>1, 'day'=>1]);
+var_dump($index->code);
+//int(200)
+
+echo $index;
+//<!DOCTYPE html>
+//<html>
+//<body>
+//The weekday of 2000/1/1 is Sat.
+//</body>
+//</html>
+```
+
+ステートレスなリクエストでレスポンスが返ってくるRESTのリソースはPHPの関数のようなものです。`body`で値を取得したり`(string)`でJSONやHTMLなどの表現にすることができます。autoloadの部分を除けば二行、連結すればたった一行のスクリプトで  アプリケーションのどのリソースでも操作することができます。
+
+このようにBEAR.Sundayで作られたリソースは他のCMSやフレームワークからも簡単に利用することができます。複数のアプリケーションの値を一度に扱うことができます。
+
+
+## Because Everything is A Resource
+
+リソースの識別子URI、統一されたインターフェイス、ステートテレスなアクセス、強力なキャッシュシステム、ハイパーリンク、レイヤードシステム、自己記述性。
 BEAR.SundayアプリケーションのリソースはこれらのRESTの特徴を備えたもので、再利用性に優れています。
 
 異なるアプリケーションの情報もハイパーリンクで接続することができ、他のCMSやフレームワークからの利用やAPIサイトにすることも容易です。

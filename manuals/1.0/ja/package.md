@@ -15,7 +15,10 @@ permalink: /manuals/1.0/ja/package.html
 
 ### 構造
 
+BEAR.Sundayアプリケーションのファイルレイアウトは[php-pds/skeleton](https://github.com/php-pds/skeleton)に準拠しています。
+
 ```
+├── (bin)
 ├── bootstrap
 │   ├── api.php
 │   ├── bootstrap.php
@@ -23,24 +26,24 @@ permalink: /manuals/1.0/ja/package.html
 ├── composer.json
 ├── composer.lock
 ├── phpunit.xml.dist
+├── public
+│   └── index.php
 ├── src
 │   ├── (Annotation)
 │   ├── (Interceptor)
 │   ├── Module
 │   └── Resource
 ├── tests
+│   ├── (Fake)
 │   ├── bootstrap.php
 │   └── tmp
 ├── var
 │   ├── (conf)
 │   ├── log
-│   ├── tmp
-│   └── www
+│   └── tmp
 └── vendor
-
-*カッコで囲まれたフォルダは必要があれば作成します
-
 ```
+
 
 ### 実行シークエンス
 
@@ -69,9 +72,17 @@ php -S 127.0.0.1 bootstrap/api.php # PHPサーバー
 コンテキストが変わるとアプリケーションの振る舞いが変わります。
 ユーザーは独自のコンテキストを作成することができます。
 
+### bin/
+
+スクリプトで実行可能なコマンドを設置します。
+
 ### src/
 
 アプリケーション固有のクラスファイルを設置します。
+
+### publc/
+
+Web公開フォルダ
 
 ### var/
 
@@ -122,35 +133,39 @@ AOPアライアンスに準拠したAOPフレームワークです。
 [![Code Coverage](https://scrutinizer-ci.com/g/bearsunday/BEAR.Middleware/badges/coverage.png?b=1.x)](https://scrutinizer-ci.com/g/bearsunday/BEAR.Middleware/?branch=1.x)
 [![Build Status](https://travis-ci.org/bearsunday/BEAR.Middleware.svg?branch=1.x)](https://travis-ci.org/bearsunday/BEAR.Middleware)
 
-PSR7のミドルウエアのためのオプションパッケージです。
+PSR-7のミドルウエアのためのオプションパッケージです。
 
 ## ライブラリ・パッケージ
 
 必要なライブラリ・パッケージを`composer`インストールします。
 
-| **Category** | **Composer package** | **Library** 
+| **Category** | **Composer package** | **Library**
 | ルーター |
-| |[bear/aura-router-module](https://github.com/bearsunday/BEAR.AuraRouterModule) | Aura.Router v2 |
+| |[bear/aura-router-module](https://github.com/bearsunday/BEAR.AuraRouterModule) | [Aura.Router v2](https://github.com/auraphp/Aura.Router/tree/2.x) |
 | データベース |
-|| [ray/aura-sql-module](https://github.com/ray-di/Ray.AuraSqlModule) | Aura.Sql v2
-|| [ray/dbal-module](https://github.com/ray-di/Ray.DbalModule) | Doctrine DBAL
-|| [ray/cake-database-module](https://github.com/ray-di/Ray.CakeDbModule) | CakePHP v3 database
+|| [ray/aura-sql-module](https://github.com/ray-di/Ray.AuraSqlModule) | [Aura.Sql v2](https://github.com/auraphp/Aura.Sql/tree/2.x)
+|| [ray/dbal-module](https://github.com/ray-di/Ray.DbalModule) | [Doctrine DBAL](https://github.com/doctrine/dbal)
+|| [ray/cake-database-module](https://github.com/ray-di/Ray.CakeDbModule) | [CakePHP v3 database](https://github.com/cakephp/database)
 || [ray/doctrine-orm-module](https://github.com/kawanamiyuu/Ray.DoctrineOrmModule) | [Doctrine ORM](https://github.com/doctrine/doctrine2)
 | ストレージ |
 ||[bear/query-repository](https://github.com/bearsunday/BEAR.QueryRepository) | 読み書きリポジトリの分離
-| Web 
+| Web |
 | |[madapaja/twig-module](http://bearsunday.github.io/manuals/1.0/ja/html.html) | [Twigテンプレートエンジン](http://twig.sensiolabs.org/)
 | |[ray/web-form-module](http://bearsunday.github.io/manuals/1.0/ja/form.html) | Webフォーム & バリデーション
 | |[ray/aura-web-module](https://github.com/Ray-Di/Ray.AuraWebModule) | [Aura.Web](https://github.com/auraphp/Aura.Web)
 | |[ray/aura-session-module](https://github.com/ray-di/Ray.AuraSessionModule) | [Aura.Session](https://github.com/auraphp/Aura.Session)
 | |[ray/symfony-session-module](https://github.com/kawanamiyuu/Ray.SymfonySessionModule) | [Symfony Session](https://github.com/symfony/http-foundation/tree/master/Session)
-| 認証
+| バリデーション |
+| |[ray/validate-module](https://github.com/ray-di/Ray.ValidateModule) | [Aura.Filter](https://github.com/auraphp/Aura.Filter)
+| |[satomif/extra-aura-filter-module](https://github.com/satomif/ExtraAuraFilterModule) | [Aura.Filter](https://github.com/auraphp/Aura.Filter)
+| 認証 |
 | |[ray/oauth-module](https://github.com/Ray-Di/Ray.OAuthModule) | OAuth
-| |[ray/role-module](https://github.com/ray-di/Ray.RoleModule) | Zend Acl
-| ハイパーメディア
+| |[kuma-guy/jwt-auth-module](https://github.com/kuma-guy/BEAR.JwtAuthModule) | JSON Web Token
+| |[ray/role-module](https://github.com/ray-di/Ray.RoleModule) | [Zend Acl](https://github.com/zendframework/zend-permissions-acl)
+| ハイパーメディア |
 | |[kuma-guy/siren-module](https://github.com/kuma-guy/BEAR.SirenModule) | Siren
-|  開発
-| |[ray/fake-module](https://github.com/shingo-kumagai/Ray.FakeModule) | モッキング
+|  開発 |
+| |[ray/test-double](https://github.com/ray-di/Ray.TestDouble) | テストダブル
 
 ## ベンダー・パッケージ
 
@@ -159,10 +174,3 @@ PSR7のミドルウエアのためのオプションパッケージです。
 
 [Koriym.DbAppPackage](https://github.com/koriym/Koriym.DbAppPackage)はマイグレーションツールのPhinxやAuraPHPのコンポーネントなどをセットにして、設定ファイルや実行ファイルを添付したDBを使ったWeb APIアプリ用のパッケージです。
 カスタムパッケージを作る時の参考に。
-
-# Semver
-
-BEAR.Sundayはパッケージの依存管理のために[セマンティックバージョニング](http://semver.org/lang/ja/)に従います。
-
-各パッケージのメジャーバージョン番号は「後方互換性を失う」以外の特別な意味はありません。
-全体のバージョンをロックする機構を持たず、バージョンアップは個別に行われます。

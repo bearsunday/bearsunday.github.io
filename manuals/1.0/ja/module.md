@@ -9,8 +9,10 @@ permalink: /manuals/1.0/ja/module.html
 モジュールはアプリケーションの設定です。DIとAOPの束縛を行います。
 
 BEAR.Sundayでは設置場所や記述フォーマットが固定されているいわゆる設定ファイルや、Configクラスはありません。
-その代わりに機能ごとに独立したモジュールに設定値を与え、DIとAOPの設定をします。
-起点となるモジュールが`AppModule` (/src/Module/AppModule.php)です。
+その代わりに機能ごとに独立したモジュールに設定値をコンストラクタインジェクションしてDIとAOPの設定をします。
+（設定もインジェククトするので設定をコンテキスト毎に変えるのも簡単です）
+
+起点となるモジュールが`AppModule` (src/Module/AppModule.php)です。
 `AppModule`で必要なモジュールを`install`してアプリケーション全体を構成します。
 
 コンテキストに依存しない設定値はモジュールにそのまま記述し、環境により変更されるようなものやクレデンシャル情報は`$_ENV`値を使います。
@@ -53,7 +55,7 @@ $this->bind($interface)->toConstructor($class, $named);
 
 束縛は先にされたものが優先されますが、モジュールを`override`すると先にされた束縛を上書きすることができます。
 
-詳しくは[Ray.DiのREADME](https://github.com/ray-di/Ray.Di/blob/2.x/README.ja.md)をご覧ください。
+詳しくは[DI](di.html)をご覧ください。
 
 
 ## AOPの設定
@@ -74,58 +76,4 @@ $this->bindInterceptor(
 );
 ```
 
-`Matcher`は他にこのような指定もできます。
-
- * [Matcher::any](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/MatcherInterface.php#L16) - 無制限
- * [Matcher::annotatedWith](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/MatcherInterface.php#L23) - アノテーション
- * [Matcher::subclassesOf](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/MatcherInterface.php#L30) - 継承または実装されたクラス
- * [Matcher::startsWith](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/MatcherInterface.php#L37) - 名前の始めの文字列
- * [Matcher::logicalOr](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/MatcherInterface.php#L44) - OR条件
- * [Matcher::logicalAnd](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/MatcherInterface.php#L51) - AND条件
- * [Matcher::logicalNot](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/MatcherInterface.php#L58) - NOT条件
-
-## インターセプター
-
-インターセプターの`invoke`メソッドでは`MethodInvocation`（メソッド実行）変数を受け取り、メソッドの前後に処理を加えます。
-
-
-```php?start_inline
-use Ray\Aop\MethodInvocation;
-
-class MyInterceptor implements MethodInterceptor
-{
-    public function invoke(MethodInvocation $invocation)
-    {
-        // メソッド実行前の処理
-        // ...
-
-        // メソッド実行
-        $result = $invocation->proceed();
-
-        // メソッド実行後の処理
-        // ...
-
-        return $result;
-    }
-}
-```
-
-インターセプターに渡される`MethodInvocation`で対象のメソッド実行に関連するオブジェクトやメソッド、引数にアクセスすることができます。
-
- * [MethodInvocation::proceed](https://github.com/ray-di/Ray.Aop/blob/2.x/src/Joinpoint.php) - 対象メソッド実行
- * [MethodInvocation::getMethod](https://github.com/ray-di/Ray.Aop/blob/2.x/src/MethodInvocation.php) -  対象メソッドリフレクションの取得
- * [MethodInvocation::getThis](https://github.com/ray-di/Ray.Aop/blob/2.x/src/Joinpoint.php) - 対象オブジェクトの取得
- * [MethodInvocation::getArguments](https://github.com/ray-di/Ray.Aop/blob/2.x/src/Invocation.php) - 呼び出し引数配列の取得
-
-
-リフレクションのメソッドでアノテーションを取得することができます。
-
-```php?start_inline
-$method = $invocation->getMethod();
-$class = $invocation->getMethod()->getDeclaringClass();
-```
-
- * `$method->getAnnotations()`     - メソッドアノテーションの取得
- * `$method->getAnnotation($name)`
- * `$class->->getAnnotations()`    - クラスアノテーションの取得
- * `$class->->getAnnotation($name)`
+詳しくは[AOP](aop.html)をご覧ください。
