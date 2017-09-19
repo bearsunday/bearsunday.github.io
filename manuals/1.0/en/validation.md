@@ -18,7 +18,7 @@ The [JSON Schema](http://json-schema.org/) is the standard for describing and va
 
 ### Install
 
-If you want to validate in all contexts, including production, create `AppModule`, if validation is done only during development, create `DevModule` and install within it.
+If you want to validate in all contexts including production, create `AppModule`, if validation is done only during development, create `DevModule` and install within it
 
 
 ```php?start_inline
@@ -39,7 +39,7 @@ class AppModule extends AbstractModule
     }
 }
 ```
-Create directories for JSON shema files.
+Create directories for the JSON schema files
 
 ```bash
 mkdir var/json_schema
@@ -50,7 +50,7 @@ In the `var/json_schema/`, store the JSON schema file which is the specification
 
 ### @JsonSchema annotation
 
-It annotates `@JsonSchema` in the method of the resource class. For the `schema` property, specify the JSON schema file name.
+Annotate the method of the resource class by adding `@JsonSchema`, then add the `schema` property by specifying the JSON schema file name, which is `user.json` for this purpose.
 
 ### schema
 
@@ -78,7 +78,7 @@ class User extends ResourceObject
 }
 ```
 
-We will set up the JSON schema to `/var/json_schema/user.json`
+We will create a JSON schema named `/var/json_schema/user.json`
 
 ```json
 {
@@ -96,7 +96,7 @@ We will set up the JSON schema to `/var/json_schema/user.json`
 
 ### key
 
-If the body has an index key, specify it with the key property of the annotation.
+If the body has an index key, specify it with the key property of the annotation
 
 ```php?start_inline
 
@@ -123,7 +123,7 @@ class Person extends ResourceObject
 
 ### params
 
-The `params` property specifies the JSON schema file name for argument validation.
+The `params` property specifies the JSON schema file name for the argument validation
 
 
 ```php?start_inline
@@ -138,7 +138,7 @@ class Todo extends ResourceObject
     public function onPost(string $title)
 ```
 
-We place JSON schema file.
+We place the JSON schema file
 
 **/var/json_validate/todo.post.json**
 
@@ -199,7 +199,7 @@ class AppModule extends AbstractModule
 
 There are three annotations `@Valid`, `@OnValidate`, `@OnFailure` for validation.
 
-First of all, annotate method that you want to validate with `@Valid`.
+First of all, annotate the method that you want to validate with `@Valid`
 
 ```php?start_inline
 use Ray\Validation\Annotation\Valid;
@@ -215,7 +215,7 @@ class News
 
 Validation will be conducted in the method annotated with `@OnValidate`.
 
-The arguments of the method should be the same as the original method. The method name is free.
+The arguments of the method should be the same as the original method. The method name can be anything.
 
 ```php?start_inline
 use Ray\Validation\Annotation\OnValidate;
@@ -236,10 +236,10 @@ class News
     }
 ```
 
-Add unvalidated elements to your validation object by `addError ()` with `element name` and` error message`, And return the validation object.
+Add validations to your elements by `addError()` with the `element name` and` error message` as parameters, then return the validation object.
 
-When validation fail, the exception `Ray\Validation\Exception\InvalidArgumentException` will be thrown,
-but if you have method annotated with `@OnFailure`, it will be called instead of throwing exception.
+When validation fails, the exception `Ray\Validation\Exception\InvalidArgumentException` will be thrown,
+but if you have a method annotated with the `@OnFailure`, it will be called, instead of throwing an exception
 
 ```php?start_inline
 use Ray\Validation\Annotation\OnFailure;
@@ -263,12 +263,12 @@ class News
     }
 ```
 
-In the method annotated with `@OnFailure`, you can access to the validated messages with `$failure->getMessages()`
+In the method annotated with `@OnFailure`, you can access the validated messages with `$failure->getMessages()`
 and also you can get the object of the original method with `$failure->getInvocation()`.
 
 ### Various validation
 
-If you want to have various validation for a class, you can specify the name of validation like below.
+If you want to have different validations for a class, you can specify the name of the validation like below
 
 ```php?start_inline
 use Ray\Validation\Annotation\Valid;
@@ -298,6 +298,6 @@ class News
 
 ### Other validation
 
-If you need to implement the complex validation, you can have another class for validation and inject it.
-And then call in the method annotated with `onValidate`.
+If you need to implement complex validation, you can have another class for validation and inject it.
+And then call in the method annotated with the `onValidate`.
 You can also change your validation behavior by context with DI.
