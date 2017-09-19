@@ -76,6 +76,7 @@ class Index
 ```
 
 `Ray.AuraSqlModule` contains [Aura.SqlQuery](https://github.com/auraphp/Aura.SqlQuery) to help you build sql queries.
+[Aura.SqlQuery](https://github.com/auraphp/Aura.SqlQuery) also have other useful methods like fetch() and perform() that you can use for your needs, please check their documentation.
 
 ## Replication
 
