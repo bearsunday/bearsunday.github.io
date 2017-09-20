@@ -29,14 +29,14 @@ php -S 127.0.0.1:8080 -t public
 
 ## Stream
 
-BEAR.Sunday supports http body of a message output in a [stream](http://php.net/manual/ja/intro.stream.php).
+BEAR.Sunday supports HTTP body of a message output in a [stream](http://php.net/manual/ja/intro.stream.php).
 
 In `ResourceObject`, you can mix stream with a normal string. The output is converted to a single stream.
-`StreamTransfer` is default http transfer. Seem more at [Stream Response](http://bearsunday.github.io/manuals/1.0/en/stream.html).
+`StreamTransfer` is the default HTTP transfer. Seem more at [Stream Response](http://bearsunday.github.io/manuals/1.0/en/stream.html).
 
 ## New Project
 
-You can alo create a BEAR.Sunday PSR-7 project with `bear/project` from scatch.
+You can also create a BEAR.Sunday PSR-7 project with `bear/project` from scratch.
 
 ```
 composer create-project bear/project my-psr7-project
