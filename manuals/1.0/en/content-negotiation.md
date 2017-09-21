@@ -7,17 +7,17 @@ permalink: /manuals/1.0/en/content-negotiation.html
 
 # Content Negotiation 
 
-In HTTP,([content negotiation](https://en.wikipedia.org/wiki/Content_negotiation)) is a mechanism used to provide various versions of resources for the same URL. BEAR.Sunday supports server-side content negotiation of media type 'Accept' and 'Accept-Language' of language. It can be specified on an application basis or resource basis.
+In HTTP, [Content Negotiation](https://en.wikipedia.org/wiki/Content_negotiation) is a mechanism used to provide various versions of resources for the same URL. BEAR.Sunday supports server-side content negotiation of media type 'Accept' and 'Accept-Language' of language. It can be specified on an application basis or resource basis.
 
 ## Install
 
-Install [BEAR.Accept](https://github.com/bearsunday/BEAR.Accept) with composer.
+Install [BEAR.Accept](https://github.com/bearsunday/BEAR.Accept) with composer
 
 ```bash
 composer require bear/accept ^0.1
 ```
 
-Next, save the context corresponding to the `Accept *` request header in `/var/locale/available.php`.
+Next, save the context corresponding to the `Accept *` request header in `/var/locale/available.php`
 
 ```php?
 <?php
@@ -38,7 +38,7 @@ return [
 
 The `Accept` key array specifies an array whose context is a value with the media type as a key. `cli` is not used in web access in the context of console access.
 
-The `Accept-Language` key array specifies an array with the context key as key for the language.
+The `Accept-Language` key array specifies an array with the context key as the key for the language.
 
 ## By Application
 
@@ -91,7 +91,7 @@ use use BEAR\Accept\Annotation\Produces;
 public function onGet()
 ```
 
-Annotate the available media types from left to right. The renderer of the corresponding context is set in AOP and the expression changes. Unlike negotiation on a per-application basis, you do not need to manually add the `Vary` header.
+Annotate available media type from left by priority. The representation (JSON or HTML) is changed by the contextual renderer. You do not need to add `Vary` header manually unlike application level content-negotiation.
 
 ## Access using curl
 
