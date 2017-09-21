@@ -12,7 +12,7 @@ permalink: /manuals/1.0/en/hypermedia-api.html
 BEAR.Sunday supports the [HAL](https://en.wikipedia.org/wiki/Hypertext_Application_Language) hypermedia (`application/hal+json`) API.
 
 
-The HAL resource model consists of the following elements.
+The HAL resource model consists of the following elements:
 
  * Link
  * Embedded resources
@@ -38,7 +38,7 @@ Resources should have a `self` URI
 
 Link rels are the main way of distinguishing between a resource's links.
 
-The link has a `rel` (relationship), which indicates the meaning of the link. `Rel` distinguishes resource links. As with Web pages, link operations to other resources and resources related to resources.
+There is a `rel` (relation) on the link, and it shows how the relationship is linked. It is similar to the `rel` used in the HTML `<link>` and `<a>` tag.
 
 ```
 {
@@ -141,15 +141,15 @@ class Index extends ResourceObject
 }
 ```
 
-In `_links`, specify a special token that defines the document` curies`. In `curies`, specify` href` which indicates the document URI of the resource and its name with `name`.
+In `_links`, specify a special token that defines the document `curies`. In `curies`, specify` href` which indicates the document URI of the resource and its name with a `name`.
 
-In this example you will find that you can access the `http://apidoc.example.com/rels/?rel=todo` URL to get documentation on the` todo` resource.
+In this example, you will find that you can access the `http://apidoc.example.com/rels/?rel=todo` URL to get documentation on the` todo` resource.
 
 ## API document service
 
-The API server can also be an API document server. It solves problems such as the time required to create API document, deviation from actual API, verification, maintenance.
+The API server can also be an API document server. It solves problems such as the time required to create the API document, deviation from actual API, verification, maintenance.
 
-In order to service it install `bear/api-doc` and install it by inheriting the `BEAR\ApiDoc\ApiDoc` page class.
+In order for it to be on service, install `bear/api-doc` and install it by inheriting the `BEAR\ApiDoc\ApiDoc` page class
 
 ```
 composer require bear/api-doc
@@ -166,13 +166,13 @@ class Index extends ApiDoc
 }
 ```
 
-Publish the folder of Json Schema to the web.
+Publish the folder of JSON Schema to the web
 
 ```
 ln -s var/json_schema public/schemas
 ```
 
-API Documents are automatically generated using Docblock comments and Json Shcema. The page class has its own renderer and is not affected by `$context`, it serves a document (`text/html`) for people. Since it is not affected by `$context`, you can install either` App` or `Page`.
+API documents are automatically generated using Docblock comments and JSON Schema. The page class has its own renderer and is not affected by `$context`, it serves a document (`text/html`) for people. Since it is not affected by `$context`, you can install either` App` or `Page`.
 
 If CURIEs is installed at the root, the API itself can be used even for raw JSON which is not hypermedia. Documents generated in real time always accurately reflect property information and validation constraints.
 
@@ -192,7 +192,7 @@ Open `http://127.0.0.1:8080/rels/` to see API doc page.
 
 The API set written in HAL functions as **headless REST application**.
 
-You can access all the resources by following the link from the root like the web site with the Web based HAL Browser or the CURL command of the console.
+You can access all the resources by following the link from the root like the website with the Web-based HAL Browser or the CURL command of the console.
 
  * [HAL Browser](https://github.com/mikekelly/hal-browser) - [example](http://haltalk.herokuapp.com/explorer/browser.html#/)
  * [hyperagent.js](https://weluse.github.io/hyperagent/)
