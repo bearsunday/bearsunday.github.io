@@ -9,7 +9,10 @@ permalink: /manuals/1.0/en/examples.html
 
 This example application is built on the principles described in the [Coding Guide](http://bearsunday.github.io/manuals/1.0/en/coding-guide.html).
 
-## [Todos](https://github.com/koriym/Polidog.Todo)
+## Polidog.Todo
+
+[https://github.com/koriym/Polidog.Todo](https://github.com/koriym/Polidog.Todo)
+
 
 `Todos` is a basic CRUD application. The DB is accessed using the static　SQL file in the `var/sql` directory. Includes REST API using hyperlinks and testing, as well as form validation tests.
 
@@ -20,12 +23,14 @@ This example application is built on the principles described in the [Coding Gui
   * [koriym/query-locator](https://github.com/koriym/Koriym.QueryLocator) - SQL locator
   * [koriym/http-constants](https://github.com/koriym/Koriym.HttpConstants) - Contains the values HTTP
 
-```
-git clone https://github.com/koriym/Polidog.Todo.git
-cd Polidog.Todo
-cp .env.dist .env
-composer install
-composer setup
-composer test
-composer serve
-```
+## MyVendor.ContactForm
+
+[https://github.com/bearsunday/MyVendor.ContactForm](https://github.com/bearsunday/MyVendor.ContactForm)
+
+
+It is a sample of various form pages.
+
+  * Minimal form page
+  * Multiple forms page
+  * Looped input form page
+  * Preview form page including checkbox and radio button

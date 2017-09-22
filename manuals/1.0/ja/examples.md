@@ -9,7 +9,9 @@ permalink: /manuals/1.0/ja/examples.html
 
 [Coding Guide](http://bearsunday.github.io/manuals/1.0/en/coding-guide.html)に従って作られたアプリケーションの例です。
 
-## [Todos](https://github.com/koriym/Polidog.Todo)
+## Polidog.Todo
+
+[https://github.com/koriym/Polidog.Todo](https://github.com/koriym/Polidog.Todo)
 
 基本的なCRUDのアプリケーションです。`var/sql`ディレクトリのSQLファイルでDBアクセスをしています。ハイパーリンクを使ったREST APIとテスト、それにフォームのバリデーションテストも含まれます。
 
@@ -20,12 +22,13 @@ permalink: /manuals/1.0/ja/examples.html
   * [koriym/query-locator](https://github.com/koriym/Koriym.QueryLocator) - SQL locator
   * [koriym/http-constants](https://github.com/koriym/Koriym.HttpConstants) - Contains the values HTTP
 
-```
-git clone https://github.com/koriym/Polidog.Todo.git
-cd Polidog.Todo
-cp .env.dist .env
-composer install
-composer setup
-composer test
-composer serve
-```
+## MyVendor.ContactForm
+
+[https://github.com/bearsunday/MyVendor.ContactForm](https://github.com/bearsunday/MyVendor.ContactForm)
+
+各種のフォームページのサンプルです。
+
+ * 最小限のフォーム
+ * 複数のフォーム
+ * INPUTエレメントをループで生成したフォーム
+ * チェックボックス、ラジオボタンを含んだプレビュー付きのフォーム
