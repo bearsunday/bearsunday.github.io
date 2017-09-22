@@ -30,7 +30,7 @@ This example application is built on the principles described in the [Coding Gui
 
 It is a sample of various form pages.
 
-  * Minimal form page
-  * Multiple forms page
-  * Looped input form page
-  * Preview form page including checkbox and radio button
+  * Minimal form page
+  * Multiple forms page
+  * Looped input form page
+  * Preview form page including checkbox and radio button
