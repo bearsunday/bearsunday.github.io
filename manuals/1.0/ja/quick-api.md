@@ -168,7 +168,7 @@ $router->route('/task', '/task/{id}');
 
 # SQL
 
-SQLフィイルを設置します。
+SQLファイルを設置します。
 
 `var/db/sql/task_list.sql`
 

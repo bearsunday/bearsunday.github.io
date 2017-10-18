@@ -188,7 +188,7 @@ class AppModule extends AbstractModule
             'toEnv' => true
         ]);
         $this->install(new PackageModule);
-        $this->override(new AuraRouterModule($appDir . '/var/conf/aura.route.conf')); // 追加
+        $this->override(new AuraRouterModule($appDir . '/var/conf/aura.route.php')); // 追加
     }
 }
 ```

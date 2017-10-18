@@ -88,7 +88,7 @@ class Index
      */
     public function doSomething(LoggerInterface $logger = null)
     {
-        $logger-log('log message..');
+        $logger->log('log message..');
     }
 ```
 
