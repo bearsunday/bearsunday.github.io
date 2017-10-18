@@ -544,7 +544,7 @@ class News
 
 ## クエリーリポジトリの直接操作
 
-クエリージポジトリに格納されているデータは`QueryRepositoryInterface`で受け取ったクライアントで直接`put`（保存）したり`get`したりすることができます。
+クエリーリポジトリに格納されているデータは`QueryRepositoryInterface`で受け取ったクライアントで直接`put`（保存）したり`get`したりすることができます。
 
 ```php?start_inline
 use BEAR\QueryRepository\QueryRepositoryInterface;
