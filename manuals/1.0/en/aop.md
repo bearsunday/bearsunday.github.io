@@ -15,7 +15,7 @@ The method interceptor API implemented is a part of a public specification calle
 [MethodInterceptors](https://github.com/ray-di/Ray.Aop/blob/2.x/src/MethodInterceptor.php) are executed whenever a matching method is invoked.
 They have the opportunity to inspect the call: the method, its arguments, and the receiving instance.
 They can perform their cross-cutting logic and then delegate to the underlying method.
-Finally, they may inspect the return value or exception and return. Since interceptors may be applied to many methods and will receive many calls, their implementation should be efficient and unintrusive.
+Finally, they may inspect the return value or the exception and return. Since interceptors may be applied to many methods and will receive many calls, their implementation should be efficient and unintrusive.
 
 
 ```php?start_inline
@@ -90,8 +90,8 @@ $class = $invocation->getMethod()->getDeclaringClass();
 ## Own matcher
    
 You can have your own matcher.
-To create `contains` matcher, You need to provide a class which have two method. One is `matchesClass` for class match.
-The other one is `matchesMethod` method match. Both return the boolean result of matched.
+To create `contains` matcher, You need to provide a class which has two methods. One is `matchesClass` for a class match.
+The other one is `matchesMethod` method match. Both return the boolean result of match.
 
 ```php?start_inline
 use Ray\Aop\AbstractMatcher;
