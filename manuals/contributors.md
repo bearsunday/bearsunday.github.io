@@ -50,4 +50,5 @@ permalink: /contributors.html
 [<img alt="bakura10" src="https://avatars3.githubusercontent.com/u/1198915?v=3&s=117" width="117">](https://github.com/bakura10)
 [<img alt="satomif" src="https://avatars0.githubusercontent.com/u/1614058?v=3&s=117" width="117">](https://github.com/satomif)
 [<img alt="T-Miura0203" src="https://avatars0.githubusercontent.com/u/13865557?v=3&s=117" width="117">](https://github.com/T-Miura0203)
-[<img alt="T-Miura0203" src="https://avatars2.githubusercontent.com/u/1582243?s=460&v=4&s=117" width="117">](https://github.com/:q)
+[<img alt="toshikimiyagawa" src="https://avatars2.githubusercontent.com/u/1582243?s=460&v=4&s=117" width="117">](https://github.com/toshikimiyagawa)
+[<img alt="kalibora" src="https://avatars3.githubusercontent.com/u/434940?s=460&v=4" width="117">](https://github.com/kalibora)
