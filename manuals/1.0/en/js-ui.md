@@ -32,7 +32,7 @@ Note: If you do not install V8Js then JS will be run using Node.js.
 Install `koriym/ssr-module` into the project.
 
 ```bash
-// composer create-project bear/skeleton MyVendor.MyProject; cd MyVendor.MyProject // When a new project
+// composer create-project bear/skeleton MyVendor.MyProject && cd MyVendor.MyProject; 
 composer require bear/ssr-module
 ```
 
