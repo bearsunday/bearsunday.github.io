@@ -124,4 +124,4 @@ Since injection is done in all classes, there is no problem of DI error at runti
 vendor/bin/bear.compile 'Polidog\Todo' prod-html-app /path/to/prject
 ```
 
-Deployer's [BEAR.Sunday recipe]((https://github.com/bearsunday/deploy)) is convenient and safe to use. Consider using the other server configuration tool as well as referring or running the Deployer script.
+Deployer's [BEAR.Sunday recipe](https://github.com/bearsunday/deploy) is convenient and safe to use. Consider using the other server configuration tool as well as referring or running the Deployer script.
