@@ -17,12 +17,15 @@ bootファイルで指定するコンテキストが`prod-`または`stage-`で�
 $context = 'prod-app';
 require dirname(dirname(__DIR__)) . '/bootstrap/bootstrap.php';
 ```
+**重要:**
 
-deploy後にキャッシュを再生成するにはwebサーバーを再起動するか、`src/`ディレクトリのタイムスタンプを変更します。
+**プロダクションではdeploy毎に$appを再生成する必要があります。**
+
+$appを再生成するにはwebサーバーを再起動します(推奨）。その権限がない場合には`src/`ディレクトリのタイムスタンプを変更します。（BEAR.Sundayはそれを検知して`$app`と`tmp/`のDI/AOPファイルの再生性を行います。）
 
 ## ProdModule
 
-アプリケーション用の`ProdModule`を`src/Module/ProdModule.php`に用意してプロダクション用の束縛をカスタマイズします。
+アプリケーション用の`ProdModule`を`src/Module/ProdModule.php`に設置して、プロダクション用の束縛をカスタマイズやHTTP OPTIONSメソッドの許可を行います。
 
 ```php
 <?php
@@ -57,7 +60,7 @@ class ProdModule extends AbstractModule
 
 複数のWebサーバーを構成するためには共有のキャッシュストレージを設定する必要があり、（[memcached](http://php.net/manual/ja/book.memcached.php)または[Redis](https://redis.io)）のモジュールをインストールします。
 
-### memcached
+### Memcached
 
 ```php
 <?php
@@ -179,4 +182,4 @@ vendor/bin/bear.compile 'Polidog\Todo' prod-html-app /path/to/prject
 
 ### Deployerサポート
 
-[Deployer](http://deployer.org/)の[BEAR.Sundayレシピ](https://github.com/bearsunday/deploy)を利用が便利で安全です。他のサーバー構成ツールを利用する場合でも参考にしたりDeployerスクリプトを実行することを検討してください。
+[Deployer](http://deployer.org/)の[BEAR.Sundayレシピ](https://github.com/bearsunday/deploy)を利用が便利で安全です。他のサーバー構成ツールを利用する場合でも参考にしたりDeployerスクリプトを実行することを検討してください。またDeployerをプロジェクトのディレクトリを毎回生成するので`$app`の再生成を気にする必要がありません。

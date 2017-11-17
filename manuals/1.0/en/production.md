@@ -9,35 +9,39 @@ permalink: /manuals/1.0/en/production.html
 
 In this section, we will cover how to setup the cache and the system for the production environment.
 
-## Boot file
 
-If the context is prefixed with `prod-`, the `$app` application object will be cached.
+## Context
 
-Cache drivers like `ApcCache` or `FilesystemCache` will be used automatically in response to the environment.
+The application object `$app` is cached when the context specified in the boot file starts with`prod-`or` stage-`. (`Prod` is a production site actually operated and `stage` is a `prod` mirror site.)
+
 
 ```php?start_inline
 $context = 'prod-app';
 require dirname(dirname(__DIR__)) . '/bootstrap/bootstrap.php';
 ```
 
-## Cache settings
+## Refresh $app
 
+**IMPORTANT**
+
+**In production, You need to regenerate $app cache in each deploy.**
+
+To regenerate the `$app` cache, restart the web server (recommended).
+
+ If you do not have the authority to do so, You can recreate `$app` cache by **changing the timestamp of the `src/` directory**. The BEAR.Sunday framework recognise it, then it re-generate `$app` and whole DI/AOP files under `tmp/` directory.
+ 
 ## ProdModule
 
-In the default `ProdModule` of `BEAR.Package`, `ApcCache` is designed for one single web server.
+Set `ProdModule` for the application in `src/Module/ProdModule.php` to customize the bindings for production and to allow HTTP OPTIONS methods.
 
-For multiple servers, you need to set the shared cache storage. You can implement application-specific src/Module/ProdModule.php.
+```php
+<?php
+namespace Polidog\Todo\Module;
 
-```php?start_inline
-namespace BEAR\HelloWorld\Module;
-
-use BEAR\RepositoryModule\Annotation\Storage;
 use BEAR\Package\Context\ProdModule as PackageProdModule;
-use Doctrine\Common\Cache\Cache;
+use BEAR\QueryRepository\CacheVersionModule;
+use BEAR\Resource\Module\OptionsMethodModule;
 use Ray\Di\AbstractModule;
-use Ray\Di\Scope;
-
-use Doctrine\Common\Cache\ApcCache;
 
 class ProdModule extends AbstractModule
 {
@@ -46,21 +50,82 @@ class ProdModule extends AbstractModule
      */
     protected function configure()
     {
-        $cache = ApcCache::class;
-        // shared cache
-        $this->bind(CacheProvider::class)->annotatedWith(Storage::class)->to($cache)->in(Scope::SINGLETON);
-        // cache per server
-        $this->bind(Cache::class)->to($cache)->in(Scope::SINGLETON);
-        // install package ProdModule
+        $this->install(new PackageProdModule);       // default setting (recommended)
+        $this->install(new OptionsMethodModule);     // Enable HTTP OPTIONS method in production
+        $this->install(new CacheVersionModule('1')); // Specify version number of resource cache
+    }
+}
+```
+## Cache
+
+There are two kinds of caches: a local cache that does not share between multiple Web servers and a shared cache that shares. The local cache is used for unchanged cachesafter deploy, such as annotations. The shared cache is used to store the resource state.
+
+Both caches are by default chain cache of [APCu + file cache]. APCu is used preferentially and the write is done to both storages.
+
+### Resource Cache
+
+In order to configure multiple web servers, it is necessary to set shared cache storage. Install ([Memcached] (http://php.net/manual/en/book.memcached.php) or [Redis] (https://redis.io/)) module.
+
+### Memcached
+
+```php
+<?php
+namespace BEAR\HelloWorld\Module;
+
+use BEAR\QueryRepository\StorageMemcachedModule;
+use BEAR\Package\Context\ProdModule as PackageProdModule;
+use Ray\Di\AbstractModule;
+use Ray\Di\Scope;
+
+class ProdModule extends AbstractModule
+{
+    /**
+     * {@inheritdoc}
+     */
+    protected function configure()
+    {
+        // memcache
+        // {host}:{port}:{weight},...
+        $memcachedServers = 'mem1.domain.com:11211:33,mem2.domain.com:11211:67';
+        $this->install(new StorageMemcachedModule(memcachedServers);
+
+        // Install default ProdModule
         $this->install(new PackageProdModule);
     }
 }
 ```
-`Cache` interface annotated with `@Storage` is defined for query repository and it is a shared storage for web servers.
 
-We cannot use `ApcCache` on multiple servers, however, we have the option to use
-[Redis](http://doctrine-orm.readthedocs.org/en/latest/reference/caching.html#redis) or other storage by creating an adapter.
-([Memcached](http://doctrine-orm.readthedocs.org/en/latest/reference/caching.html#memcached) is also available, but be careful about the capacity and volatility because it is stored in memory.）
+### Redis
+
+```php?start_inline
+// redis
+$redisServer = 'localhost:6379'; // {host}:{port}
+$this->install(new StorageRedisModule($redisServer);
+```
+
+When using storage other than the above, create a new module with reference to each module.
+
+### Set cache expiration (TTL)
+
+To change the default TTL,Install `StorageExpiryModule`.
+
+
+```php?start_inline
+// Cache time
+$short = 60;
+$medium = 3600;
+$long = 24 * 3600;
+$this->install(new StorageExpiryModule($short, $medium, $long);
+```
+### Specify the cache version
+
+Resource cache incompatibility is lost In the case of deploy, change the cache version.
+
+```
+$this->install(new CacheVersionModule($cacheVersion));
+```
+
+If you want to destroy the resource cache every time you deploy, assign time and random value to `$ cacheVersion`. (This statement is invoked only once after deploy.)
 
 ## HTTP Cache
 
@@ -124,4 +189,4 @@ Since injection is done in all classes, there is no problem of DI error at runti
 vendor/bin/bear.compile 'Polidog\Todo' prod-html-app /path/to/prject
 ```
 
-Deployer's [BEAR.Sunday recipe](https://github.com/bearsunday/deploy) is convenient and safe to use. Consider using the other server configuration tool as well as referring or running the Deployer script.
+Deployer's [BEAR.Sunday recipe](https://github.com/bearsunday/deploy) is convenient and safe to use. Consider using the other server configuration tool as well as referring or running the Deployer script. Since Deployer generates a project directory each time, you do not have to worry about regenerating `$app`.
