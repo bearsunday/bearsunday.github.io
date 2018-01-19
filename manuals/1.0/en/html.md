@@ -5,12 +5,14 @@ category: Manual
 permalink: /manuals/1.0/en/html.html
 ---
 
+(You are reading the documentation for HTML v1. Switch to the documentation for [Html v2](html-v2).)
+
 # HTML
 
 In order to have an HTML reprensentation lets install `madapaja/twig-module` with composer.
 
 ```bash
-composer require madapaja/twig-module
+composer require madapaja/twig-module ^1.0
 ```
 
 Next create the context file `src/Module/HtmlModule.php` and install the `TwigModule`.
