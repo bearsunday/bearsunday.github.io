@@ -100,7 +100,7 @@ class Todos extend ResourceObject
 }
 ```
 
-`Todos.hmtl.twig`
+`Todos.html.twig`
 
 ```twig
 {% raw %}{{ _ro.code }} // 200
