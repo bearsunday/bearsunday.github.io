@@ -5,6 +5,8 @@ category: Manual
 permalink: /manuals/1.0/ja/html.html
 ---
 
+(これは^1.0バージョンのドキュメントです。Twig v2を使用する[twig-module ^2.0](html-v2)も利用可能です。)
+
 # HTML
 
 HTML表示のためにcomposerで`madapaja/twig-module`をインストールします。
