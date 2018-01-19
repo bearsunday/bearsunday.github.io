@@ -83,16 +83,16 @@ content-type: text/html; charset=utf-8
 
 例）
 
-`Index.php`
+`Todos.php`
 
 ```php
-class Index extend ResourceObject
+class Todos extend ResourceObject
 {
+    public $code = 200;
+
     public $text = [
         'name' => 'BEAR';
-    ];
-    
-    public $code = 200;
+    ];    
 
     public $body = [
         ['title' => 'run']
@@ -100,7 +100,7 @@ class Index extend ResourceObject
 }
 ```
 
-`Index.hmtl.twig`
+`Todos.hmtl.twig`
 
 ```twig
 {% raw %}{{ _ro.code }} // 200
@@ -137,7 +137,7 @@ class Todos extends ResourceObject
 {% endfor %}{% endraw %}
 ```
 
-### page://self/todos
+### page://self/index
 
 ```php
 class Index extends ResourceObject
