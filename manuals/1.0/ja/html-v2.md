@@ -5,13 +5,13 @@ category: Manual
 permalink: /manuals/1.0/ja/html-v2.html
 ---
 
-(これは^2.0バージョンのドキュメントです。以前のTwig v1を使用する[twig-module ^1.0](html)も利用可能です。)
+(これはHTML v2のドキュメントです。以前のTwig v1を使用する[HTML v1](html)も利用可能です。)
 
-# HTML (v2)
+# HTML
 
 ## インストール
 
-composerで[Twig v2](https://twig.symfony.com/doc/2.x/)のモジュール`madapaja/twig-module ^2.0`をインストールします。
+HTML表示のためにcomposerで[Twig v2](https://twig.symfony.com/doc/2.x/)のモジュールをインストールします。
 
 ```bash
 composer require madapaja/twig-module ^2.0
@@ -38,14 +38,14 @@ class HtmlModule extends AbstractModule
 `bootstrap/web.php`や`public/index.php`のコンテキストを変更して`html`を有効にします。
 
 ```bash
-$context = 'cli-html-app';
+$context = 'cli-html-app'; // 'htm-app'
 ```
 ## テンプレート
 
-1つのリソースに１つのテンプレートファイルが対応します。リソースクラスファイルと同じ`src`か`templates`フォルダに設置します。
-`src/Page/Index.php`に対応するのは`src/Resource/Page/Index.html.twig`か`templates/Page/Index.html.twig`になります。
+1つのリソースクラスに１つのテンプレートファイルがリソースクラスファイルと同じ`src`か`templates`フォルダに必要です。
+例えば`src/Page/Index.php`には`src/Resource/Page/Index.html.twig`か`var/templates/Page/Index.html.twig`が必要です。
 
-テンプレートにアサインされるのはリソースの "**body**" とリソース全体 "**_ro**" です。
+テンプレートにリソースの **body**がアサインされます。
 
 例）
 
@@ -60,7 +60,7 @@ class Index extend ResourceObject
 }
 ```
 
-`src/Page/Index.twig.php` または `templates/Page/Index.twig.php`
+`src/Page/Index.twig.php` または `var/templates/Page/Index.twig.php`
 
 ```twig
 {% raw %}<h1>{{ greeting }}</h1>{% endraw %}
@@ -70,7 +70,8 @@ class Index extend ResourceObject
 
 ```bash
 php bootstrap/web.php get /
-
+```
+```bash
 200 OK
 content-type: text/html; charset=utf-8
 
@@ -79,7 +80,7 @@ content-type: text/html; charset=utf-8
 
 ## リソースのアサイン
 
-リソースクラスのプロパティを参照するにはリソース全体がアサインされる`_ro`を使います。
+リソースクラスのプロパティを参照するにはリソース全体がアサインされる`_ro`を参照します。
 
 例）
 
@@ -112,8 +113,9 @@ class Todos extend ResourceObject
 
 ## ビューの階層構造
 
-リソースクラス単位でビューを持つ事ができます。構造をよく表しキャッシュもリソース単位で行われるので効率的です。
-`app://self/todos`を読み込む`page://self/index`のコードサンプルは以下のようになります。
+リソースクラス単位でビューを持つ事ができます。構造を良く表し、キャッシュもリソース単位で行われるので効率的です。
+
+例）`app://self/todos`を読み込む`page://self/index`
 
 ### app://self/todos
 

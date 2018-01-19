@@ -12,7 +12,7 @@ permalink: /manuals/1.0/ja/html.html
 HTML表示のためにcomposerで`madapaja/twig-module`をインストールします。
 
 ```bash
-composer require madapaja/twig-module
+composer require madapaja/twig-module ^1.0
 ```
 
 次に`html`コンテキストファイル`src/Module/HtmlModule.php`を用意して`TwigModule`をインストールします。
