@@ -182,21 +182,22 @@ We can add the necessary information to `vnd.error+json` using `@VndError` annot
  public function onPost()
 ```
 
-## VndErrorModule
+## FormVndErrorModule
 
-If we install `VndErrorModule`, the method annotated with `@FormValidation`
+If we install `Ray\WebFormModule\FormVndErrorModule`, the method annotated with `@FormValidation`
 will throw an exception in the same way as the method annotated with `@InputValidation`.
 We can use the page resources as API.
 
 ```php?start_inline
-use BEAR\Package\Provide\Error\VndErrorModule;
 use Ray\Di\AbstractModule;
+use Ray\WebFormModule\FormVndErrorModule;
 
 class FooModule extends AbstractModule
 {
     protected function configure()
     {
-        $this->override(new VndErrorModule);
+        $this->install(new AuraInputModule);
+        $this->override(new FormVndErrorModule);
     }
 }
 ```

@@ -182,20 +182,21 @@ echo $e->error;
  public function onPost()
 ```
 
-## VndErrorModuleモジュール
+## FormVndErrorModuleモジュール
 
-`VndErrorModule`をインストールすると`@FormValidation`フォームとアノートしたメソッドも`@InputValidation`とアノテートしたメソッドと同じように例外を投げるようになります。
+`Ray\WebFormModule\FormVndErrorModule`をインストールすると`@FormValidation`フォームとアノートしたメソッドも`@InputValidation`とアノテートしたメソッドと同じように例外を投げるようになります。
 作成したPageリソースをAPIとして使うことが出来ます。
 
 ```php?start_inline
-use BEAR\Package\Provide\Error\VndErrorModule;
 use Ray\Di\AbstractModule;
+use Ray\WebFormModule\FormVndErrorModule;
 
 class FooModule extends AbstractModule
 {
     protected function configure()
     {
-        $this->override(new VndErrorModule);
+        $this->install(new AuraInputModule);
+        $this->override(new FormVndErrorModule);
     }
 }
 ```
