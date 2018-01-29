@@ -40,7 +40,7 @@ The `Accept` key array specifies an array whose context is a value with the medi
 
 The `Accept-Language` key array specifies an array with the context key as the key for the language.
 
-## By Application
+## Enable by Application
 
 Change `public/index.php` to enable content negotiation **throughout the application**.
 
@@ -65,7 +65,7 @@ Accept-Language: ja-JP
 
 At this time `JaModule` requires binding for Japanese text. For details, refer to the demo application [MyVendor.Locale](https://github.com/koriym/MyVendor.Locale).
 
-## By Resource
+## Enable by Resource
 
 To do content negotiation on a resource basis, install the `AcceptModule` module and use the `@Produces` annotation.
 
