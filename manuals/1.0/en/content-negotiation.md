@@ -27,10 +27,10 @@ return [
         'application/json' => 'app',
         'cli' => 'cli-hal-app' 
     ],
-    'Accept-Language' => [
-        'ja-JP' => 'ja',
+    'Accept-Language' => [ // lower case for key
+        'ja-jp' => 'ja',
         'ja' => 'ja',
-        'en-US' => 'en',
+        'en-us' => 'en',
         'en' => 'en'
     ]
 ];

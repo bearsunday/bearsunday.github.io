@@ -28,10 +28,10 @@ return [
         'application/json' => 'app',
         'cli' => 'cli-hal-app' 
     ],
-    'Accept-Language' => [
-        'ja-JP' => 'ja',
+    'Accept-Language' => [ // キーを小文字で
+        'ja-jp' => 'ja',
         'ja' => 'ja',
-        'en-US' => 'en',
+        'en-us' => 'en',
         'en' => 'en'
     ]
 ];
