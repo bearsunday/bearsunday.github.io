@@ -101,10 +101,11 @@ class AppModule extends AbstractModule
 ルータースクリプトではグローバルで渡されていた`Map`オブジェクトに対してルートを設定します。
 ルーティングにメソッドを指定する必要がありません。１つ目の引数はルート名としてパス、２つ目の引数に名前付きトークンのプレイスフォルダーを含んだパスを指定します。
 
+`var/conf/aura.route.php`
+
 ```php
 <?php
 /* @var $map \Aura\Router\Map */
-
 $map->route('/blog', '/blog/{id}');
 $map->route('/user', '/user/{name}')->tokens(['name' => '[a-z]+']);
 ```
@@ -125,8 +126,7 @@ Auraルーターでルートされない場合は、Webルーターが使われ�
 
 下のスクリプトは`{date}`が適切なフォーマットの時だけルートします。
 
-```php
-<?php
+```php?start_inline
 $map->route('/calendar/from', '/calendar/from/{date}')
     ->tokens([
         'date' => function ($date, $route, $request) {
@@ -145,15 +145,13 @@ $map->route('/calendar/from', '/calendar/from/{date}')
 オプションのパラメーターを指定するためにはパスに`{/attribute1,attribute2,attribute3}`の表記を加えます。
 
 例）
-```php
-<?php
+```php?start_inline
 $map->route('archive', '/archive{/year,month,day}')
     ->tokens([
         'year' => '\d{4}',
         'month' => '\d{2}',
         'day' => '\d{2}',
     ]);
-?>
 ```
 
 プレイスホルダーの**内側に**最初のスラッシュがあるのに注意してください。
@@ -171,11 +169,9 @@ $map->route('archive', '/archive{/year,month,day}')
 任意の長さのパスの末尾パラメーターとして格納したいときには`wildcard()`メソッドを使います。
 
 
-```php
-<?php
+```php?start_inline
 $map->route('wild', '/wild')
     ->wildcard('card');
-?>
 ```
 スラッシュで区切られたパスの値が配列になり`wildcard()`で指定したパラメーターに格納されます。
 
