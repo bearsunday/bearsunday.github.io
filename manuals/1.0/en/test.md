@@ -268,3 +268,6 @@ Reference
  * [Stop mocking, start testing]()
  * [Why is it so bad to mock classes?](https://stackoverflow.com/questions/1595166/why-is-it-so-bad-to-mock-classes)
  * [All About Mocking with PHPUnit](https://code.tutsplus.com/tutorials/all-about-mocking-with-phpunit--net-27252)
+
+---
+*[This document](https://github.com/bearsunday/bearsunday.github.io/blob/master/manuals/1.0/en/test.md) needs to be proofread by an English speaker. If interested please send me a pull request. Thank you.*
