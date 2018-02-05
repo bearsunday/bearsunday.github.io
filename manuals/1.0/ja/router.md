@@ -181,3 +181,28 @@ $map->route('wild', '/wild')
 - `/wild/foo/bar/baz : ['card' => ['foo', 'bar', 'baz']]`
 
 その他の高度なルートに関してはAura Routerの[defining-routes](https://github.com/auraphp/Aura.Router/blob/3.x/docs/defining-routes.md)をご覧ください。
+
+## リバースルーティング
+
+ルートの名前とパラメーターの値からURLを生成することができます。
+
+```php?start_inline
+use BEAR\Sunday\Extension\Router\RouterInterface;
+
+class Index extends ResourceObject
+{
+    /**
+     * @var RouterInterface
+     */
+    private $router;
+
+    public function __construct(RouterInterface $router)
+    {
+        $this->router = $router;
+    }
+
+    public function onGet() : ResourceObject
+    {
+        $userLink = $this->router->generate('/user', ['name' => 'bear']);
+        // '/user/bear'
+```
