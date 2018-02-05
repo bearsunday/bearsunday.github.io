@@ -1,6 +1,6 @@
 ---
 layout: docs-ja
-title: router
+title: ルーター
 category: Manual
 permalink: /manuals/1.0/ja/router.html
 ---
@@ -189,7 +189,7 @@ $map->route('wild', '/wild')
 
 ## リバースルーティング
 
-ルートの名前とパラメーターの値からURLを生成することができます。
+ルートの名前とパラメーターの値からURIを生成することができます。
 
 ```php?start_inline
 use BEAR\Sunday\Extension\Router\RouterInterface;
