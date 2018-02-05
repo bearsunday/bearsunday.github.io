@@ -5,11 +5,31 @@ category: Manual
 permalink: /manuals/1.0/ja/router.html
 ---
 
-_WIP_
-
 # ルーター
 
-ルーターはWebやコンソールなどの外部コンテキストのリクエストを、内部リソースのリクエストに変換します。
+ルーターはWebやコンソールなどの外部コンテキストのリソースリクエストを、BEAR.Sunday内部のリソースリクエストに変換します。
+
+
+```php
+$request = $app->router->match($GLOBALS, $_SERVER);
+echo (string) $request;
+// get page://self/user?name=bear
+var_dump($request);
+// class BEAR\Sunday\Extension\Router\RouterMatch#298 (3) {
+//   public $method =>
+//   string(3) "get"
+//   public $path =>
+//  string(16) "page://self/user"
+//  public $query =>
+//  array(1) {
+//    'name' =>
+//    string(4) "bear"
+//  }
+// }
+$page = $app->resource->{$request->method}->uri($request->path)($request->query);
+echo $page;
+// {"greeting": "Hello bear"}
+```
 
 # Webルーター
 
@@ -206,3 +226,7 @@ class Index extends ResourceObject
         $userLink = $this->router->generate('/user', ['name' => 'bear']);
         // '/user/bear'
 ```
+
+## 独自のルーターコンポーネント
+
+ * [BEAR.AuraRouterModule](https://github.com/bearsunday/BEAR.AuraRouterModule)を参考に[RouterInterface](https://github.com/bearsunday/BEAR.Sunday/blob/1.x/src/Extension/Router/RouterInterface.php)を実装します。
