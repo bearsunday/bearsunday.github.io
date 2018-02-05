@@ -78,7 +78,7 @@ HTTP PUT トラフィックや HTTP DELETE トラフィックを許可しない�
 リクエストのパスをパラメーターとして受け取る場合はAura Routerを使用します。
 
 ```bash
-composer require madapaja/aura-router-module 2.x-dev
+composer require bear/aura-router-module 2.x-dev
 ```
 
 ルータースクリプトのパスを指定して`AuraRouterModule`をインストールします。
