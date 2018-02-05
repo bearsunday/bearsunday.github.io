@@ -77,3 +77,7 @@ class Image extends ResourceObject
 If you want to further control streaming such as streaming bandwidth and timing control, uploading to the cloud, etc. [StreamResponder](https://github.com/bearsunday/BEAR.Streamer/blob/1.x/src /StreamResponder.php ) and build it and bind it.
 
 The demo is available at [MyVendor.Stream](https://github.com/bearsunday/MyVendor.Stream).
+
+
+---
+*[This document](https://github.com/bearsunday/bearsunday.github.io/blob/master/manuals/1.0/en/stream.md) needs to be proofread by an English speaker. If interested please send me a pull request. Thank you.*
