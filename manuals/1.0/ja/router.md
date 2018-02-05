@@ -10,25 +10,10 @@ permalink: /manuals/1.0/ja/router.html
 ルーターはWebやコンソールなどの外部コンテキストのリソースリクエストを、BEAR.Sunday内部のリソースリクエストに変換します。
 
 
-```php
+```php?start_inline
 $request = $app->router->match($GLOBALS, $_SERVER);
 echo (string) $request;
 // get page://self/user?name=bear
-var_dump($request);
-// class BEAR\Sunday\Extension\Router\RouterMatch#298 (3) {
-//   public $method =>
-//   string(3) "get"
-//   public $path =>
-//  string(16) "page://self/user"
-//  public $query =>
-//  array(1) {
-//    'name' =>
-//    string(4) "bear"
-//  }
-// }
-$page = $app->resource->{$request->method}->uri($request->path)($request->query);
-echo $page;
-// {"greeting": "Hello bear"}
 ```
 
 # Webルーター
@@ -38,7 +23,7 @@ echo $page;
 
 ルーターの設定やスクリプトは必要ありません。
 
-```php
+```php?start_inline
 namespace MyVendor\MyProject\Resource\Page;
 
 // page://self/index
@@ -136,7 +121,7 @@ $map->route('/user', '/user/{name}')->tokens(['name' => '[a-z]+']);
 ## 優先ルーター
 
 Auraルーターでルートされない場合は、Webルーターが使われます。
-つまりパスでパラメーターを渡すURIだけにAuraルーターのルータースクリプトを用意すれば問題ありません。
+つまりパスでパラメーターを渡すURIだけにルータースクリプトを用意すればOKです。
 
 ## パラメーター
 
