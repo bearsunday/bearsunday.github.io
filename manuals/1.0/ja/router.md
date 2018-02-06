@@ -1,15 +1,20 @@
 ---
 layout: docs-ja
-title: router
+title: ルーター
 category: Manual
 permalink: /manuals/1.0/ja/router.html
 ---
 
-_WIP_
-
 # ルーター
 
-ルーターはWebやコンソールなどの外部コンテキストのリクエストを、内部リソースのリクエストに変換します。
+ルーターはWebやコンソールなどの外部コンテキストのリソースリクエストを、BEAR.Sunday内部のリソースリクエストに変換します。
+
+
+```php?start_inline
+$request = $app->router->match($GLOBALS, $_SERVER);
+echo (string) $request;
+// get page://self/user?name=bear
+```
 
 # Webルーター
 
@@ -18,7 +23,7 @@ _WIP_
 
 ルーターの設定やスクリプトは必要ありません。
 
-```php
+```php?start_inline
 namespace MyVendor\MyProject\Resource\Page;
 
 // page://self/index
@@ -78,7 +83,7 @@ HTTP PUT トラフィックや HTTP DELETE トラフィックを許可しない�
 リクエストのパスをパラメーターとして受け取る場合はAura Routerを使用します。
 
 ```bash
-composer require madapaja/aura-router-module 2.x-dev
+composer require bear/aura-router-module ^2.0
 ```
 
 ルータースクリプトのパスを指定して`AuraRouterModule`をインストールします。
@@ -116,7 +121,7 @@ $map->route('/user', '/user/{name}')->tokens(['name' => '[a-z]+']);
 ## 優先ルーター
 
 Auraルーターでルートされない場合は、Webルーターが使われます。
-つまりパスでパラメーターを渡すURIだけにAuraルーターのルータースクリプトを用意すれば問題ありません。
+つまりパスでパラメーターを渡すURIだけにルータースクリプトを用意すればOKです。
 
 ## パラメーター
 
@@ -181,3 +186,32 @@ $map->route('wild', '/wild')
 - `/wild/foo/bar/baz : ['card' => ['foo', 'bar', 'baz']]`
 
 その他の高度なルートに関してはAura Routerの[defining-routes](https://github.com/auraphp/Aura.Router/blob/3.x/docs/defining-routes.md)をご覧ください。
+
+## リバースルーティング
+
+ルートの名前とパラメーターの値からURIを生成することができます。
+
+```php?start_inline
+use BEAR\Sunday\Extension\Router\RouterInterface;
+
+class Index extends ResourceObject
+{
+    /**
+     * @var RouterInterface
+     */
+    private $router;
+
+    public function __construct(RouterInterface $router)
+    {
+        $this->router = $router;
+    }
+
+    public function onGet() : ResourceObject
+    {
+        $userLink = $this->router->generate('/user', ['name' => 'bear']);
+        // '/user/bear'
+```
+
+## 独自のルーターコンポーネント
+
+ * [BEAR.AuraRouterModule](https://github.com/bearsunday/BEAR.AuraRouterModule)を参考に[RouterInterface](https://github.com/bearsunday/BEAR.Sunday/blob/1.x/src/Extension/Router/RouterInterface.php)を実装します。

@@ -4,8 +4,13 @@ title: チュートリアル
 category: Manual
 permalink: /manuals/1.0/ja/tutorial.html
 ---
-
 # チュートリアル
+
+このチュートリアルはリソース、DI、AOP、REST APIなどと行ったBEAR.Sundayの基本的な機能を紹介します。
+このプロジェクトのソースコードは**各セクションごと**に[bearsunday/Tutorial](https://github.com/bearsunday/Tutorial/commits/master)にコミットしてあります。
+適宜参照してください。
+
+# プロジェクト作成
 
 年月日を入力すると曜日を返すWebサービスを作成してみましょう。
 まずプロジェクトを作成します。
@@ -47,16 +52,18 @@ php bootstrap/api.php get /weekday
 ```
 
 ```
-404 Not Found
+400 Bad Request
 content-type: application/vnd.error+json
 
 {
-    "message": "Not Found",
-    "logref": "466fa1ee",
-...
+    "message": "Bad Request",
+    "logref": "e29567cd",
 ```
 
-400はリクエストに問題があるエラーコードです。（エラーは`lofref`IDがつけられ`var/log/`でエラーの詳しい内容を参照することができます）次は引数をつけて正しいリクエストを試します。
+エラーは[application/vnd.error+json](https://github.com/blongden/vnd.error)メディアタイプで返されます。
+400はリクエストに問題があるエラーコードです。エラーには`lofref`IDがつけられ`var/log/`でエラーの詳しい内容を参照することができます。
+
+次は引数をつけて正しいリクエストを試します。
 
 ```bash
 php bootstrap/api.php get '/weekday?year=2001&month=1&day=1'
@@ -161,10 +168,10 @@ Allow: GET
 
 最初にcompoerでインストールします。
 ```bash
-composer require bear/aura-router-module ^1.0
+composer require bear/aura-router-module ^2.0
 ```
 
-次に`src/Module/AppModule.php`で`AuraRouterModule`を上書き(override)インストールします。
+次に`src/Module/AppModule.php`で`AuraRouterModule`を`PackageModule`の前でインストールします。
 
 ```php
 <?php
@@ -172,6 +179,7 @@ namespace MyVendor\Weekday\Module;
 
 use BEAR\Package\PackageModule;
 use BEAR\Package\Provide\Router\AuraRouterModule; // add this line
+
 use josegonzalez\Dotenv\Loader as Dotenv;
 use Ray\Di\AbstractModule;
 
@@ -187,8 +195,8 @@ class AppModule extends AbstractModule
             'filepath' => dirname(dirname(__DIR__)) . '/.env',
             'toEnv' => true
         ]);
+        $this->install(new AuraRouterModule($appDir . '/var/conf/aura.route.php')); // add this line
         $this->install(new PackageModule);
-        $this->override(new AuraRouterModule($appDir . '/var/conf/aura.route.php')); // 追加
     }
 }
 ```
@@ -197,9 +205,9 @@ class AppModule extends AbstractModule
 
 ```php
 <?php
-/* @var $router \BEAR\Package\Provide\Router\AuraRoute */
+/* @var $map \Aura\Router\Map */
 
-$router->route('/weekday', '/weekday/{year}/{month}/{day}');
+$map->route('/weekday', '/weekday/{year}/{month}/{day}');
 ```
 
 試してみましょう。
@@ -555,10 +563,10 @@ content-type: application/hal+json
 composerインストール
 
 ```bash
-composer require madapaja/twig-module ^1.0
+composer require madapaja/twig-module ^2.0
 ```
 
-`src/Module/HtmlModule.php`を作成
+`src/Module/HtmlModule.php`を作成します。
 
 ```php
 <?php
@@ -575,16 +583,23 @@ class HtmlModule extends AbstractModule
     }
 }
 ```
+テンプレート用のフォルダ`var/templates`を作成します。
 
-`bootstrap/web.php`を変更
+```
+mkdir var/templates
+```
+
+`bootstrap/web.php`を変更します。
 
 ```php
 <?php
-$context = 'cli-html-app';
+$context = PHP_SAPI === 'cli' ? 'cli-html-hal-app' : 'html-hal-app';
 require __DIR__ . '/bootstrap.php';
 ```
 
-これで`text/html`メディア出力の準備はできました。最後に`src/Resource/Page/Index.html.twig`にtwigテンプレートを用意します。
+これで`text/html`出力の準備はできました。
+最後に`var/templates/Page/Index.html.twig`または`src/Resource/Page/Index.html.twig`にtwigテンプレートを用意します。
+（慣習的には`var/templates/`とテンプレートフォルダを分けるやり方が馴染みがあるかもしれません。対して`src/Resource/`に設置するとリソースとその表現がまとまります。）
 
 ```bash
 <!DOCTYPE html>
@@ -594,6 +609,7 @@ require __DIR__ . '/bootstrap.php';
 </body>
 </html>
 ```
+
 
 準備完了です。まずはコンソールでこのようなHTMLが出力されるか確認してみましょう。
 
@@ -761,10 +777,24 @@ class Todo extends ResourceObject
     }
 }
 ```
-アノテーションに注目してください。クラスに付いている`@Cacheable`はこのリソースのGETメソッドがキャッシュ可能なことを示しています。`OnPost`や`onPut`の`@Transactional`はデータベースアクセスのトランザクションを示し、`onPost`の
+アノテーションに注目してください。クラスに付いている`@Cacheable`はこのリソースのGETメソッドがキャッシュ可能なことを示しています。
+`OnPost`や`onPut`の`@Transactional`はデータベースアクセスのトランザクションを示しています。
+
+`onPost`の`@ReturnCreatedResource`は作成したリソースをbodyに含みます。
+この時`Location`ヘッダーのURIで実際に`onGet`がコールされるので`Location`ヘッダーの内容が正しいことが保証されると同時に`onGet`をコールすることでキャッシュも作られます。
 
 
 `POST`してみましょう。
+
+まずキャッシュを有効にするために`bootstrap/api.php`のコンテキストをプロダクション用の`prod`にします。
+
+```php
+<?php
+$context = PHP_SAPI === 'cli' ? 'prod-cli-hal-api-app' : 'prod-hal-api-app';
+require __DIR__ . '/bootstrap.php';
+```
+
+コンソールコマンドでリクエストします。`POST`ですが便宜上クエリーの形でパラメーターを渡します。
 
 ```bash
 php bootstrap/api.php post '/todo?todo=shopping'
@@ -786,7 +816,8 @@ Location: /todo?id=1
 }
 ```
 
-ステータスコード(`201 Created`)と`Location`ヘッダーで新しいリソースが`/todo/?id=1`に作成された事がわかります。[RFC7231 Section-6.3.2](https://tools.ietf.org/html/rfc7231#section-6.3.2) [日本語訳](https://triple-underscore.github.io/RFC7231-ja.html#section-6.3.2)
+ステータスコードは`201 Created`。`Location`ヘッダーで新しいリソースが`/todo/?id=1`に作成された事がわかります。
+[RFC7231 Section-6.3.2](https://tools.ietf.org/html/rfc7231#section-6.3.2) [日本語訳](https://triple-underscore.github.io/RFC7231-ja.html#section-6.3.2)
 
 `@ReturnCreatedResource`とアノテートされているのでボディに作成されたリソースを返します。
 
@@ -814,18 +845,16 @@ content-type: application/hal+json
 }
 ```
 
-ハイパーメディアAPIの完成です！
-
-次にAPIサーバーを立ち上げます。
+ハイパーメディアAPIの完成です！APIサーバーを立ち上げましょう。
 
 ```bash
 php -S 127.0.0.1:8081 bootstrap/api.php
 ```
 
-今度は`curl`コマンドでGETしてみましょう。
+`curl`コマンドでGETします。
 
 ```bash
-curl -i 'http://127.0.0.1:8081/todo?id=1'
+curl -i http://127.0.0.1:8081/todo?id=1
 ```
 
 ```bash
@@ -864,7 +893,7 @@ curl -i http://127.0.0.1:8081/todo -X PUT -d "id=1&todo=think"
 curl -i http://127.0.0.1:8081/todo -X PUT -H 'Content-Type: application/json' -d '{"id": "1", "todo":"think" }'
 ```
 
-再度GETを行うと`Last-Modified`が変わっているのが確認できます。
+再度GETを行うと`Etag`と`Last-Modified`が変わっているのが確認できます。
 
 ```bash
 curl -i 'http://127.0.0.1:8081/todo?id=1'
@@ -873,9 +902,7 @@ curl -i 'http://127.0.0.1:8081/todo?id=1'
 この`Last-Modified`の日付は`@Cacheable`で提供されるものです。
 アプリケーションが管理したり、データベースのカラムを用意したりする必要はありません。
 
-`@Cacheable`を使うと、リソースコンテンツは書き込み用のデータベースとは違うリソースの保存専用の「クエリーリポジトリ」で管理され、データの更新や`Etag`や`Last-Modified`のヘッダーの付加が透過的に行われます。
-
-
+`@Cacheable`を使うと、リソースコンテンツは書き込み用のデータベースとは違うリソースの保存専用の「クエリーリポジトリ」で管理され`Etag`や`Last-Modified`のヘッダーの付加が自動で行われます。
 
 ## アプリケーションのインポート
 
