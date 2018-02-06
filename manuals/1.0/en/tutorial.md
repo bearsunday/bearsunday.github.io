@@ -7,6 +7,11 @@ permalink: /manuals/1.0/en/tutorial.html
 
 # Tutorial
 
+This tutorial introduces the basic functions of BEAR.Sunday that you have done with resources, DI, AOP, REST API etc.
+The source code of this project is committed in each section at [bearsunday/Tutorial](https://github.com/bearsunday/Tutorial/commits/master).
+
+# Get started
+
 Let's make a web service that returns the weekday for a given year-month-day.
 
 First make a project with [composer](https://getcomposer.org/).
@@ -48,13 +53,12 @@ php bootstrap/api.php get '/weekday'
 ```
 
 ```
-404 Not Found
+400 Bad Request
 content-type: application/vnd.error+json
 
 {
-    "message": "Not Found",
-    "logref": "466fa1ee",
-...
+    "message": "Bad Request",
+    "logref": "e29567cd",
 ```
 
 A `400` means that you sent a bad request.
@@ -113,7 +117,7 @@ content-type: application/hal+json
 This resource class only has a GET method, therefore `405 Method Not Allowed` will be returned with any other request. Try it out!.
 
 ```
-curl -i -X POST http://127.0.0.1:8080/weekday?year=2001&month=1&day=1
+curl -i -X POST 'http://127.0.0.1:8080/weekday?year=2001&month=1&day=1'
 ```
 
 
@@ -163,7 +167,7 @@ To receive a dynamic parameter in URI path, we can use `AuraRouter`. This can be
 Get it with [composer](http://getcomposer.org) first.
 
 ```bash
-composer require bear/aura-router-module ^1.0
+composer require bear/aura-router-module ^2.0
 ```
 
 ```php
@@ -171,31 +175,36 @@ composer require bear/aura-router-module ^1.0
 namespace MyVendor\Weekday\Module;
 
 use BEAR\Package\PackageModule;
-use Ray\Di\AbstractModule;
-use josegonzalez\Dotenv\Loader as Dotenv;
 use BEAR\Package\Provide\Router\AuraRouterModule; // add this line
+
+use josegonzalez\Dotenv\Loader as Dotenv;
+use Ray\Di\AbstractModule;
 
 class AppModule extends AbstractModule
 {
+    /**
+     * {@inheritdoc}
+     */
     protected function configure()
     {
+        $appDir = dirname(dirname(__DIR__));
         Dotenv::load([
             'filepath' => dirname(dirname(__DIR__)) . '/.env',
             'toEnv' => true
         ]);
+        $this->install(new AuraRouterModule($appDir . '/var/conf/aura.route.php')); // add this line
         $this->install(new PackageModule);
-        $this->override(new AuraRouterModule); // add this line
     }
 }
 ```
 
 This module looks for a router script file at `var/conf/aura.route.php`.
 
-```php?start_inline
+```php
 <?php
-/* @var $router \BEAR\Package\Provide\Router\AuraRoute */
+/* @var $map \Aura\Router\Map */
 
-$router->route('/weekday', '/weekday/{year}/{month}/{day}');
+$map->route('/weekday', '/weekday/{year}/{month}/{day}');
 ```
 
 Let's try it out.
@@ -546,7 +555,7 @@ We can see that the other resource has been included in the `_embedded` node.  B
 Composer Install
 
 ```bash
-composer require madapaja/twig-module ^1.0
+composer require madapaja/twig-module ^2.0
 ```
 
 Create `src/Module/HtmlModule.php`.
@@ -571,7 +580,7 @@ Change `bootstrap/web.php`
 
 ```php
 <?php
-$context = 'cli-html-app';
+$context = PHP_SAPI === 'cli' ? 'cli-html-hal-app' : 'html-hal-app';
 require __DIR__ . '/bootstrap.php';
 ```
 
@@ -648,7 +657,7 @@ For the DB there are various option that we have including [AuraSql](https://git
 Let's install CakeDB that the Cake PHP framework uses.
 
 ```bash
-composer require ray/cake-database-module ~1.0
+composer require ray/cake-database-module ^1.0
 ```
 
 In `src/Module/AppModule::configure()` we install the module.
