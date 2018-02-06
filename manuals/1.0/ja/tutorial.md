@@ -989,7 +989,7 @@ content-type: application/hal+json
 ```php?start_inline
 use BEAR\Package\Bootstrap;
 
-require __DIR__ . '/autoload.php';
+require dirname(__DIR__) . '/autoload.php';
 
 $api = (new Bootstrap)->getApp('MyVendor\Weekday', 'prod-hal-app');
 
@@ -1002,7 +1002,7 @@ var_dump($blog);
 試して見ましょう。
 
 ```
-php bint/test.php
+php bin/import.php
 ```
 ```
 string(17) "Hello BEAR.Sunday"
