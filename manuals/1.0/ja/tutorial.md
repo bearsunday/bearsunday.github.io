@@ -168,7 +168,7 @@ Allow: GET
 
 最初にcompoerでインストールします。
 ```bash
-composer require bear/aura-router-module ^1.0
+composer require bear/aura-router-module ^2.0
 ```
 
 次に`src/Module/AppModule.php`で`AuraRouterModule`を`PackageModule`の前でインストールします。
@@ -563,7 +563,7 @@ content-type: application/hal+json
 composerインストール
 
 ```bash
-composer require madapaja/twig-module ^1.0
+composer require madapaja/twig-module ^2.0
 ```
 
 `src/Module/HtmlModule.php`を作成します。
