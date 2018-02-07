@@ -7,14 +7,14 @@ permalink: /manuals/1.0/en/tutorial.html
 
 # Tutorial
 
-This tutorial introduces the basic functions of BEAR.Sunday that you have done with resources, DI, AOP, REST API etc.
-The source code of this project is committed in each section at [bearsunday/Tutorial](https://github.com/bearsunday/Tutorial/commits/master).
+This tutorial introduces the basic features of BEAR.Sunday that use resources, DI, AOP, REST API etc.
+Each section of the source code of this project is committed at [bearsunday/Tutorial](https://github.com/bearsunday/Tutorial/commits/master).
 
 # Get started
 
 Let's make a web service that returns the weekday for a given year-month-day.
 
-First make a project with [composer](https://getcomposer.org/).
+First, create a new project with [composer](https://getcomposer.org/).
 
 ```bash
 composer create-project bear/skeleton MyVendor.Weekday
@@ -43,14 +43,16 @@ class Weekday extends ResourceObject
 }
 ```
 
-This `MyVendor\Weekday\Resource\App\Weekday` resource class is mapped to the `/weekday` path.
-The request query is then passed to php method parameters.
+This `MyVendor\Weekday\Resource\App\Weekday` resource class is mapped to the `/weekday` path (by default, Bear.Sunday automatically creates route based on the filename - this point will be explained later).
+The request query is automatically converted to PHP method parameters (internally, Bear.Sunday introspect the method parameters).
 
-Let's access it in console and check the error code first.
+The route can be accessed via the console by typing this command:
 
 ```bash
 php bootstrap/api.php get '/weekday'
 ```
+
+The following error should display:
 
 ```
 400 Bad Request
@@ -61,9 +63,9 @@ content-type: application/vnd.error+json
     "logref": "e29567cd",
 ```
 
-A `400` means that you sent a bad request.
+A `400` means that you have sent a bad request (in this example, required parameters are missing).
 
-Next make request with the expected parameters.
+Send a new request with the expected parameters by typing the following command:
 
 ```bash
 php bootstrap/api.php get '/weekday?year=2001&month=1&day=1'
@@ -85,13 +87,13 @@ Content-Type: application/hal+json
 
 The result is returned successfully with the `application/hal+json` media type.
 
-Let us fire the php server to make a web service for this
+The previous example can be executed as a webservice as well. To do this, fire the built-in PHP server:
 
 ```bash
 php -S 127.0.0.1:8080 bootstrap/api.php
 ```
 
-Send a HTTP `GET` request with `curl`
+Send a HTTP `GET` request with `curl` (or type the URL in your browser):
 
 ```
 curl -i 'http://127.0.0.1:8080/weekday?year=2001&month=1&day=1'
@@ -114,7 +116,7 @@ content-type: application/hal+json
 }
 ```
 
-This resource class only has a GET method, therefore `405 Method Not Allowed` will be returned with any other request. Try it out!.
+This resource class only has a GET method, therefore `405 Method Not Allowed` will be returned with any other HTTP method. Try it out!
 
 ```
 curl -i -X POST 'http://127.0.0.1:8080/weekday?year=2001&month=1&day=1'
@@ -127,7 +129,7 @@ HTTP/1.1 405 Method Not Allowed
 ```
 
 
-You can use the OPTIONS method to examine the HTTP methods available and the required parameters in the request. ([RFC7231](https://tools.ietf.org/html/rfc7231#section-4.3.7))
+You can use the OPTIONS method to retrieve the supported HTTP methods and the required parameters in the request. ([RFC7231](https://tools.ietf.org/html/rfc7231#section-4.3.7))
 ```
 curl -i -X OPTIONS http://127.0.0.1:8080/weekday
 ```
@@ -229,17 +231,17 @@ Congratulations! You’ve just developed a hypermedia-driven RESTful web service
 
 ## DI
 
-Let's log a result with [monolog](https://github.com/Seldaek/monolog) logger.
+To demonstrate the power of DI, let's log a result with [monolog](https://github.com/Seldaek/monolog) logger library.
 Get it with [composer](http://getcomposer.org) first.
 
 ```bash
 composer require monolog/monolog ^1.0
 ```
 
-You instantiating `monolog` object with the `new` operator is *strongly discouraged*,
-you "receive" a created instance as a dependency instead. This is called the [DI pattern](http://en.wikipedia.org/wiki/Dependency_injection).
+A naive approach is to instantiate a `monolog` object with the `new` operator whenever you need it. However this approach is *strongly discouraged* (and make testing much harder).
+Instead, your objects should receive a created instance as a constructor dependency. This is called the [DI pattern](http://en.wikipedia.org/wiki/Dependency_injection).
 
-To do this make a `MonologLoggerProvider` dependency provider in `src/Module/MonologLoggerProvider.php`
+To do this, let's create a `MonologLoggerProvider` dependency provider in `src/Module/MonologLoggerProvider.php`
 
 ```php
 <?php
@@ -274,11 +276,10 @@ class MonologLoggerProvider implements ProviderInterface
 }
 ```
 
-We need a log directory path to log, It can be get via the application meta information object which passed in constructor.
+We need a log directory path to log. In this example, we have injected an object (`AbstractAppMeta`) which contains some configuration.
 Dependency is provided via `get` method.
 
-To bind the [logger interface](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-3-logger-interface.md) to the factory class,
-Add the following code to the `configure` method in `src/Modules/AppModule.php`.
+To bind the [logger interface](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-3-logger-interface.md) to the factory class, add the following code to the `configure` method in `src/Modules/AppModule.php`.
 
 ```php
 <?php
@@ -296,7 +297,7 @@ class AppModule extends AbstractModule
 }
 ```
 
-Now we can expect to have a `monolog` object injected into any constructor.
+Now, whenever a constructor requires a `LoggerInterface::class` object (designated within the `bind` method), our dependency injector will automatically inject a `monolog` object into the constructor (created via the `get` method we have defined earlier).
 Add some code in `src/Resource/App/Weekday.php` to be able to start logging.
 
 ```php
@@ -351,7 +352,7 @@ $time = microtime(true) - $start;
 ```
 
 Changing code to benchmark each different method can be tedious.
-For such problems [Aspect Oriented Programming](https://github.com/google/guice/wiki/AOP) works great. Using this concept you can compose a clean separation of a `cross cutting concern` and `core concern.
+For such problems [Aspect Oriented Programming](https://github.com/google/guice/wiki/AOP) works great. Using this concept you can compose a clean separation of a `cross cutting concern` and `core concern`.
 
 First, make a **interceptor** which intercepts the target method for benchmarking which we will save in `src/Interceptor/BenchMarker.php`.
 
@@ -454,7 +455,7 @@ cat var/log/cli-hal-api-app/weekday.log
 
 ## HTML
 
-Next let's turn this API application into an HTML application. Go ahead and create a new `page` resource at `src/Resource/Page/Index.php`. Even though `page` resources and `app` resources are effectively the same class their role and location differs.
+While modern applications will likely be API-first, you can turn this API application into an HTML application. Go ahead and create a new `page` resource at `src/Resource/Page/Index.php`. Even though `page` resource and `app` resource are effectively the same class, their role and location differs.
 
 ```php
 <?php
@@ -540,7 +541,7 @@ content-type: application/hal+json
 }
 ```
 
-We can see that the other resource has been included in the `_embedded` node.  Because there is no change to the resource renderer an `application/hal+json` media type is output. In order to output the HTML(text/html) media we need to install an HTML Module.
+We can see that the other resource has been included in the `_embedded` node.  Because there is no change to the resource renderer, an `application/hal+json` media type is output. In order to output the HTML(text/html) media, we need to install an HTML Module.
 
 Composer Install
 
@@ -566,7 +567,7 @@ class HtmlModule extends AbstractModule
 }
 ```
 
-Make template directory.
+Create a template directory.
 
 ```
 mkdir var/templates
@@ -580,7 +581,7 @@ $context = PHP_SAPI === 'cli' ? 'cli-html-hal-app' : 'html-hal-app';
 require __DIR__ . '/bootstrap.php';
 ```
 
-In this way `text/html` media output can be set. Lastly save your twig template `var/templates/Page/Index.html.twig` or
+In this way `text/html` media output can be set. Lastly, save your Twig template `var/templates/Page/Index.html.twig` or
  `src/Resource/Page/Index.html.twig`.
 
 ```bash
@@ -610,7 +611,7 @@ The weekday of 1991/8/1 is Thu.
 </html>
 ```
 
-In order to run the web service we need make a change to `public/index.php`.
+In order to run the web service, we need to make a change to `public/index.php`.
 
 ```php
 <?php
@@ -624,14 +625,14 @@ Boot up the PHP web server and check it out by accessing [http://127.0.0.1:8080/
 php -S 127.0.0.1:8080 var/www/index.php
 ```
 
-As the [context](/manuals/1.0/en/application.html#context) changes so does the behaviour of the application. Let's try it.
+As the [context](/manuals/1.0/en/application.html#context) changes, so does the behaviour of the application. Let's try it.
 
 ```php?start_inline
 $context = 'app';           // JSON Application (Minimal)
 $context = 'prod-hal-app';  // HAL application for production
 ```
 
-For each context php code that builds up the application is produced and saved in `var/tmp/`. These files are not normally needed, but you can use it to check how your application object is created. Using the `diff` command you can check which dependencies have changed across contexts.
+For each context PHP code that builds up the application is produced and saved in `var/tmp/`. These files are not normally needed, but you can use it to check how your application object is created. Using the `diff` command you can check which dependencies have changed across contexts.
 
 ```bash
 diff -q var/tmp/app/ var/tmp/prod-hal-app/
@@ -640,7 +641,7 @@ diff -q var/tmp/app/ var/tmp/prod-hal-app/
 ## A Hypermedia API using a Database
 
 Let's make an application resource that uses SQLite3.
-First in the console we can create our database `var/db/todo.sqlite3`.
+First, using the console, create a database `var/db/todo.sqlite3`.
 
 ```bash
 mkdir var/db
@@ -650,7 +651,7 @@ sqlite> create table todo(id integer primary key, todo, created);
 sqlite> .exit
 ```
 
-For the DB there are various option that we have including [AuraSql](https://github.com/ray-di/Ray.AuraSqlModule), [Doctrine Dbal](https://github.com/ray-di/Ray.DbalModule) or [CakeDB](https://github.com/ray-di/Ray.CakeDbModule).
+Various DB systems can be used, such as [AuraSql](https://github.com/ray-di/Ray.AuraSqlModule), [Doctrine Dbal](https://github.com/ray-di/Ray.DbalModule) or [CakeDB](https://github.com/ray-di/Ray.CakeDbModule).
 Let's install CakeDB that the Cake PHP framework uses.
 
 ```bash
@@ -751,10 +752,12 @@ class Todo extends ResourceObject
 }
 ```
 
-Please pay attention to the annotation. The `@acheable` is annotated to the class indicates that the GET method of this resource can be cached.
-`@Transactional` on `onPost` and `onPut` shows database access transactions.
+Some annotations used in this code are worth mentioning:
 
-`@ReturnCreatedResource` of `onPost` contains the created resource in body.
+* `@cacheable`: added at the class level, it indicates that the GET method of this resource can be cached.
+`@Transactional` on `onPost` and `onPut` shows database access transactions.
+* `@ReturnCreatedResource`: added on the `onPost` method, it indicates that it contains the created resource in body.
+
 At this time, since the `onGet` is actually called with the URI in the `Location` header, we guarantee that the URI of the `Location` header is correct, and at the same time we call `onGet` to create a cache.
 
 Let's try a `POST`.
@@ -789,9 +792,9 @@ Location: /todo?id=1
 }
 ```
 
-We can see that with a `201` response, a new resource `/todo/?id=1` has been created.　[RFC7231 Section-6.3.2](https://tools.ietf.org/html/rfc7231#section-6.3.2)
+Our response returned a `201` status code, and a new resource `/todo/?id=1` has been created.　[RFC7231 Section-6.3.2](https://tools.ietf.org/html/rfc7231#section-6.3.2)
 
-Since it has been announced with `@ ReturnCreatedResource`, return the resource created in the body.
+Since it has been annotated with `@ReturnCreatedResource`, the resource is automatically returned as the body.
 
 Next we will do a `GET`.
 
@@ -817,13 +820,13 @@ content-type: application/hal+json
 }
 ```
 
-The HyperMedia API is now complete　Let's start up the API server.
+The HyperMedia API is now complete. Let's start up the API server.
 
 ```bash
 php -S 127.0.0.1:8081 bootstrap/api.php
 ```
 
-`curl`コマンドでGETします。
+Let's do a GET `curl` request:
 
 ```bash
 curl -i http://127.0.0.1:8081/todo?id=1
@@ -851,10 +854,9 @@ content-type: application/hal+json
 }
 ```
 
-Make a request several times and check that the `Last-Modified` time stamp doesn't change. In this case the `onGet` method has not been run. (As a test add an `echo` into the method and try again.)
+If you run the request several times, you will notice that the `Last-Modified` timestamp does not change. This is because the class is annotated with `@Cacheable`.
 
-On the `@Cacheable` annotation if no `expiry` is set then it will be cached forever. However when updates `onPut($id, $todo)` or deletes `onDelete($id)` occur on the resource then the cache will be updated on the corresponding id.
-So a GET request just uses the saved cache data, logic contained in the `onGet` method is not invoked.
+On the `@Cacheable` annotation, if no `expiry` is set then it will be cached forever. However when updates `onPut($id, $todo)` or deletes `onDelete($id)` occur on the resource, the cached resource will automatically be flushed and refreshed for the given ID.
 
 Next we update the resource with a `PUT`.
 
@@ -868,7 +870,7 @@ If you would rather send a JSON body with the PUT request you can run the follow
 curl -i http://127.0.0.1:8080/todo -X PUT -H 'Content-Type: application/json' -d '{"id": "2", "todo":"think" }'
 ```
 
-This time when you perform a `GET` you can see that the `Last-Modified` has been updated.
+This time, when you perform a `GET` you can see that the `Last-Modified` has been updated.
 
 ```bash
 curl -i 'http://127.0.0.1:8080/todo?id=2'
@@ -876,7 +878,7 @@ curl -i 'http://127.0.0.1:8080/todo?id=2'
 
 This `Last-Modified` time stamp has been provided by `@Cacheable`. No need to provide any special application admin or database columns.
 
-When you use `@Cacheable` the resource content is also saved in a separate `query repository` where along with the resources changes are managed along with `Etag` or `Last-Modified` headers beinig automatically appended.
+When you use `@Cacheable`, the resource content is also saved in a separate `query repository` where along with the resources changes are managed along with `Etag` or `Last-Modified` headers being automatically appended.
 
 ## Application Import
 
