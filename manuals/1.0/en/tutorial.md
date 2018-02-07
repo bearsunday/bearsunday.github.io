@@ -372,9 +372,6 @@ class BenchMarker implements MethodInterceptor
         $this->logger = $logger;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function invoke(MethodInvocation $invocation)
     {
         $start = microtime(true);
@@ -576,6 +573,12 @@ class HtmlModule extends AbstractModule
 }
 ```
 
+Make template directory.
+
+```
+mkdir var/templates
+```
+
 Change `bootstrap/web.php`
 
 ```php
@@ -584,7 +587,8 @@ $context = PHP_SAPI === 'cli' ? 'cli-html-hal-app' : 'html-hal-app';
 require __DIR__ . '/bootstrap.php';
 ```
 
-In this way `text/html` media output can be set. Lastly save your twig template `src/Resource/Page/Index.html.twig`.
+In this way `text/html` media output can be set. Lastly save your twig template `var/templates/Page/Index.html.twig` or
+ `src/Resource/Page/Index.html.twig`.
 
 ```bash
 <!DOCTYPE html>
@@ -898,7 +902,7 @@ Normally you would set up the new application as a package, For this tutorial le
 ```bash
 mkdir my-vendor
 cd my-vendor
-composer create-project bear/skeleton Acme.Blog ~1.0@dev
+composer create-project bear/skeleton Acme.Blog
 ```
 
 In the `composer.json` in the `autoload` section add `Acme\\Blog`.
@@ -934,16 +938,15 @@ class AppModule extends AbstractModule
     protected function configure()
     {
         // ...
-        $dbConfig = [
-            'driver' => 'Cake\Database\Driver\Sqlite',
-            'database' => $appDir . '/var/db/todo.sqlite3'
+        $importConfig = [
+            new ImportApp('blog', 'Acme\Blog', 'prod-hal-app') // host, name, context
         ];
-        $this->install(new CakeDbModule($dbConfig));
+        $this->override(new ImportAppModule($importConfig , Context::class));
     }
 }
 ```
 
-With this a Acme\Blog` application using a `prod-hal-app` context can create resources that will be available to the `blog` host.
+With this a `Acme\Blog` application using a `prod-hal-app` context can create resources that will be available to the `blog` host.
 
 Let's check it works by creating an Import resource in `src/Resource/App/Import.php`.
 
@@ -1010,7 +1013,7 @@ var_dump($blog);
 Let's try it..
 
 ```bash
-php bint/test.php
+php bin/import.php
 ```
 
 ```
