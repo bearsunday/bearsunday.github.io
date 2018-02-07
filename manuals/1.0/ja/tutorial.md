@@ -746,11 +746,10 @@ class Todo extends ResourceObject
             ['todo' => $todo, 'created' => new \DateTime('now')],
             ['created' => 'datetime']
         );
-        // hyper link
-        $id = $statement->lastInsertId();
-        // status code
+        // created
         $this->code = 201;
-        // created resource
+        // hyperlink
+        $id = $statement->lastInsertId();
         $this->headers['Location'] = '/todo?id=' . $id;
 
         return $this;
@@ -766,11 +765,8 @@ class Todo extends ResourceObject
             ['todo' => $todo],
             ['id' => $id]
         );
-        $this->headers['Location'] = '/todo/?id=' . $id;
-        // status code
+        // no content
         $this->code = 204;
-
-        $this->body = (string) $this->onGet($id);
 
         return $this;
     }
