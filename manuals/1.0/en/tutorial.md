@@ -759,7 +759,23 @@ class Todo extends ResourceObject
 }
 ```
 
+Please pay attention to the annotation. The `@acheable` is annotated to the class indicates that the GET method of this resource can be cached.
+`@Transactional` on `onPost` and `onPut` shows database access transactions.
+
+`@ReturnCreatedResource` of `onPost` contains the created resource in body.
+At this time, since the `onGet` is actually called with the URI in the `Location` header, we guarantee that the URI of the `Location` header is correct, and at the same time we call `onGet` to create a cache.
+
 Let's try a `POST`.
+
+In order to enable caching , make the context of `bootstrap/api.php` `prod` for production.
+
+```php
+<?php
+$context = PHP_SAPI === 'cli' ? 'prod-cli-hal-api-app' : 'prod-hal-api-app';
+require __DIR__ . '/bootstrap.php';
+```
+
+Request with console command. `POST`, but for convenience we pass parameters in the form of a query.
 
 ```bash
 php bootstrap/api.php post '/todo?todo=shopping'
@@ -809,49 +825,21 @@ content-type: application/hal+json
 }
 ```
 
-The HyperMedia API is now complete.
-
-## Transactions
-
-In order to implement transactional behavior on the `POST` action we use the `@Transactional` annotation.
+The HyperMedia API is now complete　Let's start up the API server.
 
 ```bash
-<?php
-
-use Ray\CakeDbModule\Annotation\Transactional;
-// ...
-
-    /**
-     * @Transactional
-     */
-    public function onPost($todo="shopping")
+php -S 127.0.0.1:8081 bootstrap/api.php
 ```
 
-## Query Repository
-
-A resource cache is created by annotating a resource class with `@Cachable`. This cache data is created when the `onPost` action has been invoked, not only the resource properties but the HTML and JSON is also cached.
+`curl`コマンドでGETします。
 
 ```bash
-<?php
-
-use BEAR\RepositoryModule\Annotation\Cacheable;
-// ...
-
-/**
- * @Cacheable
- */
-class Todo extends ResourceObject
-```
-
-Let's try it. Unlike last time an `Etag` and `Last-Modified` header has been added to the response.
-
-```bash
-php bootstrap/api.php get '/todo?id=1'
+curl -i http://127.0.0.1:8081/todo?id=1
 ```
 
 ```bash
 HTTP/1.1 200 OK
-Host: 127.0.0.1:8080
+Host: 127.0.0.1:8081
 Date: Sun, 04 Jun 2017 18:02:55 +0200
 Connection: close
 X-Powered-By: PHP/7.1.4
@@ -870,131 +858,11 @@ content-type: application/hal+json
     }
 }
 ```
-`Last-Modified` changes upon each request, but this is because currently cache settings have been disabled. When `prod` is added to the context it becomes enabled.
+
+Make a request several times and check that the `Last-Modified` time stamp doesn't change. In this case the `onGet` method has not been run. (As a test add an `echo` into the method and try again.)
 
 On the `@Cacheable` annotation if no `expiry` is set then it will be cached forever. However when updates `onPut($id, $todo)` or deletes `onDelete($id)` occur on the resource then the cache will be updated on the corresponding id.
-
- So a GET request just uses the saved cache data, logic contained in the `onGet` method is not invoked.
-
- Just like this todo resource the timing of update or deletion of the cache is effective as it is completely contained within the resource itself. Invoke an `onPut` or `onDelete` method to give it a try.
-
-## Auto-Updating the Cache via the resource method
-
-Let's implement the `onPut` method in the `todo` resource.
-
-```php
-<?php
-namespace MyVendor\Weekday\Resource\App;
-
-use BEAR\RepositoryModule\Annotation\Cacheable;
-use BEAR\Resource\ResourceObject;
-use Ray\CakeDbModule\Annotation\Transactional;
-use Ray\CakeDbModule\DatabaseInject;
-
-/**
- * @Cacheable
- */
-class Todo extends ResourceObject
-{
-    use DatabaseInject;
-
-    public function onGet(int $id) : ResourceObject
-    {
-        $this['todo'] = $this
-            ->db
-            ->newQuery()
-            ->select('*')
-            ->from('todo')
-            ->where(['id' => $id])
-            ->execute()
-            ->fetchAll('assoc');
-
-        return $this;
-    }
-
-    /**
-     * @Transactional
-     */
-    public function onPost(string $todo) : ResourceObject
-    {
-        $statement = $this->db->insert(
-            'todo',
-            ['todo' => $todo, 'created' => new \DateTime('now')],
-            ['created' => 'datetime']
-        );
-        // hyper link
-        $this->headers['Location'] = '/todo/?id=' . $statement->lastInsertId();
-        // status code
-        $this->code = 201;
-
-        return $this;
-    }
-
-    /**
-     * @Transactional
-     */
-    public function onPut(int $id, string $todo) : ResourceObject
-    {
-        $this->db->update(
-            'todo',
-            ['todo' => $todo],
-            ['id' => (int) $id]
-        );
-        $this->headers['location'] = '/todo/?id=' . $id;
-
-        return $this;
-    }
-}
-```
-
-First create some data by doing a POST in the console.
-
-```bash
-php bootstrap/api.php post '/todo?todo=run'
-
-
-201 Created
-location: /todo/?id=2
-content-type: application/hal+json
-
-```
-
-Next we start up the API server.
-```bash
-php -S 127.0.0.1:8080 bootstrap/api.php
-```
-
-This time do a get with a `curl` command.
-
-```bash
-curl -i 'http://127.0.0.1:8080/todo?id=2'
-```
-
-```
-HTTP/1.1 200 OK
-Host: 127.0.0.1:8080
-Connection: close
-content-type: application/hal+json
-ETag: 3134272297
-Last-Modified: Tue, 26 May 2015 04:08:59 GMT
-
-{
-    "todo": [
-        {
-            "id": "2",
-            "todo": "run",
-            "created": "2015-05-04 03:51:50"
-        }
-    ],
-    "_links": {
-        "self": {
-            "href": "/todo?id=2"
-        }
-    }
-}
-```
-
-Make a request several times and check that the `Last-Modified` time stamp doesn't change. In this case the `onGet` method has not been run. As a test add an `echo` into the method and try again.
+So a GET request just uses the saved cache data, logic contained in the `onGet` method is not invoked.
 
 Next we update the resource with a `PUT`.
 

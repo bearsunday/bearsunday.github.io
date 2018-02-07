@@ -778,7 +778,7 @@ class Todo extends ResourceObject
 }
 ```
 アノテーションに注目してください。クラスに付いている`@Cacheable`はこのリソースのGETメソッドがキャッシュ可能なことを示しています。
-`OnPost`や`onPut`の`@Transactional`はデータベースアクセスのトランザクションを示しています。
+`onPost`や`onPut`の`@Transactional`はデータベースアクセスのトランザクションを示しています。
 
 `onPost`の`@ReturnCreatedResource`は作成したリソースをbodyに含みます。
 この時`Location`ヘッダーのURIで実際に`onGet`がコールされるので`Location`ヘッダーの内容が正しいことが保証されると同時に`onGet`をコールすることでキャッシュも作られます。
@@ -879,7 +879,10 @@ content-type: application/hal+json
 }
 ```
 
-何回かリクエストして`Last-Modified`の日付が変わらないことを確認しましょう。この時`onGet`メソッド内は実行されていません。試しにメソッド内で`echo`などを追加して確認してみましょう。
+何回かリクエストして`Last-Modified`の日付が変わらないことを確認しましょう。この時`onGet`メソッド内は実行されていません。（試しにメソッド内で`echo`などを追加して確認してみましょう）
+
+`expiry`を設定してない`Cacheable`アノテーションのキャッシュは時間でキャッシュが無効になる事はありません。
+`onPut($id, $todo)`や`onDelete($id)でリソースの変更が行われるとキャッシュが再生成されます。
 
 次に`PUT`メソッドでこのリソースを変更します。
 
