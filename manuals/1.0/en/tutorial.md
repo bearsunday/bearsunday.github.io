@@ -94,7 +94,7 @@ php -S 127.0.0.1:8080 bootstrap/api.php
 Send a HTTP `GET` request with `curl`
 
 ```
-curl -i http://127.0.0.1:8080/weekday?year=2001&month=1&day=1
+curl -i 'http://127.0.0.1:8080/weekday?year=2001&month=1&day=1'
 ```
 ```
 HTTP/1.1 200 OK
@@ -176,7 +176,6 @@ namespace MyVendor\Weekday\Module;
 
 use BEAR\Package\PackageModule;
 use BEAR\Package\Provide\Router\AuraRouterModule; // add this line
-
 use josegonzalez\Dotenv\Loader as Dotenv;
 use Ray\Di\AbstractModule;
 
@@ -211,6 +210,8 @@ Let's try it out.
 
 ```bash
 php bootstrap/api.php get '/weekday/1981/09/08'
+```
+```
 200 OK
 Content-Type: application/hal+json
 
@@ -334,6 +335,8 @@ Let's check `var/log/cli-hal-api-app/weekday.log` to see if our logger worked.
 
 ```bash
 php bootstrap/api.php get '/weekday/2011/05/23'
+```
+```
 cat var/log/cli-hal-api-app/weekday.log
 ```
 
@@ -424,18 +427,6 @@ class AppModule extends AbstractModule
 }
 ```
 
-```php?start_inline
-use MyVendor\Weekday\Annotation\BenchMark;
-use MyVendor\Weekday\Interceptor\BenchMarker;
-
-// add the code to configure() method.
-$this->bindInterceptor(
-    $this->matcher->any(),                           // in any class
-    $this->matcher->annotatedWith(BenchMark::class), // which annotated as @BenchMark
-    [BenchMarker::class]                             // apply BenchMarker interceptor
-);
-```
-
 Annotate the target method with `@BenchMark`.
 
 ```php?start_inline
@@ -456,7 +447,9 @@ Now check out the logging for the method invocation speed in `var/log/weekday.lo
 
 ```bash
 php bootstrap/api.php get '/weekday/2015/05/28'
-cat var/log/weekday.log
+```
+```
+cat var/log/cli-hal-api-app/weekday.log
 ```
 
 ## HTML
@@ -617,12 +610,12 @@ The weekday of 1991/8/1 is Thu.
 </html>
 ```
 
-In order to run the web service we need make a change to `var/www/index.php`.
+In order to run the web service we need make a change to `public/index.php`.
 
 ```php
 <?php
-$context = 'html-app';
-require dirname(dirname(__DIR__)) . '/bootstrap/bootstrap.php';
+$context = PHP_SAPI === 'cli-server' ? 'html-app' : 'prod-html-app';
+require dirname(__DIR__) . '/bootstrap/bootstrap.php';
 ```
 
 Boot up the PHP web server and check it out by accessing [http://127.0.0.1:8080/?year=2001&month=1&day=1](http://127.0.0.1:8080/?year=2001&month=1&day=1).
@@ -669,8 +662,7 @@ In `src/Module/AppModule::configure()` we install the module.
 ```php
 <?php
 // ...
-use Psr\Log\LoggerInterface; // add this line
-use Ray\Di\Scope; // add this line
+use Ray\CakeDbModule\CakeDbModule; // add this line
 
 class AppModule extends AbstractModule
 {

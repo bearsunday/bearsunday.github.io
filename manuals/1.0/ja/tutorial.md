@@ -179,7 +179,6 @@ namespace MyVendor\Weekday\Module;
 
 use BEAR\Package\PackageModule;
 use BEAR\Package\Provide\Router\AuraRouterModule; // add this line
-
 use josegonzalez\Dotenv\Loader as Dotenv;
 use Ray\Di\AbstractModule;
 
@@ -634,10 +633,11 @@ The weekday of 1991/8/1 is Thu.
 
 次にWebサービスを行うために`public/index.php`も変更します。
 
+
 ```php
 <?php
-$context = 'html-app';
-require dirname(dirname(__DIR__)) . '/bootstrap/bootstrap.php';
+$context = PHP_SAPI === 'cli-server' ? 'html-app' : 'prod-html-app';
+require dirname(__DIR__) . '/bootstrap/bootstrap.php';
 ```
 
 PHPサーバーを立ち上げてwebブラウザで[http://127.0.0.1:8080/?year=2001&month=1&day=1](http://127.0.0.1:8080/?year=2001&month=1&day=1)をアクセスして確認してみましょう。
@@ -684,8 +684,7 @@ composer require ray/cake-database-module ^1.0
 ```php
 <?php
 // ...
-use Psr\Log\LoggerInterface; // add this line
-use Ray\Di\Scope; // add this line
+use Ray\CakeDbModule\CakeDbModule; // add this line
 
 class AppModule extends AbstractModule
 {
