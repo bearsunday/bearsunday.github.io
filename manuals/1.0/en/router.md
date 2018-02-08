@@ -117,7 +117,7 @@ $map->route('/user', '/user/{name}')->tokens(['name' => '[a-z]+']);
 ```
 
 In the first line, accessing `/blog/bear` will be accessed as `page://self/blog?id=bear`.
-= `Blog` class's` onGet` method with the value `id`=`bear`. Also `token` is used to restrict parameters with regular expressions.
+(= `Blog` class's` onGet($id)` method with the value `$id`=`bear`.) Also `token` is used to restrict parameters with regular expressions.
 
 ## Preferred router
 

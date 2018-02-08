@@ -19,7 +19,7 @@ echo (string) $request;
 # Webルーター
 
 デフォルトのWebルーターではHTTPリクエストのパス(`$_SERVER['REQUEST_URI']`)に対応したリソースクラスにアクセスされます。
-例えば`/index`のリクエストは`{Vendor名}\{Project名}\Resource\Page\Index`クラスのHTTPメソッドじ応じたPHPメソッドにアクセスされます。
+例えば`/index`のリクエストは`{Vendor名}\{Project名}\Resource\Page\Index`クラスのHTTPメソッドに応じたPHPメソッドにアクセスされます。
 
 ルーターの設定やスクリプトは必要ありません。
 
@@ -61,14 +61,14 @@ HTTPメソッドに対応して実行されるPHPメソッドの名前と渡さ�
 | POST | onPost | $_POST または 標準入力 |
 | PUT | onPut | ※標準入力 |
 | PATCH | onPatch | ※標準入力 |
-| DELETE | onDelete | ※標準入力　| 
+| DELETE | onDelete | ※標準入力　|
 
 リクエストのメディアタイプは以下の２つが利用できます。
 
  * `application/x-www-form-urlencoded` // param1=one&param2=two
  * `application/json` // {"param1": "one", "param2": "one"} (POSTの時は標準入力の値が使われます）
 
-PHPマニュアルの[PUT メソッドのサポート](http://php.net/manual/ja/features.file-upload.put-method.php)もご覧ください。 
+PHPマニュアルの[PUT メソッドのサポート](http://php.net/manual/ja/features.file-upload.put-method.php)もご覧ください。
 
 ## メソッドオーバーライド
 
@@ -77,7 +77,7 @@ HTTP PUT トラフィックや HTTP DELETE トラフィックを許可しない�
 
  * `X-HTTP-Method-Override` POSTリクエストのヘッダーフィールドを使用してPUTリクエストやDELETEリクエストを送る。
  * `_method` URI パラメーターを使用する。例）POST /users?...&_method=PUT
- 
+
 # Auraルーター
 
 リクエストのパスをパラメーターとして受け取る場合はAura Routerを使用します。
@@ -103,8 +103,8 @@ class AppModule extends AbstractModule
 ```
 ## ルータースクリプト
 
-ルータースクリプトではグローバルで渡されていた`Map`オブジェクトに対してルートを設定します。
-ルーティングにメソッドを指定する必要がありません。１つ目の引数はルート名としてパス、２つ目の引数に名前付きトークンのプレイスフォルダーを含んだパスを指定します。
+ルータースクリプトではグローバルで渡された`Map`オブジェクトに対してルートを設定します。
+ルーティングにメソッドを指定する必要はありません。１つ目の引数はルート名としてパス、２つ目の引数に名前付きトークンのプレイスフォルダーを含んだパスを指定します。
 
 `var/conf/aura.route.php`
 
@@ -115,8 +115,8 @@ $map->route('/blog', '/blog/{id}');
 $map->route('/user', '/user/{name}')->tokens(['name' => '[a-z]+']);
 ```
 
-最初の一行では`/blog/bear`とアクセスがあると`page://self/blog?id=bear`としてアクセスされます。
-=`Blog`クラスの`onGet`メソッドに`id`=`bear`の値でコールされます。また`token`はパラメーターを正規表現で制限するときに使用します。
+最初の行では`/blog/bear`とアクセスがあると`page://self/blog?id=bear`としてアクセスされます。
+(=`Blog`クラスの`onGet($id)`メソッドに`$id`=`bear`の値でコールされます。)また`token`はパラメーターを正規表現で制限するときに使用します。
 
 ## 優先ルーター
 
