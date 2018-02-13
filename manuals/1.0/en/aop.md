@@ -51,7 +51,7 @@ $this->bindInterceptor(
 );
 
 $this->bindInterceptor(
-    $this->matcher->SubclassesOf(AdminPage::class),  // Of the AdminPage class or a class inherited from it
+    $this->matcher->subclassesOf(AdminPage::class),  // Of the AdminPage class or a class inherited from it
     $this->matcher->annotatedWith(Auth::class),      // Annotated method with the @Auth annotation
     [AdminAuthentication::class]                     //Bind the AdminAuthenticationInterceptor
 );
