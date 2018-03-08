@@ -82,19 +82,22 @@ JSONスキーマを設置します。
 
 /var/json_schema/user.json
 
-
-
 ```json
 {
   "type": "object",
   "properties": {
-    "username": {
+    "firstName": {
+      "type": "string",
+      "maxLength": 30,
+      "pattern": "[a-z\\d~+-]+"
+    },
+    "lastName": {
       "type": "string",
       "maxLength": 30,
       "pattern": "[a-z\\d~+-]+"
     }
   },
-  "required": ["username"]
+  "required": ["firstName", "lastName"]
 }
 ```
 
@@ -105,20 +108,21 @@ bodyにインデックスキーがある場合にはアノテーションの`key
 
 ```php?start_inline
 
-use BEAR\Resource\Annotation\JsonSchema; // この行を追加
+use BEAR\Resource\Annotation\JsonSchema; // Add this line
 
-class Person extends ResourceObject
+class User extends ResourceObject
 {
     /**
      * @JsonSchema(key="user", schema="user.json")
      */
     public function onGet()
     {
-
-        $this['user'] = [
-            'firstName' => 'mucha',
-            'lastName' => 'alfons',
-            'age' => 12
+        $this->body = [
+            'user' => [
+                'firstName' => 'mucha',
+                'lastName' => 'alfons',
+                'age' => 12
+            ]
         ];        
 
         return $this;
