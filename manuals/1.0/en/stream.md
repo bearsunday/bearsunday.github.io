@@ -7,7 +7,7 @@ permalink: /manuals/1.0/en/stream.html
 
 # Stream Response
 
-Normally, resources are rendered by renderers into one string and finally `echo`ed out, but then you cannot output content whose size exceeds the memory limit of PHP. With `StreamRnderer` you can stream HTTP output and you can output large size content while keeping memory consumption low. Stream output can also be used in coexistence with existing renderers.
+Normally, resources are rendered by renderers into one string and finally `echo`ed out, but then you cannot output content whose size exceeds the memory limit of PHP. With `StreamRenderer` you can stream HTTP output and you can output large size content while keeping memory consumption low. Stream output can also be used in coexistence with existing renderers.
 
 ## Change Transferer and Renderer
 
