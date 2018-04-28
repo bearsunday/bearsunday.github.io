@@ -174,7 +174,7 @@ Transfer is mostly done simply by simple `header()` function or `echo`, but it c
 
 Like a renderer, you do not have to be aware of it normally.
 
-When doing a resource specific specific transfer, override the following method.
+When doing a resource specific transfer, override the following method.
 
 ```php?start_inline
 class Index

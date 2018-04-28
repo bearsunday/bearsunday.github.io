@@ -877,7 +877,7 @@ content-type: application/hal+json
 何回かリクエストして`Last-Modified`の日付が変わらないことを確認しましょう。この時`onGet`メソッド内は実行されていません。（試しにメソッド内で`echo`などを追加して確認してみましょう）
 
 `expiry`を設定してない`Cacheable`アノテーションのキャッシュは時間でキャッシュが無効になる事はありません。
-`onPut($id, $todo)`や`onDelete($id)でリソースの変更が行われるとキャッシュが再生成されます。
+`onPut($id, $todo)`や`onDelete($id)` でリソースの変更が行われるとキャッシュが再生成されます。
 
 次に`PUT`メソッドでこのリソースを変更します。
 
