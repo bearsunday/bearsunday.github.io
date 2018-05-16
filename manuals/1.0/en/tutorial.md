@@ -21,23 +21,22 @@ composer create-project bear/skeleton MyVendor.Weekday
 ```
 This will prompt you to choose vendor name and project name. Type `MyVendor` and `Weekday` here.
 
+## Resource
+
 Add the first application resource file at `src/Resource/App/Weekday.php`
 
 ```php
 <?php
 namespace MyVendor\Weekday\Resource\App;
-
 use BEAR\Resource\ResourceObject;
-
 class Weekday extends ResourceObject
 {
     public function onGet(int $year, int $month, int $day) : ResourceObject
     {
-        $date = \DateTime::createFromFormat('Y-m-d', "$year-$month-$day");
+        $weekday = \DateTime::createFromFormat('Y-m-d', "$year-$month-$day")->format('D');
         $this->body = [
-            'weekday' => $date->format('D')
+            'weekday' => $weekday
         ];
-
         return $this;
     }
 }
@@ -160,6 +159,84 @@ Allow: GET
         ]
     }
 }
+```
+
+## Test
+
+Let's create a resource test using [PHPUnit](https://phpunit.readthedocs.io/ja/latest/).
+
+Create test file at `tests/Resource/App/WeekdayTest.php`.
+
+```php
+<?php
+namespace MyVendor\Weekday\Resource\App;
+
+use BEAR\Package\AppInjector;
+use BEAR\Resource\ResourceInterface;
+use BEAR\Resource\ResourceObject;
+use PHPUnit\Framework\TestCase;
+
+class WeekdayTest extends TestCase
+{
+    /**
+     * @var ResourceInterface
+     */
+    private $resource;
+
+    protected function setUp()
+    {
+        $this->resource = (new AppInjector('MyVendor\Weekday', 'app'))->getInstance(ResourceInterface::class);
+    }
+
+    public function testOnGet()
+    {
+        $ro = $this->resource->uri('app://self/weekday')(['year' => '2001', 'month' => '1', 'day' => '1']);
+        /* @var ResourceObject $ro  */
+        $this->assertSame(200, $ro->code);
+        $this->assertSame('Mon', $ro->body['weekday']);
+    }
+}
+```
+
+Any object of the application can be instanciated by `AppInjector` with given application name (MyVendor\Weekday) and the context (app).
+Use it to request testing resource in the test method.
+
+Let's run it.
+
+```
+./vendor/bin/phpunit
+```
+```
+PHPUnit 7.1.5 by Sebastian Bergmann and contributors.
+
+..                                                                  2 / 2 (100%)
+
+Time: 159 ms, Memory: 10.00MB
+```
+
+There are other commands to perform test and code checking.
+To get test coverage, run `composer coverage`.
+
+```
+composer coverage
+```
+
+You can see the details of the coverage by opening `build/coverage/index.html` with a web browser.
+
+You can inspect whether you are following coding standard with `composer cs` command.
+Fix it with `composer cs-fix` command.
+
+```
+composer cs
+```
+```
+composer cs-fix
+```
+
+`composer tests` will also check [phpmd](https://phpmd.org/) and [phpstan](https://github.com/phpstan/phpstan) in addition to` phpunit`, `phpcs`. It's better to do it before committing.
+
+```
+composer tests
 ```
 
 ## Routing

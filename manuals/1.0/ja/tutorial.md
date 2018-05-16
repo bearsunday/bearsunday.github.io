@@ -20,23 +20,22 @@ composer create-project bear/skeleton MyVendor.Weekday
 ```
 **vendor**名を`MyVendor`に**project**名を`Weekday`として入力します。
 
-最初にインストールされるアプリケーションリソースファイルを`src/Resource/App/Weekday.php`に作成します。
+## リソース
+
+最初にアプリケーションリソースファイルを`src/Resource/App/Weekday.php`に作成します。
 
 ```php
 <?php
 namespace MyVendor\Weekday\Resource\App;
-
 use BEAR\Resource\ResourceObject;
-
 class Weekday extends ResourceObject
 {
     public function onGet(int $year, int $month, int $day) : ResourceObject
     {
-        $date = \DateTime::createFromFormat('Y-m-d', "$year-$month-$day");
+        $weekday = \DateTime::createFromFormat('Y-m-d', "$year-$month-$day")->format('D');
         $this->body = [
-            'weekday' => $date->format('D')
+            'weekday' => $weekday
         ];
-
         return $this;
     }
 }
@@ -159,6 +158,84 @@ Allow: GET
         ]
     }
 }
+```
+## テスト
+
+[PHPUnit](https://phpunit.readthedocs.io/ja/latest/)を使ったリソースのテストを作成しましょう。
+
+`tests/Resource/App/WeekdayTest.php`に以下のテストコードを記述します。
+
+```php
+<?php
+namespace MyVendor\Weekday\Resource\App;
+
+use BEAR\Package\AppInjector;
+use BEAR\Resource\ResourceInterface;
+use BEAR\Resource\ResourceObject;
+use PHPUnit\Framework\TestCase;
+
+class WeekdayTest extends TestCase
+{
+    /**
+     * @var ResourceInterface
+     */
+    private $resource;
+
+    protected function setUp()
+    {
+        $this->resource = (new AppInjector('MyVendor\Weekday', 'app'))->getInstance(ResourceInterface::class);
+    }
+
+    public function testOnGet()
+    {
+        $ro = $this->resource->uri('app://self/weekday')(['year' => '2001', 'month' => '1', 'day' => '1']);
+        /* @var ResourceObject $ro  */
+        $this->assertSame(200, $ro->code);
+        $this->assertSame('Mon', $ro->body['weekday']);
+    }
+}
+```
+
+`setUp()`ではアプリケーション名(MyVendor\Weekday)とコンテキスト(app)を指定するとアプリケーションのどのオブジェクトでも生成できる
+`AppInjector`を使ってリソースクライアント(`ResourceInterface`)を取得します。
+
+テストメソッド`testOnGet`でリソースをリクエストしてテストします。
+
+実行して見ましょう。
+
+```
+./vendor/bin/phpunit
+```
+```
+PHPUnit 7.1.5 by Sebastian Bergmann and contributors.
+
+..                                                                  2 / 2 (100%)
+
+Time: 159 ms, Memory: 10.00MB
+```
+
+インストールされたプロジェクトには他にはテストやコード検査を実行するコマンドが用意されています。
+テストカバレッジを取得するには`composer coverage`を実行します。
+
+```
+composer coverage
+```
+カバレッジの詳細を`build/coverage/index.html`をWebブラウザで開くことで見ることができます。
+
+コーディングスタンダードにしたがっているかののチェックは`composer cs`コマンドで確認できます。
+その自動修正は`composer cs-fix`コマンドでできます。
+
+```
+composer cs
+```
+```
+composer cs-fix
+```
+
+`composer tests`は　`phpunit`、`phpcs`に加え[phpmd](https://phpmd.org/)と[phpstan](https://github.com/phpstan/phpstan)の検査も行います。コミット前に行うのが良いでしょう。
+
+```
+composer tests
 ```
 
 ## ルーティング
