@@ -23,6 +23,7 @@ composer require madapaja/twig-module ^2.0
 namespace MyVendor\MyPackage\Module;
 
 use BEAR\AppMeta\AppMeta;
+use Madapaja\TwigModule\TwigErrorPageModule;
 use Madapaja\TwigModule\TwigModule;
 use Ray\Di\AbstractModule;
 
@@ -31,8 +32,17 @@ class HtmlModule extends AbstractModule
     protected function configure()
     {
         $this->install(new TwigModule);
+        $this->install(new TwigErrorPageModule);
     }
 }
+```
+
+`TwigErrorPageModule`はエラー表示をHTMLで行うオプションです。`HtmlModule`でインストールしないで`ProdModule`でインストールして開発時のエラー表示はJSONにすることも出来ます。
+
+次にテンプレートファイルをコピーします
+
+```bash
+cp -r vendor/madapaja/twig-module/var/templates var/templates
 ```
 
 `bootstrap/web.php`や`public/index.php`のコンテキストを変更して`html`を有効にします。
@@ -42,8 +52,8 @@ $context = 'cli-html-app'; // 'htm-app'
 ```
 ## テンプレート
 
-1つのリソースクラスに１つのテンプレートファイルがリソースクラスファイルと同じ`src`か`templates`フォルダに必要です。
-例えば`src/Page/Index.php`には`src/Resource/Page/Index.html.twig`か`var/templates/Page/Index.html.twig`が必要です。
+1つのリソースクラスに１つのテンプレートファイルが`var/templates`フォルダに必要です。
+例えば`src/Page/Index.php`には`var/templates/Page/Index.html.twig` が必要です。
 
 テンプレートにリソースの **body**がアサインされます。
 
@@ -78,6 +88,45 @@ content-type: text/html; charset=utf-8
 <h1>Hello BEAR.Sunday</h1>
 ```
 
+## テンプレートファイルの選択
+
+どのテンプレートを使用するかはリソースでは決定しません。リソースの状態によって`include`します。
+
+```twig{% raw %}
+{% if user.is_login %}
+    {{ include('member.html.twig') }}
+{% else %}
+    {{ include('guest.html.twig') }}
+{% endif %}{% endraw %}
+```
+
+リソースクラスはリソース状態(body)だけに関心を持ち、リソース表現（ビュー）の関心はテンプレートが持ちます。
+
+## エラーページテンプレート
+
+`var/templates/error.html.twig`を編集します。エラーページには以下の値がアサインされています。
+
+| 変数 | 意味 | プロパティ |
+|---|---|---|---|
+| status | HTTP ステータス | code, message |
+| e | 例外 | code, message, class |
+| logref | ログID |  |
+
+例
+
+```twig
+{% raw %}{% extends 'layout/base.html.twig' %}
+{% block title %}{{ status.code }} {{ status.message }}{% endblock %}
+{% block content %}
+    <h1>{{ status.code }} {{ status.message }}</h1>
+    {% if status.code == 404 %}
+        <p>The requested URL was not found on this server.</p>
+    {% else %}
+        <p>The server is temporarily unable to service your request.</p>
+        <p>refference number: {{ logref }}</p>
+    {% endif %}
+{% endblock %}{% endraw %}
+```
 ## リソースのアサイン
 
 リソースクラスのプロパティを参照するにはリソース全体がアサインされる`_ro`を参照します。
@@ -160,7 +209,6 @@ class Index extends ResourceObject
   {{ todos|raw }}
 {% endblock %}{% endraw %}
 ```
-
 ## 拡張
 Twigを`addExtension()`メソッドで拡張する場合には、拡張を行うTwigのProviderクラスを用意し`Twig_Environment`クラスに`Provider`束縛します。
 
