@@ -22,7 +22,6 @@ composer require madapaja/twig-module ^2.0
 ```php?start_inline
 namespace MyVendor\MyPackage\Module;
 
-use BEAR\AppMeta\AppMeta;
 use Madapaja\TwigModule\TwigErrorPageModule;
 use Madapaja\TwigModule\TwigModule;
 use Ray\Di\AbstractModule;
@@ -39,7 +38,7 @@ class HtmlModule extends AbstractModule
 
 `TwigErrorPageModule`はエラー表示をHTMLで行うオプションです。`HtmlModule`でインストールしないで`ProdModule`でインストールして開発時のエラー表示はJSONにすることも出来ます。
 
-次にテンプレートファイルをコピーします
+次に`templates`フォルダをコピーします
 
 ```bash
 cp -r vendor/madapaja/twig-module/var/templates var/templates
@@ -90,7 +89,7 @@ content-type: text/html; charset=utf-8
 
 ## テンプレートファイルの選択
 
-どのテンプレートを使用するかはリソースでは決定しません。リソースの状態によって`include`します。
+どのテンプレートを使用するかはリソースでは選択しません。リソースの状態によって`include`します。
 
 ```twig{% raw %}
 {% if user.is_login %}
@@ -100,17 +99,18 @@ content-type: text/html; charset=utf-8
 {% endif %}{% endraw %}
 ```
 
-リソースクラスはリソース状態(body)だけに関心を持ち、リソース表現（ビュー）の関心はテンプレートが持ちます。
+リソースクラスはリソース状態だけに関心を持ち、テンプレートだけがリソース表現に関心を持ちます。
+このような設計原則を[関心の分離(SoC)](https://ja.wikipedia.org/wiki/%E9%96%A2%E5%BF%83%E3%81%AE%E5%88%86%E9%9B%A2)といいます。
 
-## エラーページテンプレート
+## エラーページ
 
 `var/templates/error.html.twig`を編集します。エラーページには以下の値がアサインされています。
 
-| 変数 | 意味 | プロパティ |
+| 変数 | 意味 | キー |
 |---|---|---|---|
 | status | HTTP ステータス | code, message |
 | e | 例外 | code, message, class |
-| logref | ログID |  |
+| logref | ログID | n/a |
 
 例
 
@@ -127,6 +127,7 @@ content-type: text/html; charset=utf-8
     {% endif %}
 {% endblock %}{% endraw %}
 ```
+
 ## リソースのアサイン
 
 リソースクラスのプロパティを参照するにはリソース全体がアサインされる`_ro`を参照します。
