@@ -632,6 +632,7 @@ Create `src/Module/HtmlModule.php`.
 <?php
 namespace MyVendor\Weekday\Module;
 
+use Madapaja\TwigModule\TwigErrorPageModule;
 use Madapaja\TwigModule\TwigModule;
 use Ray\Di\AbstractModule;
 
@@ -640,15 +641,17 @@ class HtmlModule extends AbstractModule
     protected function configure()
     {
         $this->install(new TwigModule);
+        $this->install(new TwigErrorPageModule);
     }
 }
 ```
 
-Create a template directory.
+Copy `templates` directory.
 
+```bash
+cp -r vendor/madapaja/twig-module/var/templates var/templates
 ```
-mkdir var/templates
-```
+
 
 Change `bootstrap/web.php`
 
@@ -658,8 +661,7 @@ $context = PHP_SAPI === 'cli' ? 'cli-html-hal-app' : 'html-hal-app';
 require __DIR__ . '/bootstrap.php';
 ```
 
-In this way `text/html` media output can be set. Lastly, save your Twig template `var/templates/Page/Index.html.twig` or
- `src/Resource/Page/Index.html.twig`.
+In this way `text/html` media output can be set. Lastly, save your Twig template `var/templates/Page/Index.html.twig`.
 
 ```bash
 <!DOCTYPE html>
