@@ -71,7 +71,7 @@ You can create your own boot file for different context.
 ### bin/
 
 Plavce command-line executable files.
- 
+
 ### src/
 
 Place application class file.
@@ -143,6 +143,7 @@ Optional library package can be installed with `composer require` command.
 || [ray/doctrine-orm-module](https://github.com/kawanamiyuu/Ray.DoctrineOrmModule) | [Doctrine ORM](https://github.com/doctrine/doctrine2)
 | Storage |
 ||[bear/query-repository](https://github.com/bearsunday/BEAR.QueryRepository) | CQRS inspired repository
+||[bear/query-module](https://github.com/ray-di/Ray.QueryModule) | Separation of external access such as DB or Web API
 | Web
 | |[madapaja/twig-module](http://bearsunday.github.io/manuals/1.0/ja/html.html) | [Twig](http://twig.sensiolabs.org/)
 | |[ray/web-form-module](http://bearsunday.github.io/manuals/1.0/ja/form.html) | Web form
@@ -156,6 +157,7 @@ Optional library package can be installed with `composer require` command.
 | |[ray/oauth-module](https://github.com/Ray-Di/Ray.OAuthModule) | OAuth
 | |[kuma-guy/jwt-auth-module](https://github.com/kuma-guy/BEAR.JwtAuthModule) | JSON Web Token
 | |[ray/role-module](https://github.com/ray-di/Ray.RoleModule) | Zend Acl
+| |[bear/acl-resource](https://github.com/bearsunday/BEAR.AclResource) | ACL based embedded resource
 | Hypermedia
 | |[kuma-guy/siren-module](https://github.com/kuma-guy/BEAR.SirenModule) | Siren
 |  Development
