@@ -33,7 +33,7 @@ Ray.Diには以下の機能があります。
 ## 注入
 
 クラスが依存を受け取る箇所はコンストラクタ、セッターメソッド、実行メソッドの三種類がありそれをインジェクションポイントと呼びます。
-コンストラクタでの注入は必須ですが、セッターメソッドには通常のメソッドと区別するための`@Injet`アノテーションの印が必要です。
+コンストラクタでの注入は必須でアノテーションは不要ですが、セッターメソッドには通常のメソッドと区別するための`@Injet`アノテーションが必要です。
 
 コンストラクターインジェクション
 
@@ -151,7 +151,7 @@ $this->bind($interface)->toInstance($instance);
 
 ## リンク束縛
 
-リンク束縛は最も基本の束縛です。インターフェイスとその実装クラスを束縛します。
+リンク束縛は**最も基本の束縛**です。インターフェイスとその実装クラスを束縛します。
 
 ```php?start_inline
 class ListerModule extends AbstractModule
@@ -234,10 +234,8 @@ class Index
 
 引数が複数の場合は`変数名=名前`のペアでカンマ区切りの文字列を指定します。
 
-
 ```php?start_inline
 /**
- * @Inject
  * @Named("paymentLogger=payment_logger,debugLogger=debug_logger")
  */
 public __construct(LoggerInterface $paymentLogger, LoggerInterface $debugLogger)
@@ -261,8 +259,9 @@ protected function configure()
 
 ## コンストラクタ束縛
 
-`@Inject`アノテーションのないサードパーティーのクラスやアノテーションを使わない場合には**コンストラクタ束縛**で束縛することができます。
+アノテーションを使わない場合や、セッターメソッドに`@Inject`アノテーションのないサードパーティーのクラスなどは**コンストラクタ束縛**で束縛することができます。（コンストラクトインジェクションと混同しないように注意）
 最初の引数にはクラス名前、２番目の引数の`変数名`=>`名前`の名前束縛、３番目の引数にセッターインジェクションを指定します。
+
 
 ```php
 <?php
@@ -333,7 +332,8 @@ protected function configure()
 
 ### PDO Example
 
-[PDO](http://php.net/manual/ja/pdo.construct.php)クラスの束縛の例です.`$username`と`$password`に名前をつけて束縛しています。
+[PDO](http://php.net/manual/ja/pdo.construct.php)クラスの束縛の例です. 
+PDOクラスにはアノテーションが無い為に、`$username`と`$password`に名前をつけて束縛しています。
 
 ```php?start_inline
 public PDO::__construct ( string $dsn [, string $username [, string $password [, array $options ]]] )
@@ -356,7 +356,7 @@ protected function configure()
 }
 ```
 
-PDOのインターフェイスがないので`toConstructor()`メソッドの二番目の引数の名前束縛でP束縛しています
+PDOのインターフェイスがないので`toConstructor()`メソッドの二番目の引数の名前束縛で束縛しています。
 
 ## プロバイダ束縛
 
@@ -530,6 +530,7 @@ public function setMessage(string $message) // こんにちは
 ```
 
 オブジェクトも束縛できますが、単純な値オブジェクトだけにするべきです。
+サービスオブジェクトには使わないようにします。
 
 ```php?start_inline
 protected function configure()
@@ -641,3 +642,7 @@ return $instance;
  * `MyVendor_Todo_Resource_App_Todos_c0kmGJA` という語尾に文字列がつく生成されたクラス名はAOPがバインドされていることを表します。
  * `$singleton('BEAR\\Resource\\RenderInterface-')`は`RenderInterface`インターフェイスに束縛されてあるインスタンスをシングルトンで取得するという意味です。
  * `$instance->bindings`の`[{メソッド名} => {インターセプター}]`の配列がインターセプターの束縛を表します。
+
+## demo
+
+Ray.Diを更に理解するために`demoコード`もご覧ください。様々なタイプの束縛の例があります。
