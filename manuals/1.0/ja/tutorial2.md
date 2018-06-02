@@ -126,7 +126,7 @@ vendor/bin/phinx create -c var/db/phinx.php Ticket
 // ...
 created var/db/migrations/20180602071503_ticket.php
 ```
-作成された`var/db/migrations/{タイムスタンプ}_ticket.php`マイグレーションファイルの`change()`メソッドを編集します。
+作成された`var/db/migrations/{タイムスタンプ}_ticket.php`マイグレーションファイルを編集します。
 
 ```php
     public function change()
@@ -141,8 +141,12 @@ created var/db/migrations/20180602071503_ticket.php
             ->addColumn('deleted', 'boolean')
             ->create();
     }
-```
 
+    public function down()
+    {
+        $this->dropTable('ticket');
+    }
+```
 
 マイグレーション実行します。
 
@@ -166,6 +170,7 @@ passthru('vendor/bin/phinx migrate -c var/db/phinx.php -e development');
 ```bash
 composer setup
 ```
+
 `composer install`と`composer setup`だけで環境構築が完了するようにすれば、セットアップのための詳しいドキュメンテーションは不要で、ディプロイにも便利です。
 必要に応じてフォルダの書き込み権限のチェックやクリーニング、DIのcompileなどのウオームアップスクリプトも追加しましょう。
 
