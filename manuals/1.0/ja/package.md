@@ -168,6 +168,8 @@ PSR-7のミドルウエアのためのオプションパッケージです。
 | |[kuma-guy/siren-module](https://github.com/kuma-guy/BEAR.SirenModule) | Siren
 |  開発 |
 | |[ray/test-double](https://github.com/ray-di/Ray.TestDouble) | テストダブル
+|  非同期ハイパフォーマンス |
+| |[MyVendor.Swoole](https://github.com/bearsunday/MyVendor.Swoole) | [Swoole](https://github.com/swoole/swoole-src)
 
 ## ベンダー・パッケージ
 

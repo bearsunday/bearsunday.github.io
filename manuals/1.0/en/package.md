@@ -162,6 +162,8 @@ Optional library package can be installed with `composer require` command.
 | |[kuma-guy/siren-module](https://github.com/kuma-guy/BEAR.SirenModule) | Siren
 |  Development
 | |[ray/test-double](https://github.com/ray-di/Ray.TestDouble) | Test Double
+|  Asynchronous high performance |
+| |[MyVendor.Swoole](https://github.com/bearsunday/MyVendor.Swoole) | [Swoole](https://github.com/swoole/swoole-src)
 
 ## Semver
 
