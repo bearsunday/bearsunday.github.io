@@ -350,7 +350,7 @@ Ticket（アイテム）、Tickets（Ticketアイテムの集合）の２つの�
 
 # テスト
 
-次に今から作ろうとする/ticketリソースのテストを用意します。
+次に今から作ろうとする/ticketリソースのテストを`tests/Resource/App/TicketsTest.php`に用意します。
 
 ```php
 <?php
