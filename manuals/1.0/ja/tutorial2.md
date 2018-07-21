@@ -550,7 +550,7 @@ class Tickets extends ResourceObject
 
 GETリクエストはticket.phpの時とほぼ同様です。
 
-## /indexリソース
+## indexリソース
 
 indexリソースは作成したリソース(API)へのリンク集です。
 
