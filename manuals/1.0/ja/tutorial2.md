@@ -230,7 +230,6 @@ class Ticket extends AbstractMigration
         $this->table('ticket')->drop()->save();
     }
 }
-
 ```
 
 もう一度セットアップコマンドを実行してテーブルを作成します。
@@ -477,6 +476,7 @@ class Ticket extends ResourceObject
      */
     public function onGet(string $id) : ResourceObject
     {
+        unset($id);
     }
 
     /**
@@ -524,7 +524,8 @@ class Ticket extends ResourceObject
 
 ## tikcetsリソース
 
-次はTikcetリソースの集合のTikcetsリソースです。JSONスキーマでは単純に`ticket.json`の集合(array)と定義されています。
+次はTikcetリソースの集合のTikcetsリソースを`src/resource/App/Tickets.php`に作成します。JSONスキーマでは単純に`var/json_schema/tickets.json`は`ticket.json`スキーマの集合(array)と定義されています。
+このようにJSONスキーマはスキーマの構造を表すことができます。
 
 ```php
 <?php
@@ -555,7 +556,7 @@ GETリクエストはticket.phpの時とほぼ同様です。
 
 ## indexリソース
 
-indexリソースは作成したリソース(API)へのリンク集です。
+indexリソースは作成したリソース(API)へのリンク集です。`src/resource/App/Tickets.php`に作成します。
 
 ```php
 <?php
@@ -799,10 +800,11 @@ Last-Modified: Sat, 21 Jul 2018 03:02:04 GMT
 composer test
 ```
 
-コーディング規約通りにかけているか、またはphpdocがコードと同じように正しくかけてるかは静的解析ツールで調べることができます。コミットする前に必ず実行しましょう（コミットフックを設定するのも良い方法です）
+コーディング規約通りにかけているか、またはphpdocがコードと同じように正しくかけてるかは静的解析ツールで調べることができます。コミットする前に必ず実行しましょう。コミットフックを設定するのも良い方法です。
+コーディング規約のエラーは`composer cs-fix`で直すことができます。
 
 ```
 composer tests
 ```
 
-テストはパスしましたか？ REST APIの完成です！
+テストはパスしましたか？　REST APIの完成です！
