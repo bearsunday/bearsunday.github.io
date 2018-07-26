@@ -43,7 +43,7 @@ robmorgan/phinx
 
 `src/Module/AppModule.php`を編集してcomposerでインストールしたパッケージをモジュールインストールします。
 
-```
+```php
 <?php
 namespace MyVendor\Ticket\Module;
 
@@ -282,48 +282,6 @@ SELECT * FROM ticket
 Note: PHPStormを使用しているならPreference > Plugin で [Database Navigator](https://plugins.jetbrains.com/plugin/1800-database-navigator)をインストールするとSQLファイルを右クリックすると単体で実行することが出来ます。S
 
 PHPでSQLを実行する前に、このように事前に単体で実行してSQLが正しく記述できているかを確かめると確実で開発も用意です。[Sequel Pro](https://www.sequelpro.com/)や[MySQL Workbench](https://www.mysql.com/jp/products/workbench/)などのデータベースブラウザを使うのも良いでしょう。
-
-## モジュールインストール
-
-`src/Module/AppModule.php`を編集して以下のモジュールをインストールします。
-
- * [SqlQueryModule](https://github.com/ray-di/Ray.QueryModule/)
- * [NowModule](https://github.com/koriym/Koriym.Now/)
- * [JsonSchemaModule](http://bearsunday.github.io/manuals/1.0/ja/validation.html)
-
-
-
-```php
-<?php
-namespace MyVendor\Ticket\Module;
-
-use BEAR\Package\PackageModule;
-use BEAR\Resource\Module\JsonSchemaModule;
-use josegonzalez\Dotenv\Loader;
-use Koriym\Now\NowModule;
-use Ray\AuraSqlModule\AuraSqlModule;
-use Ray\Di\AbstractModule;
-use Ray\Query\SqlQueryModule;
-
-class AppModule extends AbstractModule
-{
-    /**
-     * {@inheritdoc}
-     */
-    protected function configure()
-    {
-        $appDir = dirname(__DIR__, 2);
-        (new Loader($appDir . '/.env'))->parse()->toEnv();
-        $this->install(new AuraSqlModule($_ENV['DB_DSN'], $_ENV['DB_USER'], $_ENV['DB_PASS'], $_ENV['DB_SLAVE']));
-        $this->install(new SqlQueryModule($appDir . '/var/sql'));
-        $this->install(new NowModule);
-        $this->install(new JsonSchemaModule($appDir . '/var/json_schema', $appDir . '/var/json_validate'));
-        $this->install(new PackageModule);
-    }
-}
-```
-
-
 
 ## JsonSchema
 
