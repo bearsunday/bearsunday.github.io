@@ -71,6 +71,7 @@ class AppModule extends AbstractModule
         $this->install(new PackageModule);
     }
 }
+```
 
 モジュールが必要とするフォルダを作成します。
 
@@ -78,11 +79,9 @@ class AppModule extends AbstractModule
 mkdir var/sql
 mkdir var/json_schema
 mkdir var/json_validate
-
 ```
-# データベース
 
-## DB接続情報
+## データベース
 
 プロジェクトルートフォルダの`.env`ファイルに接続情報を記述します。
 
@@ -98,7 +97,7 @@ DB_NAME=ticket
 
 phinxの実行環境を整えます。
 
-まずはフォルダ作成。
+まずはphinxが利用するフォルダを作成します。
 
 ```bash
 mkdir -p var/phinx/migrations
@@ -148,7 +147,6 @@ db: {
     $db->exec('CREATE DATABASE IF NOT EXISTS ' . $_ENV['DB_NAME'] . '_test');
     passthru('./vendor/bin/phinx migrate -c var/phinx/phinx.php -e development');
 }
-
 ```
 
 実行してデータベースを作成します。
