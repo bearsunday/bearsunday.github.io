@@ -12,21 +12,25 @@ permalink: /manuals/1.0/ja/tutorial2.html
  * APIレスポンスのスキーマを定義する[Json Schema](https://qiita.com/kyoh86/items/e7de290e9a0e989fcc14)
  * SQL文をSQL実行オブジェクトに変換する [ray/query-module](https://github.com/ray-di/Ray.QueryModule)
 
- 
-[チュートリアル](/manuals/1.0/ja/tutorial.html)と被る箇所もありますがおさらいのつもりでトライして見ましょう。
 
-# プロジェクト作成
+[チュートリアル](/manuals/1.0/ja/tutorial.html)と被る箇所もありますがおさらいのつもりでトライして見ましょう。
+レポジトリは[MyVendor.Ticket](https://github.com/bearsunday/MyVendor.Ticket)にあります。うまくいかないときは見比べて見ましょう。
+
+
+## プロジェクト作成
 
 まずプロジェクトを作成します。
 
-```bash
+```
 composer create-project bear/skeleton MyVendor.Ticket
 ```
 **vendor**名を`MyVendor`に**project**名を`Ticket`として入力します。
 
+## composerインストール
+
 次に依存するパッケージを一度にインストールします。
 
-```bash
+```
 composer require  \
 koriym/now  \
 bear/api-doc  \
@@ -35,6 +39,47 @@ ramsey/uuid  \
 robmorgan/phinx
 ```
 
+## モジュールインストール
+
+`src/Module/AppModule.php`を編集してcomposerでインストールしたパッケージをモジュールインストールします。
+
+```
+<?php
+namespace MyVendor\Ticket\Module;
+
+use BEAR\Package\PackageModule;
+use BEAR\Resource\Module\JsonSchemaModule;
+use josegonzalez\Dotenv\Loader;
+use Koriym\Now\NowModule;
+use Ray\AuraSqlModule\AuraSqlModule;
+use Ray\Di\AbstractModule;
+use Ray\Query\SqlQueryModule;
+
+class AppModule extends AbstractModule
+{
+    /**
+     * {@inheritdoc}
+     */
+    protected function configure()
+    {
+        $appDir = dirname(__DIR__, 2);
+        (new Loader($appDir . '/.env'))->parse()->toEnv(true);
+        $this->install(new AuraSqlModule($_ENV['DB_DSN'], $_ENV['DB_USER'], $_ENV['DB_PASS'], $_ENV['DB_SLAVE']));
+        $this->install(new SqlQueryModule($appDir . '/var/sql'));
+        $this->install(new NowModule);
+        $this->install(new JsonSchemaModule($appDir . '/var/json_schema', $appDir . '/var/json_validate'));
+        $this->install(new PackageModule);
+    }
+}
+
+モジュールが必要とするフォルダを作成します。
+
+```bash
+mkdir var/sql
+mkdir var/json_schema
+mkdir var/json_validate
+
+```
 # データベース
 
 ## DB接続情報
@@ -57,7 +102,7 @@ phinxの実行環境を整えます。
 
 ```bash
 mkdir -p var/phinx/migrations
-mkdir -p var/phinx/seeds
+mkdir var/phinx/seeds
 ```
 
 次に`.env`の接続情報をphinxで利用するために`var/phinx/phinx.php`を設置します。
@@ -108,8 +153,10 @@ db: {
 
 実行してデータベースを作成します。
 
-```bash
-$ composer setup
+```
+composer setup
+```
+```
 > php bin/setup.php
 Phinx by CakePHP - https://phinx.org. 0.10.5
 
@@ -126,7 +173,8 @@ All Done. Took 0.0462s
 
 ```
 ./vendor/bin/phinx create Ticket -c var/phinx/phinx.php
-
+```
+```
 Phinx by CakePHP - https://phinx.org. 0.10.5
 
 using config file ./var/phinx/phinx.php
@@ -190,7 +238,9 @@ class Ticket extends AbstractMigration
 もう一度セットアップコマンドを実行してテーブルを作成します。
 
 ```
-$ composer setup
+composer setup
+```
+```
 > php bin/setup.php
 Phinx by CakePHP - https://phinx.org. 0.10.5
 
@@ -211,22 +261,21 @@ All Done. Took 0.0900s
 
 ## SQL
 
-チケットをデータベースに保存、読み込もスリために次のSQLを`/var/sql`に保存します。
+チケットをデータベースに保存、読み込むために次の３つのSQLを`var/sql`に保存します。
 
-
-`/var/sql/ticket_insert.sql`
+`var/sql/ticket_insert.sql`
 
 ```sql
 INSERT INTO ticket (id, title, description, status, assignee, created, updated) VALUES (:id, :title, :description, :status, :assignee, :created, :updated)
 ```
 
-`/var/sql/ticket_item_by_id.sql`
+`var/sql/ticket_item_by_id.sql`
 
 ```sql
 SELECT * FROM ticket WHERE id = :id
 ```
 
-`/var/sql/ticket_list.sql`
+`var/sql/ticket_list.sql`
 
 ```sql
 SELECT * FROM ticket
@@ -282,9 +331,9 @@ class AppModule extends AbstractModule
 
 Ticket（アイテム）、Tickets（Ticketアイテムの集合）の２つのリソースを作成するためにまず、これらのリソースの定義を[JsonSchema](http://json-schema.org/)で定義します。JsonSchemaについて[日本語での解説](https://qiita.com/kyoh86/items/e7de290e9a0e989fcc14)もご覧ください。
 
-それぞれのスキーマファイルを`var/schema`フォルダに保存します。
+それぞれのスキーマファイルを`var/json_schema`フォルダに保存します。
 
-`var/schema/ticket.json`
+`var/json_schema/ticket.json`
 
 ```json
 {
@@ -332,7 +381,7 @@ Ticket（アイテム）、Tickets（Ticketアイテムの集合）の２つの�
   "additionalProperties": false
 }
 ```
-`var/schema/tickets.json`
+`var/json_schema/tickets.json`
 
 ```json
 {
@@ -350,7 +399,7 @@ Ticket（アイテム）、Tickets（Ticketアイテムの集合）の２つの�
 
 # テスト
 
-次に今から作ろうとする/ticketリソースのテストを用意します。
+次に今から作ろうとする/ticketリソースのテストを`tests/Resource/App/TicketsTest.php`に用意します。
 
 ```php
 <?php
@@ -410,10 +459,8 @@ class TicketsTest extends TestCase
 
 まだ実装してないのでエラーが出ますが、test実行を試してみましょう。
 
-```bash
+```
 composer test
-// or
-./vendor/bin/phpunit
 ```
 
 当面の目標はこのテストがパスするようになる事です。テストを先に用意する事で、作ったリソースの実行やデバックトレースが簡単になり、着手した作業のゴールが明確になります。
@@ -598,8 +645,10 @@ Webサイトを利用するのに事前に全てのURIを知る必要がない�
 
 早速リクエストして見ましょう。
 
-```bash
-$ php bootstrap/api.php get /
+```
+php bootstrap/api.php get /
+```
+```
 200 OK
 content-type: application/hal+json
 
@@ -635,7 +684,9 @@ content-type: application/hal+json
 それぞれの詳細を調べるには`OPTIONS`コマンドでリクエストします。
 
 ```
-bootstrap/api.php options /ticket
+php bootstrap/api.php options /ticket
+```
+```
 200 OK
 Content-Type: application/json
 Allow: GET, POST
@@ -733,9 +784,10 @@ Allow: GET, POST
 
 POSTリクエストでチケット作成します。
 
-```bash
+```
 php bootstrap/api.php post '/ticket?title=run'
-
+```
+```
 201 Created
 Location: /ticket?id=ed3f9f53-d5ef-4d7c-843e-e2d81361f62a
 content-type: application/hal+json
@@ -760,7 +812,8 @@ content-type: application/hal+json
 
 ```
 php bootstrap/api.php get '/ticket?id=ed3f9f53-d5ef-4d7c-843e-e2d81361f62a'
-
+```
+```
 200 OK
 content-type: application/hal+json
 ETag: 4274077199
