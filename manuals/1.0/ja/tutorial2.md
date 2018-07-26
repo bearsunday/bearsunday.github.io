@@ -8,14 +8,12 @@ permalink: /manuals/1.0/ja/tutorial2.html
 
 このチュートリアルは以下のライブラリやツールを使ってREST APIを作成します。
 
- * CakePHPが開発してるDBマイグレーションツール[Phinx](https://book.cakephp.org/3.0/ja/phinx.html)
- * APIレスポンスのスキーマを定義する[Json Schema](https://qiita.com/kyoh86/items/e7de290e9a0e989fcc14)
+ * CakePHPが開発してる[Phinx](https://book.cakephp.org/3.0/ja/phinx.html) DBマイグレーションツール
+ * APIレスポンスのスキーマを定義する [Json Schema](https://qiita.com/kyoh86/items/e7de290e9a0e989fcc14)
  * SQL文をSQL実行オブジェクトに変換する [ray/query-module](https://github.com/ray-di/Ray.QueryModule)
-
 
 [チュートリアル](/manuals/1.0/ja/tutorial.html)と被る箇所もありますがおさらいのつもりでトライして見ましょう。
 レポジトリは[MyVendor.Ticket](https://github.com/bearsunday/MyVendor.Ticket)にあります。うまくいかないときは見比べて見ましょう。
-
 
 ## プロジェクト作成
 
@@ -793,7 +791,6 @@ Last-Modified: Sat, 21 Jul 2018 03:02:04 GMT
 ```
 
 それぞれのリソースには`@Cacheable`がアノテートされているのでGETレスポンスは引数をキーにしてキャッシュされます。`@Purge`はキャッシュの破壊です。`/ticket`でPOSTされると`/tickets`リソースのキャッシュを破壊しています。`@Refresh`とすると破壊のタイミングでキャッシュを再生成します。
-
 最初に作ったテストも今はうまくパスするはずです。試して見ましょう。
 
 ```
