@@ -23,6 +23,7 @@ Next create the context file `src/Module/HtmlModule.php` and install the `TwigMo
 namespace MyVendor\MyPackage\Module;
 
 use BEAR\AppMeta\AppMeta;
+use Madapaja\TwigModule\TwigErrorPageModule;
 use Madapaja\TwigModule\TwigModule;
 use Ray\Di\AbstractModule;
 
@@ -31,6 +32,7 @@ class HtmlModule extends AbstractModule
     protected function configure()
     {
         $this->install(new TwigModule);
+        $this->install(new TwigErrorPageModule);
     }
 }
 ```
@@ -42,8 +44,8 @@ $context = 'cli-html-app'; // or 'html-app'
 ```
 ## Template
 
-One template file is required for one resource object class in `src` or `var/templates` directory to represent in HTML.
-For example, for `src/Page/Index.php` resource class, a template file is required in `src/Resource/Page/Index.html.twig` or `var/templates/Page/Index.html.twig`.
+One template file is required for one resource object class in `var/templates` directory to represent in HTML.
+For example, for `src/Page/Index.php` resource class, a template file is required in `var/templates/Page/Index.html.twig`.
 
 The body of the resource is assigned to the template.
 
@@ -60,7 +62,7 @@ class Index extend ResourceObject
 }
 ```
 
-`src/Page/Index.twig.php` or `var/templates/Page/Index.twig.php`
+`var/templates/Page/Index.twig.php`
 
 ```twig
 {% raw %}<h1>{{ greeting }}</h1>{% endraw %}
@@ -78,6 +80,47 @@ content-type: text/html; charset=utf-8
 
 <h1>Hello BEAR.Sunday</h1>
 ```
+## Select template file
+
+Resource does not select the template file. It `includes` depending on the state of the resource.
+
+```twig{% raw %}
+{% if user.is_login %}
+    {{ include('member.html.twig') }}
+{% else %}
+    {{ include('guest.html.twig') }}
+{% endif %}{% endraw %}
+```
+
+In the resource class, you should only concern resource state. Then template should concern the resource representation.
+See [Separation of concerns (SoC)](https://en.wikipedia.org/wiki/Separation_of_concerns).
+
+## Error Page
+
+Edit `var/templates/error.html.twig`. Following values are assigned to the error page.
+
+| Variable | Title | Key |
+|---|---|---|---|
+| status | HTTP status | code, message |
+| e | Exception | code, message, class |
+| logref | Log ID | n/a |
+
+例
+
+```twig
+{% raw %}{% extends 'layout/base.html.twig' %}
+{% block title %}{{ status.code }} {{ status.message }}{% endblock %}
+{% block content %}
+    <h1>{{ status.code }} {{ status.message }}</h1>
+    {% if status.code == 404 %}
+        <p>The requested URL was not found on this server.</p>
+    {% else %}
+        <p>The server is temporarily unable to service your request.</p>
+        <p>refference number: {{ logref }}</p>
+    {% endif %}
+{% endblock %}{% endraw %}
+```
+
 
 ## Assign resource
 

@@ -648,6 +648,7 @@ composer require madapaja/twig-module ^2.0
 <?php
 namespace MyVendor\Weekday\Module;
 
+use Madapaja\TwigModule\TwigErrorPageModule;
 use Madapaja\TwigModule\TwigModule;
 use Ray\Di\AbstractModule;
 
@@ -656,13 +657,15 @@ class HtmlModule extends AbstractModule
     protected function configure()
     {
         $this->install(new TwigModule);
+        $this->install(new TwigErrorPageModule);
     }
 }
 ```
-テンプレート用のフォルダ`var/templates`を作成します。
 
-```
-mkdir var/templates
+`templates`フォルダをコピーします
+
+```bash
+cp -r vendor/madapaja/twig-module/var/templates var/templates
 ```
 
 `bootstrap/web.php`を変更します。
@@ -674,8 +677,7 @@ require __DIR__ . '/bootstrap.php';
 ```
 
 これで`text/html`出力の準備はできました。
-最後に`var/templates/Page/Index.html.twig`または`src/Resource/Page/Index.html.twig`にtwigテンプレートを用意します。
-（慣習的には`var/templates/`とテンプレートフォルダを分けるやり方が馴染みがあるかもしれません。対して`src/Resource/`に設置するとリソースとその表現がまとまります。）
+最後に`var/templates/Page/Index.html.twig`ファイルを編集します。
 
 ```bash
 <!DOCTYPE html>

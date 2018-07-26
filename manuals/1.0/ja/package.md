@@ -148,7 +148,8 @@ PSR-7のミドルウエアのためのオプションパッケージです。
 || [ray/cake-database-module](https://github.com/ray-di/Ray.CakeDbModule) | [CakePHP v3 database](https://github.com/cakephp/database)
 || [ray/doctrine-orm-module](https://github.com/kawanamiyuu/Ray.DoctrineOrmModule) | [Doctrine ORM](https://github.com/doctrine/doctrine2)
 | ストレージ |
-||[bear/query-repository](https://github.com/bearsunday/BEAR.QueryRepository) | 読み書きリポジトリの分離
+||[bear/query-repository](https://github.com/bearsunday/BEAR.QueryRepository) | 読み書きリポジトリの分離（デフォルト）
+||[bear/query-module](https://github.com/ray-di/Ray.QueryModule) | DBやWeb APIなどの外部アクセスの分離
 | Web |
 | |[madapaja/twig-module](http://bearsunday.github.io/manuals/1.0/ja/html.html) | [Twigテンプレートエンジン](http://twig.sensiolabs.org/)
 | |[ray/web-form-module](http://bearsunday.github.io/manuals/1.0/ja/form.html) | Webフォーム & バリデーション
@@ -161,11 +162,14 @@ PSR-7のミドルウエアのためのオプションパッケージです。
 | 認証 |
 | |[ray/oauth-module](https://github.com/Ray-Di/Ray.OAuthModule) | OAuth
 | |[kuma-guy/jwt-auth-module](https://github.com/kuma-guy/BEAR.JwtAuthModule) | JSON Web Token
-| |[ray/role-module](https://github.com/ray-di/Ray.RoleModule) | [Zend Acl](https://github.com/zendframework/zend-permissions-acl)
+| |[ray/role-module](https://github.com/ray-di/Ray.RoleModule) | [Zend Acl](https://github.com/zendframework/zend-permissions-acl)　 Zend Acl
+| |[bear/acl-resource](https://github.com/bearsunday/BEAR.AclResource) | ACLベースのエンベドリソース
 | ハイパーメディア |
 | |[kuma-guy/siren-module](https://github.com/kuma-guy/BEAR.SirenModule) | Siren
 |  開発 |
 | |[ray/test-double](https://github.com/ray-di/Ray.TestDouble) | テストダブル
+|  非同期ハイパフォーマンス |
+| |[MyVendor.Swoole](https://github.com/bearsunday/MyVendor.Swoole) | [Swoole](https://github.com/swoole/swoole-src)
 
 ## ベンダー・パッケージ
 
