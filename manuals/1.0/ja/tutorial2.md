@@ -746,21 +746,6 @@ php bootstrap/api.php post '/ticket?title=run'
 201 Created
 Location: /ticket?id=ed3f9f53-d5ef-4d7c-843e-e2d81361f62a
 content-type: application/hal+json
-
-{
-    "id": "ed3f9f53-d5ef-4d7c-843e-e2d81361f62a",
-    "title": "run",
-    "description": "",
-    "status": "",
-    "assignee": "",
-    "created": "2018-07-21 04:58:46",
-    "updated": "2018-07-21 04:58:46",
-    "_links": {
-        "self": {
-            "href": "/ticket?id=ed3f9f53-d5ef-4d7c-843e-e2d81361f62a"
-        }
-    }
-}
 ```
 
 レスポンスにあるLocationヘッダーのURIをGETリクエストします。
