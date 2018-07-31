@@ -276,9 +276,9 @@ SELECT * FROM ticket WHERE id = :id
 SELECT * FROM ticket
 ```
 
-Note: PHPStormを使用しているならPreference > Plugin で [Database Navigator](https://plugins.jetbrains.com/plugin/1800-database-navigator)をインストールするとSQLファイルを右クリックすると単体で実行することが出来ます。S
+Note: PHPStormを使用しているならPreference > Plugin で [Database Navigator](https://plugins.jetbrains.com/plugin/1800-database-navigator)をインストールするとSQLファイルを右クリックすると単体で実行することが出来ます。
 
-PHPでSQLを実行する前に、このように事前に単体で実行してSQLが正しく記述できているかを確かめると確実で開発も用意です。[Sequel Pro](https://www.sequelpro.com/)や[MySQL Workbench](https://www.mysql.com/jp/products/workbench/)などのデータベースブラウザを使うのも良いでしょう。
+PHPでSQLを実行する前に、このように事前に単体で実行してSQLが正しく記述できているかを確かめると確実で開発も容易です。[Sequel Pro](https://www.sequelpro.com/)や[MySQL Workbench](https://www.mysql.com/jp/products/workbench/)などのデータベースブラウザを使うのも良いでしょう。
 
 ## JsonSchema
 
@@ -554,7 +554,7 @@ GETリクエストはticket.phpの時とほぼ同様です。
 
 ## indexリソース
 
-indexリソースは作成したリソース(API)へのリンク集です。`src/resource/App/Tickets.php`に作成します。
+indexリソースは作成したリソース(API)へのリンク集です。`src/resource/App/Index.php`に作成します。
 
 ```php
 <?php
@@ -746,21 +746,6 @@ php bootstrap/api.php post '/ticket?title=run'
 201 Created
 Location: /ticket?id=ed3f9f53-d5ef-4d7c-843e-e2d81361f62a
 content-type: application/hal+json
-
-{
-    "id": "ed3f9f53-d5ef-4d7c-843e-e2d81361f62a",
-    "title": "run",
-    "description": "",
-    "status": "",
-    "assignee": "",
-    "created": "2018-07-21 04:58:46",
-    "updated": "2018-07-21 04:58:46",
-    "_links": {
-        "self": {
-            "href": "/ticket?id=ed3f9f53-d5ef-4d7c-843e-e2d81361f62a"
-        }
-    }
-}
 ```
 
 レスポンスにあるLocationヘッダーのURIをGETリクエストします。
