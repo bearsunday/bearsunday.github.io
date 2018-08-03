@@ -165,7 +165,7 @@ using database ticket
 All Done. Took 0.0462s
 ```
 
-次にticketテーブルを作成するためにマイグレーションクラスを作成します。
+次に`ticket`テーブルを作成するためにマイグレーションクラスを作成します。
 
 ```
 ./vendor/bin/phinx create Ticket -c var/phinx/phinx.php
@@ -276,7 +276,7 @@ SELECT * FROM ticket WHERE id = :id
 SELECT * FROM ticket
 ```
 
-Note: PHPStormを使用しているならPreference > Plugin で [Database Navigator](https://plugins.jetbrains.com/plugin/1800-database-navigator)をインストールするとSQLファイルを右クリックすると単体で実行することが出来ます。
+*Note:* PHPStormを使用しているならPreference > Plugin で [Database Navigator](https://plugins.jetbrains.com/plugin/1800-database-navigator)をインストールするとSQLファイルを右クリックすると単体で実行することが出来ます。
 
 PHPでSQLを実行する前に、このように事前に単体で実行してSQLが正しく記述できているかを確かめると確実で開発も容易です。[Sequel Pro](https://www.sequelpro.com/)や[MySQL Workbench](https://www.mysql.com/jp/products/workbench/)などのデータベースブラウザを使うのも良いでしょう。
 
@@ -352,7 +352,7 @@ Ticket（アイテム）、Tickets（Ticketアイテムの集合）の２つの�
 
 # テスト
 
-次に今から作ろうとする/ticketリソースのテストを`tests/Resource/App/TicketsTest.php`に用意します。
+次に今から作ろうとする`/ticket`リソースのテストを`tests/Resource/App/TicketsTest.php`に用意します。
 
 ```php
 <?php
@@ -425,7 +425,7 @@ composer test
 
 ## tikcetリソース
 
-まずは基本となるticketリソースを`src/resource/App/Ticket.php`に作成します。
+まずは基本となる`ticket`リソースを`src/Resource/App/Ticket.php`に作成します。
 
 ```php
 <?php
@@ -522,7 +522,7 @@ class Ticket extends ResourceObject
 
 ## tikcetsリソース
 
-次はTikcetリソースの集合のTikcetsリソースを`src/resource/App/Tickets.php`に作成します。JSONスキーマでは単純に`var/json_schema/tickets.json`は`ticket.json`スキーマの集合(array)と定義されています。
+次は`tikcet`リソースの集合の`tikcets`リソースを`src/resource/App/Tickets.php`に作成します。JSONスキーマでは単純に`var/json_schema/tickets.json`は`ticket.json`スキーマの集合(array)と定義されています。
 このようにJSONスキーマはスキーマの構造を表すことができます。
 
 ```php
@@ -550,11 +550,11 @@ class Tickets extends ResourceObject
 }
 ```
 
-GETリクエストはticket.phpの時とほぼ同様です。
+GETリクエストは`Ticket.php`の時とほぼ同様です。
 
 ## indexリソース
 
-indexリソースは作成したリソース(API)へのリンク集です。`src/resource/App/Index.php`に作成します。
+`index`リソースは作成したリソース(API)へのリンク集です。`src/resource/App/Index.php`に作成します。
 
 ```php
 <?php
@@ -635,7 +635,7 @@ content-type: application/hal+json
 
 `curies`はヒューマンリーダブルなドキュメントのためのリンクです。詳しくは[APIドキュメンとサービス](hypermedia-api.html)をご覧ください。
 
-他のセクションを見るとこのAPIは`/ticket`と`/tickets`という２つのリソースががある事が分かります。
+他のセクションを見るとこのAPIは`/ticket`と`/tickets`という２つのリソースがある事が分かります。
 それぞれの詳細を調べるには`OPTIONS`コマンドでリクエストします。
 
 ```
