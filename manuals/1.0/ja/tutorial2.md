@@ -282,7 +282,7 @@ PHPでSQLを実行する前に、このように事前に単体で実行してSQ
 
 ## JsonSchema
 
-Ticket（アイテム）、Tickets（Ticketアイテムの集合）の２つのリソースを作成するためにまず、これらのリソースの定義を[JsonSchema](http://json-schema.org/)で定義します。JsonSchemaについて[日本語での解説](https://qiita.com/kyoh86/items/e7de290e9a0e989fcc14)もご覧ください。
+`Ticket`（`チケットアイテム`）、`Tickets`（`チケットアイテムの集合`）の２つのリソースを作成するために、まずこれらのリソースの定義を[JsonSchema](http://json-schema.org/)で定義します。JsonSchemaについて[日本語での解説](https://qiita.com/kyoh86/items/e7de290e9a0e989fcc14)もご覧ください。
 
 それぞれのスキーマファイルを`var/json_schema`フォルダに保存します。
 
