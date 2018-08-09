@@ -8,36 +8,75 @@ permalink: /manuals/1.0/ja/tutorial2.html
 
 このチュートリアルは以下のライブラリやツールを使ってREST APIを作成します。
 
- * CakePHPが開発してるDBマイグレーションツール[Phinx](https://book.cakephp.org/3.0/ja/phinx.html)
- * APIレスポンスのスキーマを定義する[Json Schema](https://qiita.com/kyoh86/items/e7de290e9a0e989fcc14)
- * SQL文をSQL実行オブジェクトに変換する [ray/query-module](https://github.com/ray-di/Ray.QueryModule)
-
+ * CakePHPが開発してるフレームワーク非依存の[Phinx](https://book.cakephp.org/3.0/ja/phinx.html) DBマイグレーションツール
+ * クライントサーバー双方でのバリデーションやドキュメンテーションを可能にする [Json Schema](https://qiita.com/kyoh86/items/e7de290e9a0e989fcc14)
+ * SQL文をSQL実行オブジェクトに変換しインフラストラクチャのコードを疎にする [ray/query-module](https://github.com/ray-di/Ray.QueryModule)
  
-[チュートリアル](/manuals/1.0/ja/tutorial.html)と被る箇所もありますがおさらいのつもりでトライして見ましょう。
+より疎結合で高品質なコード開発を学ぶ事を目的としています。[^1]
 
-# プロジェクト作成
+## プロジェクト作成
 
-まずプロジェクトを作成します。
+プロジェクトスケルトンを作成します。
 
-```bash
+```
 composer create-project bear/skeleton MyVendor.Ticket
 ```
-**vendor**名を`MyVendor`に**project**名を`Ticket`として入力します。
+**vendor**名を`MyVendor`に**project**名を`Ticket`として入力します。[^2]
+
+## composerインストール
 
 次に依存するパッケージを一度にインストールします。
 
-```bash
+```
 composer require  \
-koriym/now  \
-bear/api-doc  \
-ray/query-module  \
-ramsey/uuid  \
 robmorgan/phinx
+ray/identity-value-module  \
+ray/query-module  \
 ```
 
-# データベース
+## モジュールインストール
 
-## DB接続情報
+`src/Module/AppModule.php`を編集してcomposerでインストールしたパッケージをモジュールインストールします。
+
+```php
+<?php
+namespace MyVendor\Ticket\Module;
+
+use BEAR\Package\PackageModule;
+use BEAR\Resource\Module\JsonSchemaModule;
+use josegonzalez\Dotenv\Loader;
+use Ray\AuraSqlModule\AuraSqlModule;
+use Ray\Di\AbstractModule;
+use Ray\IdentityValueModule\IdentityValueModule;
+use Ray\Query\SqlQueryModule;
+
+class AppModule extends AbstractModule
+{
+    /**
+     * {@inheritdoc}
+     */
+    protected function configure()
+    {
+        $appDir = dirname(__DIR__, 2);
+        (new Loader($appDir . '/.env'))->parse()->toEnv(true);
+        $this->install(new AuraSqlModule($_ENV['DB_DSN'], $_ENV['DB_USER'], $_ENV['DB_PASS'], $_ENV['DB_SLAVE']));
+        $this->install(new SqlQueryModule($appDir . '/var/sql'));
+        $this->install(new IdentityValueModule);
+        $this->install(new JsonSchemaModule($appDir . '/var/json_schema', $appDir . '/var/json_validate'));
+        $this->install(new PackageModule);
+    }
+}
+```
+
+モジュールが必要とするフォルダを作成します。
+
+```bash
+mkdir var/sql
+mkdir var/json_schema
+mkdir var/json_validate
+```
+
+## データベース
 
 プロジェクトルートフォルダの`.env`ファイルに接続情報を記述します。
 
@@ -53,11 +92,11 @@ DB_NAME=ticket
 
 phinxの実行環境を整えます。
 
-まずはフォルダ作成。
+まずはphinxが利用するフォルダを作成します。
 
 ```bash
 mkdir -p var/phinx/migrations
-mkdir -p var/phinx/seeds
+mkdir var/phinx/seeds
 ```
 
 次に`.env`の接続情報をphinxで利用するために`var/phinx/phinx.php`を設置します。
@@ -103,13 +142,14 @@ db: {
     $db->exec('CREATE DATABASE IF NOT EXISTS ' . $_ENV['DB_NAME'] . '_test');
     passthru('./vendor/bin/phinx migrate -c var/phinx/phinx.php -e development');
 }
-
 ```
 
 実行してデータベースを作成します。
 
-```bash
-$ composer setup
+```
+composer setup
+```
+```
 > php bin/setup.php
 Phinx by CakePHP - https://phinx.org. 0.10.5
 
@@ -122,11 +162,12 @@ using database ticket
 All Done. Took 0.0462s
 ```
 
-次にticketテーブルを作成するためにマイグレーションクラスを作成します。
+次に`ticket`テーブルを作成するためにマイグレーションクラスを作成します。
 
 ```
 ./vendor/bin/phinx create Ticket -c var/phinx/phinx.php
-
+```
+```
 Phinx by CakePHP - https://phinx.org. 0.10.5
 
 using config file ./var/phinx/phinx.php
@@ -184,13 +225,14 @@ class Ticket extends AbstractMigration
         $this->table('ticket')->drop()->save();
     }
 }
-
 ```
 
 もう一度セットアップコマンドを実行してテーブルを作成します。
 
 ```
-$ composer setup
+composer setup
+```
+```
 > php bin/setup.php
 Phinx by CakePHP - https://phinx.org. 0.10.5
 
@@ -211,80 +253,37 @@ All Done. Took 0.0900s
 
 ## SQL
 
-チケットをデータベースに保存、読み込もスリために次のSQLを`/var/sql`に保存します。
+チケットをデータベースに保存、読み込むために次の３つのSQLを`var/sql`に保存します。
 
-
-`/var/sql/ticket_insert.sql`
+`var/sql/ticket_insert.sql`
 
 ```sql
 INSERT INTO ticket (id, title, description, status, assignee, created, updated) VALUES (:id, :title, :description, :status, :assignee, :created, :updated)
 ```
 
-`/var/sql/ticket_item_by_id.sql`
+`var/sql/ticket_item_by_id.sql`
 
 ```sql
 SELECT * FROM ticket WHERE id = :id
 ```
 
-`/var/sql/ticket_list.sql`
+`var/sql/ticket_list.sql`
 
 ```sql
 SELECT * FROM ticket
 ```
 
-Note: PHPStormを使用しているならPreference > Plugin で [Database Navigator](https://plugins.jetbrains.com/plugin/1800-database-navigator)をインストールするとSQLファイルを右クリックすると単体で実行することが出来ます。S
+*Note:* PHPStormを使用しているならPreference > Plugin で [Database Navigator](https://plugins.jetbrains.com/plugin/1800-database-navigator)をインストールするとSQLファイルを右クリックすると単体で実行することが出来ます。
 
-PHPでSQLを実行する前に、このように事前に単体で実行してSQLが正しく記述できているかを確かめると確実で開発も用意です。[Sequel Pro](https://www.sequelpro.com/)や[MySQL Workbench](https://www.mysql.com/jp/products/workbench/)などのデータベースブラウザを使うのも良いでしょう。
-
-## モジュールインストール
-
-`src/Module/AppModule.php`を編集して以下のモジュールをインストールします。
-
- * [SqlQueryModule](https://github.com/ray-di/Ray.QueryModule/)
- * [NowModule](https://github.com/koriym/Koriym.Now/)
- * [JsonSchemaModule](http://bearsunday.github.io/manuals/1.0/ja/validation.html)
-
-
-
-```php
-<?php
-namespace MyVendor\Ticket\Module;
-
-use BEAR\Package\PackageModule;
-use BEAR\Resource\Module\JsonSchemaModule;
-use josegonzalez\Dotenv\Loader;
-use Koriym\Now\NowModule;
-use Ray\AuraSqlModule\AuraSqlModule;
-use Ray\Di\AbstractModule;
-use Ray\Query\SqlQueryModule;
-
-class AppModule extends AbstractModule
-{
-    /**
-     * {@inheritdoc}
-     */
-    protected function configure()
-    {
-        $appDir = dirname(__DIR__, 2);
-        (new Loader($appDir . '/.env'))->parse()->toEnv();
-        $this->install(new AuraSqlModule($_ENV['DB_DSN'], $_ENV['DB_USER'], $_ENV['DB_PASS'], $_ENV['DB_SLAVE']));
-        $this->install(new SqlQueryModule($appDir . '/var/sql'));
-        $this->install(new NowModule);
-        $this->install(new JsonSchemaModule($appDir . '/var/json_schema', $appDir . '/var/json_validate'));
-        $this->install(new PackageModule);
-    }
-}
-```
-
-
+PHPでSQLを実行する前に、このように事前に単体で実行してSQLが正しく記述できているかを確かめると確実で開発も容易です。[Sequel Pro](https://www.sequelpro.com/)や[MySQL Workbench](https://www.mysql.com/jp/products/workbench/)などのデータベースブラウザを使うのも良いでしょう。
 
 ## JsonSchema
 
-Ticket（アイテム）、Tickets（Ticketアイテムの集合）の２つのリソースを作成するためにまず、これらのリソースの定義を[JsonSchema](http://json-schema.org/)で定義します。JsonSchemaについて[日本語での解説](https://qiita.com/kyoh86/items/e7de290e9a0e989fcc14)もご覧ください。
+`Ticket`（`チケットアイテム`）、`Tickets`（`チケットアイテムの集合`）の２つのリソースを作成するために、まずこれらのリソースの定義を[JsonSchema](http://json-schema.org/)で定義します。JsonSchemaについて[日本語での解説](https://qiita.com/kyoh86/items/e7de290e9a0e989fcc14)もご覧ください。
 
-それぞれのスキーマファイルを`var/schema`フォルダに保存します。
+それぞれのスキーマファイルを`var/json_schema`フォルダに保存します。
 
-`var/schema/ticket.json`
+`var/json_schema/ticket.json`
 
 ```json
 {
@@ -332,7 +331,7 @@ Ticket（アイテム）、Tickets（Ticketアイテムの集合）の２つの�
   "additionalProperties": false
 }
 ```
-`var/schema/tickets.json`
+`var/json_schema/tickets.json`
 
 ```json
 {
@@ -350,7 +349,7 @@ Ticket（アイテム）、Tickets（Ticketアイテムの集合）の２つの�
 
 # テスト
 
-次に今から作ろうとする/ticketリソースのテストを`tests/Resource/App/TicketsTest.php`に用意します。
+次に今から作ろうとする`/ticket`リソースのテストを`tests/Resource/App/TicketsTest.php`に用意します。
 
 ```php
 <?php
@@ -408,12 +407,10 @@ class TicketsTest extends TestCase
 
 `$this->resource`は`MyVendor\Ticket`アプリケーションを`app`コンテキストで動作させた時のリソースクライアントです。`testOnPost`でリソースをPOSTリクエストで作成して、`testOnGet`ではそのレスポンスのLocationヘッダーに表されているリソースのURIをGETリクエストして、作成したリソースが正しいものかをテストしています。
 
-まだ実装してないのでエラーが出ますが、test実行を試してみましょう。
+まだ実装してないのでエラーが出ますが、テスト実行を試してみましょう。
 
-```bash
+```
 composer test
-// or
-./vendor/bin/phpunit
 ```
 
 当面の目標はこのテストがパスするようになる事です。テストを先に用意する事で、作ったリソースの実行やデバックトレースが簡単になり、着手した作業のゴールが明確になります。
@@ -425,7 +422,7 @@ composer test
 
 ## tikcetリソース
 
-まずは基本となるticketリソースを`src/resource/App/Ticket.php`に作成します。
+まずは基本となる`ticket`リソースを`src/Resource/App/Ticket.php`に作成します。
 
 ```php
 <?php
@@ -438,10 +435,10 @@ use BEAR\Resource\Annotation\JsonSchema;
 use BEAR\Resource\ResourceObject;
 use Koriym\HttpConstants\ResponseHeader;
 use Koriym\HttpConstants\StatusCode;
-use Koriym\Now\NowInterface;
-use Ramsey\Uuid\Uuid;
 use Ray\AuraSqlModule\Annotation\Transactional;
 use Ray\Di\Di\Named;
+use Ray\IdentityValueModule\NowInterface;
+use Ray\IdentityValueModule\UuidInterface;
 use Ray\Query\Annotation\AliasQuery;
 
 /**
@@ -460,12 +457,18 @@ class Ticket extends ResourceObject
     private $now;
 
     /**
+     * @var UuidInterface
+     */
+    private $uuid;
+
+    /**
      * @Named("createTicket=ticket_insert")
      */
-    public function __construct(callable $createTicket, NowInterface $now)
+    public function __construct(callable $createTicket, NowInterface $now, UuidInterface $uuid)
     {
         $this->createTicket = $createTicket;
         $this->now = $now;
+        $this->uuid = $uuid;
     }
 
     /**
@@ -474,6 +477,7 @@ class Ticket extends ResourceObject
      */
     public function onGet(string $id) : ResourceObject
     {
+        unset($id);
     }
 
     /**
@@ -487,7 +491,7 @@ class Ticket extends ResourceObject
         string $description = '',
         string $assignee = ''
     ) : ResourceObject {
-        $id = Uuid::uuid4()->toString();
+        $id = (string) $this->uuid;
         ($this->createTicket)([
             'id' => $id,
             'title' => $title,
@@ -521,7 +525,8 @@ class Ticket extends ResourceObject
 
 ## tikcetsリソース
 
-次はTikcetリソースの集合のTikcetsリソースです。JSONスキーマでは単純に`ticket.json`の集合(array)と定義されています。
+次は`tikcet`リソースの集合の`tikcets`リソースを`src/resource/App/Tickets.php`に作成します。JSONスキーマでは単純に`var/json_schema/tickets.json`は`ticket.json`スキーマの集合(array)と定義されています。
+このようにJSONスキーマはスキーマの構造を表すことができます。
 
 ```php
 <?php
@@ -548,11 +553,11 @@ class Tickets extends ResourceObject
 }
 ```
 
-GETリクエストはticket.phpの時とほぼ同様です。
+GETリクエストは`Ticket.php`の時とほぼ同様です。
 
 ## indexリソース
 
-indexリソースは作成したリソース(API)へのリンク集です。
+`index`リソースは作成したリソース(API)へのリンク集です。`src/resource/App/Index.php`に作成します。
 
 ```php
 <?php
@@ -598,8 +603,10 @@ Webサイトを利用するのに事前に全てのURIを知る必要がない�
 
 早速リクエストして見ましょう。
 
-```bash
-$ php bootstrap/api.php get /
+```
+php bootstrap/api.php get /
+```
+```
 200 OK
 content-type: application/hal+json
 
@@ -631,11 +638,13 @@ content-type: application/hal+json
 
 `curies`はヒューマンリーダブルなドキュメントのためのリンクです。詳しくは[APIドキュメンとサービス](hypermedia-api.html)をご覧ください。
 
-他のセクションを見るとこのAPIは`/ticket`と`/tickets`という２つのリソースががある事が分かります。
+他のセクションを見るとこのAPIは`/ticket`と`/tickets`という２つのリソースがある事が分かります。
 それぞれの詳細を調べるには`OPTIONS`コマンドでリクエストします。
 
 ```
-bootstrap/api.php options /ticket
+php bootstrap/api.php options /ticket
+```
+```
 200 OK
 Content-Type: application/json
 Allow: GET, POST
@@ -733,34 +742,21 @@ Allow: GET, POST
 
 POSTリクエストでチケット作成します。
 
-```bash
+```
 php bootstrap/api.php post '/ticket?title=run'
-
+```
+```
 201 Created
 Location: /ticket?id=ed3f9f53-d5ef-4d7c-843e-e2d81361f62a
 content-type: application/hal+json
-
-{
-    "id": "ed3f9f53-d5ef-4d7c-843e-e2d81361f62a",
-    "title": "run",
-    "description": "",
-    "status": "",
-    "assignee": "",
-    "created": "2018-07-21 04:58:46",
-    "updated": "2018-07-21 04:58:46",
-    "_links": {
-        "self": {
-            "href": "/ticket?id=ed3f9f53-d5ef-4d7c-843e-e2d81361f62a"
-        }
-    }
-}
 ```
 
 レスポンスにあるLocationヘッダーのURIをGETリクエストします。
 
 ```
 php bootstrap/api.php get '/ticket?id=ed3f9f53-d5ef-4d7c-843e-e2d81361f62a'
-
+```
+```
 200 OK
 content-type: application/hal+json
 ETag: 4274077199
@@ -783,17 +779,22 @@ Last-Modified: Sat, 21 Jul 2018 03:02:04 GMT
 ```
 
 それぞれのリソースには`@Cacheable`がアノテートされているのでGETレスポンスは引数をキーにしてキャッシュされます。`@Purge`はキャッシュの破壊です。`/ticket`でPOSTされると`/tickets`リソースのキャッシュを破壊しています。`@Refresh`とすると破壊のタイミングでキャッシュを再生成します。
-
-最初に作ったテストも今はうまくパスするはずです。試して見ましょう。
+最初に作ったテストも今はうまくパスするはずです。試してみましょう。
 
 ```
 composer test
 ```
 
-コーディング規約通りにかけているか、またはphpdocがコードと同じように正しくかけてるかは静的解析ツールで調べることができます。コミットする前に必ず実行しましょう（コミットフックを設定するのも良い方法です）
+コーディング規約通りに書けているか、または`phpdoc`がコードと同じように正しく書けているかは静的解析ツールで調べることができます。コミットする前に必ず実行しましょう。コミットフックを設定するのも良い方法です。
+コーディング規約のエラーは`composer cs-fix`で直すことができます。
 
 ```
 composer tests
 ```
 
-テストはパスしましたか？ REST APIの完成です！
+テストはパスしましたか？　REST APIの完成です！
+
+---
+
+[^1]:[チュートリアル](/manuals/1.0/ja/tutorial.html)を終えた方を対象としています。被る箇所もありますがおさらいのつもりでトライして見ましょう。レポジトリは[MyVendor.Ticket](https://github.com/bearsunday/MyVendor.Ticket)にあります。うまくいかないときは見比べて見ましょう。
+[^2]:通常は**vendor**名は個人またはチーム（組織）の名前を入力します。githubのアカウント名やチーム名が適当でしょう。**project**にはアプリケーション名を入力します。
