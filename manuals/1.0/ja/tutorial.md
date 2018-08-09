@@ -6,7 +6,7 @@ permalink: /manuals/1.0/ja/tutorial.html
 ---
 # チュートリアル
 
-このチュートリアルはリソース、DI、AOP、REST APIなどと行ったBEAR.Sundayの基本的な機能を紹介します。
+このチュートリアルではBEAR.Sundayの基本機能の**DI**、**AOP**、**REST API**を紹介します。
 このプロジェクトのソースコードは**各セクションごと**に[bearsunday/Tutorial](https://github.com/bearsunday/Tutorial/commits/master)にコミットしてあります。
 適宜参照してください。
 
