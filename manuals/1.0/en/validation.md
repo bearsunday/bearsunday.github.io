@@ -22,7 +22,7 @@ If you want to validate in all contexts including production, create `AppModule`
 
 
 ```php?start_inline
-use BEAR\Resource\Module\JsonSchemalModule; // Add this line
+use BEAR\Resource\Module\JsonSchemaModule; // Add this line
 use Ray\Di\AbstractModule;
 
 class AppModule extends AbstractModule
@@ -31,7 +31,7 @@ class AppModule extends AbstractModule
     {
         // ...
         $this->install(
-            new JsonSchemalModule(
+            new JsonSchemaModule(
                 $appDir . '/var/json_schema',
                 $appDir . '/var/json_validate'
             )

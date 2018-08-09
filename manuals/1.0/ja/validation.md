@@ -21,7 +21,7 @@ permalink: /manuals/1.0/ja/validation.html
 全てのコンテキストで常にバリデーションを行うなら`AppModule`、開発中のみバリデーションを行うなら`DevModule`などのクラスを作成してその中でインストールします。
 
 ```php?start_inline
-use BEAR\Resource\Module\JsonSchemalModule; // この行を追加
+use BEAR\Resource\Module\JsonSchemaModule; // この行を追加
 use Ray\Di\AbstractModule;
 
 class AppModule extends AbstractModule
@@ -30,7 +30,7 @@ class AppModule extends AbstractModule
     {
         // ...
         $this->install(
-            new JsonSchemalModule(
+            new JsonSchemaModule(
                 $appDir . '/var/json_schema',
                 $appDir . '/var/json_validate'
             )
