@@ -18,7 +18,8 @@ permalink: /manuals/1.0/ja/tutorial.html
 ```bash
 composer create-project bear/skeleton MyVendor.Weekday
 ```
-**vendor**名を`MyVendor`に**project**名を`Weekday`として入力します。
+
+**vendor**名を`MyVendor`に**project**名を`Weekday`として入力します。[^1]
 
 ## リソース
 
@@ -1160,3 +1161,7 @@ BEAR.SundayアプリケーションのリソースはこれらのRESTの特徴�
 
 異なるアプリケーションの情報もハイパーリンクで接続することができ、他のCMSやフレームワークからの利用やAPIサイトにすることも容易です。
 リソースの値と表現は分離されていて、Webページですら他のアプリケーションのAPIになることができます。
+
+---
+
+[^1]:通常は**vendor**名は個人またはチーム（組織）の名前を入力します。githubのアカウント名やチーム名が適当でしょう。**project**にはアプリケーション名を入力します。
