@@ -30,11 +30,9 @@ composer create-project bear/skeleton MyVendor.Ticket
 
 ```
 composer require  \
-koriym/now  \
-bear/api-doc  \
-ray/query-module  \
-ramsey/uuid  \
 robmorgan/phinx
+ray/identity-value-module  \
+ray/query-module  \
 ```
 
 ## モジュールインストール
@@ -48,9 +46,9 @@ namespace MyVendor\Ticket\Module;
 use BEAR\Package\PackageModule;
 use BEAR\Resource\Module\JsonSchemaModule;
 use josegonzalez\Dotenv\Loader;
-use Koriym\Now\NowModule;
 use Ray\AuraSqlModule\AuraSqlModule;
 use Ray\Di\AbstractModule;
+use Ray\IdentityValueModule\IdentityValueModule;
 use Ray\Query\SqlQueryModule;
 
 class AppModule extends AbstractModule
@@ -64,7 +62,7 @@ class AppModule extends AbstractModule
         (new Loader($appDir . '/.env'))->parse()->toEnv(true);
         $this->install(new AuraSqlModule($_ENV['DB_DSN'], $_ENV['DB_USER'], $_ENV['DB_PASS'], $_ENV['DB_SLAVE']));
         $this->install(new SqlQueryModule($appDir . '/var/sql'));
-        $this->install(new NowModule);
+        $this->install(new IdentityValueModule);
         $this->install(new JsonSchemaModule($appDir . '/var/json_schema', $appDir . '/var/json_validate'));
         $this->install(new PackageModule);
     }
@@ -438,10 +436,10 @@ use BEAR\Resource\Annotation\JsonSchema;
 use BEAR\Resource\ResourceObject;
 use Koriym\HttpConstants\ResponseHeader;
 use Koriym\HttpConstants\StatusCode;
-use Koriym\Now\NowInterface;
-use Ramsey\Uuid\Uuid;
 use Ray\AuraSqlModule\Annotation\Transactional;
 use Ray\Di\Di\Named;
+use Ray\IdentityValueModule\NowInterface;
+use Ray\IdentityValueModule\UuidInterface;
 use Ray\Query\Annotation\AliasQuery;
 
 /**
@@ -460,12 +458,18 @@ class Ticket extends ResourceObject
     private $now;
 
     /**
+     * @var UuidInterface
+     */
+    private $uuid;
+
+    /**
      * @Named("createTicket=ticket_insert")
      */
-    public function __construct(callable $createTicket, NowInterface $now)
+    public function __construct(callable $createTicket, NowInterface $now, UuidInterface $uuid)
     {
         $this->createTicket = $createTicket;
         $this->now = $now;
+        $this->uuid = $uuid;
     }
 
     /**
@@ -488,7 +492,7 @@ class Ticket extends ResourceObject
         string $description = '',
         string $assignee = ''
     ) : ResourceObject {
-        $id = Uuid::uuid4()->toString();
+        $id = (string) $this->uuid;
         ($this->createTicket)([
             'id' => $id,
             'title' => $title,
