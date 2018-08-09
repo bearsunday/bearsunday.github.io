@@ -257,7 +257,7 @@ namespace MyVendor\Weekday\Module;
 
 use BEAR\Package\PackageModule;
 use BEAR\Package\Provide\Router\AuraRouterModule; // add this line
-use josegonzalez\Dotenv\Loader as Dotenv;
+use josegonzalez\Dotenv\Loader;
 use Ray\Di\AbstractModule;
 
 class AppModule extends AbstractModule
@@ -267,11 +267,8 @@ class AppModule extends AbstractModule
      */
     protected function configure()
     {
-        $appDir = dirname(dirname(__DIR__));
-        Dotenv::load([
-            'filepath' => dirname(dirname(__DIR__)) . '/.env',
-            'toEnv' => true
-        ]);
+        $appDir = dirname(__DIR__, 2);
+        (new Loader($appDir . '/.env'))->parse()->toEnv(true);
         $this->install(new AuraRouterModule($appDir . '/var/conf/aura.route.php')); // add this line
         $this->install(new PackageModule);
     }
