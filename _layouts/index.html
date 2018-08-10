@@ -62,7 +62,9 @@
                 <li {% if page.category == "Index" %} class="active"{% endif %}>
                 <a href="/contributors.html">Contributors</a>
                 </li>
-                <li><a href="BEAR.Sunday.pdf">Slide</a></li>
+                <li {% if page.category == "Slide" %} class="active"{% endif %}>
+                <a href="/slide.html">Slide</a>
+                </li>
             </ul>
         </nav>
     </div>
