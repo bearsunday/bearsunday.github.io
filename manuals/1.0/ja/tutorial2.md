@@ -29,10 +29,7 @@ composer create-project bear/skeleton MyVendor.Ticket
 次に依存するパッケージを一度にインストールします。
 
 ```
-composer require  \
-robmorgan/phinx
-ray/identity-value-module  \
-ray/query-module  \
+composer require robmorgan/phinx ray/identity-value-module ray/query-module
 ```
 
 ## モジュールインストール
