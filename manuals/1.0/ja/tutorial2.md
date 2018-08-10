@@ -26,8 +26,6 @@ composer create-project bear/skeleton MyVendor.Ticket
 
 ## composerインストール
 
-## composerインストール
-
 次に依存するパッケージを一度にインストールします。
 
 ```
