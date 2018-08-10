@@ -6,13 +6,14 @@ permalink: /manuals/1.0/ja/tutorial2.html
 ---
 # チュートリアル2
 
-このチュートリアルは以下のライブラリやツールを使ってREST APIを作成します。
+このチュートリアルでは以下のツールを用いてREST APIを作成し、疎結合で高品質なアプリケーション開発を学びます。
 
  * CakePHPが開発してるフレームワーク非依存の[Phinx](https://book.cakephp.org/3.0/ja/phinx.html) DBマイグレーションツール
  * クライントサーバー双方でのバリデーションやドキュメンテーションを可能にする [Json Schema](https://qiita.com/kyoh86/items/e7de290e9a0e989fcc14)
- * SQL文をSQL実行オブジェクトに変換しインフラストラクチャのコードを疎にする [ray/query-module](https://github.com/ray-di/Ray.QueryModule)
+ * SQL文をSQL実行オブジェクトに変換しアプリケーションとインフラストラクチャのコードを疎にする [ray/query-module](https://github.com/ray-di/Ray.QueryModule)
  
-より疎結合で高品質なコード開発を学ぶ事を目的としています。[^1]
+[チュートリアル](/manuals/1.0/ja/tutorial.html)と被る箇所もありますがおさらいのつもりでトライして見ましょう。
+レポジトリは[MyVendor.Ticket](https://github.com/bearsunday/MyVendor.Ticket)にあります。うまくいかないときは見比べて見ましょう。
 
 ## プロジェクト作成
 
@@ -22,6 +23,8 @@ permalink: /manuals/1.0/ja/tutorial2.html
 composer create-project bear/skeleton MyVendor.Ticket
 ```
 **vendor**名を`MyVendor`に**project**名を`Ticket`として入力します。[^2]
+
+## composerインストール
 
 ## composerインストール
 
