@@ -371,7 +371,6 @@ class TicketsTest extends TestCase
 
     protected function setUp()
     {
-        parent::setUp();
         $this->resource = (new AppInjector('MyVendor\Ticket', 'app'))->getInstance(ResourceInterface::class);
     }
 
@@ -500,8 +499,8 @@ class Ticket extends ResourceObject
             'description' => $description,
             'assignee' => $assignee,
             'status' => '',
-            'created' => (string) $time,
-            'updated' => (string) $time,
+            'created' => $time,
+            'updated' => $time,
         ]);
         $this->code = StatusCode::CREATED;
         $this->headers[ResponseHeader::LOCATION] = "/ticket?id={$id}";
