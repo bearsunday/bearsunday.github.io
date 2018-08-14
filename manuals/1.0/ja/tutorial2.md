@@ -6,7 +6,7 @@ permalink: /manuals/1.0/ja/tutorial2.html
 ---
 # チュートリアル2
 
-このチュートリアルでは以下のツールを用いてREST APIを作成し、疎結合で高品質なアプリケーション開発を学びます。
+このチュートリアルでは以下のツールを用いてタスク管理のチケット作成・取得用REST APIを作成し、疎結合で高品質なアプリケーション開発を学びます。[^1]
 
  * CakePHPが開発してるフレームワーク非依存の[Phinx](https://book.cakephp.org/3.0/ja/phinx.html) DBマイグレーションツール
  * クライントサーバー双方でのバリデーションやドキュメンテーションを可能にする [Json Schema](https://qiita.com/kyoh86/items/e7de290e9a0e989fcc14)
@@ -129,17 +129,18 @@ return [
 
 ```php
 <?php
-
 require dirname(__DIR__) . '/vendor/autoload.php';
+// dir
 chdir(dirname(__DIR__));
-
-db: {
-    (new josegonzalez\Dotenv\Loader(dirname(__DIR__) . '/.env'))->parse()->toEnv();
-    $db = new PDO('mysql:', $_ENV['DB_USER'], $_ENV['DB_PASS']);
-    $db->exec('CREATE DATABASE IF NOT EXISTS ' . $_ENV['DB_NAME']);
-    $db->exec('CREATE DATABASE IF NOT EXISTS ' . $_ENV['DB_NAME'] . '_test');
-    passthru('./vendor/bin/phinx migrate -c var/phinx/phinx.php -e development');
-}
+passthru('rm -rf var/tmp/*');
+passthru('chmod 775 var/tmp');
+passthru('chmod 775 var/log');
+// db
+(new josegonzalez\Dotenv\Loader(dirname(__DIR__) . '/.env'))->parse()->toEnv();
+$db = new PDO('mysql:', $_ENV['DB_USER'], $_ENV['DB_PASS']);
+$db->exec('CREATE DATABASE IF NOT EXISTS ' . $_ENV['DB_NAME']);
+$db->exec('CREATE DATABASE IF NOT EXISTS ' . $_ENV['DB_NAME'] . '_test');
+passthru('./vendor/bin/phinx migrate -c var/phinx/phinx.php -e development');
 ```
 
 実行してデータベースを作成します。
@@ -252,6 +253,7 @@ All Done. Took 0.0900s
 ## SQL
 
 チケットをデータベースに保存、読み込むために次の３つのSQLを`var/sql`に保存します。
+SQLの記述は[SQLスタイルガイド](https://www.sqlstyle.guide/ja/)を参考にするといいでしょう。
 
 `var/sql/ticket_insert.sql`
 
@@ -270,6 +272,7 @@ SELECT * FROM ticket WHERE id = :id
 ```sql
 SELECT * FROM ticket
 ```
+
 
 *Note:* PHPStormを使用しているならPreference > Plugin で [Database Navigator](https://plugins.jetbrains.com/plugin/1800-database-navigator)をインストールするとSQLファイルを右クリックすると単体で実行することが出来ます。
 
@@ -490,14 +493,15 @@ class Ticket extends ResourceObject
         string $assignee = ''
     ) : ResourceObject {
         $id = (string) $this->uuid;
+        $time = (string) $this->now;
         ($this->createTicket)([
             'id' => $id,
             'title' => $title,
             'description' => $description,
             'assignee' => $assignee,
             'status' => '',
-            'created' => (string) $this->now,
-            'updated' => (string) $this->now,
+            'created' => (string) $time,
+            'updated' => (string) $time,
         ]);
         $this->code = StatusCode::CREATED;
         $this->headers[ResponseHeader::LOCATION] = "/ticket?id={$id}";
@@ -783,16 +787,32 @@ Last-Modified: Sat, 21 Jul 2018 03:02:04 GMT
 composer test
 ```
 
-コーディング規約通りに書けているか、または`phpdoc`がコードと同じように正しく書けているかは静的解析ツールで調べることができます。コミットする前に必ず実行しましょう。コミットフックを設定するのも良い方法です。
-コーディング規約のエラーは`composer cs-fix`で直すことができます。
+コーディング規約通りに書けているか、または`phpdoc`がコードと同じように正しく書けているかはツールで調べることができます。
+エラーが出れば`cs-fix`で直すことができます。
+
+```
+composer cs-fix
+```
+
+ユニットテストとコーディング規約、静的解析ツールを同時に行うこともできます。コミットする前に実行しましょう。[^3]
 
 ```
 composer tests
 ```
 
-テストはパスしましたか？　REST APIの完成です！
+`compile`コマンドで最適化された`autoload.php`を生成してDI/AOPスクリプトを生成することができます。ディプロイ前は実行しましょう。[^4][^5]
+全てをDIするBEAR.Sundayアプリケーションはアプリケーション実行前に依存の問題を見つけることができます。ログでDIの束縛の情報を見れ事もできるので開発時でも役に立ちます。
+
+```
+composer compile
+```
+
+テストはパスしてコンパイルもうまくできましたか？ REST APIの完成です！
 
 ---
 
-[^1]:[チュートリアル](/manuals/1.0/ja/tutorial.html)を終えた方を対象としています。被る箇所もありますがおさらいのつもりでトライして見ましょう。レポジトリは[MyVendor.Ticket](https://github.com/bearsunday/MyVendor.Ticket)にあります。うまくいかないときは見比べて見ましょう。
+[^1]:[チュートリアル](/manuals/1.0/ja/tutorial.html)を終えた方を対象としています。被る箇所もありますがおさらいのつもりでトライして見ましょう。レポジトリは[bearsaunday/Tutorial2](https://github.com/bearsunday/Tutorial2)にあります。うまくいかないときは見比べて見ましょう。
 [^2]:通常は**vendor**名は個人またはチーム（組織）の名前を入力します。githubのアカウント名やチーム名が適当でしょう。**project**にはアプリケーション名を入力します。
+[^3]:コミットフックを設定するのも良い方法です。
+[^4]:キャッシュも暖めらるので２度行うと確実です。
+[^5]:コンテキストの変更は`composer.json`の`compile`スクリプトコマンドを編集します。
