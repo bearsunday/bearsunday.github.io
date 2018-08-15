@@ -218,11 +218,6 @@ class Ticket extends AbstractMigration
             ->addColumn('updated', 'datetime')
             ->create();
     }
-
-    public function down()
-    {
-        $this->table('ticket')->drop()->save();
-    }
 }
 ```
 
