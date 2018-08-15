@@ -79,7 +79,7 @@ mkdir var/json_validate
 プロジェクトルートフォルダの`.env`ファイルに接続情報を記述します。
 
 ```
-DB_DSN=mysql:host=localhost;dbname=ticket
+DB_DSN=mysql:host=127.0.0.1;dbname=ticket
 DB_USER=root
 DB_PASS=''
 DB_SLAVE=''
@@ -137,7 +137,7 @@ passthru('chmod 775 var/tmp');
 passthru('chmod 775 var/log');
 // db
 (new josegonzalez\Dotenv\Loader(dirname(__DIR__) . '/.env'))->parse()->toEnv();
-$db = new PDO('mysql:', $_ENV['DB_USER'], $_ENV['DB_PASS']);
+$db = new PDO($_ENV['DB_DSN'], $_ENV['DB_USER'], $_ENV['DB_PASS']);
 $db->exec('CREATE DATABASE IF NOT EXISTS ' . $_ENV['DB_NAME']);
 $db->exec('CREATE DATABASE IF NOT EXISTS ' . $_ENV['DB_NAME'] . '_test');
 passthru('./vendor/bin/phinx migrate -c var/phinx/phinx.php -e development');
@@ -553,7 +553,7 @@ GETリクエストは`Ticket.php`の時とほぼ同様です。
 
 ## indexリソース
 
-`index`リソースは作成したリソース(API)へのリンク集です。`src/resource/App/Index.php`に作成します。
+`index`リソースは作成したリソース(API)へのリンク集です。`src/esource/App/Index.php`に作成します。
 
 ```php
 <?php
