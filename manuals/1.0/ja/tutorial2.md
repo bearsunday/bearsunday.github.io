@@ -553,7 +553,7 @@ GETリクエストは`Ticket.php`の時とほぼ同様です。
 
 ## indexリソース
 
-`index`リソースは作成したリソース(API)へのリンク集です。`src/esource/App/Index.php`に作成します。
+`index`リソースは作成したリソース(API)へのリンク集です。`src/Resource/App/Index.php`に作成します。
 
 ```php
 <?php
