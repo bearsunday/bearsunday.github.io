@@ -6,7 +6,7 @@ permalink: /manuals/1.0/ja/tutorial2.html
 ---
 # チュートリアル2
 
-このチュートリアルでは以下のツールを用いてREST APIを作成し、疎結合で高品質なアプリケーション開発を学びます。
+このチュートリアルでは以下のツールを用いてタスク管理のチケット作成・取得用REST APIを作成し、疎結合で高品質なアプリケーション開発を学びます。[^1]
 
  * CakePHPが開発してるフレームワーク非依存の[Phinx](https://book.cakephp.org/3.0/ja/phinx.html) DBマイグレーションツール
  * クライントサーバー双方でのバリデーションやドキュメンテーションを可能にする [Json Schema](https://qiita.com/kyoh86/items/e7de290e9a0e989fcc14)
@@ -20,7 +20,7 @@ permalink: /manuals/1.0/ja/tutorial2.html
 プロジェクトスケルトンを作成します。
 
 ```
-composer create-project bear/skeleton MyVendor.Ticket
+composer create-project bear/skeleton MyVendor.Ticket 
 ```
 **vendor**名を`MyVendor`に**project**名を`Ticket`として入力します。[^2]
 
@@ -40,27 +40,36 @@ composer require robmorgan/phinx ray/identity-value-module ray/query-module
 <?php
 namespace MyVendor\Ticket\Module;
 
+use BEAR\Package\AbstractAppModule;
 use BEAR\Package\PackageModule;
 use BEAR\Resource\Module\JsonSchemaModule;
-use josegonzalez\Dotenv\Loader;
 use Ray\AuraSqlModule\AuraSqlModule;
-use Ray\Di\AbstractModule;
 use Ray\IdentityValueModule\IdentityValueModule;
 use Ray\Query\SqlQueryModule;
 
-class AppModule extends AbstractModule
+class AppModule extends AbstractAppModule
 {
     /**
      * {@inheritdoc}
      */
     protected function configure()
     {
-        $appDir = dirname(__DIR__, 2);
-        (new Loader($appDir . '/.env'))->parse()->toEnv(true);
-        $this->install(new AuraSqlModule($_ENV['DB_DSN'], $_ENV['DB_USER'], $_ENV['DB_PASS'], $_ENV['DB_SLAVE']));
+        $appDir = $this->appMeta->appDir;
+        require_once $appDir . 'env.php';
+        $this->install(
+            new AuraSqlModule(
+                getenv('TKT_DB_DSN'),
+                getenv('TKT_DB_USER'),
+                getenv('TKT_DB_PASS'),
+                getenv('TKT_DB_SLAVE')
+            )
+        );
         $this->install(new SqlQueryModule($appDir . '/var/sql'));
         $this->install(new IdentityValueModule);
-        $this->install(new JsonSchemaModule($appDir . '/var/json_schema', $appDir . '/var/json_validate'));
+        $this->install(new JsonSchemaModule(
+            $appDir . '/var/json_schema', 
+            $appDir . '/var/json_validate')
+        );
         $this->install(new PackageModule);
     }
 }
@@ -79,11 +88,12 @@ mkdir var/json_validate
 プロジェクトルートフォルダの`.env`ファイルに接続情報を記述します。
 
 ```
-DB_DSN=mysql:host=localhost;dbname=ticket
-DB_USER=root
-DB_PASS=''
-DB_SLAVE=''
-DB_NAME=ticket
+TKT_DB_HOST=localhost
+TKT_DB_NAME=ticket
+TKT_DB_USER=root
+TKT_DB_PASS=''
+TKT_DB_SLAVE=''
+TKT_DB_DSN=mysql:host=${TKT_DB_HOST};dbname=${TKT_DB_NAME}
 ```
 
 ## マイグレーション
@@ -101,11 +111,7 @@ mkdir var/phinx/seeds
 
 ```php
 <?php
-use Aura\Sql\ExtendedPdoInterface;
-use MyVendor\Ticket\Module\AppModule;
-use Ray\Di\Injector;
-
-$pdo = (new Injector(new AppModule))->getInstance(ExtendedPdoInterface::class);
+$pdo = new \PDO(getenv('TKT_DB_DSN'), getenv('TKT_DB_USER'), getenv('TKT_DB_PASS'));
 $name = $pdo->query("SELECT DATABASE()")->fetchColumn();
 return [
     'paths' => [
@@ -122,6 +128,7 @@ return [
         ]
     ]
 ];
+
 ```
 ## setupスクリプト
 
@@ -129,17 +136,18 @@ return [
 
 ```php
 <?php
-
-require dirname(__DIR__) . '/vendor/autoload.php';
+require dirname(__DIR__) . '/autoload.php';
+require_once dirname(__DIR__) . '/env.php';
+// dir
 chdir(dirname(__DIR__));
-
-db: {
-    (new josegonzalez\Dotenv\Loader(dirname(__DIR__) . '/.env'))->parse()->toEnv();
-    $db = new PDO('mysql:', $_ENV['DB_USER'], $_ENV['DB_PASS']);
-    $db->exec('CREATE DATABASE IF NOT EXISTS ' . $_ENV['DB_NAME']);
-    $db->exec('CREATE DATABASE IF NOT EXISTS ' . $_ENV['DB_NAME'] . '_test');
-    passthru('./vendor/bin/phinx migrate -c var/phinx/phinx.php -e development');
-}
+passthru('rm -rf var/tmp/*');
+passthru('chmod 775 var/tmp');
+passthru('chmod 775 var/log');
+// db
+$pdo = new \PDO(getenv('TKT_DB_DSN'), getenv('TKT_DB_USER'), getenv('TKT_DB_PASS'));
+$pdo->exec('CREATE DATABASE IF NOT EXISTS ' . getenv('DB_NAME'));
+$pdo->exec('CREATE DATABASE IF NOT EXISTS ' . getenv('DB_NAME') . '_test');
+passthru('./vendor/bin/phinx migrate -c var/phinx/phinx.php -e development');
 ```
 
 実行してデータベースを作成します。
@@ -252,6 +260,7 @@ All Done. Took 0.0900s
 ## SQL
 
 チケットをデータベースに保存、読み込むために次の３つのSQLを`var/sql`に保存します。
+SQLの記述は[SQLスタイルガイド](https://www.sqlstyle.guide/ja/)を参考にするといいでしょう。
 
 `var/sql/ticket_insert.sql`
 
@@ -270,6 +279,7 @@ SELECT * FROM ticket WHERE id = :id
 ```sql
 SELECT * FROM ticket
 ```
+
 
 *Note:* PHPStormを使用しているならPreference > Plugin で [Database Navigator](https://plugins.jetbrains.com/plugin/1800-database-navigator)をインストールするとSQLファイルを右クリックすると単体で実行することが出来ます。
 
@@ -490,14 +500,15 @@ class Ticket extends ResourceObject
         string $assignee = ''
     ) : ResourceObject {
         $id = (string) $this->uuid;
+        $time = (string) $this->now;
         ($this->createTicket)([
             'id' => $id,
             'title' => $title,
             'description' => $description,
             'assignee' => $assignee,
             'status' => '',
-            'created' => (string) $this->now,
-            'updated' => (string) $this->now,
+            'created' => (string) $time,
+            'updated' => (string) $time,
         ]);
         $this->code = StatusCode::CREATED;
         $this->headers[ResponseHeader::LOCATION] = "/ticket?id={$id}";
@@ -783,16 +794,32 @@ Last-Modified: Sat, 21 Jul 2018 03:02:04 GMT
 composer test
 ```
 
-コーディング規約通りに書けているか、または`phpdoc`がコードと同じように正しく書けているかは静的解析ツールで調べることができます。コミットする前に必ず実行しましょう。コミットフックを設定するのも良い方法です。
-コーディング規約のエラーは`composer cs-fix`で直すことができます。
+コーディング規約通りに書けているか、または`phpdoc`がコードと同じように正しく書けているかはツールで調べることができます。
+エラーが出れば`cs-fix`で直すことができます。
+
+```
+composer cs-fix
+```
+
+ユニットテストとコーディング規約、静的解析ツールを同時に行うこともできます。コミットする前に実行しましょう。[^3]
 
 ```
 composer tests
 ```
 
-テストはパスしましたか？　REST APIの完成です！
+`compile`コマンドで最適化された`autoload.php`を生成してDI/AOPスクリプトを生成することができます。ディプロイ前は実行しましょう。[^4][^5]
+全てをDIするBEAR.Sundayアプリケーションはアプリケーション実行前に依存の問題を見つけることができます。ログでDIの束縛の情報を見れ事もできるので開発時でも役に立ちます。
+
+```
+composer compile
+```
+
+テストはパスしてコンパイルもうまくできましたか？ REST APIの完成です！
 
 ---
 
-[^1]:[チュートリアル](/manuals/1.0/ja/tutorial.html)を終えた方を対象としています。被る箇所もありますがおさらいのつもりでトライして見ましょう。レポジトリは[MyVendor.Ticket](https://github.com/bearsunday/MyVendor.Ticket)にあります。うまくいかないときは見比べて見ましょう。
+[^1]:[チュートリアル](/manuals/1.0/ja/tutorial.html)を終えた方を対象としています。被る箇所もありますがおさらいのつもりでトライして見ましょう。レポジトリは[bearsaunday/Tutorial2](https://github.com/bearsunday/Tutorial2)にあります。うまくいかないときは見比べて見ましょう。
 [^2]:通常は**vendor**名は個人またはチーム（組織）の名前を入力します。githubのアカウント名やチーム名が適当でしょう。**project**にはアプリケーション名を入力します。
+[^3]:コミットフックを設定するのも良い方法です。
+[^4]:キャッシュも暖めらるので２度行うと確実です。
+[^5]:コンテキストの変更は`composer.json`の`compile`スクリプトコマンドを編集します。
