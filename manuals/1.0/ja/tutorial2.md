@@ -55,7 +55,7 @@ class AppModule extends AbstractAppModule
     protected function configure()
     {
         $appDir = $this->appMeta->appDir;
-        require_once $appDir . 'env.php';
+        require_once $appDir . '/env.php';
         $this->install(
             new AuraSqlModule(
                 getenv('TKT_DB_DSN'),
@@ -66,9 +66,11 @@ class AppModule extends AbstractAppModule
         );
         $this->install(new SqlQueryModule($appDir . '/var/sql'));
         $this->install(new IdentityValueModule);
-        $this->install(new JsonSchemaModule(
-            $appDir . '/var/json_schema', 
-            $appDir . '/var/json_validate')
+        $this->install(
+            new JsonSchemaModule(
+            $appDir . '/var/json_schema',
+            $appDir . '/var/json_validate'
+        )
         );
         $this->install(new PackageModule);
     }
@@ -136,7 +138,6 @@ return [
         ]
     ]
 ];
-
 ```
 ## setupスクリプト
 
@@ -156,7 +157,6 @@ $pdo = new \PDO(getenv('TKT_DB_DSN'), getenv('TKT_DB_USER'), getenv('TKT_DB_PASS
 $pdo->exec('CREATE DATABASE IF NOT EXISTS ' . getenv('DB_NAME'));
 $pdo->exec('CREATE DATABASE IF NOT EXISTS ' . getenv('DB_NAME') . '_test');
 passthru('./vendor/bin/phinx migrate -c var/phinx/phinx.php -e development');
-
 ```
 
 実行してデータベースを作成します。
@@ -193,7 +193,7 @@ using default template
 created var/phinx/migrations/20180719040628_ticket.php
 ```
 
-`var/phinx/migrations/{current_date}_ticket.php`を編集して`change()`メソッドと`down()`メソッドを実装します。
+`var/phinx/migrations/{current_date}_ticket.php`を編集して`change()`メソッドを実装します。
 
 ```php
 <?php
@@ -259,7 +259,8 @@ using database ticket
 All Done. Took 0.0900s
 ```
 
-これでテーブルが作成されました。次回からこのプロジェクトのデータベース環境を整えるには`composer setup`を実行するだけで行えます。
+これでテーブルが作成されました。次回からこのプロジェクトのデータベース環境を整えるには`composer setup`を実行するだけで行えます。[^7]
+マイグレーションクラスの記述について詳しくは[Phixのマニュアル：マイグレーションを書く](https://book.cakephp.org/3.0/ja/phinx/migrations.html)をご覧ください。
 
 ## SQL
 
@@ -827,3 +828,4 @@ composer compile
 [^4]:キャッシュも暖めらるので２度行うと確実です。
 [^5]:コンテキストの変更は`composer.json`の`compile`スクリプトコマンドを編集します。
 [^6]:BEAR.Sundayフレームワークが依存する環境変数は１つもありません。
+[^7]:mysqlコマンドの操作などをREADMEで説明する必要もないので便利です。
