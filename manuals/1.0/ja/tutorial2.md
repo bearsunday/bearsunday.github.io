@@ -20,7 +20,7 @@ permalink: /manuals/1.0/ja/tutorial2.html
 プロジェクトスケルトンを作成します。
 
 ```
-composer create-project bear/skeleton MyVendor.Ticket
+composer create-project bear/skeleton MyVendor.Ticket inject-app-meta-dev
 ```
 **vendor**名を`MyVendor`に**project**名を`Ticket`として入力します。[^2]
 
@@ -40,27 +40,36 @@ composer require robmorgan/phinx ray/identity-value-module ray/query-module
 <?php
 namespace MyVendor\Ticket\Module;
 
+use BEAR\Package\AbstractAppModule;
 use BEAR\Package\PackageModule;
 use BEAR\Resource\Module\JsonSchemaModule;
-use josegonzalez\Dotenv\Loader;
 use Ray\AuraSqlModule\AuraSqlModule;
-use Ray\Di\AbstractModule;
 use Ray\IdentityValueModule\IdentityValueModule;
 use Ray\Query\SqlQueryModule;
 
-class AppModule extends AbstractModule
+class AppModule extends AbstractAppModule
 {
     /**
      * {@inheritdoc}
      */
     protected function configure()
     {
-        $appDir = dirname(__DIR__, 2);
-        (new Loader($appDir . '/.env'))->parse()->toEnv(true);
-        $this->install(new AuraSqlModule($_ENV['DB_DSN'], $_ENV['DB_USER'], $_ENV['DB_PASS'], $_ENV['DB_SLAVE']));
+        $appDir = $this->appMeta->appDir;
+        require_once $appDir . 'env.php';
+        $this->install(
+            new AuraSqlModule(
+                getenv('TKT_DB_DSN'),
+                getenv('TKT_DB_USER'),
+                getenv('TKT_DB_PASS'),
+                getenv('TKT_DB_SLAVE')
+            )
+        );
         $this->install(new SqlQueryModule($appDir . '/var/sql'));
         $this->install(new IdentityValueModule);
-        $this->install(new JsonSchemaModule($appDir . '/var/json_schema', $appDir . '/var/json_validate'));
+        $this->install(new JsonSchemaModule(
+            $appDir . '/var/json_schema', 
+            $appDir . '/var/json_validate')
+        );
         $this->install(new PackageModule);
     }
 }
@@ -76,14 +85,23 @@ mkdir var/json_validate
 
 ## データベース
 
-プロジェクトルートフォルダの`.env`ファイルに接続情報を記述します。
+プロジェクトルートフォルダの`.env`ファイルに接続情報を記述します。[^6]
 
 ```
-DB_DSN=mysql:host=127.0.0.1;dbname=ticket
-DB_USER=root
-DB_PASS=''
-DB_SLAVE=''
-DB_NAME=ticket
+TKT_DB_HOST=127.0.0.1
+TKT_DB_NAME=ticket
+TKT_DB_USER=root
+TKT_DB_PASS=''
+TKT_DB_SLAVE=''
+TKT_DB_DSN=mysql:host=${TKT_DB_HOST};dbname=${TKT_DB_NAME}
+```
+
+`.env`はリポジトリにはコミットされません。`env.dist`に記述例を残して置きましょう。
+
+```
+cp .env .env.dist
+// remove password, etc..
+git add .env.dist
 ```
 
 ## マイグレーション
@@ -101,11 +119,7 @@ mkdir var/phinx/seeds
 
 ```php
 <?php
-use Aura\Sql\ExtendedPdoInterface;
-use MyVendor\Ticket\Module\AppModule;
-use Ray\Di\Injector;
-
-$pdo = (new Injector(new AppModule))->getInstance(ExtendedPdoInterface::class);
+$pdo = new \PDO(getenv('TKT_DB_DSN'), getenv('TKT_DB_USER'), getenv('TKT_DB_PASS'));
 $name = $pdo->query("SELECT DATABASE()")->fetchColumn();
 return [
     'paths' => [
@@ -122,6 +136,7 @@ return [
         ]
     ]
 ];
+
 ```
 ## setupスクリプト
 
@@ -129,18 +144,19 @@ return [
 
 ```php
 <?php
-require dirname(__DIR__) . '/vendor/autoload.php';
+require dirname(__DIR__) . '/autoload.php';
+require_once dirname(__DIR__) . '/env.php';
 // dir
 chdir(dirname(__DIR__));
 passthru('rm -rf var/tmp/*');
 passthru('chmod 775 var/tmp');
 passthru('chmod 775 var/log');
 // db
-(new josegonzalez\Dotenv\Loader(dirname(__DIR__) . '/.env'))->parse()->toEnv();
-$db = new PDO($_ENV['DB_DSN'], $_ENV['DB_USER'], $_ENV['DB_PASS']);
-$db->exec('CREATE DATABASE IF NOT EXISTS ' . $_ENV['DB_NAME']);
-$db->exec('CREATE DATABASE IF NOT EXISTS ' . $_ENV['DB_NAME'] . '_test');
+$pdo = new \PDO(getenv('TKT_DB_DSN'), getenv('TKT_DB_USER'), getenv('TKT_DB_PASS'));
+$pdo->exec('CREATE DATABASE IF NOT EXISTS ' . getenv('DB_NAME'));
+$pdo->exec('CREATE DATABASE IF NOT EXISTS ' . getenv('DB_NAME') . '_test');
 passthru('./vendor/bin/phinx migrate -c var/phinx/phinx.php -e development');
+
 ```
 
 実行してデータベースを作成します。
@@ -810,3 +826,4 @@ composer compile
 [^3]:コミットフックを設定するのも良い方法です。
 [^4]:キャッシュも暖めらるので２度行うと確実です。
 [^5]:コンテキストの変更は`composer.json`の`compile`スクリプトコマンドを編集します。
+[^6]:BEAR.Sundayフレームワークが依存する環境変数は１つもありません。
