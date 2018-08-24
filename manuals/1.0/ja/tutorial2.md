@@ -6,7 +6,7 @@ permalink: /manuals/1.0/ja/tutorial2.html
 ---
 # チュートリアル2
 
-このチュートリアルでは以下のツールを用いてタスク管理のチケット作成・取得用REST APIを作成し、疎結合で高品質なアプリケーション開発を学びます。[^1]
+このチュートリアルでは以下のツールを用いてタスク管理のチケット作成・取得用REST APIのサイト`Ticket API`を作成し、疎結合で高品質なアプリケーション開発を学びます。[^1]
 
  * CakePHPが開発してるフレームワーク非依存の[Phinx](https://book.cakephp.org/3.0/ja/phinx.html) DBマイグレーションツール
  * クライントサーバー双方でのバリデーションやドキュメンテーションを可能にする [Json Schema](https://qiita.com/kyoh86/items/e7de290e9a0e989fcc14)
@@ -68,9 +68,9 @@ class AppModule extends AbstractAppModule
         $this->install(new IdentityValueModule);
         $this->install(
             new JsonSchemaModule(
-            $appDir . '/var/json_schema',
-            $appDir . '/var/json_validate'
-        )
+                $appDir . '/var/json_schema',
+                $appDir . '/var/json_validate'
+            )
         );
         $this->install(new PackageModule);
     }
@@ -388,14 +388,12 @@ class TicketsTest extends TestCase
 
     public function testOnPost()
     {
-        $params = [
+        $ro = $this->resource->post('app://self/ticket', [
             'title' => 'title1',
             'status' => 'status1',
             'description' => 'description1',
             'assignee' => 'assignee1'
-        ];
-        $ro = $this->resource->post->uri('app://self/ticket')($params);
-        /* @var ResourceObject $ro */
+        ]);
         $this->assertSame(201, $ro->code);
         $this->assertContains('/ticket', $ro->headers['Location']);
 
@@ -408,7 +406,7 @@ class TicketsTest extends TestCase
     public function testOnGet(ResourceObject $ro)
     {
         $location = $ro->headers[ResponseHeader::LOCATION];
-        $ro = $this->resource->uri('app://self' . $location)();
+        $ro = $this->resource->get('app://self' . $location);
         /* @var ResourceObject $ro */
         $this->assertSame('title1', $ro->body['title']);
         $this->assertSame('description1', $ro->body['description']);
@@ -820,6 +818,139 @@ composer compile
 
 テストはパスしてコンパイルもうまくできましたか？ REST APIの完成です！
 
+## AaaS (Application as a Service)
+
+作成したAPIアプリケーションはWebやコンソール（バッチ）からアクセスできますが、他のPHPプロジェクトからライブラリとしてアクセスする事もできます。
+このチュートリアルで作成したリポジトリは[https://github.com/bearsunday/Tutorial2.git](https://github.com/bearsunday/Tutorial2.git)にpushしてあります。
+
+このプロジェクトをライブラリとして利用してみましょう。まず最初に新しいプロジェクトフォルダを作って`composer.json`を用意します。
+
+```
+mkdir app
+cd app
+mkdir -p ticket/log
+mkdir ticket/tmp
+```
+
+composer.json
+
+```json
+{
+    "name": "my-vendor/app",
+    "description": "A BEAR.Sunday application",
+    "type": "project",
+    "license": "proprietary",
+    "require": {
+        "my-vendor/ticket": "dev-master"
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/bearsunday/Tutorial2.git"
+        }
+    ]
+}
+```
+
+composer installでプロジェクトがライブラリとしてインストールされます。
+
+```
+composer install
+```
+
+`Ticket API`はプロジェクトフォルダにある`.env`を読むように設定されてました。`vendor/my-vendor/app/.env`に保存出来なくもないですが、ここでは別の方法で環境変数をセットアップしましょう。
+
+このような`app/.env`ファイルを用意します。
+
+```bash
+export TKT_DB_HOST=localhost
+export TKT_DB_NAME=ticket
+export TKT_DB_USER=root
+export TKT_DB_PASS=''
+export TKT_DB_SLAVE=''
+export TKT_DB_DSN=mysql:host=${TKT_DB_HOST}\;dbname=${TKT_DB_NAME}
+```
+
+`source`コマンドで環境変数にexportすることができます。
+
+```
+source .env 
+```
+
+`Ticket API`を他のプロジェクトから利用する最も簡単なスクリプトは以下のようなものです。
+アプリケーション名とコンテキストを指定してアプリケーションオブジェクト`$ticket`を取得してリソースアクセスします。
+
+```php
+<?php
+use BEAR\Package\Bootstrap;
+
+require __DIR__ . '/vendor/autoload.php';
+
+$ticket = (new Bootstrap)->getApp('MyVendor\Ticket', 'app');
+$response = $ticket->resource->post('app://self/ticket',
+    ['title' => 'run']
+);
+
+echo $response->code . PHP_EOL;
+
+
+```
+
+`index.php`と保存して実行してみましょう。
+
+```
+php index.php
+```
+```
+201
+```
+
+APIを他のメソッドに渡したり、他のフレームワークなどののコンテナに格納するためには`callable`オブジェクトにします。
+`$createTicket`は普通の関数のように扱うことができます。
+
+```php
+<?php
+use BEAR\Package\Bootstrap;
+
+require __DIR__ . '/vendor/autoload.php';
+
+$ticket = (new Bootstrap)->getApp('MyVendor\Ticket', 'app');
+$createTicket = $ticket->resource->post->uri('app://self/ticket');
+// invoke callable object
+$response = $createTicket(['title' => 'run']);
+echo $response->code . PHP_EOL;
+```
+
+うまく動きましたか？しかし、このままでは`tmp`/ `log`ディレクトリは`vendor`の下のアプリが使われてしまいますね。
+このようにアプリケーションのメタ情報を変更するとディレクトリの位置を変更することができます。
+
+```php
+<?php
+
+use BEAR\AppMeta\Meta;
+use BEAR\Package\Bootstrap;
+
+require __DIR__ . '/vendor/autoload.php';
+
+$meta = new Meta('MyVendor\Ticket', 'app');
+$meta->tmpDir = __DIR__ . '/ticket/tmp';
+$meta->logDir = __DIR__ . '/ticket/log';
+$ticket = (new Bootstrap)->newApp($meta, 'app');
+```
+
+`Ticket API`はREST APIとしてHTTPやコンソールからアクセスできるだけでなく、BEAR.Sundayではない他のプロジェクトのライブラリとしても使えるようになりました！
+
+## 振り返り
+
+ * phinxマイグレーションツールを使ってアプリケーションのバージョンにあったデータベースの設定ができるようになりました。`composer setup`コマンドはディプロイやCIでも便利です。
+
+ * SQLファイルを`var/sql`フォルダに置くことでGUIやCLIのSQLツールで単体実行することができ、開発や運用にも便利でテストも容易になります。スタティックなSQLはPhpStormで補完も効くし、GUIでモデリングできるツールもあります。 
+ 
+ * BEAR.Sundayのリソースを使ったAPIは入出力は宣言されていて明瞭です。引数はパラメータのシグネチャで分かります。
+レスポンスはJsonSchemaで定義されているとバリデーションだけだなくドキュメントにもなります。ドキュメントツールで生成するAPIドキュメントと違って自動生成されバリデーションもAOPで毎回行われるので、ドキュメントが正しい事が保証されます。
+
+ * 作成したAPIアプリケーションはライブラリにもなり資産になります。複数のアプリケーションを協調させ例えばAPI、フロントエンド、管理ツールとそれぞれのドメインの単位でプロ上ジェクトを分ける事が出来ますし並行開発も容易になります。[^8]
+
 ---
 
 [^1]:[チュートリアル](/manuals/1.0/ja/tutorial.html)を終えた方を対象としています。被る箇所もありますがおさらいのつもりでトライして見ましょう。レポジトリは[bearsaunday/Tutorial2](https://github.com/bearsunday/Tutorial2)にあります。うまくいかないときは見比べて見ましょう。
@@ -829,3 +960,4 @@ composer compile
 [^5]:コンテキストの変更は`composer.json`の`compile`スクリプトコマンドを編集します。
 [^6]:BEAR.Sundayフレームワークが依存する環境変数は１つもありません。
 [^7]:mysqlコマンドの操作などをREADMEで説明する必要もないので便利です。
+[^8]:プロジェクトは固有の名前空間をもち、フォルダ構造を含めグローバルなものが無くて全てをインジェクトしてるBEAR.Sundayだからこそ可能な事です！
