@@ -216,7 +216,7 @@ class Index extends ResourceObject
 $posts = $this->resource->get->uri('app://self/posts')->withQuery(['id' => 1])->eager->request();
 // PHP 7.x >==
 $posts = $this->resource->get->uri('app://self/posts')(['id' => 1]);
-// getは省略化
+// getは省略可
 $posts = $this->resource->uri('app://self/posts')(['id' => 1]);
 ```
 
