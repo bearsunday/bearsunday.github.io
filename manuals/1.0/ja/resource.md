@@ -37,7 +37,9 @@ class Todo extends ResourceObject
     public function onPost(string $id, string $todo) : ResourceOjbect
     {
         $this->code = 201; // ステータスコード
-        $this->headers['Location'] = '/todo/new_id'; // ヘッダー
+        $this->headers = [ // ヘッダー
+            'Location' => '/todo/new_id';
+        ];
 
         return $this;
     }
@@ -105,7 +107,7 @@ $this->body['price'] = 10;
 
 ```php?start_inline
 
-$weekday = $api->resource->uri('app://self/weekday')(['year' => 2000, 'month'=>1, 'day'=>1]);
+$weekday = $api->resource->get('app://self/weekday', ['year' => 2000, 'month'=>1, 'day'=>1]);
 var_dump($weekday->body); // as array
 //array(1) {
 //    ["weekday"]=>
@@ -189,10 +191,9 @@ class Index
 
 ## クライアント
 
-リソースクライアントを使用して他のリソースのリクエストをします。
+インジェクトしたリソースクライアントを使用して他のリソースのリクエストをします。
 
 ```php?start_inline
-
 use BEAR\Sunday\Inject\ResourceInject;
 
 class Index extends ResourceObject
@@ -201,29 +202,32 @@ class Index extends ResourceObject
 
     public function onGet() : ResourceOjbect
     {
-        $this['post'] = $this
-            ->resource
-            ->get
-            ->uri('app://self/blog/posts')
-            ->withQuery(['id' => 1])
-            ->eager
-            ->request();
+        $this->body = [
+            'posts' => $this->resource->get('app://self/blog/posts', ['id' => 1])
         ];
     }
 }
 ```
-
-このリクエストは`app://self/blog/posts`リソースに`?id=1`というクエリーでリクエストをすぐ`eager`に行います。
-
-リソースのリクエストはlazyとeagerがあります。リクエストにeagerがついてないものがlazyリクエストです。
+このリクエストは`app://self/blog/posts`リソースに`?id=1`というクエリーでリクエストを実行します。
+この他にも以下の表記があります。
 
 ```php?start_inline
-$posts = $this->resource->get->uri('app://self/posts')->request(); //lazy
-$posts = $this->resource->get->uri('app://self/posts')->eager->request(); // eager
+// PHP 5.x >== (deprecated)
+$posts = $this->resource->get->uri('app://self/posts')->withQuery(['id' => 1])->eager->request();
+// PHP 7.x >==
+$posts = $this->resource->get->uri('app://self/posts')(['id' => 1]);
+// getは省略化
+$posts = $this->resource->uri('app://self/posts')(['id' => 1]);
 ```
 
-lazy `request()`で帰って来るオブジェクトは実行可能なリクエストオブジェクトです。`$posts()`で実行することができます。
-このリクエストをテンプレートやリソースに埋め込むと、その要素が使用されるときに評価されます。
+以上はリクエストをすぐに行う`eager`リクエストですが、リクエスト結果ではなくリクエストそのものを取得し、実行を遅延することもできます。
+
+```php?start_inline
+$request = $this->resource->get->uri('app://self/posts'); // callable
+$posts = $request(['id' => 1]);
+```
+
+このリクエストをテンプレートやリソースに埋め込むと、その要素が使用されるときに評価されリクエストが実行されます。つまり評価されない時はリクエストは行われず実行コストがかかりません。
 
 ## リンクリクエスト
 
@@ -247,35 +251,10 @@ $blog = $this
  * `linkNew($rel)` リンク先のリソースがリンク元のリソースに追加されます
  * `linkCrawl($rel)` リンクをクロールして"リソースツリー"を作成します。
 
-## シンタックスシュガー
+### クロールリンク
 
-eagerリクエストの場合はシンタックスシュガーが利用できます。以下のリクエストは全て同じです。(php7)
-
-```php?start_inline
-$this->resource->get->uri('app://self/user')->withQuery(['id' => 1])->eager->request()->body;
-$this->resource->get->uri('app://self/user')(['id' => 1])->body;
-$this->resource->uri('app://self/user')(['id' => 1])->body; // getは省略化
-$this->resource->uri('app://self/user?id=1')()->body;
-```
-
-PHP7ではクライントでのコードはこのように記述できます。
-
-```php
-<?php
-use BEAR\Sunday\Inject\ResourceInject;
-
-class Index extends ResourceObject
-{
-    use ResourceInject;
-
-    public function onGet() : ResourceOjbect
-    {
-        $this->body = [
-            'post' => $this->uri('app://self/blog/posts')(['id' => 1])
-        ];
-    }
-}
-```
+ツリー構造をもつリソース、例えばユーザーからブログ、ブログから記事、記事からコメント、コメントから評価にリンクされているようなツリー構造のリソースは`linkCrawl()`で上手く取得できます。
+詳しくは[クロール](https://github.com/bearsunday/BEAR.Resource/blob/1.x/README.ja.md#%E3%82%AF%E3%83%AD%E3%83%BC%E3%83%AB)をご覧ください。
 
 ## リンクアノテーション
 
@@ -313,7 +292,6 @@ class Index extends ResourceObject
     }
 }
 ```
-
 
 BEARのリソースリクエストでは`linkSelf()`, `linkNew`, `linkCrawl`の時にリソースリンクとして使われます。
 
@@ -359,7 +337,7 @@ class News
     public function onGet(string $id) : ResourceOjbect
     {
         // ...
-        $this['website']->addQuery(['title' => $title]); // 引数追加
+        $this->body['website']->addQuery(['title' => $title]); // 引数追加
 ```
 
 [HAL](https://github.com/blongden/hal)レンダラーでは`_embedded `として扱われます。
@@ -590,12 +568,9 @@ class Index extends ResourceObject
 
     public function onGet(string $status) : ResoureObject
     {
-        $this['todos'] = $this->resource
-            ->get
-            ->uri('app://self/todos')
-            ->withQuery(['status' => $status])
-            ->eager
-            ->request();
+        $this->body = [
+            'todos' => $this->resource->uri('app://self/todos')(['status' => $status]); // lazy request
+        ];
 
         return $this;
     }
@@ -626,12 +601,7 @@ class Todo extends ResourceObject
 
     public function onPost(string $title) : ResourceObject
     {
-        $this->resource
-            ->post
-            ->uri('app://self/todo')
-            ->withQuery(['title' => $title])
-            ->eager
-            ->request();
+        $this->resource->post('app://self/todo', ['title' => $title]);
         $this->code = 301;
         $this->headers[ResponseHeader::LOCATION] = '/';
 
@@ -670,19 +640,10 @@ class User extends ResourceObject
 
     public function onGet(string $id) : ResoureObject
     {
-        $nickname = $this->resource
-            ->uri('app://self/login-user')
-            ->withQuery(['id' => $id])
-            ->eager
-            ->request()
-            ->body['nickname'];
-        $this['profile'] = $this->resource
-            ->get
-            ->uri('app://self/profile')
-            ->withQuery(['name' => $nickname])
-            ->eager
-            ->request()
-            ->body;
+        $nickname = $this->resource->get('app://self/login-user', ['id' => $id])->body['nickname'];
+        $this->body = [
+            'profile'=> $this->resource->get('app://self/profile', ['name' => $nickname])->body
+        ];
 
         return $this;
     }
@@ -698,13 +659,9 @@ class User extends ResourceObject
      */
     public function onGet(string $id, string $name) : ResoureObject
     {
-        $this['profile'] = $this->resource
-            ->get
-            ->uri('app://self/profile')
-            ->withQuery(['name' => $name])
-            ->eager
-            ->request()
-            ->body;
+        $this->body = [
+            'profile' => $this->resource->get('app://self/profile', ['name' => $name])->body
+        ];
 
         return $this;
     }
@@ -719,7 +676,7 @@ class User extends ResourceObject
      */
     public function onGet(string $id, string $name) : ResoureObject
     {
-        $this['profile']->addQuery(['name'=>$name]);
+        $this->body['profile']->addQuery(['name'=>$name]);
 
         return $this;
     }

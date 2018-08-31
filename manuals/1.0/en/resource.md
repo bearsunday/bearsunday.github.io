@@ -39,10 +39,10 @@ class Todo extends ResourceObject
 {
     public function onPost(string $id, string $todo) : ResourceOjbect
     {
-        // status code
-        $this->code = 201;
-        // location header for created resource
-        $this->headers['Location'] = '/todo/new_id';
+        $this->code = 201; // status code
+        $this->headers = [ // header
+            'Location' => '/todo/new_id';
+        ];
 
         return $this;
     }
@@ -194,54 +194,6 @@ In this way, each class has a function to **change its own resource state** by r
 You need a **Resource Client** to request resource. In the following example a `ResourceInject` trait is used to inject a `Resource Client`.
 
 ```php?start_inline
-
-use BEAR\Sunday\Inject\ResourceInject;
-
-class Index extends ResourceObject
-{
-    use ResourceInject;
-
-    public function onGet()
-    {
-        $this['post'] = $this
-            ->resource
-            ->get
-            ->uri('app://self/blog/posts')
-            ->withQuery(['id' => 1])
-            ->eager
-            ->request();
-        ];
-    }
-}
-```
-
-This code invokes a `GET` request to `app://self/blog/posts` App resource with the query `?id=1` .
-If you do not specify an `eager` option with the request, it is just hold the request. Request invocation will then be made when values are lazily output in the representation.
-
-```php?start_inline
-$posts = $this->resource->get->uri('app://self/posts')->request(); //lazy
-$posts = $this->resource->get->uri('app://self/posts')->eager->request(); // eager
-```
-
-A `request()` method without `eager` returns an invokable request object, which can be invoked by calling `$posts()`.
-You can assign this value to a template engine or embed it in another resource. It will then be lazily evaluated.
-
-## Syntax Sugar
-
-Syntax sugar can be used for eager request. The following requests are all the same.　(php7)
-
-
-```php?start_inline
-$this->resource->get->uri('app://self/user')->withQuery(['id' => 1])->eager->request()->body;
-$this->resource->get->uri('app://self/user')(['id' => 1])->body;
-$this->resource->uri('app://self/user')(['id' => 1])->body; // "get" can be omitted.
-$this->resource->uri('app://self/user?id=1')()->body;
-```
-
-For PHP7.0 and up, You can code examples in the client like this
-
-```php
-<?php
 use BEAR\Sunday\Inject\ResourceInject;
 
 class Index extends ResourceObject
@@ -251,10 +203,32 @@ class Index extends ResourceObject
     public function onGet() : ResourceOjbect
     {
         $this->body = [
-            'post' => $this->uri('app://self/blog/posts')(['id' => 1])
+            'posts' => $this->resource->get('app://self/blog/posts', ['id' => 1])
         ];
     }
 }
+```
+This code invokes a `GET` request to `app://self/blog/posts` `app` resource with the query `?id=1` .
+
+この他にも以下の表記があります。
+
+```php?start_inline
+// PHP 5.x >== (deprecated)
+$posts = $this->resource->get->uri('app://self/posts')->withQuery(['id' => 1])->eager->request();
+// PHP 7.x >==
+$posts = $this->resource->get->uri('app://self/posts')(['id' => 1]);
+// getは省略化
+$posts = $this->resource->uri('app://self/posts')(['id' => 1]);
+```
+
+The above is an `eager` request to make a request immediately, but it gets the request itself rather than the request result,
+Request invocation will then be made when values are lazily output in the representation.
+You can assign this value to a template engine or embed it in another resource. It will then be lazily evaluated.
+
+
+```php?start_inline
+$request = $this->resource->get->uri('app://self/posts'); // callable
+$posts = $request(['id' => 1]);
 ```
 
 ## Link request
@@ -302,7 +276,7 @@ use BEAR\Resource\Annotation\Link;
 public function onGet($id = null)
 ```
 
-A `crawl` tagged link will then be [crawled](https://github.com/koriym/BEAR.Resource#crawl) with `linkCrawl`.
+A `crawl` tagged link will then be [crawled](https://github.com/bearsunday/BEAR.Resource/blob/1.x/README.md#crawl) with `linkCrawl`.
 
 Find out more about the `@Link` annotation at  BEAR.Resource [README](https://github.com/bearsunday/BEAR.Resource/blob/1.x/README.md).
 
@@ -518,12 +492,9 @@ class Index extends ResourceObject
 
     public function onGet(string $status) : ResoureObject
     {
-        $this['todos'] = $this->resource
-            ->get
-            ->uri('app://self/todos')
-            ->withQuery(['status' => $status])
-            ->eager
-            ->request();
+        $this->body = [
+            'todos' => $this->resource->uri('app://self/todos')(['status' => $status]); // lazy request
+        ];
 
         return $this;
     }
@@ -554,12 +525,7 @@ class Todo extends ResourceObject
 
     public function onPost(string $title) : ResourceObject
     {
-        $this->resource
-            ->post
-            ->uri('app://self/todo')
-            ->withQuery(['title' => $title])
-            ->eager
-            ->request();
+        $this->resource->post('app://self/todo', ['title' => $title]);
         $this->code = 301;
         $this->headers[ResponseHeader::LOCATION] = '/';
 
@@ -598,20 +564,10 @@ class User extends ResourceObject
 
     public function onGet(string $id) : ResoureObject
     {
-        $nickname = $this->resource
-            ->get
-            ->uri('app://self/login-user')
-            ->withQuery(['id' => $id])
-            ->eager
-            ->request()
-            ->body['nickname'];
-        $this['profile'] = $this->resource
-            ->get
-            ->uri('app://self/profile')
-            ->withQuery(['name' => $nickname])
-            ->eager
-            ->request()
-            ->body;
+        $nickname = $this->resource->get('app://self/login-user', ['id' => $id])->body['nickname'];
+        $this->body = [
+            'profile'=> $this->resource->get('app://self/profile', ['name' => $nickname])->body
+        ];
 
         return $this;
     }
@@ -627,13 +583,9 @@ class User extends ResourceObject
      */
     public function onGet(string $id, string $name) : ResoureObject
     {
-        $this['profile'] = $this->resource
-            ->get
-            ->uri('app://self/profile')
-            ->withQuery(['name' => $name])
-            ->eager
-            ->request()
-            ->body;
+        $this->body = [
+            'profile' => $this->resource->get('app://self/profile', ['name' => $name])->body
+        ];
 
         return $this;
     }
@@ -648,7 +600,7 @@ class User extends ResourceObject
      */
     public function onGet(string $id, string $name) : ResoureObject
     {
-        $this['profile']->addQuery(['name'=>$name]);
+        $this->body['profile']->addQuery(['name'=>$name]);
 
         return $this;
     }
