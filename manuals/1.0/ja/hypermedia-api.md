@@ -88,7 +88,7 @@ public function onGet() {
  * @Embed(rel="todos", src="/todos{?status}")
  * @Embed(rel="me", src="/me")
  */
-public function onGet() : ResourceObject
+public function onGet(string $status) : ResourceObject
 
 ```
 

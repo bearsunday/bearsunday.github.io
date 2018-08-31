@@ -92,7 +92,7 @@ To embed other resources statically, use the `@Embed` annotation, and to embed i
  * @Embed(rel="todos", src="/todos{?status}")
  * @Embed(rel="me", src="/me")
  */
-public function onGet() : ResourceObject
+public function onGet(string $status) : ResourceObject
 
 ```
 
