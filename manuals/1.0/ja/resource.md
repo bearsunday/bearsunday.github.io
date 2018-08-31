@@ -299,7 +299,7 @@ class Index extends ResourceObject
     }
 ```
 
-`href`のURIの`{?id}`は`$body`の値です。[RFC6570 URI template](https://github.com/ioseb/uri-template)でURIが生成され、HALでの出力は以下のようになります。
+`@Link`の`href`のURIの`{?id}`は`$body`の値です。（メソッドの`$id`ではありません）[RFC6570 URI template](https://github.com/ioseb/uri-template)でURIが生成され、HALでの出力は以下のようになります。
 ```json
 {
     "id": 10,
@@ -330,7 +330,7 @@ public function onGet($id = null) : ResourceOjbect
 
 ## 埋め込みリソース
 
-リソースの中に`src`で指定した別のリソースを埋め込むことができます。
+リソースの中に`@Embed`の`src`で指定した別のリソースを埋め込むことができます。
 
 ```php?start_inline
 use BEAR\Resource\Annotation\Embed;
@@ -345,6 +345,8 @@ class News
 ```
 
 埋め込まれるのはリソース**リクエスト**です。レンダリングの時に実行されますが、その前に`addQuery()`メソッドで引数を加えたり`withQuery()`で引数を置き換えることができます。
+
+`src`にはURI templateが利用でき、**リクエストメソッドの引数**がバインドされます。（リソースの`$body`ではありません）
 
 ```php?start_inline
 use BEAR\Resource\Annotation\Embed;
