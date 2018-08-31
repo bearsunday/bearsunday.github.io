@@ -79,9 +79,9 @@ public function onGet() {
 
 ```
 
-### @Embeded
+### @Embed
 
-他のリソースを静的に埋め込むには`@Embeded`アノテーションを使い、動的に埋め込むには`body`にリクエストを代入します。
+他のリソースを静的に埋め込むには`@Embed`アノテーションを使い、動的に埋め込むには`body`にリクエストを代入します。
 
 ```php?start_inline
 /**

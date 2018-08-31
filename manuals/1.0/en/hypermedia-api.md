@@ -83,9 +83,9 @@ public function onGet() {
 
 ```
 
-### @Embeded
+### @Embed
 
-To embed other resources statically, use the `@Embeded` annotation, and to embed it dynamically, assign the "request" to` body`.
+To embed other resources statically, use the `@Embed` annotation, and to embed it dynamically, assign the "request" to` body`.
 
 ```php?start_inline
 /**
