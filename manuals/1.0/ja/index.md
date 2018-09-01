@@ -35,13 +35,47 @@ BEAR.SundayはMVCパターンではなく、RESTfulアプリケーション用�
 
 ステートレスなリクエストは`Method`で`Resource`状態をつくり、内部のRendererが`Representation`にしてレスポンスになります。
 
-## コンポーネント
+```php?start_inline
+class Index extends ResourceObject
+{
+    public $code = 200;
+    public $headers = ['access-control-allow-origin' => '*'];
+    public $body = [];
+
+    private $renderer;
+
+    public function __construct(RenderInterface $render)
+    {
+        $this->renderer = $render;
+    }
+
+    public function onGet(string $name) : ResourceObject
+    {
+        // set resource state
+        $this->body = $state;
+
+        return $this;
+    }
+
+    public function __toString()
+    {
+        // contextual renderer makes representation (JSON, HTML)
+        return $this->renderer->render($this);
+    }
+
+    public function transfer(TransferInterface $responder, array $server)
+    {
+        // contextual responder output (CLI, HTTP)
+        $responder($this, $server);
+    }
+}
+```
 
 ### Resource
 
-WebのリソースをオブジェクトにしたものがResourceです。アプリケーション内で固有のURIやHTTPに準じたリクエストインターフェイスを持ち、オブジェクトはサービスとして機能します。
-
-他のリソースを`@Embed`したり`@Link`することでハイパーメディアとして機能します。
+WebのリソースをオブジェクトにしたものがResourceObjectです。(Object as a Service)
+固有のURIがマップされHTTPに準じたリクエストメソッドでリソースの状態を変更します。
+他のリソースを`@Embed`で埋め込んだり、次のアクションに`@Link`することでハイパーメディアにすることもできます。
 
 ### Method
 
@@ -65,7 +99,7 @@ Methodの構造は[オニオンアーキテクチャ](http://www.infoq.com/jp/ne
 
  1. 文字列評価で`Resource`内のレンダラーがリソース状態を`Representation`にします。
 
- 1. `Resource`内のレスポンダーが`Representation`をクライアントにレスポンスとして返します。
+ 1. レスポンダーが`Representation`をクライアントにレスポンスとして返します。
 
 
 ## なぜ新しいパターン？

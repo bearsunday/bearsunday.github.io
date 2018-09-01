@@ -43,11 +43,45 @@ BEAR.Sunday does not follow MVC instead it is a variation of [Resource-Method-Re
 
 Resource state is created by calling stateless  requests on RESTful methods, the internal renderer then handles the `representation` and becomes the response.
 
-## Components
+```php?start_inline
+class Index extends ResourceObject
+{
+    public $code = 200;
+    public $headers = ['access-control-allow-origin' => '*'];
+    public $body = [];
+
+    private $renderer;
+
+    public function __construct(RenderInterface $render)
+    {
+        $this->renderer = $render;
+    }
+
+    public function onGet(string $name) : ResourceObject
+    {
+        // set resource state
+        $this->body = $state;
+
+        return $this;
+    }
+
+    public function __toString()
+    {
+        // contextual renderer makes representation (JSON, HTML)
+        return $this->renderer->render($this);
+    }
+
+    public function transfer(TransferInterface $responder, array $server)
+    {
+        // contextual responder output (CLI, HTTP)
+        $responder($this, $server);
+    }
+}
+```
 
 ### Resources
 
-What initially makes up a web application is a group of resources. In BEAR.Sunday these can be created as Resource Objects. The resources can then be accessed locally via PHP or by HTTP requests. In both cases using a consistent URI interface. Each Resource object can then be exposed as a service either or both inside and outside of you application. Using Hypermedia using specially provided annotations you can either `@Link` or `@Embed` other resources.
+What initially makes up a web application is a group of resources. In BEAR.Sunday these can be created as Resource Objects. (Object as a service) The resources can then be accessed locally via PHP or by HTTP requests. In both cases using a consistent URI interface. Each Resource object can then be exposed as a service either or both inside and outside of you application. Using Hypermedia using specially provided annotations you can either `@Link` or `@Embed` other resources.
 
 ### Methods
 
@@ -69,7 +103,7 @@ Each resource have have the representation of its current state rendered through
 
 1. The resources assigned `Renderer` then renders the string value `Representation` of that resources state.
 
-1. The `Responder` contained in the `Resource` then returns the `Representation` to the client
+1. The `Responder` returns the `Representation` to the client
 
 ## Why a new pattern?
 
