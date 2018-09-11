@@ -409,7 +409,6 @@ class TicketsTest extends TestCase
             'description' => 'description1',
             'assignee' => 'assignee1'
         ]);
-        /* @var ResourceObject $ro */
         $this->assertSame(201, $ro->code);
         $this->assertContains('/ticket?id=', $ro->headers['Location']);
 
@@ -422,8 +421,7 @@ class TicketsTest extends TestCase
     public function testOnGet(ResourceObject $ro)
     {
         $location = $ro->headers[ResponseHeader::LOCATION];
-        $ro = $this->resource->uri('app://self' . $location)();
-        /* @var ResourceObject $ro */
+        $ro = $this->resource->get('app://self' . $location);
         $this->assertSame('title1', $ro->body['title']);
         $this->assertSame('description1', $ro->body['description']);
         $this->assertSame('assignee1', $ro->body['assignee']);
