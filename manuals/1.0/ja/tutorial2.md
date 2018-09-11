@@ -20,7 +20,7 @@ permalink: /manuals/1.0/ja/tutorial2.html
 プロジェクトスケルトンを作成します。
 
 ```
-composer create-project bear/skeleton MyVendor.Ticket inject-app-meta-dev
+composer create-project bear/skeleton MyVendor.Ticket 1.x-dev
 ```
 **vendor**名を`MyVendor`に**project**名を`Ticket`として入力します。[^2]
 
@@ -30,6 +30,7 @@ composer create-project bear/skeleton MyVendor.Ticket inject-app-meta-dev
 
 ```
 composer require robmorgan/phinx ray/identity-value-module ray/query-module
+composer require --dev bear/api-doc
 ```
 
 ## モジュールインストール
@@ -42,6 +43,8 @@ namespace MyVendor\Ticket\Module;
 
 use BEAR\Package\AbstractAppModule;
 use BEAR\Package\PackageModule;
+use BEAR\Package\Provide\Router\AuraRouterModule;
+use BEAR\Resource\Module\JsonSchemaLinkHeaderModule;
 use BEAR\Resource\Module\JsonSchemaModule;
 use Ray\AuraSqlModule\AuraSqlModule;
 use Ray\IdentityValueModule\IdentityValueModule;
@@ -72,6 +75,8 @@ class AppModule extends AbstractAppModule
                 $appDir . '/var/json_validate'
             )
         );
+        $this->install(new JsonSchemaLinkHeaderModule('http://www.example.com/'));
+        $this->install(new AuraRouterModule($appDir . '/var/conf/aura.route.php'));
         $this->install(new PackageModule);
     }
 }
@@ -83,6 +88,16 @@ class AppModule extends AbstractAppModule
 mkdir var/sql
 mkdir var/json_schema
 mkdir var/json_validate
+```
+
+## ルーターファイル
+
+`tickets/{id}`のアクセスを`Ticket`クラスにルートするためにルーターファイルを`/var/conf/aura.route.php`に設置します。
+
+```php
+<?php
+/* @var $map \Aura\Router\Map */
+$map->route('/ticket', '/tickets/{id}');
 ```
 
 ## データベース
@@ -285,7 +300,6 @@ SELECT * FROM ticket WHERE id = :id
 SELECT * FROM ticket
 ```
 
-
 *Note:* PHPStormを使用しているならPreference > Plugin で [Database Navigator](https://plugins.jetbrains.com/plugin/1800-database-navigator)をインストールするとSQLファイルを右クリックすると単体で実行することが出来ます。
 
 PHPでSQLを実行する前に、このように事前に単体で実行してSQLが正しく記述できているかを確かめると確実で開発も容易です。[Sequel Pro](https://www.sequelpro.com/)や[MySQL Workbench](https://www.mysql.com/jp/products/workbench/)などのデータベースブラウザを使うのも良いでしょう。
@@ -300,9 +314,10 @@ PHPでSQLを実行する前に、このように事前に単体で実行してSQ
 
 ```json
 {
-  "$schema": "http://json-schema.org/draft-04/schema#",
+  "$id": "ticket.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Ticket",
   "type": "object",
-  "id": "ticket.json",
   "properties": {
     "id": {
       "type": "string",
@@ -348,8 +363,8 @@ PHPでSQLを実行する前に、このように事前に単体で実行してSQ
 
 ```json
 {
-  "$schema": "http://json-schema.org/draft-04/schema#",
-  "id": "tickets.json",
+  "$id": "tickets.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Collection of Tickets",
   "type": "array",
   "items": {
@@ -388,14 +403,15 @@ class TicketsTest extends TestCase
 
     public function testOnPost()
     {
-        $ro = $this->resource->post('app://self/ticket', [
+        $ro = $this->resource->post('app://self/tickets', [
             'title' => 'title1',
             'status' => 'status1',
             'description' => 'description1',
             'assignee' => 'assignee1'
         ]);
+        /* @var ResourceObject $ro */
         $this->assertSame(201, $ro->code);
-        $this->assertContains('/ticket', $ro->headers['Location']);
+        $this->assertContains('/ticket?id=', $ro->headers['Location']);
 
         return $ro;
     }
@@ -406,7 +422,7 @@ class TicketsTest extends TestCase
     public function testOnGet(ResourceObject $ro)
     {
         $location = $ro->headers[ResponseHeader::LOCATION];
-        $ro = $this->resource->get('app://self' . $location);
+        $ro = $this->resource->uri('app://self' . $location)();
         /* @var ResourceObject $ro */
         $this->assertSame('title1', $ro->body['title']);
         $this->assertSame('description1', $ro->body['description']);
@@ -432,7 +448,48 @@ composer test
 
 ## tikcetリソース
 
-まずは基本となる`ticket`リソースを`src/Resource/App/Ticket.php`に作成します。
+`ticket`リソースを`src/Resource/App/Ticket.php`に作成します。
+
+```php
+<?php
+namespace MyVendor\Ticket\Resource\App;
+
+use BEAR\RepositoryModule\Annotation\Cacheable;
+use BEAR\Resource\Annotation\JsonSchema;
+use BEAR\Resource\ResourceObject;
+use Ray\Query\Annotation\AliasQuery;
+
+/**
+ * @Cacheable
+ */
+class Ticket extends ResourceObject
+{
+    /**
+     * @JsonSchema(key="ticket", schema="ticket.json")
+     * @AliasQuery("ticket_item_by_id", type="row")
+     */
+    public function onGet(string $id) : ResourceObject
+    {
+        unset($id);
+
+        return $this;
+    }
+}
+
+```
+
+## ticket - GETリクエスト
+
+`GET`のための`onGet`メソッドを見てみましょう。メソッドシグネチャーを見れば、リクエストに必要な入力は`$_GET['id']`のみで、それは省略ができないという事が分かります。
+
+`@JsonSchema`アノテーションはこのクラスの`body`プロパティの`ticket`キー配列が`ticket.json`で定義されたスキーマであるということを宣言しつつリアルタイムのバリデーションをAOPで毎回行う事で保証しています。
+
+`@AliasQuery("ticket_item_by_id", type="row")`と指定されているので、このメソッドはSQL実行と置き換わります。`var/sql/ticket_item_by_id.sql`ファイルのSQLが実行され、その結果が単一行（type="row"）で返ります。このようにロジックが単純にSQLで置換えられる場合は`@AliasQuery`を使ってPHPの記述を省略することができます。
+
+
+## tikcetsリソース
+
+次は`tikcet`リソースの集合の`tikcets`リソースを`src/resource/App/Tickets.php`に作成します。
 
 ```php
 <?php
@@ -454,7 +511,7 @@ use Ray\Query\Annotation\AliasQuery;
 /**
  * @Cacheable
  */
-class Ticket extends ResourceObject
+class Tickets extends ResourceObject
 {
     /**
      * @var callable
@@ -482,19 +539,18 @@ class Ticket extends ResourceObject
     }
 
     /**
-     * @JsonSchema(key="ticket", schema="ticket.json")
-     * @AliasQuery("ticket_item_by_id", type="row")
+     * @JsonSchema(schema="tickets.json")
+     * @AliasQuery("ticket_list")
      */
-    public function onGet(string $id) : ResourceObject
+    public function onGet() : ResourceObject
     {
-        unset($id);
+        return $this;
     }
 
     /**
      * @ReturnCreatedResource
      * @Transactional
      * @Purge(uri="app://self/tickets")
-     * @Purge(uri="page://self/tickets")
      */
     public function onPost(
         string $title,
@@ -518,53 +574,18 @@ class Ticket extends ResourceObject
         return $this;
     }
 }
+
 ```
 
-## ticket - GETリクエスト
+## tickets - GETリクエスト
 
-`GET`のための`onGet`メソッドを見てみましょう。メソッドシグネチャーを見れば、リクエストに必要な入力は`$_GET['id']`のみで、それは省略ができないという事が分かります。
+`var/json_schema/tickets.json`JSONスキーマをご覧になってください。`ticket.json`スキーマの集合(array)と定義されています。
+このようにJSONスキーマはスキーマの構造を表すことができます。メソッドは`/ticket`リソース同様に`ticket_list.sql`のSQL実行を結果として返します。
 
-`@JsonSchema`アノテーションはこのクラスの`body`プロパティの`ticket`キー配列が`ticket.json`で定義されたスキーマであるということを宣言しつつリアルタイムのバリデーションをAOPで毎回行う事で保証しています。
-
-`@AliasQuery("ticket_item_by_id", type="row")`と指定されているので、このメソッドはSQL実行と置き換わります。`var/sql/ticket_item_by_id.sql`ファイルのSQLが実行され、その結果が単一行（type="row"）で返ります。このようにロジックが単純にSQLで置換えられる場合は`@AliasQuery`を使ってPHPの記述を省略することができます。
-
-## ticket - POSTリクエスト
+## tickets - POSTリクエスト
 
 コンストラクタでインジェクトされた`$this->createTicket`は`ticket_insert.sql`の実行オブジェクトです。受け取った連想配列をバインドしてSQL実行します。
-
-注意：リソースを作成する時は必ずロケーションヘッダーでリソースのURLを保存するようにします。作成した内容をボディに含みたい時は`@ReturnCreatedResource`とアノテートします。
-
-## tikcetsリソース
-
-次は`tikcet`リソースの集合の`tikcets`リソースを`src/resource/App/Tickets.php`に作成します。JSONスキーマでは単純に`var/json_schema/tickets.json`は`ticket.json`スキーマの集合(array)と定義されています。
-このようにJSONスキーマはスキーマの構造を表すことができます。
-
-```php
-<?php
-namespace MyVendor\Ticket\Resource\App;
-
-use BEAR\RepositoryModule\Annotation\Cacheable;
-use BEAR\Resource\Annotation\JsonSchema;
-use BEAR\Resource\ResourceObject;
-use Ray\Query\Annotation\AliasQuery;
-
-/**
- * @Cacheable
- */
-class Tickets extends ResourceObject
-{
-    /**
-     * @JsonSchema(schema="tickets.json")
-     * @AliasQuery("ticket_list")
-     */
-    public function onGet() : ResourceObject
-    {
-        return $this;
-    }
-}
-```
-
-GETリクエストは`Ticket.php`の時とほぼ同様です。
+リソースを作成する時は必ず`Location`ヘッダーでリソースのURLを保存するようにします。作成した内容をボディに含みたい時は`@ReturnCreatedResource`とアノテートします。
 
 ## indexリソース
 
@@ -579,29 +600,30 @@ use BEAR\Resource\ResourceObject;
 class Index extends ResourceObject
 {
     public $body = [
-        'message' => 'Welcome to the MyVendor.Ticket API !',
+        'overview' => 'This is the Tutorial2 REST API',
+        'issue' => 'https://github.com/bearsunday/tutorial2/issues',
         '_links' => [
             'self' => [
                 'href' => '/',
             ],
             'curies' => [
-                'href' => 'http://localhost:8081/rels/{?rel}',
-                'name' => 'kt',
+                'href' => 'rels/{rel}.html',
+                'name' => 'tk',
                 'templated' => true
             ],
-            'kt:ticket' => [
-                'href' => '/ticket',
-                'title' => 'tickets item',
+            'tk:ticket' => [
+                'href' => '/tickets/{id}',
+                'title' => 'Ticket',
                 'templated' => true
             ],
-            'kt:tickets' => [
+            'tk:tickets' => [
                 'href' => '/tickets',
-                'title' => 'ticket list'
+                'title' => 'The collection of ticket'
             ]
         ]
     ];
 
-    public function onGet()
+    public function onGet() : ResourceObject
     {
         return $this;
     }
@@ -622,26 +644,27 @@ php bootstrap/api.php get /
 content-type: application/hal+json
 
 {
-    "message": "Welcome to the Koriym.TicketSan API !",
+    "overview": "This is the Tutorial2 REST API",
+    "issue": "https://github.com/bearsunday/tutorial2/issues",
     "_links": {
         "self": {
             "href": "/"
         },
         "curies": [
             {
-                "href": "http://localhost:8081/rels/{?rel}",
-                "name": "kt",
+                "href": "rels/{rel}.html",
+                "name": "tk",
                 "templated": true
             }
         ],
-        "kt:ticket": {
-            "href": "/ticket",
-            "title": "tickets item",
+        "tk:ticket": {
+            "href": "/tickets/{id}",
+            "title": "Ticket",
             "templated": true
         },
-        "kt:tickets": {
+        "tk:tickets": {
             "href": "/tickets",
-            "title": "ticket list"
+            "title": "The collection of ticket"
         }
     }
 }
@@ -658,7 +681,7 @@ php bootstrap/api.php options /ticket
 ```
 200 OK
 Content-Type: application/json
-Allow: GET, POST
+Allow: GET
 
 {
     "GET": {
@@ -673,9 +696,10 @@ Allow: GET, POST
             ]
         },
         "schema": {
-            "$schema": "http://json-schema.org/draft-04/schema#",
+            "$id": "ticket.json",
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "title": "Ticket",
             "type": "object",
-            "id": "ticket.json",
             "properties": {
                 "id": {
                     "type": "string",
@@ -722,26 +746,6 @@ Allow: GET, POST
             ],
             "additionalProperties": false
         }
-    },
-    "POST": {
-        "request": {
-            "parameters": {
-                "title": {
-                    "type": "string"
-                },
-                "description": {
-                    "type": "string",
-                    "default": ""
-                },
-                "assignee": {
-                    "type": "string",
-                    "default": ""
-                }
-            },
-            "required": [
-                "title"
-            ]
-        }
     }
 }
 ```
@@ -754,42 +758,47 @@ Allow: GET, POST
 POSTリクエストでチケット作成します。
 
 ```
-php bootstrap/api.php post '/ticket?title=run'
+php bootstrap/api.php post '/tickets?title=run'
 ```
 ```
 201 Created
-Location: /ticket?id=ed3f9f53-d5ef-4d7c-843e-e2d81361f62a
+Location: /tickets/b0f9c395-3a3d-48ee-921b-ce45a06eee11
 content-type: application/hal+json
 ```
 
 レスポンスにあるLocationヘッダーのURIをGETリクエストします。
 
 ```
-php bootstrap/api.php get '/ticket?id=ed3f9f53-d5ef-4d7c-843e-e2d81361f62a'
+php bootstrap/api.php get '/tickets/b0f9c395-3a3d-48ee-921b-ce45a06eee11'
 ```
 ```
 200 OK
+Link: <http://www.example.com/ticket.json>; rel="describedby"
 content-type: application/hal+json
-ETag: 4274077199
-Last-Modified: Sat, 21 Jul 2018 03:02:04 GMT
+ETag: 3794765489
+Last-Modified: Tue, 11 Sep 2018 11:16:05 GMT
 
 {
-    "id": "ed3f9f53-d5ef-4d7c-843e-e2d81361f62a",
+    "id": "b0f9c395-3a3d-48ee-921b-ce45a06eee11",
     "title": "run",
     "description": "",
     "status": "",
     "assignee": "",
-    "created": "2018-07-21 04:58:46",
-    "updated": "2018-07-21 04:58:46",
+    "created": "2018-09-11 13:15:33",
+    "updated": "2018-09-11 13:15:33",
     "_links": {
         "self": {
-            "href": "/ticket?id=ed3f9f53-d5ef-4d7c-843e-e2d81361f62a"
+            "href": "/tickets/b0f9c395-3a3d-48ee-921b-ce45a06eee11"
         }
     }
 }
 ```
 
-それぞれのリソースには`@Cacheable`がアノテートされているのでGETレスポンスは引数をキーにしてキャッシュされます。`@Purge`はキャッシュの破壊です。`/ticket`でPOSTされると`/tickets`リソースのキャッシュを破壊しています。`@Refresh`とすると破壊のタイミングでキャッシュを再生成します。
+レスポンスは200 OKで帰ってきましたか？
+このレスポンスの定義は`ticket.json`で定義されたものであることが`Link`ヘッダーの`describedby`で分かります。[^9]
+`@Cacheable`と宣言されたリソースは`ETag`と`Last-Modified`ヘッダーが付加されより効率の良いHTTPレベルのキャッシュが有効になります。
+`@Purge`はキャッシュの破壊です。[^10]
+
 最初に作ったテストも今はうまくパスするはずです。試してみましょう。
 
 ```
@@ -940,6 +949,31 @@ $ticket = (new Bootstrap)->newApp($meta, 'app');
 
 `Ticket API`はREST APIとしてHTTPやコンソールからアクセスできるだけでなく、BEAR.Sundayではない他のプロジェクトのライブラリとしても使えるようになりました！
 
+## APIドキュメント
+
+APIドキュメントを出力するために`composer.json`の`scrpits`に以下の`doc`コマンドを追加します。
+
+```
+"doc": "bear.apidoc 'MyVendor\\Ticket' ./ docs/api",
+```
+
+ドキュメントのためのディレクトリを作成します。
+
+```
+mkdir -p docs/api
+```
+
+`composer doc`コマンドでAPIサイトのHTMLとJSONが出力されます。
+
+```
+composer doc
+```
+```
+API Doc is created at /path/to/docs/api
+```
+
+このサイトをGitHub Pages[^11]などで公開して、APIドキュメントにします。ディプロイのプロセスに組み込むと良いでしょう。
+
 ## 振り返り
 
  * phinxマイグレーションツールを使ってアプリケーションのバージョンにあったデータベースの設定ができるようになりました。`composer setup`コマンドはディプロイやCIでも便利です。
@@ -950,6 +984,7 @@ $ticket = (new Bootstrap)->newApp($meta, 'app');
 レスポンスはJsonSchemaで定義されているとバリデーションだけだなくドキュメントにもなります。ドキュメントツールで生成するAPIドキュメントと違って自動生成されバリデーションもAOPで毎回行われるので、ドキュメントが正しい事が保証されます。
 
  * 作成したAPIアプリケーションはライブラリにもなり資産になります。複数のアプリケーションを協調させ例えばAPI、フロントエンド、管理ツールとそれぞれのドメインの単位でプロ上ジェクトを分ける事が出来ますし並行開発も容易になります。[^8]
+ * リソースのI/OがメソッドシグネチャーとJsonSchemaで宣言されているBEAR.SundayのリソースはAPIドキュメントを自動生成することができます。
 
 ---
 
@@ -961,3 +996,6 @@ $ticket = (new Bootstrap)->newApp($meta, 'app');
 [^6]:BEAR.Sundayフレームワークが依存する環境変数は１つもありません。
 [^7]:mysqlコマンドの操作などをREADMEで説明する必要もないので便利です。
 [^8]:プロジェクトは固有の名前空間をもち、フォルダ構造を含めグローバルなものが無くて全てをインジェクトしてるBEAR.Sundayだからこそ可能な事です！
+[^9]:http://json-schema.org/latest/json-schema-core.html#rfc.section.10.1
+[^10]:`/ticket`でPOSTされると`/tickets`リソースのキャッシュを破壊しています。`@Refresh`とすると破壊のタイミングでキャッシュを再生成します。
+[^11]: [https://help.github.com/articles/creating-project-pages-using-the-command-line/](https://help.github.com/articles/creating-project-pages-using-the-command-line/)
