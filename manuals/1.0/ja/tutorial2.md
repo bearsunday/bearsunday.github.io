@@ -952,13 +952,13 @@ $ticket = (new Bootstrap)->newApp($meta, 'app');
 APIドキュメントを出力するために`composer.json`の`scrpits`に以下の`doc`コマンドを追加します。
 
 ```
-"doc": "bear.apidoc 'MyVendor\\Ticket' ./ docs/api",
+"doc": "bear.apidoc 'MyVendor\\Ticket' ./ docs",
 ```
 
 ドキュメントのためのディレクトリを作成します。
 
 ```
-mkdir -p docs/api
+mkdir docs
 ```
 
 `composer doc`コマンドでAPIサイトのHTMLとJSONが出力されます。
@@ -967,10 +967,14 @@ mkdir -p docs/api
 composer doc
 ```
 ```
-API Doc is created at /path/to/docs/api
+API Doc is created at /path/to/docs
 ```
 
-このサイトをGitHub Pages[^11]などで公開して、APIドキュメントにします。ディプロイのプロセスに組み込むと良いでしょう。
+このサイトをGitHub Pages[^11]などで公開して、APIドキュメントにします。
+このようなAPIドキュメントサイトができるはずです。
+
+[https://bearsunday.github.io/tutorial2/](https://bearsunday.github.io/tutorial2/)
+
 
 ## 振り返り
 
@@ -996,4 +1000,4 @@ API Doc is created at /path/to/docs/api
 [^8]:プロジェクトは固有の名前空間をもち、フォルダ構造を含めグローバルなものが無くて全てをインジェクトしてるBEAR.Sundayだからこそ可能な事です！
 [^9]:http://json-schema.org/latest/json-schema-core.html#rfc.section.10.1
 [^10]:`/ticket`でPOSTされると`/tickets`リソースのキャッシュを破壊しています。`@Refresh`とすると破壊のタイミングでキャッシュを再生成します。
-[^11]: [https://help.github.com/articles/creating-project-pages-using-the-command-line/](https://help.github.com/articles/creating-project-pages-using-the-command-line/)
+[^11]: [Publishing your GitHub Pages site from a /docs folder on your master branch](https://help.github.com/articles/configuring-a-publishing-source-for-github-pages/#publishing-your-github-pages-site-from-a-docs-folder-on-your-master-branch)
