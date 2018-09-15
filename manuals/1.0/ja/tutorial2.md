@@ -169,8 +169,8 @@ passthru('chmod 775 var/tmp');
 passthru('chmod 775 var/log');
 // db
 $pdo = new \PDO(getenv('TKT_DB_DSN'), getenv('TKT_DB_USER'), getenv('TKT_DB_PASS'));
-$pdo->exec('CREATE DATABASE IF NOT EXISTS ' . getenv('DB_NAME'));
-$pdo->exec('CREATE DATABASE IF NOT EXISTS ' . getenv('DB_NAME') . '_test');
+$pdo->exec('CREATE DATABASE IF NOT EXISTS ' . getenv('TKT_DB_NAME'));
+$pdo->exec('CREATE DATABASE IF NOT EXISTS ' . getenv('TKT_DB_NAME') . '_test');
 passthru('./vendor/bin/phinx migrate -c var/phinx/phinx.php -e development');
 ```
 
@@ -762,6 +762,21 @@ php bootstrap/api.php post '/tickets?title=run'
 201 Created
 Location: /tickets/b0f9c395-3a3d-48ee-921b-ce45a06eee11
 content-type: application/hal+json
+
+{
+    "id": "b0f9c395-3a3d-48ee-921b-ce45a06eee11",
+    "title": "run",
+    "description": "",
+    "status": "",
+    "assignee": "",
+    "created": "2018-09-11 13:15:33",
+    "updated": "2018-09-11 13:15:33",
+    "_links": {
+        "self": {
+            "href": "/tickets/b0f9c395-3a3d-48ee-921b-ce45a06eee11"
+        }
+    }
+}
 ```
 
 レスポンスにあるLocationヘッダーのURIをGETリクエストします。
