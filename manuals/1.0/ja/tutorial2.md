@@ -630,7 +630,7 @@ class Index extends ResourceObject
 
 [CURIE](https://en.wikipedia.org/wiki/CURIE)(compact URI)というフォーマットを使って、このプロジェクトにはどのようなリソースがあるか、またそれらのドキュメンテーションはどこにあるかという情報をAPI自身がサービスする事ができます。
 
-Webサイトを利用するのに事前に全てのURIを知る必要がないように、APIサービスも同様に一欄のリンクを持つことでAPIの"発見容易性(Discoverability)"を高めます。
+Webサイトを利用するのに事前に全てのURIを知る必要がないように、APIサービスも同様に一覧のリンクを持つことでAPIの"発見容易性(Discoverability)"を高めます。
 
 早速リクエストして見ましょう。
 
