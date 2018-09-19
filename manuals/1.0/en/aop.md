@@ -124,10 +124,11 @@ class ContainsMatcher extends AbstractMatcher
 Module
 
 ```php?start_inline
-class AppModule extends AbstractModule
+class AppModule extends AbstractAppModule
 {
     protected function configure()
     {
+        // ...
         $this->bindInterceptor(
             $this->matcher->any(),       // In any class,
             new ContainsMatcher('user'), // When 'user' contained in method name

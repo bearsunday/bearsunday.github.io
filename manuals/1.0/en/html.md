@@ -22,7 +22,7 @@ namespace MyVendor\MyPackage\Module;
 
 use BEAR\AppMeta\AppMeta;
 use Madapaja\TwigModule\TwigModule;
-use Ray\Di\AbstractModule;
+use BEAR\Package\AbstractAppModule;
 
 class HtmlModule extends AbstractModule
 {
@@ -66,9 +66,9 @@ namespace MyVendor\MyPackage\Module;
 use Madapaja\TwigModule\Annotation\TwigOptions;
 use Madapaja\TwigModule\Annotation\TwigPaths;
 use Madapaja\TwigModule\TwigModule;
-use Ray\Di\AbstractModule;
+use BEAR\Package\AbstractAppModule;
 
-class AppModule extends AbstractModule
+class AppModule extends AbstractAppModule
 {
     protected function configure()
     {

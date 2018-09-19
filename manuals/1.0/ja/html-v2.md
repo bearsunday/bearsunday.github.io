@@ -278,20 +278,22 @@ class HtmlModule extends AbstractModule
 ```php
 namespace MyVendor\MyPackage\Module;
 
+use BEAR\Package\AbstractAppModule;
 use Madapaja\TwigModule\Annotation\TwigDebug;
 use Madapaja\TwigModule\Annotation\TwigOptions;
 use Madapaja\TwigModule\Annotation\TwigPaths;
 use Madapaja\TwigModule\TwigModule;
 use Ray\Di\AbstractModule;
 
-class AppModule extends AbstractModule
+class AppModule extends AbstractAppModule
 {
     protected function configure()
     {
+        // ...
         $this->install(new TwigModule);
 
         // テンプレートパスの指定
-        $appDir = dirname(dirname(__DIR__));
+        $appDir = $this->appMeta->appDir;
         $paths = [
             $appDir . '/src/Resource',
             $appDir . '/var/templates'

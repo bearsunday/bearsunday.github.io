@@ -22,9 +22,9 @@ permalink: /manuals/1.0/ja/validation.html
 
 ```php?start_inline
 use BEAR\Resource\Module\JsonSchemaModule; // この行を追加
-use Ray\Di\AbstractModule;
+use BEAR\Package\AbstractAppModule;
 
-class AppModule extends AbstractModule
+class AppModule extends AbstractAppModule
 {
     protected function configure()
     {
@@ -193,7 +193,7 @@ composer require ray/validate-module
 ```php?start_inline
 use Ray\Validation\ValidateModule;
 
-class AppModule extends AbstractModule
+class AppModule extends AbstractAppModule
 {
     protected function configure()
     {

@@ -52,17 +52,14 @@ php vendor/koriym/db-app-package/bin/install.php
 
 
 ```php?start_inline
-class AppModule extends AbstractModule
+class AppModule extends AbstractAppModule
 {
     /**
      * {@inheritdoc}
      */
     protected function configure()
     {
-        Dotenv::load([
-            'filepath' => dirname(dirname(__DIR__)) . '/.env',
-            'toEnv' => true
-        ]);
+        // ...
         $this->install(new DbAppPackage($_ENV['DB_DSN'], $_ENV['DB_USER'], $_ENV['DB_PASS'], $_ENV['DB_READ']));
     }
 }

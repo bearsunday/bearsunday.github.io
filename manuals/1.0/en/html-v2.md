@@ -277,9 +277,9 @@ use Madapaja\TwigModule\Annotation\TwigDebug;
 use Madapaja\TwigModule\Annotation\TwigOptions;
 use Madapaja\TwigModule\Annotation\TwigPaths;
 use Madapaja\TwigModule\TwigModule;
-use Ray\Di\AbstractModule;
+use BEAR\Package\AbstractAppModule;
 
-class AppModule extends AbstractModule
+class AppModule extends AbstractAppModule
 {
     protected function configure()
     {
@@ -287,7 +287,7 @@ class AppModule extends AbstractModule
         $this->install(new TwigModule);
 
         // You can add twig template paths by the following
-        $appDir = dirname(dirname(__DIR__));
+        $appDir = $this->appMeta->appDir;
         $paths = [
             $appDir . '/src/Resource',
             $appDir . '/var/templates'

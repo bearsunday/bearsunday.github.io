@@ -21,13 +21,14 @@ composer require ray/web-form-module
 アプリケーションモジュール`src/Module/AppModule.php`で`AuraInputModule`をインストールします。
 
 ```php?start_inline
-use Ray\Di\AbstractModule;
+use BEAR\Package\AbstractAppModule;
 use Ray\WebFormModule\WebFormModule;
 
-class AppModule extends AbstractModule
+class AppModule extends AbstractAppModule
 {
     protected function configure()
     {
+        // ...
         $this->install(new AuraInputModule);
     }
 }
@@ -188,7 +189,7 @@ echo $e->error;
 作成したPageリソースをAPIとして使うことが出来ます。
 
 ```php?start_inline
-use Ray\Di\AbstractModule;
+use BEAR\Package\AbstractAppModule;
 use Ray\WebFormModule\FormVndErrorModule;
 
 class FooModule extends AbstractModule

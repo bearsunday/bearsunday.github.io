@@ -94,13 +94,14 @@ $ composer require ray/test-double 1.x-dev --dev
 `TestModule` and create modules and install modules.
 
 ```php?start_inline
-use Ray\Di\AbstractModule;
+use BEAR\Package\AbstractAppModule;
 use Ray\TestDouble\TestDoubleModule;
 
-class AppModule extends AbstractModule
+class AppModule extends AbstractAppModule
 {
     protected function configure()
     {
+        // ...
         $this->install(new TestDoubleModule);
     }
 }

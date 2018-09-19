@@ -253,20 +253,20 @@ composer require bear/aura-router-module ^2.0
 <?php
 namespace MyVendor\Weekday\Module;
 
+use BEAR\Package\AbstractAppModule;
 use BEAR\Package\PackageModule;
 use BEAR\Package\Provide\Router\AuraRouterModule; // add this line
 use josegonzalez\Dotenv\Loader;
-use Ray\Di\AbstractModule;
 
-class AppModule extends AbstractModule
+class AppModule extends AbstractAppModule
 {
     /**
      * {@inheritdoc}
      */
     protected function configure()
     {
-        $appDir = dirname(__DIR__, 2);
-        (new Loader($appDir . '/.env'))->parse()->toEnv(true);
+        $appDir = $this->appMeta->appDir;
+        require_once $appDir . '/env.php';
         $this->install(new AuraRouterModule($appDir . '/var/conf/aura.route.php')); // add this line
         $this->install(new PackageModule);
     }
@@ -361,7 +361,7 @@ class MonologLoggerProvider implements ProviderInterface
 use Psr\Log\LoggerInterface; // add this line
 use Ray\Di\Scope; // add this line
 
-class AppModule extends AbstractModule
+class AppModule extends AbstractAppModule
 {
     protected function configure()
     {
@@ -489,7 +489,7 @@ final class BenchMark
 use MyVendor\Weekday\Annotation\BenchMark; // add this line
 use MyVendor\Weekday\Interceptor\BenchMarker; // add this line
 
-class AppModule extends AbstractModule
+class AppModule extends AbstractAppModule
 {
     protected function configure()
     {
@@ -646,7 +646,7 @@ namespace MyVendor\Weekday\Module;
 
 use Madapaja\TwigModule\TwigErrorPageModule;
 use Madapaja\TwigModule\TwigModule;
-use Ray\Di\AbstractModule;
+use BEAR\Package\AbstractAppModule;
 
 class HtmlModule extends AbstractModule
 {
@@ -761,7 +761,7 @@ composer require ray/cake-database-module ^1.0
 // ...
 use Ray\CakeDbModule\CakeDbModule; // add this line
 
-class AppModule extends AbstractModule
+class AppModule extends AbstractAppModule
 {
     protected function configure()
     {
@@ -1019,7 +1019,7 @@ use BEAR\Resource\Module\ImportAppModule; // add this line
 use BEAR\Resource\ImportApp; // add this line
 use BEAR\Package\Context; // add this line
 
-class AppModule extends AbstractModule
+class AppModule extends AbstractAppModule
 {
     protected function configure()
     {

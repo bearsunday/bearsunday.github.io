@@ -88,15 +88,14 @@ composer require bear/aura-router-module ^2.0
 Install `AuraRouterModule` with the path of the router script.
 
 ```php?start_inline
-use Ray\Di\AbstractModule;
+use BEAR\Package\AbstractAppModule;
 use BEAR\Package\Provide\Router\AuraRouterModule;
 
-class AppModule extends AbstractModule
+class AppModule extends AbstractAppModule
 {
     protected function configure()
     {
         // ...
-        $appDir = dirname(dirname(__DIR__));
         $this->install(new AuraRouterModule($appDir . '/var/conf/aura.route.php');
     }
 }

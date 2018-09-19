@@ -147,7 +147,7 @@ Install `SsrModule` in AppModule.
 <?php
 use BEAR\SsrModule\SsrModule;
 
-class AppModule extends AbstractModule
+class AppModule extends AbstractAppModule
 {
     protected function configure()
     {
