@@ -24,7 +24,7 @@ APIはスキーマ定義されAOPによるバリデーションによって正�
 プロジェクトスケルトンを作成します。
 
 ```
-composer create-project bear/skeleton MyVendor.Ticket 1.x-dev
+composer create-project bear/skeleton MyVendor.Ticket
 ```
 **vendor**名を`MyVendor`に**project**名を`Ticket`として入力します。[^2]
 
