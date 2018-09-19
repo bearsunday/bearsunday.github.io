@@ -18,18 +18,18 @@ BEAR.Sundayでは設置場所や記述フォーマットが固定されている
 コンテキストに依存しない設定値はモジュールにそのまま記述し、環境により変更されるようなものやクレデンシャル情報は`$_ENV`値を使います。
 
 ```php?start_inline
-class AppModule extends AbstractModule
+class AppModule extends AbstractAppModule
 {
     /**
      * {@inheritdoc}
      */
     protected function configure()
     {
-        // package標準のモジュール
-        $this->install(new PackageModule));
         // 追加モジュール
         $this->install(new AuraSqlModule('mysql:host=localhost;dbname=test', 'username', 'password');
         $this->install(new TwigModule));
+        // package標準のモジュール
+        $this->install(new PackageModule));
     }
 }
 ```

@@ -17,18 +17,19 @@ Instead for each peice of functionality we set up DI and AOP by injecting config
 You can also override existing bindings by using `override()`.
 
 ```php?start_inline
-class AppModule extends AbstractModule
+class AppModule extends AbstractAppModule
 {
     /**
      * {@inheritdoc}
      */
     protected function configure()
     {
-        // install basic module
-        $this->install(new PackageModule));
+        // ...
         // install additional modules
         $this->install(new AuraSqlModule('mysql:host=localhost;dbname=test', 'username', 'password');
         $this->install(new TwigModule));
+        // install basic module
+        $this->install(new PackageModule));
     }
 }
 ```

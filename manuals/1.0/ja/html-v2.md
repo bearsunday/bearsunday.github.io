@@ -44,7 +44,7 @@ class HtmlModule extends AbstractModule
 cp -r vendor/madapaja/twig-module/var/templates var/templates
 ```
 
-`bootstrap/web.php`や`public/index.php`のコンテキストを変更して`html`を有効にします。
+`bin/page.php`や`public/index.php`のコンテキストを変更して`html`を有効にします。
 
 ```bash
 $context = 'cli-html-app'; // 'htm-app'
@@ -78,7 +78,7 @@ class Index extend ResourceObject
 出力
 
 ```bash
-php bootstrap/web.php get /
+php bin/page.php get /
 ```
 ```bash
 200 OK
@@ -278,20 +278,22 @@ class HtmlModule extends AbstractModule
 ```php
 namespace MyVendor\MyPackage\Module;
 
+use BEAR\Package\AbstractAppModule;
 use Madapaja\TwigModule\Annotation\TwigDebug;
 use Madapaja\TwigModule\Annotation\TwigOptions;
 use Madapaja\TwigModule\Annotation\TwigPaths;
 use Madapaja\TwigModule\TwigModule;
 use Ray\Di\AbstractModule;
 
-class AppModule extends AbstractModule
+class AppModule extends AbstractAppModule
 {
     protected function configure()
     {
+        // ...
         $this->install(new TwigModule);
 
         // テンプレートパスの指定
-        $appDir = dirname(dirname(__DIR__));
+        $appDir = $this->appMeta->appDir;
         $paths = [
             $appDir . '/src/Resource',
             $appDir . '/var/templates'

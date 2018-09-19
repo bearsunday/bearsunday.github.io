@@ -34,7 +34,7 @@ namespace Polidog\Todo\Module;
 use BEAR\Package\Context\ProdModule as PackageProdModule;
 use BEAR\QueryRepository\CacheVersionModule;
 use BEAR\Resource\Module\OptionsMethodModule;
-use Ray\Di\AbstractModule;
+use BEAR\Package\AbstractAppModule;
 
 class ProdModule extends AbstractModule
 {
@@ -68,7 +68,7 @@ namespace BEAR\HelloWorld\Module;
 
 use BEAR\QueryRepository\StorageMemcachedModule;
 use BEAR\Package\Context\ProdModule as PackageProdModule;
-use Ray\Di\AbstractModule;
+use BEAR\Package\AbstractAppModule;
 use Ray\Di\Scope;
 
 class ProdModule extends AbstractModule

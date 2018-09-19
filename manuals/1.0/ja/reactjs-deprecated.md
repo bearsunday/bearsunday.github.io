@@ -85,24 +85,20 @@ namespace MyVendor\MyRedux\Module;
 
 use BEAR\Package\PackageModule;
 use BEAR\ReactJsModule\ReduxModule;
-use Ray\Di\AbstractModule;
+use BEAR\Package\AbstractAppModule;
 use josegonzalez\Dotenv\Loader as Dotenv;
 
-class AppModule extends AbstractModule
+class AppModule extends AbstractAppModule
 {
     /**
      * {@inheritdoc}
      */
     protected function configure()
     {
-        Dotenv::load([
-            'filepath' => dirname(dirname(__DIR__)) . '/.env',
-            'toEnv' => true
-        ]);
-        $this->install(new PackageModule);
         //configure()に追加
         $distDir = dirname(__DIR__, 2) . '/var/www/dist';
         $this->install(new ReduxModule($distDir, 'ssr_hello'));
+        $this->install(new PackageModule);
     }
 }
 ```

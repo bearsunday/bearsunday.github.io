@@ -42,8 +42,8 @@ GETメソッドでリクエストされると`$name`に`$_GET['name']`が渡さ�
 作成したアプリケーションはコンソールでもWebサーバーでも動作します。
 
 ```bash
-php bootstrap/web.php get /hello
-php bootstrap/web.php get /hello?name=World
+php bin/page.php get /hello
+php bin/page.php get '/hello?name=World'
 ```
 
 ```bash

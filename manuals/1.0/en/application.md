@@ -40,7 +40,7 @@ A `Renderer` is injected into the resource object, then the state of resource is
 # <a name="boot"></a>Boot File
 
 To run an application, we need just two lines of code.
-An entry point for a web server or console application access is usually set to `var/www/index.php` or `bootstrap/api.php`.
+An entry point for a web server or console application access is usually set to `var/www/index.php` or `bin/app.php`.
 As you can see below, we need to assign an application context to a global variable `$context` then require `bootstrap.php` to run the application.
 
 
@@ -56,10 +56,10 @@ Depending on your context choose a boot file.
 php -S 127.0.0.1:8080 var/www/index.php
 
 // Console access
-php bootstrap/api.php get /user/1
+php bin/app.php get /user/1
 
 // Web access for the api
-php -S 127.0.0.1:8080 bootstrap/api.php
+php -S 127.0.0.1:8080 bin/app.php
 ```
 
 ## <a name="context"></a>Application Context

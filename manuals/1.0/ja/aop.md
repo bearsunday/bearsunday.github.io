@@ -127,7 +127,7 @@ class ContainsMatcher extends AbstractMatcher
 モジュール
 
 ```php?start_inline
-class AppModule extends AbstractModule
+class AppModule extends AbstractAppModule
 {
     protected function configure()
     {

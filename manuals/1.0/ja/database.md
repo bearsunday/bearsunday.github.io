@@ -23,16 +23,16 @@ composer require ray/aura-sql-module
 アプリケーションモジュール`src/Module/AppModule.php`で`AuraSqlModule`をインストールします。
 
 ```php?start_inline
+use BEAR\Package\AbstractAppModule;
 use BEAR\AppMeta\AppMeta;
 use BEAR\Package\PackageModule;
 use Ray\AuraSqlModule\AuraSqlModule; // この行を追加
-use Ray\Di\AbstractModule;
 
-class AppModule extends AbstractModule
+class AppModule extends AbstractAppModule
 {
     protected function configure()
     {
-        $this->install(new PackageModule));
+        // ...
         $this->install(
           new AuraSqlModule(
             'mysql:host=localhost;dbname=test',
@@ -40,6 +40,7 @@ class AppModule extends AbstractModule
             'password'
           )
         );  // この行を追加
+        $this->install(new PackageModule));
     }
 }
 ```
@@ -646,7 +647,7 @@ use Pagerfanta\View\Template\TemplateInterface;
 use Pagerfanta\View\Template\TwitterBootstrap3Template;
 use Ray\AuraSqlModule\Annotation\PagerViewOption;
 
-class AppModule extends AbstractModule
+class AppModule extends AbstractAppModule
 {
     protected function configure()
     {
@@ -671,12 +672,13 @@ composer require ray/dbal-module
 
 ```php?start_inline
 use Ray\DbalModule\DbalModule;
-use Ray\Di\AbstractModule;
+use BEAR\Package\AbstractAppModule;
 
-class AppModule extends AbstractModule
+class AppModule extends AbstractAppModule
 {
     protected function configure()
     {
+        // ...
         $this->install(new DbalModule('driver=pdo_sqlite&memory=true');
     }
 }

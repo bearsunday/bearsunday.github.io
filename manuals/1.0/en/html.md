@@ -22,7 +22,7 @@ namespace MyVendor\MyPackage\Module;
 
 use BEAR\AppMeta\AppMeta;
 use Madapaja\TwigModule\TwigModule;
-use Ray\Di\AbstractModule;
+use BEAR\Package\AbstractAppModule;
 
 class HtmlModule extends AbstractModule
 {
@@ -33,7 +33,7 @@ class HtmlModule extends AbstractModule
 }
 ```
 
-Update the context in `bootstrap/web.php` and enable `html`.
+Update the context in `bin/page.php` and enable `html`.
 
 ```bash
 $context = 'cli-html-app';
@@ -47,7 +47,7 @@ We prepare twig templates by placing them in the same directory as the `page res
 The `$body` in a resource is assigned to the template and then rendered.
 
 ```bash
-php bootstrap/web.php get /
+php bin/page.php get /
 200 OK
 content-type: text/html; charset=utf-8
 
@@ -66,12 +66,13 @@ namespace MyVendor\MyPackage\Module;
 use Madapaja\TwigModule\Annotation\TwigOptions;
 use Madapaja\TwigModule\Annotation\TwigPaths;
 use Madapaja\TwigModule\TwigModule;
-use Ray\Di\AbstractModule;
+use BEAR\Package\AbstractAppModule;
 
-class AppModule extends AbstractModule
+class AppModule extends AbstractAppModule
 {
     protected function configure()
     {
+        // ...
         $this->install(new TwigModule());
 
         // You can add twig template paths by the following

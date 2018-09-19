@@ -41,8 +41,8 @@ In the above example, when the page is requested using a GET method, `Hello` and
 The BEAR.Sunday application that you have created will work on a web server, but also in the console.
 
 ```bash
-php bootstrap/web.php get /hello
-php bootstrap/web.php get /hello?name=World
+php bin/page.php get /hello
+php bin/page.php get '/hello?name=World'
 ```
 
 ```bash

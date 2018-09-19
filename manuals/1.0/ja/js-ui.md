@@ -147,7 +147,7 @@ AppModuleに`SsrModule`モジュールをインストールします。
 <?php
 use BEAR\SsrModule\SsrModule;
 
-class AppModule extends AbstractModule
+class AppModule extends AbstractAppModule
 {
     protected function configure()
     {

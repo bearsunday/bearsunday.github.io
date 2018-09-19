@@ -21,13 +21,14 @@ composer require ray/web-form-module
 Install `AuraInputModule` in our application module `src/Module/AppModule.php`
 
 ```php?start_inline
-use Ray\Di\AbstractModule;
+use BEAR\Package\AbstractAppModule;
 use Ray\WebFormModule\WebFormModule;
 
-class AppModule extends AbstractModule
+class AppModule extends AbstractAppModule
 {
     protected function configure()
     {
+        // ...
         $this->install(new AuraInputModule);
     }
 }
@@ -189,9 +190,6 @@ will throw an exception in the same way as the method annotated with `@InputVali
 We can use the page resources as API.
 
 ```php?start_inline
-use Ray\Di\AbstractModule;
-use Ray\WebFormModule\FormVndErrorModule;
-
 class FooModule extends AbstractModule
 {
     protected function configure()

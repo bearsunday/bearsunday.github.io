@@ -23,9 +23,9 @@ If you want to validate in all contexts including production, create `AppModule`
 
 ```php?start_inline
 use BEAR\Resource\Module\JsonSchemaModule; // Add this line
-use Ray\Di\AbstractModule;
+use BEAR\Package\AbstractAppModule;
 
-class AppModule extends AbstractModule
+class AppModule extends AbstractAppModule
 {
     protected function configure()
     {
@@ -191,7 +191,7 @@ Installing `ValidateModule` in your application module `src/Module/AppModule.php
 ```php?start_inline
 use Ray\Validation\ValidateModule;
 
-class AppModule extends AbstractModule
+class AppModule extends AbstractAppModule
 {
     protected function configure()
     {

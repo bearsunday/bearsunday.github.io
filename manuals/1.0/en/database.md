@@ -24,16 +24,16 @@ composer require ray/aura-sql-module
 Installing `AuraSqlModule` in your application module`src/Module/AppModule.php`.
 
 ```php?start_inline
+use BEAR\Package\AbstractAppModule;
 use BEAR\AppMeta\AppMeta;
 use BEAR\Package\PackageModule;
 use Ray\AuraSqlModule\AuraSqlModule; // add this line
-use Ray\Di\AbstractModule;
 
-class AppModule extends AbstractModule
+class AppModule extends AbstractAppModule
 {
     protected function configure()
     {
-        $this->install(new PackageModule));
+        // ...
         // Add the below install method call and contents
         $this->install(
             new AuraSqlModule(
@@ -42,6 +42,7 @@ class AppModule extends AbstractModule
                 'password'
             )
         );
+        $this->install(new PackageModule));
     }
 }
 ```
@@ -539,11 +540,11 @@ use Pagerfanta\View\Template\TemplateInterface;
 use Pagerfanta\View\Template\TwitterBootstrap3Template;
 use Ray\AuraSqlModule\Annotation\PagerViewOption;
 
-class AppModule extends AbstractModule
+class AppModule extends AbstractAppModule
 {
     protected function configure()
     {
-        // ..
+        // ...
         $this->bind(TemplateInterface::class)->to(TwitterBootstrap3Template::class);
         $this->bind()->annotatedWith(PagerViewOption::class)->toInstance($pagerViewOption);
     }
@@ -563,13 +564,14 @@ composer require ray/dbal-module
 Install `DbalModule` in application module.
 
 ```php?start_inline
+use BEAR\Package\AbstractAppModule;
 use Ray\DbalModule\DbalModule;
-use Ray\Di\AbstractModule;
 
-class AppModule extends AbstractModule
+class AppModule extends AbstractAppModule
 {
     protected function configure()
     {
+        // ...
         $this->install(new DbalModule('driver=pdo_sqlite&memory=true');
     }
 }
