@@ -40,7 +40,7 @@ class Index extends ResourceObject
 `cli`コンテキストではコンソールからの引数が外部入力になります。
 
 ```bash
-php bootstrap/web.php get /
+php bin/page.php get /
 ```
 
 BEAR.SundayアプリケーションはWebとCLIの双方で動作します。

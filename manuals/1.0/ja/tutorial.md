@@ -46,7 +46,7 @@ class Weekday extends ResourceObject
 コンソールでアクセスしてみましょう。まずはエラーを試してみます。
 
 ```bash
-php bootstrap/api.php get /weekday
+php bin/app.php get /weekday
 ```
 
 ```
@@ -64,7 +64,7 @@ content-type: application/vnd.error+json
 次は引数をつけて正しいリクエストを試します。
 
 ```bash
-php bootstrap/api.php get '/weekday?year=2001&month=1&day=1'
+php bin/app.php get '/weekday?year=2001&month=1&day=1'
 ```
 
 ```bash
@@ -87,7 +87,7 @@ Content-Type: application/hal+json
 Built-inサーバーを立ち上げます。
 
 ```bash
-php -S 127.0.0.1:8080 bootstrap/api.php
+php -S 127.0.0.1:8080 bin/app.php
 ```
 
 `curl`でHTTPの`GET`リクエストを行って確かめてみましょう。
@@ -285,7 +285,7 @@ $map->route('/weekday', '/weekday/{year}/{month}/{day}');
 試してみましょう。
 
 ```bash
-php bootstrap/api.php get '/weekday/1981/09/08'
+php bin/app.php get '/weekday/1981/09/08'
 ```
 
 ```bash
@@ -409,7 +409,7 @@ class Weekday extends ResourceObject
 実行して`var/log/cli-hal-api-app/weekday.log`に結果が出力されていることを確認しましょう。
 
 ```bash
-php bootstrap/api.php get /weekday/2011/05/23
+php bin/app.php get /weekday/2011/05/23
 ```
 
 ```bash
@@ -526,7 +526,7 @@ class Weekday
 実行して`var/log/weekday.log`に実行時間のログが出力されることを確認しましょう。
 
 ```bash
-php bootstrap/api.php get '/weekday/2015/05/28'
+php bin/app.php get '/weekday/2015/05/28'
 ```
 
 ```bash
@@ -605,7 +605,7 @@ class Weekday extends ResourceObject
 このリソースがどのような表現になるのか試してみましょう。
 
 ```bash
-php bootstrap/web.php get '/?year=2000&month=1&day=1'   
+php bin/page.php get '/?year=2000&month=1&day=1'
 ```
 
 ```
@@ -664,7 +664,7 @@ class HtmlModule extends AbstractModule
 cp -r vendor/madapaja/twig-module/var/templates var/templates
 ```
 
-`bootstrap/web.php`を変更します。
+`bin/page.php`を変更します。
 
 ```php
 <?php
@@ -688,7 +688,7 @@ require __DIR__ . '/bootstrap.php';
 準備完了です。まずはコンソールでこのようなHTMLが出力されるか確認してみましょう。
 
 ```bash
-php bootstrap/web.php get '/?year=1991&month=8&day=1'
+php bin/page.php get '/?year=1991&month=8&day=1'
 ```
 
 ```bash
@@ -856,7 +856,7 @@ class Todo extends ResourceObject
 
 `POST`してみましょう。
 
-まずキャッシュを有効にするために`bootstrap/api.php`のコンテキストをプロダクション用の`prod`にします。
+まずキャッシュを有効にするために`bin/app.php`のコンテキストをプロダクション用の`prod`にします。
 
 ```php
 <?php
@@ -867,7 +867,7 @@ require __DIR__ . '/bootstrap.php';
 コンソールコマンドでリクエストします。`POST`ですが便宜上クエリーの形でパラメーターを渡します。
 
 ```bash
-php bootstrap/api.php post '/todo?todo=shopping'
+php bin/app.php post '/todo?todo=shopping'
 ```
 
 ```bash
@@ -894,7 +894,7 @@ Location: /todo?id=1
 次にこのリソースを`GET`します。
 
 ```bash
-php bootstrap/api.php get '/todo?id=1'
+php bin/app.php get '/todo?id=1'
 ```
 
 ```
@@ -918,7 +918,7 @@ content-type: application/hal+json
 ハイパーメディアAPIの完成です！APIサーバーを立ち上げましょう。
 
 ```bash
-php -S 127.0.0.1:8081 bootstrap/api.php
+php -S 127.0.0.1:8081 bin/app.php
 ```
 
 `curl`コマンドでGETします。
@@ -1061,7 +1061,7 @@ class Import extends ResourceObject
 `page://blog/index`リソースの`greeting`が`blog`に代入されているはずです。`@Embed`も同様に使えます。
 
 ```bash
-php bootstrap/api.php get /import
+php bin/app.php get /import
 ```
 
 ```bash

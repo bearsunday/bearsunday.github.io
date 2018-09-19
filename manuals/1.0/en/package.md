@@ -12,17 +12,17 @@ You can also install another BEAR.Sunday application package as dependency.
 
 ## Application organization
 
-The file layout of the BEAR.Sunday application conforms to [php-pds/skeleton] (https://github.com/php-pds/skeleton).
+The file layout of the BEAR.Sunday application conforms to [php-pds/skeleton](https://github.com/php-pds/skeleton) standard.
 
 ```
-├── (bin)
-├── bootstrap
-│   ├── api.php
-│   ├── bootstrap.php
-│   └── web.php
+├── bin
+│   ├── app.php
+│   └── page.php
+├── env.php
+├── autoload.php
+├── bootstrap.php
 ├── composer.json
 ├── composer.lock
-├── phpunit.xml.dist
 ├── public
 │   └── index.php
 ├── src
@@ -32,8 +32,6 @@ The file layout of the BEAR.Sunday application conforms to [php-pds/skeleton] (h
 │   └── Resource
 ├── tests
 │   ├── (Fake)
-│   ├── bootstrap.php
-│   └── tmp
 ├── var
 │   ├── (conf)
 │   ├── log
@@ -44,7 +42,7 @@ The file layout of the BEAR.Sunday application conforms to [php-pds/skeleton] (h
 
 ### Invoke sequence
 
- 1. Console input or web router file call `boot file` such as `api.php` or `web.php`.
+ 1. Console input(`bin/app.php`, `bin/page.php`) or web entry file (`public/index.php`) excute `bootstrap.php` function.
  3. `$app` application object is created by `$context` in `boostrap.php`.
  4. A router in `$app` convert external resource request to internal resource request.
  4. A resource request is invoked. The representation of the result transfered to a client.
@@ -55,15 +53,15 @@ The file layout of the BEAR.Sunday application conforms to [php-pds/skeleton] (h
 You can access same resource through console input or web access with same boot file.
 
 ```bash
-php bootstrap/api.php options '/self/todo' // console API access
+php bin/app.php options /todos // console API access　(app resource)
 ```
 
 ```bash
-php bootstrap/web.php get '/todo?id=1' // console Web access
+php bin/page.php get '/todos?id=1' // console Web access (page resource)
 ```
 
 ```bash
-php -S 127.0.0.1bootstrap/api.php // PHP server
+php -S 127.0.0.1bin/app.php // PHP server
 ```
 
 You can create your own boot file for different context.

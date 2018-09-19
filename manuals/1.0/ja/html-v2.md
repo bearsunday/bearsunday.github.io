@@ -44,7 +44,7 @@ class HtmlModule extends AbstractModule
 cp -r vendor/madapaja/twig-module/var/templates var/templates
 ```
 
-`bootstrap/web.php`や`public/index.php`のコンテキストを変更して`html`を有効にします。
+`bin/page.php`や`public/index.php`のコンテキストを変更して`html`を有効にします。
 
 ```bash
 $context = 'cli-html-app'; // 'htm-app'
@@ -78,7 +78,7 @@ class Index extend ResourceObject
 出力
 
 ```bash
-php bootstrap/web.php get /
+php bin/page.php get /
 ```
 ```bash
 200 OK

@@ -37,7 +37,7 @@ class HtmlModule extends AbstractModule
 }
 ```
 
-Update the context in `bootstrap/web.php` or `public/index.php` and enable `html`.
+Update the context in `bin/page.php` or `public/index.php` and enable `html`.
 
 ```bash
 $context = 'cli-html-app'; // or 'html-app'
@@ -71,7 +71,7 @@ class Index extend ResourceObject
 Output:
 
 ```bash
-php bootstrap/web.php get /
+php bin/page.php get /
 ```
 
 ```bash
@@ -283,6 +283,7 @@ class AppModule extends AbstractModule
 {
     protected function configure()
     {
+        // ...
         $this->install(new TwigModule);
 
         // You can add twig template paths by the following

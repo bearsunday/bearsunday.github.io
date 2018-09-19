@@ -635,7 +635,7 @@ Webサイトを利用するのに事前に全てのURIを知る必要がない�
 早速リクエストして見ましょう。
 
 ```
-php bootstrap/api.php get /
+php bin/app.php get /
 ```
 ```
 200 OK
@@ -674,7 +674,7 @@ content-type: application/hal+json
 それぞれの詳細を調べるには`OPTIONS`コマンドでリクエストします。
 
 ```
-php bootstrap/api.php options /ticket
+php bin/app.php options /ticket
 ```
 ```
 200 OK
@@ -756,7 +756,7 @@ Allow: GET
 POSTリクエストでチケット作成します。
 
 ```
-php bootstrap/api.php post '/tickets?title=run'
+php bin/app.php post '/tickets?title=run'
 ```
 ```
 201 Created
@@ -782,7 +782,7 @@ content-type: application/hal+json
 レスポンスにあるLocationヘッダーのURIをGETリクエストします。
 
 ```
-php bootstrap/api.php get '/tickets/b0f9c395-3a3d-48ee-921b-ce45a06eee11'
+php bin/app.php get '/tickets/b0f9c395-3a3d-48ee-921b-ce45a06eee11'
 ```
 ```
 200 OK

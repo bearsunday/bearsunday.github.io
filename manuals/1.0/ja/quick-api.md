@@ -255,16 +255,16 @@ class Task extends ResourceObject
 まずはリソースをコンソールで実行します。
 
 ```
-php bootstrap/api.php options /task
-php bootstrap/api.php post '/task?title=run'
-php bootstrap/api.php patch /task/1
-php bootstrap/api.php get /task/1
+php bin/app.php options /task
+php bin/app.php post '/task?title=run'
+php bin/app.php patch /task/1
+php bin/app.php get /task/1
 ```
 
 次に同じリソースをWebでアクセスするためにWebサーバーをスタートさせます。
 
 ```
-php -S 127.0.0.1:8080 bootstrap/api.php
+php -S 127.0.0.1:8080 bin/app.php
 ```
 
 `curl`コマンドでアクセスします。

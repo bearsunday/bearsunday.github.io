@@ -18,14 +18,14 @@ permalink: /manuals/1.0/ja/package.html
 BEAR.Sundayアプリケーションのファイルレイアウトは[php-pds/skeleton](https://github.com/php-pds/skeleton)に準拠しています。
 
 ```
-├── (bin)
-├── bootstrap
-│   ├── api.php
-│   ├── bootstrap.php
-│   └── web.php
+├── bin
+│   ├── app.php
+│   └── page.php
+├── env.php
+├── autoload.php
+├── bootstrap.php
 ├── composer.json
 ├── composer.lock
-├── phpunit.xml.dist
 ├── public
 │   └── index.php
 ├── src
@@ -35,20 +35,19 @@ BEAR.Sundayアプリケーションのファイルレイアウトは[php-pds/ske
 │   └── Resource
 ├── tests
 │   ├── (Fake)
-│   ├── bootstrap.php
-│   └── tmp
 ├── var
 │   ├── (conf)
 │   ├── log
 │   └── tmp
 └── vendor
+
 ```
 
 
 ### 実行シークエンス
 
- 1. コンソール入力またはWebサーバーのルーターファイルがbootファイル`bootstrap.php`を呼び出します。
- 3. `bootstrap.php`ではコンテキストに応じたアプリケーションオブジェクト`$app`を作成します。
+ 1. コンソール入力(bin/app.php, page.php)またはWebサーバーのエントリーファイル(public/index.php)がbootファイル`bootstrap.php`を実行します。
+ 3. `bootstrap.php`では実行コンテキストに応じたアプリケーションオブジェクト`$app`を作成します。
  4. `$app`に含まれるルーターは外部のリクエストをアプリケーション内部のリソースリクエストに変換します。
  4. リソースでリクエストが実行され結果がクライアントに転送されます。
 
@@ -58,15 +57,15 @@ BEARのリソースはコンソール入力とWebの双方からアクセスで�
 呼び出すスクリプトによってコンテキストが変わります。
 
 ```bash
-php bootstrap/api.php options '/self/todo' # APIアクセス
+php bin/app.php options '/todos' # APIアクセス (appリソース）
 ```
 
 ```bash
-php bootstrap/web.php get '/todo?id=1' # Webアクセス
+php bin/page.php get '/todos?id=1' # Webアクセス (pageリソース）
 ```
 
 ```bash
-php -S 127.0.0.1 bootstrap/api.php # PHPサーバー
+php -S 127.0.0.1 bin/app.php # PHPサーバー
 ```
 
 コンテキストが変わるとアプリケーションの振る舞いが変わります。
@@ -82,7 +81,7 @@ php -S 127.0.0.1 bootstrap/api.php # PHPサーバー
 
 ### publc/
 
-Web公開フォルダ
+Web公開フォルダです。
 
 ### var/
 

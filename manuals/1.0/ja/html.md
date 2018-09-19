@@ -33,7 +33,7 @@ class HtmlModule extends AbstractModule
 }
 ```
 
-`bootstrap/web.php`のコンテキストを変更して`html`を有効にします。
+`bin/page.php`のコンテキストを変更して`html`を有効にします。
 
 ```bash
 $context = 'cli-html-app';
@@ -48,7 +48,7 @@ $context = 'cli-html-app';
 `$body`がテンプレートにアサインされて出力されます。
 
 ```bash
-php bootstrap/web.php get /
+php bin/page.php get /
 200 OK
 content-type: text/html; charset=utf-8
 

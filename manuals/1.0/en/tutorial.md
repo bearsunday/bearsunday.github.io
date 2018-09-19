@@ -48,7 +48,7 @@ The request query is automatically converted to PHP method parameters (internall
 The route can be accessed via the console by typing this command:
 
 ```bash
-php bootstrap/api.php get '/weekday'
+php bin/app.php get '/weekday'
 ```
 
 The following error should display:
@@ -67,7 +67,7 @@ A `400` means that you have sent a bad request (in this example, required parame
 Send a new request with the expected parameters by typing the following command:
 
 ```bash
-php bootstrap/api.php get '/weekday?year=2001&month=1&day=1'
+php bin/app.php get '/weekday?year=2001&month=1&day=1'
 ```
 
 ```bash
@@ -89,7 +89,7 @@ The result is returned successfully with the `application/hal+json` media type.
 The previous example can be executed as a webservice as well. To do this, fire the built-in PHP server:
 
 ```bash
-php -S 127.0.0.1:8080 bootstrap/api.php
+php -S 127.0.0.1:8080 bin/app.php
 ```
 
 Send a HTTP `GET` request with `curl` (or type the URL in your browser):
@@ -285,7 +285,7 @@ $map->route('/weekday', '/weekday/{year}/{month}/{day}');
 Let's try it out.
 
 ```bash
-php bootstrap/api.php get '/weekday/1981/09/08'
+php bin/app.php get '/weekday/1981/09/08'
 ```
 ```
 200 OK
@@ -409,7 +409,7 @@ class Weekday extends ResourceObject
 Let's check `var/log/cli-hal-api-app/weekday.log` to see if our logger worked.
 
 ```bash
-php bootstrap/api.php get '/weekday/2011/05/23'
+php bin/app.php get '/weekday/2011/05/23'
 ```
 ```
 cat var/log/cli-hal-api-app/weekday.log
@@ -521,7 +521,7 @@ There is no need to modify the method caller or the target method itself. Benchm
 Now check out the logging for the method invocation speed in `var/log/weekday.log`.
 
 ```bash
-php bootstrap/api.php get '/weekday/2015/05/28'
+php bin/app.php get '/weekday/2015/05/28'
 ```
 ```
 cat var/log/cli-hal-api-app/weekday.log
@@ -591,7 +591,7 @@ class Index extends ResourceObject
 At this stage let's check how this resource is rendered.
 
 ```bash
-php bootstrap/web.php get '/?year=2000&month=1&day=1'
+php bin/page.php get '/?year=2000&month=1&day=1'
 ```
 
 ```
@@ -650,7 +650,7 @@ cp -r vendor/madapaja/twig-module/var/templates var/templates
 ```
 
 
-Change `bootstrap/web.php`
+Change `bin/page.php`
 
 ```php
 <?php
@@ -672,7 +672,7 @@ In this way `text/html` media output can be set. Lastly, save your Twig template
 Set up is now complete. Check in the console that this kind of HTML is output.
 
 ```bash
-php bootstrap/web.php get '/?year=1991&month=8&day=1'
+php bin/page.php get '/?year=1991&month=8&day=1'
 ```
 
 ```bash
@@ -838,7 +838,7 @@ At this time, since the `onGet` is actually called with the URI in the `Location
 
 Let's try a `POST`.
 
-In order to enable caching , make the context of `bootstrap/api.php` `prod` for production.
+In order to enable caching , make the context of `bin/app.php` `prod` for production.
 
 ```php
 <?php
@@ -849,7 +849,7 @@ require __DIR__ . '/bootstrap.php';
 Request with console command. `POST`, but for convenience we pass parameters in the form of a query.
 
 ```bash
-php bootstrap/api.php post '/todo?todo=shopping'
+php bin/app.php post '/todo?todo=shopping'
 ```
 
 ```bash
@@ -875,7 +875,7 @@ Since it has been annotated with `@ReturnCreatedResource`, the resource is autom
 Next we will do a `GET`.
 
 ```bash
-php bootstrap/api.php get '/todo?id=1'
+php bin/app.php get '/todo?id=1'
 ```
 
 ```
@@ -899,7 +899,7 @@ content-type: application/hal+json
 The HyperMedia API is now complete. Let's start up the API server.
 
 ```bash
-php -S 127.0.0.1:8081 bootstrap/api.php
+php -S 127.0.0.1:8081 bin/app.php
 ```
 
 Let's do a GET `curl` request:
@@ -1041,7 +1041,7 @@ class Import extends ResourceObject
 The `page://blog/index` resource should now be assigned to `blog`. `@Embed` can be used in the same way.
 
 ```bash
-php bootstrap/api.php get /import
+php bin/app.php get /import
 ```
 
 ```bash
