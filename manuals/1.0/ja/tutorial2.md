@@ -16,7 +16,7 @@ permalink: /manuals/1.0/ja/tutorial2.html
 作成するAPIはスキーマ定義され、自己記述（self-descriptive)性に優れた高品質なものです。
 
 
-[チュートリアル](/manuals/1.0/ja/tutorial.html)と被る箇所もありますがおさらいのつもりでトライして見ましょう。
+[チュートリアル](/manuals/1.0/ja/tutorial.html)と被る箇所もありますがおさらいのつもりでトライしてみましょう。
 レポジトリは [bearsunday/tutorial2](https://github.com/bearsunday/tutorial2) にあります。うまくいかないときは見比べて見ましょう。
 
 ## プロジェクト作成
@@ -753,7 +753,7 @@ Allow: GET
 
 `request`に入力が、`schema `にスキーマがマシンリーダブルなAPIドキュメントとして表示されます。
 
-では実際に`/ticket`にアクセスして見ましょう。
+では実際に`/ticket`にアクセスしてみましょう。
 
 
 POSTリクエストでチケット作成します。
@@ -891,7 +891,7 @@ API Doc is created at /path/to/docs
 
  * リソースの引数と出力はメソッドやスキーマで宣言されていて明瞭です。AOPでバリデーションが行わることでドキュメントの正当性が保証され、ドキュメントメンテナンスのの労力を最小化できます。
 
-チュートリアルはうまく言ったでしょうか？もしうまく行ったらなチュートリアル[bearsunday/tutorial2](https://github.com/bearsunday/tutorial2)にスターをして記念に残しましょう。
+チュートリアルはうまくいったでしょうか？もしうまくいったならチュートリアル[bearsunday/tutorial2](https://github.com/bearsunday/tutorial2)にスターをして記念に残しましょう。
 うまくいかない時は[gitter](https://gitter.im/bearsunday/BEAR.Sunday)で相談すると解決できるかもしれません。提案や間違いがあれば[PR](https://github.com/bearsunday/bearsunday.github.io/blob/master/manuals/1.0/ja/tutorial2.md)をお願いします！
 
 ---
