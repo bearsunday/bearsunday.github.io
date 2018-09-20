@@ -6,18 +6,18 @@ permalink: /manuals/1.0/ja/tutorial2.html
 ---
 # チュートリアル2
 
-(Working in progress)
+このチュートリアルでは以下のツールを用いてタスク管理のチケット作成・取得用REST APIを作成し、疎結合で高品質なREST APIアプリケーションの開発をテスト駆動で学びます。[^1]
 
-このチュートリアルでは以下のツールを用いてタスク管理のチケット作成・取得用REST APIのサイト`Ticket API`を作成し、疎結合で高品質なアプリケーション開発をテスト駆動開発で学びます。[^1]
-APIはスキーマ定義されAOPによるバリデーションによって正当性が保証されます。また本来のRESTの特徴である自己記述（self-descriptive)性に優れ、APIがどのようなものであるかAPI自身が説明する事ができます。[^12]
+* CakePHPが開発してるフレームワーク非依存の[Phinx](https://book.cakephp.org/3.0/ja/phinx.html) DBマイグレーションツール
+* JSONのデータ構造を定義しバリデーションやドキュメンテーションに利用する [Json Schema](https://qiita.com/kyoh86/items/e7de290e9a0e989fcc14)
+* SQL文をSQL実行オブジェクトに変換しアプリケーションレイヤーとデータアクセスレイヤーを疎にする [ray/query-module](https://github.com/ray-di/Ray.QueryModule)
+* UUIDや現在時刻をインジェクトする [IdentityValueModule](https://github.com/ray-di/Ray.IdentityValueModule)
 
- * CakePHPが開発してるフレームワーク非依存の[Phinx](https://book.cakephp.org/3.0/ja/phinx.html) DBマイグレーションツール
- * クライントサーバー双方でのバリデーションやドキュメンテーションを可能にする [Json Schema](https://qiita.com/kyoh86/items/e7de290e9a0e989fcc14)
- * SQL文をSQL実行オブジェクトに変換しアプリケーションとインフラストラクチャのコードを疎にする [ray/query-module](https://github.com/ray-di/Ray.QueryModule)
- * データベースのIDはオートインクリメントIDでなくUUIDを使います。
- 
+作成するAPIはスキーマ定義され、自己記述（self-descriptive)性に優れた高品質なものです。
+
+
 [チュートリアル](/manuals/1.0/ja/tutorial.html)と被る箇所もありますがおさらいのつもりでトライして見ましょう。
-レポジトリは[MyVendor.Ticket](https://github.com/bearsunday/MyVendor.Ticket)にあります。うまくいかないときは見比べて見ましょう。
+レポジトリは [bearsunday/tutorial2](https://github.com/bearsunday/tutorial2) にあります。うまくいかないときは見比べて見ましょう。
 
 ## プロジェクト作成
 
@@ -86,6 +86,35 @@ class AppModule extends AbstractAppModule
 }
 ```
 
+テスト用のデータベースのために`src/Module/TestModule.php`も作成します。
+
+```php
+<?php
+namespace MyVendor\Ticket\Module;
+
+use BEAR\Package\AbstractAppModule;
+use Ray\AuraSqlModule\AuraSqlModule;
+
+class TestModule extends AbstractAppModule
+{
+    /**
+     * {@inheritdoc}
+     */
+    protected function configure()
+    {
+        $this->install(
+            new AuraSqlModule(
+                getenv('TKT_DB_DSN') . '_test',
+                getenv('TKT_DB_USER'),
+                getenv('TKT_DB_PASS'),
+                getenv('TKT_DB_SLAVE')
+            )
+        );
+    }
+}
+```
+
+
 モジュールが必要とするフォルダを作成します。
 
 ```bash
@@ -96,11 +125,11 @@ mkdir var/json_validate
 
 ## ルーターファイル
 
-`tickets/{id}`のアクセスを`Ticket`クラスにルートするためにルーターファイルを`/var/conf/aura.route.php`に設置します。
+`tickets/{id}`のアクセスを`Ticket`クラスにルートするためにルーターファイルを`var/conf/aura.route.php`に設置します。
 
 ```php
 <?php
-/* @var $map \Aura\Router\Map */
+/* @var\Aura\Router\Map $map */
 $map->route('/ticket', '/tickets/{id}');
 ```
 
@@ -140,20 +169,21 @@ mkdir var/phinx/seeds
 
 ```php
 <?php
-$pdo = new \PDO(getenv('TKT_DB_DSN'), getenv('TKT_DB_USER'), getenv('TKT_DB_PASS'));
-$name = $pdo->query("SELECT DATABASE()")->fetchColumn();
+require_once dirname(__DIR__, 2) . '/env.php';
+$devlopment = new \PDO(getenv('TKT_DB_DSN'), getenv('TKT_DB_USER'), getenv('TKT_DB_PASS'));
+$test = new \PDO(getenv('TKT_DB_DSN') . '_test', getenv('TKT_DB_USER'), getenv('TKT_DB_PASS'));
 return [
     'paths' => [
         'migrations' => __DIR__ . '/migrations',
     ],
     'environments' => [
         'development' => [
-            'name' => $name,
-            'connection' => $pdo
+            'name' => $devlopment->query("SELECT DATABASE()")->fetchColumn(),
+            'connection' => $devlopment
         ],
         'test' => [
-            'name' => $name . '_test',
-            'connection' => $pdo
+            'name' => $test->query("SELECT DATABASE()")->fetchColumn(),
+            'connection' => $test
         ]
     ]
 ];
@@ -172,10 +202,11 @@ passthru('rm -rf var/tmp/*');
 passthru('chmod 775 var/tmp');
 passthru('chmod 775 var/log');
 // db
-$pdo = new \PDO(getenv('TKT_DB_DSN'), getenv('TKT_DB_USER'), getenv('TKT_DB_PASS'));
+$pdo = new \PDO('mysql:host=' . getenv('TKT_DB_HOST'), getenv('TKT_DB_USER'), getenv('TKT_DB_PASS'));
 $pdo->exec('CREATE DATABASE IF NOT EXISTS ' . getenv('TKT_DB_NAME'));
 $pdo->exec('CREATE DATABASE IF NOT EXISTS ' . getenv('TKT_DB_NAME') . '_test');
 passthru('./vendor/bin/phinx migrate -c var/phinx/phinx.php -e development');
+passthru('./vendor/bin/phinx migrate -c var/phinx/phinx.php -e test');
 ```
 
 実行してデータベースを作成します。
@@ -184,16 +215,10 @@ passthru('./vendor/bin/phinx migrate -c var/phinx/phinx.php -e development');
 composer setup
 ```
 ```
-> php bin/setup.php
-Phinx by CakePHP - https://phinx.org. 0.10.5
+Phinx by CakePHP - https://phinx.org. 0.10.6
 
-using config file ./var/phinx/phinx.php
-using config parser php
-using migration paths 
-using environment development
-using database ticket
-
-All Done. Took 0.0462s
+...
+using database ticket_test
 ```
 
 次に`ticket`テーブルを作成するためにマイグレーションクラスを作成します。
@@ -202,14 +227,10 @@ All Done. Took 0.0462s
 ./vendor/bin/phinx create Ticket -c var/phinx/phinx.php
 ```
 ```
-Phinx by CakePHP - https://phinx.org. 0.10.5
+Phinx by CakePHP - https://phinx.org. 0.10.6
 
-using config file ./var/phinx/phinx.php
-using config parser php
-using migration paths 
-using migration base class Phinx\Migration\AbstractMigration
-using default template
-created var/phinx/migrations/20180719040628_ticket.php
+...
+created var/phinx/migrations/20180920054037_ticket.php
 ```
 
 `var/phinx/migrations/{current_date}_ticket.php`を編集して`change()`メソッドを実装します。
@@ -220,27 +241,6 @@ use Phinx\Migration\AbstractMigration;
 
 class Ticket extends AbstractMigration
 {
-    /**
-     * Change Method.
-     *
-     * Write your reversible migrations using this method.
-     *
-     * More information on writing migrations is available here:
-     * http://docs.phinx.org/en/latest/migrations.html#the-abstractmigration-class
-     *
-     * The following commands can be used in this method and Phinx will
-     * automatically reverse them when rolling back:
-     *
-     *    createTable
-     *    renameTable
-     *    addColumn
-     *    renameColumn
-     *    addIndex
-     *    addForeignKey
-     *
-     * Remember to call "create()" or "update()" and NOT "save()" when working
-     * with the Table class.
-     */
     public function change()
     {
         $table = $this->table('ticket', ['id' => false, 'primary_key' => ['id']]);
@@ -263,19 +263,10 @@ composer setup
 ```
 ```
 > php bin/setup.php
-Phinx by CakePHP - https://phinx.org. 0.10.5
+Phinx by CakePHP - https://phinx.org. 0.10.6
 
-using config file ./var/phinx/phinx.php
-using config parser php
-using migration paths 
- - /Users/akihito/git/MyVendor.Ticket/var/phinx/migrations
-using environment development
-using database ticket
-
- == 20180719040628 Ticket: migrating
- == 20180719040628 Ticket: migrated 0.0756s
-
-All Done. Took 0.0900s
+...
+All Done. Took 0.0248s
 ```
 
 これでテーブルが作成されました。次回からこのプロジェクトのデータベース環境を整えるには`composer setup`を実行するだけで行えます。[^7]
@@ -377,6 +368,13 @@ PHPでSQLを実行する前に、このように事前に単体で実行してSQ
 }
 ```
 
+作成したJSONを`validate-json`を使ってバリデートすることができます。[^13]
+
+```
+./vendor/bin/validate-json var/json_schema/ticket.json
+./vendor/bin/validate-json var/json_schema/tickets.json
+```
+
 これでリソースを定義をすることが出来ました。このスキーマは実際にバリデーションで使うことが出来ます。また独立したJSONファイルはフロントエンドのバリデーションでも使うことができるでしょう。
 
 # テスト
@@ -402,7 +400,7 @@ class TicketsTest extends TestCase
 
     protected function setUp()
     {
-        $this->resource = (new AppInjector('MyVendor\Ticket', 'app'))->getInstance(ResourceInterface::class);
+        $this->resource = (new AppInjector('MyVendor\Ticket', 'test-app'))->getInstance(ResourceInterface::class);
     }
 
     public function testOnPost()
@@ -433,7 +431,10 @@ class TicketsTest extends TestCase
 }
 ```
 
-`$this->resource`は`MyVendor\Ticket`アプリケーションを`app`コンテキストで動作させた時のリソースクライアントです。`testOnPost`でリソースをPOSTリクエストで作成して、`testOnGet`ではそのレスポンスのLocationヘッダーに表されているリソースのURIをGETリクエストして、作成したリソースが正しいものかをテストしています。
+`$this->resource`は`MyVendor\Ticket`アプリケーションを`test-app`コンテキストで動作させた時のリソースクライアントです。
+`AppModule`、`TestModule`の順のモジュールで上書きされるのでデータベースはテスト用の`ticket_test`データベースが使われます。
+
+`testOnPost`でリソースをPOSTリクエストで作成して、`testOnGet`ではそのレスポンスのLocationヘッダーに表されているリソースのURIをGETリクエストして、作成したリソースが正しいものかをテストしています。
 
 まだ実装してないのでエラーが出ますが、テスト実行を試してみましょう。
 
@@ -477,7 +478,6 @@ class Ticket extends ResourceObject
         return $this;
     }
 }
-
 ```
 
 ## ticket - GETリクエスト
@@ -576,7 +576,6 @@ class Tickets extends ResourceObject
         return $this;
     }
 }
-
 ```
 
 ## tickets - GETリクエスト
@@ -871,36 +870,40 @@ API Doc is created at /path/to/docs
 公開APIサイトのドメインが決まれば`JsonSchemaLinkHeaderModule()`モジュールで公開ドメインを指定します。
 
 ```php?start_inline
- $this->install(new JsonSchemaLinkHeaderModule('http://www.example.com/'));
+ $this->install(new JsonSchemaLinkHeaderModule('https://{your-domain}/schema'));
 ```
 
 このようなAPIドキュメントサイトができるはずです。
 
 [https://bearsunday.github.io/tutorial2/](https://bearsunday.github.io/tutorial2/)
 
-## 振り返り
+ドキュメントサイトをコードと同じGithub管理するとでコードとどの時点で作成されたドキュメントなのか記録が残ります。
 
- * phinxマイグレーションツールを使ってアプリケーションのバージョンにあったデータベースの設定ができるようになりました。`composer setup`コマンドはディプロイやCIでも便利です。
+## 終わりに
 
- * SQLファイルを`var/sql`フォルダに置くことでGUIやCLIのSQLツールで単体実行することができ、開発や運用にも便利でテストも容易になります。スタティックなSQLはPhpStormで補完も効くし、GUIでモデリングできるツールもあります。 
+
+
+ * phinxマイグレーションツールを使ってアプリケーションのバージョンに従ったデータベースの環境構築ができるようになりました。
  
- * BEAR.Sundayのリソースを使ったAPIは入出力は宣言されていて明瞭です。引数はパラメータのシグネチャで分かります。
-レスポンスはJsonSchemaで定義されているとバリデーションだけだなくドキュメントにもなります。ドキュメントツールで生成するAPIドキュメントと違って自動生成されバリデーションもAOPで毎回行われるので、ドキュメントが正しい事が保証されます。
+ * `composer setup`コマンドで環境構築ができれば、データベースコマンドを操作する必要がなくディプロイやCIでも便利です。
 
- * 作成したAPIアプリケーションはライブラリにもなり資産になります。複数のアプリケーションを協調させ例えばAPI、フロントエンド、管理ツールとそれぞれのドメインの単位でプロ上ジェクトを分ける事が出来ますし並行開発も容易になります。[^8]
- * リソースのI/OがメソッドシグネチャーとJsonSchemaで宣言されているBEAR.SundayのリソースはAPIドキュメントを自動生成することができます。
+ * SQLファイルを`var/sql`フォルダに置くことでGUIやCLIのSQLツールで単体実行することができ、開発や運用にも便利でテストも容易になります。スタティックなSQLはPhpStormで補完も効くし、GUIでモデリングできるツールもあります。
+
+ * リソースの引数と出力はメソッドやスキーマで宣言されていて明瞭です。AOPでバリデーションが行わることでドキュメントの正当性が保証され、ドキュメントメンテナンスのの労力を最小化できます。
+
+チュートリアルはうまく言ったでしょうか？もしうまく行ったらなチュートリアル[bearsunday/tutorial2](https://github.com/bearsunday/tutorial2)にスターをして記念に残しましょう。
+うまくいかない時は[gitter](https://gitter.im/bearsunday/BEAR.Sunday)で相談すると解決できるかもしれません。提案や間違いがあれば[PR](https://github.com/bearsunday/bearsunday.github.io/blob/master/manuals/1.0/ja/tutorial2.md)をお願いします！
 
 ---
 
 [^1]:[チュートリアル](/manuals/1.0/ja/tutorial.html)を終えた方を対象としています。被る箇所もありますがおさらいのつもりでトライして見ましょう。レポジトリは[bearsaunday/Tutorial2](https://github.com/bearsunday/Tutorial2)にあります。うまくいかないときは見比べて見ましょう。
 [^2]:通常は**vendor**名は個人またはチーム（組織）の名前を入力します。githubのアカウント名やチーム名が適当でしょう。**project**にはアプリケーション名を入力します。
 [^3]:コミットフックを設定するのも良い方法です。
-[^4]:キャッシュも暖めらるので２度行うと確実です。
+[^4]:キャッシュを"温める"ために２度行うと確実です。
 [^5]:コンテキストの変更は`composer.json`の`compile`スクリプトコマンドを編集します。
 [^6]:BEAR.Sundayフレームワークが依存する環境変数は１つもありません。
 [^7]:mysqlコマンドの操作などをREADMEで説明する必要もないので便利です。
-[^8]:プロジェクトは固有の名前空間をもち、フォルダ構造を含めグローバルなものが無くて全てをインジェクトしてるBEAR.Sundayだからこそ可能な事です！
 [^9]:http://json-schema.org/latest/json-schema-core.html#rfc.section.10.1
 [^10]:`/ticket`でPOSTされると`/tickets`リソースのキャッシュを破壊しています。`@Refresh`とすると破壊のタイミングでキャッシュを再生成します。
 [^11]: [Publishing your GitHub Pages site from a /docs folder on your master branch](https://help.github.com/articles/configuring-a-publishing-source-for-github-pages/#publishing-your-github-pages-site-from-a-docs-folder-on-your-master-branch)
-[^12]: 最高のAPIを開発をしましょう！
+[^13]: 2018年9月現在php7.3だと実行できますが`PHP Deprecated`が表示されます。
