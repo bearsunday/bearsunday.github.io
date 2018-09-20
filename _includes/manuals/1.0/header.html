@@ -1,57 +1,55 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
     <title>{{ page.title }}</title>
+    <meta name="description" content="BEAR.Sunday is a resource orientated framework with a REST centered architecture, implementing Dependency Injection and Aspect Orientated Programming' at its core.">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
     <link rel="stylesheet" href="/css/index.css">
     <link rel="stylesheet" href="/css/syntax.css">
-    <link rel="stylesheet" href="/css/github.css">
+    {% if page.category == 'Manual' %}<link rel="stylesheet" href="/css/github.css">{% endif %}
     <link rel="stylesheet" href="/css/main.css">
-    <link rel="icon" sizes="16x16 32x32 48x48 64x64" href="/images/icon/favicon.ico">
-
-    <!--[if IE]><link rel="shortcut icon" href="/images/icon/favicon.ico"><![endif]-->
-
-    <!-- The below are optional but encouraged -->
-
-    <!-- Touch icon for iOS 2.0+ and Android 2.1+: -->
-    <link rel="apple-touch-icon-precomposed" href="/images/icon/favicon-152.png">
-
-    <!-- The below are optional -->
-
-    <!-- IE 10 Metro tile icon (Metro equivalent of apple-touch-icon): -->
-    <meta name="msapplication-TileColor" content="#FFFFFF">
-    <meta name="msapplication-TileImage" content="/images/icon/favicon-144.png">
-    <!-- For iPad with high-resolution Retina display running iOS ≥ 7: -->
-    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="/images/icon/favicon-152.png">
-    <!-- For iPad with high-resolution Retina display running iOS ≤ 6: -->
-    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/images/icon/favicon-144.png">
-    <!-- For iPhone with high-resolution Retina display running iOS ≥ 7: -->
-    <link rel="apple-touch-icon-precomposed" sizes="120x120" href="/images/icon/favicon-120.png">
-    <!-- For iPhone with high-resolution Retina display running iOS ≤ 6: -->
-    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/images/icon/favicon-114.png">
-    <!-- For first- and second-generation iPad: -->
-    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/images/icon/favicon-72.png">
-    <!-- For non-Retina iPhone, iPod Touch, and Android 2.1+ devices: -->
-    <link rel="apple-touch-icon-precomposed" href="/images/icon/favicon-57.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="apple-touch-icon" href="/icon.png">
 </head>
 <body>
-<!--<div id="wrap">-->
+<header>
     <div class="navbar navbar-expand-lg navbar-light bg-light mb-4">
         <div class="container">
             <a class="navbar-brand" href="/index.html">
                 <span class="bear-icon-32"></span>
             </a>
-            <nav class="dropdown">
-                <a class="nav-item nav-link dropdown-toggle" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    {% if page.layout == 'docs-en' %}English{% endif %}
-                    {% if page.layout == 'docs-ja' %}Japanese{% endif %}
-                </a>
-                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    <li><a class="dropdown-item {% if page.layout == 'docs-en' %}active{% endif %}" href="{{ page.permalink | replace: '/ja/', '/en/' }}">English</a></li>
-                    <li><a class="dropdown-item {% if page.layout == 'docs-ja' %}active{% endif %}" href="{{ page.permalink | replace: '/en/', '/ja/' }}">Japanese</a></li>
-                </ul>
-            </nav>
+            {% if page.category == 'Manual' %}
+                <nav class="dropdown">
+                    <a class="nav-item nav-link dropdown-toggle" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        {% if page.layout == 'docs-en' %}English{% endif %}
+                        {% if page.layout == 'docs-ja' %}Japanese{% endif %}
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <li><a class="dropdown-item {% if page.layout == 'docs-en' %}active{% endif %}" href="{{ page.permalink | replace: '/ja/', '/en/' }}">English</a></li>
+                        <li><a class="dropdown-item {% if page.layout == 'docs-ja' %}active{% endif %}" href="{{ page.permalink | replace: '/en/', '/ja/' }}">Japanese</a></li>
+                    </ul>
+                </nav>
+            {% else %}
+                <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#Navber" aria-controls="Navber" aria-expanded="false" aria-label="ナビゲーションの切替">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="Navber">
+                    <ul class="navbar-nav mr-auto">
+                        <li class="nav-item{% if page.category == 'Manual' %} active{% endif %}">
+                            <a class="nav-link" href="/manuals/1.0/en/index.html">Manual</a>
+                        </li>
+                        <li class="nav-item{% if page.category == 'Index' %} active{% endif %}">
+                            <a class="nav-link" href="/contributors.html">Contributors</a>
+                        </li>
+                        <li class="nav-item{% if page.category == 'Slide' %} active{% endif %}">
+                            <a class="nav-link" href="/slide.html">Slide</a>
+                        </li>
+                    </ul>
+                </div>
+            {% endif %}
+            </div>
         </div>
-    </div>
+</header>
