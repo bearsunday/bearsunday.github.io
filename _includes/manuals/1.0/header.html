@@ -4,13 +4,11 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ page.title }}</title>
-    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
     <link rel="stylesheet" href="/css/index.css">
     <link rel="stylesheet" href="/css/syntax.css">
     <link rel="stylesheet" href="/css/github.css">
     <link rel="stylesheet" href="/css/main.css">
-    <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
-    <link rel="stylesheet" href="/css/carousel.css">
     <link rel="icon" sizes="16x16 32x32 48x48 64x64" href="/images/icon/favicon.ico">
 
     <!--[if IE]><link rel="shortcut icon" href="/images/icon/favicon.ico"><![endif]-->
@@ -40,20 +38,19 @@
 </head>
 <body>
 <!--<div id="wrap">-->
-
-    <!-- Docs master nav -->
-    <div class="navbar navbar-default">
+    <div class="navbar navbar-expand-lg navbar-light bg-light mb-4">
         <div class="container">
-            <div class="navbar-header">
-                <a href="/index.html" class="navbar-brand">
-                    <span class="bear-icon-32"></span>
+            <a class="navbar-brand" href="/index.html">
+                <span class="bear-icon-32"></span>
+            </a>
+            <nav class="dropdown">
+                <a class="nav-item nav-link dropdown-toggle" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    {% if page.layout == 'docs-en' %}English{% endif %}
+                    {% if page.layout == 'docs-ja' %}Japanese{% endif %}
                 </a>
-            </div>
-
-            <nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
-                <ul class="nav navbar-nav navbar-right">
-                    <li class="{% if page.layout  == 'docs-en' %}active{% endif %}"><a href="{{ page.permalink | replace: '/ja/', '/en/' }}">English</a></li>
-                    <li class="{% if page.layout  == 'docs-ja' %}active{% endif %}"><a href="{{ page.permalink | replace: '/en/', '/ja/' }}">Japanese</a></li>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <li><a class="dropdown-item {% if page.layout == 'docs-en' %}active{% endif %}" href="{{ page.permalink | replace: '/ja/', '/en/' }}">English</a></li>
+                    <li><a class="dropdown-item {% if page.layout == 'docs-ja' %}active{% endif %}" href="{{ page.permalink | replace: '/en/', '/ja/' }}">Japanese</a></li>
                 </ul>
             </nav>
         </div>
