@@ -1,5 +1,5 @@
 .jumbotron {
-    text-align:center;
+    text-align: center;
 }
 
 .jumbotron > img[src*="BEAR_logo.png"] {
@@ -7,5 +7,5 @@
 }
 
 .jumbotron > p {
-    font-size: 1.2em;
+    font-size: 1.2rem;
 }

@@ -1,7 +1,7 @@
 ---
 layout: index
 title: BEAR.Sunday Contributors
-category: Index
+category: Contributors
 permalink: /contributors.html
 ---
 [<img alt="akkie" src="https://avatars.githubusercontent.com/u/307006?v=3&s=117" width="117">](https://github.com/akkie)
