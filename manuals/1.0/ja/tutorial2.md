@@ -15,8 +15,8 @@ permalink: /manuals/1.0/ja/tutorial2.html
 
 作成するAPIはスキーマ定義され、自己記述（self-descriptive)性に優れた高品質なものです。
 
-[チュートリアル](/manuals/1.0/ja/tutorial.html)と被る箇所もありますがおさらいのつもりでトライして見ましょう。
-レポジトリは [bearsunday/tutorial2](https://github.com/bearsunday/tutorial2) にあります。うまくいかないときは見比べて見ましょう。
+[チュートリアル](/manuals/1.0/ja/tutorial.html)と被る箇所もありますがおさらいのつもりでトライしてみましょう。
+レポジトリは [bearsunday/tutorial2](https://github.com/bearsunday/tutorial2) にあります。うまくいかないときは見比べてみましょう。
 
 ## プロジェクト作成
 
@@ -649,7 +649,7 @@ class Index extends ResourceObject
 
 Webサイトを利用するのに事前に全てのURIを知る必要がないように、APIサービスも同様に一覧のリンクを持つことでAPIの"発見容易性(Discoverability)"を高めます。
 
-早速リクエストして見ましょう。
+早速リクエストしてみましょう。
 
 ```
 php bin/app.php get /
@@ -736,7 +736,7 @@ Allow: GET, POST
 
 マシンリーダブルなAPIドキュメントとして表示されます。
 
-では実際に`/tickets`にアクセスして見ましょう。
+では実際に`/tickets`にアクセスしてみましょう。
 
 
 POSTリクエストでチケット作成します。
@@ -874,12 +874,12 @@ API Doc is created at /path/to/docs
 
  * リソースの引数と出力はメソッドやスキーマで宣言されていて明瞭です。AOPでバリデーションが行わることでドキュメントの正当性が保証され、ドキュメントメンテナンスのの労力を最小化できます。
 
-チュートリアルはうまく言ったでしょうか？もしうまく行ったらなチュートリアル[bearsunday/tutorial2](https://github.com/bearsunday/tutorial2)にスターをして記念に残しましょう。
+チュートリアルはうまく言ったでしょうか？ もしうまく行ったらなチュートリアル[bearsunday/tutorial2](https://github.com/bearsunday/tutorial2)にスターをして記念に残しましょう。
 うまくいかない時は[gitter](https://gitter.im/bearsunday/BEAR.Sunday)で相談すると解決できるかもしれません。提案や間違いがあれば[PR](https://github.com/bearsunday/bearsunday.github.io/blob/master/manuals/1.0/ja/tutorial2.md)をお願いします！
 
 ---
 
-[^1]:[チュートリアル](/manuals/1.0/ja/tutorial.html)を終えた方を対象としています。被る箇所もありますがおさらいのつもりでトライして見ましょう。レポジトリは[bearsaunday/Tutorial2](https://github.com/bearsunday/Tutorial2)にあります。うまくいかないときは見比べて見ましょう。
+[^1]:[チュートリアル](/manuals/1.0/ja/tutorial.html)を終えた方を対象としています。被る箇所もありますがおさらいのつもりでトライしてみましょう。レポジトリは[bearsaunday/Tutorial2](https://github.com/bearsunday/Tutorial2)にあります。うまくいかないときは見比べてみましょう。
 [^2]:通常は**vendor**名は個人またはチーム（組織）の名前を入力します。githubのアカウント名やチーム名が適当でしょう。**project**にはアプリケーション名を入力します。
 [^3]:コミットフックを設定するのも良い方法です。
 [^4]:キャッシュを"温める"ために２度行うと確実です。
