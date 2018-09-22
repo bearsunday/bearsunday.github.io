@@ -8,6 +8,10 @@ body {
     padding-bottom: 4rem;
 }
 
+a {
+    color: #0366d6;
+}
+
 header + .container {
     padding-top: 2rem;
 }
@@ -29,12 +33,26 @@ header .bear-icon-32 {
 }
 
 .footer {
+    text-align: center;
+    padding: 0 1rem;
     position: absolute;
     bottom: 0;
     width: 100%;
     height: 4rem;
     line-height: 4rem;
-    background-color: #f5f5f5;
+    background-color: rgb(245,245,245);
+    font-size: 85%;
+}
+
+.footer ul {
+    display: none;
+    margin-bottom: 0;
+    padding-left: 0;
+}
+
+.footer li {
+    display: inline-block;
+    margin-left: 1rem;
 }
 
 .jumbotron {
@@ -47,15 +65,7 @@ header .bear-icon-32 {
 
 .jumbotron > p {
     font-size: 1.2rem;
-}
-
-.side-bar {
-    max-height: calc(100vh - 4rem);
-    overflow-y: auto;
-}
-
-.side-bar .navbar-light .navbar-nav .nav-link {
-    color: #007bff;
+    margin-bottom: 1.2rem;
 }
 
 .side-bar button {
@@ -74,16 +84,23 @@ header .bear-icon-32 {
         min-height: 4rem;
     }
 
+    .footer {
+        text-align: left;
+    }
+
     article {
-        padding-top: 2rem;
+        padding: 2rem 0;
     }
 
     .side-bar {
+        max-height: calc(100vh - 4rem);
+        overflow-y: auto;
+
         position: -webkit-sticky;
         position: sticky;
         top: 4rem;
         z-index: 1;
-        margin-left: 15px;
+        margin-left: 1rem;
         height: calc(100vh - 4rem);
         border-right: 1px solid rgba(0,0,0,.1);
     }
@@ -93,8 +110,7 @@ header .bear-icon-32 {
     }
 
     .side-bar ul {
-        padding-top: 1rem;
-        padding-bottom: 1rem;
+        padding: 2rem 0;
         max-height: calc(100vh);
         overflow-y: auto;
         display: block!important;
@@ -105,3 +121,4 @@ header .bear-icon-32 {
         width: 100%;
     }
 }
+
