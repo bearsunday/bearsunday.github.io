@@ -1,14 +1,16 @@
 {% include manuals/1.0/header.html %}
-<div class="container">
-  <div class="row">
-    <div class="col-md-3">
-      {% include manuals/1.0/ja/contents.html %}
+<div class="container-fluid">
+    <div class="row flex-xl-nowrap">
+        <div class="col-md-3 col-lg-2">
+            <div class="side-bar">
+                {% include manuals/1.0/ja/contents.html %}
+            </div>
+        </div>
+        <div class="col-md-9 col-lg-10">
+            <article class="markdown-body">
+                {{ content }}
+            </article>
+        </div>
     </div>
-    <div class="col-md-9">
-      <article class="markdown-body">
-        {{ content }}
-      </article>
-    </div>
-  </div>
 </div>
 {% include manuals/1.0/footer.html %}
