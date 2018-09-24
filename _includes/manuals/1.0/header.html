@@ -17,59 +17,61 @@
     <link rel="apple-touch-icon" href="/icon.png">
 </head>
 <body data-spy="scroll" data-target="#ArticleToc" data-offset="65">
-<header class="navbar navbar-expand flex-column flex-md-row bg-light">
-    <a class="navbar-brand mr-0 mr-md-2" href="/index.html">
-        <span class="bear-icon-32 d-inline-block align-top"></span>
-    </a>
-    <div class="navbar-nav-scroll">
-        <ul class="navbar-nav flex-row">
-            <li class="nav-item{% if page.category == 'Index' %} active{% endif %}">
-                <a class="nav-link" href="/index.html">Home</a>
+<header>
+    <nav class="navbar navbar-expand flex-column flex-md-row bg-light">
+        <a class="navbar-brand mr-0 mr-md-2" href="/index.html">
+            <span class="bear-icon-32 d-inline-block align-top"></span>
+        </a>
+        <div class="navbar-nav-scroll">
+            <ul class="navbar-nav flex-row">
+                <li class="nav-item{% if page.category == 'Index' %} active{% endif %}">
+                    <a class="nav-link" href="/index.html">Home</a>
+                </li>
+                <li class="nav-item{% if page.category == 'Manual' %} active{% endif %}">
+                    <a class="nav-link" href="/manuals/1.0/en/index.html">Manual</a>
+                </li>
+                <li class="nav-item{% if page.category == 'Contributors' %} active{% endif %}">
+                    <a class="nav-link" href="/contributors.html">Contributors</a>
+                </li>
+                <li class="nav-item{% if page.category == 'Slide' %} active{% endif %}">
+                    <a class="nav-link" href="/slide.html">Slide</a>
+                </li>
+            </ul>
+        </div>
+        <ul class="navbar-nav flex-row ml-md-auto d-none d-md-flex">
+            {% if page.category == 'Manual' %}
+            <li class="nav-item dropdown">
+                <a class="nav-item nav-link dropdown-toggle mr-md-2" href="#" id="bd-versions" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    {% if page.layout == 'docs-en' %}English{% endif %}
+                    {% if page.layout == 'docs-ja' %}Japanese{% endif %}
+                </a>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="bd-versions">
+                    <a class="dropdown-item {% if page.layout == 'docs-en' %}active{% endif %}" href="{{ page.permalink | replace: '/ja/', '/en/' }}">English</a>
+                    <a class="dropdown-item {% if page.layout == 'docs-ja' %}active{% endif %}" href="{{ page.permalink | replace: '/en/', '/ja/' }}">Japanese</a>
+                </div>
             </li>
-            <li class="nav-item{% if page.category == 'Manual' %} active{% endif %}">
-                <a class="nav-link" href="/manuals/1.0/en/index.html">Manual</a>
+            {% else %}
+            <li class="nav-item">
+                <a class="nav-link" href="https://github.com/bearsunday/BEAR.Sunday">
+                    <i class="fab fa-github"></i>
+                </a>
             </li>
-            <li class="nav-item{% if page.category == 'Contributors' %} active{% endif %}">
-                <a class="nav-link" href="/contributors.html">Contributors</a>
+            <li class="nav-item">
+                <a class="nav-link" href="https://gitter.im/bearsunday/BEAR.Sunday?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge">
+                    <i class="fab fa-gitter"></i>
+                </a>
             </li>
-            <li class="nav-item{% if page.category == 'Slide' %} active{% endif %}">
-                <a class="nav-link" href="/slide.html">Slide</a>
+            <li class="nav-item">
+                <a class="nav-link" href="https://twitter.com/BEARSunday">
+                    <i class="fab fa-twitter"></i>
+                </a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link" href="https://www.facebook.com/pages/BEARSunday/110116939178462?ref=hl">
+                    <i class="fab fa-facebook"></i>
+                </a>
+            </li>
+            {% endif %}
         </ul>
-    </div>
-    <ul class="navbar-nav flex-row ml-md-auto d-none d-md-flex">
-        {% if page.category == 'Manual' %}
-        <li class="nav-item dropdown">
-            <a class="nav-item nav-link dropdown-toggle mr-md-2" href="#" id="bd-versions" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                {% if page.layout == 'docs-en' %}English{% endif %}
-                {% if page.layout == 'docs-ja' %}Japanese{% endif %}
-            </a>
-            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="bd-versions">
-                <a class="dropdown-item {% if page.layout == 'docs-en' %}active{% endif %}" href="{{ page.permalink | replace: '/ja/', '/en/' }}">English</a>
-                <a class="dropdown-item {% if page.layout == 'docs-ja' %}active{% endif %}" href="{{ page.permalink | replace: '/en/', '/ja/' }}">Japanese</a>
-            </div>
-        </li>
-        {% else %}
-        <li class="nav-item">
-            <a class="nav-link" href="https://github.com/bearsunday/BEAR.Sunday">
-                <i class="fab fa-github"></i>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="https://gitter.im/bearsunday/BEAR.Sunday?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge">
-                <i class="fab fa-gitter"></i>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="https://twitter.com/BEARSunday">
-                <i class="fab fa-twitter"></i>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="https://www.facebook.com/pages/BEARSunday/110116939178462?ref=hl">
-                <i class="fab fa-facebook"></i>
-            </a>
-        </li>
-        {% endif %}
-    </ul>
+    </nav>
 </header>

@@ -29,15 +29,15 @@ header .bear-icon-32 {
 }
 
 .footer {
-    text-align: center;
-    padding: 0 1rem;
     position: absolute;
     bottom: 0;
+    padding: 0 1rem;
     width: 100%;
     height: 4rem;
     line-height: 4rem;
     background-color: rgb(245,245,245);
     font-size: 85%;
+    text-align: center;
 }
 
 .footer ul {
@@ -60,8 +60,8 @@ header .bear-icon-32 {
 }
 
 .jumbotron > p {
-    font-size: 1.2rem;
     margin-bottom: 1.2rem;
+    font-size: 1.2rem;
 }
 
 .side-bar button {
@@ -93,16 +93,16 @@ header .bear-icon-32 {
     }
 
     .side-bar {
-        max-height: calc(100vh - 4rem);
-        overflow-y: auto;
-
         position: -webkit-sticky;
         position: sticky;
         top: 4rem;
-        z-index: 1;
         margin-left: 1rem;
         height: calc(100vh - 4rem);
+        max-height: calc(100vh - 4rem);
         border-right: 1px solid rgba(0,0,0,.1);
+        z-index: 1;
+
+        overflow-y: auto;
     }
 
     .side-bar .navbar {
@@ -110,11 +110,12 @@ header .bear-icon-32 {
     }
 
     .side-bar ul {
-        padding: 2rem 0;
-        max-height: calc(100vh);
-        overflow-y: auto;
         display: block!important;
+        padding: 2rem 0;
         width: 100%;
+        max-height: calc(100vh);
+
+        overflow-y: auto;
     }
 
     .side-bar ul > li {
@@ -122,21 +123,20 @@ header .bear-icon-32 {
     }
 
     .side-bar-right {
-        max-height: calc(100vh - 4rem);
-        overflow-y: auto;
-
         position: -webkit-sticky;
         position: sticky;
         top: 5rem;
-        z-index: 1;
-
         margin: 1rem 0;
         padding: 1rem 2rem;
+        max-height: calc(100vh - 4rem);
         border-left: 1px solid rgba(0,0,0,.1);
+        z-index: 1;
+
+        overflow-y: auto;
     }
 
     .side-bar-right ul {
-        padding: 1rem 2rem;
+        padding: 0;
     }
 
     .side-bar-right ul > li {
@@ -154,8 +154,8 @@ header .bear-icon-32 {
     }
 
     .side-bar-right li a.active {
-        font-weight: 600;
         color: rgba(0, 0, 0, .7);
+        font-weight: 600;
     }
 }
 
