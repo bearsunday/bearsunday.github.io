@@ -92,8 +92,10 @@ header a:hover {
     border-bottom: 1px solid rgb(234,236,239);
 }
 
-.side-bar button {
+.side-bar .navbar-light .navbar-toggler {
     margin: 0 0 0 auto;
+    color: rgba(0, 0, 0, .7);
+    border: 0;
 }
 
 @media (min-width: 768px) {
@@ -217,6 +219,10 @@ header a:hover {
 }
 
 @media (max-width: 768px) {
+    article {
+        padding-bottom: 2rem;
+    }
+
     #Contributors main ul li {
         width: 33.3%;
         padding: 3px;
