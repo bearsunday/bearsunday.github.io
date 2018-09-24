@@ -120,5 +120,37 @@ header .bear-icon-32 {
     .side-bar ul > li {
         width: 100%;
     }
+
+    .side-bar-right {
+        max-height: calc(100vh - 4rem);
+        overflow-y: auto;
+
+        position: -webkit-sticky;
+        position: sticky;
+        top: 5rem;
+        z-index: 1;
+
+        margin: 1rem 0;
+        padding: 1rem 2rem;
+        border-left: 1px solid rgba(0,0,0,.1);
+    }
+
+    .side-bar-right ul {
+        padding: 0;
+    }
+
+    .side-bar-right ul > li {
+        list-style: none;
+    }
+
+    .side-bar-right li > ul {
+        padding-left: 2rem;
+    }
+
+    .side-bar-right li a {
+        display: block;
+        padding: .125rem 0;
+        color: rgba(0, 0, 0, .5);
+    }
 }
 

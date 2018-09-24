@@ -31,5 +31,22 @@
     ga('create', 'UA-6074569-8', 'bearsunday.github.io'); ga('send', 'pageview');
 </script>
 <script src="https://www.google-analytics.com/analytics.js" async defer></script>
+{% if page.category == 'Manual' %}
+<script src="/js/generate-table-of-contents/index.min.js"></script>
+<script>
+    var toc = generateTableOfContents(document.getElementById('article'));
+    var sideBarRight = $('.side-bar-right');
+    sideBarRight.append(toc);
+
+    var headerHeight = $('header').outerHeight();
+    var articlePaddingTop = $('article').css('padding-top').replace('px', '');
+    sideBarRight.find('a').on('click', function (e) {
+        e.preventDefault();
+        var targetId = $(this).attr('href');
+        var targetPositionTop = $(targetId).offset().top - headerHeight - articlePaddingTop;
+        window.scrollTo(0, targetPositionTop)
+    });
+</script>
+{% endif %}
 </body>
 </html>
