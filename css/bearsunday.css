@@ -20,10 +20,6 @@ header .navbar-brand {
     display: block;
 }
 
-header .nav-item > a {
-    font-weight: 600;
-}
-
 header .bear-icon-32 {
     width: 32px;
     height: 32px;
