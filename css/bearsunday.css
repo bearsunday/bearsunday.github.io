@@ -12,6 +12,10 @@ a {
     color: #0366d6;
 }
 
+img {
+    max-width: 100%;
+}
+
 .markdown-body h1,
 .markdown-body h2,
 .markdown-body h3,
@@ -40,6 +44,10 @@ header .bear-icon-32 {
 
 header .nav-link.active {
     font-weight: 600;
+}
+
+header a:hover {
+    opacity: .7;
 }
 
 .footer {
@@ -188,3 +196,29 @@ header .nav-link.active {
     }
 }
 
+#Contributors header + .container {
+    padding-top: 15px;
+}
+
+#Contributors main ul {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 0;
+}
+
+#Contributors main ul li {
+    width: 10%;
+    list-style: none;
+    padding: 5px;
+}
+
+#Contributors main ul li a:hover {
+    opacity: .7;
+}
+
+@media (max-width: 768px) {
+    #Contributors main ul li {
+        width: 33.3%;
+        padding: 3px;
+    }
+}
