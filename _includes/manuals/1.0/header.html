@@ -24,17 +24,17 @@
         </a>
         <div class="navbar-nav-scroll">
             <ul class="navbar-nav flex-row">
-                <li class="nav-item{% if page.category == 'Index' %} active{% endif %}">
-                    <a class="nav-link" href="/index.html">Home</a>
+                <li class="nav-item">
+                    <a class="nav-link {% if page.category == 'Index' %}active{% endif %}" href="/index.html">Home</a>
                 </li>
-                <li class="nav-item{% if page.category == 'Manual' %} active{% endif %}">
-                    <a class="nav-link" href="/manuals/1.0/en/index.html">Manual</a>
+                <li class="nav-item">
+                    <a class="nav-link {% if page.category == 'Manual' %}active{% endif %}" href="/manuals/1.0/en/index.html">Manual</a>
                 </li>
-                <li class="nav-item{% if page.category == 'Contributors' %} active{% endif %}">
-                    <a class="nav-link" href="/contributors.html">Contributors</a>
+                <li class="nav-item">
+                    <a class="nav-link {% if page.category == 'Contributors' %} active{% endif %}" href="/contributors.html">Contributors</a>
                 </li>
-                <li class="nav-item{% if page.category == 'Slide' %} active{% endif %}">
-                    <a class="nav-link" href="/slide.html">Slide</a>
+                <li class="nav-item">
+                    <a class="nav-link{% if page.category == 'Slide' %} active{% endif %}" href="/slide.html">Slide</a>
                 </li>
             </ul>
         </div>

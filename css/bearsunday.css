@@ -12,6 +12,16 @@ a {
     color: #0366d6;
 }
 
+.markdown-body h1,
+.markdown-body h2,
+.markdown-body h3,
+.markdown-body h4,
+.markdown-body h5,
+.markdown-body h6 {
+    padding: 1.5rem 0 .5rem;
+    margin-bottom: .5rem;
+}
+
 header + .container {
     padding-top: 2rem;
 }
@@ -26,6 +36,10 @@ header .bear-icon-32 {
     background-image: url("../images/icon/favicon-64.png");
     background-size: 100%;
     text-decoration: none;
+}
+
+header .nav-link.active {
+    font-weight: 600;
 }
 
 .footer {
@@ -96,7 +110,7 @@ header .bear-icon-32 {
         position: -webkit-sticky;
         position: sticky;
         top: 4rem;
-        margin-left: 1rem;
+        margin-left: -15px;
         height: calc(100vh - 4rem);
         max-height: calc(100vh - 4rem);
         border-right: 1px solid rgba(0,0,0,.1);
@@ -118,8 +132,13 @@ header .bear-icon-32 {
         overflow-y: auto;
     }
 
-    .side-bar ul > li {
-        width: 100%;
+    .side-bar .nav-link {
+        padding-left: 1.5rem!important;
+    }
+
+    .side-bar a.nav-link.active {
+        font-weight: bold;
+        background-color: rgb(245,245,245);
     }
 
     .side-bar-right {
@@ -151,6 +170,10 @@ header .bear-icon-32 {
         display: block;
         padding: .125rem 0;
         color: rgba(0, 0, 0, .5);
+    }
+
+    .side-bar-right li a:hover {
+        color: rgba(0, 0, 0, .7);
     }
 
     .side-bar-right li a.active {
