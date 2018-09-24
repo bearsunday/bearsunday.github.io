@@ -136,7 +136,7 @@ header .bear-icon-32 {
     }
 
     .side-bar-right ul {
-        padding: 0;
+        padding: 1rem 2rem;
     }
 
     .side-bar-right ul > li {
