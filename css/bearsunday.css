@@ -162,7 +162,7 @@ header a:hover {
         position: sticky;
         top: 5rem;
         margin: 1rem 0;
-        padding: 1rem 2rem;
+        padding: 1rem;
         max-height: calc(100vh - 4rem);
         border-left: 1px solid rgb(234,236,239);
         z-index: 1;
@@ -179,7 +179,7 @@ header a:hover {
     }
 
     .side-bar-right li > ul {
-        padding-left: 2rem;
+        padding-left: 1rem;
     }
 
     .side-bar-right li a {
