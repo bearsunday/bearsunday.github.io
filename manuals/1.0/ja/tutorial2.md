@@ -15,9 +15,8 @@ permalink: /manuals/1.0/ja/tutorial2.html
 
 作成するAPIはスキーマ定義され、自己記述（self-descriptive)性に優れた高品質なものです。
 
-
-[チュートリアル](/manuals/1.0/ja/tutorial.html)と被る箇所もありますがおさらいのつもりでトライして見ましょう。
-レポジトリは [bearsunday/tutorial2](https://github.com/bearsunday/tutorial2) にあります。うまくいかないときは見比べて見ましょう。
+[チュートリアル](/manuals/1.0/ja/tutorial.html)と被る箇所もありますがおさらいのつもりでトライしてみましょう。
+レポジトリは [bearsunday/tutorial2](https://github.com/bearsunday/tutorial2) にあります。うまくいかないときは見比べてみましょう。
 
 ## プロジェクト作成
 
@@ -243,14 +242,14 @@ class Ticket extends AbstractMigration
 {
     public function change()
     {
-        $table = $this->table('ticket', ['id' => false, 'primary_key' => ['id']]);
-        $table->addColumn('id', 'uuid')
+         $table = $this->table('ticket', ['id' => false, 'primary_key' => ['id']]);
+         $table->addColumn('id', 'uuid')
             ->addColumn('title', 'string')
             ->addColumn('description', 'string')
             ->addColumn('status', 'string')
             ->addColumn('assignee', 'string')
-            ->addColumn('created', 'datetime')
-            ->addColumn('updated', 'datetime')
+            ->addColumn('created_at', 'datetime')
+            ->addColumn('updated_at', 'datetime')
             ->create();
     }
 }
@@ -275,29 +274,43 @@ All Done. Took 0.0248s
 ## SQL
 
 チケットをデータベースに保存、読み込むために次の３つのSQLを`var/sql`に保存します。
-SQLの記述は[SQLスタイルガイド](https://www.sqlstyle.guide/ja/)を参考にするといいでしょう。
 
 `var/sql/ticket_insert.sql`
 
 ```sql
-INSERT INTO ticket (id, title, description, status, assignee, created, updated) VALUES (:id, :title, :description, :status, :assignee, :created, :updated)
-```
-
-`var/sql/ticket_item_by_id.sql`
-
-```sql
-SELECT * FROM ticket WHERE id = :id
+/* create ticket */
+INSERT INTO ticket (id, title, description, status, assignee, created_at, updated_at)
+VALUES (:id, :title, :description, :status, :assignee, :created_at, :updated_at)
 ```
 
 `var/sql/ticket_list.sql`
 
 ```sql
-SELECT * FROM ticket
+SELECT id, title, description, status, assignee, created_at, updated_at
+  FROM ticket
 ```
 
-*Note:* PHPStormを使用しているならPreference > Plugin で [Database Navigator](https://plugins.jetbrains.com/plugin/1800-database-navigator)をインストールするとSQLファイルを右クリックすると単体で実行することが出来ます。
+`var/sql/ticket_item_by_id.sql`
 
-PHPでSQLを実行する前に、このように事前に単体で実行してSQLが正しく記述できているかを確かめると確実で開発も容易です。[Sequel Pro](https://www.sequelpro.com/)や[MySQL Workbench](https://www.mysql.com/jp/products/workbench/)などのデータベースブラウザを使うのも良いでしょう。
+```sql
+SELECT id, title, description, status, assignee, created_at, updated_at
+  FROM ticket
+ WHERE id = :id
+```
+
+上記のSQLの記述は[SQLスタイルガイド](https://www.sqlstyle.guide/ja/)に従ったものです。以下の事柄が推奨されています。
+
+ * スペースとインデントを慎重に使用しコードを読みやすくする。
+ * ISO-8601に準拠した日付時間フォーマット（YYYY-MM-DD HH:MM:SS.SSSSS）で格納する。
+ * 移植性のためベンダー固有の関数の代わりに標準のSQL関数のみを使用する。
+ * 必要に応じてSQLコードにコメントを挿入する。可能なら /* で始まり */ で終わるC言語スタイルのコメントを使用し、その他の場合、-- で始まり改行で終わる行コメントを使用する。
+ * スペースを活用し、基底のキーワードがすべて同じ位置で終わるようにコードを整列させる。これは途中で「リバー」を形作り、コードの見通しを良くし、実装の詳細からキーワードを分離することを容易にする。
+
+
+PHPStormで[Database Navigator](https://confluence.jetbrains.com/display/CONTEST/Database+Navigator)を使うと、SQLのコード補完や実行が行えます。[](https://www.youtube.com/watch?v=P3C0iO1yqhk)
+PHPでSQLを実行する前に、データベースツールでSQLを単体で実行して正しく記述できているかを確かめると開発も容易で確実です。
+
+[JetBrain DataGrip](https://www.jetbrains.com/datagrip/)、[Sequel Pro](https://www.sequelpro.com/)、[MySQL Workbench](https://www.mysql.com/jp/products/workbench/)などの単体のデータベースツールがあります。
 
 ## JsonSchema
 
@@ -308,6 +321,7 @@ PHPでSQLを実行する前に、このように事前に単体で実行してSQ
 `var/json_schema/ticket.json`
 
 ```json
+
 {
   "$id": "ticket.json",
   "$schema": "http://json-schema.org/draft-07/schema#",
@@ -567,8 +581,8 @@ class Tickets extends ResourceObject
             'description' => $description,
             'assignee' => $assignee,
             'status' => '',
-            'created' => $time,
-            'updated' => $time,
+            'created_at' => $time,
+            'updated_at' => $time,
         ]);
         $this->code = StatusCode::CREATED;
         $this->headers[ResponseHeader::LOCATION] = "/ticket?id={$id}";
@@ -635,7 +649,7 @@ class Index extends ResourceObject
 
 Webサイトを利用するのに事前に全てのURIを知る必要がないように、APIサービスも同様に一覧のリンクを持つことでAPIの"発見容易性(Discoverability)"を高めます。
 
-早速リクエストして見ましょう。
+早速リクエストしてみましょう。
 
 ```
 php bin/app.php get /
@@ -671,89 +685,58 @@ content-type: application/hal+json
 }
 ```
 
-`curies`はヒューマンリーダブルなドキュメントのためのリンクです。詳しくは[APIドキュメンとサービス](hypermedia-api.html)をご覧ください。
+`[curies](http://stateless.co/hal_specification.html)`はヒューマンリーダブルなドキュメントのためのリンクです。
+このAPIは`/ticket`と`/tickets`という２つのリソースがある事が分かります。
+`curies`によってそれらのドキュメントはそれぞれ`rels/ticket.html`,`rels/tickets.html`にあると示されてます。
 
-他のセクションを見るとこのAPIは`/ticket`と`/tickets`という２つのリソースがある事が分かります。
-それぞれの詳細を調べるには`OPTIONS`コマンドでリクエストします。
+まだ作成していないので見る事は今はできませんが、`OPTIONS`コマンドで調べることができます。
 
 ```
-php bin/app.php options /ticket
+php bin/app.php options /tickets
 ```
 ```
 200 OK
 Content-Type: application/json
-Allow: GET
+Allow: GET, POST
 
 {
     "GET": {
+        "schema": {
+            "$id": "tickets.json",
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "title": "Collection of Tickets",
+            "type": "array",
+            "items": {
+                "$ref": "ticket.json"
+            }
+        }
+    },
+    "POST": {
         "request": {
             "parameters": {
-                "id": {
-                    "type": "string"
-                }
-            },
-            "required": [
-                "id"
-            ]
-        },
-        "schema": {
-            "$id": "ticket.json",
-            "$schema": "http://json-schema.org/draft-07/schema#",
-            "title": "Ticket",
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "string",
-                    "description": "The unique identifier for a ticket."
-                },
                 "title": {
-                    "type": "string",
-                    "description": "The title of the ticket",
-                    "minLength": 3,
-                    "maxLength": 255
+                    "type": "string"
                 },
                 "description": {
                     "type": "string",
-                    "description": "The description of the ticket",
-                    "maxLength": 255
+                    "default": ""
                 },
                 "assignee": {
                     "type": "string",
-                    "description": "The assignee of the ticket",
-                    "maxLength": 255
-                },
-                "status": {
-                    "description": "The name of the status",
-                    "type": "string",
-                    "maxLength": 255
-                },
-                "created": {
-                    "description": "The date and time that the ticket was created",
-                    "type": "string",
-                    "format": "datetime"
-                },
-                "updated": {
-                    "description": "The date and time that the ticket was last modified",
-                    "type": "string",
-                    "format": "datetime"
+                    "default": ""
                 }
             },
             "required": [
-                "title",
-                "description",
-                "status",
-                "created",
-                "updated"
-            ],
-            "additionalProperties": false
+                "title"
+            ]
         }
     }
 }
 ```
 
-`request`に入力が、`schema `にスキーマがマシンリーダブルなAPIドキュメントとして表示されます。
+マシンリーダブルなAPIドキュメントとして表示されます。
 
-では実際に`/ticket`にアクセスして見ましょう。
+では実際に`/tickets`にアクセスしてみましょう。
 
 
 POSTリクエストでチケット作成します。
@@ -891,12 +874,12 @@ API Doc is created at /path/to/docs
 
  * リソースの引数と出力はメソッドやスキーマで宣言されていて明瞭です。AOPでバリデーションが行わることでドキュメントの正当性が保証され、ドキュメントメンテナンスのの労力を最小化できます。
 
-チュートリアルはうまく言ったでしょうか？もしうまく行ったらなチュートリアル[bearsunday/tutorial2](https://github.com/bearsunday/tutorial2)にスターをして記念に残しましょう。
+チュートリアルはうまく言ったでしょうか？ もしうまく行ったらなチュートリアル[bearsunday/tutorial2](https://github.com/bearsunday/tutorial2)にスターをして記念に残しましょう。
 うまくいかない時は[gitter](https://gitter.im/bearsunday/BEAR.Sunday)で相談すると解決できるかもしれません。提案や間違いがあれば[PR](https://github.com/bearsunday/bearsunday.github.io/blob/master/manuals/1.0/ja/tutorial2.md)をお願いします！
 
 ---
 
-[^1]:[チュートリアル](/manuals/1.0/ja/tutorial.html)を終えた方を対象としています。被る箇所もありますがおさらいのつもりでトライして見ましょう。レポジトリは[bearsaunday/Tutorial2](https://github.com/bearsunday/Tutorial2)にあります。うまくいかないときは見比べて見ましょう。
+[^1]:[チュートリアル](/manuals/1.0/ja/tutorial.html)を終えた方を対象としています。被る箇所もありますがおさらいのつもりでトライしてみましょう。レポジトリは[bearsaunday/Tutorial2](https://github.com/bearsunday/Tutorial2)にあります。うまくいかないときは見比べてみましょう。
 [^2]:通常は**vendor**名は個人またはチーム（組織）の名前を入力します。githubのアカウント名やチーム名が適当でしょう。**project**にはアプリケーション名を入力します。
 [^3]:コミットフックを設定するのも良い方法です。
 [^4]:キャッシュを"温める"ために２度行うと確実です。
