@@ -22,8 +22,8 @@ img {
 .markdown-body h4,
 .markdown-body h5,
 .markdown-body h6 {
-    padding: 1.5rem 0 .5rem;
     margin-bottom: .5rem;
+    padding: 1.5rem 0 .5rem;
 }
 
 header + .container {
@@ -32,12 +32,9 @@ header + .container {
 
 header .navbar-brand {
     display: block;
-}
-
-header .bear-icon-32 {
     width: 32px;
     height: 32px;
-    background-image: url("../images/icon/favicon-64.png");
+    background-image: url(../icon.png);
     background-size: 100%;
     text-decoration: none;
 }
@@ -77,8 +74,9 @@ header a:hover {
     text-align: center;
 }
 
-.jumbotron > img[src*="BEAR_logo.png"] {
-    max-width: 100%;
+.jumbotron > img[src*="BEAR-logo.png"] {
+    margin-bottom: 2rem;
+    max-width: 90%;
 }
 
 .jumbotron > p {
@@ -87,15 +85,15 @@ header a:hover {
 }
 
 .side-bar {
-    margin-left: -15px;
     margin-right: -15px;
+    margin-left: -15px;
     border-bottom: 1px solid rgb(234,236,239);
 }
 
 .side-bar .navbar-light .navbar-toggler {
     margin: 0 0 0 auto;
-    color: rgba(0, 0, 0, .7);
     border: 0;
+    color: rgba(0, 0, 0, .7);
 }
 
 @media (min-width: 768px) {
@@ -114,6 +112,10 @@ header a:hover {
         text-align: left;
     }
 
+    .jumbotron > img[src*="BEAR-logo.png"] {
+        width: 380px;
+    }
+
     article {
         padding-bottom: 4rem;
     }
@@ -129,9 +131,10 @@ header a:hover {
         margin-left: -15px;
         height: calc(100vh - 4rem);
         max-height: calc(100vh - 4rem);
-        border-right: 1px solid rgb(234,236,239);
         border-bottom: 0;
+        border-right: 1px solid rgb(234,236,239);
         z-index: 1;
+
         overflow-y: auto;
     }
 
@@ -153,8 +156,8 @@ header a:hover {
     }
 
     .side-bar a.nav-link.active {
-        font-weight: bold;
         background-color: rgb(248, 249, 250);
+        font-weight: bold;
     }
 
     .side-bar-right {
@@ -204,14 +207,15 @@ header a:hover {
 
 #Contributors main ul {
     display: flex;
-    flex-wrap: wrap;
     padding: 0;
+
+    flex-wrap: wrap;
 }
 
 #Contributors main ul li {
+    padding: 5px;
     width: 10%;
     list-style: none;
-    padding: 5px;
 }
 
 #Contributors main ul li a:hover {
@@ -224,7 +228,7 @@ header a:hover {
     }
 
     #Contributors main ul li {
-        width: 33.3%;
         padding: 3px;
+        width: 33.3%;
     }
 }
