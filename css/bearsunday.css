@@ -44,7 +44,7 @@ header .navbar-brand {
 }
 
 header .nav-link {
-    color: rgba(0,0,0,.7);
+    color: rgba(0,0,0,.5);
     font-weight: 600;
 }
 
