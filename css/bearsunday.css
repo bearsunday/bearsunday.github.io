@@ -201,24 +201,24 @@ header a:hover {
     }
 }
 
-#Contributors header + .container {
+[data-page-category="Contributors"] header + .container {
     padding-top: 15px;
 }
 
-#Contributors main ul {
+[data-page-category="Contributors"] main ul {
     display: flex;
     padding: 0;
 
     flex-wrap: wrap;
 }
 
-#Contributors main ul li {
+[data-page-category="Contributors"] main ul li {
     padding: 5px;
     width: 10%;
     list-style: none;
 }
 
-#Contributors main ul li a:hover {
+[data-page-category="Contributors"] main ul li a:hover {
     opacity: .7;
 }
 
@@ -227,8 +227,12 @@ header a:hover {
         padding-bottom: 2rem;
     }
 
-    #Contributors main ul li {
+    [data-page-category="Contributors"] main ul li {
         padding: 3px;
         width: 33.3%;
+    }
+
+    [data-page-category="Contributors"] main ul li img {
+        width: 100%;
     }
 }
