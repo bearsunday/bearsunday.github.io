@@ -1,4 +1,4 @@
-<footer class="footer">
+<footer>
     <div class="container d-md-flex">
         <i class="bear-icon d-none d-md-block"></i>
         <small>
@@ -41,12 +41,12 @@
     var sideBarRight = $('.side-bar-right');
     sideBarRight.append(toc);
 
-    var headerHeight = $('header').outerHeight();
+    var scrollOffset = $('body').attr('data-offset');
     var articlePaddingTop = $('article').css('padding-top').replace('px', '');
     sideBarRight.find('a').on('click', function (e) {
         e.preventDefault();
         var targetId = $(this).attr('href');
-        var targetPositionTop = $(targetId).offset().top - headerHeight - articlePaddingTop;
+        var targetPositionTop = $(targetId).offset().top - scrollOffset - articlePaddingTop;
         window.scrollTo(0, targetPositionTop)
     });
 </script>

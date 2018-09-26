@@ -77,11 +77,13 @@ header a:hover {
     opacity: .7;
 }
 
-header .dropdown-toggle {
-    color: rgba(0,0,0,.9);
+header .dropdown-toggle,
+.side-bar .dropdown-toggle {
+    color: rgba(0,0,0,.5);
+    font-weight: 600;
 }
 
-.footer {
+footer {
     position: absolute;
     bottom: 0;
     padding: 0 1rem 1rem;
@@ -93,22 +95,22 @@ header .dropdown-toggle {
     text-align: center;
 }
 
-.footer small,
-.footer ul {
+footer small,
+footer ul {
     line-height: 4rem;
 }
 
-.footer small {
+footer small {
     font-size: 100%;
 }
 
-.footer ul {
+footer ul {
     display: none;
     margin-bottom: 0;
     padding-left: 0;
 }
 
-.footer li {
+footer li {
     display: inline-block;
     margin-left: 1rem;
 }
@@ -131,7 +133,6 @@ header .dropdown-toggle {
 .side-bar {
     margin-right: -15px;
     margin-left: -15px;
-    border-bottom: 1px solid rgb(234,236,239);
 }
 
 .side-bar .navbar-light .navbar-toggler {
@@ -152,11 +153,7 @@ header .dropdown-toggle {
         min-height: 4rem;
     }
 
-    .footer {
-        text-align: left;
-    }
-
-    .footer .bear-icon {
+    footer .bear-icon {
         position: absolute;
         top: 50%;
         left: 50%;
@@ -282,8 +279,27 @@ header .dropdown-toggle {
 }
 
 @media (max-width: 768px) {
+    header .navbar-brand {
+        margin: .25rem 0;
+    }
+
     article {
         padding-bottom: 2rem;
+    }
+
+    .navigation-header {
+        margin: 0 -15px;
+        padding: 0 15px .5rem;
+        text-align: right;
+        width: 100vw;
+        border-bottom: 1px solid rgb(234,236,239);
+    }
+
+    .navigation-header + .navbar-collapse {
+        margin: 0 -15px;
+        padding: .5rem 15px;
+        width: 100vw;
+        border-bottom: 1px solid rgb(234,236,239);
     }
 
     [data-page-category="Contributors"] main ul li {
