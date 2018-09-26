@@ -1,69 +1,124 @@
-/*****************************************************************************/
-/*
-/* Nav
-/*
-/*****************************************************************************/
-body {
-  padding-top: 0px;
-}
-
-.navbar {
-  margin-bottom: 30px;
-}
-.navbar-default{
-  margin-top: 0px;
-}
-
-/*****************************************************************************/
-/*
-/* Footer
-/*
-/*****************************************************************************/
-
 html,
 body {
-  height: 100%;
-  /* The html and body elements cannot have any padding or margin. */
+    min-height: 100vh;
 }
 
-/* Wrapper for page content to push down footer */
-#wrap {
-  min-height: 100%;
-  height: auto !important;
-  height: 100%;
-  /* Negative indent footer by its height */
-  margin: 0 auto -60px;
-  /* Pad bottom by footer height */
-  padding: 0 0 60px;
+body {
+    position: relative;
+    padding-bottom: 4rem;
 }
 
-/* Set the fixed height of the footer here */
-#footer {
-  height: 60px;
-  background-color: #f5f5f5;
+a {
+    color: #0366d6;
 }
 
-.framework {
-    padding-top: 0px;
-    background-image: url("../images/screen/BEAR_kage.png");
-    background-repeat: no-repeat;
-    background-position: center;
+header + .container {
+    padding-top: 2rem;
 }
 
-
-.container .credit {
-  margin: 20px 0;
+header .navbar-brand {
+    display: block;
 }
 
-.bear-icon-32 {
-    float: left;
-    height: 32px;
+header .nav-item > a {
+    font-weight: 600;
+}
+
+header .bear-icon-32 {
     width: 32px;
-    display: inline-block;
+    height: 32px;
+    background-image: url("../images/icon/favicon-64.png");
+    background-size: 100%;
     text-decoration: none;
-    background-image: url("../images/screen/BEAR_icon32.png");
 }
 
-.navbar-brand {
-    padding: 9px;
+.footer {
+    text-align: center;
+    padding: 0 1rem;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 4rem;
+    line-height: 4rem;
+    background-color: rgb(245,245,245);
+    font-size: 85%;
 }
+
+.footer ul {
+    display: none;
+    margin-bottom: 0;
+    padding-left: 0;
+}
+
+.footer li {
+    display: inline-block;
+    margin-left: 1rem;
+}
+
+.jumbotron {
+    text-align: center;
+}
+
+.jumbotron > img[src*="BEAR_logo.png"] {
+    max-width: 100%;
+}
+
+.jumbotron > p {
+    font-size: 1.2rem;
+    margin-bottom: 1.2rem;
+}
+
+.side-bar button {
+    margin: 0 0 0 auto;
+}
+
+@media (min-width: 768px) {
+    header {
+        position: -webkit-sticky;
+        position: sticky;
+        top: 0;
+        z-index: 2;
+    }
+
+    header > .navbar {
+        min-height: 4rem;
+    }
+
+    .footer {
+        text-align: left;
+    }
+
+    article {
+        padding: 2rem 0;
+    }
+
+    .side-bar {
+        max-height: calc(100vh - 4rem);
+        overflow-y: auto;
+
+        position: -webkit-sticky;
+        position: sticky;
+        top: 4rem;
+        z-index: 1;
+        margin-left: 1rem;
+        height: calc(100vh - 4rem);
+        border-right: 1px solid rgba(0,0,0,.1);
+    }
+
+    .side-bar .navbar {
+        padding: 0!important;
+    }
+
+    .side-bar ul {
+        padding: 2rem 0;
+        max-height: calc(100vh);
+        overflow-y: auto;
+        display: block!important;
+        width: 100%;
+    }
+
+    .side-bar ul > li {
+        width: 100%;
+    }
+}
+

@@ -1,15 +1,19 @@
 {% include manuals/1.0/header.html %}
-
-<div class="container">
-
-  <div class="row">
-    <div class="col-md-3">
-      {% include manuals/1.0/ja/contents.html %}
+<main class="container-fluid">
+    <div class="row flex-xl-nowrap">
+        <div class="col-md-3 col-lg-2">
+            <div class="side-bar">
+                {% include manuals/1.0/ja/contents.html %}
+            </div>
+        </div>
+        <div class="col-md-9 col-lg-8">
+            <article id="article" class="markdown-body">
+                {{ content }}
+            </article>
+        </div>
+        <div id="ArticleToc" class="col-lg-2 d-none d-lg-block">
+            <nav class="nav side-bar-right"></nav>
+        </div>
     </div>
-    <div class="col-md-9">
-      {{ content }}
-    </div>
-  </div>
-
-</div>
+</main>
 {% include manuals/1.0/footer.html %}

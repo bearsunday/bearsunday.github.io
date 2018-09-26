@@ -1,60 +1,81 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="{% if page.layout == 'docs-ja' %}ja{% else %}en{% endif %}">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ page.title }}</title>
-    <link rel="stylesheet" href="/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/css/index.css">
-    <link rel="stylesheet" href="/css/syntax.css">
-    <link rel="stylesheet" href="/css/github.css">
-    <link rel="stylesheet" href="/css/main.css">
-    <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
-    <link rel="stylesheet" href="/css/carousel.css">
-    <link rel="icon" sizes="16x16 32x32 48x48 64x64" href="/images/icon/favicon.ico">
-
-    <!--[if IE]><link rel="shortcut icon" href="/images/icon/favicon.ico"><![endif]-->
-
-    <!-- The below are optional but encouraged -->
-
-    <!-- Touch icon for iOS 2.0+ and Android 2.1+: -->
-    <link rel="apple-touch-icon-precomposed" href="/images/icon/favicon-152.png">
-
-    <!-- The below are optional -->
-
-    <!-- IE 10 Metro tile icon (Metro equivalent of apple-touch-icon): -->
-    <meta name="msapplication-TileColor" content="#FFFFFF">
-    <meta name="msapplication-TileImage" content="/images/icon/favicon-144.png">
-    <!-- For iPad with high-resolution Retina display running iOS ≥ 7: -->
-    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="/images/icon/favicon-152.png">
-    <!-- For iPad with high-resolution Retina display running iOS ≤ 6: -->
-    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/images/icon/favicon-144.png">
-    <!-- For iPhone with high-resolution Retina display running iOS ≥ 7: -->
-    <link rel="apple-touch-icon-precomposed" sizes="120x120" href="/images/icon/favicon-120.png">
-    <!-- For iPhone with high-resolution Retina display running iOS ≤ 6: -->
-    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/images/icon/favicon-114.png">
-    <!-- For first- and second-generation iPad: -->
-    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/images/icon/favicon-72.png">
-    <!-- For non-Retina iPhone, iPod Touch, and Android 2.1+ devices: -->
-    <link rel="apple-touch-icon-precomposed" href="/images/icon/favicon-57.png">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>{{ page.title }}{% if page.category != 'Index' %} &#124; BEAR.Sunday{% endif %}</title>
+    <meta name="description" content="BEAR.Sunday is a resource orientated framework with a REST centered architecture, implementing Dependency Injection and Aspect Orientated Programming' at its core.">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+    {% if page.category == 'Manual' %}
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/github-markdown-css/2.10.0/github-markdown.css">
+        <link rel="stylesheet" href="/css/syntax.css">
+    {% endif %}
+    <link rel="stylesheet" href="/css/bearsunday.css">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="apple-touch-icon" href="/icon.png">
 </head>
-<body>
-<!--<div id="wrap">-->
-
-    <!-- Docs master nav -->
-    <div class="navbar navbar-default">
-        <div class="container">
-            <div class="navbar-header">
-                <a href="/index.html" class="navbar-brand">
-                    <span class="bear-icon-32"></span>
-                </a>
-            </div>
-
-            <nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
-                <ul class="nav navbar-nav navbar-right">
-                    <li class="{% if page.layout  == 'docs-en' %}active{% endif %}"><a href="{{ page.permalink | replace: '/ja/', '/en/' }}">English</a></li>
-                    <li class="{% if page.layout  == 'docs-ja' %}active{% endif %}"><a href="{{ page.permalink | replace: '/en/', '/ja/' }}">Japanese</a></li>
-                </ul>
-            </nav>
+<body {% if page.category %}data-page-category="{{ page.category }}"{% endif %} data-spy="scroll" data-target="#ArticleToc" data-offset="65">
+<header>
+    <nav class="navbar navbar-expand flex-column flex-md-row bg-light">
+        <a class="navbar-brand mr-0 mr-md-2" href="/index.html"></a>
+        <div class="navbar-nav-scroll">
+            <ul class="navbar-nav flex-row">
+                <li class="nav-item">
+                    <a class="nav-link {% if page.category == 'Index' %}active{% endif %}" href="/index.html">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if page.category == 'Manual' %}active{% endif %}" href="/manuals/1.0/en/index.html">Manual</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if page.category == 'Contributors' %} active{% endif %}" href="/contributors.html">Contributors</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link{% if page.category == 'Slide' %} active{% endif %}" href="/slide.html">Slide</a>
+                </li>
+            </ul>
         </div>
-    </div>
+        <ul class="navbar-nav flex-row ml-md-auto d-none d-md-flex">
+            {% if page.category == 'Manual' %}
+            <li class="nav-item dropdown">
+                <a class="nav-item nav-link dropdown-toggle mr-md-2" href="#" id="language" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    {% if page.layout == 'docs-en' %}English{% endif %}
+                    {% if page.layout == 'docs-ja' %}日本語{% endif %}
+                </a>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="language">
+                    {% if page.layout == 'docs-en' %}
+                        <a class="dropdown-item {% if page.layout == 'docs-en' %}active{% endif %}" href="{{ page.permalink | replace: '/ja/', '/en/' }}">English</a>
+                        <a class="dropdown-item {% if page.layout == 'docs-ja' %}active{% endif %}" href="{{ page.permalink | replace: '/en/', '/ja/' }}">Japanese</a>
+                    {% endif %}
+                    {% if page.layout == 'docs-ja' %}
+                        <a class="dropdown-item {% if page.layout == 'docs-ja' %}active{% endif %}" href="{{ page.permalink | replace: '/en/', '/ja/' }}">日本語</a>
+                        <a class="dropdown-item {% if page.layout == 'docs-en' %}active{% endif %}" href="{{ page.permalink | replace: '/ja/', '/en/' }}">英語</a>
+                    {% endif %}
+                </div>
+            </li>
+            {% else %}
+            <li class="nav-item">
+                <a class="nav-link" href="https://github.com/bearsunday/BEAR.Sunday">
+                    <i class="fab fa-github"></i>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="https://gitter.im/bearsunday/BEAR.Sunday?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge">
+                    <i class="fab fa-gitter"></i>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="https://twitter.com/BEARSunday">
+                    <i class="fab fa-twitter"></i>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="https://www.facebook.com/pages/BEARSunday/110116939178462?ref=hl">
+                    <i class="fab fa-facebook"></i>
+                </a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+</header>
