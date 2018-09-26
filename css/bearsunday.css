@@ -12,6 +12,10 @@ a {
     color: #0366d6;
 }
 
+.nav-link.active {
+    pointer-events: none;
+}
+
 img {
     max-width: 100%;
 }
@@ -39,12 +43,38 @@ header .navbar-brand {
     text-decoration: none;
 }
 
-header .nav-link.active {
+header .nav-link {
+    color: rgba(0,0,0,.7);
     font-weight: 600;
+}
+
+header .nav-link.active {
+    pointer-events: none;
+    color: rgba(0,0,0,.9);
+}
+
+header .fa-github {
+    color: rgb(0, 0, 0);
+}
+
+header .fa-hex {
+    color: rgb(59, 89, 152);
+}
+
+header .fa-twitter {
+    color: rgb(29, 161, 242);
+}
+
+header .fa-gitter {
+    color: rgb(117, 58, 136);
 }
 
 header a:hover {
     opacity: .7;
+}
+
+header .dropdown-toggle {
+    color: rgba(0,0,0,.9);
 }
 
 .footer {
@@ -80,8 +110,9 @@ header a:hover {
 }
 
 .jumbotron > p {
-    margin-bottom: 1.2rem;
-    font-size: 1.2rem;
+    margin-bottom: 2rem;
+    color: rgb(36, 41, 46);
+    font-size: 1.125rem;
 }
 
 .side-bar {
