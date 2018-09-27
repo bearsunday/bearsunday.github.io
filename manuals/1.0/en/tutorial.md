@@ -21,7 +21,7 @@ composer create-project bear/skeleton MyVendor.Weekday
 ```
 This will prompt you to choose vendor name and project name. Type `MyVendor` and `Weekday` here. [^1]
 
-## Resource
+# Resource
 
 Add the first application resource file at `src/Resource/App/Weekday.php`
 
@@ -164,7 +164,7 @@ Allow: GET
 }
 ```
 
-## Test
+# Test
 
 Let's create a resource test using [PHPUnit](https://phpunit.readthedocs.io/ja/latest/).
 
@@ -240,7 +240,7 @@ composer cs-fix
 composer tests
 ```
 
-## Routing
+# Routing
 
 A default router is set to `WebRouter` which simply maps URL's to the resource class directory.
 To receive a dynamic parameter in URI path, we can use `AuraRouter`. This can be done with an override install of the `AuraRouterModule` in `src/Module/AppModule.php`.
@@ -426,7 +426,7 @@ php bin/app.php get /weekday/2011/05/23
 cat var/log/cli-hal-api-app/weekday.log
 ```
 
-## AOP
+# AOP
 
 We can benchmarking method invocation like is often done like this.
 
@@ -538,7 +538,7 @@ php bin/app.php get '/weekday/2015/05/28'
 cat var/log/cli-hal-api-app/weekday.log
 ```
 
-## HTML
+# HTML
 
 While modern applications will likely be API-first, you can turn this API application into an HTML application. Go ahead and create a new `page` resource at `src/Resource/Page/Index.php`. Even though `page` resource and `app` resource are effectively the same class, their role and location differs.
 
@@ -724,7 +724,7 @@ For each context PHP code that builds up the application is produced and saved i
 diff -q var/tmp/app/ var/tmp/prod-hal-app/
 ```
 
-## A Hypermedia API using a Database
+# A Hypermedia API using a Database
 
 Let's make an application resource that uses SQLite3.
 First, using the console, create a database `var/db/todo.sqlite3`.
@@ -968,7 +968,7 @@ This `Last-Modified` time stamp has been provided by `@Cacheable`. No need to pr
 When you use `@Cacheable`, the resource content is also saved in a separate `query repository` where along with the resources changes are managed along with `Etag` or `Last-Modified` headers being automatically appended.
 
 
-## Because Everything is A Resource
+# Because Everything is A Resource
 
 Uniform resource identifier(URI), a consistent interface, stateless access, powerful caching system, hyperlinks, layered system, and self-descriptive messages. A resource built with BEAR.Sunday implements all of these REST features.
 
