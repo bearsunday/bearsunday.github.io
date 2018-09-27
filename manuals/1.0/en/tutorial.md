@@ -28,7 +28,9 @@ Add the first application resource file at `src/Resource/App/Weekday.php`
 ```php
 <?php
 namespace MyVendor\Weekday\Resource\App;
+
 use BEAR\Resource\ResourceObject;
+
 class Weekday extends ResourceObject
 {
     public function onGet(int $year, int $month, int $day) : ResourceObject
@@ -37,6 +39,7 @@ class Weekday extends ResourceObject
         $this->body = [
             'weekday' => $weekday
         ];
+
         return $this;
     }
 }
@@ -173,7 +176,6 @@ namespace MyVendor\Weekday\Resource\App;
 
 use BEAR\Package\AppInjector;
 use BEAR\Resource\ResourceInterface;
-use BEAR\Resource\ResourceObject;
 use PHPUnit\Framework\TestCase;
 
 class WeekdayTest extends TestCase
@@ -190,8 +192,7 @@ class WeekdayTest extends TestCase
 
     public function testOnGet()
     {
-        $ro = $this->resource->uri('app://self/weekday')(['year' => '2001', 'month' => '1', 'day' => '1']);
-        /* @var ResourceObject $ro  */
+        $ro = $this->resource->get('app://self/weekday', ['year' => '2001', 'month' => '1', 'day' => '1']);
         $this->assertSame(200, $ro->code);
         $this->assertSame('Mon', $ro->body['weekday']);
     }
@@ -256,7 +257,6 @@ namespace MyVendor\Weekday\Module;
 use BEAR\Package\AbstractAppModule;
 use BEAR\Package\PackageModule;
 use BEAR\Package\Provide\Router\AuraRouterModule; // add this line
-use josegonzalez\Dotenv\Loader;
 
 class AppModule extends AbstractAppModule
 {
@@ -277,7 +277,7 @@ This module looks for a router script file at `var/conf/aura.route.php`.
 
 ```php
 <?php
-/* @var $map \Aura\Router\Map */
+/* @var \Aura\Router\Map $map */
 
 $map->route('/weekday', '/weekday/{year}/{month}/{day}');
 ```
@@ -285,7 +285,7 @@ $map->route('/weekday', '/weekday/{year}/{month}/{day}');
 Let's try it out.
 
 ```bash
-php bin/app.php get '/weekday/1981/09/08'
+php bin/app.php get /weekday/1981/09/08
 ```
 ```
 200 OK
@@ -303,92 +303,39 @@ Content-Type: application/hal+json
 
 Congratulations! You’ve just developed a hypermedia-driven RESTful web service with BEAR.Sunday.
 
-## DI
+# DI
 
-To demonstrate the power of DI, let's log a result with [monolog](https://github.com/Seldaek/monolog) logger library.
-Get it with [composer](http://getcomposer.org) first.
+To demonstrate the power of DI, let's log a result !
 
-```bash
-composer require monolog/monolog ^1.0
-```
-
-A naive approach is to instantiate a `monolog` object with the `new` operator whenever you need it. However this approach is *strongly discouraged* (and make testing much harder).
-Instead, your objects should receive a created instance as a constructor dependency. This is called the [DI pattern](http://en.wikipedia.org/wiki/Dependency_injection).
-
-To do this, let's create a `MonologLoggerProvider` dependency provider in `src/Module/MonologLoggerProvider.php`
+First create `src/MyLoggerInterface.php` which logs the days of the week.
 
 ```php
 <?php
-namespace MyVendor\Weekday\Module;
+namespace MyVendor\Weekday;
 
-use BEAR\AppMeta\AbstractAppMeta;
-use Monolog\Handler\StreamHandler;
-use Monolog\Logger;
-use Ray\Di\ProviderInterface;
-
-class MonologLoggerProvider implements ProviderInterface
+interface MyLoggerInterface
 {
-    /**
-     * @var AbstractAppMeta
-     */
-    private $appMeta;
-
-    public function __construct(AbstractAppMeta $appMeta)
-    {
-        $this->appMeta = $appMeta;
-    }
-
-    public function get()
-    {
-        $log = new Logger('weekday');
-        $log->pushHandler(
-            new StreamHandler($this->appMeta->logDir . '/weekday.log')
-        );
-
-        return $log;
-    }
+    public function log(string $message) : void;
 }
 ```
 
-We need a log directory path to log. In this example, we have injected an object (`AbstractAppMeta`) which contains some configuration.
-Dependency is provided via `get` method.
-
-To bind the [logger interface](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-3-logger-interface.md) to the factory class, add the following code to the `configure` method in `src/Modules/AppModule.php`.
-
-```php
-<?php
-// ...
-use Psr\Log\LoggerInterface; // add this line
-use Ray\Di\Scope; // add this line
-
-class AppModule extends AbstractAppModule
-{
-    protected function configure()
-    {
-        // ...
-        $this->bind(LoggerInterface::class)->toProvider(MonologLoggerProvider::class)->in(Scope::SINGLETON);
-    }
-}
-```
-
-Now, whenever a constructor requires a `LoggerInterface::class` object (designated within the `bind` method), our dependency injector will automatically inject a `monolog` object into the constructor (created via the `get` method we have defined earlier).
-Add some code in `src/Resource/App/Weekday.php` to be able to start logging.
+Change the resource to use this logger.
 
 ```php
 <?php
 namespace MyVendor\Weekday\Resource\App;
 
 use BEAR\Resource\ResourceObject;
-use Psr\Log\LoggerInterface;
+use MyVendor\Weekday\MyLoggerInterface;
 
 class Weekday extends ResourceObject
 {
     /**
-     * @var LoggerInterface
+     * @var MyLoggerInterface
      */
     private $logger;
 
-    public function __construct(LoggerInterface $logger)
+    public function __construct(MyLoggerInterface $logger)
     {
         $this->logger = $logger;
     }
@@ -399,19 +346,83 @@ class Weekday extends ResourceObject
         $this->body = [
             'weekday' => $weekday
         ];
-        $this->logger->info("$year-$month-$day {$weekday}");
+        $this->logger->log("$year-$month-$day {$weekday}");
 
         return $this;
     }
 }
 ```
 
-Let's check `var/log/cli-hal-api-app/weekday.log` to see if our logger worked.
+A naive approach is to instantiate a logger object with the new operator whenever you need it.
+However this approach is strongly discouraged (and make testing much harder). Instead, your objects should receive a created instance as a constructor dependency.
+This is called the [DI pattern](https://en.wikipedia.org/wiki/Dependency_injection).
+
+
+Next we will implement `MyLoggerInterface` in` MyLogger`.
+
+```php
+<?php
+namespace MyVendor\Weekday;
+
+use BEAR\AppMeta\AbstractAppMeta;
+
+class MyLogger implements MyLoggerInterface
+{
+    private $logFile;
+
+    public function __construct(AbstractAppMeta $meta)
+    {
+        $this->logFile = $meta->logDir . '/weekday.log';
+    }
+
+    public function log(string $message) : void
+    {
+        error_log($message . PHP_EOL, 3, $this->logFile);
+    }
+}
+```
+
+In order to implement `MyLogger` you need the application's log directory information (`AbstractAppMeta`), but this is also accepted as `dependency` in the constructor.
+In other words, the `Weekday` resource depends on` MyLogger`, but `MyLogger` also depends on the log directory information. Objects built with DI in this way are dependencies depend on .. and dependency assignments are made.
+
+It is the DI tool (dependency injector) that makes this dependency solution.
+
+Edit the `configure` method of` src/Modules/AppModule.php` to bind `MyLoggerInterface` and` MyLogger` with the DI tool.
+
+```php
+<?php
+namespace MyVendor\Weekday\Module;
+
+use BEAR\Package\AbstractAppModule;
+use BEAR\Package\PackageModule;
+use BEAR\Package\Provide\Router\AuraRouterModule;
+use MyVendor\Weekday\MyLogger; // add this line
+use MyVendor\Weekday\MyLoggerInterface;  // add this line
+
+class AppModule extends AbstractAppModule
+{
+    /**
+     * {@inheritdoc}
+     */
+    protected function configure()
+    {
+        $appDir = $this->appMeta->appDir;
+        require_once $appDir . '/env.php';
+        $this->install(new AuraRouterModule($appDir . '/var/conf/aura.route.php'));
+        $this->bind(MyLoggerInterface::class)->to(MyLogger::class); // add this line
+        $this->install(new PackageModule);
+    }
+}
+```
+
+Now all classes can now accept loggers with `MyLoggerInterface` in the constructor.
+Let's make sure that the result is output to `var/log/cli-hal-api-app/weekday.log`.
 
 ```bash
-php bin/app.php get '/weekday/2011/05/23'
+php bin/app.php get /weekday/2011/05/23
 ```
-```
+
+```bash
 cat var/log/cli-hal-api-app/weekday.log
 ```
 
@@ -533,11 +544,10 @@ While modern applications will likely be API-first, you can turn this API applic
 
 ```php
 <?php
-
 namespace MyVendor\Weekday\Resource\Page;
 
-use BEAR\Resource\ResourceObject;
 use BEAR\Resource\Annotation\Embed;
+use BEAR\Resource\ResourceObject;
 
 class Index extends ResourceObject
 {
@@ -646,7 +656,7 @@ class HtmlModule extends AbstractModule
 Copy `templates` directory.
 
 ```bash
-cp -r vendor/madapaja/twig-module/var/templates var/templates
+cp -r vendor/madapaja/twig-module/var/templates var
 ```
 
 
@@ -654,19 +664,18 @@ Change `bin/page.php`
 
 ```php
 <?php
-$context = PHP_SAPI === 'cli' ? 'cli-html-hal-app' : 'html-hal-app';
-require __DIR__ . '/bootstrap.php';
+require dirname(__DIR__) . '/autoload.php';
+exit((require dirname(__DIR__) . '/bootstrap.php')(PHP_SAPI === 'cli' ? 'cli-html-app' : 'html-app'));
 ```
 
 In this way `text/html` media output can be set. Lastly, save your Twig template `var/templates/Page/Index.html.twig`.
 
 ```bash
-<!DOCTYPE html>
-<html>
-<body>
-{% raw %}The weekday of {{ year }}/{{ month }}/{{ day }} is {{ weekday.weekday }}.{% endraw %}
-</body>
-</html>
+{% raw %}{% extends 'layout/base.html.twig' %}
+{% block title %}Weekday{% endblock %}
+{% block content %}
+The weekday of {{ year }}/{{ month }}/{{ day }} is {{ weekday.weekday }}.
+{% endblock %}{% endraw %}
 ```
 
 Set up is now complete. Check in the console that this kind of HTML is output.
@@ -703,9 +712,10 @@ php -S 127.0.0.1:8080 var/www/index.php
 
 As the [context](/manuals/1.0/en/application.html#context) changes, so does the behaviour of the application. Let's try it.
 
-```php?start_inline
-$context = 'app';           // JSON Application (Minimal)
-$context = 'prod-hal-app';  // HAL application for production
+```php
+<?php
+require dirname(__DIR__) . '/autoload.php';
+exit((require dirname(__DIR__) . '/bootstrap.php')(PHP_SAPI === 'cli-server' ? 'html-app' : 'prod-html-app'));
 ```
 
 For each context PHP code that builds up the application is produced and saved in `var/tmp/`. These files are not normally needed, but you can use it to check how your application object is created. Using the `diff` command you can check which dependencies have changed across contexts.
@@ -723,7 +733,7 @@ First, using the console, create a database `var/db/todo.sqlite3`.
 mkdir var/db
 sqlite3 var/db/todo.sqlite3
 
-sqlite> create table todo(id integer primary key, todo, created);
+sqlite> create table todo(id integer primary key, todo, created_at);
 sqlite> .exit
 ```
 
@@ -736,6 +746,7 @@ composer require ray/cake-database-module ^1.0
 
 In `src/Module/AppModule::configure()` we install the module.
 
+```php
 ```php
 <?php
 // ...
@@ -757,7 +768,7 @@ class AppModule extends AbstractAppModule
 
 Now if we `use` the setter method trait `DatabaseInject` we have the CakeDB object available to us in `$this->db`.
 
-Build up the `src/Resource/App/Todo.php` resource.
+Build up the `src/Resource/App/Todos.php` resource.
 
 ```php
 <?php
@@ -772,7 +783,7 @@ use Ray\CakeDbModule\DatabaseInject;
 /**
  * @Cacheable
  */
-class Todo extends ResourceObject
+class Todos extends ResourceObject
 {
     use DatabaseInject;
 
@@ -798,14 +809,14 @@ class Todo extends ResourceObject
     {
         $statement = $this->db->insert(
             'todo',
-            ['todo' => $todo, 'created' => new \DateTime('now')],
-            ['created' => 'datetime']
+            ['todo' => $todo, 'created_at' => new \DateTime('now')],
+            ['created_at' => 'datetime']
         );
         // created
         $this->code = 201;
         // hyperlink
         $id = $statement->lastInsertId();
-        $this->headers['Location'] = '/todo?id=' . $id;
+        $this->headers['Location'] = '/todos?id=' . $id;
 
         return $this;
     }
@@ -838,23 +849,23 @@ At this time, since the `onGet` is actually called with the URI in the `Location
 
 Let's try a `POST`.
 
-In order to enable caching , make the context of `bin/app.php` `prod` for production.
+In order to enable caching , create the context of `bin/app.php` `test` for caching.
 
 ```php
 <?php
-$context = PHP_SAPI === 'cli' ? 'prod-cli-hal-api-app' : 'prod-hal-api-app';
-require __DIR__ . '/bootstrap.php';
+require dirname(__DIR__) . '/autoload.php';
+exit((require dirname(__DIR__) . '/bootstrap.php')('cli-prod-hal-api-app'));
 ```
 
 Request with console command. `POST`, but for convenience we pass parameters in the form of a query.
 
 ```bash
-php bin/app.php post '/todo?todo=shopping'
+php bin/test.php post '/todos?todo=shopping'
 ```
 
 ```bash
 201 Created
-Location: /todo?id=1
+Location: /todos?id=1
 
 {
     "id": "1",
@@ -862,7 +873,7 @@ Location: /todo?id=1
     "created": "2017-06-04 15:58:03",
     "_links": {
         "self": {
-            "href": "/todo?id=1"
+            "href": "/todos?id=1"
         }
     }
 }
@@ -875,7 +886,7 @@ Since it has been annotated with `@ReturnCreatedResource`, the resource is autom
 Next we will do a `GET`.
 
 ```bash
-php bin/app.php get '/todo?id=1'
+php bin/app.php get '/todos?id=1'
 ```
 
 ```
@@ -890,7 +901,7 @@ content-type: application/hal+json
     "created": "2017-06-04 15:58:03",
     "_links": {
         "self": {
-            "href": "/todo?id=1"
+            "href": "/todos?id=1"
         }
     }
 }
@@ -905,7 +916,7 @@ php -S 127.0.0.1:8081 bin/app.php
 Let's do a GET `curl` request:
 
 ```bash
-curl -i http://127.0.0.1:8081/todo?id=1
+curl -i http://127.0.0.1:8081/todos?id=1
 ```
 
 ```bash
@@ -924,7 +935,7 @@ content-type: application/hal+json
     "created": "2017-06-04 15:58:03",
     "_links": {
         "self": {
-            "href": "/todo?id=1"
+            "href": "/todos?id=1"
         }
     }
 }
@@ -949,182 +960,13 @@ curl -i http://127.0.0.1:8080/todo -X PUT -H 'Content-Type: application/json' -d
 This time, when you perform a `GET` you can see that the `Last-Modified` has been updated.
 
 ```bash
-curl -i 'http://127.0.0.1:8080/todo?id=2'
+curl -i 'http://127.0.0.1:8080/todos?id=2'
 ```
 
 This `Last-Modified` time stamp has been provided by `@Cacheable`. No need to provide any special application admin or database columns.
 
 When you use `@Cacheable`, the resource content is also saved in a separate `query repository` where along with the resources changes are managed along with `Etag` or `Last-Modified` headers being automatically appended.
 
-## Application Import
-
-Resources created with BEAR.Sunday have unrivaled re-usability.
-You can run multiple applications at the same time and use resources of other applications. You do not need to set up separate web servers.
-
-Let's try using a resource in another application.
-
-Normally you would set up the new application as a package, For this tutorial let's create a new `my-vendor` and manually add it to the auto loader. .
-
-```bash
-mkdir my-vendor
-cd my-vendor
-composer create-project bear/skeleton Acme.Blog
-```
-
-In the `composer.json` in the `autoload` section add `Acme\\Blog`.
-
-```json
-"autoload": {
-    "psr-4": {
-        "MyVendor\\Weekday\\": "src/",
-        "Acme\\Blog\\": "my-vendor/Acme.Blog/src/"
-    }
-},
-```
-
-Dump the `autoload`.
-
-```bash
-composer dump-autoload
-```
-
-With this the configuration for the `Acme\Blog` application is complete.
-
-Next in order to import the application in `src/Module/AppModule.php` we use the `ImportAppModule` in `src/Module/AppModule.php` to install as an override.
-
-```php
-<?php
-// ...
-use BEAR\Resource\Module\ImportAppModule; // add this line
-use BEAR\Resource\ImportApp; // add this line
-use BEAR\Package\Context; // add this line
-
-class AppModule extends AbstractAppModule
-{
-    protected function configure()
-    {
-        // ...
-        $importConfig = [
-            new ImportApp('blog', 'Acme\Blog', 'prod-hal-app') // host, name, context
-        ];
-        $this->override(new ImportAppModule($importConfig , Context::class));
-    }
-}
-```
-
-With this a `Acme\Blog` application using a `prod-hal-app` context can create resources that will be available to the `blog` host.
-
-Let's check it works by creating an Import resource in `src/Resource/App/Import.php`.
-
-```php
-<?php
-namespace MyVendor\Weekday\Resource\App;
-
-use BEAR\Resource\ResourceObject;
-use BEAR\Sunday\Inject\ResourceInject;
-
-class Import extends ResourceObject
-{
-    use ResourceInject;
-
-    public function onGet()
-    {
-        $this->body =[
-            'blog' => $this->resource->uri('page://blog/index')['greeting']
-        ];
-
-        return $this;
-    }
-}
-```
-
-The `page://blog/index` resource should now be assigned to `blog`. `@Embed` can be used in the same way.
-
-```bash
-php bin/app.php get /import
-```
-
-```bash
-200 OK
-content-type: application/hal+json
-
-{
-    "blog": "Hello BEAR.Sunday",
-    "_links": {
-        "self": {
-            "href": "/import"
-        }
-    }
-}
-```
-
-Great, we could now use another application's resource. We do not even need to use HTTP to fetch this data.
-
-The combined application is now seen as 1 layer of a single application. A
-[Layered System](http://en.wikipedia.org/wiki/Representational_state_transfer#Layered_system) is another feature of REST.
-
-Next lets look at how we use a resource in a system that is not BEAR.Sunday based. We create an app.php. You can place this anywhere but be careful that it picks up `autoload.php` path correctly.
-
-```php?start_inline
-use BEAR\Package\Bootstrap;
-
-require __DIR__ . '/autoload.php';
-
-$api = (new Bootstrap)->getApp('MyVendor\Weekday', 'prod-hal-app');
-
-$blog = $api->resource->uri('app://self/import')['blog'];
-var_dump($blog);
-```
-
-Let's try it..
-
-```bash
-php bin/import.php
-```
-
-```
-string(17) "Hello BEAR.Sunday"
-```
-
-Other examples..
-
-```php?start_inline
-$weekday = $api->resource->uri('app://self/weekday')(['year' => 2000, 'month'=>1, 'day'=>1]);
-var_dump($weekday->body); // as array
-//array(1) {
-//    ["weekday"]=>
-//  string(3) "Sat"
-//}
-
-echo $weekday; // as string
-//{
-//    "weekday": "Sat",
-//    "_links": {
-//    "self": {
-//        "href": "/weekday/2000/1/1"
-//        }
-//    }
-//}
-```
-
-```php?start_inline
-$html = (new Bootstrap)->getApp('MyVendor\Weekday', 'prod-html-app');
-$index = $html->resource->uri('page://self/index')(['year' => 2000, 'month'=>1, 'day'=>1]);
-var_dump($index->code);
-//int(200)
-
-echo $index;
-//<!DOCTYPE html>
-//<html>
-//<body>
-//The weekday of 2000/1/1 is Sat.
-//</body>
-//</html>
-```
-
-Response is returned with a stateless request REST's resource is like a PHP function. You can get the value in `body` or you can express it like JSON or HTML with `(string)`. You can operate on any resource of the application with two lines except autoload, one line script if you concatenate it.
-
-In this way, resources created with BEAR.Sunday can be easily used from other CMS and framework. You can handle the values of multiple applications at once.
 
 ## Because Everything is A Resource
 
