@@ -44,30 +44,14 @@ header .navbar-brand {
 }
 
 header .nav-link {
-    color: rgba(0,0,0,.5);
+    color: rgba(0, 0, 0, .5);
     font-weight: 600;
 }
 
 header .nav-link.active {
-    color: rgba(0,0,0,.9);
+    color: rgba(0, 0, 0, .9);
 
     pointer-events: none;
-}
-
-header .fa-github {
-    color: rgb(0, 0, 0);
-}
-
-header .fa-facebook {
-    color: rgb(59, 89, 152);
-}
-
-header .fa-twitter {
-    color: rgb(29, 161, 242);
-}
-
-header .fa-gitter {
-    color: rgb(117, 58, 136);
 }
 
 header a:hover {
@@ -76,7 +60,22 @@ header a:hover {
 
 header .dropdown-toggle,
 .side-bar .dropdown-toggle {
-    color: rgba(0,0,0,.5);
+    color: rgba(0, 0, 0, .7);
+    font-weight: 600;
+}
+
+header .dropdown-menu,
+.side-bar .dropdown-menu {
+    font-size: .875rem;
+    color: rgba(0, 0, 0, .5);
+}
+
+header .dropdown-item.active,
+header .dropdown-item:active,
+.side-bar .dropdown-item.active,
+.side-bar .dropdown-item:active {
+    background-color: rgb(248, 249, 250);
+    color: rgba(0, 0, 0, .7);
     font-weight: 600;
 }
 
@@ -136,6 +135,11 @@ footer li {
     margin: 0 0 0 auto;
     border: 0;
     color: rgba(0, 0, 0, .7);
+}
+
+.side-bar a.nav-link.active {
+    background-color: rgb(248, 249, 250);
+    font-weight: 600;
 }
 
 @media (min-width: 768px) {
@@ -206,11 +210,6 @@ footer li {
 
     .side-bar .nav-link {
         padding-left: 1.5rem!important;
-    }
-
-    .side-bar a.nav-link.active {
-        background-color: rgb(248, 249, 250);
-        font-weight: bold;
     }
 
     .side-bar-right {
