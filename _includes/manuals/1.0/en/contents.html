@@ -4,7 +4,6 @@
             <div class="nav-item dropdown d-inline-block">
                 <a class="nav-item nav-link dropdown-toggle mr-md-2" href="#" id="language" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     {% if page.layout == 'docs-en' %}English{% endif %}
-                    {% if page.layout == 'docs-ja' %}Japanese{% endif %}
                 </a>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="language">
                     <a class="dropdown-item {% if page.layout == 'docs-en' %}active{% endif %}" href="{{ page.permalink | replace: '/ja/', '/en/' }}">English</a>
