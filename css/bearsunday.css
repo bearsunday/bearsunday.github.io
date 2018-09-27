@@ -49,8 +49,9 @@ header .nav-link {
 }
 
 header .nav-link.active {
-    pointer-events: none;
     color: rgba(0,0,0,.9);
+
+    pointer-events: none;
 }
 
 header .fa-github {
@@ -150,18 +151,18 @@ footer li {
     }
 
     footer .bear-icon {
+        display: block;
         position: absolute;
         top: 50%;
         left: 50%;
         margin-top: -.5rem;
-        transform: translateY(-50%) translateX(-50%);
-        display: block;
         width: 1.5rem;
         height: 1.5rem;
         background-image: url(../images/icon/favicon-48.png);
         background-size: 100%;
+
+        transform: translateY(-50%) translateX(-50%);
         opacity: .1;
-        content: "";
     }
 
     .jumbotron > img[src*="BEAR-logo.png"] {
@@ -286,9 +287,9 @@ footer li {
     .navigation-header {
         margin: 0 -15px;
         padding: 0 15px .5rem;
-        text-align: right;
         width: 100vw;
         border-bottom: 1px solid rgb(234,236,239);
+        text-align: right;
     }
 
     .navigation-header + .navbar-collapse {
