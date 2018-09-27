@@ -11,21 +11,24 @@ permalink: /manuals/1.0/ja/production.html
 
 ## コンテキスト
 
-bootファイルで指定するコンテキストが`prod-`または`stage-`で始まるとアプリケーションオブジェクト`$app`がキャッシュされます。（`prod`は実際に運用するプロダクションサイトで`stage`は`prod`のミラーサイトです）
+`prod`はプロダクションのためのコンテキストです。
+ルートオブジェクト`$app`やアノテーションリーダーなどでキャッシュが使われます。
 
-```php?start_inline
-$context = 'prod-app';
-require dirname(dirname(__DIR__)) . '/bootstrap/bootstrap.php';
+```php
+<?php
+require dirname(__DIR__) . '/autoload.php';
+exit((require dirname(__DIR__) . '/bootstrap.php')('prod-api-app'));
 ```
 **重要:**
 
-**プロダクションではdeploy毎に$appを再生成する必要があります。**
+**プロダクションではディプロイ毎に`$app`を再生成する必要があります。**
 
-$appを再生成するにはwebサーバーを再起動します(推奨）。その権限がない場合には`src/`ディレクトリのタイムスタンプを変更します。（BEAR.Sundayはそれを検知して`$app`と`tmp/`のDI/AOPファイルの再生性を行います。）
+`$app`を再生成するには`src/`ディレクトリのタイムスタンプを変更します。
+BEAR.Sundayはそれを検知して`$app`と`tmp/{context}/di`のDI/AOPファイルの再生成を行います。
 
 ## ProdModule
 
-アプリケーション用の`ProdModule`を`src/Module/ProdModule.php`に設置して、プロダクション用の束縛をカスタマイズやHTTP OPTIONSメソッドの許可を行います。
+アプリケーション用の`ProdModule`を`src/Module/ProdModule.php`に設置して、プロダクション用の束縛をカスタマイズやHTTP OPTIONSメソッドの許可を行う事ができます。
 
 ```php
 <?php

@@ -33,25 +33,27 @@ HTTPリクエストは`router`でアプリケーションのリソースへの�
 
 # <a name="boot"></a>bootファイル
 
-アプリケーションを実行するわずか２行のPHPスクリプトです。`var/www/index.php`や`bin/app.php`等に設置してWebサーバーやコンソールアプリケーションのエントリーポイントにします。
-スクリプトではグローバル変数`$context`にコンテキストを指定して`bootstrap.php`ファイルを読み込むとアプリケーションが実行されます。
+アプリケーションを実行するわずか２行のPHPスクリプトです。`public/`や`bin/`等に設置してWebサーバーやコンソールアプリケーションのエントリーポイントにします。
+スクリプトは`bootstrap.php`スクリプトにコンテキストを指定してアプリケーションを実行します。
 
-```php?start_inline
-$context = 'prod-api-hal-app'
-require 'pat/to/bootstrap.php';
+
+```php
+<?php
+require dirname(__DIR__) . '/autoload.php';
+exit((require dirname(__DIR__) . '/bootstrap.php')('prod-html-app'));
 ```
 
 コンテキストに応じてbootファイルを選択します。
+同一ファイルでWebサーバースクリプトにもコンソールアクセスのスクリプトにもなります。
 
 ```bash
 // fire php server
-php -S 127.0.0.1:8080 var/www/index.php
+php -S 127.0.0.1:8080 public/index.php
+```
 
+```
 // console access
 php bin/app.php get /user/1
-
-// web access
-php -S 127.0.0.1:8080 bin/app.php
 ```
 
 ## <a name="context"></a>アプリケーションコンテキスト

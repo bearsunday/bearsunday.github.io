@@ -110,7 +110,7 @@ class AppModule extends AbstractAppModule
 
 ```php
 <?php
-/* @var $map \Aura\Router\Map */
+/* @var \Aura\Router\Map $map */
 $map->route('/blog', '/blog/{id}');
 $map->route('/user', '/user/{name}')->tokens(['name' => '[a-z]+']);
 ```

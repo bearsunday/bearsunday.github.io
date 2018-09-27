@@ -107,7 +107,7 @@ Rendering is done when a resource is string evaluated.
 
 ```php?start_inline
 
-$weekday = $api->resource->uri('app://self/weekday')(['year' => 2000, 'month'=>1, 'day'=>1]);
+$weekday = $api->resource->get('app://self/weekday', ['year' => 2000, 'month'=>1, 'day'=>1]);
 var_dump($weekday->body); // as array
 //array(1) {
 //    ["weekday"]=>
@@ -210,15 +210,15 @@ class Index extends ResourceObject
 ```
 This code invokes a `GET` request to `app://self/blog/posts` `app` resource with the query `?id=1` .
 
-この他にも以下の表記があります。
-
 ```php?start_inline
-// PHP 5.x >== (deprecated)
+// PHP 5.x and up 
 $posts = $this->resource->get->uri('app://self/posts')->withQuery(['id' => 1])->eager->request();
-// PHP 7.x >==
+// PHP 7.x and up
 $posts = $this->resource->get->uri('app://self/posts')(['id' => 1]);
 // getは省略可
 $posts = $this->resource->uri('app://self/posts')(['id' => 1]);
+// bear/resource 1.11 and up 
+$posts = $this->resource->get('app://self/posts', ['id' => 1]);
 ```
 
 The above is an `eager` request to make a request immediately, but it gets the request itself rather than the request result,
@@ -227,7 +227,7 @@ You can assign this value to a template engine or embed it in another resource. 
 
 
 ```php?start_inline
-$request = $this->resource->get->uri('app://self/posts'); // callable
+$request = $this->resource->uri('app://self/posts'); // callable
 $posts = $request(['id' => 1]);
 ```
 

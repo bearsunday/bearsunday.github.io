@@ -12,12 +12,13 @@ In this section, we will cover how to setup the cache and the system for the pro
 
 ## Context
 
-The application object `$app` is cached when the context specified in the boot file starts with`prod-`or` stage-`. (`Prod` is a production site actually operated and `stage` is a `prod` mirror site.)
+`prod` is the context for production.
+Cache is used for root object `$app`, annotation reader, etc.
 
-
-```php?start_inline
-$context = 'prod-app';
-require dirname(dirname(__DIR__)) . '/bootstrap/bootstrap.php';
+```php
+<?php
+require dirname(__DIR__) . '/autoload.php';
+exit((require dirname(__DIR__) . '/bootstrap.php')('prod-api-app'));
 ```
 
 ## Refresh $app
@@ -26,9 +27,7 @@ require dirname(dirname(__DIR__)) . '/bootstrap/bootstrap.php';
 
 **In production, You need to regenerate $app cache in each deploy.**
 
-To regenerate the `$app` cache, restart the web server (recommended).
-
- If you do not have the authority to do so, You can recreate `$app` cache by **changing the timestamp of the `src/` directory**. The BEAR.Sunday framework recognise it, then it re-generate `$app` and whole DI/AOP files under `tmp/` directory.
+To regenerate the `$app` cache, You **change the timestamp of the `src/` directory**. The BEAR.Sunday framework recognise it, then it re-generate `$app` and whole DI/AOP files under `tmp/` directory.
  
 ## ProdModule
 

@@ -212,18 +212,20 @@ class Index extends ResourceObject
 この他にも以下の表記があります。
 
 ```php?start_inline
-// PHP 5.x >== (deprecated)
+// PHP 5.x and up 
 $posts = $this->resource->get->uri('app://self/posts')->withQuery(['id' => 1])->eager->request();
-// PHP 7.x >==
+// PHP 7.x and up
 $posts = $this->resource->get->uri('app://self/posts')(['id' => 1]);
 // getは省略可
 $posts = $this->resource->uri('app://self/posts')(['id' => 1]);
+// bear/resource 1.11 and up 
+$posts = $this->resource->get('app://self/posts', ['id' => 1]);
 ```
 
 以上はリクエストをすぐに行う`eager`リクエストですが、リクエスト結果ではなくリクエストそのものを取得し、実行を遅延することもできます。
 
 ```php?start_inline
-$request = $this->resource->get->uri('app://self/posts'); // callable
+$request = $this->resource->uri('app://self/posts'); // callable
 $posts = $request(['id' => 1]);
 ```
 

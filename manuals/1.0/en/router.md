@@ -54,7 +54,7 @@ For example `/wild-animal` requests are accessed to the `WildAnimal` class.
 
 The name of the PHP method executed corresponding to the HTTP method and the value passed are as follows.
 
-| HTTPメソッド | PHPメソッド  |　渡される値  |
+| HTTP method | PHP method | Parameters |
 |---|---|---|
 | GET | onGet | $_GET |
 | POST | onPost | $_POST or ※ standard input |
@@ -111,7 +111,7 @@ The first argument specifies the path as the root name and the second argument s
 
 ```php
 <?php
-/* @var $map \Aura\Router\Map */
+/* @var \Aura\Router\Map $map */
 $map->route('/blog', '/blog/{id}');
 $map->route('/user', '/user/{name}')->tokens(['name' => '[a-z]+']);
 ```
