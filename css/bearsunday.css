@@ -54,22 +54,6 @@ header .nav-link.active {
     pointer-events: none;
 }
 
-header .fa-github {
-    color: rgb(0, 0, 0);
-}
-
-header .fa-facebook {
-    color: rgb(59, 89, 152);
-}
-
-header .fa-twitter {
-    color: rgb(29, 161, 242);
-}
-
-header .fa-gitter {
-    color: rgb(117, 58, 136);
-}
-
 header a:hover {
     opacity: .7;
 }
