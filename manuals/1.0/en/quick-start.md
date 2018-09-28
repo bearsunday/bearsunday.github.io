@@ -19,7 +19,6 @@ Create your own basic page resource in `src/Resource/Page/Hello.php`
 
 ```php
 <?php
-
 namespace MyVendor\MyProject\Resource\Page;
 
 use BEAR\Resource\ResourceObject;
@@ -62,7 +61,7 @@ Content-Type: application/hal+json
 Let us fire up the php server and access our page at [http://127.0.0.1:8080/hello](http://127.0.0.1:8080/hello).
 
 ```bash
-php -S 127.0.0.1:8080 var/www/index.php
+php -S 127.0.0.1:8080 -t public
 ```
 
 ```bash

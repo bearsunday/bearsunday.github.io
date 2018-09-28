@@ -63,7 +63,7 @@ Content-Type: application/hal+json
 ビルトインウェブサーバーを起動し
 
 ```bash
-php -S 127.0.0.1:8080 public/index.php
+php -S 127.0.0.1:8080 -t public
 ```
 
 webブラウザまたはcurlコマンドで[http://127.0.0.1:8080/hello](http://127.0.0.1:8080/hello)をリクエストします。
