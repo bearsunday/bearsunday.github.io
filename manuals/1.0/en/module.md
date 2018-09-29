@@ -136,3 +136,5 @@ $class = $invocation->getMethod()->getDeclaringClass();
 
 BEAR.Sunday does not have any special environment mode except `prod`.
 A Module and the application itself are unaware of the current environment.
+
+There is no way to get the current "mode", this is intentional to keep the code clean.
