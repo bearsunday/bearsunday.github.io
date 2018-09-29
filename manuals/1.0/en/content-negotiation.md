@@ -5,7 +5,7 @@ category: Manual
 permalink: /manuals/1.0/en/content-negotiation.html
 ---
 
-# Content Negotiation 
+# Content Negotiation
 
 In HTTP, [Content Negotiation](https://en.wikipedia.org/wiki/Content_negotiation) is a mechanism used to provide various versions of resources for the same URL. BEAR.Sunday supports server-side content negotiation of media type 'Accept' and 'Accept-Language' of language. It can be specified on an application basis or resource basis.
 
@@ -25,7 +25,7 @@ return [
     'Accept' => [
         'text/hal+json' => 'hal-app',
         'application/json' => 'app',
-        'cli' => 'cli-hal-app' 
+        'cli' => 'cli-hal-app'
     ],
     'Accept-Language' => [ // lower case for key
         'ja-jp' => 'ja',
@@ -75,13 +75,13 @@ To do content negotiation on a resource basis, install the `AcceptModule` module
 protected function configure()
 {
     // ...
-    $available = require dirname(dirname(__DIR__)) . '/var/locale/available.php';
+    $available = $appDir . '/var/locale/available.php';
     $this->install(new AcceptModule(available));
 }
 ```
 
-### @Produces
- 
+## @Produces annotation
+
 ```php?start_inline
 use use BEAR\Accept\Annotation\Produces;
 

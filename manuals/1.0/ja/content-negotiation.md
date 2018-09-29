@@ -1,11 +1,11 @@
 ---
 layout: docs-ja
-title: コンテントネゴシエーション 
+title: コンテントネゴシエーション
 category: Manual
 permalink: /manuals/1.0/ja/content-negotiation.html
 ---
 
-# コンテントネゴシエーション 
+# コンテントネゴシエーション
 
 HTTPにおいてコンテントネゴシエーション ([content negotiation](https://en.wikipedia.org/wiki/Content_negotiation)) は、同じ URL に対してさまざまなバージョンのリソースを提供するために使用する仕組みです。BEAR.Sundayではその内のメディアタイプの`Accept`と言語の`Accept-Language`のサーバーサイドのコンテントネゴシエーションをサポートします。アプリケーション単位またはリソース単位で指定することができます。
 
@@ -26,7 +26,7 @@ return [
     'Accept' => [
         'text/hal+json' => 'hal-app',
         'application/json' => 'app',
-        'cli' => 'cli-hal-app' 
+        'cli' => 'cli-hal-app'
     ],
     'Accept-Language' => [ // キーを小文字で
         'ja-jp' => 'ja',
@@ -70,19 +70,19 @@ Accept-Language: ja-JP
 
 リソース単位でコンテントネゴシエーションを行う場合は`AcceptModule`モジュールをインストールして`@Produces`アノテーションを使います。
 
-### モジュールインストール
+### モジュール
 
 ```php?start_inline
 protected function configure()
 {
     // ...
-    $available = require dirname(dirname(__DIR__)) . '/var/locale/available.php';
+    $available = $appDir . '/var/locale/available.php';
     $this->install(new AcceptModule(available));
 }
 ```
 
-### @Producesアノテーション
- 
+## @Producesアノテーション
+
 ```php?start_inline
 use use BEAR\Accept\Annotation\Produces;
 
