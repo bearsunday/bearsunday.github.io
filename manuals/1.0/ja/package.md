@@ -43,16 +43,10 @@ BEAR.Sundayアプリケーションのファイルレイアウトは[php-pds/ske
 
 ```
 
+### bin/
 
-### 実行シークエンス
+スクリプトで実行可能なコマンドを設置します。
 
- 1. コンソール入力(bin/app.php, page.php)またはWebサーバーのエントリーファイル(public/index.php)がbootファイル`bootstrap.php`を実行します。
- 3. `bootstrap.php`では実行コンテキストに応じたアプリケーションオブジェクト`$app`を作成します。
- 4. `$app`に含まれるルーターは外部のリクエストをアプリケーション内部のリソースリクエストに変換します。
- 4. リソースでリクエストが実行され結果がクライアントに転送されます。
-
-
-### bootstrap/
 BEARのリソースはコンソール入力とWebの双方からアクセスできます。
 呼び出すスクリプトによってコンテキストが変わります。
 
@@ -71,10 +65,6 @@ php -S 127.0.0.1 bin/app.php # PHPサーバー
 コンテキストが変わるとアプリケーションの振る舞いが変わります。
 ユーザーは独自のコンテキストを作成することができます。
 
-### bin/
-
-スクリプトで実行可能なコマンドを設置します。
-
 ### src/
 
 アプリケーション固有のクラスファイルを設置します。
@@ -87,47 +77,57 @@ Web公開フォルダです。
 
 `log`,`tmp`フォルダは書き込み可能にします。`var/www`はWebドキュメントの公開エリアです。
 
+
+
+## 実行シーケンス
+
+ 1. コンソール入力(bin/app.php, page.php)またはWebサーバーのエントリーファイル(public/index.php)がbootファイル`bootstrap.php`を実行します。
+ 3. `bootstrap.php`では実行コンテキストに応じたアプリケーションオブジェクト`$app`を作成します。
+ 4. `$app`に含まれるルーターは外部のリクエストをアプリケーション内部のリソースリクエストに変換します。
+ 4. リソースでリクエストが実行され結果がクライアントに転送されます。
+
+
+
 ## フレームワーク・パッケージ
 
 フレームワークは以下のパッケージから構成されます。
 
-## bear/sunday
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/bearsunday/BEAR.Sunday/badges/quality-score.png?b=1.x)](https://scrutinizer-ci.com/g/bearsunday/BEAR.Sunday/?branch=1.x)
-[![Code Coverage](https://scrutinizer-ci.com/g/bearsunday/BEAR.Sunday/badges/coverage.png?b=1.x)](https://scrutinizer-ci.com/g/bearsunday/BEAR.Sunday/?branch=1.x)
-[![Build Status](https://travis-ci.org/bearsunday/BEAR.Sunday.svg?branch=1.x)](https://travis-ci.org/bearsunday/BEAR.Sunday?branch=1.x)
-
-フレームワークのインターフェイスパッケージです。リファレンスの実装を含みます。
-
-## bear/package
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/bearsunday/BEAR.Package/badges/quality-score.png?b=1.x)](https://scrutinizer-ci.com/g/bearsunday/BEAR.Package/?branch=1.x)
-[![Code Coverage](https://scrutinizer-ci.com/g/bearsunday/BEAR.Package/badges/coverage.png?b=1.x)](https://scrutinizer-ci.com/g/bearsunday/BEAR.Package/?branch=1.x)
-[![Build Status](https://travis-ci.org/bearsunday/BEAR.Package.svg?branch=1.x)](https://travis-ci.org/bearsunday/BEAR.Package)
-
-
-`bear/sunday`を実装したフレームワークの基本パッケージです。
-
-## bear/resource
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/bearsunday/BEAR.Resource/badges/quality-score.png?b=1.x)](https://scrutinizer-ci.com/g/bearsunday/BEAR.Resource/?branch=1.x)
-[![Code Coverage](https://scrutinizer-ci.com/g/bearsunday/BEAR.Resource/badges/coverage.png?b=1.x)](https://scrutinizer-ci.com/g/bearsunday/BEAR.Resource/?branch=1.x)
-[![Build Status](https://travis-ci.org/bearsunday/BEAR.Resource.svg?branch=1.x)](https://travis-ci.org/bearsunday/BEAR.Resource)
-
-PHPのオブジェクトをRESTサービスとして使用するRESTフレームワークです。
-
-## ray/di
- [![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/ray-di/Ray.Di/badges/quality-score.png?b=2.x)](https://scrutinizer-ci.com/g/ray-di/Ray.Di/)
- [![Code Coverage](https://scrutinizer-ci.com/g/ray-di/Ray.Di/badges/coverage.png?b=2.x)](https://scrutinizer-ci.com/g/ray-di/Ray.Di/)
- [![Build Status](https://secure.travis-ci.org/ray-di/Ray.Di.png?b=2.x)](http://travis-ci.org/ray-di/Ray.Di)
-
-Google GuiceスタイルのDIフレームワークです。
-
-## ray/aop
+### ray/aop
  [![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/ray-di/Ray.Aop/badges/quality-score.png?b=2.x)](https://scrutinizer-ci.com/g/ray-di/Ray.Aop/)
  [![Code Coverage](https://scrutinizer-ci.com/g/ray-di/Ray.Aop/badges/coverage.png?b=2.x)](https://scrutinizer-ci.com/g/ray-di/Ray.Aop/)
  [![Build Status](https://secure.travis-ci.org/ray-di/Ray.Aop.png?b=2.x)](http://travis-ci.org/ray-di/Ray.Aop)
 
-AOPアライアンスに準拠したAOPフレームワークです。
+Javeの[AOPアライアンス](http://aopalliance.sourceforge.net/)に準拠したAOPフレームワークです。
 
-## bear/middleware
+### ray/di
+ [![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/ray-di/Ray.Di/badges/quality-score.png?b=2.x)](https://scrutinizer-ci.com/g/ray-di/Ray.Di/)
+ [![Code Coverage](https://scrutinizer-ci.com/g/ray-di/Ray.Di/badges/coverage.png?b=2.x)](https://scrutinizer-ci.com/g/ray-di/Ray.Di/)
+ [![Build Status](https://secure.travis-ci.org/ray-di/Ray.Di.png?b=2.x)](http://travis-ci.org/ray-di/Ray.Di)
+
+[google/guice](https://github.com/google/guice)スタイルのDIフレームワークです。`ray/aop`を含みます。
+
+### bear/resource
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/bearsunday/BEAR.Resource/badges/quality-score.png?b=1.x)](https://scrutinizer-ci.com/g/bearsunday/BEAR.Resource/?branch=1.x)
+[![Code Coverage](https://scrutinizer-ci.com/g/bearsunday/BEAR.Resource/badges/coverage.png?b=1.x)](https://scrutinizer-ci.com/g/bearsunday/BEAR.Resource/?branch=1.x)
+[![Build Status](https://travis-ci.org/bearsunday/BEAR.Resource.svg?branch=1.x)](https://travis-ci.org/bearsunday/BEAR.Resource)
+
+PHPのオブジェクトをRESTサービスとして使用するRESTフレームワークです。`ray/di`を含みます。
+
+### bear/sunday
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/bearsunday/BEAR.Sunday/badges/quality-score.png?b=1.x)](https://scrutinizer-ci.com/g/bearsunday/BEAR.Sunday/?branch=1.x)
+[![Code Coverage](https://scrutinizer-ci.com/g/bearsunday/BEAR.Sunday/badges/coverage.png?b=1.x)](https://scrutinizer-ci.com/g/bearsunday/BEAR.Sunday/?branch=1.x)
+[![Build Status](https://travis-ci.org/bearsunday/BEAR.Sunday.svg?branch=1.x)](https://travis-ci.org/bearsunday/BEAR.Sunday?branch=1.x)
+
+フレームワークのインターフェイスパッケージです。`bear/resource`を含みます。
+
+### bear/package
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/bearsunday/BEAR.Package/badges/quality-score.png?b=1.x)](https://scrutinizer-ci.com/g/bearsunday/BEAR.Package/?branch=1.x)
+[![Code Coverage](https://scrutinizer-ci.com/g/bearsunday/BEAR.Package/badges/coverage.png?b=1.x)](https://scrutinizer-ci.com/g/bearsunday/BEAR.Package/?branch=1.x)
+[![Build Status](https://travis-ci.org/bearsunday/BEAR.Package.svg?branch=1.x)](https://travis-ci.org/bearsunday/BEAR.Package)
+
+`bear/sunday`を実装したWebフレームワークです。
+
+### bear/middleware
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/bearsunday/BEAR.Middleware/badges/quality-score.png?b=1.x)](https://scrutinizer-ci.com/g/bearsunday/BEAR.Middleware/?branch=1.x)
 [![Code Coverage](https://scrutinizer-ci.com/g/bearsunday/BEAR.Middleware/badges/coverage.png?b=1.x)](https://scrutinizer-ci.com/g/bearsunday/BEAR.Middleware/?branch=1.x)
 [![Build Status](https://travis-ci.org/bearsunday/BEAR.Middleware.svg?branch=1.x)](https://travis-ci.org/bearsunday/BEAR.Middleware)
@@ -172,8 +172,12 @@ PSR-7のミドルウエアのためのオプションパッケージです。
 
 ## ベンダー・パッケージ
 
-特定のパッケージやツールの組み合わせを１つのパッケージにして再利用することができます。
-同じチームで複数のプロジェクトを行う場合のスケルトンになります。
+特定のパッケージやツールの組み合わせをモジュールだけのパッケージにして再利用し、同様のプロジェクトのモジュールを共通化する事ができます。[^1]
 
-[Koriym.DbAppPackage](https://github.com/koriym/Koriym.DbAppPackage)はマイグレーションツールのPhinxやAuraPHPのコンポーネントなどをセットにして、設定ファイルや実行ファイルを添付したDBを使ったWeb APIアプリ用のパッケージです。
-カスタムパッケージを作る時の参考に。
+## Semver
+
+全てのパッケージは[セマンティックバージョニング](https://semver.org/lang/ja/)に従います。マイナーバージョンアップでコードの修正が必要になる事はありません。
+
+---
+
+[^1]: 参考モジュール [Koriym.DbAppPackage](https://github.com/koriym/Koriym.DbAppPackage)
