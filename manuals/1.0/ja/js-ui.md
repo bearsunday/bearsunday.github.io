@@ -26,9 +26,9 @@ Note: V8JsがインストールされていないとNode.jsでJSが実行され�
  * **CSR** クライアントサイドレンダリング (Webブラウザで描画)
  * **SSR** サーバーサイドレンダリング (サーバーサイドのV8またはNode.jsが描画)
 
-# JavaScript
+## JavaScript
 
-## インストール
+### インストール
 
 プロジェクトに`koriym/ssr-module`をインストールします。
 
@@ -46,7 +46,7 @@ cp -r vendor/koriym/js-ui-skeleton/package.json .
 yarn install
 ```
 
-## UIアプリケーションの実行
+### UIアプリケーションの実行
 
 まずはデモアプリケーションを動かして見ましょう。
 現れたWebページからレンダリング方法を選択してJSアプリケーションを実行します。
@@ -82,7 +82,7 @@ cp ui/dev/config/index.php ui/dev/config/myapp.php
 PHP側が必要とするのはバンドルされて出力されたJSのみです。
 
 
-## UIアプリケーションの作成
+### UIアプリケーションの作成
 
 PHPから渡された引数を使ってレンダリングした文字列を返す**render**関数を作成します。
 
@@ -137,9 +137,9 @@ global.render = render;
 
 ここまでPHP側の作業はありません。SSRのアプリケーション開発はPHP開発と独立して行うことができます。
 
-# PHP
+## PHP
 
-## モジュールインストール
+### モジュールインストール
 
 AppModuleに`SsrModule`モジュールをインストールします。
 
@@ -160,7 +160,7 @@ class AppModule extends AbstractAppModule
 
 `$build`フォルダはJSのファイルがあるディレクトリです。(`ui/ui.config.js`で指定するwebpackの出力先)
 
-## @Ssrアノテーション
+### @Ssrアノテーション
 
 リソースをSSRするメソッドに`@Ssr`とアノテートします。`app`にJSアプリケーション名が必要です。
 
@@ -213,7 +213,7 @@ public function onGet()
 
 実際`state`と`metas`をどのようにして渡してSSRを実現するかは`ui/src/page/index/server`のサンプルアプリケーションをご覧ください。影響を受けるのはアノテートしたメソッドだけで、APIやHTMLのレンダリングの設定はそのままです。
 
-# PHPアプリケーションの実行設定
+### PHPアプリケーションの実行設定
 
 `ui/ui.config.js`を編集して、`public`にweb公開ディレクトリを`build`にwebpackのbuild先を指定します。
 `build`はSsrModuleのインストールで指定したディレクトリと同じです。
@@ -227,7 +227,7 @@ module.exports = {
 };
 ```
 
-## PHPアプリケーションの実行
+### PHPアプリケーションの実行
 
 ```
 yarn run dev

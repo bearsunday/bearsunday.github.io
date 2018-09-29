@@ -25,14 +25,14 @@ Note: If you do not install V8Js then JS will be run using Node.js.
  * **CSR** Client Side Rendering (via Web Browser)
  * **SSR** Server Side Rendering (via V8 or Node.js)
 
-# JavaScript
+## JavaScript
 
-## Installation
+### Installation
 
 Install `koriym/ssr-module` into the project.
 
 ```bash
-// composer create-project bear/skeleton MyVendor.MyProject && cd MyVendor.MyProject; 
+// composer create-project bear/skeleton MyVendor.MyProject && cd MyVendor.MyProject;
 composer require bear/ssr-module
 ```
 
@@ -45,7 +45,7 @@ cp -r vendor/koriym/js-ui-skeleton/package.json .
 yarn install
 ```
 
-## Running the UI application
+### Running the UI application
 
 Lets start by running the demo application.
 From the displayed web page lets select the rendering engine and run the JS application.
@@ -81,7 +81,7 @@ The PHP configuration files that have been edited in this section are only used 
 All the PHP side needs is the output bundled JS file.
 
 
-## Creating the UI application.
+### Creating the UI application.
 
 Using the variables that have been passed in from PHP, create a **render** function that returns a rendered string.
 
@@ -137,9 +137,9 @@ global.render = render;
 
 Thus far there has been nothing happening on the PHP side. Development on the SSR application and PHP development can done independently.
 
-# PHP
+## PHP
 
-## Module Installation
+### Module Installation
 
 Install `SsrModule` in AppModule.
 
@@ -161,7 +161,7 @@ class AppModule extends AbstractAppModule
 The `$build` directory is where the JS files live.(The Webpack output location set in `ui/ui.config.js`)
 
 
-## @Ssr Annotation
+### @Ssr Annotation
 
 Annotate the resource function to be SSR'd with `@Ssr`. The JS application name is required in `app`.
 
@@ -214,7 +214,7 @@ public function onGet()
 To see exactly how you pass in `state` and `metas` to achieve SSR see the sample application `ui/src/page/index/server`. The only influence is from the annotated method, the rest comes straight from the API or HTML rendering configuration.
 
 
-# Runtime PHP Application Settings
+### Runtime PHP Application Settings
 
 Edit `ui/ui.config.js`, set the Webpack build location in `build` and web directory in `public`. The `build` directory is the same that you set in the SsrModule installation.
 
@@ -227,7 +227,7 @@ module.exports = {
 };
 ```
 
-## Running the PHP application
+### Running the PHP application
 
 ```
 yarn run dev
