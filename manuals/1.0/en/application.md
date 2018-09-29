@@ -7,12 +7,13 @@ permalink: /manuals/1.0/en/application.html
 
 # <a name="app"></a>Application
 
+## Sequence
 A BEAR.Sunday application transfers the state of a resource that can be represented (REST)
 using a script found in `bootstrap/bootstrap.php`.
 
 A BEAR.Sunday app has a run order of `compile`, `request` and `response`.
 
-## 0. Compile
+### 0. Compile
 
 An `$app` application object is created through `DI` and `AOP` configuration depending on a specified `$context`.
 An `$app` is made up of service objects as it's properties that are needed to run the application such as a `router` or `transfer` etc.
@@ -20,7 +21,7 @@ An `$app` is made up of service objects as it's properties that are needed to ru
 This is called an [Object Graph](http://en.wikipedia.org/wiki/Object_graph).
 `$app` is then serialized and reused in each request and response.
 
-## 1. Request
+### 1. Request
 
 An application resource request and resource object is created based on the HTTP request.
 
@@ -30,14 +31,14 @@ The resource object can then `@Embed` or `@Link` other resource objects.
 
 Methods on the resource object are only for changing the resources state and have no interest in the representation itself (HTML, JSON etc).
 
-## 2. Response
+### 2. Response
 
 A `Renderer` is injected into the resource object, then the state of resource is represented as HTML, JSON etc or however it has been configured, it is then transfered to the client.
 
  <img src="/images/screen/diagram.png" style="max-width: 100%;height: auto;"/>
 
 
-# <a name="boot"></a>Boot File
+## <a name="boot"></a>Boot File
 
 To run an application, we need just two lines of code.
 An entry point for a web server or console application access is usually set to `public/index.php` or `bin/app.php`.
@@ -62,7 +63,7 @@ php -S 127.0.0.1:8080 public/index.php
 php bin/app.php get /user/1
 ```
 
-## <a name="context"></a>Application Context
+## <a name="context"></a>Context
 
 The composition of the application object `$app` changes in response to the defined context, so that application behavior changes.
 
