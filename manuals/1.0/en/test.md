@@ -150,7 +150,7 @@ Add `autoload-dev` to` composer.json` so that autoload works.
 $resource = (new AppInjector('MyVendor\MyProject', 'test-app'))->getInstance(ResourceInterface::class);
 ```
 
-# Spy
+### Spy
 
 Annotate the class to spy ** with `@Spy` to record the input / output target class.
 

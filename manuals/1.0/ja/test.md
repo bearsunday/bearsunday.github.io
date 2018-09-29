@@ -153,7 +153,7 @@ class FakeFoo extend Foo
 $resource = (new AppInjector('MyVendor\MyProject', 'test-app'))->getInstance(ResourceInterface::class);
 ```
 
-# スパイ
+### スパイ
 
 入出力を記録して**スパイ**するクラスに`@Spy`とアノテートします。
 
