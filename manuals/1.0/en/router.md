@@ -221,4 +221,4 @@ class Index extends ResourceObject
 Implement [RouterInterface](https://github.com/bearsunday/BEAR.Sunday/blob/1.x/src/Extension/Router/RouterInterface.php) with by referring to [BEAR.AuraRouterModule](https://github.com/bearsunday/BEAR.AuraRouterModule).
 
 ---
-*[This document](https://github.com/bearsunday/bearsunday.github.io/blob/master/manuals/1.0/en/router.md) needs to be proofread by an English speaker. If interested please send me a pull request. Thank you.*
+*[This document](https://github.com/bearsunday/bearsunday.github.io/blob/master/manuals/1.0/en/router.md) needs to be proofread by native speaker. *

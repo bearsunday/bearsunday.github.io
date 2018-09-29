@@ -80,4 +80,4 @@ The demo is available at [MyVendor.Stream](https://github.com/bearsunday/MyVendo
 
 
 ---
-*[This document](https://github.com/bearsunday/bearsunday.github.io/blob/master/manuals/1.0/en/stream.md) needs to be proofread by an English speaker. If interested please send me a pull request. Thank you.*
+*[This document](https://github.com/bearsunday/bearsunday.github.io/blob/master/manuals/1.0/en/stream.md) needs to be proofread by native speaker.*
