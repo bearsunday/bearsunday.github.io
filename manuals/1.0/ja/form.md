@@ -115,7 +115,7 @@ class MyController
 
 `onPostValidationFailed`にはサブミットされた値が渡されます。
 
-### ビュー
+## ビュー
 
 フォームの`input`要素やエラーメッセージを取得するには要素名を指定します。
 
@@ -131,9 +131,9 @@ class MyController
 {{ form.error('name') }}{% endraw %}
 ```
 
-### クロスサイトリクエストフォージェリ（CSRF）対策
+## CSRF
 
-CSRF対策を行うためにはフォームにCSRFオブジェクトをセットします。
+CSRF(クロスサイトリクエストフォージェリ)対策を行うためにはフォームにCSRFオブジェクトをセットします。
 
 ```php?start_inline
 use Ray\WebFormModule\SetAntiCsrfTrait;
@@ -146,7 +146,7 @@ class MyForm extends AbstractAuraForm
 セキュリティレベルを高めるためには、ユーザーの認証を含んだカスタムCsrfクラスを作成してフォームクラスにセットします。
 詳しくはAura.Inputの[Applying CSRF Protections](https://github.com/auraphp/Aura.Input#applying-csrf-protections)をご覧ください。
 
-## @InputValidationアノテーション
+## @InputValidation
 
 `@FormValidation`の代わりに`@InputValidation`とアノテートするとバリデーションが失敗したときに`Ray\WebFormModule\Exception\ValidationException`が投げられるようになります。
 この場合はHTML表現は使われません。Web APIに便利です。
@@ -183,7 +183,7 @@ echo $e->error;
  public function onPost()
 ```
 
-## FormVndErrorModuleモジュール
+## Vnd Error
 
 `Ray\WebFormModule\FormVndErrorModule`をインストールすると`@FormValidation`フォームとアノートしたメソッドも`@InputValidation`とアノテートしたメソッドと同じように例外を投げるようになります。
 作成したPageリソースをAPIとして使うことが出来ます。

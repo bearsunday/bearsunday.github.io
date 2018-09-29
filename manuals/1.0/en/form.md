@@ -116,7 +116,7 @@ We can explicitly specify the name and the method by changing the `form` propert
 
 The submit parameters will be passed to the `onPostValidationFailed` method.
 
-### View
+## View
 
 Specify the element name to get the `input` elements and error messages
 
@@ -132,9 +132,9 @@ The same applies to Twig template
 {{ form.error('name') }}{% endraw %}
 ```
 
-### Cross site request forgeries（CSRF）Protections
+## CSRF Protections
 
-We can add a CSRF object to the form to apply CSRF protections.
+We can add a CSRF(Cross site request forgeries) object to the form to apply CSRF protections.
 
 ```php?start_inline
 use Ray\WebFormModule\SetAntiCsrfTrait;
@@ -147,7 +147,7 @@ class MyForm extends AbstractAuraForm
 In order to increase the security level, add a custom CSRF class that contains the user authentication to the form class.
 Please refer to the [Applying CSRF Protections](https://github.com/auraphp/Aura.Input#applying-csrf-protections) of Aura.Input for more information.
 
-## @InputValidation Annotation
+## @InputValidation annotation
 
 If we annotate the method with `@InputValidation` instead of `@FormValidation`, the exception `Ray\WebFormModule\Exception\ValidationException` is thrown when validation fails.
 For convenience, HTML representation is not used in this case.
