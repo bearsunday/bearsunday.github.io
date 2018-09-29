@@ -8,7 +8,7 @@ permalink: /manuals/1.0/ja/database.html
 
 データベースライブラリの利用のため`Aura.Sql`、`Doctrine DBAL`, `CakeDB`などのモジュールが用意されています。
 
-# Aura.Sql
+## Aura.Sql
 
 [Aura.Sql](https://github.com/auraphp/Aura.Sql)はPHPのPDOを拡張したデータベースライブラリです。
 
@@ -76,7 +76,7 @@ class Index
 
 `Ray.AuraSqlModule`は[Aura.SqlQuery](https://github.com/auraphp/Aura.SqlQuery)を含んでいてMySQLやPostgresなどのSQLを組み立てるのに利用できます。
 
-## perform() メソッド
+### perform() メソッド
 
 `perform()`メソッドは、1つのプレイスホルダーしかないSQLに配列の値をバインドすることが出来ます。
 
@@ -110,7 +110,7 @@ echo $sth->queryString;
 // "SELECT * FROM test WHERE foo IN ('foo', 'bar', 'baz')"
 ```
 
-## fetch*() メソッド
+### fetch*() メソッド
 
 `prepare()`、`bindValue()`、 `execute()`を繰り返してデータベースから値を取得する代わりに`fetch*()`メソッドを使うとボイラープレートコードを減らすことができます。
 （内部では`perform()`メソッドを実行しているので配列のプレースフォルもサポートしています）
@@ -162,7 +162,7 @@ $result = $pdo->fetchAssoc($stm, $bind, function (&$row) {
 });
 ?>
 ```
-## yield*() メソッド
+### yield*() メソッド
 
 メモリを節約するために`yield*()`メソッドを使うことができます。 `fetch*()`メソッドは全ての行を一度に取得しますが、
 `yield*()`メソッドはイテレーターが返ります。
@@ -192,7 +192,7 @@ foreach ($pdo->yieldPairs($stm, $bind) as $key => $val) {
 }
 ```
 
-## リプリケーションのための接続
+### リプリケーション
 
 マスター／スレーブの接続を自動で行うためには4つ目の引数にスレーブDBのIPを指定します。
 
@@ -268,7 +268,7 @@ class User
 }
 ```
 
-## 複数のデータベースに接続
+### 複数DB
 
 接続先の違う複数の`PdoExtendedInterface`オブジェクトを受け取るためには
 `@Named`アノテーションで指定します。
@@ -298,7 +298,7 @@ $this->install(
 );
 ```
 
-## トランザクション
+### トランザクション
 
 `@Transactional`とアノテートしたメソッドはトランザクション管理されます。
 
@@ -337,7 +337,7 @@ $this->pdo->commit();
 $this->userDb->commit();
 ```
 
-# Aura.SqlQuery
+## Aura.SqlQuery
 
 [Aura.Sql](https://github.com/auraphp/Aura.Sql)はPDOを拡張したライブラリですが、[Aura.SqlQuery](https://github.com/auraphp/Aura.SqlQuery)は MySQL、Postgres,、SQLiteあるいは Microsoft SQL Serverといったデータベース固有のSQLのビルダーを提供します。
 
@@ -348,7 +348,7 @@ $this->userDb->commit();
 $this->install(new AuraSqlQueryModule('mysql')); // pgsql, sqlite, or sqlsrv
 ```
 
-## SELECT
+### SELECT
 
 リソースではDBクエリービルダオブジェクトを受け取り、下記のメソッドを使ってSELECTクエリーを組み立てます。
 メソッドに特定の順番はなく複数回呼ぶことこともできます。
@@ -418,9 +418,9 @@ class User extend ResourceObject
 
 組み立てたクエリーは`getStatement()`で文字列にしてクエリーを行います。
 
-## INSERT
+### INSERT
 
-### 単一行のINSERT
+#### 単一行のINSERT
 
 
 ```php?start_inline
@@ -469,7 +469,7 @@ class User extend ResourceObject
             ]);
 ```
 
-### 複数行のINSERT
+#### 複数行のINSERT
 
 複数の行のINSERTを行うためには、最初の行の最後で`addRow()`メソッドを使います。その後に次のクエリーを組み立てます。
 
@@ -541,7 +541,7 @@ class User extend ResourceObject
         $this->insert->addRows($rows);
 ```
 
-## UPDATE
+### UPDATE
 下記のメソッドを使ってUPDATEクエリーを組み立てます。 メソッドに特定の順番はなく複数回呼ぶことこともできます。
 
 ```php?start_inline
@@ -580,7 +580,7 @@ class User extend ResourceObject
 ?>
 ```
 
-## DELETE
+### DELETE
 下記のメソッドを使ってDELETEクエリーを組み立てます。 メソッドに特定の順番はなく複数回呼ぶことこともできます。
 ```php?start_inline
         $this->delete
@@ -598,12 +598,12 @@ class User extend ResourceObject
         $sth->execute($this->delete->getBindValues());
 ```
 
-## パジネーション
+### パジネーション
 
 [ray/aura-sql-module](https://packagist.org/packages/ray/aura-sql-module)はRay.Sqlの生SQL、Ray.AuraSqlQueryのクエリービルダー双方でパジネーション（ページ分割）をサポートしています。
 バインドする値と１ページあたりのアイテム数、それに{page}をページ番号にしたuri_templateでページャーファクトリーを`newInstance()`で生成して、ページ番号で配列アクセスします。
 
-### Aura.Sql用
+#### Aura.Sql用
 AuraSqlPagerFactoryInterface
 
 ```php?start_inline
@@ -620,7 +620,7 @@ $page = $pager[2]; // page 2
 // (string) $page // pager html (string)
 ```
 
-### Aura.SqlQuery用
+#### Aura.SqlQuery用
 AuraSqlQueryPagerFactoryInterface
 
 ```php?start_inline
@@ -658,7 +658,7 @@ class AppModule extends AbstractAppModule
 }
 ```
 
-# Doctrine DBAL
+## Doctrine DBAL
 
 [Doctrine DBAL](http://www.doctrine-project.org/projects/dbal.html)はDoctrineが提供しているデータベースの抽象化レイヤーです。
 
@@ -701,7 +701,7 @@ class Index
 }
 ```
 
-## 複数のデータベースに接続
+### 複数DB
 
 複数のデータベースの接続には二番目の引数に識別子を指定します。
 
@@ -720,7 +720,7 @@ public function setLogDb(Connection $logDb)
 
 [MasterSlaveConnection](http://www.doctrine-project.org/api/dbal/2.0/class-Doctrine.DBAL.Connections.MasterSlaveConnection.html)というリプリケーションのためのマスター／スレーブ接続が標準で用意されています。
 
-# CakeDb
+## CakeDb
 
 **CakeDb**はアクティブレコードとデータマッパーパターンのアイデアを使ったORMで、素早くシンプルにORMを使うことができます。CakePHP3で提供されているORMと同じものです。
 
@@ -734,6 +734,6 @@ composer require ray/cake-database-module ~1.0
 
 Ray.CakeDbModuleはCakePHP3のORMを開発したJose([@lorenzo](https://github.com/lorenzo))さんにより提供されています。
 
-# 環境による接続先の変更
+## 環境による接続先
 
 [phpdotenv](https://github.com/vlucas/phpdotenv)ライブラリなどを利用して環境先に応じた接続先を設定します。実装例の[Ex.Package](https://github.com/BEARSunday/Ex.Package)をご覧ください。

@@ -9,11 +9,11 @@ permalink: /manuals/1.0/en/database.html
 
 `Aura.Sql`、`Doctrine DBAL`, `CakeDB` modules are available for database connections.
 
-# Aura.Sql
+## Aura.Sql
 
 [Aura.Sql](https://github.com/auraphp/Aura.Sql) is an Aura database library that extends from `PDO` .
 
-## Installation
+### Installation
 
 Install `Ray.AuraSqlModule` via composer.
 
@@ -230,7 +230,7 @@ $this->pdo->commit();
 $this->userDb->commit();
 ```
 
-# Aura.SqlQuery
+## Aura.SqlQuery
 
 [Aura.Sql](https://github.com/auraphp/Aura.Sql) is an extension of PDO. [Aura.SqlQuery](https://github.com/auraphp/Aura.SqlQuery) provides database-specific SQL builder for MySQL, Postgres, SQLite or Microsoft SQL Server.
 
@@ -241,7 +241,7 @@ Specify the database and install it with the application module `src/Module/AppM
 $this->install(new AuraSqlQueryModule('mysql')); // pgsql, sqlite, or sqlsrv
 ```
 
-## SELECT
+### SELECT
 
 The resource receives the DB Query Builder object and constructs a SELECT query using the following methods.
 You can also call the method multiple times in any order.
@@ -311,7 +311,7 @@ class User extend ResourceObject
 
 The created queries are queried as strings with the `getStatement()`.
 
-## INSERT
+### INSERT
 
 ### Single row INSERT
 
@@ -434,7 +434,7 @@ You can also set the database at once using `addRows()`.
         $this->insert->addRows($rows);
 ```
 
-## UPDATE
+### UPDATE
 Use the following methods to construct an UPDATE query. You can also call the method multiple times in any order.
 
 ```php?start_inline
@@ -473,7 +473,7 @@ You can also pass an associative array to `cols()` with the key as the column na
 ?>
 ```
 
-## DELETE
+### DELETE
 Use the following methods to construct a DELETE query. You can also call the method multiple times in any order.
 ```php?start_inline
         $this->delete
@@ -491,7 +491,7 @@ Use the following methods to construct a DELETE query. You can also call the met
         $sth->execute($this->delete->getBindValues());
 ```
 
-## Pagination
+### Pagination
 
 [ray/aura-sql-module](https://packagist.org/packages/ray/aura-sql-module) supports pagination (page splitting) in both Ray.Sql raw SQL and Ray.AuraSqlQuery query builder.
 We create a pager using the `newInstance()` with a uri_template, binding values and the number of items per page. You can access the page by $page[$number].
@@ -513,7 +513,7 @@ $page = $pager[2]; // page 2
 // (string) $page // pager html (string)
 ```
 
-### Aura.SqlQuery
+## Aura.SqlQuery
 AuraSqlQueryPagerFactoryInterface
 
 ```php?start_inline
@@ -551,7 +551,7 @@ class AppModule extends AbstractAppModule
 }
 ```
 
-# Doctrine DBAL
+## Doctrine DBAL
 
 [Doctrine DBAL](http://www.doctrine-project.org/projects/dbal.html) is also abstraction layer for database.
 
@@ -593,7 +593,7 @@ class Index
 }
 ```
 
-## Connect to multiple databases
+### Connect to multiple databases
 
 To connect to multiple databases, specify the identifier as the second argument.
 
@@ -612,7 +612,7 @@ public function setLogDb(Connection $logDb)
 
 [MasterSlaveConnection](http://www.doctrine-project.org/api/dbal/2.0/class-Doctrine.DBAL.Connections.MasterSlaveConnection.html) is provided for master/slave connections.
 
-# CakeDb
+## CakeDb
 
 **CakeDb** is an ORM using the active record and data mapper pattern idea. It is the same as the one provided in CakePHP3.
 
@@ -626,6 +626,6 @@ Please refer to [Ray.CakeDbModule](https://github.com/ray-di/Ray.CakeDbModule) f
 
 Ray.CakeDbModule is provided by Jose ([@lorenzo](https://github.com/lorenzo)) who developed the ORM of CakePHP3.
 
-# Connection settings
+## Connection settings
 
 Use the [phpdotenv](https://github.com/vlucas/phpdotenv) library etc. to set the connection according to the environment destination. Please see the [Ex.Package](https://github.com/BEARSunday/Ex.Package) for implementation.
