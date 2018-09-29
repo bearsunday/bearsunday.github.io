@@ -141,7 +141,7 @@ class Index extends ResourceObject
 
 この例では`todo`リソースに関するドキュメントを取得するためには`http://apidoc.example.com/rels/?rel=todo` URLにアクセスすれば良いと分かります。
 
-## APIドキュメントサービス
+## APIドキュメント
 
 Curiesの設置されたAPIサーバーをAPIドキュメントサーバーにもすることができます。APIドキュメントの作成の手間や実際のAPIとのずれやその検証、メンテナンスといった問題を解決します。
 
@@ -194,6 +194,6 @@ WebベースのHAL BrowserやコンソールのCURLコマンドでWebサイト�
  * [hyperagent.js](https://weluse.github.io/hyperagent/)
 
 
-# Siren
+## Siren
 
 [Siren](https://github.com/kevinswiber/siren)ハイパーメディア(`application/vnd.siren+json`)をサポートした[Sirenモジュール](https://github.com/kuma-guy/BEAR.SirenModule) も利用可能です。

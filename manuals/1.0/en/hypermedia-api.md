@@ -56,7 +56,7 @@ You can annotate links and embed other resources.
 
 ### @Link
 
-You can declaratively describe the `@Link` annotation, or dynamic ones are assigned to `body['_links']`. 
+You can declaratively describe the `@Link` annotation, or dynamic ones are assigned to `body['_links']`.
 
 ```php?start_inline
 /**
@@ -198,6 +198,6 @@ You can access all the resources by following the link from the root like the we
  * [hyperagent.js](https://weluse.github.io/hyperagent/)
 
 
-# Siren
+## Siren
 
 [Siren Module](https://github.com/kuma-guy/BEAR.SirenModule) is also available for [Siren](https://github.com/kevinswiber/siren) hypermedia (`application/vnd.siren+json`) type.
