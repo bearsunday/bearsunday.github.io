@@ -8,7 +8,7 @@ permalink: /manuals/1.0/ja/tutorial.html
 
 このチュートリアルではBEAR.Sundayの基本機能の**DI**、**AOP**、**REST API**を紹介します。[^1]
 
-# プロジェクト作成
+## プロジェクト作成
 
 年月日を入力すると曜日を返すWebサービスを作成してみましょう。
 まずプロジェクトを作成します。
@@ -19,7 +19,7 @@ composer create-project bear/skeleton MyVendor.Weekday
 
 **vendor**名を`MyVendor`に**project**名を`Weekday`として入力します。[^2]
 
-# リソース
+## リソース
 
 最初にアプリケーションリソースファイルを`src/Resource/App/Weekday.php`に作成します。
 
@@ -161,7 +161,7 @@ Allow: GET
     }
 }
 ```
-# テスト
+## テスト
 
 [PHPUnit](https://phpunit.readthedocs.io/ja/latest/)を使ったリソースのテストを作成しましょう。
 
@@ -238,7 +238,7 @@ composer cs-fix
 composer tests
 ```
 
-# ルーティング
+## ルーティング
 
 デフォルトのルーターはURLをディレクトリにマップする`WebRouter`です。
 ここでは動的なパラメーターをパスで受け取るためにAuraルーターを使用します。
@@ -302,7 +302,7 @@ Content-Type: application/hal+json
 }
 ```
 
-# DI
+## DI
 
 求めた曜日をログする機能を追加してみましょう。
 
@@ -424,7 +424,7 @@ php bin/app.php get /weekday/2011/05/23
 cat var/log/cli-hal-api-app/weekday.log
 ```
 
-# AOP
+## AOP
 
 メソッドの実行時間を計測するためのベンチマーク処理を考えてみます。
 
@@ -541,7 +541,7 @@ php bin/app.php get '/weekday/2015/05/28'
 cat var/log/cli-hal-api-app/weekday.log
 ```
 
-# HTML
+## HTML
 
 次に今のAPIアプリケーションをHTMLアプリケーションにしてみましょう。
 今の`app`リソースに加えて、`src/Resource/Page/Index.php`に`page`リソースを追加します。
@@ -746,7 +746,7 @@ exit((require dirname(__DIR__) . '/bootstrap.php')('prod-hal-app'));
 diff -q var/tmp/app/di/ var/tmp/prod-hal-app/di/
 ```
 
-# REST API
+## REST API
 
 sqlite3を使ったアプリケーションリソースを作成してみましょう。
 まずはコンソールで`var/db/todo.sqlite3`にDBを作成します。
@@ -995,7 +995,7 @@ curl -i 'http://127.0.0.1:8081/todos?id=1'
 
 `@Cacheable`を使うと、リソースコンテンツは書き込み用のデータベースとは違うリソースの保存専用の「クエリーリポジトリ」で管理され`Etag`や`Last-Modified`のヘッダーの付加が自動で行われます。
 
-# BEAR
+## BEAR
 
 Because Everything is A Resource. BEARでは全てがリソースです。
 
