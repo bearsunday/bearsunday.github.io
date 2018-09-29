@@ -9,7 +9,7 @@ permalink: /manuals/1.0/en/resource.html
 
 A BEAR.Sunday application is [RESTful](http://en.wikipedia.org/wiki/Representational_state_transfer) and is made up of a collection of resources connected by links.
 
-# Object as a service
+## Object as a service
 
 An HTTP method is mapped to a PHP method in the `ResourceObject` class.
 It transfers its resource state as a resource representation from stateless request.
@@ -211,13 +211,13 @@ class Index extends ResourceObject
 This code invokes a `GET` request to `app://self/blog/posts` `app` resource with the query `?id=1` .
 
 ```php?start_inline
-// PHP 5.x and up 
+// PHP 5.x and up
 $posts = $this->resource->get->uri('app://self/posts')->withQuery(['id' => 1])->eager->request();
 // PHP 7.x and up
 $posts = $this->resource->get->uri('app://self/posts')(['id' => 1]);
 // getは省略可
 $posts = $this->resource->uri('app://self/posts')(['id' => 1]);
-// bear/resource 1.11 and up 
+// bear/resource 1.11 and up
 $posts = $this->resource->get('app://self/posts', ['id' => 1]);
 ```
 
