@@ -33,10 +33,11 @@ semper.org/lang/en/). It is not necessary to modify the application code on mino
 
 ## Version Policy
 
-When PHP comes to an EOL and upgraded to a major version (ex. `5.6` →` 7.0`), BEAR.Sunday will not break the BC of the application code. Even though the version number of PHP that is necessary to use the new module becomes higher, changes to the application codes are not needed.
+ * The core package of the framework does not make a breaking change which requires change of user code.
+ * Since it does not do destructive change, it handles unnecessary old ones as `deprecetad` but does not delete and new functions are always "added".
+ * When PHP comes to an EOL and upgraded to a major version (ex. `5.6` →` 7.0`), BEAR.Sunday will not break the BC of the application code. Even though the version number of PHP that is necessary to use the new module becomes higher, changes to the application codes are not needed.
 
-
-BEAR.Sunday emphasizes clean code and longevity.
+BEAR.Sunday emphasizes clean code and **longevity**.
 
 ## Package version
 
