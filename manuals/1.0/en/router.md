@@ -15,7 +15,7 @@ echo (string) $request;
 // get page://self/user?name=bear
 ```
 
-# Web Router
+## Web Router
 
 
 The default web router accesses the resource class corresponding to the HTTP request path (`$_SERVER['REQUEST_URI']`).
@@ -35,7 +35,7 @@ class Index extends ResourceObject
 }
 ```
 
-# CLI Router
+## CLI Router
 
 In the `cli` context, the argument from the console is "input of external context".
 
@@ -77,7 +77,7 @@ To deal with this constraint, you can send these requests in the following two w
  * `X-HTTP-Method-Override` Send a PUT request or DELETE request using the header field of the POST request.
  * `_method` Use the URI parameter. ex) POST /users?...&_method=PUT
 
-# Aura Router
+## Aura Router
 
 To receive the request path as a parameter, use Aura Router.
 
@@ -101,7 +101,7 @@ class AppModule extends AbstractAppModule
 }
 ```
 
-## Router Script
+### Router Script
 
 Router scripts set routes for `Map` objects passed globally.
 You do not need to specify a method for routing.
@@ -119,12 +119,12 @@ $map->route('/user', '/user/{name}')->tokens(['name' => '[a-z]+']);
 In the first line, accessing `/blog/bear` will be accessed as `page://self/blog?id=bear`.
 (= `Blog` class's` onGet($id)` method with the value `$id`=`bear`.) Also `token` is used to restrict parameters with regular expressions.
 
-## Preferred router
+### Preferred router
 
 If it is not routed by the Aura router, a web router will be used.
 In other words, it is OK to prepare the router script only for the URI that passes the parameters in the path.
 
-## Parameter
+### Parameter
 
 `Aura router` have various methods to obtain parameters from the path.
 
