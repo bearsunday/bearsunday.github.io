@@ -11,16 +11,16 @@ permalink: /manuals/1.0/en/tutorial2.html
 
 # Tutorial 2
 
-In this tutorial, we will create a REST API for task management ticket creation / acquisition using the following tools and learn the development of loosely coupled high quality REST API application with test drive.[^1]
+In this tutorial, we will create a REST API for task management ticket creation / acquisition using the following tools and learn the development of loosely coupled high quality test driven REST API application.[^1]
 
 * A framework-agnostic [Phinx](https://book.cakephp.org/3.0/ja/phinx.html) DB migration tool by CakePHP
 * Define the data structure of JSON and use it for validation and documentation [Json Schema](https://qiita.com/kyoh86/items/e7de290e9a0e989fcc14)
-* Convert SQL statement to SQL execution object and make application layer and data access layer loosely decoupled [ray/query-module](https://github.com/ray-di/Ray.QueryModule)
+* Convert SQL statement to SQL execution object and make application layer and data access layer loosely coupled [ray/query-module](https://github.com/ray-di/Ray.QueryModule)
 * Inject UUID and current time [IdentityValueModule](https://github.com/ray-di/Ray.IdentityValueModule)
 
-The API to be created is a schema defined, high quality with excellent self-descriptive nature.
+The aim is to create a schema-defined, high quality and self-descriptive API.
 
-The repository is [bearsunday/tutorial2](https://github.com/bearsunday/tutorial2). Let's compare when it does not work well.
+The repository is [bearsunday/tutorial2](https://github.com/bearsunday/tutorial2).
 
 ## New Project
 
@@ -34,7 +34,7 @@ Enter `MyVendor` for **vendor** and enter `Ticket` for **project**.[^2]
 
 ## Composer install
 
-Next we will install dependent packages at once.
+Next, type the following commands to install all dependencies.
 
 ```
 composer require bear/aura-router-module ray/identity-value-module ray/query-module
@@ -43,7 +43,7 @@ composer require --dev robmorgan/phinx bear/api-doc
 
 ## Module install
 
-Edit `src/Module/AppModule.php` to module-install the package you installed with composer.
+Edit `src/Module/AppModule.php` to install the package you installed with composer.
 
 ```php
 <?php
@@ -90,7 +90,7 @@ class AppModule extends AbstractAppModule
 }
 ```
 
-We also create `src/Module/TestModule.php` for the test database.
+We also create `src/Module/TestModule.php` for testing the database.
 
 ```php
 <?php
@@ -118,7 +118,7 @@ class TestModule extends AbstractAppModule
 }
 ```
 
-Create a folder required by the module.
+Create the required folders by typing those commands:
 
 ```bash
 mkdir var/sql
@@ -128,7 +128,7 @@ mkdir var/json_validate
 
 ## Router file
 
-We will place the router file in `var/conf/aura.route.php` to route access to `tickets/{id} `to the` Ticket` class.
+To define the routes, create a router file in `var/conf/aura.route.php`. The following route will map the `tickets/{id}` route to the `Ticket` class.
 
 ```php
 <?php
@@ -149,7 +149,7 @@ TKT_DB_SLAVE=''
 TKT_DB_DSN=mysql:host=${TKT_DB_HOST};dbname=${TKT_DB_NAME}
 ```
 
-`.env` is not committed to the repository. Let's leave the description example in `env.dist`.
+Because `.env` file is not comitted to Git, it can contains sensitive information such as password. You can however create a copy called `env.dist` that will be committed, and that contains an example of the file structure.
 
 ```
 cp .env .env.dist
@@ -168,7 +168,7 @@ mkdir -p var/phinx/migrations
 mkdir var/phinx/seeds
 ```
 
-Next, set `var/phinx/phinx.php` to use the connection information of` .env` in phinx.
+Next, set `var/phinx/phinx.php` to use the connection information of `.env` in phinx.
 
 ```php
 <?php
@@ -277,7 +277,7 @@ For details on the description of migration classes, please refer to [Phix Manua
 
 ## SQL
 
-Save the following three SQL files in `var/sql` to save and load the ticket in the database.
+Save the following three SQL files in `var/sql`. Each file contains a specific SQL query that create a ticket, get all tickets and get a specific ticket by id, respectively.
 
 `var/sql/ticket_insert.sql`
 
@@ -304,11 +304,8 @@ SELECT id, title, description, status, assignee, created_at, updated_at
 
 The above description of SQL conforms to [SQL style guide](https://www.sqlstyle.guide/en/).
 
-  Using [Database Navigator](https://confluence.jetbrains.com/display/CONTEST/Database+Navigator) on PHPStorm you can complete SQL code completion and execution. [youtube](https://www.youtube.com/watch?v=P3C0iO1yqhk)
-  Before executing SQL with PHP, it is easy and reliable to develop by executing SQL alone by the database tool and checking whether it can be written correctly.
-
-
-here are standalone database tools such as [JetBrain DataGrip](https://www.jetbrains.com/datagrip/), [Sequel Pro](https://www.sequelpro.com/), and [MySQL Workbench](https://www.mysql.com/jp/products/workbench/).
+  Using [Database Navigator](https://confluence.jetbrains.com/display/CONTEST/Database+Navigator) on PHPStorm you can take advantage of SQL code completion and execution. [youtube](https://www.youtube.com/watch?v=P3C0iO1yqhk)
+  We would recommend you to use a tool such as [JetBrain DataGrip](https://www.jetbrains.com/datagrip/), [Sequel Pro](https://www.sequelpro.com/), or [MySQL Workbench](https://www.mysql.com/jp/products/workbench/) to easily write SQL queries and make sure they are valid, before executing them with PHP.
 
 ## JsonSchema
 
@@ -386,7 +383,7 @@ You can validate the created JSON using `validate-json`. [^13]
 ./vendor/bin/validate-json var/json_schema/tickets.json
 ```
 
-Now we were able to define the resources. This schema can actually be used in validation. Independent JSON files can also be used for front end validation.
+Now that the schema have been defined, the framework will be able to use them to validate the data. Please note that you can use different schema files for the front-end, if validation requirements differ.
 
 ## Test
 
