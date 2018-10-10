@@ -387,7 +387,7 @@ Now that the schema have been defined, the framework will be able to use them to
 
 ## Test
 
-Next, prepare the `/ticket` resource test that you are about to make from `tests/Resource/App/TicketsTest.php`.
+Next, create the `tests/Resource/App/TicketsTest.php` file to test the `/ticket` resource.
 
 ```php
 <?php
@@ -439,18 +439,18 @@ class TicketsTest extends TestCase
 }
 ```
 
-`$this->resource` is a resource client when you run the` MyVendor\Ticket` application in the `test-app` context.
+`$this->resource` is a resource client when you run the `MyVendor\Ticket` application in the `test-app` context.
 `AppModule`,` TestModule`, so the database uses the `ticket_test` database for testing.
 
-`testOnPost` creates a resource with a POST request and` testOnGet` tests whether the created resource is correct by GET requesting the URI of the resource shown in the Location header of the response.
+`testOnPost` creates a resource by simulating a POST request, while `testOnGet` validates that the resource exists by inspecting the Location response header.
 
-Since I have not implemented it yet, I will get an error, but let's try the test execution.
+We can run the tests by typing the following command:
 
 ```
 composer test
 ```
 
-The immediate goal is that this test will pass. By preparing the test first, execution of debugging resources and debug tracing become easy, and the goal of the work started is clarified.
+Since the code has not been implemented yet, an error should be raised. However, writing the tests before the implementation allows for a cleaner and simpler implementation as we know beforehand the goal of the method.
 
 ## Resource
 
