@@ -81,7 +81,7 @@ class Index extends ResourceObject
 
 ### Resources
 
-What initially makes up a web application is a group of resources. In BEAR.Sunday these can be created as Resource Objects. (Object as a service) The resources can then be accessed locally via PHP or by HTTP requests. In both cases using a consistent URI interface. Each Resource object can then be exposed as a service either or both inside and outside of you application. Using Hypermedia using specially provided annotations you can either `@Link` or `@Embed` other resources.
+What initially makes up a web application is a group of resources. In BEAR.Sunday these can be created as Resource Objects. (Object as a service) The resources can then be accessed locally via PHP or by HTTP requests. In both cases using a consistent URI interface. Each Resource object can then be exposed as a service either or both inside and outside of your application. Using Hypermedia using specially provided annotations you can either `@Link` or `@Embed` other resources.
 
 ### Methods
 
@@ -91,7 +91,7 @@ Method construction can then be built up using a variation of [Onion Architectur
 
 ### Representation
 
-Each resource have have the representation of its current state rendered through an injected renderer. Methods themselves do not know anything about a representation's existence at all. This representation is handled by the resources' `Responder`
+Each resource has the representation of its current state rendered through an injected renderer. Methods themselves do not know anything about a representation's existence at all. This representation is handled by the resources' `Responder`
 
 ![Clean Method](/images/screen/clean-method.png)
 
