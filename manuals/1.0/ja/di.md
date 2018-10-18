@@ -406,7 +406,7 @@ class DatabaseTransactionLogProvider implements Provider
 
 ```php?start_inline
 $dbConfig = ['user' => $userDsn, 'job' => $jobDsn, 'log' => $logDsn];
-$this->bind()->annotatedWith('db_config')->toInstance(dbConfig);
+$this->bind()->annotatedWith('db_config')->toInstance($dbConfig);
 $this->bind(Connection::class)->annotatedWith('usr_db')->toProvider(DbalProvider::class, 'user');
 $this->bind(Connection::class)->annotatedWith('job_db')->toProvider(DbalProvider::class, 'job');
 $this->bind(Connection::class)->annotatedWith('log_db')->toProvider(DbalProvider::class, 'log');
