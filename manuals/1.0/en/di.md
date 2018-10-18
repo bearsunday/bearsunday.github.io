@@ -430,10 +430,7 @@ class DbalProvider implements ProviderInterface, SetContextInterface
 {
     private $dbConfigs;
 
-    public function setContext($context)
-    {
-        $this->context = $context;
-    }
+    private $context;
 
     /**
      * @Named("db_config")
@@ -441,6 +438,11 @@ class DbalProvider implements ProviderInterface, SetContextInterface
     public function __construct(array $dbConfigs)
     {
         $this->dbConfigs = $dbConfigs;
+    }
+
+    public function setContext($context)
+    {
+        $this->context = $context;
     }
 
     /**
