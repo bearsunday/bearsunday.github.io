@@ -417,7 +417,7 @@ You may want to create an object using the context when binding with Provider. F
 
 ```php?start_inline
 $dbConfig = ['user' => $userDsn, 'job' => $jobDsn, 'log' => $logDsn];
-$this->bind()->annotatedWith('db_config')->toInstance(dbConfig);
+$this->bind()->annotatedWith('db_config')->toInstance($dbConfig);
 $this->bind(Connection::class)->annotatedWith('usr_db')->toProvider(DbalProvider::class, 'user');
 $this->bind(Connection::class)->annotatedWith('job_db')->toProvider(DbalProvider::class, 'job');
 $this->bind(Connection::class)->annotatedWith('log_db')->toProvider(DbalProvider::class, 'log');
@@ -430,10 +430,7 @@ class DbalProvider implements ProviderInterface, SetContextInterface
 {
     private $dbConfigs;
 
-    public function setContext($context)
-    {
-        $this->context = $context;
-    }
+    private $context;
 
     /**
      * @Named("db_config")
@@ -441,6 +438,11 @@ class DbalProvider implements ProviderInterface, SetContextInterface
     public function __construct(array $dbConfigs)
     {
         $this->dbConfigs = $dbConfigs;
+    }
+
+    public function setContext($context)
+    {
+        $this->context = $context;
     }
 
     /**
