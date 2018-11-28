@@ -7,6 +7,68 @@ permalink: /manuals/1.0/ja/psr7.html
 
 # PSR-7
 
+[PSR7 HTTP message interface](https://www.php-fig.org/psr/psr-7/)[^1]を使ってサーバーサイドリクエストの情報を取得したり、BEAR.SundayアプリケーションをPSR7ミドルウエアとして実行する事ができます。
+
+
+## HTTPリクエスト
+
+PHPには[`$_SERVER`](http://php.net/manual/ja/reserved.variables.server.php)や[`$_COOKIE`](http://php.net/manual/ja/reserved.variables.cookies.php)などの[スーパーグローバル](http://php.net/manual/ja/language.variables.superglobals.php)がありますが、
+それらの代わりに[PSR7 HTTP message interface](https://www.php-fig.org/psr/psr-7/)を使ってサーバーサイドリクエストの情報(`$_COOKIE`, `$_GET`, `$_POST`, `$_FILES`, `$_SERVER`)を受け取ることができます。
+
+### ServerRequest （サーバーリクエスト全般）
+
+````php
+class Index extends ResourceObject
+{
+    public function __construct(ServerRequestInterface $serverRequest)
+    {
+        // retrieve cookies
+        $cookie = $serverRequest->getCookieParams(); // $_COOKIE
+    }
+}
+````
+
+### アップロードファイル
+
+````php
+
+use Psr\Http\Message\UploadedFileInterface;
+use Ray\HttpMessage\Annotation\UploadFiles;
+
+class Index extends ResourceObject
+{
+    /**
+     * @UploadFiles
+     */
+    public function __construct(array $files)
+    {
+        // retrieve file name
+        $file = $files['my-form']['details']['avatar'][0]
+        /* @var UploadedFileInterface $file */
+        $name = $file->getClientFilename(); // my-avatar3.png
+    }
+}
+````
+
+### URI
+
+````php
+
+use Psr\Http\Message\UriInterface;
+
+class Index extends ResourceObject
+{
+    public function __construct(UriInterface $uri)
+    {
+        // retrieve host name
+        $host = $uri->getHost();
+    }
+}
+````
+
+
+## PSR7ミドルウエア
+
 既存のBEAR.Sundayアプリケーションは特別な変更無しに[PSR-7](http://www.php-fig.org/psr/psr-7/)ミドルウエアとして動作させることができます。
 
 以下のコマンドで`bear/middleware`を追加して、ミドルウエアとして動作させるための[bootstrapスクリプト](https://github.com/bearsunday/BEAR.Middleware/blob/1.x/bootstrap/bootstrap.php)に置き換えます。
@@ -22,13 +84,13 @@ cp vendor/bear/middleware/bootstrap/bootstrap.php bootstrap/bootstrap.php
 php -S 127.0.0.1:8080 -t public
 ```
 
-## ストリーム
+### ストリーム
 
 ミドルウエアに対応したBEAR.Sundayのリソースは[ストリーム](http://php.net/manual/ja/intro.stream.php)の出力に対応しています。
 
 HTTP出力は`StreamTransfer`が標準です。詳しくは[ストリーム出力](http://bearsunday.github.io/manuals/1.0/ja/stream.html)をご覧ください。
 
-## 新規プロジェクト
+### 新規プロジェクト
 
 新規でPSR-7のプロジェクトを始めることもできます。
 
@@ -38,6 +100,10 @@ cd my-awesome-project/
 php -S 127.0.0.1:8080 -t public
 ```
 
-## PSR-7ミドルウエア
+### PSR-7ミドルウエア
 
  * [oscarotero/psr7-middlewares](https://github.com/oscarotero/psr7-middlewares)
+
+ ---
+
+ [^1]:[PSR-7 HTTP message interfaces 日本語訳 (by RitoLabo)](https://www.ritolab.com/entry/102)
