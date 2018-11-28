@@ -7,7 +7,7 @@ permalink: /manuals/1.0/en/psr7.html
 
 # PSR-7
 
-You can get server side request information using [PSR7 HTTP message interface](https://www.php-fig.org/psr/psr-7/). Also you can run BEAR.Sunday application as PSR 7 middleware.
+You can get server side request information using [PSR7 HTTP message interface](https://www.php-fig.org/psr/psr-7/). Also, you can run BEAR.Sunday application as PSR 7 middleware.
 
 
 ## HTTP Request
