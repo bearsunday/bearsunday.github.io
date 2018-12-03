@@ -11,14 +11,14 @@ permalink: /manuals/1.0/en/version.html
 
 BEAR.Sunday supports the following supported PHP versions ([Supported Versions](http://php.net/supported-versions.php)):
 
-* `^5.6` (Old stable 28 Aug 2014 - 31 Dec 2018)
-* `^7.0` (Old stable 3 Dec 2015 - 3 Dec 2018)
-* `^7.1` (Old stable 1 Dec 2016 - 1 Dec 2019)
-* `^7.2` (Current stable 30 Nov 2017 - 30 Nov 2020)
+* `5.6` (Old stable 28 Aug 2014 - 31 Dec 2018)
+* `7.1` (Old stable 1 Dec 2016 - 1 Dec 2019)
+* `7.2` (Current stable 30 Nov 2017 - 30 Nov 2020)
 
 End of life ([EOL](http://php.net/eol.php))
 
-* `5.5.*` (21 Jul 2016)
+* `5.5` (21 Jul 2016)
+* `7.0` (3 Dec 2018)
 
 The new optional package will be developed based on the current stable PHP. We encourage you to use the current stable PHP for quality, performance and security.
 
