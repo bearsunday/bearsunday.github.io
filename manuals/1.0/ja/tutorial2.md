@@ -353,18 +353,18 @@ PHPでSQLを実行する前に、データベースツールでSQLを単体で�
       "type": "string",
       "maxLength": 255
     },
-    "created": {
+    "created_at": {
       "description": "The date and time that the ticket was created",
       "type": "string",
       "format": "datetime"
     },
-    "updated": {
+    "updated_at": {
       "description": "The date and time that the ticket was last modified",
       "type": "string",
       "format": "datetime"
     }
   },
-  "required": ["title", "description", "status", "created", "updated"],
+  "required": ["title", "description", "status", "created_at", "updated_at"],
   "additionalProperties": false
 }
 ```
