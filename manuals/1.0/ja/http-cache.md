@@ -26,11 +26,27 @@ REST標準のキャッシュ制約に従う事で**RFC7234**をサポートし�
 | public | クライアント間の共有キャッシュの利用 |
 | private | クライアントでキャッシュを共有しない |
 | no-store | キャッシュしません |
-| no-cache | キャッシュの利用に都度検証が必要。**注意）`no-cache`という名前ですがキャッシュは行います** |
+| no-cache | キャッシュの利用にオリジンサーバーへの検証が必要。[^3]|
 | must-revalidate | 期限の切れたキャッシュの利用に必ず検証が必要。 |
 | max-age | キャッシュの有効期限 |
 | s-maxage | 共有キャッシュの有効期限 |
 
+### publicとprivate
+
+`public`の場合、レスポンスにHTTP認証が関連付けられているとしても、レスポンスのステータスコードが通常キャッシュ可能になっていない場合でもキャッシュできます。通常は`max-age`など明示的なキャッシュ情報によってレスポンスがキャッシュ可能であることが指定されているため`public`は必要ありません。
+
+一方、`private`レスポンスは、ブラウザのキャッシュには格納できますが、通常、対象ユーザーは1人のため、中間キャッシュに格納することは認められません。たとえば個人的なユーザー情報はそのユーザーのクライアントでのみキャッシュされCDNではキャッシュされません。
+
+### no-cacheとno-store
+
+`no-cache`はキャッシュ可能かどうか、つまりレスポンスに変更があったかどうかを確認する必要があることを示します。リクエストヘッダーの検証トークン（ETag）を検査し、リソースに変更がなければHTTPコード`304`を返答し、レスポンスボディを省略する事ができます。
+
+`no-store`は単純にレスポンスのすべてのキャッシュを禁止します。
+
+### 
+### 最適なCache-Control ポリシーの定義[^5]
+
+<img src="https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/images/http-cache-decision-tree.png?hl=ja">
 
 ## @Cacheable
 
@@ -139,6 +155,15 @@ class UncacheableResource extends ResourceObject
  * Ruby [faraday-http-cache](https://github.com/plataformatec/faraday-http-cache)
  * Python [requests-cache](https://pypi.org/project/requests-cache/)
 
+## 有効なキャッシュのために
+
+ * 一貫したURIを使用する。[^7]
+ * クラアイントサイドでのキャッシュを優先して検討する
+ * 適切な有効期限(`max-age`）を設定する。
+ * ユーザー単位で格納されるリソースも`private`でキャッシュする。
+ * 本当にキャッシュできないコンテンツのみ`no-store`を使用する。
+ * HTTP APIクライアントにRFC7234対応クライアントを使用する。
+
 ## Link
 
  * [HTTP Caching - Client and Network Caching with RFC 7234](https://www.youtube.com/watch?v=761puUy8ir4)
@@ -148,3 +173,8 @@ class UncacheableResource extends ResourceObject
 
 [^1]: キャッシュテストに便利です。
 [^2]: `ETag`と`If-not-modified`リクエストヘッダーが使われます。
+[^3]: `no-cache`という名前ですが、キャッシュは行います。
+[^4]: https://tech.mercari.com/entry/2017/06/22/204500
+[^5]: https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/http-caching?hl=ja より引用
+[^6]: レスポンスにHTTP認証が関連付けられているとしても、レスポンスのステータスコードが通常キャッシュ可能になっていない場合でもキャッシュできます。通常は明示的なキャッシュ情報（「max-age」など）によってレスポンスがキャッシュ可能であることが指定されているため`public`は必要ありません。[^7]
+[^7]: 大文字と小文字が区別されます。
