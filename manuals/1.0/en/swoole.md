@@ -36,7 +36,7 @@ exit((require dirname(__DIR__) . '/vendor/bear/swoole/bootstrap.php')(
 ## Excute
 
 ```
-php tests/bin/swoole.php
+php bin/swoole.php
 ```
 ```
 Swoole http server is started at http://127.0.0.1:8088
