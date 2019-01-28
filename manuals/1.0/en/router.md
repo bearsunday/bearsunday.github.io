@@ -96,9 +96,15 @@ class AppModule extends AbstractAppModule
     protected function configure()
     {
         // ...
-        $this->install(new AuraRouterModule($appDir . '/var/conf/aura.route.php');
+        $this->install(new AuraRouterModule($appDir . '/var/conf/aura.route.php'));
     }
 }
+```
+
+Delete cached DI files to activate new router.
+
+```
+rm -rf var/tmp/*
 ```
 
 ### Router Script
@@ -114,11 +120,14 @@ The first argument specifies the path as the root name and the second argument s
 /* @var \Aura\Router\Map $map */
 $map->route('/blog', '/blog/{id}');
 $map->route('/user', '/user/{name}')->tokens(['name' => '[a-z]+']);
+$map->route('/blog/comment', '/blog/{id}/comment');
 ```
 
-In the first line, accessing `/blog/bear` will be accessed as `page://self/blog?id=bear`.
-(= `Blog` class's` onGet($id)` method with the value `$id`=`bear`.) Also `token` is used to restrict parameters with regular expressions.
-
+ * In the first line, accessing `/blog/bear` will be accessed as `page://self/blog?id=bear`.
+(= `Blog` class's` onGet($id)` method with the value `$id`=`bear`.)
+ * `token` is used to restrict parameters with regular expressions.
+ * `/blog/{id}/comment` to route `Blog\Comment` class.
+  
 ### Preferred router
 
 If it is not routed by the Aura router, a web router will be used.

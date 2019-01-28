@@ -97,10 +97,17 @@ class AppModule extends AbstractAppModule
     protected function configure()
     {
         // ...
-        $this->install(new AuraRouterModule($appDir . '/var/conf/aura.route.php');
+        $this->install(new AuraRouterModule($appDir . '/var/conf/aura.route.php'));
     }
 }
 ```
+
+キャッシュされているDIファイルを消去します。
+
+```
+rm -rf var/tmp/*
+```
+
 ### ルータースクリプト
 
 ルータースクリプトではグローバルで渡された`Map`オブジェクトに対してルートを設定します。
@@ -112,11 +119,17 @@ class AppModule extends AbstractAppModule
 <?php
 /* @var \Aura\Router\Map $map */
 $map->route('/blog', '/blog/{id}');
+$map->route('/blog/comment', '/blog/{id}/comment');
 $map->route('/user', '/user/{name}')->tokens(['name' => '[a-z]+']);
 ```
 
-最初の行では`/blog/bear`とアクセスがあると`page://self/blog?id=bear`としてアクセスされます。
-(=`Blog`クラスの`onGet($id)`メソッドに`$id`=`bear`の値でコールされます。)また`token`はパラメーターを正規表現で制限するときに使用します。
+ * 最初の行では`/blog/bear`とアクセスがあると`page://self/blog?id=bear`としてアクセスされます。
+(=`Blog`クラスの`onGet($id)`メソッドに`$id`=`bear`の値でコールされます。)
+
+ * `/blog/{id}/comment`は`Blog\Comment`クラスにルートされます。
+
+ * `token()`はパラメーターを正規表現で制限するときに使用します。
+ 
 
 ### 優先ルーター
 
