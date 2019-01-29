@@ -53,3 +53,4 @@ permalink: /contributors.html
 - [<img alt="toshikimiyagawa" src="https://avatars2.githubusercontent.com/u/1582243?s=460&v=4&s=117" width="117">](https://github.com/toshikimiyagawa)
 - [<img alt="kalibora" src="https://avatars3.githubusercontent.com/u/434940?s=460&v=4" width="117">](https://github.com/kalibora)
 - [<img alt="suzumaze" src="https://avatars0.githubusercontent.com/u/17695387?s=460&v=4" width="117">](https://github.com/suzumaze)
+- [<img alt="izayoi256" src="https://avatars0.githubusercontent.com/u/1329505?s=460&v=4" width="117">](https://github.com/izayoi256)
