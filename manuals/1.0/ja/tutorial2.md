@@ -483,7 +483,7 @@ class Ticket extends ResourceObject
 {
     /**
      * @JsonSchema(key="ticket", schema="ticket.json")
-     * @AliasQuery("ticket_item_by_id", type="row")
+     * @Query("ticket_item_by_id", type="row")
      */
     public function onGet(string $id) : ResourceObject
     {
@@ -500,7 +500,7 @@ class Ticket extends ResourceObject
 
 `@JsonSchema`アノテーションはこのクラスの`body`プロパティの`ticket`キー配列が`ticket.json`で定義されたスキーマであるということを宣言しつつリアルタイムのバリデーションをAOPで毎回行う事で保証しています。
 
-`@AliasQuery("ticket_item_by_id", type="row")`と指定されているので、このメソッドはSQL実行と置き換わります。`var/sql/ticket_item_by_id.sql`ファイルのSQLが実行され、その結果が単一行（type="row"）で返ります。このようにロジックが単純にSQLで置換えられる場合は`@AliasQuery`を使ってPHPの記述を省略することができます。
+`@Query("ticket_item_by_id", type="row")`と指定されているので、このメソッドはSQL実行と置き換わります。`var/sql/ticket_item_by_id.sql`ファイルのSQLが実行され、その結果が単一行（type="row"）で返ります。このようにロジックが単純にSQLで置換えられる場合は`@Query`を使ってPHPの記述を省略することができます。
 
 
 ## tikcetsリソース
@@ -556,7 +556,7 @@ class Tickets extends ResourceObject
 
     /**
      * @JsonSchema(schema="tickets.json")
-     * @AliasQuery("ticket_list")
+     * @Query("ticket_list")
      */
     public function onGet() : ResourceObject
     {

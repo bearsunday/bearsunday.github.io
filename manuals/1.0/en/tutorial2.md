@@ -476,7 +476,7 @@ class Ticket extends ResourceObject
 {
     /**
      * @JsonSchema(key="ticket", schema="ticket.json")
-     * @AliasQuery("ticket_item_by_id", type="row")
+     * @Query("ticket_item_by_id", type="row")
      */
     public function onGet(string $id) : ResourceObject
     {
@@ -493,7 +493,7 @@ Let's see the `onGet` method for` GET`. If you look at the method signature, you
 
 The `@JsonSchema` annotation ensures real-time validation by AOP every time declaring that the　`ticket` key array of this class's `body` property is a schema defined with　`ticket.json` It is.
 
-This method replaces SQL execution as `@AliasQuery("ticket_item_by_id", type ="row")` is specified. The SQL in the `var/sql/ticket_item_by_id.sql` file is executed and the result is returned as a single line (type="row"). If you can simply replace the logic with SQL like this you can omit PHP description using `@AliasQuery`.
+This method replaces SQL execution as `@Query("ticket_item_by_id", type ="row")` is specified. The SQL in the `var/sql/ticket_item_by_id.sql` file is executed and the result is returned as a single line (type="row"). If you can simply replace the logic with SQL like this you can omit PHP description using `@Query`.
 
 ### tikcets　resource
 
@@ -548,7 +548,7 @@ class Tickets extends ResourceObject
 
     /**
      * @JsonSchema(schema="tickets.json")
-     * @AliasQuery("ticket_list")
+     * @Query("ticket_list")
      */
     public function onGet() : ResourceObject
     {
