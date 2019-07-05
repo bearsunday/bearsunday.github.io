@@ -23,7 +23,7 @@ class Index extends ResourceObject
     public function onGet(int $a, int $b) : ResourceObject
     {
         $this->body = [
-            'result' => $a + $b  // $_GET['a'] + $_GET['b']
+            'sum' => $a + $b  // $_GET['a'] + $_GET['b']
         ];
 
         return $this;
