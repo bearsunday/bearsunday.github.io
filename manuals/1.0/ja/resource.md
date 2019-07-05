@@ -50,17 +50,6 @@ PHPのリソースクラスはWebのURIと同じような`app://self/blog/posts/
 
 メソッドでは自身のリソース状態`code`,`headers`,`body`を変更し`$this`を返します。
 
-
-### bodyのシンタックスシュガー
-
-`$this`へのarrayアクセスは`$this->body`のアクセスになります。
-
-```php?start_inline
-$this['price'] = 10;
-// is same as
-$this->body['price'] = 10;
-```
-
 ## URI
 
 PHPのクラスはURIにマップされていて、アプリケーションではクラス名の代わりにURIを使ってリソースにアクセスします。
@@ -754,6 +743,17 @@ class User extends ResourceObject
         return $this;
     }
 }
+```
+
+
+### bodyのシンタックスシュガー
+
+`$this`へのarrayアクセスは`$this->body`のアクセスになります。
+
+```php?start_inline
+$this['price'] = 10;
+// is same as
+$this->body['price'] = 10;
 ```
 
 ## BEAR.Resource
