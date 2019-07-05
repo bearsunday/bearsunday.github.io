@@ -98,7 +98,7 @@ Resource deletion. Has idempotence just like PUT.
 ### OPTIONS
 Get information on parameters and responses required for resource request. It is as secure as GET method.
 
-# Rendering
+## Rendering
 
 The request method of the `ResourceObject` class (such as `onGet`) has no interest in expressions such as whether the resource is represented in HTML or JSON.
 Depending on the context, the resource renderer injected into `ResourceObject` renders it to JSON or HTML and makes it a resource representation (view).
@@ -167,7 +167,7 @@ class Index
 }
 ```
 
-# Transfer
+## Transfer
 
 The transponder forwards the representation (view) to the client (console or web client).
 Transfer is mostly done simply by simple `header()` function or `echo`, but it can be transferred with [stream output](stream.html).

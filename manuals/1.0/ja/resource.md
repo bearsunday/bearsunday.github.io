@@ -48,8 +48,6 @@ class Todo extends ResourceObject
 
 PHPのリソースクラスはWebのURIと同じような`app://self/blog/posts/?id=3`, `page://self/index`などのURIを持ち、HTTPのメソッドに準じた`onGet`, `onPost`, `onPut`, `onPatch`, `onDelete`インターフェイスを持ちます。
 
-メソッドの引数には`onGet`には$_GET、`onPost`には$_POSTが変数名に応じて渡されます、それ以外の`onPut`,`onPatch`, `onDelete`のメソッドには`content-type`(`x-www-form-urlencoded` or `application/json`)に応じた値が引数になります。
-
 メソッドでは自身のリソース状態`code`,`headers`,`body`を変更し`$this`を返します。
 
 
@@ -63,43 +61,200 @@ $this['price'] = 10;
 $this->body['price'] = 10;
 ```
 
-## スキーマ
+## URI
+
+PHPのクラスはURIにマップされていて、アプリケーションではクラス名の代わりにURIを使ってリソースにアクセスします。
+プリケーション名が`koriym\todo`というアプリケーションの場合、URIとクラスはこのように対応します。
 
 | URI | Class |
 |-----+-------|
-| page://self/index | Koriym\Todo\Resource\Page\Index |
-| app://self/blog/posts | Koriym\Todo\Resource\App\Blog\Posts |
+| `page://self/index` | `Koriym\Todo\Resource\Page\Index` |
+| `app://self/blog/posts` | `Koriym\Todo\Resource\App\Blog\Posts` |
 
-アプリケーション名が`koriym\todo`というアプリケーションの場合、URIとクラスはこのように対応します。
-アプリケーションではクラス名の代わりにURIを使ってリソースにアクセスします。
 
-標準ではリソースは二種類用意されています。１つは`App`リソースでアプリケーションのプログラミングインタフェース(**API**)です。
-もう１つは`Page`リソースでHTTPに近いレイヤーのリソースです。`Page`リソースは`App`リソースを利用してWebページを作成します。
+* page://self/indexのindexは省略する事ができます。page://self/indexとpage://self/は同じです。
+* HTTPのURIと同じようにクエリを使う事もできます。 (app://self/blog/posts/?id=3)
+
+
+標準ではリソースは二種類用意されています。１つは`App`アプリケーションリソースです。アプリケーションのAPIです。
+もう１つは`Page`リソースです。`Page`リソースは`App`リソースを利用してWebページを表現します。
 
 ## メソッド
 
 リソースはHTTPのメソッドに対応した6つのメソッドでアクセスすることができます。
 
 ### GET
-リソースの状態を読み込みます。安全なメソッドです。このメソッドではリソースの状態を変えてはいけません。
+リソースの状態を取得します。安全なメソッドです。このメソッドではリソースの状態を変えてはいけません。
 
 ### PUT
-リクエストしたURIにリソースの保存を行います。このメソッドは安全ではなくリソースの状態を変更します。
-メソッドには[冪等性](https://ja.wikipedia.org/wiki/%E5%86%AA%E7%AD%89)があり、メソッドを何度実行しても結果は同じです。
+リクエストしたURIでリソースの状態を置き換えます。このメソッドは安全ではなくリソースの状態を変更します。
+メソッドには[冪等性](https://ja.wikipedia.org/wiki/%E5%86%AA%E7%AD%89)がありメソッドを何度実行しても結果は同じです。
 
 ### PATCH
-部分的な更新を行います。
+リソースを部分的に変更します。
 
 ### POST
-リクエストしたURIにリソースを追加します。このメソッドは安全ではなくリソースの状態を変更します。メソッドには冪等性はなくリクエストの回数分リソースが追加されます。
+リクエストしたURIに新しいリソースを追加します。このメソッドは安全ではなくリソースの状態を変更します。冪等性はなくリクエストの回数分リソースが追加されます。
 
 ### DELETE
-リソースの削除をします。PUTと同じで冪等性があります。
+リソースの削除をします。冪等性があります。
 
 ### OPTIONS
-リソースのリクエストに必要なパラメーターとレスポンスに関する情報を取得します。GETと同じように安全なメソッドです。
+リソースのリクエストに必要なパラメーターとレスポンスに関する情報を取得します。安全なメソッドです。
 
-# レンダリング
+## パラメーター
+
+HTTPからリクエストされた時に`onGet`メソッドの引数には`$_GET`、`onPost`には`$_POST`が変数名に応じて渡されます。例えば下記の$idは$_GET['id']が渡されます。
+
+
+```php?start_inline
+class Index extends ResourceObject
+{
+    public function onGet(int $id) : ResourceObject
+    {
+```    
+
+GET,POST以外のメソッド`onPut`,`onPatch`, `onDelete`の引数にはリクエストボディの値が`content-type`ヘッダーで指定されたフォーマットで与えられます。 [^1]
+例えば`application/json`ならJSONフォーマットで、`x-www-form-urlencoded`ならURL経由で渡されるクエリ文字列と同じフォーマット key1=val1&key2=vale2&..として扱われます。
+
+パラメーターはネストされたデータ [^2] でも構いません。
+JSONやネストされたクエリ文字列で送信されたデータは配列やクラスでも受け取る事ができます。
+
+```php?start_inline
+class Index extends ResourceObject
+{
+    public function onPost(array $user) : ResourceOjbect
+    {
+        $name = $use['name'] // bear
+```
+
+```php?start_inline
+class Index extends ResourceObject
+{
+    public function onPost(User $user) : ResourceOjbect
+    {
+        $name = $user->name // bear
+```
+
+受け取るクラス（Inputクラス）は事前にパラメーターをpublicプロパティにしたものを定義しておきます。
+
+```php?start_inline
+<?php
+
+namespace Vendor\App\Input;
+
+final class User
+{
+    public $id;
+    public $name;
+}
+```
+
+ネームスペースは任意です。Inputクラスでは入力データをまとめたり検証したりするメソッドを実装する事ができます。[^4]
+
+```php?start_inline
+final class User
+{
+    public $givenName;
+    public $familyName;
+    
+   public function getFullName() : string
+   {
+       return "{$this->givenName} {$this->familyName}";
+   }
+}
+```
+
+配列受け取りはInputクラスの集合として入力を受け取る時にも便利です。
+
+### バインドパラメーター
+
+リソースクラスのメソッドの引数をWebコンテキストや他リソースの状態と束縛することができます。
+
+#### Webコンテキストパラメーター
+
+`$_GET`や`$_COOKIE`などのPHPのスーパーグローバルの値をメソッド内で取得するのではなく、メソッドの引数に束縛することができます。
+
+キーの名前と引数の名前が同じ場合
+
+```php?start_inline
+use Ray\WebContextParam\Annotation\QueryParam;
+
+class News
+{
+    /**
+     * @QueryParam("id")
+     */
+    public function foo(strin $id) : ResourceOjbect
+    {
+      // $id = $_GET['id'];
+```
+
+キーの名前と引数の名前が違う場合は`key`と`param`で指定します。
+
+```php?start_inline
+use Ray\WebContextParam\Annotation\CookieParam;
+
+class News
+{
+    /**
+     * @CookieParam(key="id", param="tokenId")
+     */
+    public function foo(string $tokenId) : ResourceOjbect
+    {
+      // $tokenId = $_COOKIE['id'];
+```
+
+フルリスト
+
+```php?start_inline
+use Ray\WebContextParam\Annotation\QueryParam;
+use Ray\WebContextParam\Annotation\CookieParam;
+use Ray\WebContextParam\Annotation\EnvParam;
+use Ray\WebContextParam\Annotation\FormParam;
+use Ray\WebContextParam\Annotation\ServerParam;
+
+class News
+{
+    /**
+     * @QueryParam(key="id", param="userId")
+     * @CookieParam(key="id", param="tokenId")
+     * @EnvParam("app_mode")
+     * @FormParam("token")
+     * @ServerParam(key="SERVER_NAME", param="server")
+     */
+    public function foo(
+        string $userId,           // $_GET['id'];
+        string $tokenId = "0000", // $_COOKIE['id'] or "0000" when unset;
+        string $app_mode,         // $_ENV['app_mode'];
+        string $token,            // $_POST['token'];
+        string $server            // $_SERVER['SERVER_NAME'];
+    ) : ResourceOjbect {
+```
+
+この機能を使うためには引数のデフォルトに`null`が必要です。
+またクライアントが値を指定した時は指定した値が優先され、束縛した値は無効になります。
+
+#### リソースパラメーター
+
+`@ResourceParam`アノテーションを使えば他のリソースリクエストの結果をメソッドの引数に束縛できます。
+
+```php?start_inline
+use BEAR\Resource\Annotation\ResourceParam;
+
+class News
+{
+    /**
+     * @ResourceParam(param=“name”, uri="app://self//login#nickname")
+     */
+    public function onGet(string $name) : ResoureObject
+    {
+```
+
+この例ではメソッドが呼ばれると`login`リソースに`get`リクエストを行い`$body['nickname']`を`$name`で受け取ります。
+
+
+## レンダリング
 
 `ResourceObject`クラスのリクエストメソッド(`onGet`など）はリソースがHTMLで表現されるかJSONで表現されるかなどの表現に対して関心を持ちません。
 コンテキストによって`ResourceObject`にインジェクトされたリソースレンダラーがJSONやHTMLにレンダリングしてリソース表現(view)にします。
@@ -168,7 +323,7 @@ class Index
 }
 ```
 
-# 転送
+## 転送
 
 トランスポンダーが表現(view)をクライント（コンソールやWebクライアント）に転送します。
 転送は単に`header`関数や`echo`で行われることがほとんどですが、[ストリーム出力](stream.html)で転送することもできます。
@@ -345,91 +500,6 @@ class News
 
 [HAL](https://github.com/blongden/hal)レンダラーでは`_embedded `として扱われます。
 
-## バインドパラメーター
-
-リソースクラスのメソッドの引数をWebコンテキストや他リソースの状態と束縛することができます。
-
-### Webコンテキストパラメーター
-
-`$_GET`や`$_COOKIE`などのPHPのスーパーグローバルの値をメソッド内で取得するのではなく、メソッドの引数に束縛することができます。
-
-キーの名前と引数の名前が同じ場合
-
-```php?start_inline
-use Ray\WebContextParam\Annotation\QueryParam;
-
-class News
-{
-    /**
-     * @QueryParam("id")
-     */
-    public function foo(strin $id) : ResourceOjbect
-    {
-      // $id = $_GET['id'];
-```
-
-キーの名前と引数の名前が違う場合は`key`と`param`で指定
-
-```php?start_inline
-use Ray\WebContextParam\Annotation\CookieParam;
-
-class News
-{
-    /**
-     * @CookieParam(key="id", param="tokenId")
-     */
-    public function foo(string $tokenId) : ResourceOjbect
-    {
-      // $tokenId = $_COOKIE['id'];
-```
-
-フルリスト
-
-```php?start_inline
-use Ray\WebContextParam\Annotation\QueryParam;
-use Ray\WebContextParam\Annotation\CookieParam;
-use Ray\WebContextParam\Annotation\EnvParam;
-use Ray\WebContextParam\Annotation\FormParam;
-use Ray\WebContextParam\Annotation\ServerParam;
-
-class News
-{
-    /**
-     * @QueryParam(key="id", param="userId")
-     * @CookieParam(key="id", param="tokenId")
-     * @EnvParam("app_mode")
-     * @FormParam("token")
-     * @ServerParam(key="SERVER_NAME", param="server")
-     */
-    public function foo(
-        string $userId,           // $_GET['id'];
-        string $tokenId = "0000", // $_COOKIE['id'] or "0000" when unset;
-        string $app_mode,         // $_ENV['app_mode'];
-        string $token,            // $_POST['token'];
-        string $server            // $_SERVER['SERVER_NAME'];
-    ) : ResourceOjbect {
-```
-
-この機能を使うためには引数のデフォルトに`null`が必要です。
-またクライアントが値を指定した時は指定した値が優先され、束縛した値は無効になります。
-
-### リソースパラメーター
-
-`@ResourceParam`アノテーションを使えば他のリソースリクエストの結果をメソッドの引数に束縛できます。
-
-```php?start_inline
-use BEAR\Resource\Annotation\ResourceParam;
-
-class News
-{
-    /**
-     * @ResourceParam(param=“name”, uri="app://self//login#nickname")
-     */
-    public function onGet(string $name) : ResoureObject
-    {
-```
-
-この例ではメソッドが呼ばれると`login`リソースに`get`リクエストを行い`$body['nickname']`を`$name`で受け取ります。
 
 ## リソースキャッシュ
 
@@ -689,3 +759,8 @@ class User extends ResourceObject
 ## BEAR.Resource
 
 リソースクラスに関するより詳しい情報はBEAR.Resourceの[README](https://github.com/bearsunday/BEAR.Resource/blob/1.x/README.ja.md)もご覧ください。
+
+---
+[^1]:[PUT メソッドのサポート](https://www.php.net/manual/ja/features.file-upload.put-method.php)参照
+[^2]:[parse_str](https://www.php.net/manual/ja/function.parse-str.php)参照 
+[^3]:publicプロパティとして定義しないで、`__set()`マジックメソッドでバリデーションをする事もできます。
