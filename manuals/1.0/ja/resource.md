@@ -63,18 +63,23 @@ $this['price'] = 10;
 $this->body['price'] = 10;
 ```
 
-## スキーマ
+## URI
+
+PHPのクラスはURIにマップされていて、アプリケーションではクラス名の代わりにURIを使ってリソースにアクセスします。
+プリケーション名が`koriym\todo`というアプリケーションの場合、URIとクラスはこのように対応します。
 
 | URI | Class |
 |-----+-------|
-| page://self/index | Koriym\Todo\Resource\Page\Index |
-| app://self/blog/posts | Koriym\Todo\Resource\App\Blog\Posts |
+| `page://self/index` | `Koriym\Todo\Resource\Page\Index` |
+| `app://self/blog/posts` | `Koriym\Todo\Resource\App\Blog\Posts` |
 
-アプリケーション名が`koriym\todo`というアプリケーションの場合、URIとクラスはこのように対応します。
-アプリケーションではクラス名の代わりにURIを使ってリソースにアクセスします。
 
-標準ではリソースは二種類用意されています。１つは`App`リソースでアプリケーションのプログラミングインタフェース(**API**)です。
-もう１つは`Page`リソースでHTTPに近いレイヤーのリソースです。`Page`リソースは`App`リソースを利用してWebページを作成します。
+* page://self/indexのindexは省略する事ができます。page://self/indexとpage://self/は同じです。
+* HTTPのURIと同じようにクエリを使う事もできます。 (app://self/blog/posts/?id=3)
+
+
+標準ではリソースは二種類用意されています。１つは`App`アプリケーションリソースです。アプリケーションのAPIです。
+もう１つは`Page`リソースです。`Page`リソースは`App`リソースを利用してWebページを表現します。
 
 ## メソッド
 
