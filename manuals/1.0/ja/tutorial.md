@@ -583,7 +583,7 @@ class Index extends ResourceObject
 
 `<iframe>`や`<img>`タグで他のリソースを含むページをイメージしてください。これらもHTMLページが画像や他のHTMLなどのリソースを自身に埋め込んでいます。
 
-`@Embed`でリソースを埋め込むかわりに` use ResourceInject;`で`resource`リソースクライアントをインジェクトしてそのクラインアトでappリソースをセットすることもできます。[^3]
+`@Embed`でリソースを埋め込むかわりに`use ResourceInject;`で`resource`リソースクライアントをインジェクトしてそのクライアントでappリソースをセットすることもできます。[^3]
 
 ```php
 <?php
@@ -971,7 +971,7 @@ content-type: application/hal+json
 ```bash
 curl -i http://127.0.0.1:8081/todos -X PUT -d "id=1&todo=think"
 ```
-ボディがない事を示す`204 No Content`のレスポンsが返ってきます。
+ボディがない事を示す`204 No Content`のレスポンスが返ってきます。
 
 ```
 HTTP/1.1 204 No Content
@@ -981,7 +981,7 @@ HTTP/1.1 204 No Content
  `Content-Type` ヘッダーでメディアタイプを指定する事ができます。`application/json`でも試してみましょう。
 
 ```bash
-curl -i http://127.0.0.1:8081/todos -X PUT -H 'Content-Type: application/json' -d '{"id": "1", "todo":"think" }'
+curl -i http://127.0.0.1:8081/todos -X PUT -H 'Content-Type: application/json' -d '{"id": 1, "todo":"think" }'
 ```
 
 再度GETを行うと`Etag`と`Last-Modified`が変わっているのが確認できます。
