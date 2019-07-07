@@ -128,7 +128,7 @@ mkdir var/json_validate
 
 ```php
 <?php
-/* @var\Aura\Router\Map $map */
+/* @var \Aura\Router\Map $map */
 $map->route('/ticket', '/tickets/{id}');
 ```
 
@@ -483,7 +483,7 @@ class Ticket extends ResourceObject
 {
     /**
      * @JsonSchema(key="ticket", schema="ticket.json")
-     * @Query("ticket_item_by_id", type="row")
+     * @AliasQuery("ticket_item_by_id", type="row")
      */
     public function onGet(string $id) : ResourceObject
     {
@@ -556,7 +556,7 @@ class Tickets extends ResourceObject
 
     /**
      * @JsonSchema(schema="tickets.json")
-     * @Query("ticket_list")
+     * @AliasQuery("ticket_list")
      */
     public function onGet() : ResourceObject
     {
@@ -685,7 +685,7 @@ content-type: application/hal+json
 }
 ```
 
-`[curies](http://stateless.co/hal_specification.html)`はヒューマンリーダブルなドキュメントのためのリンクです。
+[`curies`](http://stateless.co/hal_specification.html)はヒューマンリーダブルなドキュメントのためのリンクです。
 このAPIは`/ticket`と`/tickets`という２つのリソースがある事が分かります。
 `curies`によってそれらのドキュメントはそれぞれ`rels/ticket.html`,`rels/tickets.html`にあると示されてます。
 
