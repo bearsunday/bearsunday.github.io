@@ -467,7 +467,7 @@ namespace MyVendor\Ticket\Resource\App;
 use BEAR\RepositoryModule\Annotation\Cacheable;
 use BEAR\Resource\Annotation\JsonSchema;
 use BEAR\Resource\ResourceObject;
-use Ray\Query\Annotation\AliasQuery;
+use Ray\Query\Annotation\Query;
 
 /**
  * @Cacheable
@@ -514,7 +514,7 @@ use Ray\AuraSqlModule\Annotation\Transactional;
 use Ray\Di\Di\Named;
 use Ray\IdentityValueModule\NowInterface;
 use Ray\IdentityValueModule\UuidInterface;
-use Ray\Query\Annotation\AliasQuery;
+use Ray\Query\Annotation\Query;
 
 /**
  * @Cacheable

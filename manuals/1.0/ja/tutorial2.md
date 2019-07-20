@@ -474,7 +474,7 @@ namespace MyVendor\Ticket\Resource\App;
 use BEAR\RepositoryModule\Annotation\Cacheable;
 use BEAR\Resource\Annotation\JsonSchema;
 use BEAR\Resource\ResourceObject;
-use Ray\Query\Annotation\AliasQuery;
+use Ray\Query\Annotation\Query;
 
 /**
  * @Cacheable
@@ -483,7 +483,7 @@ class Ticket extends ResourceObject
 {
     /**
      * @JsonSchema(key="ticket", schema="ticket.json")
-     * @AliasQuery("ticket_item_by_id", type="row")
+     * @Query("ticket_item_by_id", type="row")
      */
     public function onGet(string $id) : ResourceObject
     {
@@ -522,7 +522,7 @@ use Ray\AuraSqlModule\Annotation\Transactional;
 use Ray\Di\Di\Named;
 use Ray\IdentityValueModule\NowInterface;
 use Ray\IdentityValueModule\UuidInterface;
-use Ray\Query\Annotation\AliasQuery;
+use Ray\Query\Annotation\Query;
 
 /**
  * @Cacheable
@@ -556,7 +556,7 @@ class Tickets extends ResourceObject
 
     /**
      * @JsonSchema(schema="tickets.json")
-     * @AliasQuery("ticket_list")
+     * @Query("ticket_list")
      */
     public function onGet() : ResourceObject
     {
