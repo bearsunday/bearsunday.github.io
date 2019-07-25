@@ -145,7 +145,7 @@ TKT_DB_SLAVE=''
 TKT_DB_DSN=mysql:host=${TKT_DB_HOST};dbname=${TKT_DB_NAME}
 ```
 
-`.env`はリポジトリにはコミットされません。`env.dist`に記述例を残して置きましょう。
+`.env`はリポジトリにはコミットされません。`.env.dist`に記述例を残して置きましょう。
 
 ```
 cp .env .env.dist
