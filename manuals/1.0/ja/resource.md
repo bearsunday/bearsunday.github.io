@@ -53,7 +53,7 @@ PHPのリソースクラスはWebのURIと同じような`app://self/blog/posts/
 ## URI
 
 PHPのクラスはURIにマップされていて、アプリケーションではクラス名の代わりにURIを使ってリソースにアクセスします。
-プリケーション名が`koriym\todo`というアプリケーションの場合、URIとクラスはこのように対応します。
+アプリケーション名が`koriym\todo`というアプリケーションの場合、URIとクラスはこのように対応します。
 
 | URI | Class |
 |-----+-------|
@@ -174,7 +174,7 @@ class News
     /**
      * @QueryParam("id")
      */
-    public function foo(strin $id) : ResourceOjbect
+    public function foo(string $id) : ResourceOjbect
     {
       // $id = $_GET['id'];
 ```

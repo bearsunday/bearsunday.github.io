@@ -579,7 +579,7 @@ class Index extends ResourceObject
 下記の２つのURI templateは同じURIを示しています。
 
  * `app://self/weekday{?year,month,day}`
- * `app://self/weekday?year={year},month={month},day={day}`
+ * `app://self/weekday?year={year}&month={month}&day={day}`
 
 `<iframe>`や`<img>`タグで他のリソースを含むページをイメージしてください。これらもHTMLページが画像や他のHTMLなどのリソースを自身に埋め込んでいます。
 
@@ -783,6 +783,7 @@ class AppModule extends AbstractAppModule
             'database' => $appDir . '/var/db/todo.sqlite3'
         ];
         $this->install(new CakeDbModule($dbConfig));
+        $this->install(new PackageModule());
     }
 }
 ```
@@ -999,7 +1000,7 @@ curl -i 'http://127.0.0.1:8081/todos?id=1'
 
 Because Everything is A Resource. BEARでは全てがリソースです。
 
-リソースの識別子URI、統一されたインターフェイス、ステートテレスなアクセス、強力なキャッシュシステム、ハイパーリンク、レイヤードシステム、自己記述性。
+リソースの識別子URI、統一されたインターフェイス、ステートレスなアクセス、強力なキャッシュシステム、ハイパーリンク、レイヤードシステム、自己記述性。
 BEAR.SundayアプリケーションのリソースはこれらのRESTの特徴を備えたもので、再利用性に優れています。
 
 BEAR.Sundayは**DI**で構造を結び、AOPで横断的関心事を結び、RESTの力でアプリケーションのコンポーネントをリソースとして結ぶコネクティングレイヤーのフレームワークです。
