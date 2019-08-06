@@ -364,8 +364,7 @@ PHPでSQLを実行する前に、データベースツールでSQLを単体で�
       "format": "datetime"
     }
   },
-  "required": ["title", "description", "status", "created_at", "updated_at"],
-  "additionalProperties": false
+  "required": ["title", "description", "status", "created_at", "updated_at"]
 }
 ```
 `var/json_schema/tickets.json`
