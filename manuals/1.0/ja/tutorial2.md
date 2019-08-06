@@ -481,7 +481,7 @@ use Ray\Query\Annotation\Query;
 class Ticket extends ResourceObject
 {
     /**
-     * @JsonSchema(key="ticket", schema="ticket.json")
+     * @JsonSchema(schema="ticket.json")
      * @Query("ticket_item_by_id", type="row")
      */
     public function onGet(string $id) : ResourceObject
