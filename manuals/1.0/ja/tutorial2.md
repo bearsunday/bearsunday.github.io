@@ -425,7 +425,7 @@ class TicketsTest extends TestCase
             'assignee' => 'assignee1'
         ]);
         $this->assertSame(201, $ro->code);
-        $this->assertContains('/ticket?id=', $ro->headers['Location']);
+        $this->assertStringContainsString('/ticket?id=', $ro->headers['Location']);
 
         return $ro;
     }
