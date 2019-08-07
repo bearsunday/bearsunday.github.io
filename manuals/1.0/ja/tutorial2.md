@@ -364,8 +364,7 @@ PHPでSQLを実行する前に、データベースツールでSQLを単体で�
       "format": "datetime"
     }
   },
-  "required": ["title", "description", "status", "created_at", "updated_at"],
-  "additionalProperties": false
+  "required": ["title", "description", "status", "created_at", "updated_at"]
 }
 ```
 `var/json_schema/tickets.json`
@@ -412,7 +411,7 @@ class TicketsTest extends TestCase
      */
     private $resource;
 
-    protected function setUp()
+    protected function setUp() : void
     {
         $this->resource = (new AppInjector('MyVendor\Ticket', 'test-app'))->getInstance(ResourceInterface::class);
     }
@@ -426,7 +425,7 @@ class TicketsTest extends TestCase
             'assignee' => 'assignee1'
         ]);
         $this->assertSame(201, $ro->code);
-        $this->assertContains('/ticket?id=', $ro->headers['Location']);
+        $this->assertStringContainsString('/ticket?id=', $ro->headers['Location']);
 
         return $ro;
     }
@@ -482,7 +481,7 @@ use Ray\Query\Annotation\Query;
 class Ticket extends ResourceObject
 {
     /**
-     * @JsonSchema(key="ticket", schema="ticket.json")
+     * @JsonSchema(schema="ticket.json")
      * @Query("ticket_item_by_id", type="row")
      */
     public function onGet(string $id) : ResourceObject
@@ -625,15 +624,6 @@ class Index extends ResourceObject
                 'href' => 'rels/{rel}.html',
                 'name' => 'tk',
                 'templated' => true
-            ],
-            'tk:ticket' => [
-                'href' => '/tickets/{id}',
-                'title' => 'Ticket',
-                'templated' => true
-            ],
-            'tk:tickets' => [
-                'href' => '/tickets',
-                'title' => 'The collection of ticket'
             ]
         ]
     ];
@@ -674,12 +664,12 @@ content-type: application/hal+json
         ],
         "tk:ticket": {
             "href": "/tickets/{id}",
-            "title": "Ticket",
+            "title": "The ticket item",
             "templated": true
         },
         "tk:tickets": {
             "href": "/tickets",
-            "title": "The collection of ticket"
+            "title": "The ticket list"
         }
     }
 }
