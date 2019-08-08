@@ -624,7 +624,16 @@ class Index extends ResourceObject
                 'href' => 'rels/{rel}.html',
                 'name' => 'tk',
                 'templated' => true
-            ]
+            ],
+            'tk:ticket' => [
+                'href' => '/tickets/{id}',
+                'title' => 'The ticket item',
+                'templated' => true
+            ],
+            'tk:tickets' => [
+                'href' => '/tickets',
+                'title' => 'The ticket list'
+            ] 
         ]
     ];
 
