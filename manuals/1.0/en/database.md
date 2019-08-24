@@ -39,7 +39,9 @@ class AppModule extends AbstractAppModule
             new AuraSqlModule(
                 'mysql:host=localhost;dbname=test',
                 'username',
-                'password'
+                'password',
+                // $options,
+                // $attributes
             )
         );
         $this->install(new PackageModule));
