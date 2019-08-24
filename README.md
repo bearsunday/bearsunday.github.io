@@ -13,3 +13,9 @@ gem install github-pages
 github-pages -v
 github-pages versions
 ```
+
+### Run
+
+```
+jekyll serve
+```
