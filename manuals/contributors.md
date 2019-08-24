@@ -55,4 +55,6 @@ permalink: /contributors.html
 - [<img alt="suzumaze" src="https://avatars0.githubusercontent.com/u/17695387?s=460&v=4" width="117">](https://github.com/suzumaze)
 - [<img alt="izayoi256" src="https://avatars0.githubusercontent.com/u/1329505?s=460&v=4" width="117">](https://github.com/izayoi256)
 - [<img alt="KushibikiMashu" src="https://avatars0.githubusercontent.com/u/36080801?s=460&v=4" width="117">](https://github.com/KushibikiMashu)
-
+- [<img alt="momospnr" src="https://avatars1.githubusercontent.com/u/1066913?s=460&v=4" width="117">](https://github.com/momospnr)
+- [<img alt="ssnm-a" src="https://avatars0.githubusercontent.com/u/43442305?s=460&v=4" width="117">](https://github.com/ssnm-a)
+- [<img alt="piotzkhider" src="https://avatars1.githubusercontent.com/u/7950487?s=460&v=4" width="117">](https://github.com/piotzkhider)
