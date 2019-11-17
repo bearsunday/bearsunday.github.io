@@ -325,8 +325,8 @@ protected function configure()
                 ->addOptionalMethod('setOptionalToken'),
             'initialize'                                // string $postCostruct
         );
-    $this->bind()->annotated('user_id')->toInstance($_ENV['user_id']);
-    $this->bind()->annotated('user_password')->toInstance($_ENV['user_password']);
+    $this->bind()->annotatedWith('user_id')->toInstance($_ENV['user_id']);
+    $this->bind()->annotatedWith('user_password')->toInstance($_ENV['user_password']);
 }
 ```
 
