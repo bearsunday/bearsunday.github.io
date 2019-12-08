@@ -384,7 +384,7 @@ class MyLogger implements MyLoggerInterface
 
 この依存解決を行うのがDIツール(dependency injector)です。
 
-DIツールで`MyLoggerInterface`と`MyLogger`を束縛(bind)するために`src/Modules/AppModule.php`の`configure`メソッドを編集します。
+DIツールで`MyLoggerInterface`と`MyLogger`を束縛(bind)するために`src/Module/AppModule.php`の`configure`メソッドを編集します。
 
 ```php
 <?php

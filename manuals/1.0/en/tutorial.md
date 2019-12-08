@@ -387,7 +387,7 @@ In other words, the `Weekday` resource depends on` MyLogger`, but `MyLogger` als
 
 It is the DI tool (dependency injector) that makes this dependency solution.
 
-Edit the `configure` method of` src/Modules/AppModule.php` to bind `MyLoggerInterface` and` MyLogger` with the DI tool.
+Edit the `configure` method of` src/Module/AppModule.php` to bind `MyLoggerInterface` and` MyLogger` with the DI tool.
 
 ```php
 <?php
