@@ -182,7 +182,7 @@ class WeekdayTest extends TestCase
      */
     private $resource;
 
-    protected function setUp()
+    protected function setUp() : void
     {
         $this->resource = (new AppInjector('MyVendor\Weekday', 'app'))->getInstance(ResourceInterface::class);
     }
@@ -384,7 +384,7 @@ class MyLogger implements MyLoggerInterface
 
 この依存解決を行うのがDIツール(dependency injector)です。
 
-DIツールで`MyLoggerInterface`と`MyLogger`を束縛(bind)するために`src/Modules/AppModule.php`の`configure`メソッドを編集します。
+DIツールで`MyLoggerInterface`と`MyLogger`を束縛(bind)するために`src/Module/AppModule.php`の`configure`メソッドを編集します。
 
 ```php
 <?php
