@@ -243,7 +243,7 @@ composer tests
 デフォルトのルーターはURLをディレクトリにマップする`WebRouter`です。
 ここでは動的なパラメーターをパスで受け取るためにAuraルーターを使用します。
 
-最初にcompoerでインストールします。
+最初にcomposerでインストールします。
 ```bash
 composer require bear/aura-router-module ^2.0
 ```
