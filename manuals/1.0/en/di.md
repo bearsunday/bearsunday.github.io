@@ -193,7 +193,7 @@ class Index
      * @Inject
      * @Named("prod")
      */
-    public function setLogger(LoggerInterface $foo)
+    public function setLogger(LoggerInterface $logger)
     {
         $this->logger = $logger;
     }
@@ -227,7 +227,7 @@ class Index
      * @Inject
      * @Prod
      */
-    public function setLogger(LoggerInterface $foo)
+    public function setLogger(LoggerInterface $logger)
     {
         $this->logger = $logger;
     }
