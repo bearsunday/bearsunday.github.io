@@ -201,7 +201,7 @@ class WeekdayTest extends TestCase
 
 テストメソッド`testOnGet`でリソースをリクエストしてテストします。
 
-実行して見ましょう。
+実行してみましょう。
 
 ```
 ./vendor/bin/phpunit
