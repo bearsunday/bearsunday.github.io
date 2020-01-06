@@ -622,7 +622,7 @@ class HorizontalScaleDbProvider implements ProviderInterface
 }
 ```
 
-## デバック
+## デバッグ
 
 複雑な束縛も最終的には単純なPHPのファクトリーコードにコンパイルされて`var/tmp/{context}`フォルダに出力されます。
 生成されたファイルを見ればどのセッターメソッドが有効でどの依存をどのように(Singleton ?)注入したかが分かります。
