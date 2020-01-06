@@ -322,7 +322,7 @@ protected function configure()
             (new InjectionPoints)                       // InjectionPoints　$setter_injection
                 ->addMethod('setGuzzle', 'token')
                 ->addOptionalMethod('setOptionalToken'),
-            'initialize'                                // string $postCostruct
+            'initialize'                                // string $postConstruct
         );
     $this->bind()->annotatedWith('user_id')->toInstance($_ENV['user_id']);
     $this->bind()->annotatedWith('user_password')->toInstance($_ENV['user_password']);
