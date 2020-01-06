@@ -222,7 +222,7 @@ composer coverage
 ```
 カバレッジの詳細を`build/coverage/index.html`をWebブラウザで開くことで見ることができます。
 
-コーディングスタンダードにしたがっているかののチェックは`composer cs`コマンドで確認できます。
+コーディングスタンダードにしたがっているかのチェックは`composer cs`コマンドで確認できます。
 その自動修正は`composer cs-fix`コマンドでできます。
 
 ```
