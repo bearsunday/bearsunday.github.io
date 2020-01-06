@@ -62,7 +62,7 @@ content-type: application/vnd.error+json
 ```
 
 エラーは[application/vnd.error+json](https://github.com/blongden/vnd.error)メディアタイプで返されます。
-400はリクエストに問題があるエラーコードです。エラーには`lofref`IDがつけられ`var/log/`でエラーの詳しい内容を参照することができます。
+400はリクエストに問題があるエラーコードです。エラーには`logref`IDがつけられ`var/log/`でエラーの詳しい内容を参照することができます。
 
 次は引数をつけて正しいリクエストを試します。
 
