@@ -450,7 +450,7 @@ class DbalProvider implements ProviderInterface, SetContextInterface
     public function get()
     {
         $config = $this->dbConfigs[$this->context];
-        $conn = DriverManager::getConnection(config);
+        $conn = DriverManager::getConnection($config);
 
         return $conn;
     }
