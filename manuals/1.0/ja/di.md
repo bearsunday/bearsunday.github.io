@@ -481,7 +481,7 @@ class Psr3LoggerProvider implements ProviderInterface
     public function get()
     {
         $targetClass = $this->ip->getClass()->getName();
-        $logger = new \Monolog\Logger(targetClass);
+        $logger = new \Monolog\Logger($targetClass);
         $logger->pushHandler(new StreamHandler('path/to/your.log', Logger::WARNING));
 
         return $logger;
