@@ -98,15 +98,14 @@ class Index
 束縛を作るには`AbstractModule`クラスを拡張して、`configure`メソッドをオーバーライドします。メソッド内では`bind()`でそれぞれの束縛をします。
 
 ```php?start_inline
-class Tweet
-extends AbstractModule
+class Tweet extends AbstractModule
 {
     protected function configure()
     {
         $this->bind(TweetClient::class);
         $this->bind(TweeterInterface::class)->to(SmsTweeter::class)->in(Scope::SINGLETON);
-        $this->bind(UrlShortenerInterface)->toProvider(TinyUrlShortener::class)
-        $this->bind('')->annotatedWith(Username::class)->toInstance("koriym")
+        $this->bind(UrlShortenerInterface)->toProvider(TinyUrlShortener::class);
+        $this->bind('')->annotatedWith(Username::class)->toInstance("koriym");
     }
 }
 ```

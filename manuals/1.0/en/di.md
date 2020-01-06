@@ -100,15 +100,14 @@ Use modules to create linked bindings, instance bindings, provider bindings, con
 
 
 ```php?start_inline
-class Tweet
-extends AbstractModule
+class Tweet extends AbstractModule
 {
     protected function configure()
     {
         $this->bind(TweetClient::class);
         $this->bind(TweeterInterface::class)->to(SmsTweeter::class)->in(Scope::SINGLETON);
-        $this->bind(UrlShortenerInterface)->toProvider(TinyUrlShortener::class)
-        $this->bind('')->annotatedWith(Username::class)->toInstance("koriym")
+        $this->bind(UrlShortenerInterface)->toProvider(TinyUrlShortener::class);
+        $this->bind('')->annotatedWith(Username::class)->toInstance("koriym");
     }
 }
 ```
