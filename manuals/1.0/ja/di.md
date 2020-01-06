@@ -392,7 +392,7 @@ class DatabaseTransactionLogProvider implements Provider
     {
         $this->pdo->setAttribute(\PDO::ATTR_CASE, \PDO::CASE_NATURAL);
 
-        return $pdo;
+        return $this->pdo;
     }
 }
 ```
