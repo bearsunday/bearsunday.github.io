@@ -33,7 +33,7 @@ Ray.Diには以下の機能があります。
 ## 注入
 
 クラスが依存を受け取る箇所はコンストラクタ、セッターメソッド、実行メソッドの三種類がありそれをインジェクションポイントと呼びます。
-コンストラクタでの注入は必須でアノテーションは不要ですが、セッターメソッドには通常のメソッドと区別するための`@Injet`アノテーションが必要です。
+コンストラクタでの注入は必須でアノテーションは不要ですが、セッターメソッドには通常のメソッドと区別するための`@Inject`アノテーションが必要です。
 
 コンストラクターインジェクション
 
@@ -98,15 +98,14 @@ class Index
 束縛を作るには`AbstractModule`クラスを拡張して、`configure`メソッドをオーバーライドします。メソッド内では`bind()`でそれぞれの束縛をします。
 
 ```php?start_inline
-class Tweet
-extends AbstractModule
+class Tweet extends AbstractModule
 {
     protected function configure()
     {
         $this->bind(TweetClient::class);
         $this->bind(TweeterInterface::class)->to(SmsTweeter::class)->in(Scope::SINGLETON);
-        $this->bind(UrlShortenerInterface)->toProvider(TinyUrlShortener::class)
-        $this->bind('')->annotatedWith(Username::class)->toInstance("koriym")
+        $this->bind(UrlShortenerInterface)->toProvider(TinyUrlShortener::class);
+        $this->bind('')->annotatedWith(Username::class)->toInstance("koriym");
     }
 }
 ```
@@ -192,7 +191,7 @@ class Index
      * @Inject
      * @Named("prod")
      */
-    public function setLogger(LoggerInterface $foo)
+    public function setLogger(LoggerInterface $logger)
     {
         $this->logger = $logger;
     }
@@ -226,7 +225,7 @@ class Index
      * @Inject
      * @Prod
      */
-    public function setLogger(LoggerInterface $foo)
+    public function setLogger(LoggerInterface $logger)
     {
         $this->logger = $logger;
     }
@@ -323,7 +322,7 @@ protected function configure()
             (new InjectionPoints)                       // InjectionPoints　$setter_injection
                 ->addMethod('setGuzzle', 'token')
                 ->addOptionalMethod('setOptionalToken'),
-            'initialize'                                // string $postCostruct
+            'initialize'                                // string $postConstruct
         );
     $this->bind()->annotatedWith('user_id')->toInstance($_ENV['user_id']);
     $this->bind()->annotatedWith('user_password')->toInstance($_ENV['user_password']);
@@ -393,7 +392,7 @@ class DatabaseTransactionLogProvider implements Provider
     {
         $this->pdo->setAttribute(\PDO::ATTR_CASE, \PDO::CASE_NATURAL);
 
-        return $pdo;
+        return $this->pdo;
     }
 }
 ```
@@ -440,7 +439,7 @@ class DbalProvider implements ProviderInterface, SetContextInterface
     public function get()
     {
         $config = $this->dbConfigs[$this->context];
-        $conn = DriverManager::getConnection(config);
+        $conn = DriverManager::getConnection($config);
 
         return $conn;
     }
@@ -482,7 +481,7 @@ class Psr3LoggerProvider implements ProviderInterface
     public function get()
     {
         $targetClass = $this->ip->getClass()->getName();
-        $logger = new \Monolog\Logger(targetClass);
+        $logger = new \Monolog\Logger($targetClass);
         $logger->pushHandler(new StreamHandler('path/to/your.log', Logger::WARNING));
 
         return $logger;
@@ -623,7 +622,7 @@ class HorizontalScaleDbProvider implements ProviderInterface
 }
 ```
 
-## デバック
+## デバッグ
 
 複雑な束縛も最終的には単純なPHPのファクトリーコードにコンパイルされて`var/tmp/{context}`フォルダに出力されます。
 生成されたファイルを見ればどのセッターメソッドが有効でどの依存をどのように(Singleton ?)注入したかが分かります。
