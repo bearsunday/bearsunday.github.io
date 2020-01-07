@@ -59,3 +59,4 @@ permalink: /contributors.html
 - [<img alt="ssnm-a" src="https://avatars0.githubusercontent.com/u/43442305?s=460&v=4" width="117">](https://github.com/ssnm-a)
 - [<img alt="piotzkhider" src="https://avatars1.githubusercontent.com/u/7950487?s=460&v=4" width="117">](https://github.com/piotzkhider)
 - [<img alt="wand2016" src="https://avatars3.githubusercontent.com/u/22491120?s=460&v=4" width="117">](https://github.com/wand2016)
+- [<img alt="YAhiru" src="https://avatars3.githubusercontent.com/u/22848064?s=460&v=4" width="117">](https://github.com/YAhiru)
