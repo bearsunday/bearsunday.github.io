@@ -62,7 +62,7 @@ content-type: application/vnd.error+json
 ```
 
 エラーは[application/vnd.error+json](https://github.com/blongden/vnd.error)メディアタイプで返されます。
-400はリクエストに問題があるエラーコードです。エラーには`lofref`IDがつけられ`var/log/`でエラーの詳しい内容を参照することができます。
+400はリクエストに問題があるエラーコードです。エラーには`logref`IDがつけられ`var/log/`でエラーの詳しい内容を参照することができます。
 
 次は引数をつけて正しいリクエストを試します。
 
@@ -201,7 +201,7 @@ class WeekdayTest extends TestCase
 
 テストメソッド`testOnGet`でリソースをリクエストしてテストします。
 
-実行して見ましょう。
+実行してみましょう。
 
 ```
 ./vendor/bin/phpunit
@@ -222,7 +222,7 @@ composer coverage
 ```
 カバレッジの詳細を`build/coverage/index.html`をWebブラウザで開くことで見ることができます。
 
-コーディングスタンダードにしたがっているかののチェックは`composer cs`コマンドで確認できます。
+コーディングスタンダードにしたがっているかのチェックは`composer cs`コマンドで確認できます。
 その自動修正は`composer cs-fix`コマンドでできます。
 
 ```
@@ -243,7 +243,7 @@ composer tests
 デフォルトのルーターはURLをディレクトリにマップする`WebRouter`です。
 ここでは動的なパラメーターをパスで受け取るためにAuraルーターを使用します。
 
-最初にcompoerでインストールします。
+最初にcomposerでインストールします。
 ```bash
 composer require bear/aura-router-module ^2.0
 ```
@@ -740,7 +740,7 @@ exit((require dirname(__DIR__) . '/bootstrap.php')('prod-hal-app'));
 コンテキストに応じたインスタンスを生成するPHPコードが生成されます。アプリケーションの`var/tmp/{context}/di`フォルダを確認してみましょう。
 これらのファイルは普段見る必要はありませんが、オブジェクトがどのように作られているかを確認することができます。
 
-コンテキストを変える事でどの依存がど変わったかを`diff`コマンドで調べることもできます。
+コンテキストを変える事でどの依存がどう変わったかを`diff`コマンドで調べることもできます。
 
 ```bash
 diff -q var/tmp/app/di/ var/tmp/prod-hal-app/di/

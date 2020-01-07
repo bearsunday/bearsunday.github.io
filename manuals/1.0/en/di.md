@@ -100,15 +100,14 @@ Use modules to create linked bindings, instance bindings, provider bindings, con
 
 
 ```php?start_inline
-class Tweet
-extends AbstractModule
+class Tweet extends AbstractModule
 {
     protected function configure()
     {
         $this->bind(TweetClient::class);
         $this->bind(TweeterInterface::class)->to(SmsTweeter::class)->in(Scope::SINGLETON);
-        $this->bind(UrlShortenerInterface)->toProvider(TinyUrlShortener::class)
-        $this->bind('')->annotatedWith(Username::class)->toInstance("koriym")
+        $this->bind(UrlShortenerInterface)->toProvider(TinyUrlShortener::class);
+        $this->bind('')->annotatedWith(Username::class)->toInstance("koriym");
     }
 }
 ```
@@ -194,7 +193,7 @@ class Index
      * @Inject
      * @Named("prod")
      */
-    public function setLogger(LoggerInterface $foo)
+    public function setLogger(LoggerInterface $logger)
     {
         $this->logger = $logger;
     }
@@ -228,7 +227,7 @@ class Index
      * @Inject
      * @Prod
      */
-    public function setLogger(LoggerInterface $foo)
+    public function setLogger(LoggerInterface $logger)
     {
         $this->logger = $logger;
     }
@@ -330,7 +329,7 @@ protected function configure()
             (new InjectionPoints)                       // InjectionPoints　$setter_injection
                 ->addMethod('setGuzzle', 'token')
                 ->addOptionalMethod('setOptionalToken'),
-            'initialize'                                // string $postCostruct
+            'initialize'                                // string $postConstruct
         );
     $this->bind()->annotatedWith('user_id')->toInstance($_ENV['user_id']);
     $this->bind()->annotatedWith('user_password')->toInstance($_ENV['user_password']);
@@ -404,7 +403,7 @@ class DatabaseTransactionLogProvider implements Provider
     {
         $this->pdo->setAttribute(\PDO::ATTR_CASE, \PDO::CASE_NATURAL);
 
-        return $pdo;
+        return $this->pdo;
     }
 }
 ```
@@ -451,7 +450,7 @@ class DbalProvider implements ProviderInterface, SetContextInterface
     public function get()
     {
         $config = $this->dbConfigs[$this->context];
-        $conn = DriverManager::getConnection(config);
+        $conn = DriverManager::getConnection($config);
 
         return $conn;
     }
@@ -496,7 +495,7 @@ class Psr3LoggerProvider implements ProviderInterface
     public function get()
     {
         $targetClass = $this->ip->getClass()->getName();
-        $logger = new \Monolog\Logger(targetClass);
+        $logger = new \Monolog\Logger($targetClass);
         $logger->pushHandler(new StreamHandler('path/to/your.log', Logger::WARNING));
 
         return $logger;
