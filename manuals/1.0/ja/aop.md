@@ -17,6 +17,7 @@ BEAR.Sundayは[AOP Alliance](http://aopalliance.sourceforge.net/)に準拠した
 この変数は、インターセプター元メソッドを実行するためだけの変数です。前後にログやトランザクションなどの横断的処理を記述します。
 
 ```php?start_inline
+use Ray\Aop\MethodInterceptor;
 use Ray\Aop\MethodInvocation;
 
 class MyInterceptor implements MethodInterceptor
@@ -95,7 +96,6 @@ $class = $invocation->getMethod()->getDeclaringClass();
 
 ```php?start_inline
 use Ray\Aop\AbstractMatcher;
-use Ray\Aop\Matcher;
 
 /**
  * 特定の文字列が含まれているか

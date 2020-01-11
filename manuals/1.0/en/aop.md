@@ -19,6 +19,7 @@ Finally, they may inspect the return value or the exception and return. Since in
 
 
 ```php?start_inline
+use Ray\Aop\MethodInterceptor;
 use Ray\Aop\MethodInvocation;
 
 class MyInterceptor implements MethodInterceptor
@@ -95,7 +96,6 @@ The other one is `matchesMethod` method match. Both return the boolean result of
 
 ```php?start_inline
 use Ray\Aop\AbstractMatcher;
-use Ray\Aop\Matcher;
 
 class ContainsMatcher extends AbstractMatcher
 {
