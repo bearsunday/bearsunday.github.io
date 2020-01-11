@@ -34,11 +34,11 @@ class Index extends ResourceObject
 ```php?start_inline
 class Todo extends ResourceObject
 {
-    public function onPost(string $id, string $todo) : ResourceOjbect
+    public function onPost(string $id, string $todo) : ResourceObject
     {
         $this->code = 201; // ステータスコード
         $this->headers = [ // ヘッダー
-            'Location' => '/todo/new_id';
+            'Location' => '/todo/new_id'
         ];
 
         return $this;
@@ -112,17 +112,17 @@ JSONやネストされたクエリ文字列で送信されたデータは配列�
 ```php?start_inline
 class Index extends ResourceObject
 {
-    public function onPost(array $user) : ResourceOjbect
+    public function onPost(array $user) : ResourceObject
     {
-        $name = $use['name'] // bear
+        $name = $user['name']; // bear
 ```
 
 ```php?start_inline
 class Index extends ResourceObject
 {
-    public function onPost(User $user) : ResourceOjbect
+    public function onPost(User $user) : ResourceObject
     {
-        $name = $user->name // bear
+        $name = $user->name; // bear
 ```
 
 受け取るクラス（Inputクラス）は事前にパラメーターをpublicプロパティにしたものを定義しておきます。
@@ -147,10 +147,10 @@ final class User
     public $givenName;
     public $familyName;
     
-   public function getFullName() : string
-   {
-       return "{$this->givenName} {$this->familyName}";
-   }
+    public function getFullName() : string
+    {
+        return "{$this->givenName} {$this->familyName}";
+    }
 }
 ```
 
@@ -169,12 +169,12 @@ final class User
 ```php?start_inline
 use Ray\WebContextParam\Annotation\QueryParam;
 
-class News
+class News extends ResourceObject
 {
     /**
      * @QueryParam("id")
      */
-    public function foo(string $id) : ResourceOjbect
+    public function foo(string $id) : ResourceObject
     {
       // $id = $_GET['id'];
 ```
@@ -184,12 +184,12 @@ class News
 ```php?start_inline
 use Ray\WebContextParam\Annotation\CookieParam;
 
-class News
+class News extends ResourceObject
 {
     /**
      * @CookieParam(key="id", param="tokenId")
      */
-    public function foo(string $tokenId) : ResourceOjbect
+    public function foo(string $tokenId) : ResourceObject
     {
       // $tokenId = $_COOKIE['id'];
 ```
@@ -203,7 +203,7 @@ use Ray\WebContextParam\Annotation\EnvParam;
 use Ray\WebContextParam\Annotation\FormParam;
 use Ray\WebContextParam\Annotation\ServerParam;
 
-class News
+class News extends ResourceObject
 {
     /**
      * @QueryParam(key="id", param="userId")
@@ -218,7 +218,7 @@ class News
         string $app_mode,         // $_ENV['app_mode'];
         string $token,            // $_POST['token'];
         string $server            // $_SERVER['SERVER_NAME'];
-    ) : ResourceOjbect {
+    ) : ResourceObject {
 ```
 
 この機能を使うためには引数のデフォルトに`null`が必要です。
@@ -231,12 +231,12 @@ class News
 ```php?start_inline
 use BEAR\Resource\Annotation\ResourceParam;
 
-class News
+class News extends ResourceObject
 {
     /**
      * @ResourceParam(param=“name”, uri="app://self//login#nickname")
      */
-    public function onGet(string $name) : ResoureObject
+    public function onGet(string $name) : ResourceObject
     {
 ```
 
@@ -252,7 +252,7 @@ class News
 
 ```php?start_inline
 
-$weekday = $api->resource->get('app://self/weekday', ['year' => 2000, 'month'=>1, 'day'=>1]);
+$weekday = $api->resource->get('app://self/weekday', ['year' => 2000, 'month'=> 1, 'day'=> 1]);
 var_dump($weekday->body); // as array
 //array(1) {
 //    ["weekday"]=>
@@ -275,7 +275,7 @@ echo $weekday; // as string
 リソース特有の表現が必要な時は以下のように独自のレンダラーをインジェクトします。
 
 ```php?start_inline
-class Index
+class Index extends ResourceObject
 {
     // ...
     /**
@@ -292,7 +292,7 @@ class Index
 or
 
 ```php?start_inline
-class Index
+class Index extends ResourceObject
 {
     /**
      * @Inject
@@ -322,7 +322,7 @@ class Index
 リソース特有の転送を行う時は以下のメソッドをオーバーライドします。
 
 ```php?start_inline
-class Index
+class Index extends ResourceObject
 {
     // ...
     public function transfer(TransferInterface $responder, array $server)
@@ -345,7 +345,7 @@ class Index extends ResourceObject
 {
     use ResourceInject;
 
-    public function onGet() : ResourceOjbect
+    public function onGet() : ResourceObject
     {
         $this->body = [
             'posts' => $this->resource->get('app://self/blog/posts', ['id' => 1])
@@ -415,7 +415,7 @@ $blog = $this
     /**
      * @Link(rel="profile", href="/profile{?id}")
      */
-    public function onGet($id) : ResourceOjbect
+    public function onGet($id) : ResourceObject
     {
         $this->body = [
             'id' => 10
@@ -448,7 +448,7 @@ use BEAR\Resource\Annotation\Link;
 /**
  * @Link(crawl="post-tree", rel="post", href="app://self/post?author_id={id}")
  */
-public function onGet($id = null) : ResourceOjbect
+public function onGet($id = null) : ResourceObject
 ```
 
 `linkCrawl`は`crawl`の付いたリンクを[クロール](https://github.com/koriym/BEAR.Resource#crawl)してリソースを集めます。
@@ -460,13 +460,13 @@ public function onGet($id = null) : ResourceOjbect
 ```php?start_inline
 use BEAR\Resource\Annotation\Embed;
 
-class News
+class News extends ResourceObject
 {
     /**
      * @Embed(rel="sports", src="/news/sports")
      * @Embed(rel="weater", src="/news/weather")
      */
-    public function onGet() : ResourceOjbect
+    public function onGet() : ResourceObject
 ```
 
 埋め込まれるのはリソース**リクエスト**です。レンダリングの時に実行されますが、その前に`addQuery()`メソッドで引数を加えたり`withQuery()`で引数を置き換えることができます。
@@ -476,12 +476,12 @@ class News
 ```php?start_inline
 use BEAR\Resource\Annotation\Embed;
 
-class News
+class News extends ResourceObject
 {
     /**
      * @Embed(rel="website", src="/website{?id}")
      */
-    public function onGet(string $id) : ResourceOjbect
+    public function onGet(string $id) : ResourceObject
     {
         // ...
         $this->body['website']->addQuery(['title' => $title]); // 引数追加
@@ -517,14 +517,14 @@ use BEAR\RepositoryModule\Annotation\Cacheable;
 /**
  * @Cacheable
  */
-class Todo
+class Todo extends ResourceObject
 {
-    public function onGet(string $id) : ResoureObject
+    public function onGet(string $id) : ResourceObject
     {
         // read
     }
 
-    public function onPost(string $id, string $name) : ResoureObject
+    public function onPost(string $id, string $name) : ResourceObject
     {
         // update
     }
@@ -557,13 +557,13 @@ class Todo
 use BEAR\RepositoryModule\Annotation\Purge;
 use BEAR\RepositoryModule\Annotation\Refresh;
 
-class News
+class News extends ResourceObject
 {
   /**
    * @Purge(uri="app://self/user/friend?user_id={id}")
    * @Refresh(uri="app://self/user/profile?user_id={id}")
    */
-   public function onPut(string $id, string $name, int $age)
+   public function onPut(string $id, string $name, int $age)) : ResourceObject
 ```
 
 別のクラスのリソースや関連する複数のリソースの`QueryRepository`の内容を更新することができます。
@@ -575,13 +575,13 @@ uri-templateに与えられる値は他と同様に`$body`にアサインした�
 use BEAR\RepositoryModule\Annotation\Purge;
 use BEAR\RepositoryModule\Annotation\Refresh;
 
-class News
+class News extends ResourceObject
 {
   /**
    * @Purge(uri="app://self/user/friend?user_id={id}")
    * @Refresh(uri="app://self/user/profile?user_id={id}")
    */
-   public function onPut($id, $name, $age) : ResoureObject
+   public function onPut($id, $name, $age) : ResourceObject
 ```
 
 ## クエリーリポジトリの直接操作
@@ -607,10 +607,10 @@ class Foo
         // 消去
         $this->repository->purge($resourceObject->uri);
         $this->repository->purge(new Uri('app://self/user'));
-        $this->queryRepository->purge(new Uri('app://self/ad/?id={id}', ['id' => 1]));
+        $this->repository->purge(new Uri('app://self/ad/?id={id}', ['id' => 1]));
 
         // 読み込み
-        list($code, $headers, $body, $view) = $repository->get(new Uri('app://self/user'));
+        list($code, $headers, $body, $view) = $this->repository->get(new Uri('app://self/user'));
      }
 ```
 
@@ -628,10 +628,10 @@ class Index extends ResourceObject
 {
     use ResourceInject;
 
-    public function onGet(string $status) : ResoureObject
+    public function onGet(string $status) : ResourceObject
     {
         $this->body = [
-            'todos' => $this->resource->uri('app://self/todos')(['status' => $status]); // lazy request
+            'todos' => $this->resource->uri('app://self/todos')(['status' => $status]) // lazy request
         ];
 
         return $this;
@@ -700,7 +700,7 @@ class User extends ResourceObject
 {
     use ResourceInject;
 
-    public function onGet(string $id) : ResoureObject
+    public function onGet(string $id) : ResourceObject
     {
         $nickname = $this->resource->get('app://self/login-user', ['id' => $id])->body['nickname'];
         $this->body = [
@@ -719,7 +719,7 @@ class User extends ResourceObject
     /**
      * @ResourceParam(param=“name”, uri="app://self//login-user#nickname")
      */
-    public function onGet(string $id, string $name) : ResoureObject
+    public function onGet(string $id, string $name) : ResourceObject
     {
         $this->body = [
             'profile' => $this->resource->get('app://self/profile', ['name' => $name])->body
@@ -736,7 +736,7 @@ class User extends ResourceObject
      * @ResourceParam(param=“name”, uri="app://self//login-user#nickname")
      * @Embed(rel="profile", src="app://self/profile")
      */
-    public function onGet(string $id, string $name) : ResoureObject
+    public function onGet(string $id, string $name) : ResourceObject
     {
         $this->body['profile']->addQuery(['name'=>$name]);
 

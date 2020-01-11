@@ -37,11 +37,11 @@ class Index extends ResourceObject
 ```php?start_inline
 class Todo extends ResourceObject
 {
-    public function onPost(string $id, string $todo) : ResourceOjbect
+    public function onPost(string $id, string $todo) : ResourceObject
     {
         $this->code = 201; // status code
         $this->headers = [ // header
-            'Location' => '/todo/new_id';
+            'Location' => '/todo/new_id'
         ];
 
         return $this;
@@ -107,7 +107,7 @@ Rendering is done when a resource is string evaluated.
 
 ```php?start_inline
 
-$weekday = $api->resource->get('app://self/weekday', ['year' => 2000, 'month'=>1, 'day'=>1]);
+$weekday = $api->resource->get('app://self/weekday', ['year' => 2000, 'month'=> 1, 'day'=> 1]);
 var_dump($weekday->body); // as array
 //array(1) {
 //    ["weekday"]=>
@@ -129,7 +129,7 @@ It is injected according to the context so you do not usually need to be aware.
 When a resource specific expression is required, we inject our own renderer as follows.
 
 ```php?start_inline
-class Index
+class Index extends ResourceObject
 {
     // ...
     /**
@@ -146,7 +146,7 @@ class Index
 or
 
 ```php?start_inline
-class Index
+class Index extends ResourceObject
 {
     /**
      * @Inject
@@ -177,7 +177,7 @@ Like a renderer, you do not have to be aware of it normally.
 When doing a resource specific transfer, override the following method.
 
 ```php?start_inline
-class Index
+class Index extends ResourceObject
 {
     // ...
     public function transfer(TransferInterface $responder, array $server)
@@ -200,7 +200,7 @@ class Index extends ResourceObject
 {
     use ResourceInject;
 
-    public function onGet() : ResourceOjbect
+    public function onGet() : ResourceObject
     {
         $this->body = [
             'posts' => $this->resource->get('app://self/blog/posts', ['id' => 1])
@@ -260,7 +260,7 @@ Three type of links are provided.
 /**
  * @Link(rel="profile", href="/profile{?id}")
  */
-public function onGet($id) : ResourceOjbect
+public function onGet($id) : ResourceObject
 ```
 
 Set the link with `rel` key name and `href` resource URI.
@@ -273,7 +273,7 @@ use BEAR\Resource\Annotation\Link;
 /**
  * @Link(crawl="post-tree", rel="post", href="app://self/post?author_id={id}")
  */
-public function onGet($id = null)
+public function onGet($id = null) : ResourceObject
 ```
 
 A `crawl` tagged link will then be [crawled](https://github.com/bearsunday/BEAR.Resource/blob/1.x/README.md#crawl) with `linkCrawl`.
@@ -287,13 +287,13 @@ You can embed another resource by using `src`.
 ```php?start_inline
 use BEAR\Resource\Annotation\Embed;
 
-class News
+class News extends ResourceObject
 {
     /**
      * @Embed(rel="sports", src="/news/sports")
      * @Embed(rel="weater", src="/news/weather")
      */
-    public function onGet() : ResourceOjbect
+    public function onGet() : ResourceObject
 ```
 
 The resource **request** is embeded. The request is invoked when rendering. You can add parameters or replace with `addQuery()` or `withQuery()`
@@ -301,12 +301,12 @@ The resource **request** is embeded. The request is invoked when rendering. You 
 ```php?start_inline
 use BEAR\Resource\Annotation\Embed;
 
-class News
+class News extends ResourceObject
 {
     /**
      * @Embed(rel="website", src="/website{?id}")
      */
-    public function onGet(string $id) : ResourceOjbect
+    public function onGet(string $id) : ResourceObject
     {
         // ...
         $this['website']->addQuery(['title' => $title]); // add parameters
@@ -325,12 +325,12 @@ For instance, Instead you "pull" `$_GET` or any global the web context values, Y
 ```php?start_inline
 use Ray\WebContextParam\Annotation\QueryParam;
 
-class News
+class News extends ResourceObject
 {
     /**
      * @QueryParam("id")
      */
-    public function foo(strin $id) : ResoureObject
+    public function foo(strin $id) : ResourceObject
     {
       // $id = $_GET['id'];
 ```
@@ -341,12 +341,12 @@ You can specify `key` and `param` values when they don't match.
 ```php?start_inline
 use Ray\WebContextParam\Annotation\CookieParam;
 
-class News
+class News extends ResourceObject
 {
     /**
      * @CookieParam(key="id", param="tokenId")
      */
-    public function foo(string $tokenId) : ResoureObject
+    public function foo(string $tokenId) : ResourceObject
     {
       // $tokenId = $_COOKIE['id'];
 ```
@@ -361,7 +361,7 @@ use Ray\WebContextParam\Annotation\EnvParam;
 use Ray\WebContextParam\Annotation\FormParam;
 use Ray\WebContextParam\Annotation\ServerParam;
 
-class News
+class News extends ResourceObject
 {
     /**
      * @QueryParam(key="id", param="userId")
@@ -376,7 +376,7 @@ class News
         string $app_mode,         // $_ENV['app_mode'];
         string $token,            // $_POST['token'];
         string $server            // $_SERVER['SERVER_NAME'];
-    ) : ResourceOjbect {
+    ) : ResourceObject {
 ```
 
 This `bind parameter` is also very useful for testing.
@@ -388,12 +388,12 @@ We can bind the status of another resource to a parameter with the `@ResourcePar
 ```php?start_inline
 use BEAR\Resource\Annotation\ResourceParam;
 
-class News
+class News extends ResourceObject
 {
     /**
      * @ResourceParam(param=“name”, uri="app://self//login#nickname")
      */
-    public function onGet(string $name) : ResourceOjbect
+    public function onGet(string $name) : ResourceObject
     {
 ```
 
@@ -423,14 +423,14 @@ use BEAR\RepositoryModule\Annotation\Cacheable;
 /**
  * @Cacheable
  */
-class Todo
+class Todo extends ResourceObject
 {
-    public function onGet(string $id) : ResoureObject
+    public function onGet(string $id) : ResourceObject
     {
         // read
     }
 
-    public function onPost(string $id, string $name) : ResoureObject
+    public function onPost(string $id, string $name) : ResourceObject
     {
         // update
     }
@@ -464,13 +464,13 @@ You can also update caches with the `@Purge` and `@Refresh` annotation.
 use BEAR\RepositoryModule\Annotation\Purge;
 use BEAR\RepositoryModule\Annotation\Refresh;
 
-class News
+class News extends ResourceObject
 {
   /**
    * @Purge(uri="app://self/user/friend?user_id={id}")
    * @Refresh(uri="app://self/user/profile?user_id={id}")
    */
-   public function onPut(string $id, string $name, int $age) : ResoureObject
+   public function onPut(string $id, string $name, int $age) : ResourceObject
 ```
 
 You can update the cache for another resource class or even multiple resources at once. `@Purge` deletes a cache where `@Refresh` will recreate cache data.
@@ -490,10 +490,10 @@ class Index extends ResourceObject
 {
     use ResourceInject;
 
-    public function onGet(string $status) : ResoureObject
+    public function onGet(string $status) : ResourceObject
     {
         $this->body = [
-            'todos' => $this->resource->uri('app://self/todos')(['status' => $status]); // lazy request
+            'todos' => $this->resource->uri('app://self/todos')(['status' => $status]) // lazy request
         ];
 
         return $this;
@@ -562,7 +562,7 @@ class User extends ResourceObject
 {
     use ResourceInject;
 
-    public function onGet(string $id) : ResoureObject
+    public function onGet(string $id) : ResourceObject
     {
         $nickname = $this->resource->get('app://self/login-user', ['id' => $id])->body['nickname'];
         $this->body = [
@@ -581,7 +581,7 @@ class User extends ResourceObject
     /**
      * @ResourceParam(param=“name”, uri="app://self//login-user#nickname")
      */
-    public function onGet(string $id, string $name) : ResoureObject
+    public function onGet(string $id, string $name) : ResourceObject
     {
         $this->body = [
             'profile' => $this->resource->get('app://self/profile', ['name' => $name])->body
@@ -598,7 +598,7 @@ class User extends ResourceObject
      * @ResourceParam(param=“name”, uri="app://self//login-user#nickname")
      * @Embed(rel="profile", src="app://self/profile")
      */
-    public function onGet(string $id, string $name) : ResoureObject
+    public function onGet(string $id, string $name) : ResourceObject
     {
         $this->body['profile']->addQuery(['name'=>$name]);
 
