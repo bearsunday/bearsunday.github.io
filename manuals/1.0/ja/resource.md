@@ -11,7 +11,7 @@ BEAR.Sundayアプリケーションはリンクで接続されたリソースの
 
 ## サービスとしてのオブジェクト
 
-`ResourceObject`はHTTPのメソッドがPHPのメソッドにマップされたサービスとしてのオブジェクト (Object as a servie)です。ステートレスなリクエストで自身のリソース状態を表現にして転送します。
+`ResourceObject`はHTTPのメソッドがPHPのメソッドにマップされたサービスとしてのオブジェクト (Object as a service)です。ステートレスなリクエストで自身のリソース状態を表現にして転送します。
 ([Representational State Transfer)](http://ja.wikipedia.org/wiki/REST)
 
 ```php?start_inline
@@ -314,7 +314,7 @@ class Index extends ResourceObject
 
 ## 転送
 
-トランスポンダーが表現(view)をクライント（コンソールやWebクライアント）に転送します。
+トランスポンダーが表現(view)をクライアント（コンソールやWebクライアント）に転送します。
 転送は単に`header`関数や`echo`で行われることがほとんどですが、[ストリーム出力](stream.html)で転送することもできます。
 
 レンダラーと同じように普段は意識する必要はありません。
@@ -378,7 +378,7 @@ $posts = $request(['id' => 1]);
 
 ## リンクリクエスト
 
-クラインアントはハイパーリンクで接続されているリソースをリンクすることができます。
+クライアントはハイパーリンクで接続されているリソースをリンクすることができます。
 
 ```php?start_inline
 $blog = $this
@@ -464,7 +464,7 @@ class News extends ResourceObject
 {
     /**
      * @Embed(rel="sports", src="/news/sports")
-     * @Embed(rel="weater", src="/news/weather")
+     * @Embed(rel="weather", src="/news/weather")
      */
     public function onGet() : ResourceObject
 ```

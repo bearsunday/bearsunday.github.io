@@ -291,12 +291,12 @@ class News extends ResourceObject
 {
     /**
      * @Embed(rel="sports", src="/news/sports")
-     * @Embed(rel="weater", src="/news/weather")
+     * @Embed(rel="weather", src="/news/weather")
      */
     public function onGet() : ResourceObject
 ```
 
-The resource **request** is embeded. The request is invoked when rendering. You can add parameters or replace with `addQuery()` or `withQuery()`
+The resource **request** is embedded. The request is invoked when rendering. You can add parameters or replace with `addQuery()` or `withQuery()`
 
 ```php?start_inline
 use BEAR\Resource\Annotation\Embed;
@@ -330,7 +330,7 @@ class News extends ResourceObject
     /**
      * @QueryParam("id")
      */
-    public function foo(strin $id) : ResourceObject
+    public function foo(string $id) : ResourceObject
     {
       // $id = $_GET['id'];
 ```
