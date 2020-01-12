@@ -106,7 +106,7 @@ class Tweet extends AbstractModule
     {
         $this->bind(TweetClient::class);
         $this->bind(TweeterInterface::class)->to(SmsTweeter::class)->in(Scope::SINGLETON);
-        $this->bind(UrlShortenerInterface)->toProvider(TinyUrlShortener::class);
+        $this->bind(UrlShortenerInterface::class)->toProvider(TinyUrlShortener::class);
         $this->bind('')->annotatedWith(Username::class)->toInstance("koriym");
     }
 }
@@ -296,7 +296,7 @@ class WebApi implements WebApiInterface
     }
 
     /**
-     * @Inect(optional=true)
+     * @Inject(optional=true)
      * @Named("token")
      */
     public function setOptionalToken(string $token)
@@ -324,7 +324,7 @@ protected function configure()
             WebApi::class,                              // string $class_name
             [
                 ['id' => 'user_id'],                    // array $name
-                ['passowrd' => 'user_password']
+                ['password' => 'user_password']
             ],
             (new InjectionPoints)                       // InjectionPoints　$setter_injection
                 ->addMethod('setGuzzle', 'token')
@@ -361,7 +361,7 @@ protected function configure()
 }
 ```
 
-## Provier Bindings
+## Provider Bindings
 
 Provider bindings map a type to its provider(factory).
 
@@ -574,7 +574,7 @@ public function onInit()
 Methods are called in the following order:
 
  * Constructor
- * Setter methods (randam order)
+ * Setter methods (random order)
  * `@PostConstruct` method
 
 ## Scopes
