@@ -215,7 +215,7 @@ This code invokes a `GET` request to `app://self/blog/posts` `app` resource with
 $posts = $this->resource->get->uri('app://self/posts')->withQuery(['id' => 1])->eager->request();
 // PHP 7.x and up
 $posts = $this->resource->get->uri('app://self/posts')(['id' => 1]);
-// getは省略可
+// you can omit `get`
 $posts = $this->resource->uri('app://self/posts')(['id' => 1]);
 // bear/resource 1.11 and up
 $posts = $this->resource->get('app://self/posts', ['id' => 1]);
