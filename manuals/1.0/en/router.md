@@ -29,7 +29,7 @@ namespace MyVendor\MyProject\Resource\Page;
 // page://self/index
 class Index extends ResourceObject
 {
-    public function onGet() : ResourceObject // GETリクエスト
+    public function onGet() : ResourceObject // GET request
     {
     }
 }
@@ -50,7 +50,7 @@ The BEAR.Sunday application works on both the Web and the CLI.
 The path of the URI using hyphens and using multiple words uses the class name of Camel Case.
 For example `/wild-animal` requests are accessed to the `WildAnimal` class.
 
-## Prameters
+## Parameters
 
 The name of the PHP method executed corresponding to the HTTP method and the value passed are as follows.
 
