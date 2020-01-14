@@ -104,7 +104,7 @@ class Tweet extends AbstractModule
     {
         $this->bind(TweetClient::class);
         $this->bind(TweeterInterface::class)->to(SmsTweeter::class)->in(Scope::SINGLETON);
-        $this->bind(UrlShortenerInterface)->toProvider(TinyUrlShortener::class);
+        $this->bind(UrlShortenerInterface::class)->toProvider(TinyUrlShortener::class);
         $this->bind('')->annotatedWith(Username::class)->toInstance("koriym");
     }
 }
@@ -289,7 +289,7 @@ class WebApi implements WebApiInterface
     }
 
     /**
-     * @Inect(optional=true)
+     * @Inject(optional=true)
      * @Named("token")
      */
     public function setOptionalToken(string $token)
@@ -317,7 +317,7 @@ protected function configure()
             WebApi::class,                              // string $class_name
             [
                 ['id' => 'user_id'],                    // array $name
-                ['passowrd' => 'user_password']
+                ['password' => 'user_password']
             ],
             (new InjectionPoints)                       // InjectionPoints　$setter_injection
                 ->addMethod('setGuzzle', 'token')
@@ -597,7 +597,7 @@ class Index
     }
 ```
 
-`@Assisted`で提供される依存は、その時に渡された他の引数を参照して決定することもできます。そのためには依存を`プロバイダーバインディング`で束縛して、その[プロバイダー束縛](#provider-bidning)は`MethodInvocationProvider`を依存として受け取るようにします。`get()`メソッドでメソッド実行オブジェクト [MethodInvocation](https://github.com/ray-di/Ray.Aop/blob/2.x/src/MethodInvocation.php) を取得することができ、引数の値や対象のメソッドのプロパティにアクセスすることができます。
+`@Assisted`で提供される依存は、その時に渡された他の引数を参照して決定することもできます。そのためには依存を`プロバイダーバインディング`で束縛して、その[プロバイダー束縛](#プロバイダ束縛)は`MethodInvocationProvider`を依存として受け取るようにします。`get()`メソッドでメソッド実行オブジェクト [MethodInvocation](https://github.com/ray-di/Ray.Aop/blob/2.x/src/MethodInvocation.php) を取得することができ、引数の値や対象のメソッドのプロパティにアクセスすることができます。
 
 ```php?start_inline
 class HorizontalScaleDbProvider implements ProviderInterface
