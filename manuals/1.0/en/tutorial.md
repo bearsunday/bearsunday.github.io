@@ -475,9 +475,9 @@ class BenchMarker implements MethodInterceptor
 ```
 
 You can invoke the original method with `$invocation->proceed();` inside an `invoke` method.
-You can then reset and stop the timer on before and after this is invoked. The target method object and method name is taken in the form of a [MethodInvocation](http://www.bear-project.net/Ray.Aop/build/apigen/class-Ray.Aop.MethodInvocation.html) object sent to the invoke method.
+You can then reset and stop the timer on before and after this is invoked. The target method object and method name is taken in the form of a [MethodInvocation](https://github.com/ray-di/Ray.Aop/blob/2.x/src/MethodInvocation.php) object sent to the invoke method.
 
-Next, provide an [annotation](http://docs.doctrine-project.org/projects/doctrine-common/en/latest/reference/annotations.html) class at `src/Annotation/BenchMark.php`.
+Next, provide an [annotation](https://www.doctrine-project.org/projects/doctrine-annotations/en/1.6/index.html) class at `src/Annotation/BenchMark.php`.
 
 ```php
 <?php

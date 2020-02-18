@@ -473,9 +473,9 @@ class BenchMarker implements MethodInterceptor
 ```
 
 元のメソッドを横取りしたインターセプターの`invoke`メソッドでは、元メソッドの実行を`$invocation->proceed();`で行うことができます。
-その前後にタイマーのリセット、計測記録の処理を行います。（メソッド実行オブジェクト[MethodInvocation](http://www.bear-project.net/Ray.Aop/build/apigen/class-Ray.Aop.MethodInvocation.html) `$invocation`から元メソッドのオブジェクトとメソッドの名前を取得しています。）
+その前後にタイマーのリセット、計測記録の処理を行います。（メソッド実行オブジェクト[MethodInvocation](https://github.com/ray-di/Ray.Aop/blob/2.x/src/MethodInvocation.php) `$invocation`から元メソッドのオブジェクトとメソッドの名前を取得しています。）
 
-次にベンチマークをしたいメソッドに目印をつけるための[アノテーション](http://docs.doctrine-project.org/projects/doctrine-common/en/latest/reference/annotations.html)を`src/Annotation/BenchMark.php `に作成します。
+次にベンチマークをしたいメソッドに目印をつけるための[アノテーション](https://www.doctrine-project.org/projects/doctrine-annotations/en/1.6/index.html)を`src/Annotation/BenchMark.php `に作成します。
 
 ```php
 <?php
