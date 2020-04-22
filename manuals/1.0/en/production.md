@@ -138,12 +138,31 @@ Set up in a different directory and switch it (by symlink) if the setup is OK.
 
 When setting up, you can warm up the project using the `vendor/bin/bear.compile` script. The compilation script prepares all static cache files such as dynamically created files and annotations for DI / AOP in advance.
 
-Since injection is done in all classes, there is no problem of DI error at runtime. In addition, although `.env` generally contains credential information such as API key and password, all contents are imported into PHP file and can be deleted after compilation. Compilation makes the deployment faster and safer.
+Since injection is done in all classes, there is no problem of DI error at runtime. In addition, although `.env` generally contains credential information such as API key and password, all contents are imported into PHP file and can be deleted after compilation. Compilation makes the deployment faster and safer. The optimized autoload.php file and preload.php are also output.
 
 **Execution at the console**
 
 ```
 vendor/bin/bear.compile 'Polidog\Todo' prod-html-app /path/to/prject
 ```
+
+### autoload.php
+
+It will output an autoload.php file optimized for `{project_path}/autoload.php`, which is much faster than the `vendor/autoload.php` dumped by `composer dumpa-autoload --optimize`.
+
+### preload.php
+
+You need to specify `opcache.preload` and `opcache.preload` in `php.ini` to enable preload, a feature supported in PHP 7.4 but not recommended for `7.4.0`-`7.4.2`.
+
+Example)
+
+```
+opcache.preload=/path/to/project/preload.php
+opcache.preload_user=www-data
+```
+
+Note: Please refer to bechmark for performance information.
+
+## Deploy
 
 Deployer's [BEAR.Sunday recipe](https://github.com/bearsunday/deploy) is convenient and safe to use. Consider using the other server configuration tool as well as referring or running the Deployer script. Since Deployer generates a project directory each time, you do not have to worry about regenerating `$app`.

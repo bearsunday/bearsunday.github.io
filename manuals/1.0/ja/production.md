@@ -134,7 +134,7 @@ deployの度にリソースキャッシュを破棄したい場合は`$cacheVers
 
 ### コンパイル推奨
 
-セットアップを行う際に`vendor/bin/bear.compile`スクリプトを使ってプロジェクトを**ウオームアップ**することができます。コンパイルスクリプトはDI/AOP用の動的に作成されるファイルやアノテーションなどの静的なキャッシュファイルを全て事前に作成します。
+セットアップを行う際に`vendor/bin/bear.compile`スクリプトを使ってプロジェクトを**ウオームアップ**することができます。コンパイルスクリプトはDI/AOP用の動的に作成されるファイルやアノテーションなどの静的なキャッシュファイルを全て事前に作成し、最適化されたautoload.phpファイルとpreload.phpが出力されます。
 
 全てのクラスでインジェクションを行うのでランタイムでDIのエラーが出ることもありません。また`.env`には一般にAPIキーやパスワードなどのクレデンシャル情報が含まれますが、内容は全てPHPファイルに取り込まれるのでコンパイル後に消去可能です。コンパイルはdeployをより高速で安全にします。
 
@@ -143,6 +143,23 @@ deployの度にリソースキャッシュを破棄したい場合は`$cacheVers
 ```
 vendor/bin/bear.compile 'Polidog\Todo' prod-html-app /path/to/prject
 ```
+
+### autoload.php
+
+`{project_path}/autoload.php`に最適化されたautoload.phpファイルが出力されます。`composer dumpa-autoload --optimize`でダンプされる`vendor/autoload.php`よりずっと高速です。
+
+### preload.php
+
+`{project_path}/preload.php`に最適化されたpreload.phpファイルが出力されます。preloadを有効にするためにはphp.iniで[opcache.preload](https://www.php.net/manual/ja/opcache.configuration.php#ini.opcache.preload)、[opcache.preload](https://www.php.net/manual/ja/opcache.configuration.php#ini.opcache.preload-user)を指定する必要があります。PHP 7.4でサポートされた機能ですが、`7.4.0`-`7.4.2`では不安定で推奨できません。`7.4.4`以上の最新版を使いましょう。
+
+例）
+```
+opcache.preload=/path/to/project/preload.php
+opcache.preload_user=www-data
+```
+
+Note: パフォーマンスについては[bechmark](https://github.com/bearsunday/BEAR.HelloworldBenchmark/wiki/Intel-Core-i5-3.8-GHz-iMac-(Retina-5K,-27-inch,-2017)---PHP-7.4.4)を参考にしてください。
+
 
 ### Deployerサポート
 
