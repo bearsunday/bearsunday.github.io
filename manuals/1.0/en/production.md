@@ -28,7 +28,7 @@ exit((require dirname(__DIR__) . '/bootstrap.php')('prod-api-app'));
 **In production, You need to regenerate $app cache in each deploy.**
 
 To regenerate the `$app` cache, You **change the timestamp of the `src/` directory**. The BEAR.Sunday framework recognise it, then it re-generate `$app` and whole DI/AOP files under `tmp/` directory.
- 
+
 ## ProdModule
 
 Set `ProdModule` for the application in `src/Module/ProdModule.php` to customize the bindings for production and to allow HTTP OPTIONS methods.
@@ -125,48 +125,6 @@ $this->install(new CacheVersionModule($cacheVersion));
 ```
 
 If you want to destroy the resource cache every time you deploy, assign time and random value to `$ cacheVersion`. (This statement is invoked only once after deploy.)
-
-## HTTP Cache
-
-The resource annotated with the `@Cacheable`, outputs an `ETag` entity tag.
-
-By using this `ETag`, we can return a `304` (Not Modified) appropriate response when the resource is not modified.
-
-（Therefore, we can save not only the cpu cost but also the network transfer cost.）
-
-### App
-
-To use `HttpCache` in a script, we are going to inject `HttpCache` using `HttpCacheInject` trait in `App` class.
-
-```php?start_inline
-namespace MyVendor\MyApi\Module;
-
-use BEAR\QueryRepository\HttpCacheInject; // Add this line
-use BEAR\Sunday\Extension\Application\AbstractApp;
-use Ray\Di\Di\Inject;
-
-class App extends AbstractApp
-{
-    use HttpCacheInject; // Add this line
-}
-```
-
-### bootstrap
-
-Next, modify the `route` section in `bootstrap/bootstrap.php` to return a `304` when the contents are not modified, by adding an `if` conditional statement.
-
-```php?start_inline
-route: {
-    $app = (new Bootstrap)->getApp(__NAMESPACE__, $context);
-    if ($app->httpCache->isNotModified($_SERVER)) {
-        http_response_code(304);
-        exit(0);
-}
-
-```
-
-`ETag` is also updated automatically, but you need to specify the relation of the resource caches using `@Refresh` and `@Purge` annotations.
-
 
 ## Deploy
 

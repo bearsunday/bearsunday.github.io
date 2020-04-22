@@ -5,8 +5,6 @@ category: Manual
 permalink: /manuals/1.0/ja/http-cache.html
 ---
 
-*Work in Progress (`bear/package ^1.9`が必要です）*
-
 # HTTPキャッシュ
 
 [RFC2616 Hypertext Transfer Protocol (HTTP/1.1): Caching](https://triple-underscore.github.io/RFC2616-ja.html#section-13)ではHTTPキャッシュの目的を以下のように定めています。
@@ -43,7 +41,7 @@ REST標準のキャッシュ制約に従う事で**RFC7234**をサポートし�
 
 `no-store`は単純にレスポンスのすべてのキャッシュを禁止します。
 
-### 
+###
 ### 最適なCache-Control ポリシーの定義[^5]
 
 <img src="https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/images/http-cache-decision-tree.png?hl=ja">

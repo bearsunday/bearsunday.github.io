@@ -123,45 +123,6 @@ $this->install(new CacheVersionModule($cacheVersion));
 
 deployの度にリソースキャッシュを破棄したい場合は`$cacheVersion`に時刻や乱数の値を割り当てます。
 
-## HTTP キャッシュ
-
-キャッシュ可能(`@Cacheable`)とアノテートしたリソースはエンティティタグ`ETag`を出力します。
-
-この`ETag`を使ってリソースに変更が無い時は自動で適切な`304` (Not Modified)のレスポンスコードを返すことができます。
-（この時、ネットワークの転送コストだけでなく、CPUコストも最小限のものにします。）
-
-### App
-
-`HttpCache`をスクリプトで使うために`App`クラスで`HttpCacheInject`のtraitを使って`HttpCache`をインジェクトします。
-
-```php?start_inline
-namespace MyVendor\MyApi\Module;
-
-use BEAR\QueryRepository\HttpCacheInject; // この行を追加
-use BEAR\Sunday\Extension\Application\AbstractApp;
-use Ray\Di\Di\Inject;
-
-class App extends AbstractApp
-{
-    use HttpCacheInject; // この行を追加
-}
-```
-
-### bootstrap
-
-`bootstrap/bootstrap.php`で以下のように`if`文を追加して、`ETag`のコンテンツに変更がなければ`304 (NotModified)`を出力するようにします。
-
-```php?start_inline
-
-$app = (new Bootstrap)->getApp('BEAR\HelloWorld', $context, dirname(__DIR__));
-if ($app->httpCache->isNotModified($_SERVER)) {
-    http_response_code(304);
-    exit(0);
-}
-
-```
-
-`ETag`の更新は自動で行われますが、`@Refresh`や`@Purge`アノテーションを使ってリソースキャッシュの破棄の関係性を適切に指定しておかなければなりません。
 
 ## デプロイ
 
