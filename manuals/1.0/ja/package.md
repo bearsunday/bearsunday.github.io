@@ -15,26 +15,19 @@ permalink: /manuals/1.0/ja/package.html
 
 ### 構造
 
-BEAR.Sundayアプリケーションのファイルレイアウトは[php-pds/skeleton](https://github.com/php-pds/skeleton)に準拠しています。
+BEAR.Sundayアプリケーションのファイルレイアウトは [php-pds/skeleton](https://github.com/php-pds/skeleton) に準拠しています。
 
 ```
 ├── bin
-│   ├── app.php
-│   └── page.php
-├── env.php
-├── autoload.php
 ├── bootstrap.php
 ├── composer.json
-├── composer.lock
 ├── public
 │   └── index.php
 ├── src
-│   ├── (Annotation)
-│   ├── (Interceptor)
 │   ├── Module
 │   └── Resource
 ├── tests
-│   ├── (Fake)
+│   └── 
 ├── var
 │   ├── (conf)
 │   ├── log
@@ -76,15 +69,15 @@ Web公開フォルダです。
 ### var/
 
 `log`,`tmp`フォルダは書き込み可能にします。`var/www`はWebドキュメントの公開エリアです。
-
+`conf`など可変のファイルを設置します。
 
 
 ## 実行シーケンス
 
- 1. コンソール入力(bin/app.php, page.php)またはWebサーバーのエントリーファイル(public/index.php)がbootファイル`bootstrap.php`を実行します。
- 3. `bootstrap.php`では実行コンテキストに応じたアプリケーションオブジェクト`$app`を作成します。
- 4. `$app`に含まれるルーターは外部のリクエストをアプリケーション内部のリソースリクエストに変換します。
- 4. リソースでリクエストが実行され結果がクライアントに転送されます。
+ 1. コンソール入力(`bin/app.php`, `page.php`)またはWebサーバーのエントリーファイル(`public/index.php`)が`bootstrap.php`を実行します。
+ 3. `bootstrap.php`では実行コンテキストに応じたルートオブジェクト`$app`を作成します。
+ 4. `$app`に含まれるルーターは外部のHTTPまたはCLIリクエストをアプリケーション内部のリソースリクエストに変換します。
+ 4. リソースリクエストが実行され、結果がクライアントに転送されます。
 
 
 
@@ -97,14 +90,14 @@ Web公開フォルダです。
  [![Code Coverage](https://scrutinizer-ci.com/g/ray-di/Ray.Aop/badges/coverage.png?b=2.x)](https://scrutinizer-ci.com/g/ray-di/Ray.Aop/)
  [![Build Status](https://secure.travis-ci.org/ray-di/Ray.Aop.png?b=2.x)](http://travis-ci.org/ray-di/Ray.Aop)
 
-Javeの[AOPアライアンス](http://aopalliance.sourceforge.net/)に準拠したAOPフレームワークです。
+Javeの [AOPアライアンス](http://aopalliance.sourceforge.net/) に準拠したAOPフレームワークです。
 
 ### ray/di
  [![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/ray-di/Ray.Di/badges/quality-score.png?b=2.x)](https://scrutinizer-ci.com/g/ray-di/Ray.Di/)
  [![Code Coverage](https://scrutinizer-ci.com/g/ray-di/Ray.Di/badges/coverage.png?b=2.x)](https://scrutinizer-ci.com/g/ray-di/Ray.Di/)
  [![Build Status](https://secure.travis-ci.org/ray-di/Ray.Di.png?b=2.x)](http://travis-ci.org/ray-di/Ray.Di)
 
-[google/guice](https://github.com/google/guice)スタイルのDIフレームワークです。`ray/aop`を含みます。
+[google/guice](https://github.com/google/guice) スタイルのDIフレームワークです。`ray/aop`を含みます。
 
 ### bear/resource
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/bearsunday/BEAR.Resource/badges/quality-score.png?b=1.x)](https://scrutinizer-ci.com/g/bearsunday/BEAR.Resource/?branch=1.x)
@@ -125,7 +118,7 @@ PHPのオブジェクトをRESTサービスとして使用するRESTフレーム
 [![Code Coverage](https://scrutinizer-ci.com/g/bearsunday/BEAR.Package/badges/coverage.png?b=1.x)](https://scrutinizer-ci.com/g/bearsunday/BEAR.Package/?branch=1.x)
 [![Build Status](https://travis-ci.org/bearsunday/BEAR.Package.svg?branch=1.x)](https://travis-ci.org/bearsunday/BEAR.Package)
 
-`bear/sunday`を実装したWebフレームワークです。
+`bear/sunday`の実装パッケージです。`bear/sunday`を含みます。
 
 ### bear/middleware
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/bearsunday/BEAR.Middleware/badges/quality-score.png?b=1.x)](https://scrutinizer-ci.com/g/bearsunday/BEAR.Middleware/?branch=1.x)
@@ -176,7 +169,7 @@ PSR-7のミドルウエアのためのオプションパッケージです。
 
 ## Semver
 
-全てのパッケージは[セマンティックバージョニング](https://semver.org/lang/ja/)に従います。マイナーバージョンアップでコードの修正が必要になる事はありません。
+全てのパッケージは[セマンティックバージョニング](https://semver.org/lang/ja/) に従います。マイナーバージョンアップでは後方互換性が破壊されることはありません。
 
 ---
 
