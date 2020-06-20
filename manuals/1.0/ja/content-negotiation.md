@@ -84,7 +84,7 @@ protected function configure()
 ## @Producesアノテーション
 
 ```php?start_inline
-use use BEAR\Accept\Annotation\Produces;
+use BEAR\Accept\Annotation\Produces;
 
 /**
  * @Produces({"application/hal+json", "text/csv"})
