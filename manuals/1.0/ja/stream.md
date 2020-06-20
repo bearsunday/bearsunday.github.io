@@ -14,7 +14,7 @@ permalink: /manuals/1.0/ja/stream.html
 ストリーム出力用のレンダラーとレスポンダーインジェクトするためにページに[StreamTransferInject](https://github.com/bearsunday/BEAR.Streamer/blob/1.x/src/StreamTransferInject.php)トレイトを`use`します。このダウンロードページの例では`$body`をストリームのリソース変数にしているので、インジェトされたレンダラーは無視されリソースがストリーム出力されます。
 
 ```php?start_inline
-use use BEAR\Streamer\StreamTransferInject;
+use BEAR\Streamer\StreamTransferInject;
 
 class Download extends ResourceObject
 {
