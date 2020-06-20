@@ -396,6 +396,7 @@ use BEAR\Package\AppInjector;
 use BEAR\Resource\ResourceInterface;
 use BEAR\Resource\ResourceObject;
 use Koriym\HttpConstants\ResponseHeader;
+use Koriym\HttpConstants\StatusCode;
 use PHPUnit\Framework\TestCase;
 
 class TicketsTest extends TestCase
@@ -418,8 +419,8 @@ class TicketsTest extends TestCase
             'description' => 'description1',
             'assignee' => 'assignee1'
         ]);
-        $this->assertSame(201, $ro->code);
-        $this->assertStringContainsString('/ticket?id=', $ro->headers['Location']);
+        $this->assertSame(StatusCode::CREATED, $ro->code);
+        $this->assertStringContainsString('/ticket?id=', $ro->headers[ResponseHeader::LOCATION]);
 
         return $ro;
     }
