@@ -60,3 +60,6 @@ permalink: /contributors.html
 - [<img alt="piotzkhider" src="https://avatars1.githubusercontent.com/u/7950487?s=460&v=4" width="117">](https://github.com/piotzkhider)
 - [<img alt="wand2016" src="https://avatars3.githubusercontent.com/u/22491120?s=460&v=4" width="117">](https://github.com/wand2016)
 - [<img alt="YAhiru" src="https://avatars3.githubusercontent.com/u/22848064?s=460&v=4" width="117">](https://github.com/YAhiru)
+- [<img alt="amashigeseiji" src="https://avatars1.githubusercontent.com/u/1837070?s=460&u=08fa959a7c585c6f126e135c06cfad45c7a51c1a&v=4" width="117">](https://github.com/amashigeseiji)
+- [<img alt="apple-x-co" src="https://avatars0.githubusercontent.com/u/8497012?s=460&u=382d0dbecd6682bfd8deb296f25b84d55169cc05&v=4" width="117">](https://github.com/apple-x-co)
+- [<img alt="nes801" src="https://avatars1.githubusercontent.com/u/13078598?s=460&u=f3e3365059c30909db043a0a8e9919211a2db811&v=4" width="117">](https://github.com/nes801)
