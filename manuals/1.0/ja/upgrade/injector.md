@@ -73,7 +73,6 @@ final class Injector
 
 `bootstrap.php`を変更します。
 
-before:
 ```diff
 -$app = (new Bootstrap)->getApp($name, $context, __DIR__);
 +$app = Vendor\Package\Injector::getInstance($context)->getInstance(\BEAR\Sunday\Extension\Application\AppInterface::class);
