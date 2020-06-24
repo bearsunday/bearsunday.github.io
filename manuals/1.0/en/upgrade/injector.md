@@ -9,7 +9,7 @@ permalink: /manuals/1.0/en/upgrade/injector.html
 
 ## Changes
 
-[BEAR.Package 1.10](https://github.com/ bearsunday/BEAR.Package/releases/tag/1.10.0 ), `Bootstrap` and `AppInjector` has been replaced by `Injectpr`.
+[BEAR.Package 1.10](https://github.com/bearsunday/BEAR.Package/releases/tag/1.10.0), `Bootstrap` and `AppInjector` has been replaced by `Injector`.
 
 ```diff
 -AppInjector
@@ -17,14 +17,14 @@ permalink: /manuals/1.0/en/upgrade/injector.html
 +Injector.
 ```
 
-In the case of `BEARPack\BackstageInjector::getInstance()`, the Depending on the context, different injectors are passed for production and development.
+In the case of `BEAR\Package\Injector::getInstance()`, the Depending on the context, different injectors are passed for production and development.
 Production writes out a  DI script file with `ScriptInjector`, or no writing out DI files for development `Ray\Di\Injector`.
 
 The interface and the usage is the same.
 
 ```php
 $injector = Injector::getInstance($context);
-$instance = $injector->getInsntance($ interface, name);
+$instance = $injector->getInsntance($interface, name);
 ```
 
 ## Advantages
@@ -47,16 +47,14 @@ Swoole and other runtime environments (not PHP's shared-nothing architecture) Bu
 
 ### Step 1
 
-Put the `Injector` of the application in `src/Injector.php` and add the following lines of code Change the `Vendor\Package` to your project name. Change the `Vendor\Package` to your project name. This will take about 10 minutes.
-
-The process takes about 10 minutes.
+Put the `Injector` of the application in `src/Injector.php` and add the following lines of code Change the `Vendor\Package` to your project name.
 
 ```php
 <?php
-namespace Vendor\\Backup;
+namespace Vendor\Package;
 
-use BEAR\PlayPointPointPointPointfolio as PackageInjector;
-use Ray\DiDiDiDi\InjectorInterface;
+use BEAR\Package\Injector as PackageInjector;
+use Ray\Di\InjectorInterface;
 
 final class Injector
 {
@@ -64,9 +62,9 @@ final class Injector
     {
     }
 
-    public static function getInstance(string $ context) : InjectorInterface
+    public static function getInstance(string $context) : InjectorInterface
     {
-        return PackageInjector::getInstance(__ NAMESPACE__, $context, dirname(__DIR__));
+        return PackageInjector::getInstance(__NAMESPACE__, $context, dirname(__DIR__));
     }
 }
 ```
@@ -76,26 +74,24 @@ final class Injector
 Change the `bootstrap.php`.
 
 ```diff
--$app = (new Bootstrap)->getApp($name, $context , __DIR__);
-+$app = Vendor\PackageInjector::getInstance  ExtensionApplicationApplicationAddressInterface::class);
+-$app = (new Bootstrap)->getApp($name, $context, __DIR__);
++$app = Vendor\Package\Injector::getInstance($context)->getInstance(\BEAR\Sunday\Extension\Application\AppInterface::class);
 ```
 
 ### Step 3
 
 Change the AppInjector used in `tests/`.
 
-You can change the AppInjector used in `tests/`.
-
 ```diff
--new AppInjector('Vendor\Package', 'test-hal-' api-app');
-+VendorPackageAddressInjector::getInstance('test -hal-api-app');
+-new AppInjector('Vendor\Package', 'test-hal-api-app');
++Vendor\Package\Injector::getInstance('test-hal-api-app');
 ```
 
 Getting an injector for another application in a multi-application project Use the Inner Inner Inner Designer of BEARPackage in the case of
 
 ```diff
--new AppInjector('Vendor\Package', 'test-hal-' api-app');
-+VendorPackageAddressInjector::getInstance(' Vendor\a_iropping', 'test-hal-api-app', $appDir );
+-new AppInjector('Vendor\Package', 'test-hal-api-app');
++Vendor\Package\Injector::getInstance('Vendor\Package', 'test-hal-api-app', $appDir);
 ```
 
 That's it.

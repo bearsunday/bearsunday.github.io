@@ -9,7 +9,7 @@ permalink: /manuals/1.0/ja/upgrade/injector.html
 
 ## 変更点
 
-[BEAR.Package 1.10](https://github.com/bearsunday/BEAR.Package/releases/tag/1.10.0) では従来の`AppInjector`, `Bootstrap`は`@deprecated`になり、統合された`Injectpr`になりました。
+[BEAR.Package 1.10](https://github.com/bearsunday/BEAR.Package/releases/tag/1.10.0) では従来の`AppInjector`, `Bootstrap`は`@deprecated`になり、統合された`Injector`になりました。
 
 ```diff
 -AppInjector
@@ -73,7 +73,6 @@ final class Injector
 
 `bootstrap.php`を変更します。
 
-before:
 ```diff
 -$app = (new Bootstrap)->getApp($name, $context, __DIR__);
 +$app = Vendor\Package\Injector::getInstance($context)->getInstance(\BEAR\Sunday\Extension\Application\AppInterface::class);
