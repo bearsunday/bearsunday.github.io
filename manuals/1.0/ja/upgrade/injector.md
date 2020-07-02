@@ -84,14 +84,14 @@ final class Injector
 
 ```diff
 -new AppInjector('Vendor\Package', 'test-hal-api-app');
-+Vendor\Package\Injector::getInstance('test-hal-api-app');
++\Vendor\Package\Injector::getInstance('test-hal-api-app');
 ```
 
 複数アプリケーションのプロジェクトで、他のアプリケーションのインジェクターを取得する場合にはBEAR\PackageのInjectorを使います。
 
 ```diff
 -new AppInjector('Vendor\Package', 'test-hal-api-app');
-+Vendor\Package\Injector::getInstance('Vendor\Package', 'test-hal-api-app', $appDir);
++\BEAR\Package\Injector::getInstance('Vendor\Package', 'test-hal-api-app', $appDir);
 ```
 
 FCQN（完全修飾名）の長いクラス名はツールで変換するのが便利です。[^1]

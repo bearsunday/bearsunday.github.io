@@ -75,7 +75,7 @@ Change the `bootstrap.php`.
 
 ```diff
 -$app = (new Bootstrap)->getApp($name, $context, __DIR__);
-+$app = Vendor\Package\Injector::getInstance($context)->getInstance(\BEAR\Sunday\Extension\Application\AppInterface::class);
++$app = \Vendor\Package\Injector::getInstance($context)->getInstance(\BEAR\Sunday\Extension\Application\AppInterface::class);
 ```
 
 ### Step 3
@@ -84,14 +84,14 @@ Change the AppInjector used in `tests/`.
 
 ```diff
 -new AppInjector('Vendor\Package', 'test-hal-api-app');
-+Vendor\Package\Injector::getInstance('test-hal-api-app');
++\Vendor\Package\Injector::getInstance('test-hal-api-app');
 ```
 
 Getting an injector for another application in a multi-application project Use the Inner Inner Inner Designer of BEARPackage in the case of
 
 ```diff
 -new AppInjector('Vendor\Package', 'test-hal-api-app');
-+Vendor\Package\Injector::getInstance('Vendor\Package', 'test-hal-api-app', $appDir);
++\BEAR\Package\Injector::getInstance('Vendor\Package', 'test-hal-api-app', $appDir);
 ```
 
 That's it.
