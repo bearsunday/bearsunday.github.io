@@ -159,7 +159,7 @@ mv autoload.php api.autoload.php
 `{project_path}/autoload.php`に最適化されたautoload.phpファイルが出力されます。
 `composer dumpa-autoload --optimize`で出力される`vendor/autoload.php`よりずっと高速です。
 
-注意：`preload`を利用する場合にはほとんどの利用クラスが読み込まれた状態で起動するので、コンパイルされた`autoload.php`は不要です。composerが生成する`vendor/autload.php`をご利用ください。
+注意：`preload.php`を利用する場合にはほとんどの利用クラスが読み込まれた状態で起動するので、コンパイルされた`autoload.php`は不要です。composerが生成する`vendor/autload.php`をご利用ください。
 
 ### preload.php
 
