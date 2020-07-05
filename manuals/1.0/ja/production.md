@@ -143,9 +143,14 @@ $this->install(new CacheVersionModule($cacheVersion));
 セットアップを行う際に`vendor/bin/bear.compile`スクリプトを使ってプロジェクトを**ウオームアップ**することができます。
 コンパイルスクリプトはDI/AOP用の動的に作成されるファイルやアノテーションなどの静的なキャッシュファイルを全て事前に作成し、最適化されたautoload.phpファイルとpreload.phpを出力します。
 
- * 複数のコンテキストを扱うアプリケーションではそのコンテキストに応じた`autoload.php`の利用が効果的です。
  * コンパイルをすれば全てのクラスでインジェクションを行うのでランタイムでDIのエラーが出る可能性が極めて低くなります。
  * `.env`には含まれた内容はPHPファイルに取り込まれるのでコンパイル後に`.env`を消去可能です。
+
+コンテントネゴシエーションを行う場合など(ex. api-app, html-app)1つのアプリケーションで複数コンテキストのコンパイルを行うときにはファイルの退避が必要です。
+
+```
+mv autoload.php api.autoload.php
+```
 
 `composer.json`を編集して`composer compile`の内容を変更します。
 
