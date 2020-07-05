@@ -7,32 +7,26 @@ permalink: /manuals/1.0/ja/production.html
 
 # プロダクション
 
-アプリケーションの[ディプロイ環境](https://en.wikipedia.org/wiki/Deployment_environment)に応じてキャッシュの設定や束縛の変更を行います。
+BEAR.Sunday既定の`prod`束縛に対して、アプリケーションがそれぞれの[ディプロイ環境](https://en.wikipedia.org/wiki/Deployment_environment)に応じたモジュールをカスタマイズして束縛を行ます。
 
-## コンテキスト
+## 既定のProdModule
 
-`prod`はプロダクションのためのコンテキストです。
-ルートオブジェクト`$app`やアノテーションリーダーなどでキャッシュが使われます。
+既定の`prod`束縛では以下のインターフェイスの束縛がされています。
 
-```php
-<?php
-require dirname(__DIR__) . '/autoload.php';
-exit((require dirname(__DIR__) . '/bootstrap.php')('prod-api-app'));
-```
-**重要:**
+ * エラーページ生成ファクトリー
+ * PSRロガーインターフェイス
+ * ローカルキャッシュ
+ * 分散キャッシュ
+ 
+詳細はBEAR.Packageの[ProdModule.php](https://github.com/bearsunday/BEAR.Package/blob/1.x/src/Context/ProdModule.php)参照。
 
-**プロダクションではディプロイ毎に`$app`を再生成する必要があります。**
+## アプリケーションのProdModule
 
-`$app`を再生成するには`src/`ディレクトリのタイムスタンプを変更します。
-BEAR.Sundayはそれを検知して`$app`と`tmp/{context}/di`のDI/AOPファイルの再生成を行います。
-
-## ProdModule
-
-アプリケーション用の`ProdModule`を`src/Module/ProdModule.php`に設置して、プロダクション用の束縛をカスタマイズやHTTP OPTIONSメソッドの許可を行う事ができます。
+既定のProdModuleに対してアプリケーションの`ProdModule`を`src/Module/ProdModule.php`に設置してカスタマイズします。特にエラーページと分散キャッシュは重要です。
 
 ```php
 <?php
-namespace Polidog\Todo\Module;
+namespace MyVendor\Todo\Module;
 
 use BEAR\Package\Context\ProdModule as PackageProdModule;
 use BEAR\QueryRepository\CacheVersionModule;
@@ -49,19 +43,27 @@ class ProdModule extends AbstractModule
         $this->install(new PackageProdModule);       // デフォルトのprod設定
         $this->install(new OptionsMethodModule);     // OPTIONSメソッドをプロダクションでも有効に
         $this->install(new CacheVersionModule('1')); // リソースキャッシュのバージョン指定
+
+        // 独自のエラーページ
+        $this->bind(ErrorPageFactoryInterface::class)->to(MyErrorPageFactory::class);
     }
 }
 ```
 
 ## キャッシュ
 
-キャッシュは複数のWebサーバー間でシェアをしないローカルキャッシュと、シェアをする共有キャッシュの２種類あります。ローカルキャッシュはdeploy後に変更のないキャシュ例えばアノテーション等に使われ、共有キャッシュはリソース状態の保存に使われます。
+キャッシュはローカルキャッシュと、複数のWebサーバー間でシェアをする分散キャッシュの２種類があります。
+どちらのキャッシュもデフォルトは[PhpFileCache](https://www.doctrine-project.org/projects/doctrine-cache/en/1.10/index.html#phpfilecache)です。
 
-どちらのキャッシュもデフォルトでは「APCuキャッシュ+ファイルキャッシュ」のチェーンキャッシュです。リードはAPCuが優先して使用されライトは両方のストレージに行われます。
+### ローカルキャッシュ
 
-### リソースキャッシュ
+ローカルキャッシュはdeploy後に変更のないアノテーション等のキャシュ例に使われ、分散キャッシュはリソース状態の保存に使われます。
 
-複数のWebサーバーを構成するためには共有のキャッシュストレージを設定する必要があり、（[memcached](http://php.net/manual/ja/book.memcached.php)または[Redis](https://redis.io)）のモジュールをインストールします。
+### 分散キャッシュ
+
+2つ以上のWebサーバーでサービスを行うためには分散キャッシュの構成が必要です。
+代表的な[memcached](http://php.net/manual/ja/book.memcached.php)、[Redis](https://redis.io)のキャッシュエンジンのそれぞれのモジュールが用意されています。
+
 
 ### Memcached
 
@@ -76,9 +78,6 @@ use Ray\Di\Scope;
 
 class ProdModule extends AbstractModule
 {
-    /**
-     * {@inheritdoc}
-     */
     protected function configure()
     {
         // memcache
@@ -94,13 +93,15 @@ class ProdModule extends AbstractModule
 
 ### Redis
 
+
 ```php?start_inline
 // redis
 $redisServer = 'localhost:6379'; // {host}:{port}
 $this->install(new StorageRedisModule($redisServer);
 ```
 
-上記以外のストレージを利用する場合には、それぞれのモジュールを参考に新たにモジュールを作成します。
+リソースの状態保存は単にTTLによる時間更新のキャッシュとの他に、TTL時間では消えない永続的なストレージとして(CQRS）の運用も可能です。
+その場合には`Redis`で永続処理を行うか、Cassandraなどの他KVSのストレージアダプターを独自で用意する必要があります。
 
 ### キャッシュ時間の指定
 
@@ -115,52 +116,88 @@ $this->install(new StorageExpiryModule($short, $medium, $long);
 ```
 ### キャッシュバージョンの指定
 
-リソースキャッシュの互換性が失われるdeployの時にはキャッシュバージョンを変更します。
+リソースのスキーマが代わり、互換性が失われる時にはキャッシュバージョンを変更します。特にTTL時間で消えないCQRS運用の場合に重要です。
 
 ```
 $this->install(new CacheVersionModule($cacheVersion));
 ```
 
-deployの度にリソースキャッシュを破棄したい場合は`$cacheVersion`に時刻や乱数の値を割り当てます。
-
+ディプロイの度にリソースキャッシュを破棄するためには`$cacheVersion`に時刻や乱数の値を割り当てると変更が不要で便利です。
 
 ## デプロイ
 
 ### ⚠️ 上書き更新を避ける
 
-駆動中のプロジェクトフォルダを`rsync`などで上書きするのはリソースキャッシュの不一致や`tmp/`に作成される自動生成のクラスファイルと実際のクラスとの不一致になるリスクがあります。高負荷のサイトではキャッシュ作成やopcode作成などの大量のジョブが同時に複数実行されサイトのパフォーマンスのキャパシティを超える可能性もあります。
+#### サーバーにディプロイする場合
 
-別のディレクトリでセットアップを行いそのセットアップが問題なければ切り替えるようにします。
+ * 駆動中のプロジェクトフォルダを`rsync`などで上書きするのはキャッシュやオンデマンドで生成されるファイルのが不一致や、高負荷のサイトではキャパシティを超えるリスクがあります。
+安全のために別のディレクトリでセットアップを行いそのセットアップが成功すれば切り替えるようにします。
+ * [Deployer](http://deployer.org/)の[BEAR.Sundayレシピ](https://github.com/bearsunday/deploy)を利用する事ができます。
+
+#### クラウドにディプロイする時には
+
+ * コンパイルが成功すると0、依存関係の問題を見つけるとコンパイラはexitコード1を出力します。それを利用してCIにコンパイルを組み込む事を推奨します。
 
 ### コンパイル推奨
 
-セットアップを行う際に`vendor/bin/bear.compile`スクリプトを使ってプロジェクトを**ウオームアップ**することができます。コンパイルスクリプトはDI/AOP用の動的に作成されるファイルやアノテーションなどの静的なキャッシュファイルを全て事前に作成し、最適化されたautoload.phpファイルとpreload.phpが出力されます。
+セットアップを行う際に`vendor/bin/bear.compile`スクリプトを使ってプロジェクトを**ウオームアップ**することができます。
+コンパイルスクリプトはDI/AOP用の動的に作成されるファイルやアノテーションなどの静的なキャッシュファイルを全て事前に作成し、最適化されたautoload.phpファイルとpreload.phpを出力します。
 
-全てのクラスでインジェクションを行うのでランタイムでDIのエラーが出ることもありません。また`.env`には一般にAPIキーやパスワードなどのクレデンシャル情報が含まれますが、内容は全てPHPファイルに取り込まれるのでコンパイル後に消去可能です。コンパイルはdeployをより高速で安全にします。
+ * コンパイルをすれば全てのクラスでインジェクションを行うのでランタイムでDIのエラーが出る可能性が極めて低くなります。
+ * `.env`には含まれた内容はPHPファイルに取り込まれるのでコンパイル後に`.env`を消去可能です。
 
-例）コンソールで実行
+コンテントネゴシエーションを行う場合など(ex. api-app, html-app)1つのアプリケーションで複数コンテキストのコンパイルを行うときにはファイルの退避が必要です。
 
 ```
-vendor/bin/bear.compile 'Polidog\Todo' prod-html-app /path/to/prject
+mv autoload.php api.autoload.php
 ```
+
+`composer.json`を編集して`composer compile`の内容を変更します。
 
 ### autoload.php
 
-`{project_path}/autoload.php`に最適化されたautoload.phpファイルが出力されます。`composer dumpa-autoload --optimize`でダンプされる`vendor/autoload.php`よりずっと高速です。
+`{project_path}/autoload.php`に最適化されたautoload.phpファイルが出力されます。
+`composer dumpa-autoload --optimize`で出力される`vendor/autoload.php`よりずっと高速です。
+
+注意：`preload.php`を利用する場合、ほとんどの利用クラスが読み込まれた状態で起動するのでコンパイルされた`autoload.php`は不要です。composerが生成する`vendor/autload.php`をご利用ください。
 
 ### preload.php
 
-`{project_path}/preload.php`に最適化されたpreload.phpファイルが出力されます。preloadを有効にするためにはphp.iniで[opcache.preload](https://www.php.net/manual/ja/opcache.configuration.php#ini.opcache.preload)、[opcache.preload](https://www.php.net/manual/ja/opcache.configuration.php#ini.opcache.preload-user)を指定する必要があります。PHP 7.4でサポートされた機能ですが、`7.4.0`-`7.4.2`では不安定で推奨できません。`7.4.4`以上の最新版を使いましょう。
+`{project_path}/preload.php`に最適化されたpreload.phpファイルが出力されます。
+preloadを有効にするためにはphp.iniで[opcache.preload](https://www.php.net/manual/ja/opcache.configuration.php#ini.opcache.preload)、[opcache.preload](https://www.php.net/manual/ja/opcache.configuration.php#ini.opcache.preload-user)を指定する必要があります。PHP 7.4でサポートされた機能ですが、`7.4`初期のバージョンでは不安定です。`7.4.4`以上の最新版を使いましょう。
 
 例）
+
 ```
 opcache.preload=/path/to/project/preload.php
 opcache.preload_user=www-data
 ```
 
-Note: パフォーマンスについては[bechmark](https://github.com/bearsunday/BEAR.HelloworldBenchmark/wiki/Intel-Core-i5-3.8-GHz-iMac-(Retina-5K,-27-inch,-2017)---PHP-7.4.4)を参考にしてください。
+Note: パフォーマンスベンチマークは[bechmark](https://github.com/bearsunday/BEAR.HelloworldBenchmark/wiki/Intel-Core-i5-3.8-GHz-iMac-(Retina-5K,-27-inch,-2017)---PHP-7.4.4)を参考にしてください。
 
 
-### Deployerサポート
+### .compile.php
 
-[Deployer](http://deployer.org/)の[BEAR.Sundayレシピ](https://github.com/bearsunday/deploy)を利用が便利で安全です。他のサーバー構成ツールを利用する場合でも参考にしたりDeployerスクリプトを実行することを検討してください。またDeployerをプロジェクトのディレクトリを毎回生成するので`$app`の再生成を気にする必要がありません。
+実環境ではないと生成ができないクラス、（例えば認証が成功しないとインジェクトが完了しないResourceObject）がある場合にはコンパイル時にのみ読み込まれるダミークラス読み込みをルートの`.compile.php`に記述する事によってコンパイルをする事ができます。
+
+.compile.php
+
+```php
+<?php
+
+require __DIR__ . '/tests/Null/AuthProvider.php'; // 常に生成可能なNullオブジェクト
+$_SERVER[__REQUIRED_KEY__] = 'fake';
+```
+
+### module.dot
+
+コンパイルをすると"dotファイル"が出力されので[graphviz](https://graphviz.org/)で画像ファイルに変換するか、[GraphvizOnline](https://dreampuf.github.io/GraphvizOnline/)を利用すればオブジェクトグラフを表示する事ができます。
+スケルトンの[オブジェクトグラフ](/images/screen/skeleton.svg)もご覧ください。
+
+```php
+dot -T svn module.dot > module.svg
+```
+
+----
+
+* このマニュアルはBEAR.Package 0.10に対応したマニュアルです。これ以前のものは[/manuals/1.0/ja/archive/production1.html](/manuals/1.0/ja/archive/production1.html)をご覧ください。
