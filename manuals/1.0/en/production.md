@@ -5,6 +5,8 @@ category: Manual
 permalink: /manuals/1.0/en/production.html
 ---
 
+(This chapter is not yet updated for the BEAR.Package 1.10+)
+
 # Production
 
 In this section, we will cover how to setup the cache and the system for the production environment.
