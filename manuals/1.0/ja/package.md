@@ -17,25 +17,6 @@ permalink: /manuals/1.0/ja/package.html
 
 BEAR.Sundayアプリケーションのファイルレイアウトは [php-pds/skeleton](https://github.com/php-pds/skeleton) に準拠しています。
 
-```
-├── bin
-├── bootstrap.php
-├── composer.json
-├── public
-│   └── index.php
-├── src
-│   ├── Module
-│   └── Resource
-├── tests
-│   └── 
-├── var
-│   ├── (conf)
-│   ├── log
-│   └── tmp
-└── vendor
-
-```
-
 ### bin/
 
 スクリプトで実行可能なコマンドを設置します。

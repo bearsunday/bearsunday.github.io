@@ -14,32 +14,6 @@ You can also install another BEAR.Sunday application package as dependency.
 
 The file layout of the BEAR.Sunday application conforms to [php-pds/skeleton](https://github.com/php-pds/skeleton) standard.
 
-```
-├── bin
-│   ├── app.php
-│   └── page.php
-├── env.php
-├── autoload.php
-├── bootstrap.php
-├── composer.json
-├── composer.lock
-├── public
-│   └── index.php
-├── src
-│   ├── (Annotation)
-│   ├── (Interceptor)
-│   ├── Module
-│   └── Resource
-├── tests
-│   ├── (Fake)
-├── var
-│   ├── (conf)
-│   ├── log
-│   └── tmp
-└── vendor
-
-```
-
 ### Invoke sequence
 
  1. Console input(`bin/app.php`, `bin/page.php`) or web entry file (`public/index.php`) excute `bootstrap.php` function.
