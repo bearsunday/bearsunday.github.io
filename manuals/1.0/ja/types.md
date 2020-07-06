@@ -7,10 +7,10 @@ permalink: /manuals/1.0/ja/types.html
 
 # タイプ
 
-phpのネイティブではサポートされていない型も**PHPdoc types**を記述すれば、静的解析ツールが検査を行い対応するエディターでは補完もされます。
+phpのネイティブではサポートされていない型も**PHPdoc type**を記述すれば、静的解析ツールが検査を行い対応するエディターでは補完もされます。
 また将来のPHPで採用予定の型も先に利用できます。
 
-例）リソースクラスの`body`の連想配列をarray-shapeで型指定
+例）リソースクラスの`body`の連想配列を"Object-like array"で指定
 
 ```php
 /** @var array{greeting: string} */
@@ -90,6 +90,7 @@ $user->body['__invalid__']; // 未定義キーのアクセスはエラーに
 
 ```php
 /** @return array<TKey, TValue> */
+/** @return array<int, Foo> */
 /** @return array<string, int|string> */
 
 ```
@@ -102,14 +103,22 @@ $user->body['__invalid__']; // 未定義キーのアクセスはエラーに
 /** @return array{optional?: string, bar: int} */
 ```
 
-#### リスト型
-
+#### リスト
 
 ```php
-/** @param list<string> $arr */
+/** @param list<string> $stringList */
 ```
 
+#### PHPDoc配列
+
+```php
+/** @param string[] $strings */
+```
+
+レガシーシンタックスのPHPDoc配列表記は`array<array-key, ValueType>`とジェネリック配列型として扱われます。
+
 ### その他のアトミック型
+
 
 ```php
 /** @return iterable */
