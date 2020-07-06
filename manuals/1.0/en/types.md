@@ -7,8 +7,7 @@ permalink: /manuals/1.0/en/types.html
 
 # Type
 
-You can write **PHPdoc type** and a static analysis tool will check it and complete it for you with the corresponding editor.
-Also, future PHP types will be available ahead of time.
+Use **PHPDoc types** for richer types that are not supported by native PHP.
 
 E.g.: Assign an associative array of the resource class `body` as an "object-like array".
 
@@ -22,7 +21,7 @@ public $body;
 public $body;
 ```
 
-The tool understands the type of an object retrieved by the resource client when `assert()` is used.
+The tool understands the type of an object retrieved by the resource client with `assert()`.
 
 ```php
 $user = $this->resource->get('/user', []);
