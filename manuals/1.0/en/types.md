@@ -21,7 +21,7 @@ public $body;
 public $body;
 ```
 
-The tool understands the type of an object retrieved by the resource client with `assert()`.
+The tool understands the object's type retrieved by the resource client with `assert()`.
 
 ```php
 $user = $this->resource->get('/user', []);
@@ -46,7 +46,7 @@ Union and intersection types use a combination of atomic types.
 /** @param class-string $class */
 /** @param class-string<AbstractFoo> $fooClass */
 /** @param callable-string $callable */
-/** @param numeric-string $num */ 
+/** @param numeric-string $num */
 /** @param bool $isSet */
 /** @param array-key $key */
 /** @param numeric $num */
