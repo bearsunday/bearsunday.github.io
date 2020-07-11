@@ -69,9 +69,10 @@ public function onGet() {
     if ($hasCommentPrivilege) {
         $this->body += [
             '_links' => [
-                'rel' => 'comment',
-                'href' => '/comments/{post-id}',
-                'templated' => true
+                'comment' => [
+                    'href' => '/comments/{post-id}',
+                    'templated' => true
+                ]
             ]
         ];
     }
