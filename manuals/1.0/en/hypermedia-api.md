@@ -184,10 +184,9 @@ git clone https://github.com/koriym/Polidog.Todo.git
 cd Polidog.Todo/
 composer install
 composer setup
-composer serve
 ```
 
-Open `http://127.0.0.1:8080/rels/` to see API doc page.
+Open [docs/index.md](https://github.com/koriym/Polidog.Todo/blob/master/docs/index.md) to see API doc page.
 
 ## Browsable
 

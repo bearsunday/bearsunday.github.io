@@ -183,7 +183,7 @@ composer setup
 composer serve
 ```
 
-`http://127.0.0.1:8080/rels/`でAPI docページが開きます。
+[docs/index.md](https://github.com/koriym/Polidog.Todo/blob/master/docs/index.md)にAPI docが作成されます。
 
 ## ブラウズ可能
 
