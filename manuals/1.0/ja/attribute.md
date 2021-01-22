@@ -31,7 +31,7 @@ public function onGet(string $date): self
 ## 引数に適用
 
 アノテーションはメソッドにしか適用できず引数名を名前で指定する必要があるものがありましたが、
-アトリビュートでは直接引数を装飾することができます。
+PHP8では直接、引数のアトリビュートで指定することができます。
 
 ```php?start_inline
 public __construct(#[Named('payment')] LoggerInterface $paymentLogger, #[Named('debug')] LoggerInterface $debugLogger)
