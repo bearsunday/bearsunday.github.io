@@ -38,11 +38,11 @@ public __construct(#[Named('payment')] LoggerInterface $paymentLogger, #[Named('
 ```
 
 ```php?start_inline
-public function doSomething($id, #[Assisted] DbInterface $db = null)
+public function onGet($id, #[Assisted] DbInterface $db = null)
 ```
 
 ```php?start_inline
-public function foo(#[CookieParam('id')]string $tokenId): void
+public function onGet(#[CookieParam('id')]string $tokenId): void
 ```
 
 ```php?start_inline
