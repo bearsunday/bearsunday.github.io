@@ -184,6 +184,7 @@ git clone https://github.com/koriym/Polidog.Todo.git
 cd Polidog.Todo/
 composer install
 composer setup
+composer doc
 ```
 
 Open [docs/index.md](https://github.com/koriym/Polidog.Todo/blob/master/docs/index.md) to see API doc page.

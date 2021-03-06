@@ -180,7 +180,7 @@ git clone https://github.com/koriym/Polidog.Todo.git
 cd Polidog.Todo/
 composer install
 composer setup
-composer serve
+composer doc
 ```
 
 [docs/index.md](https://github.com/koriym/Polidog.Todo/blob/master/docs/index.md)にAPI docが作成されます。
