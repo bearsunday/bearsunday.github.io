@@ -41,7 +41,7 @@ class ProdModule extends AbstractModule
     protected function configure()
     {
         $this->install(new PackageProdModule);       // デフォルトのprod設定
-        $this->install(new OptionsMethodModule);     // OPTIONSメソッドをプロダクションでも有効に
+        $this->override(new OptionsMethodModule);    // OPTIONSメソッドをプロダクションでも有効に
         $this->install(new CacheVersionModule('1')); // リソースキャッシュのバージョン指定
 
         // 独自のエラーページ
