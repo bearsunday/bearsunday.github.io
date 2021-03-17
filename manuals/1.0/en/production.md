@@ -52,7 +52,7 @@ class ProdModule extends AbstractModule
     protected function configure()
     {
         $this->install(new PackageProdModule);       // default setting (recommended)
-        $this->install(new OptionsMethodModule);     // Enable HTTP OPTIONS method in production
+        $this->override(new OptionsMethodModule);    // Enable HTTP OPTIONS method in production
         $this->install(new CacheVersionModule('1')); // Specify version number of resource cache
     }
 }
