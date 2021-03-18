@@ -7,11 +7,11 @@ permalink: /manuals/1.0/ja/stream.html
 
 # ストリーム出力
 
-通常リソースはレンダラーでレンダリングされて１つの文字列になり最終的にechoで出力されますが、それではサイズがPHPのメモリの限界を超えるようなコンテンツは出力できません。`StreamRenderer`を使うとHTTP出力をストリームすることができ、メモリ消費を低く押さえてストリーム出力することができます。ストリーム出力は既存のレンダラーと共存して使うこともできます。
+通常リソースはレンダラーでレンダリングされて１つの文字列になり最終的にechoで出力されますが、それではサイズがPHPのメモリの限界を超えるようなコンテンツは出力できません。`StreamRenderer`を使うとHTTP出力をストリームでき、メモリ消費を低く抑えられます。ストリーム出力は既存のレンダラーと共存して使うこともできます。
 
 ## トランスファーとレンダラーの変更
 
-ストリーム出力用のレンダラーとレスポンダーインジェクトするためにページに[StreamTransferInject](https://github.com/bearsunday/BEAR.Streamer/blob/1.x/src/StreamTransferInject.php)トレイトを`use`します。このダウンロードページの例では`$body`をストリームのリソース変数にしているので、インジェクトされたレンダラーは無視されリソースがストリーム出力されます。
+ストリーム出力用のレンダラーとレスポンダーをインジェクトするために、ページに[StreamTransferInject](https://github.com/bearsunday/BEAR.Streamer/blob/1.x/src/StreamTransferInject.php)トレイトを`use`します。このダウンロードページの例では`$body`をストリームのリソース変数にしているので、インジェクトされたレンダラーは無視されリソースがストリーム出力されます。
 
 ```php?start_inline
 use BEAR\Streamer\StreamTransferInject;
