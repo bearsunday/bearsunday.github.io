@@ -130,7 +130,7 @@ $this->install(new CacheVersionModule($cacheVersion));
 
 #### サーバーにディプロイする場合
 
- * 駆動中のプロジェクトフォルダを`rsync`などで上書きするのはキャッシュやオンデマンドで生成されるファイルのが不一致や、高負荷のサイトではキャパシティを超えるリスクがあります。
+ * 駆動中のプロジェクトフォルダを`rsync`などで上書きするのはキャッシュやオンデマンドで生成されるファイルの不一致や、高負荷のサイトではキャパシティを超えるリスクがあります。
 安全のために別のディレクトリでセットアップを行いそのセットアップが成功すれば切り替えるようにします。
  * [Deployer](http://deployer.org/)の[BEAR.Sundayレシピ](https://github.com/bearsunday/deploy)を利用する事ができます。
 
@@ -191,7 +191,7 @@ $_SERVER[__REQUIRED_KEY__] = 'fake';
 
 ### module.dot
 
-コンパイルをすると"dotファイル"が出力されので[graphviz](https://graphviz.org/)で画像ファイルに変換するか、[GraphvizOnline](https://dreampuf.github.io/GraphvizOnline/)を利用すればオブジェクトグラフを表示する事ができます。
+コンパイルをすると"dotファイル"が出力されるので[graphviz](https://graphviz.org/)で画像ファイルに変換するか、[GraphvizOnline](https://dreampuf.github.io/GraphvizOnline/)を利用すればオブジェクトグラフを表示する事ができます。
 スケルトンの[オブジェクトグラフ](/images/screen/skeleton.svg)もご覧ください。
 
 ```php
