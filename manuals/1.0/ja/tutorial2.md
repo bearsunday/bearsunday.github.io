@@ -33,7 +33,7 @@ composer create-project bear/skeleton MyVendor.Ticket
 
 ```
 composer require bear/aura-router-module ray/identity-value-module ray/query-module
-composer require --dev robmorgan/phinx bear/api-doc
+composer require --dev robmorgan/phinx bear/api-doc ^0.4
 ```
 
 ## モジュールインストール
@@ -485,7 +485,7 @@ class Ticket extends ResourceObject
      * @JsonSchema(schema="ticket.json")
      * @Query("ticket_item_by_id", type="row")
      */
-    public function onGet(string $id) : ResourceObject
+    public function onGet(string $id): ResourceObject
     {
         unset($id);
 
@@ -558,7 +558,7 @@ class Tickets extends ResourceObject
      * @JsonSchema(schema="tickets.json")
      * @Query("ticket_list")
      */
-    public function onGet() : ResourceObject
+    public function onGet(): ResourceObject
     {
         return $this;
     }
@@ -572,7 +572,7 @@ class Tickets extends ResourceObject
         string $title,
         string $description = '',
         string $assignee = ''
-    ) : ResourceObject {
+    ): ResourceObject {
         $id = (string) $this->uuid;
         $time = (string) $this->now;
         ($this->createTicket)([
@@ -638,7 +638,7 @@ class Index extends ResourceObject
         ]
     ];
 
-    public function onGet() : ResourceObject
+    public function onGet(): ResourceObject
     {
         return $this;
     }
