@@ -33,7 +33,7 @@ composer create-project bear/skeleton MyVendor.Ticket
 
 ```
 composer require bear/aura-router-module ray/identity-value-module ray/query-module
-composer require --dev robmorgan/phinx bear/api-doc ^0.4
+composer require --dev robmorgan/phinx bear/api-doc 1.x-dev
 ```
 
 ## モジュールインストール
@@ -602,93 +602,6 @@ class Tickets extends ResourceObject
 コンストラクタでインジェクトされた`$this->createTicket`は`ticket_insert.sql`の実行オブジェクトです。受け取った連想配列をバインドしてSQL実行します。
 リソースを作成する時は必ず`Location`ヘッダーでリソースのURLを保存するようにします。作成した内容をボディに含みたい時は`@ReturnCreatedResource`とアノテートします。
 
-## indexリソース
-
-`index`リソースは作成したリソース(API)へのリンク集です。`src/Resource/App/Index.php`に作成します。
-
-```php
-<?php
-namespace MyVendor\Ticket\Resource\App;
-
-use BEAR\Resource\ResourceObject;
-
-class Index extends ResourceObject
-{
-    public $body = [
-        'overview' => 'This is the Tutorial2 REST API',
-        'issue' => 'https://github.com/bearsunday/tutorial2/issues',
-        '_links' => [
-            'self' => [
-                'href' => '/',
-            ],
-            'curies' => [
-                'href' => 'rels/{rel}.html',
-                'name' => 'tk',
-                'templated' => true
-            ],
-            'tk:ticket' => [
-                'href' => '/tickets/{id}',
-                'title' => 'The ticket item',
-                'templated' => true
-            ],
-            'tk:tickets' => [
-                'href' => '/tickets',
-                'title' => 'The ticket list'
-            ] 
-        ]
-    ];
-
-    public function onGet(): ResourceObject
-    {
-        return $this;
-    }
-}
-```
-
-[CURIE](https://en.wikipedia.org/wiki/CURIE)(compact URI)というフォーマットを使って、このプロジェクトにはどのようなリソースがあるか、またそれらのドキュメンテーションはどこにあるかという情報をAPI自身がサービスする事ができます。
-
-Webサイトを利用するのに事前に全てのURIを知る必要がないように、APIサービスも同様に一覧のリンクを持つことでAPIの"発見容易性(Discoverability)"を高めます。
-
-早速リクエストしてみましょう。
-
-```
-php bin/app.php get /
-```
-```
-200 OK
-content-type: application/hal+json
-
-{
-    "overview": "This is the Tutorial2 REST API",
-    "issue": "https://github.com/bearsunday/tutorial2/issues",
-    "_links": {
-        "self": {
-            "href": "/"
-        },
-        "curies": [
-            {
-                "href": "rels/{rel}.html",
-                "name": "tk",
-                "templated": true
-            }
-        ],
-        "tk:ticket": {
-            "href": "/tickets/{id}",
-            "title": "The ticket item",
-            "templated": true
-        },
-        "tk:tickets": {
-            "href": "/tickets",
-            "title": "The ticket list"
-        }
-    }
-}
-```
-
-[`curies`](http://stateless.co/hal_specification.html)はヒューマンリーダブルなドキュメントのためのリンクです。
-このAPIは`/ticket`と`/tickets`という２つのリソースがある事が分かります。
-`curies`によってそれらのドキュメントはそれぞれ`rels/ticket.html`,`rels/tickets.html`にあると示されてます。
-
 まだ作成していないので見る事は今はできませんが、`OPTIONS`コマンドで調べることができます。
 
 ```
@@ -734,11 +647,7 @@ Allow: GET, POST
 }
 ```
 
-マシンリーダブルなAPIドキュメントとして表示されます。
-
 では実際に`/tickets`にアクセスしてみましょう。
-
-
 POSTリクエストでチケット作成します。
 
 ```
@@ -828,10 +737,17 @@ composer compile
 
 ## APIドキュメント
 
-APIドキュメントを出力するために`composer.json`の`scrpits`に以下の`doc`コマンドを追加します。
+APIドキュメントを出力するために`php/bin.php`スクリプトを追加します。
 
 ```
-"doc": "bear.apidoc 'MyVendor\\Ticket' ./ docs",
+<?php
+
+require dirname(__DIR__) . '/vendor/autoload.php';
+
+use BEAR\ApiDoc\DocApp;
+
+$docApp = new DocApp('MyVendor\Ticket');
+$docApp->dumpHtml(dirname(__DIR__) . '/docs', 'app');```
 ```
 
 ドキュメントのためのディレクトリを作成します。
@@ -843,28 +759,21 @@ mkdir docs
 `composer doc`コマンドでAPIサイトのHTMLとJSONが出力されます。
 
 ```
-composer doc
+php bin/doc.php
 ```
-```
-API Doc is created at /path/to/docs
-```
-
 このサイトをGitHub Pages[^11]などで公開して、APIドキュメントにします。
-公開APIサイトのドメインが決まれば`JsonSchemaLinkHeaderModule()`モジュールで公開ドメインを指定します。
-
-```php?start_inline
- $this->install(new JsonSchemaLinkHeaderModule('https://{your-domain}/schema'));
-```
 
 このようなAPIドキュメントサイトができるはずです。
 
 [https://bearsunday.github.io/tutorial2/](https://bearsunday.github.io/tutorial2/)
 
-ドキュメントサイトをコードと同じGithub管理するとでコードとどの時点で作成されたドキュメントなのか記録が残ります。
+もし`github.com`を使っていて、APIドキュメントをプライベートにしたい場合にはmarkdownで出力することもできます。
+
+```php
+$docApp->dumpMd(dirname(__DIR__) . '/docs', 'app');```
+```
 
 ## 終わりに
-
-
 
  * phinxマイグレーションツールを使ってアプリケーションのバージョンに従ったデータベースの環境構築ができるようになりました。
  
