@@ -9,7 +9,7 @@ permalink: /manuals/1.0/ja/validation.html
 
 
  * JSONスキーマでリソースAPIを定義する事ができます。
- * `@Valid`, `@onVlidate`アノテーションでバリデーションコードを分離する事ができます。
+ * `@Valid`, `@OnValidate`アノテーションでバリデーションコードを分離する事ができます。
  * Webフォームによるバリデーションは[フォーム](form.html)をご覧ください。
 
 # JSONスキーマ

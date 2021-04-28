@@ -8,7 +8,7 @@ permalink: /manuals/1.0/en/validation.html
 # Validation
 
  * You can define resource APIs in the JSON schema.
- * You can separate the validation code with `@Valid`, `@onVlidate` annotation.
+ * You can separate the validation code with `@Valid`, `@OnValidate` annotation.
  * Please see the form for validation by web form.
 
 # JSON Schema
