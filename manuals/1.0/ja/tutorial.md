@@ -888,11 +888,11 @@ sqlite> create table todo(id integer primary key, todo, created_at);
 sqlite> .exit
 ```
 
-データベースは[AuraSql](https://github.com/ray-di/Ray.AuraSqlModule)や, [Doctrine Dbal](https://github.com/ray-di/Ray.DbalModule)、[CakeDB](https://github.com/ray-di/Ray.CakeDbModule)などから選べますが
-ここではCakePHP3でも使われているCakeDBをインストールしてみましょう。
+データベースアクセスは[AuraSql](https://github.com/ray-di/Ray.AuraSqlModule)や, [Doctrine Dbal](https://github.com/ray-di/Ray.DbalModule)、[CakeDB](https://github.com/ray-di/Ray.CakeDbModule)などから選べますが
+ここではRay.AuraSqlModuleをインストールしてみましょう。
 
 ```bash
-composer require ray/cake-database-module ^1.0
+composer require ray/aura-sql-module
 ```
 
 `src/Module/AppModule::configure()`でモジュールのインストールをします。
@@ -907,11 +907,9 @@ class AppModule extends AbstractAppModule
     protected function configure()
     {
         // ...
-        $dbConfig = [
-            'driver' => 'Cake\Database\Driver\Sqlite',
-            'database' => $appDir . '/var/db/todo.sqlite3'
-        ];
-        $this->install(new CakeDbModule($dbConfig));
+        $dsn = sprin;
+        $this->install(new AuraSqlModule($dsn));
+
         $this->install(new PackageModule());
     }
 }
@@ -923,76 +921,65 @@ Todoリソースを`src/Resource/App/Todos.php`に設置します。
 
 ```php
 <?php
+
+declare(strict_types=1);
+
 namespace MyVendor\Weekday\Resource\App;
 
+use Aura\Sql\ExtendedPdoInterface;
 use BEAR\Package\Annotation\ReturnCreatedResource;
 use BEAR\RepositoryModule\Annotation\Cacheable;
 use BEAR\Resource\ResourceObject;
-use Ray\CakeDbModule\Annotation\Transactional;
-use Ray\CakeDbModule\DatabaseInject;
+use DateTimeImmutable;
+use Ray\AuraSqlModule\Annotation\Transactional;
 
-/**
- * @Cacheable
- */
+use function sprintf;
+
+#[Cacheable]
 class Todos extends ResourceObject
 {
-    use DatabaseInject;
-
-    public function onGet(int $id) : ResourceObject
+    public function __construct(private ExtendedPdoInterface $pdo)
     {
-        $this->body = $this
-            ->db
-            ->newQuery()
-            ->select('*')
-            ->from('todo')
-            ->where(['id' => $id])
-            ->execute()
-            ->fetch('assoc');
+    }
+
+    public function onGet(string $id = ''): static
+    {
+        $sql = $id ? /** @lang SQL */ 'SELECT * FROM todo WHERE id=:id' : /** @lang SQL */ 'SELECT * FROM todo';
+        $this->body = $this->pdo->fetchAssoc($sql, ['id' => $id]);
 
         return $this;
     }
 
-    /**
-     * @Transactional
-     * @ReturnCreatedResource
-     */
-    public function onPost(string $todo) : ResourceObject
+    #[Transactional, ReturnCreatedResource]
+    public function onPost(string $todo): static
     {
-        $statement = $this->db->insert(
-            'todo',
-            ['todo' => $todo, 'created_at' => new \DateTime('now')],
-            ['created_at' => 'datetime']
-        );
-        // created
-        $this->code = 201;
-        // hyperlink
-        $id = $statement->lastInsertId();
-        $this->headers['Location'] = '/todos?id=' . $id;
+        $this->pdo->perform(/** @lang SQL */'INSERT INTO todo (todo, created_at) VALUES (:todo, :created_at)', [
+            'todo' => $todo,
+            'created_at' => (new DateTimeImmutable('now'))->format('Y-m-d H:i:s')
+        ]);
+        $this->code = 201; // Created
+        $this->headers['Location'] = sprintf('/todos?id=%s', $this->pdo->lastInsertId()); // new URL
 
         return $this;
     }
 
-    /**
-     * @Transactional
-     */
-    public function onPut(int $id, string $todo) : ResourceObject
+    #[Transactional]
+    public function onPut(int $id, string $todo): static
     {
-        $this->db->update(
-            'todo',
-            ['todo' => $todo],
-            ['id' => $id]
-        );
-        // no content
-        $this->code = 204;
+        $this->pdo->perform(/** @lang SQL */'UPDATE todo SET todo = :todo WHERE id = :id', [
+            'id' => $id,
+            'todo' => $todo
+        ]);
+        $this->code = 204; // No content
 
         return $this;
     }
 }
 ```
-アノテーションに注目してください。クラスに付いている`@Cacheable`はこのリソースのGETメソッドがキャッシュ可能なことを示しています。
-`onPost`や`onPut`の`@Transactional`はデータベースアクセスのトランザクションを示しています。
+アトリビュートに注目してください。クラスのアトリビュート`#[Cacheable]`はこのリソースのGETメソッドがキャッシュ可能なことを示しています。
+`onPost`や`onPut`の`#[Transactional]`はデータベースアクセスのトランザクションを示しています。
 
-`onPost`の`@ReturnCreatedResource`は作成したリソースをbodyに含みます。
+`onPost`の`#[ReturnCreatedResource]`作成し`Location`でURLが示されているリソースをbodyに含んで返します。。
 この時`Location`ヘッダーのURIで実際に`onGet`がコールされるので`Location`ヘッダーの内容が正しいことが保証されると同時に`onGet`をコールすることでキャッシュも作られます。
 
 
@@ -1003,10 +990,10 @@ class Todos extends ResourceObject
 ```php
 <?php
 require dirname(__DIR__) . '/autoload.php';
-exit((require dirname(__DIR__) . '/bootstrap.php')('cli-prod-hal-api-app'));
+exit((require dirname(__DIR__) . '/bootstrap.php')('prod-cli-hal-api-app'));
 ```
 
-コンソールコマンドでリクエストします。`POST`ですが便宜上クエリーの形でパラメーターを渡します。
+コンソールコマンドでリクエストします。`POST`ですがBEAR.Sundayではクエリーの形でパラメーターを渡します。
 
 ```bash
 php bin/test.php post '/todos?todo=shopping'
@@ -1030,8 +1017,6 @@ Location: /todos?id=1
 
 ステータスコードは`201 Created`。`Location`ヘッダーで新しいリソースが`/todos/?id=1`に作成された事がわかります。
 [RFC7231 Section-6.3.2](https://tools.ietf.org/html/rfc7231#section-6.3.2) [日本語訳](https://triple-underscore.github.io/RFC7231-ja.html#section-6.3.2)
-
-`@ReturnCreatedResource`とアノテートされているのでボディに作成されたリソースを返します。
 
 次にこのリソースを`GET`します。
 
@@ -1066,29 +1051,22 @@ php -S 127.0.0.1:8081 bin/app.php
 `curl`コマンドでGETします。
 
 ```bash
-curl -i http://127.0.0.1:8081/todos?id=1
+curl -i 'http://127.0.0.1:8081/todos?id=1'
 ```
 
 ```bash
 HTTP/1.1 200 OK
 Host: 127.0.0.1:8081
-Date: Sun, 04 Jun 2017 18:02:55 +0200
+Date: Sun, 02 May 2021 17:10:55 GMT
 Connection: close
-X-Powered-By: PHP/7.1.4
-ETag: 2527085682
-Last-Modified: Sun, 04 Jun 2017 16:02:55 GMT
-content-type: application/hal+json
+X-Powered-By: PHP/8.0.3
+Content-Type: application/hal+json
+ETag: 197839553
+Last-Modified: Sun, 02 May 2021 17:10:55 GMT
+Cache-Control: max-age=31536000
 
 {
     "id": "1",
-    "todo": "shopping",
-    "created": "2017-06-04 15:58:03",
-    "_links": {
-        "self": {
-            "href": "/todos?id=1"
-        }
-    }
-}
 ```
 
 何回かリクエストして`Last-Modified`の日付が変わらないことを確認しましょう。この時`onGet`メソッド内は実行されていません。（試しにメソッド内で`echo`などを追加して確認してみましょう）
@@ -1125,18 +1103,18 @@ curl -i 'http://127.0.0.1:8081/todos?id=1'
 
 `@Cacheable`を使うと、リソースコンテンツは書き込み用のデータベースとは違うリソースの保存専用の「クエリーリポジトリ」で管理され`Etag`や`Last-Modified`のヘッダーの付加が自動で行われます。
 
-## BEAR
+## Because Everything is A Resource.
 
-Because Everything is A Resource. BEARでは全てがリソースです。
+BEARでは全てがリソースです。
 
 リソースの識別子URI、統一されたインターフェイス、ステートレスなアクセス、強力なキャッシュシステム、ハイパーリンク、レイヤードシステム、自己記述性。
-BEAR.SundayアプリケーションのリソースはこれらのRESTの特徴を備えたもので、再利用性に優れています。
+BEAR.SundayアプリケーションのリソースはこれらのRESTの特徴を備えたものです。HTTPの標準に従い再利用性に優れています。
 
-BEAR.Sundayは**DI**で構造を結び、AOPで横断的関心事を結び、RESTの力でアプリケーションのコンポーネントをリソースとして結ぶコネクティングレイヤーのフレームワークです。
+BEAR.Sundayは**DI**で依存を結び、AOPで横断的関心事を結び、RESTの力でアプリケーションの情報をリソースとして結ぶコネクティングレイヤーのフレームワークです。
 
 ---
 
-[^1]:このプロジェクトのソースコードは各セクション毎に[bearsunday/Tutorial](https://github.com/bearsunday/Tutorial/commits/master)にコミットしています。適宜参照してください。
+[^1]:このプロジェクトのソースコードは各セクション毎に[bearsunday/Tutorial](https://github.com/bearsunday/Tutorial/commits/php8)にコミットしています。適宜参照してください。
 [^2]:通常は**vendor**名は個人またはチーム（組織）の名前を入力します。githubのアカウント名やチーム名が適当でしょう。**project**にはアプリケーション名を入力します。
-[^3]:最初の`@Embed`を使った方法は[宣言型プログラミング(Declative Programming)
+[^3]:最初の`#[Embed]`を使った方法は[宣言型プログラミング(Declative Programming)
      ](https://ja.wikipedia.org/wiki/%E5%AE%A3%E8%A8%80%E5%9E%8B%E3%83%97%E3%83%AD%E3%82%B0%E3%83%A9%E3%83%9F%E3%83%B3%E3%82%B0)、後者は[命令型プログラミング(Imperative Programming)](https://ja.wikipedia.org/wiki/%E5%91%BD%E4%BB%A4%E5%9E%8B%E3%83%97%E3%83%AD%E3%82%B0%E3%83%A9%E3%83%9F%E3%83%B3%E3%82%B0)です。`@Embed`を使った前者は簡潔で可読性が高くリソースの関係を良く表しています。
