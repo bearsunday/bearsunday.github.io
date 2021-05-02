@@ -630,7 +630,7 @@ class AppModule extends AbstractAppModule
 }
 ```
 
-ベンチマークを行いたいメソッドに`@BenchMark`とアノテートします。
+ベンチマークを行いたいメソッドに`#[BenchMark]`のアトリビュートを付与します。
 
 ```diff
 +use MyVendor\Weekday\Annotation\BenchMark;
@@ -638,12 +638,12 @@ class AppModule extends AbstractAppModule
 class Weekday extends ResourceObject
 {
 
-+   [BenchMark]
++   #[BenchMark]
     public function onGet(int $year, int $month, int $day): static
     {
 ```
 
-これで計測したいメソッドに`@BenchMark`とアノテートすればいつでもベンチマークできるようになりました。
+これで計測したいメソッドに`#[BenchMark]`のアトリビュートを付与すればいつでもベンチマークできるようになりました。
 
 アノテーションとインターセプターによる機能追加は柔軟です。対象メソッドやメソッドを呼ぶ側に変更はありません。
 アノテーションはそのままでも束縛を外せばベンチマークを行いません。例えば、開発時にのみ束縛を行い特定の秒数を越すと警告を行うこともできます。
@@ -664,9 +664,14 @@ cat var/log/cli-hal-api-app/weekday.log
 今の`app`リソースに加えて、`src/Resource/Page/Index.php`に`page`リソースを追加します。
 
 `page`リソースクラスは場所と役割が違うだけで`app`リソースと基本的に同じクラスです。
+（典型的なシナリオは`page`はパブリック公開されたHTMLページ、`app`はDBなどインフラレイヤーに近いところで、`page`と共に使う時は非公開のリソースです。
+どちらを公開にするかは、実行時のコンテキストで決定されます。）
 
 ```php
 <?php
+
+declare(strict_types=1);
+
 namespace MyVendor\Weekday\Resource\Page;
 
 use BEAR\Resource\Annotation\Embed;
@@ -674,15 +679,13 @@ use BEAR\Resource\ResourceObject;
 
 class Index extends ResourceObject
 {
-    /**
-     * @Embed(rel="weekday", src="app://self/weekday{?year,month,day}")
-     */
-    public function onGet(int $year, int $month, int $day) : ResourceObject
+    #[Embed(rel: "weekday", src: "app://self/weekday{?year,month,day}")]
+    public function onGet(int $year, int $month, int $day): static
     {
         $this->body += [
             'year' => $year,
             'month' => $month,
-            'day' => $day
+            'day' => $day,
         ];
 
         return $this;
@@ -690,7 +693,15 @@ class Index extends ResourceObject
 }
 ```
 
-`@Embed`アノテーションで`app://self/weekday`リソースをbodyのweekdayキーに埋め込んでいます。**+=**で配列をmergeしているのはonGet実行前に`@Embed`でbodyに埋め込まれたweekdayと合成するためです
+`#[Embed]`は他のリソースを自身のリソースに埋め込むアトリビュートです。
+
+> #### 埋め込みリンク LE(Embedding links)
+>
+> この「他のリソースを自身のリソースとして内部にリンクする」という機能は[埋め込みリンク LE(Embedding links)](http://amundsen.com/hypermedia/hfactor/#le)と言われるもので、多くのハイパーメディアで採用されているものです。
+> 例えばHTMLなら`<img>`タグや`<iframe>`タグ、[HAL](https://en.wikipedia.org/wiki/Hypertext_Application_Language)なら[ _embedded](https://tools.ietf.org/html/draft-kelly-json-hal-08#section-4.1.2)です。
+> LEのおかげで複数のリソースが1度のリクエストで取得できます。
+
+`#[Embed]`アトリビュートで`app://self/weekday`リソースをbodyのweekdayキーに埋め込んでいます。**+=**で配列をmergeしているのはonGet実行前に`@Embed`でbodyに埋め込まれたweekdayと合成するためです
 
 その際にクエリーを**URI template** ([RFC6570](https://github.com/ioseb/uri-template))を使って`{?year,month,day}`として同じものを渡しています。
 下記の２つのURI templateは同じURIを示しています。
@@ -698,9 +709,10 @@ class Index extends ResourceObject
  * `app://self/weekday{?year,month,day}`
  * `app://self/weekday?year={year}&month={month}&day={day}`
 
-`<iframe>`や`<img>`タグで他のリソースを含むページをイメージしてください。これらもHTMLページが画像や他のHTMLなどのリソースを自身に埋め込んでいます。
+#### リソースクライアント
 
-`@Embed`でリソースを埋め込むかわりに`use ResourceInject;`で`resource`リソースクライアントをインジェクトしてそのクライアントでappリソースをセットすることもできます。[^3]
+埋め込みリンクを使う代わりに、リソースクライアントでappリソースをセットすることもできます。[^3]
+リソースクライアントは`use ResourceInject;`でインジェクトします。
 
 ```php
 <?php
@@ -791,8 +803,10 @@ cp -r vendor/madapaja/twig-module/var/templates var
 
 ```php
 <?php
+use MyVendor\Weekday\Bootstrap;
+
 require dirname(__DIR__) . '/autoload.php';
-exit((require dirname(__DIR__) . '/bootstrap.php')(PHP_SAPI === 'cli' ? 'cli-html-app' : 'html-app'));
+exit((new Bootstrap())(PHP_SAPI === 'cli' ? 'cli-html-app' : 'html-app', $GLOBALS, $_SERVER));
 ```
 
 これで`text/html`出力の準備はできました。
@@ -814,9 +828,10 @@ php bin/page.php get '/?year=1991&month=8&day=1'
 
 ```html
 200 OK
-content-type: text/html; charset=utf-8
+Content-Type: text/html; charset=utf-8
 
-<!doctype html>
+<!DOCTYPE html>
+<html>
 ...
 ```
 
@@ -828,8 +843,11 @@ content-type: text/html; charset=utf-8
 
 ```php
 <?php
+
+use MyVendor\Weekday\Bootstrap;
+
 require dirname(__DIR__) . '/autoload.php';
-exit((require dirname(__DIR__) . '/bootstrap.php')(PHP_SAPI === 'cli-server' ? 'html-app' : 'prod-html-app'));
+exit((new Bootstrap())(PHP_SAPI === 'cli-server' ? 'html-app' : 'prod-html-app', $GLOBALS, $_SERVER));
 ```
 
 PHPサーバーを立ち上げてwebブラウザで[http://127.0.0.1:8080/?year=2001&month=1&day=1](http://127.0.0.1:8080/?year=2001&month=1&day=1)をアクセスして確認してみましょう。
@@ -856,12 +874,6 @@ exit((require dirname(__DIR__) . '/bootstrap.php')('prod-hal-app'));
 
 コンテキストに応じたインスタンスを生成するPHPコードが生成されます。アプリケーションの`var/tmp/{context}/di`フォルダを確認してみましょう。
 これらのファイルは普段見る必要はありませんが、オブジェクトがどのように作られているかを確認することができます。
-
-コンテキストを変える事でどの依存がどう変わったかを`diff`コマンドで調べることもできます。
-
-```bash
-diff -q var/tmp/app/di/ var/tmp/prod-hal-app/di/
-```
 
 ## REST API
 
