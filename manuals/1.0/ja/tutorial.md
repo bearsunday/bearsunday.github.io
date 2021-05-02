@@ -25,18 +25,21 @@ composer create-project bear/skeleton MyVendor.Weekday
 
 ```php
 <?php
+
+declare(strict_types=1);
+
 namespace MyVendor\Weekday\Resource\App;
 
 use BEAR\Resource\ResourceObject;
+use DateTimeImmutable;
 
 class Weekday extends ResourceObject
 {
-    public function onGet(int $year, int $month, int $day) : ResourceObject
+    public function onGet(int $year, int $month, int $day): static
     {
-        $weekday = \DateTime::createFromFormat('Y-m-d', "$year-$month-$day")->format('D');
-        $this->body = [
-            'weekday' => $weekday
-        ];
+        $dateTime =DateTimeImmutable::createFromFormat('Y-m-d', "$year-$month-$day");
+        $weekday = $dateTime->format('D');
+        $this->body = ['weekday' => $weekday];
 
         return $this;
     }
@@ -169,25 +172,26 @@ Allow: GET
 
 ```php
 <?php
+
+declare(strict_types=1);
+
 namespace MyVendor\Weekday\Resource\App;
 
-use BEAR\Package\AppInjector;
 use BEAR\Resource\ResourceInterface;
+use MyVendor\Weekday\Injector;
 use PHPUnit\Framework\TestCase;
 
 class WeekdayTest extends TestCase
 {
-    /**
-     * @var ResourceInterface
-     */
-    private $resource;
+    private ResourceInterface $resource;
 
-    protected function setUp() : void
+    protected function setUp(): void
     {
-        $this->resource = (new AppInjector('MyVendor\Weekday', 'app'))->getInstance(ResourceInterface::class);
+        $injector = Injector::getInstance('app');
+        $this->resource = $injector->getInstance(ResourceInterface::class);
     }
 
-    public function testOnGet()
+    public function testOnGet(): void
     {
         $ro = $this->resource->get('app://self/weekday', ['year' => '2001', 'month' => '1', 'day' => '1']);
         $this->assertSame(200, $ro->code);
@@ -196,10 +200,8 @@ class WeekdayTest extends TestCase
 }
 ```
 
-`setUp()`ではアプリケーション名(MyVendor\Weekday)とコンテキスト(app)を指定するとアプリケーションのどのオブジェクトでも生成できる
-`AppInjector`を使ってリソースクライアント(`ResourceInterface`)を取得します。
-
-テストメソッド`testOnGet`でリソースをリクエストしてテストします。
+`setUp()`ではコンテキスト(app)を指定するとアプリケーションのどのオブジェクトでも生成できるアプリケーションのインジェクター
+`Injector`を使ってリソースクライアント(`ResourceInterface`)を取得していて、テストメソッド`testOnGet`でリソースをリクエストしてテストします。
 
 実行してみましょう。
 
@@ -207,11 +209,11 @@ class WeekdayTest extends TestCase
 ./vendor/bin/phpunit
 ```
 ```
-PHPUnit 7.1.5 by Sebastian Bergmann and contributors.
+PHPUnit 9.5.4 by Sebastian Bergmann and contributors.
 
-..                                                                  2 / 2 (100%)
+....                                                                4 / 4 (100%)
 
-Time: 159 ms, Memory: 10.00MB
+Time: 00:00.281, Memory: 14.00 MB
 ```
 
 インストールされたプロジェクトには他にはテストやコード検査を実行するコマンドが用意されています。
@@ -220,6 +222,13 @@ Time: 159 ms, Memory: 10.00MB
 ```
 composer coverage
 ```
+
+[pcov](https://pecl.php.net/package/pcov)はより高速にカバレッジ計測を行います。
+
+```
+composer pcov
+```
+
 カバレッジの詳細を`build/coverage/index.html`をWebブラウザで開くことで見ることができます。
 
 コーディングスタンダードにしたがっているかのチェックは`composer cs`コマンドで確認できます。
@@ -232,7 +241,103 @@ composer cs
 composer cs-fix
 ```
 
-`composer tests`は　`phpunit`、`phpcs`に加え[phpmd](https://phpmd.org/)と[phpstan](https://github.com/phpstan/phpstan)の検査も行います。コミット前に行うのが良いでしょう。
+静的解析は`composer sa`コマンドでおこないます。
+
+これまでのコードで実行してみましょう。以下のエラーがphpstanで検出されます。
+
+```
+ ------ --------------------------------------------------------- 
+  Line   src/Resource/App/Weekday.php                             
+ ------ --------------------------------------------------------- 
+  15     Cannot call method format() on DateTimeImmutable|false.  
+ ------ --------------------------------------------------------- 
+```
+
+先程のコードは`DateTimeImmutable::createFromFormat`で不正な値(年が-1など）を渡した時にfalseが帰ってくる事を考慮していませんでした。
+
+試してみましょう。
+
+```
+php bin/app.php get '/weekday?year=-1&month=1&day=1
+```
+
+PHPエラーが発生した場合でもエラーハンドラーがキャッチして、正しい`application/vnd.error+json`メディアタイプでエラーメッセージが表示されていますが、
+静的解析の検査をパスするには`DateTimeImmutable`の結果を`assert`するか型を検査して例外を投げるコードを追加します。
+
+### assertの場合
+
+```php
+$dateTime =DateTimeImmutable::createFromFormat('Y-m-d', "$year-$month-$day");
+assert($dateTime instanceof DateTimeImmutable);
+```
+
+### 例外を投げる場合
+
+まず専用の例外`src/Exception/InvalidDateTime.php`を作成します。
+
+```php
+<?php
+
+declare(strict_types=1);
+
+namespace MyVendor\Weekday\Exception;
+
+use RuntimeException;
+
+class InvalidDateTime extends RuntimeException
+{
+}
+```
+
+値の検査をしたコードに修正します。
+
+```diff
+<?php
+
+declare(strict_types=1);
+
+namespace MyVendor\Weekday\Resource\App;
+
+use BEAR\Resource\ResourceObject;
++use DateTimeImmutable;
+use MyVendor\Weekday\Exception\InvalidDateTime;
+
+class Weekday extends ResourceObject
+{
+    public function onGet(int $year, int $month, int $day): static
+    {
+        $dateTime = DateTimeImmutable::createFromFormat('Y-m-d', "$year-$month-$day");
++        if (! $dateTime instanceof DateTimeImmutable) {
++            throw new InvalidDateTime("$year-$month-$day");
++        }
+
+        $weekday = $dateTime->format('D');
+        $this->body = ['weekday' => $weekday];
+
+        return $this;
+    }
+}
+```
+
+テストも追加します。
+
+```diff
++    public function tesInvalidDateTime(): void
++    {
++        $this->expectException(InvalidDateTime::class);
++        $this->resource->get('app://self/weekday', ['year' => '-1', 'month' => '1', 'day' => '1']);
++    }
+```
+
+例外作成のベストプラクティス:
+
+入力のミスのために起こった例外なので、コード自身には問題がありません。このような実行時になって判明する例外は`RuntimeException`です。それを拡張して専用の例外を作成しました。
+反対に例外の発生がバグによるものでコードの修正が必要なら`LogicException`を拡張して例外を作成します。
+
+これで` $dateTime->format('D');`の実行時に`$dateTime`にfalseが入る可能性がなくなりました。このように値を逐一検査するプログラミングを防御的プログラミング(defensive programming)と呼びます。
+phpstanやpsalmの静的解析ツールが役立ちます。しかし、この検査がプロジェクトが求めるものに対してあまりにも厳しすぎると感じるなら設定ファイルの値を変えて検査レベルを変えてもいいでしょう。
+
+`composer tests`は　`composer test`に加えて、コーディング規約(cs)、静的解析の検査(sa)も行います。コミット前に行うのが良いでしょう。
 
 ```
 composer tests
@@ -250,34 +355,40 @@ composer require bear/aura-router-module ^2.0
 
 次に`src/Module/AppModule.php`で`AuraRouterModule`を`PackageModule`の前でインストールします。
 
-```php
+```diff
 <?php
+
+declare(strict_types=1);
+
 namespace MyVendor\Weekday\Module;
 
+use BEAR\Dotenv\Dotenv;
 use BEAR\Package\AbstractAppModule;
 use BEAR\Package\PackageModule;
-use BEAR\Package\Provide\Router\AuraRouterModule; // add this line
++use BEAR\Package\Provide\Router\AuraRouterModule;
+use function dirname;
 
 class AppModule extends AbstractAppModule
 {
-    /**
-     * {@inheritdoc}
-     */
-    protected function configure()
+    protected function configure(): void
     {
-        $appDir = $this->appMeta->appDir;
-        require_once $appDir . '/env.php';
-        $this->install(new AuraRouterModule($appDir . '/var/conf/aura.route.php')); // add this line
-        $this->install(new PackageModule);
+        (new Dotenv())->load(dirname(__DIR__, 2));
++        $appDir = $this->appMeta->appDir;
++        $this->install(new AuraRouterModule($appDir . '/var/conf/aura.route.php'));
+        $this->install(new PackageModule());
     }
 }
+
 ```
 
 ルータースクリプトファイルを`var/conf/aura.route.php`に設置します。
 
 ```php
 <?php
-/* @var \Aura\Router\Map $map */
+/** 
+ * @see http://bearsunday.github.io/manuals/1.0/ja/router.html
+ * @var \Aura\Router\Map $map 
+ */
 
 $map->route('/weekday', '/weekday/{year}/{month}/{day}');
 ```
@@ -310,17 +421,20 @@ Content-Type: application/hal+json
 
 ```php
 <?php
+
+declare(strict_types=1);
+
 namespace MyVendor\Weekday;
 
 interface MyLoggerInterface
 {
-    public function log(string $message) : void;
+    public function log(string $message): void;
 }
 ```
 
 リソースはこのログ機能を使うように変更します。
 
-```php
+```diff
 <?php
 namespace MyVendor\Weekday\Resource\App;
 
@@ -329,15 +443,9 @@ use MyVendor\Weekday\MyLoggerInterface;
 
 class Weekday extends ResourceObject
 {
-    /**
-     * @var MyLoggerInterface
-     */
-    private $logger;
-
-    public function __construct(MyLoggerInterface $logger)
-    {
-        $this->logger = $logger;
-    }
++    public function __construct(public MyLoggerInterface $logger)
++    {
++    }
 
     public function onGet(int $year, int $month, int $day) : ResourceObject
     {
@@ -345,7 +453,7 @@ class Weekday extends ResourceObject
         $this->body = [
             'weekday' => $weekday
         ];
-        $this->logger->log("$year-$month-$day {$weekday}");
++        $this->logger->log("$year-$month-$day {$weekday}");
 
         return $this;
     }
@@ -359,24 +467,32 @@ class Weekday extends ResourceObject
 
 ```php
 <?php
+
+declare(strict_types=1);
+
 namespace MyVendor\Weekday;
 
 use BEAR\AppMeta\AbstractAppMeta;
 
+use function error_log;
+
+use const PHP_EOL;
+
 class MyLogger implements MyLoggerInterface
 {
-    private $logFile;
+    private string $logFile;
 
     public function __construct(AbstractAppMeta $meta)
     {
         $this->logFile = $meta->logDir . '/weekday.log';
     }
 
-    public function log(string $message) : void
+    public function log(string $message): void
     {
         error_log($message . PHP_EOL, 3, $this->logFile);
     }
 }
+
 ```
 
 `MyLogger`を実装するためにはアプリケーションのログディレクトリの情報(`AbstractAppMeta`)が必要ですが、これも`依存`としてコンストラクタで受け取ります。
@@ -386,28 +502,16 @@ class MyLogger implements MyLoggerInterface
 
 DIツールで`MyLoggerInterface`と`MyLogger`を束縛(bind)するために`src/Module/AppModule.php`の`configure`メソッドを編集します。
 
-```php
-<?php
-namespace MyVendor\Weekday\Module;
-
-use BEAR\Package\AbstractAppModule;
-use BEAR\Package\PackageModule;
-use BEAR\Package\Provide\Router\AuraRouterModule;
-use MyVendor\Weekday\MyLogger; // add this line
-use MyVendor\Weekday\MyLoggerInterface;  // add this line
-
+```diff
 class AppModule extends AbstractAppModule
 {
-    /**
-     * {@inheritdoc}
-     */
-    protected function configure()
+    protected function configure(): void
     {
+        (new Dotenv())->load(dirname(__DIR__, 2));
         $appDir = $this->appMeta->appDir;
-        require_once $appDir . '/env.php';
         $this->install(new AuraRouterModule($appDir . '/var/conf/aura.route.php'));
-        $this->bind(MyLoggerInterface::class)->to(MyLogger::class); // add this line
-        $this->install(new PackageModule);
++        $this->bind(MyLoggerInterface::class)->to(MyLogger::class);
+        $this->install(new PackageModule());
     }
 }
 ```
@@ -441,22 +545,22 @@ $time = microtime(true) - $start;
 
 ```php
 <?php
+
+declare(strict_types=1);
+
 namespace MyVendor\Weekday\Interceptor;
 
 use MyVendor\Weekday\MyLoggerInterface;
 use Ray\Aop\MethodInterceptor;
 use Ray\Aop\MethodInvocation;
 
+use function microtime;
+use function sprintf;
+
 class BenchMarker implements MethodInterceptor
 {
-    /**
-     * @var MyLoggerInterface
-     */
-    private $logger;
-
-    public function __construct(MyLoggerInterface $logger)
+    public function __construct(private MyLoggerInterface $logger)
     {
-        $this->logger = $logger;
     }
 
     public function invoke(MethodInvocation $invocation)
@@ -475,15 +579,18 @@ class BenchMarker implements MethodInterceptor
 元のメソッドを横取りしたインターセプターの`invoke`メソッドでは、元メソッドの実行を`$invocation->proceed();`で行うことができます。
 その前後にタイマーのリセット、計測記録の処理を行います。（メソッド実行オブジェクト[MethodInvocation](https://github.com/ray-di/Ray.Aop/blob/2.x/src/MethodInvocation.php) `$invocation`から元メソッドのオブジェクトとメソッドの名前を取得しています。）
 
-次にベンチマークをしたいメソッドに目印をつけるための[アノテーション](https://www.doctrine-project.org/projects/doctrine-annotations/en/1.6/index.html)を`src/Annotation/BenchMark.php `に作成します。
+次にベンチマークをしたいメソッドに目印をつけるための[アトリビュート](https://www.php.net/manual/ja/language.attributes.overview.php)を`src/Annotation/BenchMark.php `に作成します。
 
 ```php
 <?php
+
+declare(strict_types=1);
+
 namespace MyVendor\Weekday\Annotation;
 
-/**
- * @Annotation
- */
+use Attribute;
+
+#[Attribute(Attribute::TARGET_METHOD)]
 final class BenchMark
 {
 }
@@ -491,38 +598,38 @@ final class BenchMark
 
 `AppModule`で**Matcher**を使ってインターセプターを適用するメソッドを束縛（バインド）します。
 
-```php
-<?php
-// ...
-use MyVendor\Weekday\Annotation\BenchMark; // add this line
-use MyVendor\Weekday\Interceptor\BenchMarker; // add this line
+```diff
++use MyVendor\Weekday\Annotation\BenchMark;
++use MyVendor\Weekday\Interceptor\BenchMarker;
 
 class AppModule extends AbstractAppModule
 {
-    protected function configure()
+    protected function configure(): void
     {
-        // ...
-        $this->bindInterceptor(
-            $this->matcher->any(),                           // どのクラスでも
-            $this->matcher->annotatedWith(BenchMark::class), // @BenchMarkとアノテートされているメソッドに
-            [BenchMarker::class]                             // BenchMarkerインターセプターを適用
-        );
+        (new Dotenv())->load(dirname(__DIR__, 2));
+        $appDir = $this->appMeta->appDir;
+        $this->install(new AuraRouterModule($appDir . '/var/conf/aura.route.php'));
+        $this->bind(MyLoggerInterface::class)->to(MyLogger::class);
++        $this->bindInterceptor(
++            $this->matcher->any(),                           // どのクラスでも
++            $this->matcher->annotatedWith(BenchMark::class), // #[Attribute]と属性の付けられたメソッドに
++            [BenchMarker::class]                             // BenchMarkerインターセプターを適用
++        );
+        $this->install(new PackageModule());
     }
 }
 ```
 
 ベンチマークを行いたいメソッドに`@BenchMark`とアノテートします。
 
-```php
-<?php
-use MyVendor\Weekday\Annotation\BenchMark;
+```diff
++use MyVendor\Weekday\Annotation\BenchMark;
 
-class Weekday
+class Weekday extends ResourceObject
 {
-    /**
-     * @BenchMark
-     */
-    public function onGet($year, $month, $day)
+
++   [BenchMark]
+    public function onGet(int $year, int $month, int $day): static
     {
 ```
 
