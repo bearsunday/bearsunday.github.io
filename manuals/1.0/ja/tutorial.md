@@ -785,7 +785,7 @@ use Ray\Di\AbstractModule;
 
 class HtmlModule extends AbstractModule
 {
-    protected function configure()
+    protected function configure(): void
     {
         $this->install(new TwigModule);
         $this->install(new TwigErrorPageModule);
@@ -897,19 +897,16 @@ composer require ray/aura-sql-module
 
 `src/Module/AppModule::configure()`でモジュールのインストールをします。
 
-```php
+```diff
 <?php
-// ...
-use Ray\CakeDbModule\CakeDbModule; // add this line
++use Ray\AuraSqlModule\AuraSqlModule;
 
 class AppModule extends AbstractAppModule
 {
-    protected function configure()
+    protected function configure(): void
     {
         // ...
-        $dsn = sprin;
-        $this->install(new AuraSqlModule($dsn));
-
++        $this->install(new AuraSqlModule(sprintf('sqlite:%s/var/db/todo.sq3', $this->appMeta->appDir)));
         $this->install(new PackageModule());
     }
 }
