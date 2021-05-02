@@ -938,7 +938,7 @@ use function sprintf;
 #[Cacheable]
 class Todos extends ResourceObject
 {
-    public function __construct(private ExtendedPdoInterface $pdo)
+    public function __construct(private ExtendedPdoInterface $pdo, private DateTimeImmutable $date)
     {
     }
 
@@ -955,7 +955,7 @@ class Todos extends ResourceObject
     {
         $this->pdo->perform(/** @lang SQL */'INSERT INTO todo (todo, created_at) VALUES (:todo, :created_at)', [
             'todo' => $todo,
-            'created_at' => (new DateTimeImmutable('now'))->format('Y-m-d H:i:s')
+            'created_at' => $this->date->format('Y-m-d H:i:s')
         ]);
         $this->code = 201; // Created
         $this->headers['Location'] = sprintf('/todos?id=%s', $this->pdo->lastInsertId()); // new URL
