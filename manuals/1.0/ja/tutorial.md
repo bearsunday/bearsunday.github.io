@@ -240,10 +240,15 @@ composer cs
 ```
 composer cs-fix
 ```
+## 静的解析
 
-静的解析は`composer sa`コマンドでおこないます。
+コードの静的解析は`composer sa`コマンドでおこないます。
 
-これまでのコードで実行してみましょう。以下のエラーがphpstanで検出されます。
+```
+composer sa
+```
+
+これまでのコードで実行してみると、以下のエラーがphpstanで検出されました。
 
 ```
  ------ --------------------------------------------------------- 
@@ -329,15 +334,21 @@ class Weekday extends ResourceObject
 +    }
 ```
 
-例外作成のベストプラクティス:
+#### 例外作成のベストプラクティス
+>
+> 
+> 入力のミスのために起こった例外なので、コード自身には問題がありません。このような実行時になって判明する例外は`RuntimeException`です。それを拡張して専用の例外を作成しました。
+> 反対に例外の発生がバグによるものでコードの修正が必要なら`LogicException`を拡張して例外を作成します。例外のメッセージで種類を説明するのでなく、それぞれ専用の例外を作るようにします。
 
-入力のミスのために起こった例外なので、コード自身には問題がありません。このような実行時になって判明する例外は`RuntimeException`です。それを拡張して専用の例外を作成しました。
-反対に例外の発生がバグによるものでコードの修正が必要なら`LogicException`を拡張して例外を作成します。
 
-これで` $dateTime->format('D');`の実行時に`$dateTime`にfalseが入る可能性がなくなりました。このように値を逐一検査するプログラミングを防御的プログラミング(defensive programming)と呼びます。
-phpstanやpsalmの静的解析ツールが役立ちます。しかし、この検査がプロジェクトが求めるものに対してあまりにも厳しすぎると感じるなら設定ファイルの値を変えて検査レベルを変えてもいいでしょう。
+#### 防御的プログラミング
 
-`composer tests`は　`composer test`に加えて、コーディング規約(cs)、静的解析の検査(sa)も行います。コミット前に行うのが良いでしょう。
+この修正で` $dateTime->format('D');`の実行時に`$dateTime`にfalseが入る可能性がなくなりました。
+このように問題を発生の前に回避するプログラミングを防御的プログラミング(defensive programming)と呼び、静的解析が役立ちます。
+
+#### コミット前のテスト
+
+`composer tests`は　`composer test`に加えて、コーディング規約(cs)、静的解析(sa)の検査も行います。
 
 ```
 composer tests
@@ -492,7 +503,6 @@ class MyLogger implements MyLoggerInterface
         error_log($message . PHP_EOL, 3, $this->logFile);
     }
 }
-
 ```
 
 `MyLogger`を実装するためにはアプリケーションのログディレクトリの情報(`AbstractAppMeta`)が必要ですが、これも`依存`としてコンストラクタで受け取ります。
@@ -612,7 +622,7 @@ class AppModule extends AbstractAppModule
         $this->bind(MyLoggerInterface::class)->to(MyLogger::class);
 +        $this->bindInterceptor(
 +            $this->matcher->any(),                           // どのクラスでも
-+            $this->matcher->annotatedWith(BenchMark::class), // #[Attribute]と属性の付けられたメソッドに
++            $this->matcher->annotatedWith(BenchMark::class), // #[BenchMark]と属性の付けられたメソッドに
 +            [BenchMarker::class]                             // BenchMarkerインターセプターを適用
 +        );
         $this->install(new PackageModule());
