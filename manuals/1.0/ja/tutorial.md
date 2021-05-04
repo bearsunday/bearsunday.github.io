@@ -37,7 +37,7 @@ class Weekday extends ResourceObject
 {
     public function onGet(int $year, int $month, int $day): static
     {
-        $dateTime =DateTimeImmutable::createFromFormat('Y-m-d', "$year-$month-$day");
+        $dateTime = DateTimeImmutable::createFromFormat('Y-m-d', "$year-$month-$day");
         $weekday = $dateTime->format('D');
         $this->body = ['weekday' => $weekday];
 
@@ -87,7 +87,7 @@ Content-Type: application/hal+json
 }
 ```
 
-`application/hal+json`というメディアタイプで結果が正しく返って来ました。
+[application/hal+json](https://tools.ietf.org/html/draft-kelly-json-hal-06)というメディアタイプで結果が正しく返って来ました。
 
 これをWeb APIサービスにしてみましょう。
 Built-inサーバーを立ち上げます。
@@ -105,10 +105,10 @@ curl -i 'http://127.0.0.1:8080/weekday?year=2001&month=1&day=1'
 ```
 HTTP/1.1 200 OK
 Host: 127.0.0.1:8080
-Date: Fri, 01 Sep 2017 09:31:13 +0200
+Date: Tue, 04 May 2021 01:55:59 GMT
 Connection: close
-X-Powered-By: PHP/7.1.8
-content-type: application/hal+json
+X-Powered-By: PHP/8.0.3
+Content-Type: application/hal+json
 
 {
     "weekday": "Mon",
@@ -663,10 +663,6 @@ cat var/log/cli-hal-api-app/weekday.log
 次に今のAPIアプリケーションをHTMLアプリケーションにしてみましょう。
 今の`app`リソースに加えて、`src/Resource/Page/Index.php`に`page`リソースを追加します。
 
-`page`リソースクラスは場所と役割が違うだけで`app`リソースと基本的に同じクラスです。
-（典型的なシナリオは`page`はパブリック公開されたHTMLページ、`app`はDBなどインフラレイヤーに近いところで、`page`と共に使う時は非公開のリソースです。
-どちらを公開にするかは、実行時のコンテキストで決定されます。）
-
 ```php
 <?php
 
@@ -674,18 +670,23 @@ declare(strict_types=1);
 
 namespace MyVendor\Weekday\Resource\Page;
 
-use BEAR\Resource\Annotation\Embed;
 use BEAR\Resource\ResourceObject;
+use MyVendor\Weekday\Resource\App\Weekday;
 
 class Index extends ResourceObject
 {
-    #[Embed(rel: "weekday", src: "app://self/weekday{?year,month,day}")]
+    public function __construct(private Weekday $weekday)
+    {
+    }
+
     public function onGet(int $year, int $month, int $day): static
     {
-        $this->body += [
+        $weekday = $this->weekday->onGet($year, $month, $day);
+        $this->body = [
             'year' => $year,
             'month' => $month,
             'day' => $day,
+            'weekday' => $weekday->body['weekday']
         ];
 
         return $this;
@@ -693,49 +694,12 @@ class Index extends ResourceObject
 }
 ```
 
-`#[Embed]`は他のリソースを自身のリソースに埋め込むアトリビュートです。
+`page`リソースクラスは場所と役割が違うだけで`app`リソースと基本的に同じクラスです。
+このリソースではインジェクトしたappリソースをに処理を委譲(delegate)していいます。
 
-> #### 埋め込みリンク LE(Embedding links)
->
-> この「他のリソースを自身のリソースとして内部にリンクする」という機能は[埋め込みリンク LE(Embedding links)](http://amundsen.com/hypermedia/hfactor/#le)と言われるもので、多くのハイパーメディアで採用されているものです。
-> 例えばHTMLなら`<img>`タグや`<iframe>`タグ、[HAL](https://en.wikipedia.org/wiki/Hypertext_Application_Language)なら[ _embedded](https://tools.ietf.org/html/draft-kelly-json-hal-08#section-4.1.2)です。
-> LEのおかげで複数のリソースが1度のリクエストで取得できます。
-
-`#[Embed]`アトリビュートで`app://self/weekday`リソースをbodyのweekdayキーに埋め込んでいます。**+=**で配列をmergeしているのはonGet実行前に`@Embed`でbodyに埋め込まれたweekdayと合成するためです
-
-その際にクエリーを**URI template** ([RFC6570](https://github.com/ioseb/uri-template))を使って`{?year,month,day}`として同じものを渡しています。
-下記の２つのURI templateは同じURIを示しています。
-
- * `app://self/weekday{?year,month,day}`
- * `app://self/weekday?year={year}&month={month}&day={day}`
-
-#### リソースクライアント
-
-埋め込みリンクを使う代わりに、リソースクライアントでappリソースをセットすることもできます。[^3]
-リソースクライアントは`use ResourceInject;`でインジェクトします。
-
-```php
-<?php
-namespace MyVendor\Weekday\Resource\Page;
-
-use BEAR\Resource\ResourceObject;
-use BEAR\Sunday\Inject\ResourceInject;
-
-class Index extends ResourceObject
-{
-    use ResourceInject;
-
-    public function onGet(int $year, int $month, int $day) : ResourceObject
-    {
-      $params = get_defined_vars(); // ['year' => $year, 'month' => $month, 'day' => $day]
-      $this->body = $params + [
-          'weekday' => $this->resource->get('app://self/weekday', $params)
-      ];
-
-      return $this;
-    }
-}
-```
+（典型的なシナリオは`page`はパブリック公開されたHTMLページ、`app`はDBなどインフラレイヤーに近いところで、`page`と共に使う時は非公開のリソースです。
+どちらを公開にするかは、実行時のコンテキストで決定されます。MVCに例えるとappリソースがモデルの役割を果たし、pageリソースがコントローラーの役割を果たしています。
+）
 
 このリソースがどのような表現になるのか試してみましょう。
 
@@ -745,26 +709,22 @@ php bin/page.php get '/?year=2000&month=1&day=1'
 
 ```
 200 OK
-content-type: application/hal+json
+Content-Type: application/hal+json
 
 {
     "year": 2000,
     "month": 1,
     "day": 1,
-    "_embedded": {
-        "weekday": {
-            "weekday": "Sat"
-        }
-    },
+    "weekday": "Sat",
     "_links": {
         "self": {
             "href": "/index?year=2000&month=1&day=1"
         }
     }
 }
+
 ```
 
-他のリソースが`_embedded`されているのが確認できます。
 リソースは`application/hal+json`メディアタイプで出力されていますが、これをHTML(text/html)で出力するためにHTMLモジュールをインストールします。[HTMLのマニュアル](/manuals/1.0/ja/html.html)参照。
 
 composerインストール
