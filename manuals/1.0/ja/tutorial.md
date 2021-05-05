@@ -901,7 +901,7 @@ class Todos extends ResourceObject
 
     public function onGet(string $id = ''): static
     {
-        $sql = $id ? /** @lang SQL */ 'SELECT * FROM todo WHERE id=:id' : /** @lang SQL */ 'SELECT * FROM todo';
+        $sql = $id ? /** @lang SQL */'SELECT * FROM todo WHERE id=:id' : /** @lang SQL */'SELECT * FROM todo';
         $this->body = $this->pdo->fetchAssoc($sql, ['id' => $id]);
 
         return $this;
