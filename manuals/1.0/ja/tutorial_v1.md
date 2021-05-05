@@ -1,8 +1,8 @@
 ---
 layout: docs-ja
-title: チュートリアル
+title: チュートリアル(v1)
 category: Manual
-permalink: /manuals/1.0/ja/tutorial.html
+permalink: /manuals/1.0/ja/tutorial_v1.html
 ---
 # チュートリアル
 
