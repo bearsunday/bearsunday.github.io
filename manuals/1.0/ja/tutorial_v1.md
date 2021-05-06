@@ -1,8 +1,8 @@
 ---
 layout: docs-ja
-title: チュートリアル (v2)
+title: チュートリアル(v1)
 category: Manual
-permalink: /manuals/1.0/ja/tutorial.html
+permalink: /manuals/1.0/ja/tutorial_v1.html
 ---
 # チュートリアル
 
@@ -278,7 +278,7 @@ assert($dateTime instanceof DateTimeImmutable);
 
 ### 例外を投げる場合
 
-まず専用の例外`src/Exception/InvalidDateTimeException.php`を作成します。
+まず専用の例外`src/Exception/InvalidDateTime.php`を作成します。
 
 ```php
 <?php
@@ -289,7 +289,7 @@ namespace MyVendor\Weekday\Exception;
 
 use RuntimeException;
 
-class InvalidDateTimeException extends RuntimeException
+class InvalidDateTime extends RuntimeException
 {
 }
 ```
@@ -305,7 +305,7 @@ namespace MyVendor\Weekday\Resource\App;
 
 use BEAR\Resource\ResourceObject;
 +use DateTimeImmutable;
-use MyVendor\Weekday\Exception\InvalidDateTimeException;
+use MyVendor\Weekday\Exception\InvalidDateTime;
 
 class Weekday extends ResourceObject
 {
@@ -313,7 +313,7 @@ class Weekday extends ResourceObject
     {
         $dateTime = DateTimeImmutable::createFromFormat('Y-m-d', "$year-$month-$day");
 +        if (! $dateTime instanceof DateTimeImmutable) {
-+            throw new InvalidDateTimeException("$year-$month-$day");
++            throw new InvalidDateTime("$year-$month-$day");
 +        }
 
         $weekday = $dateTime->format('D');
@@ -329,7 +329,7 @@ class Weekday extends ResourceObject
 ```diff
 +    public function tesInvalidDateTime(): void
 +    {
-+        $this->expectException(InvalidDateTimeException::class);
++        $this->expectException(InvalidDateTime::class);
 +        $this->resource->get('app://self/weekday', ['year' => '-1', 'month' => '1', 'day' => '1']);
 +    }
 ```
@@ -343,8 +343,8 @@ class Weekday extends ResourceObject
 
 #### 防御的プログラミング
 
-> この修正で` $dateTime->format('D');`の実行時に`$dateTime`にfalseが入る可能性がなくなりました。
-> このように問題を発生の前に回避するプログラミングを防御的プログラミング(defensive programming)と呼び、その検査に静的解析が役立ちます。
+この修正で` $dateTime->format('D');`の実行時に`$dateTime`にfalseが入る可能性がなくなりました。
+このように問題を発生の前に回避するプログラミングを防御的プログラミング(defensive programming)と呼び、静的解析が役立ちます。
 
 #### コミット前のテスト
 
@@ -458,7 +458,7 @@ class Weekday extends ResourceObject
 +    {
 +    }
 
-    public function onGet(int $year, int $month, int $day): static
+    public function onGet(int $year, int $month, int $day) : ResourceObject
     {
         $weekday = \DateTime::createFromFormat('Y-m-d', "$year-$month-$day")->format('D');
         $this->body = [
@@ -573,7 +573,7 @@ class BenchMarker implements MethodInterceptor
     {
     }
 
-    public function invoke(MethodInvocation $invocation): mixed
+    public function invoke(MethodInvocation $invocation)
     {
         $start = microtime(true);
         $result = $invocation->proceed(); // 元のメソッドの実行
@@ -901,7 +901,7 @@ class Todos extends ResourceObject
 
     public function onGet(string $id = ''): static
     {
-        $sql = $id ? /** @lang SQL */'SELECT * FROM todo WHERE id=:id' : /** @lang SQL */'SELECT * FROM todo';
+        $sql = $id ? /** @lang SQL */ 'SELECT * FROM todo WHERE id=:id' : /** @lang SQL */ 'SELECT * FROM todo';
         $this->body = $this->pdo->fetchAssoc($sql, ['id' => $id]);
 
         return $this;
@@ -1071,7 +1071,7 @@ BEAR.Sundayは**DI**で依存を結び、AOPで横断的関心事を結び、RES
 
 ---
 
-※ 以前のPHP7対応のチュートリアルは[tutorial_v1](tutorial_v1.html)にあります。
-
-[^1]:このプロジェクトのソースコードは各セクション毎に[bearsunday/Tutorial](https://github.com/bearsunday/Tutorial/commits/v2)にコミットしています。適宜参照してください。
+[^1]:このプロジェクトのソースコードは各セクション毎に[bearsunday/Tutorial](https://github.com/bearsunday/Tutorial/commits/php8)にコミットしています。適宜参照してください。
 [^2]:通常は**vendor**名は個人またはチーム（組織）の名前を入力します。githubのアカウント名やチーム名が適当でしょう。**project**にはアプリケーション名を入力します。
+[^3]:最初の`#[Embed]`を使った方法は[宣言型プログラミング(Declative Programming)
+     ](https://ja.wikipedia.org/wiki/%E5%AE%A3%E8%A8%80%E5%9E%8B%E3%83%97%E3%83%AD%E3%82%B0%E3%83%A9%E3%83%9F%E3%83%B3%E3%82%B0)、後者は[命令型プログラミング(Imperative Programming)](https://ja.wikipedia.org/wiki/%E5%91%BD%E4%BB%A4%E5%9E%8B%E3%83%97%E3%83%AD%E3%82%B0%E3%83%A9%E3%83%9F%E3%83%B3%E3%82%B0)です。`@Embed`を使った前者は簡潔で可読性が高くリソースの関係を良く表しています。
