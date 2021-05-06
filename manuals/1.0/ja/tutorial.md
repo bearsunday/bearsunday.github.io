@@ -645,8 +645,8 @@ class Weekday extends ResourceObject
 
 これで計測したいメソッドに`#[BenchMark]`のアトリビュートを付与すればいつでもベンチマークできるようになりました。
 
-アノテーションとインターセプターによる機能追加は柔軟です。対象メソッドやメソッドを呼ぶ側に変更はありません。
-アノテーションはそのままでも束縛を外せばベンチマークを行いません。例えば、開発時にのみ束縛を行い特定の秒数を越すと警告を行うこともできます。
+アトリビュートとインターセプターによる機能追加は柔軟です。対象メソッドやメソッドを呼ぶ側に変更はありません。
+アトリビュートはそのままでも束縛を外せばベンチマークを行いません。例えば、開発時にのみ束縛を行い特定の秒数を越すと警告を行うこともできます。
 
 実行して`var/log/weekday.log`に実行時間のログが出力されることを確認しましょう。
 
@@ -872,8 +872,6 @@ class AppModule extends AbstractAppModule
 }
 ```
 
-セッターメソッドのtrait `DatabaseInject`を使うと`$this->db`でCakeDBオブジェクトを使えます。
-
 Todoリソースを`src/Resource/App/Todos.php`に設置します。
 
 ```php
@@ -936,7 +934,7 @@ class Todos extends ResourceObject
 アトリビュートに注目してください。クラスのアトリビュート`#[Cacheable]`はこのリソースのGETメソッドがキャッシュ可能なことを示しています。
 `onPost`や`onPut`の`#[Transactional]`はデータベースアクセスのトランザクションを示しています。
 
-`onPost`の`#[ReturnCreatedResource]`作成し`Location`でURLが示されているリソースをbodyに含んで返します。。
+`onPost`の`#[ReturnCreatedResource]`作成し`Location`でURLが示されているリソースをbodyに含んで返します。
 この時`Location`ヘッダーのURIで実際に`onGet`がコールされるので`Location`ヘッダーの内容が正しいことが保証されると同時に`onGet`をコールすることでキャッシュも作られます。
 
 
@@ -1028,7 +1026,7 @@ Cache-Control: max-age=31536000
 
 何回かリクエストして`Last-Modified`の日付が変わらないことを確認しましょう。この時`onGet`メソッド内は実行されていません。（試しにメソッド内で`echo`などを追加して確認してみましょう）
 
-`expiry`を設定してない`Cacheable`アノテーションのキャッシュは時間でキャッシュが無効になる事はありません。
+`expiry`を設定してない`Cacheable`アトリビュートのキャッシュは時間でキャッシュが無効になる事はありません。
 `onPut($id, $todo)`や`onDelete($id)` でリソースの変更が行われるとキャッシュが再生成されます。
 
 次に`PUT`メソッドでこのリソースを変更します。
@@ -1055,10 +1053,10 @@ curl -i http://127.0.0.1:8081/todos -X PUT -H 'Content-Type: application/json' -
 curl -i 'http://127.0.0.1:8081/todos?id=1'
 ```
 
-この`Last-Modified`の日付は`@Cacheable`で提供されるものです。
+この`Last-Modified`の日付は`#[Cacheable]`で提供されるものです。
 アプリケーションが管理したり、データベースのカラムを用意したりする必要はありません。
 
-`@Cacheable`を使うと、リソースコンテンツは書き込み用のデータベースとは違うリソースの保存専用の「クエリーリポジトリ」で管理され`Etag`や`Last-Modified`のヘッダーの付加が自動で行われます。
+`#[Cacheable]`を使うと、リソースコンテンツは書き込み用のデータベースとは違うリソースの保存専用の「クエリーリポジトリ」で管理され`Etag`や`Last-Modified`のヘッダーの付加が自動で行われます。
 
 ## Because Everything is A Resource.
 
