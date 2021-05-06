@@ -278,7 +278,7 @@ assert($dateTime instanceof DateTimeImmutable);
 
 ### 例外を投げる場合
 
-まず専用の例外`src/Exception/InvalidDateTime.php`を作成します。
+まず専用の例外`src/Exception/InvalidDateTimeException.php`を作成します。
 
 ```php
 <?php
@@ -289,7 +289,7 @@ namespace MyVendor\Weekday\Exception;
 
 use RuntimeException;
 
-class InvalidDateTime extends RuntimeException
+class InvalidDateTimeException extends RuntimeException
 {
 }
 ```
@@ -305,7 +305,7 @@ namespace MyVendor\Weekday\Resource\App;
 
 use BEAR\Resource\ResourceObject;
 +use DateTimeImmutable;
-use MyVendor\Weekday\Exception\InvalidDateTime;
+use MyVendor\Weekday\Exception\InvalidDateTimeException;
 
 class Weekday extends ResourceObject
 {
@@ -313,7 +313,7 @@ class Weekday extends ResourceObject
     {
         $dateTime = DateTimeImmutable::createFromFormat('Y-m-d', "$year-$month-$day");
 +        if (! $dateTime instanceof DateTimeImmutable) {
-+            throw new InvalidDateTime("$year-$month-$day");
++            throw new InvalidDateTimeException("$year-$month-$day");
 +        }
 
         $weekday = $dateTime->format('D');
@@ -329,7 +329,7 @@ class Weekday extends ResourceObject
 ```diff
 +    public function tesInvalidDateTime(): void
 +    {
-+        $this->expectException(InvalidDateTime::class);
++        $this->expectException(InvalidDateTimeException::class);
 +        $this->resource->get('app://self/weekday', ['year' => '-1', 'month' => '1', 'day' => '1']);
 +    }
 ```
@@ -343,8 +343,8 @@ class Weekday extends ResourceObject
 
 #### 防御的プログラミング
 
-この修正で` $dateTime->format('D');`の実行時に`$dateTime`にfalseが入る可能性がなくなりました。
-このように問題を発生の前に回避するプログラミングを防御的プログラミング(defensive programming)と呼び、静的解析が役立ちます。
+> この修正で` $dateTime->format('D');`の実行時に`$dateTime`にfalseが入る可能性がなくなりました。
+> このように問題を発生の前に回避するプログラミングを防御的プログラミング(defensive programming)と呼び、その検査に静的解析が役立ちます。
 
 #### コミット前のテスト
 
