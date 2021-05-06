@@ -931,12 +931,23 @@ class Todos extends ResourceObject
     }
 }
 ```
+
+
+#### #[Cacheable]
+
 アトリビュートに注目してください。クラスのアトリビュート`#[Cacheable]`はこのリソースのGETメソッドがキャッシュ可能なことを示しています。
+
+#### #[Transactional]
+
 `onPost`や`onPut`の`#[Transactional]`はデータベースアクセスのトランザクションを示しています。
+
+#### #[ReturnCreatedResource]
 
 `onPost`の`#[ReturnCreatedResource]`作成し`Location`でURLが示されているリソースをbodyに含んで返します。
 この時`Location`ヘッダーのURIで実際に`onGet`がコールされるので`Location`ヘッダーの内容が正しいことが保証されると同時に`onGet`をコールすることでキャッシュも作られます。
 
+
+### POSTリクエスト
 
 `POST`してみましょう。
 
