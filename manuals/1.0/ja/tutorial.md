@@ -932,10 +932,11 @@ class Todos extends ResourceObject
 }
 ```
 
+アトリビュートに注目してください。
 
 #### #[Cacheable]
 
-アトリビュートに注目してください。クラスのアトリビュート`#[Cacheable]`はこのリソースのGETメソッドがキャッシュ可能なことを示しています。
+クラスのアトリビュート`#[Cacheable]`はこのリソースのGETメソッドがキャッシュ可能なことを示しています。
 
 #### #[Transactional]
 
