@@ -327,7 +327,7 @@ class Weekday extends ResourceObject
 テストも追加します。
 
 ```diff
-+    public function tesInvalidDateTime(): void
++    public function testInvalidDateTime(): void
 +    {
 +        $this->expectException(InvalidDateTimeException::class);
 +        $this->resource->get('app://self/weekday', ['year' => '-1', 'month' => '1', 'day' => '1']);
