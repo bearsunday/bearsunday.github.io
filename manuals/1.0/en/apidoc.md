@@ -17,7 +17,7 @@ It not only saves you the trouble of writing IDL, but also helps you maintain ac
 
 Install BEAR.ApiDoc.
 
-    composer require bear/api-doc 1.x-dev --dev
+    composer require bear/api-doc ^0.4 --dev
 
 Create `bin/doc.php` script.
 

@@ -16,7 +16,7 @@ IDLを書く手間が省け、正確なドキュメントを維持し続ける�
 
 BEAR.ApiDocをインストールします。
 
-    composer require bear/api-doc 1.x-dev --dev
+    composer require bear/api-doc ^0.4 --dev
 
 `bin/doc.php`に生成スクリプトを用意します。
 
