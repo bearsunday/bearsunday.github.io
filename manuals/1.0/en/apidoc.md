@@ -137,10 +137,25 @@ ApiDoc supports the [ALPS](http://alps.io/) format of the [RFC 6906 Profile](htt
 Words used in API request and response keys are called semantic descriptors, and if you create a dictionary of profiles, you don't need to describe the words for each request.
 Centralized definitions of words and phrases prevent notational errors and aid in shared understanding.
 
-Words used in the API (semantic descriptors) are defined using profiles with `title` or `def`.
+The words used in API request and response keys are called semantic descriptors, and creating a dictionary of profiles eliminates the need to explain the words for each request.
+Centralized definitions of words and phrases prevent shaky notation and aid in shared understanding.
 
-Example.
-For example, the following is an example of defining the descriptors `firstName` and `familyName` differently from `title` and `def` respectively.
+The following is an example of defining descriptors `firstName` and `familyName` with `title` and `def` respectively.
+While `title` describes a word and clarifies its meaning, `def` links standard words defined in vocabulary sites such as [Schema.org](https://schema.org/).
+
+ALPS profiles can be written in XML or JSON.
+
+profile.xml
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<alps
+     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:noNamespaceSchemaLocation="https://alps-io.github.io/schemas/alps.xsd">
+    <!-- Ontology -->
+    <descriptor id="firstName" title="The person's first name."/>
+    <descriptor id="familyName" def="https://schema.org/familyName"/>
+</alps>
+```
 
 profile.json
 
@@ -155,9 +170,6 @@ profile.json
   }
 }
 ```
-
-The `firstName` is described in text by the `title`.
-The `familyName` is defined by linking words defined in [schema.org](https://schema.org) with `def`.
 
 Descriptions of words appearing in ApiDoc take precedence over phpdoc > JsonSchema > ALPS in that order.
 

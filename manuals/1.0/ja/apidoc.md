@@ -139,10 +139,22 @@ BEAR.ApiDocはアプリケーションに追加情報を与える[RFC 6906 プ�
 APIのリクエストやレスポンスのキーで使う語句をセマンティックディスクリプタ（意味的記述子）と呼びますが、プロファイルそのの辞書を作っておけばリクエスト毎に語句を説明する必要がなくなります。
 語句の定義が集中することで表記揺れを防ぎ、理解共有を助けます。
 
-APIで使われる語句は（セマンティくディスクリプタ）をプロファイルを使って、`title`または`def`で定義します。
+以下は`firstName`,`familyName`というディスクリプタをそれぞれ`title`、`def`で定義した例です。
+`title`は言葉を記述して意味を明らかにしますが、`def`は[Schema.org](https://schema.org/) などのボキャブラリサイトで定義されたスタンダードな語句をリンクします。
 
-例）
-例えば、以下は`firstName`,`familyName`というディスクリプタをそれぞれ`title`、`def`と違った方法で定義した例です。
+ALPSプロファイルはXMLまたはJSONで記述します。
+
+profile.xml
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<alps
+     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:noNamespaceSchemaLocation="https://alps-io.github.io/schemas/alps.xsd">
+    <!-- Ontology -->
+    <descriptor id="firstName" title="The person's first name."/>
+    <descriptor id="familyName" def="https://schema.org/familyName"/>
+</alps>
+```
 
 profile.json
 ```xml
@@ -156,9 +168,6 @@ profile.json
   }
 }
 ```
-
-`firstName`は`title`によって文章で説明されています。
-`familyName`は[schema.org](https://schema.org)で定義されている語句を`def`でリンクする事で語句を定義しています。
 
 ApiDocに登場する語句の説明はphpdoc > JsonSchema > ALPSの順で優先します。
 
