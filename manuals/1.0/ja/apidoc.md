@@ -69,7 +69,7 @@ phpdocでは以下の部分が取得されます。
 <?xml version="1.0" encoding="UTF-8"?>
 <apidoc
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:noNamespaceSchemaLocation="./vendor/bear/api-doc/apidoc.xsd">
+        xsi:noNamespaceSchemaLocation="https://bearsunday.github.io/BEAR.ApiDoc/apidoc.xsd">
     <appName>MyVendor\MyProject</appName>
     <scheme>app</scheme>
     <docDir>docs</docDir>
