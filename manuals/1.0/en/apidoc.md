@@ -175,5 +175,6 @@ Descriptions of words appearing in ApiDoc take precedence over phpdoc > JsonSche
 
 ## Reference
 
+* [Demo](https://bearsunday.github.io/BEAR.ApiDoc/)
 * [ALPS](http://alps.io/)
 * [ALPS-ASD](https://github.com/koriym/app-state-diagram)

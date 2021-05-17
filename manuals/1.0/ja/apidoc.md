@@ -173,6 +173,7 @@ ApiDocに登場する語句の説明はphpdoc > JsonSchema > ALPSの順で優先
 
 ## リンク
 
+* [Demo](https://bearsunday.github.io/BEAR.ApiDoc/)
 * [ALPS](http://alps.io/)
 * [ALPS-ASD](https://github.com/koriym/app-state-diagram)
 * [メディアタイプとALPSプロファイル](https://qiita.com/koriym/items/2e928efb2167d559052e)
