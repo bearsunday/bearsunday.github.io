@@ -5,78 +5,29 @@ category: Manual
 permalink: /manuals/1.0/en/apidoc.html
 ---
 # API Doc
-(WIP)
 
 ApiDoc generates API documentation from your application.
 
-ApiDoc generates API documentation from your application. The documentation is automatically generated from the application code and JSON schema, so there is no difference between the API documentation and the actual application.
+The auto-generated documentation from your code and JSON schema will reduce your effort and keep your API documentation accurate.
 
-It not only saves you the trouble of writing IDL, but also helps you maintain accurate documentation.
-
-## How to use
+## Usage
 
 Install BEAR.ApiDoc.
 
-    composer require bear/api-doc ^0.4 --dev
+    composer require bear/api-doc --dev
 
-Create `bin/doc.php` script.
+Copy the configuration file.
 
-
-```php
-<php
-
-require dirname(__DIR__) . '/vendor/autoload.php';
-
-use BEAR\ApiDoc\DocApp;
-
-$docApp = new DocApp('MyVendor\MyProject');
-$docApp->dumpHtml('/path/to/docs', 'app');
-```
-
-Generate a `DocApp ` with the namespace of your application, and use `dumpHtml()` to select the destination of the document and the page schema app or page to output the document.
-
-You can also register it with the composer script command.
-
-## Profiles
-
-BEAR.ApiDoc supports the [ALPS](http://alps.io/) format of [RFC 6906 Profile](https://tools.ietf.org/html/rfc6906) which gives additional information to applications.
-
-Words used in API request and response keys are called semantic descriptors (semantic descriptors). If a dictionary of words (semantic descriptors) is created in a profile, there is no need to describe the words for each request. The centralized definition of words and phrases also prevents notational shakiness and aids in shared understanding.
-
-## ALPS profile
-
-The following is an example of defining semantic descriptors named `firstName`,`familyName`.
-
-profile.json
-
-```json
-{
-  "$schema": "https://alps-io.github.io/schemas/alps.json",
-  "alps": {
-    "descriptor": [
-      {"id": "firstName", "title": "The person's first name."},
-      {"id": "familyName", "def": "https://schema.org/familyName"},
-    ]
-  }
-}
-```
-
-The `firstName` is described in text by the `title`. The `familyName` is defined by linking words defined in [schema.org](https://schema.org) with `def`. Once defined, they will be reflected in the API documentation without having to be re-described in JSON schema or PHPDOC.
-
-To output using a profile, specify the profile as the third argument of dumpHtml().
-
-```
-$docApp->dumpHtml('/path/to/docs', 'app', 'path/to/profile.json');
-```
+    cp ./vendor/bear/api-doc/apidoc.xml.dist ./apidoc.xml
 
 ## Source
 
-BEAR.ApiDoc takes information from phpdoc, method signatures and JSON schema to generate documentation.
+ApiDoc generates documentation by retrieving information from phpdoc, method signatures, and JSON schema.
 
 #### PHPDOC
 
-The following parts are retrieved in phpdoc. For information that applies across resources, such as authentication, a separate documentation page is prepared and linked with `@link`.
-
+In phpdoc, the following parts are retrieved.
+For information that applies across resources, such as authentication, prepare a separate documentation page and link it with `@link`.
 
 ```php
 /**
@@ -97,18 +48,120 @@ The following parts are retrieved in phpdoc. For information that applies across
  *
  * {description}
  *
- * @param string $id User ID
+ * @param string $id ユーザーID
  */
  public function onGet(string $id ='kuma'): static
  {
  }
 ```
 
-* If there is no `@param` description for a method, information is retrieved from the method signature.
-* The order of priority for information retrieval is phpdoc, JSON schema, and profile.
+* If there is no `@param` description in the phpdoc of the method, get the information of the argument from the method signature.
+* The order of priority for information acquisition is phpdoc, JSON schema, and profile.
 
-## Link
+## Configuration
+
+The configuration is written in XML.
+The minimum specification is as follows.
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<apidoc
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="./vendor/bear/api-doc/apidoc.xsd">
+    <appName>MyVendor\MyProject</appName>
+    <scheme>app</scheme>
+    <docDir>docs</docDir>
+    <format>html</format>
+</apidoc>
+```
+
+### Required Attributes
+
+#### appName
+
+Application namespaces
+
+#### scheme
+
+The name of the schema to use for API documentation. `page` or `app`.
+
+#### docDir
+
+Output directory name.
+
+#### format
+
+The output format, HTML or MD (Mark down).
+
+### Optional attributes
+
+#### title
+
+API title
+
+```xml
+<title>MyBlog API</title>
+```
+
+#### description
+
+API description
+
+```xml
+<description>MyBlog API description</description
+```
+
+#### links
+
+Links. The `href` is the URL of the link, and the `rel` is its content.
+
+```xml
+<links>
+    <link href="https://www.example.com/issue" rel="issue" />
+    <link href="https://www.example.com/help" rel="help" />
+</links>
+```
+
+#### alps
+
+Specifies an "ALPS profile" that defines the terms used by the API.
+
+```xml
+<alps>alps/profile.json</alps>.
+```
+
+## Profile
+
+ApiDoc supports the [ALPS](http://alps.io/) format of the [RFC 6906 Profile](https://tools.ietf.org/html/rfc6906) which gives additional information to the application.
+
+Words used in API request and response keys are called semantic descriptors, and if you create a dictionary of profiles, you don't need to describe the words for each request.
+Centralized definitions of words and phrases prevent notational errors and aid in shared understanding.
+
+Words used in the API (semantic descriptors) are defined using profiles with `title` or `def`.
+
+Example.
+For example, the following is an example of defining the descriptors `firstName` and `familyName` differently from `title` and `def` respectively.
+
+profile.json
+
+```json
+{
+  "$schema": "https://alps-io.github.io/schemas/alps.json",
+  "alps": {
+    "descriptor": [
+      {"id": "firstName", "title": "The person's first name."}
+      {"id": "familyName", "def": "https://schema.org/familyName"},
+    ]
+  }
+}
+```
+
+The `firstName` is described in text by the `title`.
+The `familyName` is defined by linking words defined in [schema.org](https://schema.org) with `def`.
+
+Descriptions of words appearing in ApiDoc take precedence over phpdoc > JsonSchema > ALPS in that order.
+
+## Reference
 
 * [ALPS](http://alps.io/)
 * [ALPS-ASD](https://github.com/koriym/app-state-diagram)
-* [メディアタイプとALPSプロファイル](https://qiita.com/koriym/items/2e928efb2167d559052e)
