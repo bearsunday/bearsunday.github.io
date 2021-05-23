@@ -6,17 +6,14 @@ permalink: /manuals/1.0/ja/tutorial2.html
 ---
 # チュートリアル2
 
-このチュートリアルでは以下のツールを用いてタスク管理のチケット作成・取得用REST APIを作成し、疎結合で高品質なREST APIアプリケーションの開発をテスト駆動で学びます。[^1]
+(wip: 24 May 2021)
 
-* CakePHPが開発してるフレームワーク非依存の[Phinx](https://book.cakephp.org/3.0/ja/phinx.html) DBマイグレーションツール
-* JSONのデータ構造を定義しバリデーションやドキュメンテーションに利用する [Json Schema](https://qiita.com/kyoh86/items/e7de290e9a0e989fcc14)
-* SQL文をSQL実行オブジェクトに変換しアプリケーションレイヤーとデータアクセスレイヤーを疎にする [ray/query-module](https://github.com/ray-di/Ray.QueryModule)
-* UUIDや現在時刻をインジェクトする [IdentityValueModule](https://github.com/ray-di/Ray.IdentityValueModule)
+このチュートリアルでは以下のツールを用いて標準に基づいた高品質なREST(Hypermedia)アプリケーション開発を学びます。
 
-作成するAPIはスキーマ定義され、自己記述（self-descriptive)性に優れた高品質なものです。
-
-[チュートリアル](/manuals/1.0/ja/tutorial.html)と被る箇所もありますがおさらいのつもりでトライしてみましょう。
-レポジトリは [bearsunday/tutorial2](https://github.com/bearsunday/tutorial2) にあります。うまくいかないときは見比べてみましょう。
+* JSONのスキーマを定義しバリデーションやドキュメンテーションに利用する [Json Schema](https://json-schema.org/)
+* ハイパーメディアタイプ [HAL (Hypertext Application Language)](https://stateless.group/hal_specification.html)  
+* CakePHPが開発してるDBマイグレーションツール [Phinx](https://book.cakephp.org/3.0/ja/phinx.html) 
+* PHPのインターフェイスとSQL文実行を束縛する [Ray.MediaQuery](https://github.com/ray-di/Ray.MediaQuery)
 
 ## プロジェクト作成
 
@@ -25,116 +22,19 @@ permalink: /manuals/1.0/ja/tutorial2.html
 ```
 composer create-project bear/skeleton MyVendor.Ticket
 ```
-**vendor**名を`MyVendor`に**project**名を`Ticket`として入力します。[^2]
 
-## composerインストール
+**vendor**名を`MyVendor`に**project**名を`Ticket`として入力します。
 
-次に依存するパッケージを一度にインストールします。
+## マイグレーション
+
+依存するパッケージをインストールします。
 
 ```
-composer require bear/aura-router-module ray/identity-value-module ray/query-module
-composer require --dev robmorgan/phinx bear/api-doc 1.x-dev
+composer require ray/identity-value-module ray/media-query
+composer require --dev robmorgan/phinx
 ```
 
-## モジュールインストール
-
-`src/Module/AppModule.php`を編集してcomposerでインストールしたパッケージをモジュールインストールします。
-
-```php
-<?php
-namespace MyVendor\Ticket\Module;
-
-use BEAR\Package\AbstractAppModule;
-use BEAR\Package\PackageModule;
-use BEAR\Package\Provide\Router\AuraRouterModule;
-use BEAR\Resource\Module\JsonSchemaLinkHeaderModule;
-use BEAR\Resource\Module\JsonSchemaModule;
-use Ray\AuraSqlModule\AuraSqlModule;
-use Ray\IdentityValueModule\IdentityValueModule;
-use Ray\Query\SqlQueryModule;
-
-class AppModule extends AbstractAppModule
-{
-    /**
-     * {@inheritdoc}
-     */
-    protected function configure()
-    {
-        $appDir = $this->appMeta->appDir;
-        require_once $appDir . '/env.php';
-        $this->install(
-            new AuraSqlModule(
-                getenv('TKT_DB_DSN'),
-                getenv('TKT_DB_USER'),
-                getenv('TKT_DB_PASS'),
-                getenv('TKT_DB_SLAVE')
-            )
-        );
-        $this->install(new SqlQueryModule($appDir . '/var/sql'));
-        $this->install(new IdentityValueModule);
-        $this->install(
-            new JsonSchemaModule(
-                $appDir . '/var/json_schema',
-                $appDir . '/var/json_validate'
-            )
-        );
-        $this->install(new JsonSchemaLinkHeaderModule('http://www.example.com/'));
-        $this->install(new AuraRouterModule($appDir . '/var/conf/aura.route.php'));
-        $this->install(new PackageModule);
-    }
-}
-```
-
-テスト用のデータベースのために`src/Module/TestModule.php`も作成します。
-
-```php
-<?php
-namespace MyVendor\Ticket\Module;
-
-use BEAR\Package\AbstractAppModule;
-use Ray\AuraSqlModule\AuraSqlModule;
-
-class TestModule extends AbstractAppModule
-{
-    /**
-     * {@inheritdoc}
-     */
-    protected function configure()
-    {
-        $this->install(
-            new AuraSqlModule(
-                getenv('TKT_DB_DSN') . '_test',
-                getenv('TKT_DB_USER'),
-                getenv('TKT_DB_PASS'),
-                getenv('TKT_DB_SLAVE')
-            )
-        );
-    }
-}
-```
-
-
-モジュールが必要とするフォルダを作成します。
-
-```bash
-mkdir var/sql
-mkdir var/json_schema
-mkdir var/json_validate
-```
-
-## ルーターファイル
-
-`tickets/{id}`のアクセスを`Ticket`クラスにルートするためにルーターファイルを`var/conf/aura.route.php`に設置します。
-
-```php
-<?php
-/* @var \Aura\Router\Map $map */
-$map->route('/ticket', '/tickets/{id}');
-```
-
-## データベース
-
-プロジェクトルートフォルダの`.env`ファイルに接続情報を記述します。[^6]
+プロジェクトルートフォルダの`.env.dist`ファイルにDB接続情報を記述します。
 
 ```
 TKT_DB_HOST=127.0.0.1
@@ -145,32 +45,27 @@ TKT_DB_SLAVE=''
 TKT_DB_DSN=mysql:host=${TKT_DB_HOST};dbname=${TKT_DB_NAME}
 ```
 
-`.env`はリポジトリにはコミットされません。`.env.dist`に記述例を残して置きましょう。
+`.env.dist`ファイルはこのようにして、実際の接続情報は`.env`に記述しましょう。[^1]
 
-```
-cp .env .env.dist
-// remove password, etc..
-git add .env.dist
-```
-
-## マイグレーション
-
-phinxの実行環境を整えます。
-
-まずはphinxが利用するフォルダを作成します。
+次にphinxが利用するフォルダを作成します。
 
 ```bash
 mkdir -p var/phinx/migrations
 mkdir var/phinx/seeds
 ```
 
-次に`.env`の接続情報をphinxで利用するために`var/phinx/phinx.php`を設置します。
+`.env`の接続情報をphinxで利用するために`var/phinx/phinx.php`を設置します。
 
 ```php
 <?php
-require_once dirname(__DIR__, 2) . '/env.php';
-$development = new \PDO(getenv('TKT_DB_DSN'), getenv('TKT_DB_USER'), getenv('TKT_DB_PASS'));
-$test = new \PDO(getenv('TKT_DB_DSN') . '_test', getenv('TKT_DB_USER'), getenv('TKT_DB_PASS'));
+use BEAR\Dotenv\Dotenv;
+
+require_once dirname(__DIR__, 2) . '/vendor/autoload.php';
+
+(new Dotenv())->load(dirname(__DIR__, 2));
+
+$development = new PDO(getenv('TKT_DB_DSN'), getenv('TKT_DB_USER'), getenv('TKT_DB_PASS'));
+$test = new PDO(getenv('TKT_DB_DSN') . '_test', getenv('TKT_DB_USER'), getenv('TKT_DB_PASS'));
 return [
     'paths' => [
         'migrations' => __DIR__ . '/migrations',
@@ -187,15 +82,19 @@ return [
     ]
 ];
 ```
-## setupスクリプト
+
+### setupスクリプト
 
 データベース作成やマイグレーションを簡単に実行できるように`bin/setup.php`を編集します。
 
 ```php
 <?php
-require dirname(__DIR__) . '/autoload.php';
-require_once dirname(__DIR__) . '/env.php';
-// dir
+use BEAR\Dotenv\Dotenv;
+
+require_once dirname(__DIR__) . '/vendor/autoload.php';
+
+(new Dotenv())->load(dirname(__DIR__));
+
 chdir(dirname(__DIR__));
 passthru('rm -rf var/tmp/*');
 passthru('chmod 775 var/tmp');
@@ -203,21 +102,10 @@ passthru('chmod 775 var/log');
 // db
 $pdo = new \PDO('mysql:host=' . getenv('TKT_DB_HOST'), getenv('TKT_DB_USER'), getenv('TKT_DB_PASS'));
 $pdo->exec('CREATE DATABASE IF NOT EXISTS ' . getenv('TKT_DB_NAME'));
-$pdo->exec('CREATE DATABASE IF NOT EXISTS ' . getenv('TKT_DB_NAME') . '_test');
+$pdo->exec('DROP DATABASE IF EXISTS ' . getenv('TKT_DB_NAME')) . '_test';
+$pdo->exec('CREATE DATABASE ' . getenv('TKT_DB_NAME') . '_test');
 passthru('./vendor/bin/phinx migrate -c var/phinx/phinx.php -e development');
 passthru('./vendor/bin/phinx migrate -c var/phinx/phinx.php -e test');
-```
-
-実行してデータベースを作成します。
-
-```
-composer setup
-```
-```
-Phinx by CakePHP - https://phinx.org. 0.10.6
-
-...
-using database ticket_test
 ```
 
 次に`ticket`テーブルを作成するためにマイグレーションクラスを作成します。
@@ -226,10 +114,10 @@ using database ticket_test
 ./vendor/bin/phinx create Ticket -c var/phinx/phinx.php
 ```
 ```
-Phinx by CakePHP - https://phinx.org. 0.10.6
+Phinx by CakePHP - https://phinx.org.
 
 ...
-created var/phinx/migrations/20180920054037_ticket.php
+created var/phinx/migrations/20210520124501_ticket.php
 ```
 
 `var/phinx/migrations/{current_date}_ticket.php`を編集して`change()`メソッドを実装します。
@@ -238,230 +126,185 @@ created var/phinx/migrations/20180920054037_ticket.php
 <?php
 use Phinx\Migration\AbstractMigration;
 
-class Ticket extends AbstractMigration
+final class Ticket extends AbstractMigration
 {
-    public function change()
+    public function change(): void
     {
-         $table = $this->table('ticket', ['id' => false, 'primary_key' => ['id']]);
-         $table->addColumn('id', 'uuid')
+        $table = $this->table('ticket', ['id' => false, 'primary_key' => ['id']]);
+        $table->addColumn('id', 'uuid')
             ->addColumn('title', 'string')
-            ->addColumn('description', 'string')
-            ->addColumn('status', 'string')
-            ->addColumn('assignee', 'string')
-            ->addColumn('created_at', 'datetime')
-            ->addColumn('updated_at', 'datetime')
+            ->addColumn('dateCreated', 'datetime')
             ->create();
     }
 }
 ```
 
-もう一度セットアップコマンドを実行してテーブルを作成します。
+準備が完了したので、セットアップコマンドを実行してテーブルを作成します。
 
 ```
 composer setup
 ```
 ```
 > php bin/setup.php
-Phinx by CakePHP - https://phinx.org. 0.10.6
-
 ...
 All Done. Took 0.0248s
 ```
 
-これでテーブルが作成されました。次回からこのプロジェクトのデータベース環境を整えるには`composer setup`を実行するだけで行えます。[^7]
+テーブルが作成されました。次回からこのプロジェクトのデータベース環境を整えるには`composer setup`を実行するだけで行えます。
+
 マイグレーションクラスの記述について詳しくは[Phixのマニュアル：マイグレーションを書く](https://book.cakephp.org/3.0/ja/phinx/migrations.html)をご覧ください。
 
 ## SQL
 
-チケットをデータベースに保存、読み込むために次の３つのSQLを`var/sql`に保存します。
+チケット用の３つのSQLを`var/sql`に保存します。
 
-`var/sql/ticket_insert.sql`
+`var/sql/ticket_add.sql`
 
 ```sql
-/* create ticket */
-INSERT INTO ticket (id, title, description, status, assignee, created_at, updated_at)
-VALUES (:id, :title, :description, :status, :assignee, :created_at, :updated_at)
+INSERT INTO ticket (id, title, dateCreated) VALUES (:id, :title, :dateCteated);
 ```
 
 `var/sql/ticket_list.sql`
 
 ```sql
-SELECT id, title, description, status, assignee, created_at, updated_at
-  FROM ticket
+SELECT id, title, dateCreated FROM ticket LIMIT 3;
 ```
 
-`var/sql/ticket_item_by_id.sql`
+`var/sql/ticket_item.sql`
 
 ```sql
-SELECT id, title, description, status, assignee, created_at, updated_at
-  FROM ticket
- WHERE id = :id
+SELECT id, title, dateCreated FROM ticket WHERE id = :id
 ```
 
-上記のSQLの記述は[SQLスタイルガイド](https://www.sqlstyle.guide/ja/)に従ったものです。以下の事柄が推奨されています。
+作成時に単体でそのSQLが動作するか確認しましょう。
 
- * スペースとインデントを慎重に使用しコードを読みやすくする。
- * ISO-8601に準拠した日付時間フォーマット（YYYY-MM-DD HH:MM:SS.SSSSS）で格納する。
- * 移植性のためベンダー固有の関数の代わりに標準のSQL関数のみを使用する。
- * 必要に応じてSQLコードにコメントを挿入する。可能なら /* で始まり */ で終わるC言語スタイルのコメントを使用し、その他の場合、-- で始まり改行で終わる行コメントを使用する。
- * スペースを活用し、基底のキーワードがすべて同じ位置で終わるようにコードを整列させる。これは途中で「リバー」を形作り、コードの見通しを良くし、実装の詳細からキーワードを分離することを容易にする。
-
-
-PHPStormで[Database Navigator](https://confluence.jetbrains.com/display/CONTEST/Database+Navigator)を使うと、SQLのコード補完や実行が行えます。[](https://www.youtube.com/watch?v=P3C0iO1yqhk)
-PHPでSQLを実行する前に、データベースツールでSQLを単体で実行して正しく記述できているかを確かめると開発も容易で確実です。
-
-[JetBrain DataGrip](https://www.jetbrains.com/datagrip/)、[Sequel Pro](https://www.sequelpro.com/)、[MySQL Workbench](https://www.mysql.com/jp/products/workbench/)などの単体のデータベースツールがあります。
+例えば、PHPStormにはデータベースツールの[DataGrip](https://www.jetbrains.com/ja-jp/datagrip/)が含まれていて、コード補完やSQLのリファクタリングなどSQL開発に必要な機能が揃っています。
+DB接続などのセットアップを行えば、SQLファイルをIDEで直接実行できます。[^3][^4]
 
 ## JsonSchema
 
-`Ticket`（`チケットアイテム`）、`Tickets`（`チケットアイテムの集合`）の２つのリソースを作成するために、まずこれらのリソースの定義を[JsonSchema](http://json-schema.org/)で定義します。JsonSchemaについて[日本語での解説](https://qiita.com/kyoh86/items/e7de290e9a0e989fcc14)もご覧ください。
+`Ticket`（チケットアイテム）、`Tickets`（チケットアイテムリスト）のリソース表現を[JsonSchema](http://json-schema.org/)で定義し、それぞれ保存します。
 
-それぞれのスキーマファイルを`var/json_schema`フォルダに保存します。
-
-`var/json_schema/ticket.json`
+`var/schema/response/ticket.json`
 
 ```json
-
 {
   "$id": "ticket.json",
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Ticket",
   "type": "object",
+  "required": ["id", "title", "created_at"],
   "properties": {
     "id": {
       "type": "string",
-      "description": "The unique identifier for a ticket."
+      "maxLength": 64,
+      "examples": [
+        "81c08016-d2e2-4e93-8982-39e4c905bb18"
+      ]
     },
     "title": {
       "type": "string",
-      "description": "The title of the ticket",
       "minLength": 3,
-      "maxLength": 255
+      "maxLength": 255,
+      "examples": [
+        "A foo ticket"
+      ]
     },
-    "description": {
+    "dateCreated": {
       "type": "string",
-      "description": "The description of the ticket",
-      "maxLength": 255
-    },
-    "assignee": {
-      "type": "string",
-      "description": "The assignee of the ticket",
-      "maxLength": 255
-    },
-    "status": {
-      "description": "The name of the status",
-      "type": "string",
-      "maxLength": 255
-    },
-    "created_at": {
-      "description": "The date and time that the ticket was created",
-      "type": "string",
-      "format": "datetime"
-    },
-    "updated_at": {
-      "description": "The date and time that the ticket was last modified",
-      "type": "string",
-      "format": "datetime"
+      "format": "datetime",
+      "examples": [
+        "2021-05-18 16:30:35"
+      ]
     }
-  },
-  "required": ["title", "description", "status", "created_at", "updated_at"]
+  }
 }
 ```
-`var/json_schema/tickets.json`
+
+`var/schema/response/tickets.json`
 
 ```json
 {
   "$id": "tickets.json",
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "Collection of Tickets",
-  "type": "array",
-  "items": {
-    "$ref": "ticket.json"
+  "title": "Tickets",
+  "type": "object",
+  "properties": {
+    "tickets": {
+      "anyOf": [
+        {
+          "type": "array",
+          "$ref": "./ticket.json"
+        }
+      ]
+    }
   }
 }
 ```
 
-作成したJSONを`validate-json`を使ってバリデートすることができます。[^13]
+* **$id** - ファイル名を指定しますが、公開する場合はURLを記述します。
+* **title** - オブジェクト名としてAPIドキュメントで扱われます。
+* **examples** - 適宜、例を指定しましょう。オブジェクト全体のも指定できます。
 
-```
-./vendor/bin/validate-json var/json_schema/ticket.json
-./vendor/bin/validate-json var/json_schema/tickets.json
-```
+PHPStormではエディタの右上に緑色のチェックが出ていて問題がない事が分かります。スキーマ作成時にスキーマ自身もバリデートしましょう。
 
-これでリソースを定義をすることが出来ました。このスキーマは実際にバリデーションで使うことが出来ます。また独立したJSONファイルはフロントエンドのバリデーションでも使うことができるでしょう。
+## クエリーインターフェイス
 
-# テスト
+インフラストラクチャへのアクセスを抽象化したPHPのインターフェイスを作成します。
 
-次に今から作ろうとする`/ticket`リソースのテストを`tests/Resource/App/TicketsTest.php`に用意します。
+ * Ticketリソースを読み出す **TicketQueryInterface**
+ * Ticketリソースを変更する **TicketCommandInterface**
+
+`src/Query/TicketQueryInterface,php`
 
 ```php
 <?php
-namespace MyVendor\Ticket\Resource\App;
 
-use BEAR\Package\AppInjector;
-use BEAR\Resource\ResourceInterface;
-use BEAR\Resource\ResourceObject;
-use Koriym\HttpConstants\ResponseHeader;
-use Koriym\HttpConstants\StatusCode;
-use PHPUnit\Framework\TestCase;
+namespace MyVendor\Ticket\Query;
 
-class TicketsTest extends TestCase
+use MyVendor\Ticket\Entity\Ticket;
+use Ray\MediaQuery\Annotation\DbQuery;
+
+interface TicketQueryInterface
 {
-    /**
-     * @var ResourceInterface
-     */
-    private $resource;
+    #[DbQuery('ticket_item')]
+    public function item(string $id): array;
 
-    protected function setUp() : void
-    {
-        $this->resource = (new AppInjector('MyVendor\Ticket', 'test-app'))->getInstance(ResourceInterface::class);
-    }
-
-    public function testOnPost()
-    {
-        $ro = $this->resource->post('app://self/tickets', [
-            'title' => 'title1',
-            'status' => 'status1',
-            'description' => 'description1',
-            'assignee' => 'assignee1'
-        ]);
-        $this->assertSame(StatusCode::CREATED, $ro->code);
-        $this->assertStringContainsString('/ticket?id=', $ro->headers[ResponseHeader::LOCATION]);
-
-        return $ro;
-    }
-
-    /**
-     * @depends testOnPost
-     */
-    public function testOnGet(ResourceObject $ro)
-    {
-        $location = $ro->headers[ResponseHeader::LOCATION];
-        $ro = $this->resource->get('app://self' . $location);
-        $this->assertSame('title1', $ro->body['title']);
-        $this->assertSame('description1', $ro->body['description']);
-        $this->assertSame('assignee1', $ro->body['assignee']);
-    }
+    #[DbQuery('ticket_list')]
+    public function list(): array;
 }
 ```
 
-`$this->resource`は`MyVendor\Ticket`アプリケーションを`test-app`コンテキストで動作させた時のリソースクライアントです。
-`AppModule`、`TestModule`の順のモジュールで上書きされるのでデータベースはテスト用の`ticket_test`データベースが使われます。
+`src/Query/TicketCommandInterface,php`
 
-`testOnPost`でリソースをPOSTリクエストで作成して、`testOnGet`ではそのレスポンスのLocationヘッダーに表されているリソースのURIをGETリクエストして、作成したリソースが正しいものかをテストしています。
+```php
+<?php
 
-まだ実装してないのでエラーが出ますが、テスト実行を試してみましょう。
+namespace MyVendor\Ticket\Query;
 
+use DateTimeInterface;
+use Ray\MediaQuery\Annotation\DbQuery;
+
+interface TicketCommandInterface
+{
+    #[DbQuery('ticket_add')]
+    public function add(string $id, string $title, DateTimeInterface $dateCreated = null): array;
+
+    #[DbQuery('ticket_delete')]
+    public function delete(string $id): void;
+}
 ```
-composer test
-```
 
-当面の目標はこのテストがパスするようになる事です。テストを先に用意する事で、作ったリソースの実行やデバックトレースが簡単になり、着手した作業のゴールが明確になります。
+`#[DbQuery]`アトリビュートでSQL文を指定します。
 
-# リソース
+このインターフェイスに対する実装を用意する必要はありません。 指定されたSQLのクエリーを行うオブジェクトが自動生成されます。
 
+インターフェイスを**副作用が発生するcommand**または**値を返すquery**という2つの関心に分けていますが、リポジトリパターンのように1つにまとめたり
+[ADRパターン](https://github.com/pmjones/adr)のように1インターフェイス1メソッドにしても構いません。アプリケーション設計者が方針を決定します。
 
-リソースのロジックはSQLとして、そのバリデーションはJSONファイルで表すことが出来ています。リソースクラスではそれらのファイルを利用します。
+## リソース
+
+リソースクラスはクエリーインターフェイスに依存します。
 
 ## tikcetリソース
 
@@ -469,333 +312,431 @@ composer test
 
 ```php
 <?php
+
 namespace MyVendor\Ticket\Resource\App;
 
-use BEAR\RepositoryModule\Annotation\Cacheable;
 use BEAR\Resource\Annotation\JsonSchema;
 use BEAR\Resource\ResourceObject;
-use Ray\Query\Annotation\Query;
+use MyVendor\Ticket\Query\TicketQueryInterface;
 
-/**
- * @Cacheable
- */
 class Ticket extends ResourceObject
 {
-    /**
-     * @JsonSchema(schema="ticket.json")
-     * @Query("ticket_item_by_id", type="row")
-     */
-    public function onGet(string $id): ResourceObject
+    public function __construct(
+        private TicketQueryInterface $query
+    ){}
+    
+   #[JsonSchema("ticket.json")]
+   public function onGet(string $id = ''): static
     {
-        unset($id);
+        $this->body = $this->query->item($id);
 
         return $this;
     }
 }
 ```
 
-## ticket - GETリクエスト
+アトリビュート`#[JsonSchema]`は`onGet()`で出力される値が`ticket.json`のスキーマで定義されている事を表します。
+AOPによってリクエスト毎にバリデートされます。
 
-`GET`のための`onGet`メソッドを見てみましょう。メソッドシグネチャーを見れば、リクエストに必要な入力は`$_GET['id']`のみで、それは省略ができないという事が分かります。
+シードを入力してリソースをリクエストしてみましょう。[^8]
 
-`@JsonSchema`アノテーションはこのクラスの`body`プロパティの`ticket`キー配列が`ticket.json`で定義されたスキーマであるということを宣言しつつリアルタイムのバリデーションをAOPで毎回行う事で保証しています。
+```bash 
+% mysql -u root -e "INSERT INTO ticket (id, title, dateCreated) VALUES ('1', 'foo', '1970-01-01 00:00:00')" ticket
+```
 
-`@Query("ticket_item_by_id", type="row")`と指定されているので、このメソッドはSQL実行と置き換わります。`var/sql/ticket_item_by_id.sql`ファイルのSQLが実行され、その結果が単一行（type="row"）で返ります。このようにロジックが単純にSQLで置換えられる場合は`@Query`を使ってPHPの記述を省略することができます。
+```bash
+% php bin/app.php get '/ticket?id=1'
+```
+```bash
+200 OK
+Content-Type: application/hal+json
 
+{
+    "id": "1",
+    "title": "foo",
+    "dateCreated": "1970-01-01 00:00:01",
+    "_links": {
+        "self": {
+            "href": "/ticket?id=1"
+        }
+    }
+}
+```
 
-## tikcetsリソース
+### Ray.MediaQuery
 
-次は`tikcet`リソースの集合の`tikcets`リソースを`src/resource/App/Tickets.php`に作成します。
+Ray.MediaQueryを使えば、ボイラープレートとなりやすい実装クラスをコーディングする事なく、インターフェイスから自動生成されたSQL実行オブジェクトがインジェクトされます。[^5]
+
+SQL文には`;`で区切った複数のSQL分を記述する事ができ、複数のSQLに同じパラメーターが名前でバインドされます。SELECT以外のクエリーではトランザクションも実行されます。
+
+利用クラスはインターフェイスにしか依存していないので、動的にSQLを生成したい場合にはRay.MediaQueryの代わりにクエリービルダーをインジェクトしたSQL実行クラスで組み立てたSQLを実行すれば良いでしょう。
+詳しくはマニュアルの[データベース](database.html)をご覧ください。
+
+## 埋め込みリンク
+
+通常Webサイトのページは複数のリソースを内包します。例えばブログの記事ページであれば、記事以外にもおすすめや広告、カテゴリーリンクなどが含まれるかもしれません。
+それらをクライアントがバラバラに取得する代わりに、独立したリソースとして埋め込みリンクで1つのリソースに束ねる事ができます。
+
+HTMLとそこに記述される`<img>`タグをイメージしてください。どちらも独立したURLを持ちますが、画像リソースがHTMLリソースに埋めこ込まれていてHTMLを取得するとHTML内に画像が表示されます。
+これらはハイパーメディアタイプの[Embedding links(LE)](http://amundsen.com/hypermedia/hfactor/#le)と呼ばれるもので、埋め込まれるリソースがリンクされています。
+
+```diff
++use BEAR\Resource\Annotation\Embed;
++use BEAR\Resource\Request;
++
++   #[Embed(src: "/project", rel: "project")]
+    #[JsonSchema("ticket.json")]
+    public function onGet(string $id = ''): static
+    {
++        assert($this->body['project'] instanceof Request);
+-        $this->body = $this->query->item($id);
++        $this->body += $this->query->item($id);
+```
+
+`#[Embed]`アトリビュートの`src`で指定されたリソースのリクエストがbodyプロパティの`rel`キーにインジェクトされ、レンダリング時に遅延評価され文字列表現になります。
+
+例を簡単にするためにこの例ではパラメーターを渡していませんが、メソッド引数が受け取った値をURI templateを使って渡す事もできますし、インジェクトされたリクエストのパラメーターを修正、追加する事ができます。
+詳しくは[リソース](resource.html)をご覧ください。
+
+もう一度リクエストすると`_embedded`というプロパティにprojectリソースの状態が追加されているのが分かります。
+
+```
+% php bin/app.php get '/ticket?id=1'
+```
+```diff
+{
+    "id": "1",
+    "title": "2",
+    "dateCreated": "1970-01-01 00:00:01",
++    "_embedded": {
++        "project": {
++            "title": "Project A",
++        }
+    },
+```
+
+埋め込みリソースはREST APIの重要な機能です。 コンテンツにツリー構造を与えHTTPリクエストコストを削減します。
+情報が他の何の情報を含んでいるかはドメインの関心事です。クライアントで都度取得するのではなく、その関心事はサーバーサイドのLE(埋め込みリンク)でうまく表す事ができます。[^6]
+
+## ticketsリソース
+
+`POST`で作成、`GET`でチケットリストが取得できる`tikcets`リソースを`src/resource/App/Tickets.php`に作成します。
 
 ```php
 <?php
+
 namespace MyVendor\Ticket\Resource\App;
 
-use BEAR\Package\Annotation\ReturnCreatedResource;
-use BEAR\RepositoryModule\Annotation\Cacheable;
-use BEAR\RepositoryModule\Annotation\Purge;
 use BEAR\Resource\Annotation\JsonSchema;
+use BEAR\Resource\Annotation\Link;
 use BEAR\Resource\ResourceObject;
 use Koriym\HttpConstants\ResponseHeader;
 use Koriym\HttpConstants\StatusCode;
-use Ray\AuraSqlModule\Annotation\Transactional;
-use Ray\Di\Di\Named;
-use Ray\IdentityValueModule\NowInterface;
+use MyVendor\Ticket\Query\TicketCommandInterface;
+use MyVendor\Ticket\Query\TicketQueryInterface;
 use Ray\IdentityValueModule\UuidInterface;
-use Ray\Query\Annotation\Query;
+use function uri_template;
 
-/**
- * @Cacheable
- */
 class Tickets extends ResourceObject
 {
-    /**
-     * @var callable
-     */
-    private $createTicket;
+    public function __construct(
+        private TicketQueryInterface $query,
+        private TicketCommandInterface $command,
+        private UuidInterface $uuid
+    ){}
 
-    /**
-     * @var NowInterface
-     */
-    private $now;
-
-    /**
-     * @var UuidInterface
-     */
-    private $uuid;
-
-    /**
-     * @Named("createTicket=ticket_insert")
-     */
-    public function __construct(callable $createTicket, NowInterface $now, UuidInterface $uuid)
+    #[Link(rel: "doPost", href: '/tickets')]
+    #[Link(rel: "goTicket", href: '/ticket{?id}')]
+    #[JsonSchema("tickets.json")]
+    public function onGet(): static
     {
-        $this->createTicket = $createTicket;
-        $this->now = $now;
-        $this->uuid = $uuid;
-    }
-
-    /**
-     * @JsonSchema(schema="tickets.json")
-     * @Query("ticket_list")
-     */
-    public function onGet(): ResourceObject
-    {
+        $this->body = [
+            'tickets' => $this->query->list()
+        ];
+        
         return $this;
     }
 
-    /**
-     * @ReturnCreatedResource
-     * @Transactional
-     * @Purge(uri="app://self/tickets")
-     */
-    public function onPost(
-        string $title,
-        string $description = '',
-        string $assignee = ''
-    ): ResourceObject {
+    #[Link(rel: "goTickets", href: '/tickets')]
+    public function onPost(string $title): static
+    {
         $id = (string) $this->uuid;
-        $time = (string) $this->now;
-        ($this->createTicket)([
-            'id' => $id,
-            'title' => $title,
-            'description' => $description,
-            'assignee' => $assignee,
-            'status' => '',
-            'created_at' => $time,
-            'updated_at' => $time,
-        ]);
+        $this->body = $this->command->add($id, $title);
+
         $this->code = StatusCode::CREATED;
-        $this->headers[ResponseHeader::LOCATION] = "/ticket?id={$id}";
+        $this->headers[ResponseHeader::LOCATION] = uri_template('/ticket{?id}', ['id' => $id]);
 
         return $this;
     }
 }
 ```
 
-## tickets - GETリクエスト
+インジェクトされた`$uuid`は文字列にキャストする事でUUIDが得られます。また`#Link[]`は他のリソース（アプリケーション状態）へのリンクを表します。
 
-`var/json_schema/tickets.json`JSONスキーマをご覧になってください。`ticket.json`スキーマの集合(array)と定義されています。
-このようにJSONスキーマはスキーマの構造を表すことができます。メソッドは`/ticket`リソース同様に`ticket_list.sql`のSQL実行を結果として返します。
+`add()`メソッドで現在時刻を渡してない事に注目してください。
 
-## tickets - POSTリクエスト
+値が渡されない場合nullではなく、MySQLの現在時刻文字列がSQLに
 
-コンストラクタでインジェクトされた`$this->createTicket`は`ticket_insert.sql`の実行オブジェクトです。受け取った連想配列をバインドしてSQL実行します。
-リソースを作成する時は必ず`Location`ヘッダーでリソースのURLを保存するようにします。作成した内容をボディに含みたい時は`@ReturnCreatedResource`とアノテートします。
+`DateTimeInterface`に束縛された現在時刻DateTimeオブジェクトの文字列表現がSQLに束縛されます。
+この場合はMySQLの現在時刻文字列です。 SQL内部でNOW()とハードコーディングする事や、メソッドに毎回現在時刻を渡す手間を省きます。
 
-まだ作成していないので見る事は今はできませんが、`OPTIONS`コマンドで調べることができます。
-
+```php
+public function add(string $id, string $title, DateTimeInterface $dateCreated = null): array;
 ```
-php bin/app.php options /tickets
-```
-```
-200 OK
-Content-Type: application/json
-Allow: GET, POST
 
+`DateTimeオブジェクト`を渡す事もできるし、テストのコンテキストでは固定のテスト用時刻を束縛することもできます。[^7]
+
+## ハイパーメディアAPIテスト
+
+> REST(representational state transfer)という用語は、2000年にRoy Fieldingが博士論文の中で紹介、定義したもので「適切に設計されたWebアプリケーションの動作」をイメージさせることを目的としていてます。
+> それはWebリソースのネットワーク（仮想ステートマシン）であり、ユーザーはリソース識別子(URL)と、 GETやPOSTなどのリソース操作（アプリケーションステートの遷移）を選択することで、アプリケーションを進行させ、その結果、次のリソースの表現（次のアプリケーションステート）がエンドユーザーに転送されて使用されるというものです。
+>
+> -- [Wikipedia (REST)](https://en.wikipedia.org/wiki/Representational_state_transfer)
+
+RESTアプリケーションでは次のアクションがURLとしてサービスから提供され、クライアントはそれを選択します。
+
+HTML Webアプリケーションは完全にRESTfulです。その操作は「（aタグなどで）**提供されたURLに遷移する**」 または 「**提供されたフォームを埋めて送信する**」この何れかでしかありません。
+
+REST APIのテストも同様に記述します。
+
+```php
+<?php
+
+declare(strict_types=1);
+
+namespace MyVendor\Ticket\Hypermedia;
+
+use BEAR\Resource\ResourceInterface;
+use BEAR\Resource\ResourceObject;
+use Koriym\HttpConstants\ResponseHeader;
+use MyVendor\Ticket\Injector;
+use MyVendor\Ticket\Query\TicketQueryInterface;
+use PHPUnit\Framework\TestCase;
+use Ray\Di\InjectorInterface;
+use function json_decode;
+
+class WorkflowTest extends TestCase
 {
-    "GET": {
-        "schema": {
-            "$id": "tickets.json",
-            "$schema": "http://json-schema.org/draft-07/schema#",
-            "title": "Collection of Tickets",
-            "type": "array",
-            "items": {
-                "$ref": "ticket.json"
-            }
-        }
-    },
-    "POST": {
-        "request": {
-            "parameters": {
-                "title": {
-                    "type": "string"
-                },
-                "description": {
-                    "type": "string",
-                    "default": ""
-                },
-                "assignee": {
-                    "type": "string",
-                    "default": ""
-                }
-            },
-            "required": [
-                "title"
-            ]
-        }
+    protected ResourceInterface $resource;
+    protected InjectorInterface $injector;
+
+    protected function setUp(): void
+    {
+        $this->injector = Injector::getInstance('hal-api-app');
+        $this->resource = $this->injector->getInstance(ResourceInterface::class);
+        $a = $this->injector->getInstance(TicketQueryInterface::class);
+    }
+
+    public function testIndex(): ResourceObject
+    {
+        $index = $this->resource->get('/');
+        $this->assertSame(200, $index->code);
+
+        return $index;
+    }
+
+    /**
+     * @depends testIndex
+     */
+    public function testGoTickets(ResourceObject $response): ResourceObject
+    {
+
+        $json = (string) $response;
+        $href = json_decode($json)->_links->{'goTickets'}->href;
+        $ro = $this->resource->get($href);
+        $this->assertSame(200, $ro->code);
+
+        return $ro;
+    }
+
+    /**
+     * @depends testGoTickets
+     */
+    public function testDoPost(ResourceObject $response): ResourceObject
+    {
+        $json = (string) $response;
+        $href = json_decode($json)->_links->{'doPost'}->href;
+        $ro = $this->resource->post($href, ['title' => 'title1']);
+        $this->assertSame(201, $ro->code);
+
+        return $ro;
+    }
+
+    /**
+     * @depends testDoPost
+     */
+    public function testGoTicket(ResourceObject $response): ResourceObject
+    {
+        $href = $response->headers[ResponseHeader::LOCATION];
+        $ro = $this->resource->get($href);
+        $this->assertSame(200, $ro->code);
+
+        return $ro;
     }
 }
 ```
 
-では実際に`/tickets`にアクセスしてみましょう。
-POSTリクエストでチケット作成します。
+起点となるルートページも必要です。
+
+`src/Resource/App/Index.php`
+
+```php
+<?php
+
+declare(strict_types=1);
+
+namespace MyVendor\Ticket\Resource\App;
+
+use BEAR\Resource\Annotation\Link;
+use BEAR\Resource\ResourceObject;
+
+class Index extends ResourceObject
+{
+    #[Link(rel: 'goTickets', href: '/tickets')]
+    public function onGet(): static
+    {
+        return $this;
+    }
+}
+```
+
+`setUp`ではリソースクライアントを生成していて、`testIndex()`でルートページをアクセスしています。
+レスポンスを受け取った`testGoTickets()`メソッドではそのレスポンスオブジェクトをJSON表現にして、次のリンク`goTickets`を取得します。
+これはチケット一覧を取得するURLへのリンクで、そのURLでアクセスしてレスポンスに200(OK)が帰ることを確認します。
+200はレスポンスのJsonSchemaバリデーションが通ったということなので、改めてリソースボディのテストを記述する必要はありません。
+
+次の`testDoPost()`では`POST`を行いチケットを作成し、`201(Created)`のレスポンスコードを確認しています。
+
+`testGoTicket()`では`Location`ヘッダーから取得した作成されたリソースのURLを取得し200を確認しています。
+`testGoTickets()`テスト同様、中身はJsonSchemaでバリデートされているのでテストコードで改めて確認する必要はありません。
+
+実行してみましょう
+
+```bash
+./vendor/bin/phpunit --testsuite hypermedia
+```
+
+ハイパーメディアAPIテスト（RESTアプリケーションテスト）はRESTアプリケーションがステートマシンであるという事をよく表し、ワークフローをユースケースとして記述する事ができます。
+REST APIテストを見ればそのアプリケーションがどのように使われるか網羅されているのが理想です。
+
+### HTTPテスト
+
+HTTPでREST APIのテストを行うためにはテスト全体を継承して、`setUp`でクライアントをHTTPテストクライアントにします。
+
+```php
+class WorkflowTest extends Workflow
+{
+    protected function setUp(): void
+    {
+        $this->resource = new HttpResource('127.0.0.1:8080', __DIR__ . '/index.php', __DIR__ . '/log/workflow.log');
+    }
+}
+```
+
+このクライアントはリソースクライアントと同じインターフェイスを持ちますが、実際のリクエストはビルトインサーバーに対してHTTPリクエストで行われサーバーからのレスポンスを受け取ります。
+1つ目の引数はビルトインサーバーのURLです。`new`されると二番目の引数で指定されたbootstrapスクリプトでビルトインサーバーが起動します。
+
+テストサーバー用のbootstrapスクリプトもAPIコンテキストに変更します。
+
+`tests/Http/index.php`
+
+```diff
+-exit((new Bootstrap())('hal-app', $GLOBALS, $_SERVER));
++exit((new Bootstrap())('hal-api-app', $GLOBALS, $_SERVER));
+```
+
+実行してみましょう。
 
 ```
-php bin/app.php post '/tickets?title=run'
+./vendor/bin/phpunit --testsuite http
 ```
+#### HTTPアクセスログ
+
+curlで行われた実際のHTTPリクエスト/レスポンスログが三番目の引数のリソースログに記録されます。
+
 ```
-201 Created
-Location: /tickets/b0f9c395-3a3d-48ee-921b-ce45a06eee11
-content-type: application/hal+json
+curl -s -i 'http://127.0.0.1:8080/'
+
+HTTP/1.1 200 OK
+Host: 127.0.0.1:8080
+Date: Fri, 21 May 2021 22:41:02 GMT
+Connection: close
+X-Powered-By: PHP/8.0.6
+Content-Type: application/hal+json
 
 {
-    "id": "b0f9c395-3a3d-48ee-921b-ce45a06eee11",
-    "title": "run",
-    "description": "",
-    "status": "",
-    "assignee": "",
-    "created": "2018-09-11 13:15:33",
-    "updated": "2018-09-11 13:15:33",
     "_links": {
         "self": {
-            "href": "/tickets/b0f9c395-3a3d-48ee-921b-ce45a06eee11"
+            "href": "/index"
+        },
+        "goTickets": {
+            "href": "/tickets"
         }
     }
 }
 ```
 
-レスポンスにあるLocationヘッダーのURIをGETリクエストします。
+```
+curl -s -i -H 'Content-Type:application/json' -X POST -d '{"title":"title1"}' http://127.0.0.1:8080/tickets
 
-```
-php bin/app.php get '/tickets/b0f9c395-3a3d-48ee-921b-ce45a06eee11'
-```
-```
-200 OK
-Link: <http://www.example.com/ticket.json>; rel="describedby"
-content-type: application/hal+json
-ETag: 3794765489
-Last-Modified: Tue, 11 Sep 2018 11:16:05 GMT
-
-{
-    "id": "b0f9c395-3a3d-48ee-921b-ce45a06eee11",
-    "title": "run",
-    "description": "",
-    "status": "",
-    "assignee": "",
-    "created": "2018-09-11 13:15:33",
-    "updated": "2018-09-11 13:15:33",
-    "_links": {
-        "self": {
-            "href": "/tickets/b0f9c395-3a3d-48ee-921b-ce45a06eee11"
-        }
-    }
-}
+HTTP/1.1 201 Created
+Host: 127.0.0.1:8080
+Date: Fri, 21 May 2021 22:41:02 GMT
+Connection: close
+X-Powered-By: PHP/8.0.6
+Location: /ticket?id=421d997c-9a0e-4018-a6c2-9b8758cac6d6
 ```
 
-レスポンスは200 OKで帰ってきましたか？
-このレスポンスの定義は`ticket.json`で定義されたものであることが`Link`ヘッダーの`describedby`で分かります。[^9]
-`@Cacheable`と宣言されたリソースは`ETag`と`Last-Modified`ヘッダーが付加されより効率の良いHTTPレベルのキャッシュが有効になります。
-`@Purge`はキャッシュの破壊です。[^10]
 
-最初に作ったテストも今はうまくパスするはずです。試してみましょう。
-
-```
-composer test
-```
-
-コーディング規約通りに書けているか、または`phpdoc`がコードと同じように正しく書けているかはツールで調べることができます。
-エラーが出れば`cs-fix`で直すことができます。
-
-```
-composer cs-fix
-```
-
-ユニットテストとコーディング規約、静的解析ツールを同時に行うこともできます。コミットする前に実行しましょう。[^3]
-
-```
-composer tests
-```
-
-`compile`コマンドで最適化された`autoload.php`を生成してDI/AOPスクリプトを生成することができます。ディプロイ前は実行しましょう。[^4][^5]
-全てをDIするBEAR.Sundayアプリケーションはアプリケーション実行前に依存の問題を見つけることができます。ログでDIの束縛の情報を見る事もできるので開発時でも役に立ちます。
-
-```
-composer compile
-```
-
-テストはパスしてコンパイルもうまくできましたか？ REST APIの完成です！
+実際に記録されたJSONは、特に複雑な構造を持つ場合に確認するのに役に立ちます。APIドキュメントと併せて確認するのにもいいでしょう。
+HTTPクライアントはE2Eテストにも利用する事ができます。
 
 ## APIドキュメント
 
-APIドキュメントを出力するために`php/bin.php`スクリプトを追加します。
+ResourceObjectではメソッドシグネチャーがAPIの入力パラメーターになっていて、レスポンスがスキーマ定義されています。
+その自己記述性の高さからAPIドキュメントが自動生成する事ができます。
+
+作成してみましょう。
 
 ```
-<?php
-
-require dirname(__DIR__) . '/vendor/autoload.php';
-
-use BEAR\ApiDoc\DocApp;
-
-$docApp = new DocApp('MyVendor\Ticket');
-$docApp->dumpHtml(dirname(__DIR__) . '/docs', 'app');```
+composer doc
 ```
 
-ドキュメントのためのディレクトリを作成します。
+IDL(インターフェイス定義言語）を記述する労力を削減しますが、より重要なのはドキュメントが最新のPHPコードに追従し正確な事です。
+CIに組み込み常にコードとAPIドキュメントがシンクしている状態にするのがいいでしょう。
 
-```
-mkdir docs
-```
-
-`composer doc`コマンドでAPIサイトのHTMLとJSONが出力されます。
-
-```
-php bin/doc.php
-```
-このサイトをGitHub Pages[^11]などで公開して、APIドキュメントにします。
-
-このようなAPIドキュメントサイトができるはずです。
-
-[https://bearsunday.github.io/tutorial2/](https://bearsunday.github.io/tutorial2/)
-
-もし`github.com`を使っていて、APIドキュメントをプライベートにしたい場合にはmarkdownで出力することもできます。
-
-```php
-$docApp->dumpMd(dirname(__DIR__) . '/docs', 'app');```
-```
+より詳しくは[ApiDoc](apidoc.html)をご覧ください。
 
 ## 終わりに
 
- * phinxマイグレーションツールを使ってアプリケーションのバージョンに従ったデータベースの環境構築ができるようになりました。
- 
- * `composer setup`コマンドで環境構築ができれば、データベースコマンドを操作する必要がなくディプロイやCIでも便利です。
+Web APIには以下の3つのスタイルがあります。
 
- * SQLファイルを`var/sql`フォルダに置くことでGUIやCLIのSQLツールで単体実行することができ、開発や運用にも便利でテストも容易になります。スタティックなSQLはPhpStormで補完も効くし、GUIでモデリングできるツールもあります。
+* トンネル (SOAP, GraphQL）
+* URI (オブジェクト、CRUD)
+* ハイパーメディア (REST)
 
- * リソースの引数と出力はメソッドやスキーマで宣言されていて明瞭です。AOPでバリデーションが行わることでドキュメントの正当性が保証され、ドキュメントメンテナンスのの労力を最小化できます。
+リソースを単なるRPCとして扱うURIスタイル[^9]に対して、 このチュートリアルで学んだのはリソースがリンクされているRESTです。[^10]
+リソースは`#Link`のLO(アウトバウンドリンク)で結ばれワークフローを表し、`#[Embed]`のLE(埋め込みリンクで)ツリー構造を表しています。
 
-チュートリアルはうまく行ったでしょうか？ もしうまく行ったならチュートリアル[bearsunday/tutorial2](https://github.com/bearsunday/tutorial2)にスターをして記念に残しましょう。
-うまくいかない時は[gitter](https://gitter.im/bearsunday/BEAR.Sunday)で相談すると解決できるかもしれません。提案や間違いがあれば[PR](https://github.com/bearsunday/bearsunday.github.io/blob/master/manuals/1.0/ja/tutorial2.md)をお願いします！
+BEAR.Sundayは標準に基づいたクリーンなコードである事を重視します。 
 
----
+フレームワーク固有のバリデータよりJsonSchema。独自ORMより標準SQL。独自構造JSONより標準メディアタイプJSON。
 
-[^1]:[チュートリアル](/manuals/1.0/ja/tutorial.html)を終えた方を対象としています。被る箇所もありますがおさらいのつもりでトライしてみましょう。レポジトリは[bearsaunday/Tutorial2](https://github.com/bearsunday/Tutorial2)にあります。うまくいかないときは見比べてみましょう。
-[^2]:通常は**vendor**名は個人またはチーム（組織）の名前を入力します。githubのアカウント名やチーム名が適当でしょう。**project**にはアプリケーション名を入力します。
-[^3]:コミットフックを設定するのも良い方法です。
-[^4]:キャッシュを"温める"ために２度行うと確実です。
-[^5]:コンテキストの変更は`composer.json`の`compile`スクリプトコマンドを編集します。
-[^6]:BEAR.Sundayフレームワークが依存する環境変数は１つもありません。
-[^7]:mysqlコマンドの操作などをREADMEで説明する必要もないので便利です。
-[^9]:http://json-schema.org/latest/json-schema-core.html#rfc.section.10.1
-[^10]:`/ticket`でPOSTされると`/tickets`リソースのキャッシュを破壊しています。`@Refresh`とすると破壊のタイミングでキャッシュを再生成します。
-[^11]: [Publishing your GitHub Pages site from a /docs folder on your master branch](https://help.github.com/articles/configuring-a-publishing-source-for-github-pages/#publishing-your-github-pages-site-from-a-docs-folder-on-your-master-branch)
-[^13]: 2018年9月現在php7.3だと実行できますが`PHP Deprecated`が表示されます。
+アプリケーション設計は「実装が自由である」事ではなく「制約の選択が自由である」という事が重要です。
+アプリケーションはその制約に基づき効率やパフォーマンス、後方互換性を壊さない進化可能性を目指すと良いでしょう。
+
+----
+
+[^1]:.envはgit commitされないようにしておきます。
+[^2]:例えばECサイトであれば、商品一覧、カートに入れる、注文、支払い、などそれぞれのアプリケーションステートの遷移をテストで表します。
+[^3]:[PHPStorm データベースツールおよび SQL](https://pleiades.io/help/phpstorm/relational-databases.html))
+[^4]:[データベース図](https://pleiades.io/help/phpstorm/creating-diagrams.html)などでクエリプランや実行計画を確認し、作成するSQLの質を高めます。
+[^5]: Ray.MediaQueryはHTTP APIリクエストにも対応しています。
+[^6]: このようなコンテンツの階層構造の事を、IA(インフォメーションアーキテクチャ)では**タクソノミー**と呼びます。[Understanding Information Architecture](https://understandinggroup.com/ia-theory/understanding-information-architecture)参照
+[^7]: Ray.MediaQuery [README](https://github.com/ray-di/Ray.MediaQuery/blob/1.x/README.ja.md#%E6%97%A5%E4%BB%98%E6%99%82%E5%88%BB)照
+[^8]: ここでは例としてmysqlから直接実行していますが、マイグレーションツールでseedを入力したりIDEのDBツールの利用方法も学びましょう。
+[^9]: いわゆる"Restish API"。REST APIと紹介されている多くのAPIはこのURI/オブジェクトスタイルで、RESTが誤用されています。
+[^10]: チュートリアルからリンクを取り除けばURIスタイルになります。
+
+※ 以前のPHP7対応のチュートリアルは[tutorial2_v1](tutorial2_v1.html)にあります。
+
