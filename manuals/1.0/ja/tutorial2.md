@@ -315,7 +315,7 @@ PHPStormではエディタの右上に緑色のチェックが出ていて問題
 インフラストラクチャへのアクセスを抽象化したPHPのインターフェイスを作成します。
 
  * Ticketリソースを読み出す **TicketQueryInterface**
- * Ticketリソースを変更する **TicketCommandInterface**
+ * Ticketリソースを作成する **TicketCommandInterface**
 
 `src/Query/TicketQueryInterface,php`
 
@@ -538,17 +538,17 @@ class Tickets extends ResourceObject
 インジェクトされた`$uuid`は文字列にキャストする事でUUIDが得られます。また`#Link[]`は他のリソース（アプリケーション状態）へのリンクを表します。
 
 `add()`メソッドで現在時刻を渡してない事に注目してください。
-
-値が渡されない場合nullではなく、MySQLの現在時刻文字列がSQLに
-
-`DateTimeInterface`に束縛された現在時刻DateTimeオブジェクトの文字列表現がSQLに束縛されます。
-この場合はMySQLの現在時刻文字列です。 SQL内部でNOW()とハードコーディングする事や、メソッドに毎回現在時刻を渡す手間を省きます。
+値が渡されない場合nullではなく、MySQLの現在時刻文字列がSQLにバインドされます。
+なぜなら`DateTimeInterface`に束縛された現在時刻DateTimeオブジェクトの文字列表現（現在時刻文字列）がSQLに束縛されているからです。
 
 ```php
 public function add(string $id, string $title, DateTimeInterface $dateCreated = null): void;
 ```
+SQL内部でNOW()とハードコーディングする事や、メソッドに毎回現在時刻を渡す手間を省きます。
+`DateTimeオブジェクト`を渡す事もできるし、テストのコンテキストでは固定のテスト用時刻を束縛することもできます。
 
-`DateTimeオブジェクト`を渡す事もできるし、テストのコンテキストでは固定のテスト用時刻を束縛することもできます。[^7]
+このようにクエリーの引数にインターフェイスを指定するとそのオブジェクトをDIを使って取得、その文字列表現がSQLに束縛されます。
+例えばログインユーザーIDなどを束縛してアプリケーションで横断的に利用できます。[^7]
 
 ## ハイパーメディアAPIテスト
 
@@ -664,15 +664,15 @@ class Index extends ResourceObject
 }
 ```
 
-`setUp`ではリソースクライアントを生成していて、`testIndex()`でルートページをアクセスしています。
-レスポンスを受け取った`testGoTickets()`メソッドではそのレスポンスオブジェクトをJSON表現にして、次のリンク`goTickets`を取得します。
-これはチケット一覧を取得するURLへのリンクで、そのURLでアクセスしてレスポンスに200(OK)が帰ることを確認します。
-200はレスポンスのJsonSchemaバリデーションが通ったということなので、改めてリソースボディのテストを記述する必要はありません。
+* `setUp`ではリソースクライアントを生成、`testIndex()`でルートページをアクセスしています。
+* レスポンスを受け取った`testGoTickets()`メソッドではそのレスポンスオブジェクトをJSON表現にして、次のチケット一覧を取得するリンク`goTickets`を取得しています。
+* リソースボディのテストを記述する必要はありません。レスポンスのJsonSchemaバリデーションが通ったというが保証されているので、ステータスコードの確認だけでOKです。
+* RESTの統一インターフェイスに従い、次にアクセスするリクエストURLは常にレスポンスに含まれます。それを次々に検査します。
 
-次の`testDoPost()`では`POST`を行いチケットを作成し、`201(Created)`のレスポンスコードを確認しています。
-
-`testGoTicket()`では`Location`ヘッダーから取得した作成されたリソースのURLを取得し200を確認しています。
-`testGoTickets()`テスト同様、中身はJsonSchemaでバリデートされているのでテストコードで改めて確認する必要はありません。
+> **RESTの統一インターフェイス**
+> 
+> 1)リソースの識別、2)表現によるリソースの操作、3)自己記述メッセージ、
+> アプリケーション状態のエンジンとしてのハイパーメディア(HATEOAS)の4つのインターフェイス制約です。[^11]
 
 実行してみましょう
 
@@ -779,6 +779,7 @@ CIに組み込み常にコードとAPIドキュメントが同期している状
 
 * `Test`コンテキストを追加してテスト毎にDBをクリアするTestModule  [bfb950](https://github.com/bearsunday/tutorial2/commit/bfb950ea67a3293074a95a598dada520c976479c)
 * DBクエリーで連想配列を返す代わりにハイドレートしたエンティティクラスを返す`#[DbQuery]`の`entity`オプション [442ef94](https://github.com/bearsunday/tutorial2/commit/442ef94d13f3b7e331834462b4b3ae4b125bb9a7)
+* 静的なSQLと動的なSQLを合成したクエリービルダー [5bad5f3](https://github.com/bearsunday/tutorial2/commit/5bad5f349da2f37b03bf0a94580d93a4cfd51bce)
 
 ## 終わりに
 
@@ -810,6 +811,7 @@ BEAR.Sundayは標準に基づいたクリーンなコードである事を重視
 [^8]: ここでは例としてmysqlから直接実行していますが、マイグレーションツールでseedを入力したりIDEのDBツールの利用方法も学びましょう。
 [^9]: いわゆる"Restish API"。REST APIと紹介されている多くのAPIはこのURI/オブジェクトスタイルで、RESTが誤用されています。
 [^10]: チュートリアルからリンクを取り除けばURIスタイルになります。
+[^11]: 広く誤解されていますが統一インターフェイスはHTTPメソッドの事ではありません。[Uniform Interface](https://www.ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm)参照
 
 ※ 以前のPHP7対応のチュートリアルは[tutorial2_v1](tutorial2_v1.html)にあります。
 
