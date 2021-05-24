@@ -372,6 +372,8 @@ interface TicketCommandInterface
 ```php
 <?php
 
+declare(strict_types=1);
+
 namespace MyVendor\Ticket\Resource\App;
 
 use BEAR\Resource\Annotation\JsonSchema;
@@ -443,7 +445,7 @@ HTMLとそこに記述される`<img>`タグをイメージしてください。
 +use BEAR\Resource\Annotation\Embed;
 +use BEAR\Resource\Request;
 +
-+   #[Embed(src: "/project", rel: "project")]
++   #[Embed(src: '/project', rel: 'project')]
     #[JsonSchema("ticket.json")]
     public function onGet(string $id = ''): static
     {
@@ -463,6 +465,7 @@ HTMLとそこに記述される`<img>`タグをイメージしてください。
 % php bin/app.php get '/ticket?id=1'
 ```
 ```diff
+
 {
     "id": "1",
     "title": "2",
@@ -483,6 +486,8 @@ HTMLとそこに記述される`<img>`タグをイメージしてください。
 
 ```php
 <?php
+
+declare(strict_types=1);
 
 namespace MyVendor\Ticket\Resource\App;
 
