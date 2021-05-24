@@ -778,10 +778,10 @@ CIに組み込み常にコードとAPIドキュメントが同期している状
 以下のコード例も用意しています。
 
 * `Test`コンテキストを追加してテスト毎にDBをクリアするTestModule  [bfb950](https://github.com/bearsunday/tutorial2/commit/bfb950ea67a3293074a95a598dada520c976479c)
-* DBクエリーで連想配列を返す代わりにハイドレートしたエンティティクラスを返す`#[DbQuery]`の`entity`オプション [442ef94](https://github.com/bearsunday/tutorial2/commit/442ef94d13f3b7e331834462b4b3ae4b125bb9a7)
+* DBクエリーで連想配列を返す代わりにハイドレートされたエンティティクラスを返す`#[DbQuery]`の`entity`オプション [442ef94](https://github.com/bearsunday/tutorial2/commit/442ef94d13f3b7e331834462b4b3ae4b125bb9a7)
 * 静的なSQLと動的なSQLを合成したクエリービルダー [5bad5f3](https://github.com/bearsunday/tutorial2/commit/5bad5f349da2f37b03bf0a94580d93a4cfd51bce)
 
-## 終わりに
+## A truly REST framework
 
 Web APIには以下の3つのスタイルがあります。
 
