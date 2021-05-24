@@ -549,7 +549,7 @@ You can pass a `DateTime object`, or in the context of a test, you can bind a fi
 In this way, if you specify an interface as an argument to a query, you get that object using DI, and its string representation is bound to SQL.
 For example, login user IDs can be bound and used across applications. [^7]
 
-## Hypermedia API test.
+## Hypermedia API test
 
 > The term REST (representational state transfer) was introduced and defined by Roy Fielding in his doctoral dissertation in 2000, and is intended to give an idea of "the behavior of a properly designed web application".
 > It is a network of web resources (a virtual state machine) where the user selects a resource identifier (URL) and a resource operation (application state transition) such as GET or POST to proceed with the application, resulting in the next representation of the resource (the next application state) being forwarded to the end user. application state) is transferred to the end user for use.
@@ -778,7 +778,7 @@ The following code example is also available.
 * `entity` option for `#[DbQuery]` that returns a hydrated entity class instead of an associative array in DB queries [442ef94](https://github.com/bearsunday/tutorial2/commit/442ef94)
 * Query builder synthesizing static and dynamic SQL [5bad5f3](https://github.com/bearsunday/tutorial2/commit/5bad5f349da2f37b03bf0a94580d93a4cfd51bce)
 
-## A truly REST
+## REST framework
 
 There are three styles of Web APIs.
 
