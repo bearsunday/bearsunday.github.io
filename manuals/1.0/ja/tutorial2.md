@@ -15,6 +15,8 @@ permalink: /manuals/1.0/ja/tutorial2.html
 * CakePHPが開発してるDBマイグレーションツール [Phinx](https://book.cakephp.org/3.0/ja/phinx.html) 
 * PHPのインターフェイスとSQL文実行を束縛する [Ray.MediaQuery](https://github.com/ray-di/Ray.MediaQuery)
 
+[tutorial2](https://github.com/bearsunday/tutorial2/commits/v2)のコミットを参考にして進めましょう。
+
 ## プロジェクト作成
 
 プロジェクトスケルトンを作成します。
@@ -27,10 +29,9 @@ composer create-project bear/skeleton MyVendor.Ticket
 
 ## マイグレーション
 
-依存するパッケージをインストールします。
+Phinxをインストールします。
 
 ```
-composer require ray/identity-value-module ray/media-query
 composer require --dev robmorgan/phinx
 ```
 
@@ -153,6 +154,67 @@ All Done. Took 0.0248s
 テーブルが作成されました。次回からこのプロジェクトのデータベース環境を整えるには`composer setup`を実行するだけで行えます。
 
 マイグレーションクラスの記述について詳しくは[Phixのマニュアル：マイグレーションを書く](https://book.cakephp.org/3.0/ja/phinx/migrations.html)をご覧ください。
+
+## モジュール
+
+モジュールをcomposerインストールします。
+
+```
+composer require ray/identity-value-module ray/media-query
+```
+
+AppModuleでパッケージをインストールします。
+
+`src/Module/AppModule.php`
+
+```php
+<?php
+namespace MyVendor\Ticket\Module;
+
+use BEAR\Dotenv\Dotenv;
+use BEAR\Package\AbstractAppModule;
+use BEAR\Package\PackageModule;
+
+use BEAR\Resource\Module\JsonSchemaModule;
+use Ray\AuraSqlModule\AuraSqlModule;
+use Ray\IdentityValueModule\IdentityValueModule;
+use Ray\MediaQuery\DbQueryConfig;
+use Ray\MediaQuery\MediaQueryModule;
+use Ray\MediaQuery\Queries;
+use function dirname;
+
+class AppModule extends AbstractAppModule
+{
+    protected function configure(): void
+    {
+        (new Dotenv())->load(dirname(__DIR__, 2));
+        $this->install(
+            new AuraSqlModule(
+                (string) getenv('TKT_DB_DSN'),
+                (string) getenv('TKT_DB_USER'),
+                (string) getenv('TKT_DB_PASS'),
+                (string) getenv('TKT_DB_SLAVE')
+            )
+        );
+        $this->install(
+            new MediaQueryModule(
+                Queries::fromDir($this->appMeta->appDir . '/src/Query'), [
+                   new DbQueryConfig($this->appMeta->appDir . '/var/sql'),
+                ]
+            )
+        );
+        $this->install(new IdentityValueModule());
+        $this->install(
+            new JsonSchemaModule(
+                $this->appMeta->appDir . '/var/schema/response',
+                $this->appMeta->appDir . '/var/schema/request'
+            )
+        );
+        $this->install(new PackageModule());
+    }
+}
+```
+
 
 ## SQL
 
@@ -288,10 +350,7 @@ use Ray\MediaQuery\Annotation\DbQuery;
 interface TicketCommandInterface
 {
     #[DbQuery('ticket_add')]
-    public function add(string $id, string $title, DateTimeInterface $dateCreated = null): array;
-
-    #[DbQuery('ticket_delete')]
-    public function delete(string $id): void;
+    public function add(string $id, string $title, DateTimeInterface $dateCreated = null): void;
 }
 ```
 
@@ -461,7 +520,7 @@ class Tickets extends ResourceObject
     public function onPost(string $title): static
     {
         $id = (string) $this->uuid;
-        $this->body = $this->command->add($id, $title);
+        $this->command->add($id, $title);
 
         $this->code = StatusCode::CREATED;
         $this->headers[ResponseHeader::LOCATION] = uri_template('/ticket{?id}', ['id' => $id]);
@@ -481,7 +540,7 @@ class Tickets extends ResourceObject
 この場合はMySQLの現在時刻文字列です。 SQL内部でNOW()とハードコーディングする事や、メソッドに毎回現在時刻を渡す手間を省きます。
 
 ```php
-public function add(string $id, string $title, DateTimeInterface $dateCreated = null): array;
+public function add(string $id, string $title, DateTimeInterface $dateCreated = null): void;
 ```
 
 `DateTimeオブジェクト`を渡す事もできるし、テストのコンテキストでは固定のテスト用時刻を束縛することもできます。[^7]
@@ -696,16 +755,18 @@ HTTPクライアントはE2Eテストにも利用する事ができます。
 ResourceObjectではメソッドシグネチャーがAPIの入力パラメーターになっていて、レスポンスがスキーマ定義されています。
 その自己記述性の高さからAPIドキュメントが自動生成する事ができます。
 
-作成してみましょう。
+作成してみましょう。[docs](https://bearsunday.github.io/tutorial2/)フォルダにドキュメントが出力されます。
 
 ```
 composer doc
 ```
 
-IDL(インターフェイス定義言語）を記述する労力を削減しますが、より重要なのはドキュメントが最新のPHPコードに追従し正確な事です。
-CIに組み込み常にコードとAPIドキュメントがシンクしている状態にするのがいいでしょう。
+    
 
-より詳しくは[ApiDoc](apidoc.html)をご覧ください。
+IDL(インターフェイス定義言語）を記述する労力を削減しますが、より価値があるのはドキュメントが最新のPHPコードに追従し常に正確な事です。
+CIに組み込み常にコードとAPIドキュメントが同期している状態にするのがいいでしょう。
+
+関連ドキュメントをリンクする事もできます。設定について詳しくは[ApiDoc](apidoc.html)をご覧ください。
 
 ## 終わりに
 
@@ -733,7 +794,7 @@ BEAR.Sundayは標準に基づいたクリーンなコードである事を重視
 [^4]:[データベース図](https://pleiades.io/help/phpstorm/creating-diagrams.html)などでクエリプランや実行計画を確認し、作成するSQLの質を高めます。
 [^5]: Ray.MediaQueryはHTTP APIリクエストにも対応しています。
 [^6]: このようなコンテンツの階層構造の事を、IA(インフォメーションアーキテクチャ)では**タクソノミー**と呼びます。[Understanding Information Architecture](https://understandinggroup.com/ia-theory/understanding-information-architecture)参照
-[^7]: Ray.MediaQuery [README](https://github.com/ray-di/Ray.MediaQuery/blob/1.x/README.ja.md#%E6%97%A5%E4%BB%98%E6%99%82%E5%88%BB)照
+[^7]: Ray.MediaQuery [README](https://github.com/ray-di/Ray.MediaQuery/blob/1.x/README.ja.md#%E6%97%A5%E4%BB%98%E6%99%82%E5%88%BB)
 [^8]: ここでは例としてmysqlから直接実行していますが、マイグレーションツールでseedを入力したりIDEのDBツールの利用方法も学びましょう。
 [^9]: いわゆる"Restish API"。REST APIと紹介されている多くのAPIはこのURI/オブジェクトスタイルで、RESTが誤用されています。
 [^10]: チュートリアルからリンクを取り除けばURIスタイルになります。
