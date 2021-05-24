@@ -778,7 +778,7 @@ CIに組み込み常にコードとAPIドキュメントが同期している状
 以下のコード例も用意しています。
 
 * `Test`コンテキストを追加してテスト毎にDBをクリアするTestModule  [bfb950](https://github.com/bearsunday/tutorial2/commit/bfb950ea67a3293074a95a598dada520c976479c)
-* DBクエリーで連想配列の代わりにエンティティクラスを返す`#[DbQuery]`の`entity`オプション [442ef94](https://github.com/bearsunday/tutorial2/commit/442ef94d13f3b7e331834462b4b3ae4b125bb9a7)
+* DBクエリーで連想配列の代わりにエンティティクラスにハイドレートする`#[DbQuery]`の`entity`オプション [442ef94](https://github.com/bearsunday/tutorial2/commit/442ef94d13f3b7e331834462b4b3ae4b125bb9a7)
 
 ## 終わりに
 
