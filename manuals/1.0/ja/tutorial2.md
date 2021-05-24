@@ -6,8 +6,6 @@ permalink: /manuals/1.0/ja/tutorial2.html
 ---
 # チュートリアル2
 
-(wip: 24 May 2021)
-
 このチュートリアルでは以下のツールを用いて標準に基づいた高品質なREST(Hypermedia)アプリケーション開発を学びます。
 
 * JSONのスキーマを定義しバリデーションやドキュメンテーションに利用する [Json Schema](https://json-schema.org/)
@@ -773,7 +771,7 @@ CIに組み込み常にコードとAPIドキュメントが同期している状
 
 関連ドキュメントをリンクする事もできます。設定について詳しくは[ApiDoc](apidoc.html)をご覧ください。
 
-## 拡張
+## コード例
 
 以下のコード例も用意しています。
 
@@ -781,7 +779,7 @@ CIに組み込み常にコードとAPIドキュメントが同期している状
 * DBクエリーで連想配列を返す代わりにハイドレートされたエンティティクラスを返す`#[DbQuery]`の`entity`オプション [442ef94](https://github.com/bearsunday/tutorial2/commit/442ef94d13f3b7e331834462b4b3ae4b125bb9a7)
 * 静的なSQLと動的なSQLを合成したクエリービルダー [5bad5f3](https://github.com/bearsunday/tutorial2/commit/5bad5f349da2f37b03bf0a94580d93a4cfd51bce)
 
-## A truly REST framework
+## Truely REST
 
 Web APIには以下の3つのスタイルがあります。
 
