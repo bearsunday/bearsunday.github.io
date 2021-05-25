@@ -284,19 +284,19 @@ Define the resource representation of `Ticket` (ticket item) and `Tickets` (tick
 
 `var/schema/response/tickets.json`
 
+Tickets is a `Ticket` or an empty array.
+
 ```json
 {
   "$id": "tickets.json",
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Tickets",
   "type": "object",
-  "properties": {
+  "properties":{
     "tickets": {
       "anyOf": [
-        {
-          "type": "array",
-          "$ref": "./ticket.json"
-        }
+        {"type": "array", "$ref": "./ticket.json"},
+        {"type": "array", "minItems": 0}
       ]
     }
   }

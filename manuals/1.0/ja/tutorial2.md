@@ -283,19 +283,19 @@ DB接続などのセットアップを行えば、SQLファイルをIDEで直接
 
 `var/schema/response/tickets.json`
 
+Ticketsはticketまたは空の配列です。
+
 ```json
 {
   "$id": "tickets.json",
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Tickets",
   "type": "object",
-  "properties": {
+  "properties":{
     "tickets": {
       "anyOf": [
-        {
-          "type": "array",
-          "$ref": "./ticket.json"
-        }
+        {"type": "array", "$ref": "./ticket.json"},
+        {"type": "array", "minItems": 0}
       ]
     }
   }
@@ -669,7 +669,7 @@ class Index extends ResourceObject
 > **RESTの統一インターフェイス**
 > 
 > 1)リソースの識別、2)表現によるリソースの操作、3)自己記述メッセージ、
-> アプリケーション状態のエンジンとしてのハイパーメディア(HATEOAS)の4つのインターフェイス制約です。[^11]
+> 4)アプリケーション状態のエンジンとしてのハイパーメディア(HATEOAS)の4つのインターフェイス制約です。[^11]
 
 実行してみましょう
 
@@ -775,7 +775,7 @@ CIに組み込み常にコードとAPIドキュメントが同期している状
 以下のコード例も用意しています。
 
 * `Test`コンテキストを追加してテスト毎にDBをクリアするTestModule  [bfb950](https://github.com/bearsunday/tutorial2/commit/bfb950ea67a3293074a95a598dada520c976479c)
-* DBクエリーで連想配列を返す代わりにハイドレートされたエンティティクラスを返す`#[DbQuery]`の`entity`オプション [442ef94](https://github.com/bearsunday/tutorial2/commit/442ef94d13f3b7e331834462b4b3ae4b125bb9a7)
+* DBクエリーで連想配列を返す代わりにハイドレートされたエンティティクラスを返す[Ray.MediaQuery]()の`entity`オプション [442ef94](https://github.com/bearsunday/tutorial2/commit/442ef94d13f3b7e331834462b4b3ae4b125bb9a7)
 * 静的なSQLと動的なSQLを合成したクエリービルダー [5bad5f3](https://github.com/bearsunday/tutorial2/commit/5bad5f349da2f37b03bf0a94580d93a4cfd51bce)
 
 ## REST framework
