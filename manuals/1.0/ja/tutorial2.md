@@ -322,7 +322,6 @@ PHPStormではエディタの右上に緑色のチェックが出ていて問題
 
 namespace MyVendor\Ticket\Query;
 
-use MyVendor\Ticket\Entity\Ticket;
 use Ray\MediaQuery\Annotation\DbQuery;
 
 interface TicketQueryInterface

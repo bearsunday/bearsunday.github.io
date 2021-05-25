@@ -323,7 +323,6 @@ We will create a PHP interface that abstracts access to the infrastructure.
 
 namespace MyVendor\Ticket\Query;
 
-use MyVendor\Ticket\Entity\Ticket;
 use Ray\MediaQuery\Annotation\DbQuery;
 
 interface TicketQueryInterface
