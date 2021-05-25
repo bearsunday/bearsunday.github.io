@@ -438,6 +438,30 @@ SQL文には`;`で区切った複数のSQL分を記述する事ができ、複�
 HTMLとそこに記述される`<img>`タグをイメージしてください。どちらも独立したURLを持ちますが、画像リソースがHTMLリソースに埋めこ込まれていてHTMLを取得するとHTML内に画像が表示されます。
 これらはハイパーメディアタイプの[Embedding links(LE)](http://amundsen.com/hypermedia/hfactor/#le)と呼ばれるもので、埋め込まれるリソースがリンクされています。
 
+ticketリソースにprojectリソースを埋め込んでみましょう。Projectクラスを用意します。
+
+`src/Resource/App/Project.php`
+
+```php
+<?php
+
+namespace MyVendor\Ticket\Resource\App;
+
+use BEAR\Resource\ResourceObject;
+
+class Project extends ResourceObject
+{
+    public function onGet(): static
+    {
+        $this->body = ['title' => 'Project A'];
+
+        return $this;
+    }
+}
+```
+
+Ticketリソースにアトリビュート`#[Embed]`を追加します。
+
 ```diff
 +use BEAR\Resource\Annotation\Embed;
 +use BEAR\Resource\Request;

@@ -439,6 +439,30 @@ Instead of the client getting them separately, they can be bundled into one reso
 Think of HTML and the `<img>` tag that is written in it. Both have independent URLs, but the image resource is embedded in the HTML resource, and when the HTML is retrieved, the image is displayed in the HTML.
 These are called hypermedia types [Embedding links(LE)](http://amundsen.com/hypermedia/hfactor/#le), and the resource to be embedded is linked.
 
+Let's embed the project resource into the ticket resource, and prepare the Project class.
+
+`src/Resource/App/Project.php`
+
+```php
+<?php
+
+namespace MyVendor\Ticket\Resource\App;
+
+use BEAR\Resource\ResourceObject;
+
+class Project extends ResourceObject
+{
+    public function onGet(): static
+    {
+        $this->body = ['title' => 'Project A'];
+
+        return $this;
+    }
+}
+```
+
+Add the attribute `#[Embed]` to the Ticket resource.
+
 ```diff
 +use BEAR\Resource\Annotation\Embed;
 +use BEAR\Resource\Request;
