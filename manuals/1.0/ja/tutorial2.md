@@ -774,9 +774,9 @@ CIに組み込み常にコードとAPIドキュメントが同期している状
 
 以下のコード例も用意しています。
 
-* `Test`コンテキストを追加してテスト毎にDBをクリアするTestModule  [bfb950](https://github.com/bearsunday/tutorial2/commit/bfb950ea67a3293074a95a598dada520c976479c)
-* DBクエリーで連想配列を返す代わりにハイドレートされたエンティティクラスを返す[Ray.MediaQuery]()の`entity`オプション [442ef94](https://github.com/bearsunday/tutorial2/commit/442ef94d13f3b7e331834462b4b3ae4b125bb9a7)
-* 静的なSQLと動的なSQLを合成したクエリービルダー [5bad5f3](https://github.com/bearsunday/tutorial2/commit/5bad5f349da2f37b03bf0a94580d93a4cfd51bce)
+* `Test`コンテキストを追加してテスト毎にDBをクリアするTestModule [4e9704d](https://github.com/bearsunday/tutorial2/commit/4e9704d3bc65b9c7e7a8c13164dfe7cc3d6929b2)
+* DBクエリーで連想配列を返す代わりにハイドレートされたエンティティクラスを返す[Ray.MediaQuery]()の`entity`オプション [29f0a1f](https://github.com/bearsunday/tutorial2/commit/29f0a1f4d4bf51e6c0a722fd6b2f44cb78de999e)
+* 静的なSQLと動的なSQLを合成したクエリービルダー [960452](https://github.com/bearsunday/tutorial2/commit/96045243307e28d2a5a0cd4fe7769073cedfb94f)
 
 ## REST framework
 

@@ -773,9 +773,9 @@ You can also link to related documentation. See [ApiDoc](apidoc.html) for more d
 
 The following code example is also available.
 
-* TestModulethat adds a `Test` context and clears the DB for each test.  [bfb950](https://github.com/bearsunday/tutorial2/commit/bfb950ea67a3293074a95a598dada520c)
-* `entity` option for `#[DbQuery]` that returns a hydrated entity class instead of an associative array in DB queries [442ef94](https://github.com/bearsunday/tutorial2/commit/442ef94)
-* Query builder synthesizing static and dynamic SQL [5bad5f3](https://github.com/bearsunday/tutorial2/commit/5bad5f349da2f37b03bf0a94580d93a4cfd51bce)
+* TestModulethat adds a `Test` context and clears the DB for each test.  [4e9704d](https://github.com/bearsunday/tutorial2/commit/4e9704d3bc65b9c7e7a8c13164dfe7cc3d6929b2)
+* `entity` option for `#[DbQuery]` that returns a hydrated entity class instead of an associative array in DB queries [29f0a1f](https://github.com/bearsunday/tutorial2/commit/29f0a1f4d4bf51e6c0a722fd6b2f44cb78de999e)
+* Query builder synthesizing static and dynamic SQL [960452](https://github.com/bearsunday/tutorial2/commit/96045243307e28d2a5a0cd4fe7769073cedfb94f)
 
 ## REST framework
 
