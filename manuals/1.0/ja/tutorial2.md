@@ -791,7 +791,7 @@ Web APIには以下の3つのスタイルがあります。
 
 BEAR.Sundayは標準に基づいたクリーンなコードである事を重視します。 
 
-フレームワーク固有のバリデータよりJsonSchema。独自ORMより標準SQL。独自構造JSONより標準メディアタイプJSON。
+フレームワーク固有のバリデータよりJsonSchema。独自ORMより標準SQL。独自構造JSONよりIANA標準メディアタイプ[^12]JSON。
 
 アプリケーション設計は「実装が自由である」事ではなく「制約の選択が自由である」という事が重要です。
 アプリケーションはその制約に基づき開発効率やパフォーマンス、後方互換性を壊さない進化可能性を目指すと良いでしょう。
@@ -809,6 +809,7 @@ BEAR.Sundayは標準に基づいたクリーンなコードである事を重視
 [^9]: いわゆる"Restish API"。REST APIと紹介されている多くのAPIはこのURI/オブジェクトスタイルで、RESTが誤用されています。
 [^10]: チュートリアルからリンクを取り除けばURIスタイルになります。
 [^11]: 広く誤解されていますが統一インターフェイスはHTTPメソッドの事ではありません。[Uniform Interface](https://www.ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm)参照
+[^12]: [https://www.iana.org/assignments/media-types/media-types.xhtml](https://www.iana.org/assignments/media-types/media-types.xhtml)
 
 ※ 以前のPHP7対応のチュートリアルは[tutorial2_v1](tutorial2_v1.html)にあります。
 

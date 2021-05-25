@@ -790,7 +790,7 @@ Resources are connected by LOs (outbound links) in `#Link` to represent workflow
 
 BEAR.Sunday emphasizes clean, standards-based code.
 
-JsonSchema over framework-specific validators, standard SQL over proprietary ORM, standard media type JSON over proprietary structure JSON.
+JsonSchema over framework-specific validators, standard SQL over proprietary ORM, IANA registered standard[^12] media type JSON over proprietary structure JSON.
 
 Application design is not about "free implementation", but about "free choice of constraints".
 Applications should aim for evolvability without breaking development efficiency, performance, and backward compatibility based on the constraints.
@@ -810,3 +810,4 @@ Applications should aim for evolvability without breaking development efficiency
 [^9]: The so-called "Restish API"; many APIs introduced as REST APIs have this URI/object style, and REST is misused.
 [^10]: If you remove the links from the tutorial, you get the URI style.
 [^11]: It is a widespread misconception that the Uniform Interface is not an HTTP method. See [Uniform Interface](https://www.ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm).
+[^12]: [https://www.iana.org/assignments/media-types/media-types.xhtml](https://www.iana.org/assignments/media-types/media-types.xhtml)
