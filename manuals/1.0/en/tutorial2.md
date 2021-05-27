@@ -799,7 +799,7 @@ The following code example is also available.
 
 * TestModulethat adds a `Test` context and clears the DB for each test.  [4e9704d](https://github.com/bearsunday/tutorial2/commit/4e9704d3bc65b9c7e7a8c13164dfe7cc3d6929b2)
 * `entity` option for `#[DbQuery]` that returns a hydrated entity class instead of an associative array in DB queries [29f0a1f](https://github.com/bearsunday/tutorial2/commit/29f0a1f4d4bf51e6c0a722fd6b2f44cb78de999e)
-* Query builder synthesizing static and dynamic SQL [960452](https://github.com/bearsunday/tutorial2/commit/96045243307e28d2a5a0cd4fe7769073cedfb94f)
+* Query builder synthesizing static and dynamic SQL [9d095ac](https://github.com/bearsunday/tutorial2/commit/9d095acfed6150fb99f36d502ae13f03bdf2916d)
 
 ## REST framework
 
