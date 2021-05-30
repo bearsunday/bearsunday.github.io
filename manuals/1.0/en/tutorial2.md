@@ -8,14 +8,14 @@ permalink: /manuals/1.0/en/tutorial2.html
 # Tutorial 2
 
 
-In this tutorial, you will learn to develop high quality standards-based REST (Hypermedia) applications using the following tools.
+In this tutorial, you will learn how to develop high quality standards-based REST (Hypermedia) applications using the following tools.
 
 * Define a JSON schema and use it for validation and documentation [Json Schema](https://json-schema.org/)
 * Hypermedia types [HAL (Hypertext Application Language)](https://stateless.group/hal_specification.html)
 * A DB migration tool developed by CakePHP [Phinx](https://book.cakephp.org/3.0/ja/phinx.html)
 * Binding PHP interfaces to SQL statement execution [Ray. MediaQuery](https://github.com/ray-di/Ray.MediaQuery)
 
-Let's proceed with the commits in [tutorial2](https://github.com/bearsunday/tutorial2/commits/v2).
+Let's proceed with the commits found in [tutorial2](https://github.com/bearsunday/tutorial2/commits/v2).
 
 ## Create the project
 
@@ -35,7 +35,7 @@ Install Phinx.
 composer require --dev robmorgan/phinx
 ```
 
-Describe the DB connection information in the `.env.dist` file in the project root folder.
+Configure the DB connection information in the `.env.dist` file in the project root folder.
 
 ```
 TKT_DB_HOST=127.0.0.1
@@ -48,14 +48,14 @@ TKT_DB_DSN=mysql:host=${TKT_DB_HOST};dbname=${TKT_DB_NAME}
 
 The `.env.dist` file should look like this, and the actual connection information should be written in `.env`. ^1]
 
-Next, create a folder to be used byphinx.
+Next, create a folder to be used by Phinx.
 
 ```bash
 mkdir -p var/phinx/migrations
 mkdir var/phinx/seeds
 ```
 
-Set up `var/phinx/phinx.php` to use the `.env` connection information in thephinx.
+Set up `var/phinx/phinx.php` to use the `.env` connection information we have set up earlier.
 
 ```php
 <?php
@@ -140,7 +140,7 @@ final class Ticket extends AbstractMigration
 }
 ```
 
-Now that the preparation is complete, run the setup command to create the table.
+Now that we are done with the setup, run the setup command to create the table.
 
 ```
 composer setup
@@ -239,12 +239,12 @@ SELECT id, title, dateCreated FROM ticket WHERE id = :id
 
 Make sure that the SQL will work on its own when you create it.
 
-> PHPStorm includes a database tool, [DataGrip](https://www.jetbrains.com/ja-jp/datagrip/), which has all the necessary features for SQL development such as code completion and SQL refactoring.
+> PHPStorm includes a database tool, [DataGrip](https://www.jetbrains.com/datagrip/), which has all the necessary features for SQL development such as code completion and SQL refactoring.
 Once the DB connection and other setups are made, SQL files can be executed directly in the IDE. [^3][^4]
 
 ## JsonSchema.
 
-Define the resource representation of `Ticket` (ticket item) and `Tickets` (ticket item list) with [JsonSchema](http://json-schema.org/) and save them respectively.
+Create new files that will represent the resource `Ticket` (ticket item) and `Tickets` (ticket item list) with [JsonSchema](http://json-schema.org/):
 
 `var/schema/response/ticket.json`
 
@@ -354,7 +354,7 @@ interface TicketCommandInterface
 
 The `#[DbQuery]` attribute specifies a SQL statement.
 
-You do not need to prepare any implementation for this interface. An object that performs the specified SQL query will be created automatically.
+You do not need to write any implementation for this interface. An object that performs the specified SQL query will be created automatically.
 
 The interface is divided into two concerns: **command** which has side effects, and **query** which returns a value.
 It can be one interface and one method as in [ADR pattern](https://github.com/pmjones/adr). The application designer decides the policy.
@@ -499,12 +499,11 @@ If you make the request again, you will see that the status of the project resou
     },
 ```
 
-Embedded resources are an important feature of the REST API. It gives a tree structure to the content and reduces the HTTP request cost.
-It is of interest to the domain what other information is contained in the information. Rather than fetching it each time in the client, the interest can be well represented in the server-side LE (embedded links). [^6]
+Embedded resources are an important feature of the REST API. It gives a tree structure to the content and reduces the HTTP request cost. Instead of letting the client fetching it as a separate resource each time, the relationship can be represented in server-side. [^6]
 
 ## tickets resource
 
-Create a `tikcets` resource in `src/resource/App/Tickets.php` that can be created with `POST` and retrieved with `GET` for a list of tickets.
+Create a `tickets` resource in `src/resource/App/Tickets.php` that can be created with `POST` and retrieved with `GET` for a list of tickets.
 
 ```php
 <?php
