@@ -101,7 +101,7 @@ passthru('chmod 775 var/log');
 // db
 $pdo = new \PDO('mysql:host=' . getenv('TKT_DB_HOST'), getenv('TKT_DB_USER'), getenv('TKT_DB_PASS'));
 $pdo->exec('CREATE DATABASE IF NOT EXISTS ' . getenv('TKT_DB_NAME'));
-$pdo->exec('DROP DATABASE IF EXISTS ' . getenv('TKT_DB_NAME')) . '_test';
+$pdo->exec('DROP DATABASE IF EXISTS ' . getenv('TKT_DB_NAME') . '_test');
 $pdo->exec('CREATE DATABASE ' . getenv('TKT_DB_NAME') . '_test');
 passthru('./vendor/bin/phinx migrate -c var/phinx/phinx.php -e development');
 passthru('./vendor/bin/phinx migrate -c var/phinx/phinx.php -e test');
@@ -151,7 +151,7 @@ All Done. Took 0.0248s
 
 テーブルが作成されました。次回からこのプロジェクトのデータベース環境を整えるには`composer setup`を実行するだけで行えます。
 
-マイグレーションクラスの記述について詳しくは[Phixのマニュアル：マイグレーションを書く](https://book.cakephp.org/3.0/ja/phinx/migrations.html)をご覧ください。
+マイグレーションクラスの記述について詳しくは[Phinxのマニュアル：マイグレーションを書く](https://book.cakephp.org/3.0/ja/phinx/migrations.html)をご覧ください。
 
 ## モジュール
 
