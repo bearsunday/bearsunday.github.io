@@ -48,14 +48,14 @@ TKT_DB_DSN=mysql:host=${TKT_DB_HOST};dbname=${TKT_DB_NAME}
 
 The `.env.dist` file should look like this, and the actual connection information should be written in `.env`. ^1]
 
-Next, create a folder to be used byphinx.
+Next, create a folder to be used by phinx.
 
 ```bash
 mkdir -p var/phinx/migrations
 mkdir var/phinx/seeds
 ```
 
-Set up `var/phinx/phinx.php` to use the `.env` connection information in thephinx.
+Set up `var/phinx/phinx.php` to use the `.env` connection information in the phinx.
 
 ```php
 <?php
@@ -153,7 +153,7 @@ All Done. Took 0.0248s
 
 The table has been created. The next time you want to set up a database environment for this project, just run `composer setup`.
 
-For more information about writing migration classes, see [Phix Manual: Writing Migrations](https://book.cakephp.org/3.0/ja/phinx/migrations.html).
+For more information about writing migration classes, see [Phinx Manual: Writing Migrations](https://book.cakephp.org/3.0/ja/phinx/migrations.html).
 
 ## Module
 
