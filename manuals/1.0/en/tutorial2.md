@@ -48,14 +48,14 @@ TKT_DB_DSN=mysql:host=${TKT_DB_HOST};dbname=${TKT_DB_NAME}
 
 The `.env.dist` file should look like this, and the actual connection information should be written in `.env`. ^1]
 
-Next, create a folder to be used byphinx.
+Next, create a folder to be used by phinx.
 
 ```bash
 mkdir -p var/phinx/migrations
 mkdir var/phinx/seeds
 ```
 
-Set up `var/phinx/phinx.php` to use the `.env` connection information in thephinx.
+Set up `var/phinx/phinx.php` to use the `.env` connection information in the phinx.
 
 ```php
 <?php
@@ -103,7 +103,7 @@ passthru('chmod 775 var/log');
 // db
 $pdo = new \PDO('mysql:host=' . getenv('TKT_DB_HOST'), getenv('TKT_DB_USER'), getenv('TKT_DB_PASS'));
 $pdo->exec('CREATE DATABASE IF NOT EXISTS ' . getenv('TKT_DB_NAME'));
-$pdo->exec('DROP DATABASE IF EXISTS ' . getenv('TKT_DB_NAME')) . '_test';
+$pdo->exec('DROP DATABASE IF EXISTS ' . getenv('TKT_DB_NAME') . '_test');
 $pdo->exec('CREATE DATABASE ' . getenv('TKT_DB_NAME') . '_test');
 passthru('./vendor/bin/phinx migrate -c var/phinx/phinx.php -e development');
 passthru('./vendor/bin/phinx migrate -c var/phinx/phinx.php -e test');
@@ -153,7 +153,7 @@ All Done. Took 0.0248s
 
 The table has been created. The next time you want to set up a database environment for this project, just run `composer setup`.
 
-For more information about writing migration classes, see [Phix Manual: Writing Migrations](https://book.cakephp.org/3.0/ja/phinx/migrations.html).
+For more information about writing migration classes, see [Phinx Manual: Writing Migrations](https://book.cakephp.org/3.0/ja/phinx/migrations.html).
 
 ## Module
 
