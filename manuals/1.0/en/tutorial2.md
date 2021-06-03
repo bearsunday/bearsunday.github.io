@@ -38,12 +38,12 @@ composer require --dev robmorgan/phinx
 Describe the DB connection information in the `.env.dist` file in the project root folder.
 
 ```
-TKT_DB_HOST=127.0.0.1
+TKT_DB_HOST=127.0.0.1:3306
 TKT_DB_NAME=ticket
 TKT_DB_USER=root
 TKT_DB_PASS=''
 TKT_DB_SLAVE=''
-TKT_DB_DSN=mysql:host=${TKT_DB_HOST};dbname=${TKT_DB_NAME}
+TKT_DB_DSN=mysql:host=${TKT_DB_HOST}
 ```
 
 The `.env.dist` file should look like this, and the actual connection information should be written in `.env`. ^1]
@@ -139,6 +139,17 @@ final class Ticket extends AbstractMigration
     }
 }
 ```
+
+In addition, edit `.env.dist` like the following.
+
+```diff
+ TKT_DB_USER=root
+ TKT_DB_PASS=
+ TKT_DB_SLAVE=
+-TKT_DB_DSN=mysql:host=${TKT_DB_HOST}
++TKT_DB_DSN=mysql:host=${TKT_DB_HOST};dbname=${TKT_DB_NAME}
+```
+
 
 Now that the preparation is complete, run the setup command to create the table.
 
