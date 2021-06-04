@@ -70,7 +70,7 @@ Web公開フォルダです。
 [![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/ray-di/Ray.Aop/badges/quality-score.png?b=2.x)](https://scrutinizer-ci.com/g/ray-di/Ray.Aop/)
 [![codecov](https://codecov.io/gh/ray-di/Ray.Aop/branch/2.x/graph/badge.svg?token=eh3c9AF4Mr)](https://codecov.io/gh/ray-di/Ray.Aop)
 [![Type Coverage](https://shepherd.dev/github/ray-di/Ray.Aop/coverage.svg)](https://shepherd.dev/github/ray-di/Ray.Aop)
-[![Build Status](https://secure.travis-ci.org/ray-di/Ray.Aop.png?b=2.x)](http://travis-ci.org/ray-di/Ray.Aop)
+[![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/ray-di/Ray.Aop/Continuous%20Integration/2.x)](https://github.com/ray-di/Ray.Aop/actions)
 
 Javeの [AOPアライアンス](http://aopalliance.sourceforge.net/) に準拠したAOPフレームワークです。
 
@@ -78,7 +78,7 @@ Javeの [AOPアライアンス](http://aopalliance.sourceforge.net/) に準拠�
 [![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/ray-di/Ray.Di/badges/quality-score.png?b=2.x)](https://scrutinizer-ci.com/g/ray-di/Ray.Di/)
 [![codecov](https://codecov.io/gh/ray-di/Ray.Di/branch/2.x/graph/badge.svg?token=eh3c9AF4Mr)](https://codecov.io/gh/ray-di/Ray.Di)
 [![Type Coverage](https://shepherd.dev/github/ray-di/Ray.Di/coverage.svg)](https://shepherd.dev/github/ray-di/Ray.Di)
-[![Build Status](https://secure.travis-ci.org/ray-di/Ray.Di.png?b=2.x)](http://travis-ci.org/ray-di/Ray.Di)
+[![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/ray-di/Ray.Di/Continuous%20Integration/2.x)](https://github.com/ray-di/Ray.Di/actions)
 
 [google/guice](https://github.com/google/guice) スタイルのDIフレームワークです。`ray/aop`を含みます。
 
@@ -86,7 +86,7 @@ Javeの [AOPアライアンス](http://aopalliance.sourceforge.net/) に準拠�
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/bearsunday/BEAR.Resource/badges/quality-score.png?b=1.x)](https://scrutinizer-ci.com/g/bearsunday/BEAR.Resource/?branch=1.x)
 [![codecov](https://codecov.io/gh/bearsunday/BEAR.Resource/branch/1.x/graph/badge.svg?token=eh3c9AF4Mr)](https://codecov.io/gh/bearsunday/BEAR.Resource)
 [![Type Coverage](https://shepherd.dev/github/bearsunday/BEAR.Resource/coverage.svg)](https://shepherd.dev/github/bearsunday/BEAR.Resource)
-[![Build Status](https://travis-ci.org/bearsunday/BEAR.Resource.svg?branch=1.x)](https://travis-ci.org/bearsunday/BEAR.Resource)
+![Continuous Integration](https://github.com/bearsunday/BEAR.Resource/workflows/Continuous%20Integration/badge.svg)
 
 PHPのオブジェクトをRESTサービスとして使用するRESTフレームワークです。`ray/di`を含みます。
 
@@ -94,7 +94,7 @@ PHPのオブジェクトをRESTサービスとして使用するRESTフレーム
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/bearsunday/BEAR.Sunday/badges/quality-score.png?b=1.x)](https://scrutinizer-ci.com/g/bearsunday/BEAR.Sunday/?branch=1.x)
 [![codecov](https://codecov.io/gh/bearsunday/BEAR.Sunday/branch/1.x/graph/badge.svg?token=eh3c9AF4Mr)](https://codecov.io/gh/bearsunday/BEAR.Sunday)
 [![Type Coverage](https://shepherd.dev/github/bearsunday/BEAR.Sunday/coverage.svg)](https://shepherd.dev/github/bearsunday/BEAR.Sunday)
-[![Build Status](https://travis-ci.org/bearsunday/BEAR.Sunday.svg?branch=1.x)](https://travis-ci.org/bearsunday/BEAR.Sunday?branch=1.x)
+![Continuous Integration](https://github.com/bearsunday/BEAR.Sunday/workflows/Continuous%20Integration/badge.svg)
 
 フレームワークのインターフェイスパッケージです。`bear/resource`を含みます。
 
@@ -102,16 +102,9 @@ PHPのオブジェクトをRESTサービスとして使用するRESTフレーム
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/bearsunday/BEAR.Package/badges/quality-score.png?b=1.x)](https://scrutinizer-ci.com/g/bearsunday/BEAR.Package/?branch=1.x)
 [![codecov](https://codecov.io/gh/bearsunday/BEAR.Package/branch/1.x/graph/badge.svg?token=eh3c9AF4Mr)](https://codecov.io/gh/bearsunday/BEAR.Pacakge)
 [![Type Coverage](https://shepherd.dev/github/bearsunday/BEAR.Package/coverage.svg)](https://shepherd.dev/github/bearsunday/BEAR.Package)
-[![Build Status](https://travis-ci.org/bearsunday/BEAR.Package.svg?branch=1.x)](https://travis-ci.org/bearsunday/BEAR.Package)
+![Continuous Integration](https://github.com/bearsunday/BEAR.Package/workflows/Continuous%20Integration/badge.svg)
 
 `bear/sunday`の実装パッケージです。`bear/sunday`を含みます。
-
-### bear/middleware
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/bearsunday/BEAR.Middleware/badges/quality-score.png?b=1.x)](https://scrutinizer-ci.com/g/bearsunday/BEAR.Middleware/?branch=1.x)
-[![Code Coverage](https://scrutinizer-ci.com/g/bearsunday/BEAR.Middleware/badges/coverage.png?b=1.x)](https://scrutinizer-ci.com/g/bearsunday/BEAR.Middleware/?branch=1.x)
-[![Build Status](https://travis-ci.org/bearsunday/BEAR.Middleware.svg?branch=1.x)](https://travis-ci.org/bearsunday/BEAR.Middleware)
-
-PSR-7のミドルウエアのためのオプションパッケージです。
 
 ## ライブラリ・パッケージ
 
@@ -121,6 +114,7 @@ PSR-7のミドルウエアのためのオプションパッケージです。
 | ルーター |
 | |[bear/aura-router-module](https://github.com/bearsunday/BEAR.AuraRouterModule) | [Aura.Router v2](https://github.com/auraphp/Aura.Router/tree/2.x) |
 | データベース |
+|| [ray/media-query](https://github.com/ray-di/Ray.MediaQuery) | 
 || [ray/aura-sql-module](https://github.com/ray-di/Ray.AuraSqlModule) | [Aura.Sql v2](https://github.com/auraphp/Aura.Sql/tree/2.x)
 || [ray/dbal-module](https://github.com/ray-di/Ray.DbalModule) | [Doctrine DBAL](https://github.com/doctrine/dbal)
 || [ray/cake-database-module](https://github.com/ray-di/Ray.CakeDbModule) | [CakePHP v3 database](https://github.com/cakephp/database)
