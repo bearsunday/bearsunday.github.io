@@ -265,29 +265,22 @@ Define the resource representation of `Ticket` (ticket item) and `Tickets` (tick
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Ticket",
   "type": "object",
-  "required": ["id", "title", "created_at"],
+  "required": ["id", "title", "dateCreated"],
   "properties": {
     "id": {
+      "description": "The unique identifier for a ticket.",
       "type": "string",
-      "maxLength": 64,
-      "examples": [
-        "81c08016-d2e2-4e93-8982-39e4c905bb18"
-      ]
+      "maxLength": 64
     },
     "title": {
+      "description": "The unique identifier for a ticket.",
       "type": "string",
-      "minLength": 3,
-      "maxLength": 255,
-      "examples": [
-        "A foo ticket"
-      ]
+      "maxLength": 255
     },
     "dateCreated": {
+      "description": "The date and time that the ticket was created",
       "type": "string",
-      "format": "datetime",
-      "examples": [
-        "2021-05-18 16:30:35"
-      ]
+      "format": "datetime"
     }
   }
 }
@@ -295,7 +288,7 @@ Define the resource representation of `Ticket` (ticket item) and `Tickets` (tick
 
 `var/schema/response/tickets.json`
 
-Tickets is a `Ticket` or an empty array.
+Tickets is a `Ticket` array.
 
 ```json
 {
@@ -303,15 +296,15 @@ Tickets is a `Ticket` or an empty array.
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Tickets",
   "type": "object",
-  "properties":{
+  "required": ["tickets"],
+  "properties": {
     "tickets": {
-      "anyOf": [
-        {"type": "array", "$ref": "./ticket.json"},
-        {"type": "array", "minItems": 0}
-      ]
+      "type": "array",
+      "items":{"$ref": "./ticket.json"}
     }
   }
 }
+
 ```
 
 * **$id** - specifies the file name, but if it is to be published, it should be a URL.
