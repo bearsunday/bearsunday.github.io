@@ -36,12 +36,12 @@ composer require --dev robmorgan/phinx
 プロジェクトルートフォルダの`.env.dist`ファイルにDB接続情報を記述します。
 
 ```
-TKT_DB_HOST=127.0.0.1
+TKT_DB_HOST=127.0.0.1:3306
 TKT_DB_NAME=ticket
 TKT_DB_USER=root
 TKT_DB_PASS=''
 TKT_DB_SLAVE=''
-TKT_DB_DSN=mysql:host=${TKT_DB_HOST};dbname=${TKT_DB_NAME}
+TKT_DB_DSN=mysql:host=${TKT_DB_HOST}
 ```
 
 `.env.dist`ファイルはこのようにして、実際の接続情報は`.env`に記述しましょう。[^1]
@@ -136,6 +136,16 @@ final class Ticket extends AbstractMigration
             ->create();
     }
 }
+```
+
+`.env.dist`ファイルを以下のように変更します。
+
+```diff
+ TKT_DB_USER=root
+ TKT_DB_PASS=
+ TKT_DB_SLAVE=
+-TKT_DB_DSN=mysql:host=${TKT_DB_HOST}
++TKT_DB_DSN=mysql:host=${TKT_DB_HOST};dbname=${TKT_DB_NAME}
 ```
 
 準備が完了したので、セットアップコマンドを実行してテーブルを作成します。
@@ -253,29 +263,22 @@ DB接続などのセットアップを行えば、SQLファイルをIDEで直接
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Ticket",
   "type": "object",
-  "required": ["id", "title", "created_at"],
+  "required": ["id", "title", "dateCreated"],
   "properties": {
     "id": {
+      "description": "The unique identifier for a ticket.",
       "type": "string",
-      "maxLength": 64,
-      "examples": [
-        "81c08016-d2e2-4e93-8982-39e4c905bb18"
-      ]
+      "maxLength": 64
     },
     "title": {
+      "description": "The unique identifier for a ticket.",
       "type": "string",
-      "minLength": 3,
-      "maxLength": 255,
-      "examples": [
-        "A foo ticket"
-      ]
+      "maxLength": 255
     },
     "dateCreated": {
+      "description": "The date and time that the ticket was created",
       "type": "string",
-      "format": "datetime",
-      "examples": [
-        "2021-05-18 16:30:35"
-      ]
+      "format": "datetime"
     }
   }
 }
@@ -283,7 +286,7 @@ DB接続などのセットアップを行えば、SQLファイルをIDEで直接
 
 `var/schema/response/tickets.json`
 
-Ticketsはticketまたは空の配列です。
+Ticketsはticketの配列です。
 
 ```json
 {
@@ -291,12 +294,11 @@ Ticketsはticketまたは空の配列です。
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Tickets",
   "type": "object",
-  "properties":{
+  "required": ["tickets"],
+  "properties": {
     "tickets": {
-      "anyOf": [
-        {"type": "array", "$ref": "./ticket.json"},
-        {"type": "array", "minItems": 0}
-      ]
+      "type": "array",
+      "items":{"$ref": "./ticket.json"}
     }
   }
 }
