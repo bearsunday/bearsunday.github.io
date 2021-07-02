@@ -263,7 +263,7 @@ composer sa
 試してみましょう。
 
 ```
-php bin/app.php get '/weekday?year=-1&month=1&day=1
+php bin/app.php get '/weekday?year=-1&month=1&day=1'
 ```
 
 PHPエラーが発生した場合でもエラーハンドラーがキャッチして、正しい`application/vnd.error+json`メディアタイプでエラーメッセージが表示されていますが、
