@@ -956,8 +956,13 @@ class Todos extends ResourceObject
 
 ```php
 <?php
+
+declare(strict_types=1);
+
+use MyVendor\Weekday\Bootstrap;
+
 require dirname(__DIR__) . '/autoload.php';
-exit((require dirname(__DIR__) . '/bootstrap.php')('prod-cli-hal-api-app'));
+exit(( new Bootstrap() )('prod-cli-hal-api-app', $GLOBALS, $_SERVER));
 ```
 
 コンソールコマンドでリクエストします。`POST`ですがBEAR.Sundayではクエリーの形でパラメーターを渡します。
