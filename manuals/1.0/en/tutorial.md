@@ -262,7 +262,7 @@ The previous code did not take into account the fact that `DateTimeImmutable::cr
 Let's try it.
 
 ```
-php bin/app.php get '/weekday?year=-1&month=1&day=1
+php bin/app.php get '/weekday?year=-1&month=1&day=1'
 ```
 
 PHP errors are still caught by the error handler and error messages are displayed with the correct `application/vnd.error+json` media type, but
@@ -302,8 +302,8 @@ declare(strict_types=1);
 namespace MyVendor\Weekday\Resource\App;
 
 use BEAR\Resource\ResourceObject;
-+use DateTimeImmutable;
-use MyVendor\Weekday\Exception\InvalidDateTimeException;
+use DateTimeImmutable;
++use MyVendor\Weekday\Exception\InvalidDateTimeException;
 
 class Weekday extends ResourceObject
 {
@@ -851,7 +851,7 @@ class AppModule extends AbstractAppModule
     protected function configure(): void
     {
         // ...
-+        $this->install(new AuraSqlModule(sprintf('sqlite:%s/var/db/todo.sq3', $this->appMeta->appDir)));
++        $this->install(new AuraSqlModule(sprintf('sqlite:%s/var/db/todo.sqlite3', $this->appMeta->appDir)));
         $this->install(new PackageModule());
     }
 }

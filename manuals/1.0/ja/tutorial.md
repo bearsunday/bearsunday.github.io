@@ -263,7 +263,7 @@ composer sa
 試してみましょう。
 
 ```
-php bin/app.php get '/weekday?year=-1&month=1&day=1
+php bin/app.php get '/weekday?year=-1&month=1&day=1'
 ```
 
 PHPエラーが発生した場合でもエラーハンドラーがキャッチして、正しい`application/vnd.error+json`メディアタイプでエラーメッセージが表示されていますが、
@@ -304,8 +304,8 @@ declare(strict_types=1);
 namespace MyVendor\Weekday\Resource\App;
 
 use BEAR\Resource\ResourceObject;
-+use DateTimeImmutable;
-use MyVendor\Weekday\Exception\InvalidDateTimeException;
+use DateTimeImmutable;
++use MyVendor\Weekday\Exception\InvalidDateTimeException;
 
 class Weekday extends ResourceObject
 {
@@ -866,7 +866,7 @@ class AppModule extends AbstractAppModule
     protected function configure(): void
     {
         // ...
-+        $this->install(new AuraSqlModule(sprintf('sqlite:%s/var/db/todo.sq3', $this->appMeta->appDir)));
++        $this->install(new AuraSqlModule(sprintf('sqlite:%s/var/db/todo.sqlite3', $this->appMeta->appDir)));
         $this->install(new PackageModule());
     }
 }
