@@ -304,8 +304,8 @@ declare(strict_types=1);
 namespace MyVendor\Weekday\Resource\App;
 
 use BEAR\Resource\ResourceObject;
-+use DateTimeImmutable;
-use MyVendor\Weekday\Exception\InvalidDateTime;
+use DateTimeImmutable;
++use MyVendor\Weekday\Exception\InvalidDateTime;
 
 class Weekday extends ResourceObject
 {
