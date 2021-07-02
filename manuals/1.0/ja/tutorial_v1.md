@@ -866,7 +866,7 @@ class AppModule extends AbstractAppModule
     protected function configure(): void
     {
         // ...
-+        $this->install(new AuraSqlModule(sprintf('sqlite:%s/var/db/todo.sq3', $this->appMeta->appDir)));
++        $this->install(new AuraSqlModule(sprintf('sqlite:%s/var/db/todo.sqlite3', $this->appMeta->appDir)));
         $this->install(new PackageModule());
     }
 }
