@@ -231,7 +231,7 @@ class AppModule extends AbstractAppModule
 `var/sql/ticket_add.sql`
 
 ```sql
-INSERT INTO ticket (id, title, dateCreated) VALUES (:id, :title, :dateCteated);
+INSERT INTO ticket (id, title, dateCreated) VALUES (:id, :title, :dateCreated);
 ```
 
 `var/sql/ticket_list.sql`
@@ -317,7 +317,7 @@ PHPStormではエディタの右上に緑色のチェックが出ていて問題
  * Ticketリソースを読み出す **TicketQueryInterface**
  * Ticketリソースを作成する **TicketCommandInterface**
 
-`src/Query/TicketQueryInterface,php`
+`src/Query/TicketQueryInterface.php`
 
 ```php
 <?php
@@ -336,7 +336,7 @@ interface TicketQueryInterface
 }
 ```
 
-`src/Query/TicketCommandInterface,php`
+`src/Query/TicketCommandInterface.php`
 
 ```php
 <?php
