@@ -232,7 +232,7 @@ Save the three SQLs for the ticket in `var/sql`.
 `var/sql/ticket_add.sql`
 
 ```sql
-INSERT INTO ticket (id, title, dateCreated) VALUES (:id, :title, :dateCteated);
+INSERT INTO ticket (id, title, dateCreated) VALUES (:id, :title, :dateCreated);
 ```
 
 `var/sql/ticket_list.sql`
@@ -319,7 +319,7 @@ We will create a PHP interface that abstracts access to the infrastructure.
 * Read Ticket resources **TicketQueryInterface**.
 * Create a Ticket resource **TicketCommandInterface**.
 
-`src/Query/TicketQueryInterface,php`
+`src/Query/TicketQueryInterface.php`
 
 ```php
 <?php
@@ -338,7 +338,7 @@ interface TicketQueryInterface
 }
 ```
 
-`src/Query/TicketCommandInterface,php`
+`src/Query/TicketCommandInterface.php`
 
 ```php
 <?php
