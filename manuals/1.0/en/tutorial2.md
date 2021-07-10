@@ -227,24 +227,32 @@ class AppModule extends AbstractAppModule
 
 ## SQL
 
-Save the three SQLs for the ticket in `var/sql`.
+Save the three SQLs for the ticket in `var/sql`.[^13]
 
 `var/sql/ticket_add.sql`
 
 ```sql
-INSERT INTO ticket (id, title, dateCreated) VALUES (:id, :title, :dateCreated);
+/* ticket add */
+INSERT INTO ticket (id, title, datecreated)
+VALUES (:id, :title, :dateCreated);
 ```
 
 `var/sql/ticket_list.sql`
 
 ```sql
-SELECT id, title, dateCreated FROM ticket LIMIT 3;
+/* ticket list */
+SELECT id, title, datecreated
+  FROM ticket
+ LIMIT 3;
 ```
 
 `var/sql/ticket_item.sql`
 
 ```sql
-SELECT id, title, dateCreated FROM ticket WHERE id = :id
+/* ticket item */
+SELECT id, title, datecreated
+  FROM ticket
+ WHERE id = :id
 ```
 
 Make sure that the SQL will work on its own when you create it.
@@ -837,3 +845,5 @@ Applications should aim for evolvability without breaking development efficiency
 [^10]: If you remove the links from the tutorial, you get the URI style.
 [^11]: It is a widespread misconception that the Uniform Interface is not an HTTP method. See [Uniform Interface](https://www.ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm).
 [^12]: [https://www.iana.org/assignments/media-types/media-types.xhtml](https://www.iana.org/assignments/media-types/media-types.xhtml)
+[^13]: This SQL conforms to the [SQL Style Guide](https://www.sqlstyle.guide/). It can be configured from PhpStorm as [Joe Celko](https://twitter.com/koriym/status/1410996122412150786).
+The comment is not only descriptive, but also makes it easier to identify the SQL in the slow query log, etc.
