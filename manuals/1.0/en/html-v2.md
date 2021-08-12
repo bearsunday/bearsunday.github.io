@@ -57,7 +57,7 @@ example）
 class Index extends ResourceObject
 {
     public $body = [
-        ['greeting' => 'Hello BEAR.Sunday']
+        'greeting' => 'Hello BEAR.Sunday'
     ];
 }
 ```
@@ -140,7 +140,7 @@ class Todos extend ResourceObject
     ];
 
     public $body = [
-        ['title' => 'run']
+        'title' => 'run'
     ];
 }
 ```
