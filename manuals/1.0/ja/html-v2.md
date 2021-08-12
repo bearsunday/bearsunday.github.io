@@ -146,7 +146,7 @@ class Todos extend ResourceObject
     ];
 
     public $body = [
-        'title' => 'run'
+        ['title' => 'run']
     ];
 }
 ```
