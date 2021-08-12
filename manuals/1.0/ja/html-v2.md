@@ -47,7 +47,7 @@ cp -r vendor/madapaja/twig-module/var/templates var/templates
 `bin/page.php`や`public/index.php`のコンテキストを変更して`html`を有効にします。
 
 ```bash
-$context = 'cli-html-app'; // 'htm-app'
+$context = 'cli-html-app'; // 'html-app'
 ```
 ## テンプレート
 
