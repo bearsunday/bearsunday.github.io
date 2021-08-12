@@ -54,7 +54,7 @@ example）
 `src/Page/Index.php`
 
 ```php
-class Index extend ResourceObject
+class Index extends ResourceObject
 {
     public $body = [
         ['greeting' => 'Hello BEAR.Sunday']
@@ -136,8 +136,8 @@ class Todos extend ResourceObject
     public $code = 200;
 
     public $text = [
-        'name' => 'BEAR';
-    ];    
+        'name' => 'BEAR'
+    ];
 
     public $body = [
         ['title' => 'run']
@@ -171,7 +171,7 @@ class Todos extends ResourceObject
 
     public function onGet() : ResourceObject
     {
-        $this->body = $this->pdo->fetchAll($this->query['todos_list'])
+        $this->body = $this->pdo->fetchAll($this->query['todos_list']);
         return $this;
     }
 }
