@@ -1059,7 +1059,7 @@ php -S 127.0.0.1:8081 bin/app.php
 `curl`コマンドでGETします。
 
 ```bash
-curl -i http://127.0.0.1:8081/todos?id=1
+curl -i 'http://127.0.0.1:8081/todos?id=1'
 ```
 
 ```bash
