@@ -781,6 +781,9 @@ cp -r vendor/madapaja/twig-module/var/templates var
 
 ```php
 <?php
+
+use MyVendor\Weekday\Bootstrap;
+
 require dirname(__DIR__) . '/autoload.php';
 exit((new Bootstrap())(PHP_SAPI === 'cli' ? 'cli-html-app' : 'html-app', $GLOBALS, $_SERVER));
 ```
@@ -818,6 +821,9 @@ content-type: text/html; charset=utf-8
 
 ```php
 <?php
+
+use MyVendor\Weekday\Bootstrap;
+
 require dirname(__DIR__) . '/autoload.php';
 exit((new Bootstrap())(PHP_SAPI === 'cli-server' ? 'html-app' : 'prod-html-app', $GLOBALS, $_SERVER));
 ```
@@ -832,6 +838,9 @@ php -S 127.0.0.1:8080 public/index.php
 
 ```php?start_inline
 <?php
+
+use MyVendor\Weekday\Bootstrap;
+
 // JSONアプリケーション （最小）
 require dirname(__DIR__) . '/autoload.php';
 exit((new Bootstrap())('app', $GLOBALS, $_SERVER));
@@ -839,6 +848,9 @@ exit((new Bootstrap())('app', $GLOBALS, $_SERVER));
 
 ```php?start_inline
 <?php
+
+use MyVendor\Weekday\Bootstrap;
+
 // プロダクション用HALアプリケーション
 require dirname(__DIR__) . '/autoload.php';
 exit((new Bootstrap())('prod-hal-app', $GLOBALS, $_SERVER));
@@ -980,6 +992,9 @@ class Todos extends ResourceObject
 
 ```php
 <?php
+
+use MyVendor\Weekday\Bootstrap;
+
 require dirname(__DIR__) . '/autoload.php';
 exit((new Bootstrap())('cli-prod-hal-api-app', $GLOBALS, $_SERVER));
 ```

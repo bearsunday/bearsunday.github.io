@@ -753,6 +753,7 @@ Modify `bin/page.php` to set the context to `html-app`.
 
 ```php
 <?php
+
 use MyVendor\Weekday\Bootstrap;
 
 require dirname(__DIR__) . '/autoload.php';
@@ -806,6 +807,9 @@ As the [context](/manuals/1.0/en/application.html#context) changes, so does the 
 
 ```php?start_inline
 <?php
+
+use MyVendor\Weekday\Bootstrap;
+
 // JSON Application (smallest)
 require dirname(__DIR__) . '/autoload.php';
 exit((new Bootstrap())('app', $GLOBALS, $_SERVER));
@@ -813,6 +817,9 @@ exit((new Bootstrap())('app', $GLOBALS, $_SERVER));
 
 ```php?start_inline
 <?php
+
+use MyVendor\Weekday\Bootstrap;
+
 // Production HAL Application
 require dirname(__DIR__) . '/autoload.php';
 exit((new Bootstrap())('prod-hal-app', $GLOBALS, $_SERVER));
@@ -930,6 +937,9 @@ In order to enable caching , create the context of `bin/app.php` `test` for cach
 
 ```php
 <?php
+
+use MyVendor\Weekday\Bootstrap;
+
 require dirname(__DIR__) . '/autoload.php';
 exit((new Bootstrap())('prod-cli-hal-api-app', $GLOBALS, $_SERVER));
 ```
