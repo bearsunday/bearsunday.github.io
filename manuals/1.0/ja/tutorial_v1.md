@@ -782,7 +782,7 @@ cp -r vendor/madapaja/twig-module/var/templates var
 ```php
 <?php
 require dirname(__DIR__) . '/autoload.php';
-exit((require dirname(__DIR__) . '/bootstrap.php')(PHP_SAPI === 'cli' ? 'cli-html-app' : 'html-app'));
+exit((new Bootstrap())(PHP_SAPI === 'cli' ? 'cli-html-app' : 'html-app', $GLOBALS, $_SERVER));
 ```
 
 これで`text/html`出力の準備はできました。
@@ -819,7 +819,7 @@ content-type: text/html; charset=utf-8
 ```php
 <?php
 require dirname(__DIR__) . '/autoload.php';
-exit((require dirname(__DIR__) . '/bootstrap.php')(PHP_SAPI === 'cli-server' ? 'html-app' : 'prod-html-app'));
+exit((new Bootstrap())(PHP_SAPI === 'cli-server' ? 'html-app' : 'prod-html-app', $GLOBALS, $_SERVER));
 ```
 
 PHPサーバーを立ち上げてwebブラウザで[http://127.0.0.1:8080/?year=2001&month=1&day=1](http://127.0.0.1:8080/?year=2001&month=1&day=1)をアクセスして確認してみましょう。
@@ -834,14 +834,14 @@ php -S 127.0.0.1:8080 public/index.php
 <?php
 // JSONアプリケーション （最小）
 require dirname(__DIR__) . '/autoload.php';
-exit((require dirname(__DIR__) . '/bootstrap.php')('app'));
+exit((new Bootstrap())('app', $GLOBALS, $_SERVER));
 ```
 
 ```php?start_inline
 <?php
 // プロダクション用HALアプリケーション
 require dirname(__DIR__) . '/autoload.php';
-exit((require dirname(__DIR__) . '/bootstrap.php')('prod-hal-app'));
+exit((new Bootstrap())('prod-hal-app', $GLOBALS, $_SERVER));
 ```
 
 コンテキストに応じたインスタンスを生成するPHPコードが生成されます。アプリケーションの`var/tmp/{context}/di`フォルダを確認してみましょう。
@@ -981,7 +981,7 @@ class Todos extends ResourceObject
 ```php
 <?php
 require dirname(__DIR__) . '/autoload.php';
-exit((require dirname(__DIR__) . '/bootstrap.php')('cli-prod-hal-api-app'));
+exit((new Bootstrap())('cli-prod-hal-api-app', $GLOBALS, $_SERVER));
 ```
 
 コンソールコマンドでリクエストします。`POST`ですが便宜上クエリーの形でパラメーターを渡します。
