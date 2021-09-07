@@ -233,7 +233,7 @@ Save the three SQLs for the ticket in `var/sql`.[^13]
 
 ```sql
 /* ticket add */
-INSERT INTO ticket (id, title, datecreated)
+INSERT INTO ticket (id, title, dateCreated)
 VALUES (:id, :title, :dateCreated);
 ```
 
@@ -241,7 +241,7 @@ VALUES (:id, :title, :dateCreated);
 
 ```sql
 /* ticket list */
-SELECT id, title, datecreated
+SELECT id, title, dateCreated
   FROM ticket
  LIMIT 3;
 ```
@@ -250,7 +250,7 @@ SELECT id, title, datecreated
 
 ```sql
 /* ticket item */
-SELECT id, title, datecreated
+SELECT id, title, dateCreated
   FROM ticket
  WHERE id = :id
 ```
