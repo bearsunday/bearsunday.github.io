@@ -72,6 +72,7 @@ class ProdModule extends AbstractModule
 namespace BEAR\HelloWorld\Module;
 
 use BEAR\QueryRepository\StorageMemcachedModule;
+use BEAR\Resource\Module\ProdLoggerModule;
 use BEAR\Package\Context\ProdModule as PackageProdModule;
 use BEAR\Package\AbstractAppModule;
 use Ray\Di\Scope;
@@ -85,6 +86,8 @@ class ProdModule extends AbstractModule
         $memcachedServers = 'mem1.domain.com:11211:33,mem2.domain.com:11211:67';
         $this->install(new StorageMemcachedModule(memcachedServers);
 
+        // Prodロガーのインストール
+        $this->install(new ProdLoggerModule);
         // デフォルトのProdModuleのインストール
         $this->install(new PackageProdModule);
     }
@@ -123,6 +126,27 @@ $this->install(new CacheVersionModule($cacheVersion));
 ```
 
 ディプロイの度にリソースキャッシュを破棄するためには`$cacheVersion`に時刻や乱数の値を割り当てると変更が不要で便利です。
+
+## ログ
+
+`ProdLoggerModule`はプロダクション用のリソース実行ログモジュールです。インストールするとGET以外のリクエストを`Psr\Log\LoggerInterface`にバインドされているロガーでログします。
+特定のリソースや特定の状態でログしたい場合は、カスタムのログを[BEAR\Resource\LoggerInterface](https://github.com/bearsunday/BEAR.Resource/blob/1.x/src/LoggerInterface.php)にバインドします。
+
+```php
+use BEAR\Resource\LoggerInterface;
+use Ray\Di\AbstractModule;
+
+final class MyProdLoggerModule extends AbstractModule
+{
+    protected function configure(): void
+    {
+        $this->bind(LoggerInterface::class)->to(MyProdLogger::class);
+    }
+}
+```
+
+[LoggerInterface](https://github.com/bearsunday/BEAR.Resource/blob/1.x/src/LoggerInterface.php)の`__invoke`メソッドでリソースのURIとリソース状態が`ResourceObject`オブジェクトとして渡されるのでその内容で必要な部分をログします。
+作成には[既存の実装 ProdLogger](https://github.com/bearsunday/BEAR.Resource/blob/1.x/src/ProdLogger.php)を参考にしてください。
 
 ## デプロイ
 
