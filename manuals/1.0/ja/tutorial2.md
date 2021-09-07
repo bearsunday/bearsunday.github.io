@@ -226,24 +226,30 @@ class AppModule extends AbstractAppModule
 
 ## SQL
 
-チケット用の３つのSQLを`var/sql`に保存します。
-
-`var/sql/ticket_add.sql`
+チケット用の３つのSQLを`var/sql`に保存します。[^13]
 
 ```sql
-INSERT INTO ticket (id, title, dateCreated) VALUES (:id, :title, :dateCteated);
+/* ticket add */
+INSERT INTO ticket (id, title, datecreated)
+VALUES (:id, :title, :dateCreated);
 ```
 
 `var/sql/ticket_list.sql`
 
 ```sql
-SELECT id, title, dateCreated FROM ticket LIMIT 3;
+/* ticket list */
+SELECT id, title, datecreated
+  FROM ticket
+ LIMIT 3;
 ```
 
 `var/sql/ticket_item.sql`
 
 ```sql
-SELECT id, title, dateCreated FROM ticket WHERE id = :id
+/* ticket item */
+SELECT id, title, datecreated
+  FROM ticket
+ WHERE id = :id
 ```
 
 作成時に単体でそのSQLが動作するか確認しましょう。
@@ -317,7 +323,7 @@ PHPStormではエディタの右上に緑色のチェックが出ていて問題
  * Ticketリソースを読み出す **TicketQueryInterface**
  * Ticketリソースを作成する **TicketCommandInterface**
 
-`src/Query/TicketQueryInterface,php`
+`src/Query/TicketQueryInterface.php`
 
 ```php
 <?php
@@ -336,7 +342,7 @@ interface TicketQueryInterface
 }
 ```
 
-`src/Query/TicketCommandInterface,php`
+`src/Query/TicketCommandInterface.php`
 
 ```php
 <?php
@@ -836,6 +842,8 @@ BEAR.Sundayは標準に基づいたクリーンなコードである事を重視
 [^10]: チュートリアルからリンクを取り除けばURIスタイルになります。
 [^11]: 広く誤解されていますが統一インターフェイスはHTTPメソッドの事ではありません。[Uniform Interface](https://www.ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm)参照
 [^12]: [https://www.iana.org/assignments/media-types/media-types.xhtml](https://www.iana.org/assignments/media-types/media-types.xhtml)
+[^13]: このSQLは[SQLスタイルガイド](https://www.sqlstyle.guide/ja/) に準拠しています。 PhpStormからは[Joe Celko](https://twitter.com/koriym/status/1410996122412150786)として設定できます。
+コメントは説明になるだけでなくスロークエリーログ等からもSQLを特定しやすくなります。
 
 ※ 以前のPHP7対応のチュートリアルは[tutorial2_v1](tutorial2_v1.html)にあります。
 
