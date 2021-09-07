@@ -65,3 +65,4 @@ permalink: /contributors.html
 - [<img alt="nes801" src="https://avatars1.githubusercontent.com/u/13078598?s=460&u=f3e3365059c30909db043a0a8e9919211a2db811&v=4" width="117">](https://github.com/nes801)
 - [<img alt="ysato" src="https://avatars0.githubusercontent.com/u/56924527?s=460&u=8a807ba28cb5eca31912fd69922116fe71ed5e01&v=4" width="117">](https://github.com/ysato)
 - [<img alt="Pon57" src="https://avatars.githubusercontent.com/u/15137243?v=4" width="117">](https://github.com/Pon57)
+- [<img alt="KazuyaUchida" src="https://avatars.githubusercontent.com/u/86758002?v=4" width="117">](https://github.com/KazuyaUchida)
