@@ -568,7 +568,7 @@ class BenchMarker implements MethodInterceptor
     public function invoke(MethodInvocation $invocation): mixed
     {
         $start = microtime(true);
-        $result = $invocation->proceed(); // 元のメソッドの実行
+        $result = $invocation->proceed(); // Execute the original method
         $time = microtime(true) - $start;
         $message = sprintf('%s: %0.5f(µs)', $invocation->getMethod()->getName(), $time);
         $this->logger->log($message);
@@ -749,10 +749,11 @@ Copy `templates` directory.
 cp -r vendor/madapaja/twig-module/var/templates var
 ```
 
-`bin/page.php`を変更してコンテキストを`html-app`にします。
+Modify `bin/page.php` to set the context to `html-app`.
 
 ```php
 <?php
+
 use MyVendor\Weekday\Bootstrap;
 
 require dirname(__DIR__) . '/autoload.php';
@@ -806,16 +807,22 @@ As the [context](/manuals/1.0/en/application.html#context) changes, so does the 
 
 ```php?start_inline
 <?php
-// JSONアプリケーション （最小）
+
+use MyVendor\Weekday\Bootstrap;
+
+// JSON Application (smallest)
 require dirname(__DIR__) . '/autoload.php';
-exit((require dirname(__DIR__) . '/bootstrap.php')('app'));
+exit((new Bootstrap())('app', $GLOBALS, $_SERVER));
 ```
 
 ```php?start_inline
 <?php
-// プロダクション用HALアプリケーション
+
+use MyVendor\Weekday\Bootstrap;
+
+// Production HAL Application
 require dirname(__DIR__) . '/autoload.php';
-exit((require dirname(__DIR__) . '/bootstrap.php')('prod-hal-app'));
+exit((new Bootstrap())('prod-hal-app', $GLOBALS, $_SERVER));
 ```
 
 For each context PHP code that builds up the application is produced and saved in `var/tmp/`. These files are not normally needed, but you can use it to check how your application object is created. Using the `diff` command you can check which dependencies have changed across contexts.
