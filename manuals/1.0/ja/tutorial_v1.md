@@ -258,7 +258,7 @@ composer cs-fix
 試してみましょう。
 
 ```
-php bin/app.php get '/weekday?year=-1&month=1&day=1
+php bin/app.php get '/weekday?year=-1&month=1&day=1'
 ```
 
 PHPエラーが発生した場合でもエラーハンドラーがキャッチして、正しい`application/vnd.error+json`メディアタイプでエラーメッセージが表示されていますが、
@@ -620,7 +620,7 @@ class AppModule extends AbstractAppModule
 }
 ```
 
-ベンチマークを行いたいメソッドに`@BenchMark`とアノテートします。
+ベンチマークを行いたいメソッドに`#[BenchMark]`とアトリビュートを加えます。
 
 ```diff
 +use MyVendor\Weekday\Annotation\BenchMark;
@@ -628,15 +628,15 @@ class AppModule extends AbstractAppModule
 class Weekday extends ResourceObject
 {
 
-+   [BenchMark]
++   #[BenchMark]
     public function onGet(int $year, int $month, int $day): static
     {
 ```
 
-これで計測したいメソッドに`@BenchMark`とアノテートすればいつでもベンチマークできるようになりました。
+これで計測したいメソッドに`#[BenchMark]`とアトリビュートを加えればいつでもベンチマークできるようになりました。
 
-アノテーションとインターセプターによる機能追加は柔軟です。対象メソッドやメソッドを呼ぶ側に変更はありません。
-アノテーションはそのままでも束縛を外せばベンチマークを行いません。例えば、開発時にのみ束縛を行い特定の秒数を越すと警告を行うこともできます。
+アトリビュートとインターセプターによる機能追加は柔軟です。対象メソッドやメソッドを呼ぶ側に変更はありません。
+アトリビュートはそのままでも束縛を外せばベンチマークを行いません。例えば、開発時にのみ束縛を行い特定の秒数を越すと警告を行うこともできます。
 
 実行して`var/log/weekday.log`に実行時間のログが出力されることを確認しましょう。
 
