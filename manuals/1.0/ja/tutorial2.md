@@ -132,7 +132,7 @@ final class Ticket extends AbstractMigration
         $table = $this->table('ticket', ['id' => false, 'primary_key' => ['id']]);
         $table->addColumn('id', 'uuid')
             ->addColumn('title', 'string')
-            ->addColumn('dateCreated', 'datetime')
+            ->addColumn('date_created', 'datetime')
             ->create();
     }
 }
@@ -228,9 +228,11 @@ class AppModule extends AbstractAppModule
 
 チケット用の３つのSQLを`var/sql`に保存します。[^13]
 
+`var/sql/ticket_add.sql`
+
 ```sql
 /* ticket add */
-INSERT INTO ticket (id, title, dateCreated)
+INSERT INTO ticket (id, title, date_created)
 VALUES (:id, :title, :dateCreated);
 ```
 
@@ -238,7 +240,7 @@ VALUES (:id, :title, :dateCreated);
 
 ```sql
 /* ticket list */
-SELECT id, title, dateCreated
+SELECT id, title, date_created
   FROM ticket
  LIMIT 3;
 ```
@@ -247,7 +249,7 @@ SELECT id, title, dateCreated
 
 ```sql
 /* ticket item */
-SELECT id, title, dateCreated
+SELECT id, title, date_created
   FROM ticket
  WHERE id = :id
 ```
@@ -269,7 +271,7 @@ DB接続などのセットアップを行えば、SQLファイルをIDEで直接
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Ticket",
   "type": "object",
-  "required": ["id", "title", "dateCreated"],
+  "required": ["id", "title", "date_created"],
   "properties": {
     "id": {
       "description": "The unique identifier for a ticket.",
@@ -281,7 +283,7 @@ DB接続などのセットアップを行えば、SQLファイルをIDEで直接
       "type": "string",
       "maxLength": 255
     },
-    "dateCreated": {
+    "date_created": {
       "description": "The date and time that the ticket was created",
       "type": "string",
       "format": "datetime"
@@ -407,7 +409,7 @@ AOPによってリクエスト毎にバリデートされます。
 シードを入力してリソースをリクエストしてみましょう。[^8]
 
 ```bash 
-% mysql -u root -e "INSERT INTO ticket (id, title, dateCreated) VALUES ('1', 'foo', '1970-01-01 00:00:00')" ticket
+% mysql -u root -e "INSERT INTO ticket (id, title, date_created) VALUES ('1', 'foo', '1970-01-01 00:00:00')" ticket
 ```
 
 ```bash
@@ -420,7 +422,7 @@ Content-Type: application/hal+json
 {
     "id": "1",
     "title": "foo",
-    "dateCreated": "1970-01-01 00:00:01",
+    "date_created": "1970-01-01 00:00:01",
     "_links": {
         "self": {
             "href": "/ticket?id=1"
@@ -498,7 +500,7 @@ Ticketリソースにアトリビュート`#[Embed]`を追加します。
 {
     "id": "1",
     "title": "2",
-    "dateCreated": "1970-01-01 00:00:01",
+    "date_created": "1970-01-01 00:00:01",
 +    "_embedded": {
 +        "project": {
 +            "title": "Project A",
