@@ -673,14 +673,14 @@ class WorkflowTest extends TestCase
 
 起点となるルートページも必要です。
 
-`src/Resource/App/Index.php`
+`src/Resource/Page/Index.php`
 
 ```php
 <?php
 
 declare(strict_types=1);
 
-namespace MyVendor\Ticket\Resource\App;
+namespace MyVendor\Ticket\Resource\Page;
 
 use BEAR\Resource\Annotation\Link;
 use BEAR\Resource\ResourceObject;

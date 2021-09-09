@@ -674,14 +674,14 @@ class WorkflowTest extends TestCase
 
 You will also need a route page as a starting point.
 
-`src/Resource/App/Index.php`
+`src/Resource/Page/Index.php`
 
 ```php
 <?php
 
 declare(strict_types=1);
 
-namespace MyVendor\Ticket\Resource\App;
+namespace MyVendor\Ticket\Resource\Page;
 
 use BEAR\Resource\Annotation\Link;
 use BEAR\Resource\ResourceObject;
