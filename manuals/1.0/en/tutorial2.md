@@ -134,7 +134,7 @@ final class Ticket extends AbstractMigration
         $table = $this->table('ticket', ['id' => false, 'primary_key' => ['id']]);
         $table->addColumn('id', 'uuid')
             ->addColumn('title', 'string')
-            ->addColumn('dateCreated', 'datetime')
+            ->addColumn('date_created', 'datetime')
             ->create();
     }
 }
@@ -233,7 +233,7 @@ Save the three SQLs for the ticket in `var/sql`.[^13]
 
 ```sql
 /* ticket add */
-INSERT INTO ticket (id, title, datecreated)
+INSERT INTO ticket (id, title, date_created)
 VALUES (:id, :title, :dateCreated);
 ```
 
@@ -241,7 +241,7 @@ VALUES (:id, :title, :dateCreated);
 
 ```sql
 /* ticket list */
-SELECT id, title, datecreated
+SELECT id, title, date_created
   FROM ticket
  LIMIT 3;
 ```
@@ -250,7 +250,7 @@ SELECT id, title, datecreated
 
 ```sql
 /* ticket item */
-SELECT id, title, datecreated
+SELECT id, title, date_created
   FROM ticket
  WHERE id = :id
 ```
@@ -272,7 +272,7 @@ Create new files that will represent the resource `Ticket` (ticket item) and `Ti
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Ticket",
   "type": "object",
-  "required": ["id", "title", "dateCreated"],
+  "required": ["id", "title", "date_created"],
   "properties": {
     "id": {
       "description": "The unique identifier for a ticket.",
@@ -284,7 +284,7 @@ Create new files that will represent the resource `Ticket` (ticket item) and `Ti
       "type": "string",
       "maxLength": 255
     },
-    "dateCreated": {
+    "date_created": {
       "description": "The date and time that the ticket was created",
       "type": "string",
       "format": "datetime"
@@ -411,7 +411,7 @@ It is validated for each request by AOP.
 Let's try to request a resource by entering a seed. [^8]
 
 ```bash 
-% mysql -u root -e "INSERT INTO ticket (id, title, dateCreated) VALUES ('1', 'foo', '1970-01-01 00:00:00')" ticket
+% mysql -u root -e "INSERT INTO ticket (id, title, date_created) VALUES ('1', 'foo', '1970-01-01 00:00:00')" ticket
 ```
 
 ```bash
@@ -424,7 +424,7 @@ Content-Type: application/hal+json
 {
     "id": "1",
     "title": "foo",
-    "dateCreated": "1970-01-01 00:00:01",
+    "date_created": "1970-01-01 00:00:01",
     "_links": {
         "self": {
             "href": "/ticket?id=1"
@@ -502,7 +502,7 @@ If you make the request again, you will see that the status of the project resou
 {
     "id": "1",
     "title": "2",
-    "dateCreated": "1970-01-01 00:00:01",
+    "date_created": "1970-01-01 00:00:01",
 +    "_embedded": {
 +        "project": {
 +            "title": "Project A",
@@ -674,14 +674,14 @@ class WorkflowTest extends TestCase
 
 You will also need a route page as a starting point.
 
-`src/Resource/App/Index.php`
+`src/Resource/Page/Index.php`
 
 ```php
 <?php
 
 declare(strict_types=1);
 
-namespace MyVendor\Ticket\Resource\App;
+namespace MyVendor\Ticket\Resource\Page;
 
 use BEAR\Resource\Annotation\Link;
 use BEAR\Resource\ResourceObject;
