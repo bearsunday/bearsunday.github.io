@@ -11,47 +11,48 @@ permalink: /manuals/1.0/ja/cache.html
 
 BEAR.Sundayは従来のサーバーサイドでのキャッシュ有効時間（TTL）ベースの単純なキャッシュに加えて以下の機能をサポートします。
 
-* 依存解決
-* CDNコントロール
-* イベントドリブン型コンテンツのキャッシュ更新
-* HTTP条件付きリクエスト
+* キャッシュの同期更新
+* タグによる依存解決
 * ドーナッツキャッシュ
-
+* CDNコントロール
+* 条件付きリクエスト
 
 ## 分散キャッシュ
 
 <img src="https://user-images.githubusercontent.com/529021/137062427-c733c832-0631-4a43-a6ee-4204e6be007c.png" alt="distributed cache">
 
-キャッシュはREST制約に従った分散キャッシュシステムで、CPUだけでなくネットワーク資源も節約します。
+REST制約に従った分散キャッシュシステムは、CPUだけでなくネットワーク資源も節約します。
 
 PHPが直接扱うRedisやAPCなどの**サーバーサイドキャッシュ**、コンテンツ配信ネットワーク(CDN)として知られる**共有キャッシュ**、WebブラウザやAPIクライアントでキャッシュされる**クライアントサイドキャッシュ**、BEAR.SundayはこれらのキャッシュとモダンCDNを統合したキャッシングフレームワークを提供します。
 
 
 ## タグベースでのキャッシュ無効化
 
-キャッシュコンテンツには依存性の問題があります。キャッシュコンテンツ(A)が他の単数または複数のキャッシュコンテンツ(B)を含んでいる場合、Bが更新されるとBのキャッシュとETag、Bを含んだAのキャッシュ、ETagの全てが更新されなければなりません。
+HTTP標準のキャッシュのウイークポイントの１つはキャッシュ無効化の標準が無い事です。それに加えて キャッシュコンテンツには依存性の問題があります。キャッシュコンテンツAが他の単数または複数のキャッシュコンテンツBを含んでいる場合、Bが更新されるとBのキャッシュとETag、Bを含んだAのキャッシュ、ETagの全てが更新されなければなりません。
 
-BEAR.Sundayはサーバーサイド、共有キャッシュの双方で統合されたタグベースでのキャッシュ無効化が可能です。`#[Embed]`で埋め込まれたリソースに変更があると、埋め込んだリソースのキャッシュとETagが再生成されます。
+一部の先進的なCDNはこれをタグベースでの即時無効化の機能で補っています。この機能を活用し、 BEAR.Sundayはサーバーサイド、CDNの双方で統合されたタグベースでのキャッシュ無効化を可能にしています。
 
-HTTP標準のキャッシュのウイークポイントの１つはキャッシュ無効化の標準が無い事ですが、一部の先進的なCDNはこれをタグベースでの即時無効化の機能で補っていてこれをサポートします。
+`#[Embed]`で埋め込まれたリソースに変更があると、AOPが検知して関係する全てのリソースのキャッシュとETagがサーバーサイド、CDNの双方で無効化されます。同時にサーバーサイドでは次のリクエストのためにキャッシュとETagが再生成されます。
 
 ## ドーナッツキャッシュ
 
 <img width="200" alt="donut caching" src="https://user-images.githubusercontent.com/529021/137097856-f9428918-5b76-4c0e-8cea-2472c15d82e9.png">
 
-ドーナツキャッシュはキャッシュの最適化のための**部分キャッシュ** 技術の１つで、計算リソースを削減することができます。
+ドーナツキャッシュはキャッシュの最適化のための**部分キャッシュ** 技術の１つです。
 
-あとで追記されるドーナツの穴を除いて、ドーナツ（ページ全体）をキャッシュします。例えばコメントを含むブログの記事ページではコメントが穴です。それ以外のビュー化された記事の部分をキャッシュして、穴部分のコメントを別途取得して埋め込みます。穴部分もそれ以外の部分も独立してキャッシュ管理され出力時に合成されます。
+あとで追記されるドーナツの穴を除いて、ドーナツ（ページ全体）をキャッシュします。例えばコメントを含むブログの記事ページではコメントが穴です。それ以外のビュー化された記事のドーナッツ部分をキャッシュして、穴部分のコメントを別途取得して埋め込みます。
+
+穴部分の再計算が必要になった時に、キャッシュされたドーナッツ部分の計算は再利用され、計算資源を節約する事ができます。
 
 ## イベントドリブン型コンテンツ
 
-従来、CDNはアプリケーションロジックを必要とするコンテンツは「動的」であり、したがってCDNではキャッシュはできないと考えられてきました。FastlyやAkamaiなどのモダンなCDNは即時、または数秒以内でのタグベースでのキャッシュ無効化が可能になり、この考えは過去のものになろうとしています。
+従来、CDNはアプリケーションロジックを必要とするコンテンツは「動的」であり、したがってCDNではキャッシュはできないと考えられてきました。FastlyやAkamaiなどの一部のCDNは即時または数秒以内でのタグベースでのキャッシュ無効化が可能になり、この考えは過去のものになろうとしています。
 
-BEAR.Sundayはサーバーサイド、共有キャッシュの双方でリソースの更新とキャッシュ更新の同期が可能です。AOPが変更を検知し、ほとんどの場合キャッシュの更新は無指定かつ自動で行われます。
+BEAR.Sundayはサーバーサイド、共有キャッシュの双方でリソースの更新とキャッシュ更新の同期が可能です。AOPが変更を検知しサーバーサイドのキャッシュとCDNのキャッシュの更新が自動で行われます。
 
 ## 条件付きリクエスト
 
-コンテンツの変更はAOPで管理され、コンテンツのエンティティタグ(ETag)は自動で更新されます。ETagを使ったHTTPの条件付きリクエストはPHPの実行を最小化し、計算リソースだけでなくネットワークリソースも最小化します。
+コンテンツの変更はAOPで管理され、コンテンツのエンティティタグ(ETag)は自動で更新されます。ETagを使ったHTTPの条件付きリクエストは計算資源の利用を最小化するだけでなく、`302 Not Modified`を返すだけの応答はネットワーク資源の利用も最小化します。
 
 
 # 利用法
@@ -69,14 +70,14 @@ class BlogPosting extends ResourceObject
     ];
 
     #[Embed(rel: "comment", src: "page://self/html/comment")]
-    public function onGet(int $id = 0)
+    public function onGet(int $id = 0): static
     {
         $this->body['article'] = 'hello world';
 
         return $this;
     }
 
-    public function onDelete(int $id = 0)
+    public function onDelete(int $id = 0): static
     {
         return $this;
     }
@@ -89,24 +90,24 @@ class BlogPosting extends ResourceObject
 class Todo extends ResourceObject
 {
     #[CacheableResponse]
-    public function onPut(int $id = 0, string $todo)
+    public function onPut(int $id = 0, string $todo): static
     {
     }
 
     #[RefreshCache]
-    public function onDelete(int $id = 0)
+    public function onDelete(int $id = 0): static
     {
     }	
 }
 ```
 
-
-これだけで、概要で紹介した全ての機能が適用されます。
-イベントドリブン型コンテンツを想定して、時間(TTL)によるキャッシュの無効化は行われません
+どちらかの方法でアトリビュートを付与すると、概要で紹介した全ての機能が適用されます。
+イベントドリブン型コンテンツを想定してデフォルトでは時間(TTL)によるキャッシュの無効化は行われません
 
 ## TTL
 
-TTLを`DonutRepositoryInterface::put()`で指定することもできます。
+TTLの指定は`DonutRepositoryInterface::put()`で行います。
+`ttl`はドーナツの穴以外のキャッシュ時間、`sMaxAge`はCDNのキャッシュ時間です。
 
 ```php
 class BlogPosting extends ResourceObject
@@ -115,10 +116,9 @@ class BlogPosting extends ResourceObject
     {}
 
     #[Embed(rel: "comment", src: "page://self/html/comment")]
-    public function onGet()
+    public function onGet(): static
     {
-        $this->body['article'] = '1';
-
+        // ....
         $this->repository->put($this, ttl:10, sMaxAge:100);　
 
         return $this;
@@ -127,14 +127,11 @@ class BlogPosting extends ResourceObject
 ```
 ### TTLの既定値
 
-イベントドリブン型コンテンツでは、コンテンツが変更されたらキャッシュにすぐに反映されなければなりません。そのため、既定値のTTLはCDNのモジュールのインストールによって変わります。CDNがタグベースでのキャッシュ化を無効化をサポートしていればTTLは無期限（１年間）で、サポートの無い場合には10秒です。
+イベントドリブン型コンテンツでは、コンテンツが変更されたらキャッシュにすぐに反映されなければなりません。そのため、既定値のTTLはCDNのモジュールのインストールによって変わります。CDNがタグベースでのキャッシュ化を無効化をサポートしていればTTLは無期限（1年間）で、サポートの無い場合には10秒です。
 
 つまりキャッシュ反映時間は、Fastlyなら即時、Akamaiなら数秒、それ以外なら10秒が期待される時間です。
 
 カスタマイズするには`CdnCacheControlHeader`を参考に`CdnCacheControlHeaderSetterInterface`を実装して束縛します。
-
-
-`ttl`はドーナツの穴以外のキャッシュ時間、`sMaxAge`はCDNのキャッシュ時間です。
 
 ## Purge
 
@@ -147,7 +144,7 @@ interface DonutRepositoryInterface
 }
 ```
 
-下記の場合`app://self/blog/comment`のレスポンスのキャッシュだけでなく、そのETag、`app://self/blog/comment`を依存にしている他の単数または複数のリソースのレスポンスのキャッシュとそのETagが破壊されます。
+指定したレスポンスのキャッシュだけでなく、そのETag、指定したリソースの依存にしている他のリソースのレスポンス（単数または複数）のキャッシュとそのETagが一度に破壊されます。
 
 ```php
 // example
@@ -174,12 +171,6 @@ interface PurgerInterface
     public function __invoke(string $tag): void;
 }
 ```
-
-## メソッド
-
-
-## 依存の指定
-
 ### リソースの依存
 
 `#Embed`で他のリソースに含まないリソースの依存がある場合は`depends()`で明示的に示します。
@@ -195,7 +186,7 @@ interface CacheDependencyInterface
 
 ### 依存タグの指定
 
-PURGE用の特定キーを指定するためには`PURGE_KEYS`ヘッダーで指定します。
+PURGE用のキーを指定するためには`PURGE_KEYS`ヘッダーで指定します。
 
 ```php
 use BEAR\QueryRepository\Header;
@@ -207,6 +198,8 @@ class Foo
     ];
 ```
 
+`template_a`または`campaign_b`のタグによるキャッシュの無効化が行われた場合、FooのキャッシュとFooのETagは無効になります。
+
 ## マルチCDN
 
 CDNを多段構成にして、役割に応じたTTLを設定することもできます。例えばこの図では上流に多機能なCDNを配置して、下流にはコンベンショナルなCDNを配置しています。コンテンツのインバリデーションなどは上流のCDNに対して行い、下流のCDNはそれを利用するようにします。
@@ -214,13 +207,16 @@ CDNを多段構成にして、役割に応じたTTLを設定することもで�
 <img width="344" alt="multi cdn diagram" src="https://user-images.githubusercontent.com/529021/137098809-ec949a15-8efb-4d03-9808-3be15523ade7.png">
 
 
-## レスポンスヘッダー
+# レスポンスヘッダー
 
 CDNのキャッシュコントロールについてはBEAR.Sundayが自動で行いCDN用のヘッダーを出力します。クライアントのキャッシュコントロールはコンテンツに応じてResourceObjectの`$header`に記述します。
 
+セキュリティやメンテナンスの観点からこのセクションは重要です。
+全てのResourceObjectで`Cache-Control`を指定するようにしましょう。
+
 ### キャッシュ不可
 
-キャッシュができないコンテンツは必ずこのヘッダーを指定しましょう。
+キャッシュができないコンテンツは必ず指定しましょう。
 
 ```php
 ResponseHeader::CACHE_CONTROL => CacheControl::NO_STORE
@@ -241,11 +237,20 @@ ResponseHeader::CACHE_CONTROL => CacheControl::NO_CACHE
 またブラウザのリロード動作ではこのキャッシュは利用されません。`<a>`タグで遷移、またはURL入力した場合にキャッシュが利用されます。
 
 ```php
-ResponseHeader::CACHE_CONTROL => 'max-age=30'
+ResponseHeader::CACHE_CONTROL => 'max-age=60'
 ```
-APIでクライアントキャッシュを利用する場合にはRFC7234対応APIクライアントを利用します。
+
+レスポンス速度を重視する場合には、SWRの指定も検討しましょう。
+
+```php
+ResponseHeader::CACHE_CONTROL => 'max-age=30 stale-while-revalidate=10'
+```
+
+この場合、max-ageの30秒を超えた時にオリジンサーバーからフレッシュなレスポンス取得が完了するまで、SWRで指定された最大10秒間はそれまでの古いキャッシュ(stale)レスポンスを返します。つまりキャッシュが更新されるのは最後のキャッシュ更新から30秒から40秒間の間のいずれかになります。
 
 #### RFC7234対応クライアント
+
+APIでクライアントキャッシュを利用する場合にはRFC7234対応APIクライアントを利用します。
 
 * iOS [NSURLCache](https://nshipster.com/nsurlcache/)
 * Android [HttpResponseCache](https://developer.android.com/reference/android/net/http/HttpResponseCache)
