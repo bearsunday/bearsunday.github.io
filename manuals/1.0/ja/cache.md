@@ -133,35 +133,34 @@ class BlogPosting extends ResourceObject
 
 カスタマイズするには`CdnCacheControlHeader`を参考に`CdnCacheControlHeaderSetterInterface`を実装して束縛します。
 
-## Purge
+## キャッシュ無効化
 
-手動でキャッシュ破壊するには`DonutRepositoryInterface`のメソッドを利用します。
+手動でキャッシュを無効化するには`DonutRepositoryInterface`を利用します。
+指定されたキャッシュだけでなく、そのETag、指定したリソースの依存にしている他のリソースのレスポンス（単数または複数）のキャッシュとそのETagがサーバーサイド、（可能な場合）CDN共に無効化されます。
 
 ```php
 interface DonutRepositoryInterface
 {
     public function purge(AbstractUri $uri): void;
+    public function invalidateTags(array $tags): void;
 }
 ```
 
-指定したレスポンスのキャッシュだけでなく、そのETag、指定したリソースの依存にしている他のリソースのレスポンス（単数または複数）のキャッシュとそのETagが一度に破壊されます。
+### URIによる無効化
 
 ```php
 // example
 $this->repository->purge(new Uri('app://self/blog/comment'));
 ```
 
-
-## CDN
-
-特定CDN対応のモジュールをインストールするとベンダー固有のヘッダーが出力されます。
+### タグによる無効化
 
 ```php
-$this->install(new FastlyModule())
-$this->install(new AkamaiModule())
+$this->repository->invalidateTags(['template_a', 'campaign_b']);
 ```
+### CDNでタグの無効化
 
-タグベースでのキャッシュ無効化を有効にするためには`PurgerInterface`を実装して束縛する必要があります。
+CDNでタグベースでのキャッシュ無効化を有効にするためには`PurgerInterface`を実装して束縛する必要があります。
 
 ```php
 use BEAR\QueryRepository\PurgerInterface;
@@ -171,22 +170,10 @@ interface PurgerInterface
     public function __invoke(string $tag): void;
 }
 ```
-### リソースの依存
-
-`#Embed`で他のリソースに含まないリソースの依存がある場合は`depends()`で明示的に示します。
-
-```php
-interface CacheDependencyInterface
-{
-    public function depends(ResourceObject $from, ResourceObject $to): void;
-}
-```
-
-`$from`は`$to`リソースに依存している事を表します。
 
 ### 依存タグの指定
 
-PURGE用のキーを指定するためには`PURGE_KEYS`ヘッダーで指定します。
+PURGE用のキーを指定するためには`PURGE_KEYS`ヘッダーで指定します。複数文字列の時はスペースをセパレータに使います。
 
 ```php
 use BEAR\QueryRepository\Header;
@@ -198,7 +185,48 @@ class Foo
     ];
 ```
 
-`template_a`または`campaign_b`のタグによるキャッシュの無効化が行われた場合、FooのキャッシュとFooのETagは無効になります。
+`template_a`または`campaign_b`のタグによるキャッシュの無効化が行われた場合、FooのキャッシュとFooのETagはサーバーサイド、CDN共に無効になります。
+
+### リソースの依存
+
+`UriTagInterface`を使ってURIを依存タグ文字列に変換します。
+
+```php
+public function __construct(private UriTagInterface $uriTag)
+{}
+```
+```php
+$this->headers[Header::SURROGATE_KEY] = ($this->uriTag)(new Uri('app://self/foo'));
+```
+
+`app://self/foo`に変更があった場合にこのキャッシュはサーバーサイド、CDN共に無効化されます。
+
+### 連想配列をリソースの依存に
+
+```php
+// bodyの内容
+[
+    ['id' => '1', 'name' => 'a'],
+    ['id' => '2', 'name' => 'b'],
+]
+```
+上記のような`body`連想配列から、依存するURIタグリストを生成する場合はURIテンプレートを指定して`fromAssoc()`メソッドを指定します。
+
+```php
+$tagList = $this->uriTag->fromAssoc(uriTemplate: 'app://self/item{?id}', assoc: $this->body);
+$this->headers[Header::SURROGATE_KEY] = $tagList
+```
+
+上記の場合、`app://self/item?id=1`及び`app://self/item?id=2`に変更があった場合に、このキャッシュはサーバーサイド、CDN共に無効化されます。
+
+## CDN
+
+特定CDN対応のモジュールをインストールするとベンダー固有のヘッダーが出力されます。
+
+```php
+$this->install(new FastlyModule())
+$this->install(new AkamaiModule())
+```
 
 ## マルチCDN
 
