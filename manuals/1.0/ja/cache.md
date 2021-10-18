@@ -210,7 +210,7 @@ $this->headers[Header::SURROGATE_KEY] = ($this->uriTag)(new Uri('app://self/foo'
     ['id' => '2', 'name' => 'b'],
 ]
 ```
-上記のような`body`連想配列から、依存するURIタグリストを生成する場合はURIテンプレートを指定して`fromAssoc()`メソッドを指定します。
+上記のような`body`連想配列から、依存するURIタグリストを生成する場合は`fromAssoc()`メソッドでURIテンプレートを指定します。
 
 ```php
 $this->headers[Header::SURROGATE_KEY] = $this->uriTag->fromAssoc(
