@@ -173,7 +173,7 @@ interface PurgerInterface
 
 ### 依存タグの指定
 
-PURGE用のキーを指定するためには`PURGE_KEYS`ヘッダーで指定します。複数文字列の時はスペースをセパレータに使います。
+PURGE用のキーを指定するためには`SURROGATE_KEY`ヘッダーで指定します。複数文字列の時はスペースをセパレータに使います。
 
 ```php
 use BEAR\QueryRepository\Header;
@@ -181,7 +181,7 @@ use BEAR\QueryRepository\Header;
 class Foo
 {
     public $headers = [
-        Header::PURGE_KEYS => 'template_a campaign_b'
+        Header::SURROGATE_KEY => 'template_a campaign_b'
     ];
 ```
 
