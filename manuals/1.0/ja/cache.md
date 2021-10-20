@@ -7,6 +7,10 @@ permalink: /manuals/1.0/ja/cache.html
 
 # Cache
 
+> There are only two hard things in Computer Science: cache invalidation and naming things.
+>
+> -- Phil Karlton
+
 ## 概要
 
 BEAR.Sundayは従来のサーバーサイドでのキャッシュ有効時間（TTL）ベースの単純なキャッシュに加えて以下の機能をサポートします。
