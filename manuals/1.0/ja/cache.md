@@ -94,7 +94,7 @@ BEAR.Sundayの依存解決はサーバーサイドだけでなく共有キャッ
 キャッシュ対象のクラスにドーナッツキャッシュの場合（埋め込みコンテンツがキャッシュ不可能な場合）は`#[DonutCache]`、それ以外の場合は`#[CacheableResponse]`とアトリビュートを付与します。
 
 ```php
-use BEAR\RepositoryModule\Annotation\DonutCache;
+use BEAR\RepositoryModule\Annotation\CacheableResponse;
 
 #[CacheableResponse]
 class BlogPosting extends ResourceObject
@@ -146,6 +146,9 @@ TTLの指定は`DonutRepositoryInterface::put()`で行います。
 `ttl`はドーナツの穴以外のキャッシュ時間、`sMaxAge`はCDNのキャッシュ時間です。
 
 ```php
+use BEAR\RepositoryModule\Annotation\CacheableResponse;
+
+#[CacheableResponse]
 class BlogPosting extends ResourceObject
 {
     public function __construct(private DonutRepositoryInterface $repository)
@@ -154,7 +157,7 @@ class BlogPosting extends ResourceObject
     #[Embed(rel: "comment", src: "page://self/html/comment")]
     public function onGet(): static
     {
-        // ....
+        // process ...
         $this->repository->put($this, ttl:10, sMaxAge:100);　
 
         return $this;
