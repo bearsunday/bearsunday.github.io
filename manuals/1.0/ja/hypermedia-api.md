@@ -49,15 +49,13 @@ HALについてさらに詳しくは[http://stateless.co/hal_specification.html]
 
 アノテーションでリンクを貼ったり他のリソースを埋め込むことができます。
 
-### @Link
+### #[Link]
 
-リンクが静的なものは`@Link`アノテーションで表し、動的なものは`body['_links']`に代入します。宣言的に記述できる`@Link`アノテーションが良いでしょう。
+リンクが静的なものは`#[Link]`属性で表し、動的なものは`body['_links']`に代入します。宣言的に記述できる`#[Link]`属性が良いでしょう。
 
 ```php?start_inline
-/**
- * @Link(rel="user", href="/user")
- * @Link(rel="latest-post", href="/latest-post", title="latest post entrty")
- */
+#[Link(rel="user", href="/user")]
+#[Link(rel="latest-post", href="/latest-post", title="latest post entrty")]
 public function onGet()
 ```
 
@@ -80,15 +78,13 @@ public function onGet() {
 
 ```
 
-### @Embed
+### #[Embed]
 
 他のリソースを静的に埋め込むには`@Embed`アノテーションを使い、動的に埋め込むには`body`にリクエストを代入します。
 
 ```php?start_inline
-/**
- * @Embed(rel="todos", src="/todos{?status}")
- * @Embed(rel="me", src="/me")
- */
+#[Embed(rel="todos", src="/todos{?status}")]
+#[Embed(rel="me", src="/me")]
 public function onGet(string $status) : ResourceObject
 
 ```
@@ -98,49 +94,6 @@ or
 ```php?start_inline
 $this->body['_embedded']['todos'] = $this->resource->uri('app://self/todos');
 ```
-
-## CURIEs
-
-APIの見つけやすさ(API Discoverability)を実現するために`HAL`は[CURIEs]()を使います。
-
-それぞれのAPIのドキュメントへのリンクを貼った`index.json`、またはこのようなリソースクラスをルートに設置します。
-
-```php
-<?php
-
-use BEAR\Resource\ResourceObject;
-
-class Index extends ResourceObject
-{
-    public $body = [
-        'message' => 'Welcome to the Polidog.Todo API ! Our hope is to be as self-documenting and RESTful as possible.',
-        '_links' => [
-            'self' => [
-                'href' => '/',
-            ],
-            'curies' => [
-                'name' => 'doc',
-                'href' => 'http://apidoc.example.com/rels/{?rel}',
-                'templated' => true
-            ],
-            'doc:todo' => [
-                'href' => '/todo/{id}',
-                'title' => 'todo item',
-                'templated' => true
-            ]
-        ]
-    ];
-
-    public function onGet()
-    {
-        return $this;
-    }
-}
-```
-
-`_links`内で`curies`というドキュメントを定義する特別なトークンを指定します。`curies`では、リソースのドキュメントURIを示す`href`とその名前を`name`で指定します。
-
-この例では`todo`リソースに関するドキュメントを取得するためには`http://apidoc.example.com/rels/?rel=todo` URLにアクセスすれば良いと分かります。
 
 ## APIドキュメント
 
