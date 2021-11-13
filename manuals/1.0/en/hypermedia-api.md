@@ -54,15 +54,13 @@ For more information about HAL please visit [http://stateless.co/hal_specificati
 
 You can annotate links and embed other resources.
 
-### @Link
+### #[Link]
 
 You can declaratively describe the `@Link` annotation, or dynamic ones are assigned to `body['_links']`.
 
 ```php?start_inline
-/**
- * @Link(rel="user", href="/user")
- * @Link(rel="latest-post", href="/latest-post", title="latest post entrty")
- */
+#[Link(rel="user", href="/user")]
+#[Link(rel="latest-post", href="/latest-post", title="latest post entrty")]
 public function onGet()
 ```
 
@@ -84,15 +82,13 @@ public function onGet() {
 
 ```
 
-### @Embed
+### #[Embed]
 
 To embed other resources statically, use the `@Embed` annotation, and to embed it dynamically, assign the "request" to` body`.
 
 ```php?start_inline
-/**
- * @Embed(rel="todos", src="/todos{?status}")
- * @Embed(rel="me", src="/me")
- */
+#[Embed(rel="todos", src="/todos{?status}")]
+#[Embed(rel="me", src="/me")]
 public function onGet(string $status) : ResourceObject
 
 ```
