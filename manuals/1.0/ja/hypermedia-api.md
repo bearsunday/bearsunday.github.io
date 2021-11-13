@@ -95,49 +95,6 @@ or
 $this->body['_embedded']['todos'] = $this->resource->uri('app://self/todos');
 ```
 
-## CURIEs
-
-APIの見つけやすさ(API Discoverability)を実現するために`HAL`は[CURIEs]()を使います。
-
-それぞれのAPIのドキュメントへのリンクを貼った`index.json`、またはこのようなリソースクラスをルートに設置します。
-
-```php
-<?php
-
-use BEAR\Resource\ResourceObject;
-
-class Index extends ResourceObject
-{
-    public $body = [
-        'message' => 'Welcome to the Polidog.Todo API ! Our hope is to be as self-documenting and RESTful as possible.',
-        '_links' => [
-            'self' => [
-                'href' => '/',
-            ],
-            'curies' => [
-                'name' => 'doc',
-                'href' => 'http://apidoc.example.com/rels/{?rel}',
-                'templated' => true
-            ],
-            'doc:todo' => [
-                'href' => '/todo/{id}',
-                'title' => 'todo item',
-                'templated' => true
-            ]
-        ]
-    ];
-
-    public function onGet()
-    {
-        return $this;
-    }
-}
-```
-
-`_links`内で`curies`というドキュメントを定義する特別なトークンを指定します。`curies`では、リソースのドキュメントURIを示す`href`とその名前を`name`で指定します。
-
-この例では`todo`リソースに関するドキュメントを取得するためには`http://apidoc.example.com/rels/?rel=todo` URLにアクセスすれば良いと分かります。
-
 ## APIドキュメント
 
 Curiesの設置されたAPIサーバーをAPIドキュメントサーバーにもすることができます。APIドキュメントの作成の手間や実際のAPIとのずれやその検証、メンテナンスといった問題を解決します。

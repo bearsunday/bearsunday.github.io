@@ -99,49 +99,6 @@ or
 $this->body['_embedded']['todos'] = $this->resource->uri('app://self/todos');
 ```
 
-## CURIEs
-
-"CURIE"s help providing links to resource documentation.　Place `index.json` with a link to each API documentation, or such a resource class at the root.
-
-
-
-```php
-<?php
-
-use BEAR\Resource\ResourceObject;
-
-class Index extends ResourceObject
-{
-    public $body = [
-        'message' => 'Welcome to the Polidog.Todo API ! Our hope is to be as self-documenting and RESTful as possible.',
-        '_links' => [
-            'self' => [
-                'href' => '/',
-            ],
-            'curies' => [
-                'name' => 'doc',
-                'href' => 'http://apidoc.example.com/rels/{?rel}',
-                'templated' => true
-            ],
-            'doc:todo' => [
-                'href' => '/todo/{id}',
-                'title' => 'todo item',
-                'templated' => true
-            ]
-        ]
-    ];
-
-    public function onGet()
-    {
-        return $this;
-    }
-}
-```
-
-In `_links`, specify a special token that defines the document `curies`. In `curies`, specify` href` which indicates the document URI of the resource and its name with a `name`.
-
-In this example, you will find that you can access the `http://apidoc.example.com/rels/?rel=todo` URL to get documentation on the` todo` resource.
-
 ## API document service
 
 The API server can also be an API document server. It solves problems such as the time required to create the API document, deviation from actual API, verification, maintenance.
