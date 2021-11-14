@@ -9,7 +9,9 @@ permalink: /manuals/1.0/en/version.html
 
 ## Supported PHP
 
-BEAR.Sunday supports the following supported PHP versions ([Supported Versions](http://php.net/supported-versions.php)):
+[![Continuous Integration](https://github.com/bearsunday/BEAR.SupportedVersions/actions/workflows/continuous-integration.yml/badge.svg)](https://github.com/bearsunday/BEAR.SupportedVersions/actions/workflows/continuous-integration.yml)
+
+BEAR.Sunday supports the following supported PHP versions
 
 * `7.3` (Old stable 6 Dec 2018 - 6 Dec 2021)
 * `7.4` (Old stable 28 Nov 2019 - 28 Nov 2022)
