@@ -6,7 +6,7 @@ A resource orientated framework with a REST Hypermedia centered architecture, im
 
 The documentations are rendered with  [Jekyll](http://jekyllrb.com) and hosted at [http://bearsunday.github.io/](https://bearsunday.github.io/).
 
-### Install Jekeyll for GitHub page
+### Install Jekyll for GitHub page
 
 ```
 docker pull jekyll/jekyll:pages
