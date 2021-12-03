@@ -321,3 +321,33 @@ footer li {
         width: 100%;
     }
 }
+
+.language-list {
+    display: inline-flex;
+    flex-direction: row;
+}
+
+.language-list li {
+    color: rgba(0, 0, 0, .5);
+}
+
+.language-list li + li::before {
+    color: inherit;
+    content: "|";
+    display: inline-block;
+    margin: 0 .5rem 0 .75rem;
+}
+
+.language-list li > a {
+    color: inherit;
+}
+
+.language-list li > a:hover {
+    text-underline-offset: .1rem;
+}
+
+.language-list li > a.active {
+    color: rgba(0, 0, 0, .9);
+    text-decoration: underline;
+    text-underline-offset: .1rem;
+}

@@ -1,15 +1,14 @@
 <nav class="navbar navbar-expand-md navbar-light">
     <div class="navigation-header">
         <div class="ml-auto d-sm-block d-md-none">
-            <div class="nav-item dropdown d-inline-block">
-                <a class="nav-item nav-link dropdown-toggle mr-md-2" href="#" id="language" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    {% if page.layout == 'docs-ja' %}日本語{% endif %}
-                </a>
-                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="language">
-                    <a class="dropdown-item {% if page.layout == 'docs-ja' %}active{% endif %}" href="{{ page.permalink | replace: '/en/', '/ja/' }}">日本語</a>
-                    <a class="dropdown-item {% if page.layout == 'docs-en' %}active{% endif %}" href="{{ page.permalink | replace: '/ja/', '/en/' }}">英語</a>
-                </div>
-            </div>
+            <ul class="navbar-nav language-list">
+                <li>
+                    <a class="{% if page.layout == 'docs-en' %}active{% endif %}" href="{{ page.permalink | replace: '/ja/', '/en/' }}">En</a>
+                </li>
+                <li>
+                    <a class="{% if page.layout == 'docs-ja' %}active{% endif %}" href="{{ page.permalink | replace: '/en/', '/ja/' }}">Ja</a>
+                </li>
+            </ul>
             <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#Navber" aria-controls="Navber" aria-expanded="false" aria-label="ナビゲーションの切替">
                 <span class="navbar-toggler-icon"></span>
             </button>
