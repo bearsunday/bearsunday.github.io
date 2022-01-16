@@ -17,6 +17,7 @@ composer.json
 ```json
 {
   "require": {
+    "bear/package": "^1.13",
     "my-vendor/weekday": "dev-master"
   },
   "repositories": [
@@ -28,18 +29,26 @@ composer.json
 }
 ```
 
+Requires `bear/package ^1.13`.
+
 ## Module Install
 
 Install other applications with `ImportAppModule`, specifying the hostname, application name (namespace) and context to import.
 
-AppModiule.php
-```php
-protected function configure(): void
+```diff
++use BEAR\Package\Module\ImportAppModule;
++use BEAR\Package\Module\Import\ImportApp;
+
+class AppModule extends AbstractAppModule
 {
-    $this->install(new ImportAppModule([
-        new ImportApp('foo', 'MyVendor\Weekday', 'prod-app')
-    ]));
-    $this->install(new PackageModule());
+    protected function configure(): void
+    {
+        // ...
++        $this->install(new ImportAppModule([
++            new ImportApp('foo', 'MyVendor\Weekday', 'prod-app')
++        ]));
+        $this->install(new PackageModule());
+    }
 }
 ```
 
@@ -65,6 +74,8 @@ class Index extends ResourceObject
 }
 ````
 
+You can also use `#[Embed]` and `#[Link]` in the same way.
+
 ## Requests from other systems
 
 It is easy to use BEAR resources from other frameworks or CMS.
@@ -85,6 +96,9 @@ $weekdday = $resource->get('/weekday', ['year' => '2022', 'month' => '1', 'day' 
 
 echo $weekdday->body['weekday'] . PHP_EOL;
 ```
+## Environment variables
+
+Environment variables are global. Care should be taken to prefix them to avoid conflicts between applications. Instead of using `.env` files, the application to be imported will get the shell environment variables just like in production.
 
 ## System Boundary
 

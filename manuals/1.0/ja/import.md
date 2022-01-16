@@ -17,6 +17,7 @@ composer.json
 ```json
 {
   "require": {
+    "bear/package": "^1.13",
     "my-vendor/weekday": "dev-master"
   },
   "repositories": [
@@ -28,20 +29,31 @@ composer.json
 }
 ```
 
+`bear/package ^1.13`が必要です。
+
 ## モジュールインストール
 
 インポートするホスト名とアプリケーション名（namespace)、コンテキストを指定して`ImportAppModule`で他のアプリケーションをインストールします。
 
-AppModiule.php
-```php
-protected function configure(): void
+AppModule.php
+```diff
++use BEAR\Package\Module\ImportAppModule;
++use BEAR\Package\Module\Import\ImportApp;
+
+class AppModule extends AbstractAppModule
 {
-    $this->install(new ImportAppModule([
-        new ImportApp('foo', 'MyVendor\Weekday', 'prod-app')
-    ]));
-    $this->install(new PackageModule());
+    protected function configure(): void
+    {
+        // ...
++        $this->install(new ImportAppModule([
++            new ImportApp('foo', 'MyVendor\Weekday', 'prod-app')
++        ]));
+        $this->install(new PackageModule());
+    }
 }
 ```
+
+`ImportAppModule`は`BEAR\Resource`ではなく`BEAR\Package`のものであることに注意してください。
 
 ## リクエスト
 
@@ -65,6 +77,8 @@ class Index extends ResourceObject
 }
 ````
 
+`#[Embed]`や`#[Link]`も同様に利用できます。
+
 ## 他のシステムから
 
 他のフレームワークやCMSからBEARのリソースを利用するのも容易です。
@@ -85,6 +99,10 @@ $weekdday = $resource->get('/weekday', ['year' => '2022', 'month' => '1', 'day' 
 
 echo $weekdday->body['weekday'] . PHP_EOL;
 ```
+
+## 環境変数
+
+環境変数はグローバルです。アプリケーション間でコンフリクトしないようにプリフィックスを付与するなどして注意する必要があります。インポートするアプリケーションは`.env`ファイルを使うのではなく、プロダクションと同じようにシェルの環境変数を取得します。
 
 ## システム境界
 
