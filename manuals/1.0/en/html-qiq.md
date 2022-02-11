@@ -66,6 +66,12 @@ content-type: text/html; charset=utf-8
 <h1>Hello BEAR.Sunday</h1>
 ```
 
+## Helper
+
+[Helpers](https://qiqphp.com/1.x/helpers/overview.html#1-8-1) should be created in the `Qiq\Helper\` namespace. Example: `Qiq\Helper\Foo`.
+
+Edit composer.json (e.g. [composer.json](https://github.com/bearsunday/BEAR.QiqModule/blob/1.x/demo/composer.json#L26))　to make the `Qiq\Helper` class autoloadable and run `composr dump-autoload`. Then place the helper class file in the specified directory and the helper will be available.
+
 ## ProdModule
 
 Install a module in ProdModule to make the error page HTML for production and to enable compiler cache.

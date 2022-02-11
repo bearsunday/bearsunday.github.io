@@ -66,6 +66,12 @@ content-type: text/html; charset=utf-8
 <h1>Hello BEAR.Sunday</h1>
 ```
 
+## ヘルパー
+
+[ヘルパー](https://qiqphp-ja.github.io/1.x/helpers/overview.html#1-8-1)は`Qiq\Helper\`のnamespaceで作成します。例: `Qiq\Helper\Foo`
+
+composer.jsonを編集して(例: [composer.json](https://github.com/bearsunday/BEAR.QiqModule/blob/1.x/demo/composer.json#L26)) `Qiq\Helper`をクラスをオートロード可能にし`composr dump-autoload`を実行します。指定ディレクトリにヘルパークラスファイルを設置するとヘルパーが利用可能になります。
+
 ## ProdModule
 
 プロダクション用にエラーページをHTMLにし、コンパイラキャッシュを有効にするためのモジュールをProdModuleでインストールします。
