@@ -2,12 +2,10 @@
 layout: docs-ja
 title: HTML (v2)
 category: Manual
-permalink: /manuals/1.0/ja/html-v2.html
+permalink: /manuals/1.0/ja/html-twig-v2.html
 ---
 
-(これはHTML v2のドキュメントです。以前のTwig v1を使用する[HTML v1](html)も利用可能です。)
-
-# HTML
+# HTML (Twig v2)
 
 ## インストール
 
