@@ -1,6 +1,6 @@
 ---
 layout: docs-ja
-title: HTML
+title: HTML (Twig v1)
 category: Manual
 permalink: /manuals/1.0/ja/html-twig-v1.html
 ---
