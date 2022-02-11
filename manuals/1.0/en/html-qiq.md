@@ -7,13 +7,22 @@ permalink: /manuals/1.0/en/html-qiq.html
 
 # HTML (Qiq)
 
+## Setup
+
 Install the bear/qiq-module in composer for HTML representation.
 
 ```bash
 composer require bear/qiq-module
 ```
 
-Next, prepare the `html` context file `src/Module/HtmlModule.php` and install `QiqModule`.
+Next, Prepare a directory to store templates and helpers.
+
+```
+cd /path/to/project
+cp vendor/bear/qiq-module/var/qiq var
+```
+
+Prepare the `html` context file `src/Module/HtmlModule.php` and install `QiqModule`.
 
 ```php?start_inline
 namespace MyVendor\MyPackage\Module;
@@ -26,7 +35,7 @@ class HtmlModule extends AbstractModule
 {
     protected function configure()
     {
-        $this->install(new QiqModule);
+        $this->install(new QiqModule($this->appDir . '/var/qiq/template'));
     }
 }
 ```
@@ -39,14 +48,7 @@ Change the context of `bin/page.php` to enable `html`.
 $context = 'cli-html-app';
 ```
 
-## /var/qiq
-
-Prepare a directory to store templates and helpers.
-
-```
-cd /path/to/project
-cp vendor/bear/qiq-module/var/qiq var
-```
+## Template 
 
 Prepare the template for the Index resource in `var/qiq/template/Index.php`.
 

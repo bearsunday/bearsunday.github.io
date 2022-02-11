@@ -7,13 +7,22 @@ permalink: /manuals/1.0/ja/html-qiq.html
 
 # HTML (Qiq)
 
+## セットアップ
+
 HTML表示のためにcomposerで`bear/qiq-module`をインストールします。
 
 ```bash
 composer require bear/qiq-module
 ```
 
-次に`html`コンテキストファイル`src/Module/HtmlModule.php`を用意して`QiqModule`をインストールします。
+次にテンプレートやヘルパーを格納するディレクトリを用意します。
+
+```
+cd /path/to/project
+cp vendor/bear/qiq-module/var/qiq var
+```
+
+`html`コンテキストファイル`src/Module/HtmlModule.php`を用意して`QiqModule`をインストールします。
 
 ```php?start_inline
 namespace MyVendor\MyPackage\Module;
@@ -26,7 +35,7 @@ class HtmlModule extends AbstractModule
 {
     protected function configure()
     {
-        $this->install(new QiqModule);
+        $this->install(new QiqModule($this->appDir . '/var/qiq/template'));
     }
 }
 ```
@@ -39,14 +48,7 @@ class HtmlModule extends AbstractModule
 $context = 'cli-html-app';
 ```
 
-## /var/qiq
-
-テンプレートやヘルパーを格納するディレクトリを用意します。
-
-```
-cd /path/to/project
-cp vendor/bear/qiq-module/var/qiq var
-```
+## テンプレート
 
 Indexリソースのテンプレートを`var/qiq/template/Index.php`に用意します。
 
