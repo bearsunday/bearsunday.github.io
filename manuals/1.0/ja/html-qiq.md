@@ -5,12 +5,12 @@ category: Manual
 permalink: /manuals/1.0/ja/html-qiq.html
 ---
 
-# HTML (Qiq) - WIP
+# HTML (Qiq)
 
 HTML表示のためにcomposerで`bear/qiq-module`をインストールします。
 
 ```bash
-composer require bear/qiq-module 1.x-dev
+composer require bear/qiq-module
 ```
 
 次に`html`コンテキストファイル`src/Module/HtmlModule.php`を用意して`QiqModule`をインストールします。

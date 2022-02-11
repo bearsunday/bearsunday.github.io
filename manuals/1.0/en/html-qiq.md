@@ -5,12 +5,12 @@ category: Manual
 permalink: /manuals/1.0/en/html-qiq.html
 ---
 
-# HTML (Qiq) - WIP
+# HTML (Qiq)
 
 Install the bear/qiq-module in composer for HTML representation.
 
 ```bash
-composer require bear/qiq-module 1.x-dev
+composer require bear/qiq-module
 ```
 
 Next, prepare the `html` context file `src/Module/HtmlModule.php` and install `QiqModule`.
