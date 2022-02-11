@@ -1,28 +1,25 @@
 ---
-layout: docs-en
-title: HTML (v2)
+layout: docs-ja
+title: HTML (Twig v2)
 category: Manual
-permalink: /manuals/1.0/en/html-v2.html
+permalink: /manuals/1.0/ja/html-twig-v2.html
 ---
 
-(You are reading the documentation for HTML v2. Switch to the documentation for [Html v1](html).)
+# HTML (Twig v2)
 
-# HTML
+## インストール
 
-## Install
-
-In order to have an HTML reprensentation, Let's install [Twig v2](https://twig.symfony.com/doc/2.x/) module with composer.
+HTML表示のためにcomposerで[Twig v2](https://twig.symfony.com/doc/2.x/)のモジュールをインストールします。
 
 ```bash
 composer require madapaja/twig-module ^2.0
 ```
 
-Next create the context file `src/Module/HtmlModule.php` and install the `TwigModule`.
+次に`html`コンテキストファイル`src/Module/HtmlModule.php`を用意して`TwigModule`をインストールします。
 
 ```php?start_inline
 namespace MyVendor\MyPackage\Module;
 
-use BEAR\AppMeta\AppMeta;
 use Madapaja\TwigModule\TwigErrorPageModule;
 use Madapaja\TwigModule\TwigModule;
 use Ray\Di\AbstractModule;
@@ -37,19 +34,27 @@ class HtmlModule extends AbstractModule
 }
 ```
 
-Update the context in `bin/page.php` or `public/index.php` and enable `html`.
+`TwigErrorPageModule`はエラー表示をHTMLで行うオプションです。`HtmlModule`でインストールしないで`ProdModule`でインストールして開発時のエラー表示はJSONにすることも出来ます。
+
+次に`templates`フォルダをコピーします
 
 ```bash
-$context = 'cli-html-app'; // or 'html-app'
+cp -r vendor/madapaja/twig-module/var/templates var/templates
 ```
-## Template
 
-One template file is required for one resource object class in `var/templates` directory to represent in HTML.
-For example, for `src/Page/Index.php` resource class, a template file is required in `var/templates/Page/Index.html.twig`.
+`bin/page.php`や`public/index.php`のコンテキストを変更して`html`を有効にします。
 
-The body of the resource is assigned to the template.
+```bash
+$context = 'cli-html-app'; // 'html-app'
+```
+## テンプレート
 
-example）
+1つのリソースクラスに１つのテンプレートファイルが`var/templates`フォルダに必要です。
+例えば`src/Page/Index.php`には`var/templates/Page/Index.html.twig` が必要です。
+
+テンプレートにリソースの **body**がアサインされます。
+
+例）
 
 `src/Page/Index.php`
 
@@ -62,27 +67,27 @@ class Index extends ResourceObject
 }
 ```
 
-`var/templates/Page/Index.twig.php`
+`src/Page/Index.twig.php` または `var/templates/Page/Index.twig.php`
 
 ```twig
 {% raw %}<h1>{{ greeting }}</h1>{% endraw %}
 ```
 
-Output:
+出力
 
 ```bash
 php bin/page.php get /
 ```
-
 ```bash
 200 OK
 content-type: text/html; charset=utf-8
 
 <h1>Hello BEAR.Sunday</h1>
 ```
-## Select template file
 
-Resource does not select the template file. It `includes` depending on the state of the resource.
+## テンプレートファイルの選択
+
+どのテンプレートを使用するかはリソースでは選択しません。リソースの状態によって`include`します。
 
 ```twig{% raw %}
 {% if user.is_login %}
@@ -92,18 +97,18 @@ Resource does not select the template file. It `includes` depending on the state
 {% endif %}{% endraw %}
 ```
 
-In the resource class, you should only concern resource state. Then template should concern the resource representation.
-See [Separation of concerns (SoC)](https://en.wikipedia.org/wiki/Separation_of_concerns).
+リソースクラスはリソース状態だけに関心を持ち、テンプレートだけがリソース表現に関心を持ちます。
+このような設計原則を[関心の分離(SoC)](https://ja.wikipedia.org/wiki/%E9%96%A2%E5%BF%83%E3%81%AE%E5%88%86%E9%9B%A2)といいます。
 
-## Error Page
+## エラーページ
 
-Edit `var/templates/error.html.twig`. Following values are assigned to the error page.
+`var/templates/error.html.twig`を編集します。エラーページには以下の値がアサインされています。
 
-| Variable | Title | Key |
+| 変数 | 意味 | キー |
 |---|---|---|---|
-| status | HTTP status | code, message |
-| e | Exception | code, message, class |
-| logref | Log ID | n/a |
+| status | HTTP ステータス | code, message |
+| e | 例外 | code, message, class |
+| logref | ログID | n/a |
 
 例
 
@@ -121,12 +126,11 @@ Edit `var/templates/error.html.twig`. Following values are assigned to the error
 {% endblock %}{% endraw %}
 ```
 
+## リソースのアサイン
 
-## Assign resource
+リソースクラスのプロパティを参照するにはリソース全体がアサインされる`_ro`を参照します。
 
-To refer to the properties of the resource object class, Use `_ro` (resource object) to which the entire resource object is assigned
-
-exmaple）
+例）
 
 `Todos.php`
 
@@ -155,11 +159,11 @@ class Todos extend ResourceObject
 {% endfor %}{% endraw %}
 ```
 
-## Hierarchical view structure
+## ビューの階層構造
 
-You can have a view on a resource class basis. It represents the structure well. Also, the cache is also hierarchically done on a resource basis, so it is efficient.
+リソースクラス単位でビューを持つ事ができます。構造を良く表し、キャッシュもリソース単位で行われるので効率的です。
 
-example) `page://self/index` which embeds `app://self/todos`
+例）`app://self/todos`を読み込む`page://self/index`
 
 ### app://self/todos
 
@@ -204,10 +208,9 @@ class Index extends ResourceObject
   {{ todos|raw }}
 {% endblock %}{% endraw %}
 ```
+## 拡張
+Twigを`addExtension()`メソッドで拡張する場合には、拡張を行うTwigのProviderクラスを用意し`Twig_Environment`クラスに`Provider`束縛します。
 
-## Extending Twig
-
-When you extend Twig with the `addExtension()` method, prepare Twig's Provider class which performs extension and bind `Provider` to `Twig_Environment` class.
 
 ```php
 use Ray\Di\Di\Named;
@@ -247,9 +250,9 @@ class HtmlModule extends AbstractModule
 }
 ```
 
-## Template for mobile device
+## モバイル
 
-To use the template for mobile devices, install `MobileTwigModule`.
+モバイルサイト専用のテンプレートを使用するためには`MobileTwigModule`を加えてインストールします。
 
 ```php
 class HtmlModule extends AbstractModule
@@ -262,22 +265,23 @@ class HtmlModule extends AbstractModule
 }
 ```
 
-If **there is** a mobile site template `Index.mobile.twig` that will replace `Index.html.twig`, it will be used in preference.
+`index.html.twig`の代わりに`Index.mobile.twig`が **存在すれば**優先して使用されます。変更の必要なテンプレートだけを用意する事ができます。
 
-## Custom Settings
+## カスタム設定
 
-If you would like to change options depending on the context or add a template path, configuration values are bound to `@TwigPaths`and `@TwigOptions` annotations.
+コンテンキストに応じてオプション等を設定したり、テンプレートのパスを追加する場合は`@TwigPaths`と`@TwigOptions`に設定値を束縛します。
 
-Note: Since caches are always created in the `var/tmp` folder, there is no particular need for special settings for production.
+注）キャッシュを常に`var/tmp`フォルダに生成するので特にプロダクション用の設定などは特に必要ありません。
 
 ```php
 namespace MyVendor\MyPackage\Module;
 
+use BEAR\Package\AbstractAppModule;
 use Madapaja\TwigModule\Annotation\TwigDebug;
 use Madapaja\TwigModule\Annotation\TwigOptions;
 use Madapaja\TwigModule\Annotation\TwigPaths;
 use Madapaja\TwigModule\TwigModule;
-use BEAR\Package\AbstractAppModule;
+use Ray\Di\AbstractModule;
 
 class AppModule extends AbstractAppModule
 {
@@ -286,7 +290,7 @@ class AppModule extends AbstractAppModule
         // ...
         $this->install(new TwigModule);
 
-        // You can add twig template paths by the following
+        // テンプレートパスの指定
         $appDir = $this->appMeta->appDir;
         $paths = [
             $appDir . '/src/Resource',
@@ -294,7 +298,7 @@ class AppModule extends AbstractAppModule
         ];
         $this->bind()->annotatedWith(TwigPaths::class)->toInstance($paths);
 
-        // Also you can set environment options
+        // オプション
         // @see http://twig.sensiolabs.org/doc/api.html#environment-options
         $options = [
             'debug' => false,
@@ -302,7 +306,7 @@ class AppModule extends AbstractAppModule
         ];
         $this->bind()->annotatedWith(TwigOptions::class)->toInstance($options);
         
-        // Only for debug option
+        // debugオプションのみを指定する場合
         $this->bind()->annotatedWith(TwigDebug::class)->toInstance(true);
     }
 }

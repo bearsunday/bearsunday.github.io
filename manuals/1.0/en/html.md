@@ -5,95 +5,52 @@ category: Manual
 permalink: /manuals/1.0/en/html.html
 ---
 
-(You are reading the documentation for HTML v1. Switch to the documentation for [Html v2](html-v2).)
-
 # HTML
 
-In order to have an HTML reprensentation lets install `madapaja/twig-module` with composer.
+The following template engines are available for HTML representation.
 
-```bash
-composer require madapaja/twig-module ^1.0
+* [Twig v1](html-twig-v1.html)
+* [Twig v2](html-twig-v2.html)
+* [Qiq](html-qiq.html) (WIP) 
+
+## Twig vs Qiq
+
+While [Twig](https://twig.symfony.com) defaults to implicit escaping and has a proprietary syntax for control structures, [Qiq](https://qiqphp-ja.github.io) is a native PHP template that requires explicit escaping and minimizes proprietary syntax. Qiq]() is a native PHP template that requires explicit escaping and minimizes proprietary syntax.
+
+Twig was first released in 2009 and has a large user base. Qiq is a new template engine released in 2021. The Twig codebase is large and feature-rich, while Qiq is compact and simple.
+
+PHP
+```php
+<?= htmlspecialchars($var, ENT_QUOTES|ENT_DISALLOWED, 'utf-8') ?>
+<?= htmlspecialchars(helper($var, ENT_QUOTES|ENT_DISALLOWED, 'utf-8')) ?>
+<?php foreach ($users => $user): ?>
+ * <?= $user->name; ?>
+<?php endforeach; ?>
 ```
 
-Next create the context file `src/Module/HtmlModule.php` and install the `TwigModule`.
+Twig
 
-```php?start_inline
-namespace MyVendor\MyPackage\Module;
-
-use BEAR\AppMeta\AppMeta;
-use Madapaja\TwigModule\TwigModule;
-use BEAR\Package\AbstractAppModule;
-
-class HtmlModule extends AbstractModule
-{
-    protected function configure()
-    {
-        $this->install(new TwigModule);
-    }
-}
+```
+{% raw %}{{ var }}
+{{ var | helper }}
+{% for user in users %}
+  * {{ user.name }}
+{% endfor %}{% endraw %}
 ```
 
-Update the context in `bin/page.php` and enable `html`.
 
-```bash
-$context = 'cli-html-app';
+Qiq
+
 ```
-We prepare twig templates by placing them in the same directory as the `page resource` that you want to bind it to. Replace the `.php` suffix with `.html.twig`. So a template for the `Page/Index.php` resource would be `Page/Index.html.twig`.
-
-```hml
-{% raw %}<h1>{{ greeting }}</h1>{% endraw %}
-```
-
-The `$body` in a resource is assigned to the template and then rendered.
-
-```bash
-php bin/page.php get /
-200 OK
-content-type: text/html; charset=utf-8
-
-<h1>Hello BEAR.Sunday</h1>
+{% raw %}{{h $var }}または {{ $this->h($var }}
+{{h helper($var) }}
+{{ foreach($users => $user) }}
+  * {{ $user->name }}
+{{ endforeach }}{% endraw %}
 ```
 
-By default partials and template files are found in `var/lib/twig`.
+## Renderer
 
-## Custom Settings
+A renderer bound to a `RenderInetrface` and injected into a ResourceObject generates a representation of the resource. The resource itself is indifferent about its representation.
 
-If you would like to change options depending on the context or add a template path, configuration values are bound to `@TwigPaths`and `@TwigOptions` annotations.
-
-```php?start_inline
-namespace MyVendor\MyPackage\Module;
-
-use Madapaja\TwigModule\Annotation\TwigOptions;
-use Madapaja\TwigModule\Annotation\TwigPaths;
-use Madapaja\TwigModule\TwigModule;
-use BEAR\Package\AbstractAppModule;
-
-class AppModule extends AbstractAppModule
-{
-    protected function configure()
-    {
-        // ...
-        $this->install(new TwigModule());
-
-        // You can add twig template paths by the following
-        $appDir = dirname(dirname(__DIR__));
-        $paths = [
-            $appDir . '/src/Resource',
-            $appDir . '/var/lib/twig'
-        ];
-        $this->bind()->annotatedWith(TwigPaths::class)->toInstance($paths);
-
-        // Also you can set environment options
-        // @see http://twig.sensiolabs.org/doc/api.html#environment-options
-        $options = [
-            'debug' => false,
-            'cache' => $appDir . '/tmp'
-        ];
-        $this->bind()->annotatedWith(TwigOptions::class)->toInstance($options);
-    }
-}
-```
-
-## Other template engines
-
-You can not only select a template engine, but you can also provide multiple template engines and assign them to different resources.
+It can be injected on a per-resource basis, so multiple template engines can be used simultaneously.
