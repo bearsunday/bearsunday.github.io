@@ -5,15 +5,24 @@ category: Manual
 permalink: /manuals/1.0/en/html-qiq.html
 ---
 
-# HTML (Qiq) - WIP
+# HTML (Qiq)
+
+## Setup
 
 Install the bear/qiq-module in composer for HTML representation.
 
 ```bash
-composer require bear/qiq-module 1.x-dev
+composer require bear/qiq-module
 ```
 
-Next, prepare the `html` context file `src/Module/HtmlModule.php` and install `QiqModule`.
+Next, Prepare a directory to store templates and helpers.
+
+```
+cd /path/to/project
+cp vendor/bear/qiq-module/var/qiq var
+```
+
+Prepare the `html` context file `src/Module/HtmlModule.php` and install `QiqModule`.
 
 ```php?start_inline
 namespace MyVendor\MyPackage\Module;
@@ -26,7 +35,7 @@ class HtmlModule extends AbstractModule
 {
     protected function configure()
     {
-        $this->install(new QiqModule);
+        $this->install(new QiqModule($this->appDir . '/var/qiq/template'));
     }
 }
 ```
@@ -39,14 +48,7 @@ Change the context of `bin/page.php` to enable `html`.
 $context = 'cli-html-app';
 ```
 
-## /var/qiq
-
-Prepare a directory to store templates and helpers.
-
-```
-cd /path/to/project
-cp vendor/bear/qiq-module/var/qiq var
-```
+## Template 
 
 Prepare the template for the Index resource in `var/qiq/template/Index.php`.
 
@@ -63,6 +65,12 @@ content-type: text/html; charset=utf-8
 
 <h1>Hello BEAR.Sunday</h1>
 ```
+
+## Helper
+
+[Helpers](https://qiqphp.com/1.x/helpers/overview.html#1-8-1) should be created in the `Qiq\Helper\` namespace. Example: `Qiq\Helper\Foo`.
+
+Edit composer.json (e.g. [composer.json](https://github.com/bearsunday/BEAR.QiqModule/blob/1.x/demo/composer.json#L26))　to make the `Qiq\Helper` class autoloadable and run `composr dump-autoload`. Then place the helper class file in the specified directory and the helper will be available.
 
 ## ProdModule
 

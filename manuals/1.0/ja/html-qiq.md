@@ -5,15 +5,24 @@ category: Manual
 permalink: /manuals/1.0/ja/html-qiq.html
 ---
 
-# HTML (Qiq) - WIP
+# HTML (Qiq)
+
+## セットアップ
 
 HTML表示のためにcomposerで`bear/qiq-module`をインストールします。
 
 ```bash
-composer require bear/qiq-module 1.x-dev
+composer require bear/qiq-module
 ```
 
-次に`html`コンテキストファイル`src/Module/HtmlModule.php`を用意して`QiqModule`をインストールします。
+次にテンプレートやヘルパーを格納するディレクトリを用意します。
+
+```
+cd /path/to/project
+cp vendor/bear/qiq-module/var/qiq var
+```
+
+`html`コンテキストファイル`src/Module/HtmlModule.php`を用意して`QiqModule`をインストールします。
 
 ```php?start_inline
 namespace MyVendor\MyPackage\Module;
@@ -26,7 +35,7 @@ class HtmlModule extends AbstractModule
 {
     protected function configure()
     {
-        $this->install(new QiqModule);
+        $this->install(new QiqModule($this->appDir . '/var/qiq/template'));
     }
 }
 ```
@@ -39,14 +48,7 @@ class HtmlModule extends AbstractModule
 $context = 'cli-html-app';
 ```
 
-## /var/qiq
-
-テンプレートやヘルパーを格納するディレクトリを用意します。
-
-```
-cd /path/to/project
-cp vendor/bear/qiq-module/var/qiq var
-```
+## テンプレート
 
 Indexリソースのテンプレートを`var/qiq/template/Index.php`に用意します。
 
@@ -63,6 +65,12 @@ content-type: text/html; charset=utf-8
 
 <h1>Hello BEAR.Sunday</h1>
 ```
+
+## ヘルパー
+
+[ヘルパー](https://qiqphp-ja.github.io/1.x/helpers/overview.html#1-8-1)は`Qiq\Helper\`のnamespaceで作成します。例: `Qiq\Helper\Foo`
+
+composer.jsonを編集して(例: [composer.json](https://github.com/bearsunday/BEAR.QiqModule/blob/1.x/demo/composer.json#L26)) `Qiq\Helper`をクラスをオートロード可能にし`composr dump-autoload`を実行します。指定ディレクトリにヘルパークラスファイルを設置するとヘルパーが利用可能になります。
 
 ## ProdModule
 
