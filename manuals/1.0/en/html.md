@@ -15,9 +15,11 @@ The following template engines are available for HTML representation.
 
 ## Twig vs Qiq
 
-While [Twig](https://twig.symfony.com) defaults to implicit escaping and has a proprietary syntax for control structures, [Qiq](https://qiqphp-ja.github.io) is a native PHP template that requires explicit escaping and minimizes proprietary syntax. Qiq]() is a native PHP template that requires explicit escaping and minimizes proprietary syntax.
+[Twig](https://twig.symfony.com) was first released in 2009 and has many users, [Qiq](https://qiqphp.com) is a new template engine released in 2021.
 
-Twig was first released in 2009 and has a large user base. Qiq is a new template engine released in 2021. The Twig codebase is large and feature-rich, while Qiq is compact and simple.
+Qiq is a newer template engine released in 2021.Twig　defaults to implicit escaping and uses Twig's own syntax for control structures. In contrast, Qiq requires explicit escaping and is based on PHP syntax. The Twig code base is large and feature-rich, while Qiq is compact and simple.
+
+### Syntax comparison
 
 PHP
 ```php

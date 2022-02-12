@@ -9,20 +9,20 @@ permalink: /manuals/1.0/en/html-qiq.html
 
 ## Setup
 
-Install the bear/qiq-module in composer for HTML representation.
+Install `bear/qiq-module` in composer to get HTML view in Qiq.
 
 ```bash
 composer require bear/qiq-module
 ```
 
-Next, Prepare a directory to store templates and helpers.
+Next, Provide a directory to store templates and helpers.
 
 ```
 cd /path/to/project
 cp vendor/bear/qiq-module/var/qiq var
 ```
 
-Prepare the `html` context file `src/Module/HtmlModule.php` and install `QiqModule`.
+Provide the `html` context file `src/Module/HtmlModule.php` and install `QiqModule`.
 
 ```php?start_inline
 namespace MyVendor\MyPackage\Module;

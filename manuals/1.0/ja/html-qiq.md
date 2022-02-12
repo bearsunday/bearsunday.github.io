@@ -9,7 +9,7 @@ permalink: /manuals/1.0/ja/html-qiq.html
 
 ## セットアップ
 
-HTML表示のためにcomposerで`bear/qiq-module`をインストールします。
+QiqでHTML表示をするためにcomposerで`bear/qiq-module`をインストールします。
 
 ```bash
 composer require bear/qiq-module

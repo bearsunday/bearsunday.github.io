@@ -11,14 +11,15 @@ HTML表現のために以下のテンプレートエンジンが利用可能で�
 
 * [Twig v1](html-twig-v1.html)
 * [Twig v2](html-twig-v2.html)
-* [Qiq](html-qiq.html) (WIP) 
+* [Qiq](html-qiq.html)
 
 ## Twig vs Qiq
 
-[Twig](https://twig.symfony.com)が暗黙的エスケープをデフォルトにし制御構造などの構文を独自なものにしているのに対して、[Qiq](https://qiqphp-ja.github.io)は明示的なエスケープを要求し独自構文を最小限にしたPHPネイティブなテンプレートになっています。
+[Twig](https://twig.symfony.com)は最初のリリースが2009年にされ多くのユーザーがいます。[Qiq](https://qiqphp-ja.github.io)は2021年にリリースされた新しいテンプレートエンジンです。
 
-Twigは2009年に最初のリリースがされて多くのユーザーがいます。Qiqは2021年にリリースされた新しいテンプレートエンジンです。Twigのコードベースは大きく機能も豊富です。それに対してQiqはコンパクトでシンプルです。
+Twigが暗黙的エスケープをデフォルトにし制御構造などをTwig独自構文にしています。それに対して、Qiqは明示的なエスケープを要求し、PHP構文が基本のテンプレートです。 Twigのコードベースは大きく機能も豊富ですがそれに対してQiqはコンパクトでシンプルです。
 
+### 構文比較
 
 PHP
 ```php
