@@ -66,11 +66,12 @@ content-type: text/html; charset=utf-8
 <h1>Hello BEAR.Sunday</h1>
 ```
 
-## Helper
+## Custom helper
 
-[Helpers](https://qiqphp.com/1.x/helpers/overview.html#1-8-1) should be created in the `Qiq\Helper\` namespace. Example: `Qiq\Helper\Foo`.
+[Custom Helpers](https://qiqphp-ja.github.io/1.x/helpers/custom.html#1-8-4) will be created in the `Qiq\Helper\` namespace. Example: `Qiq\Helper\Foo`.
 
-Edit composer.json (e.g. [composer.json](https://github.com/bearsunday/BEAR.QiqModule/blob/1.x/demo/composer.json#L26))　to make the `Qiq\Helper` class autoloadable and run `composr dump-autoload`. Then place the helper class file in the specified directory and the helper will be available.
+Specify the `Qiq\Helper` in the `autoload` of composer.json (e.g: [composer.json](https://github.com/bearsunday/BEAR.QiqModule/blob/1.x/demo/composer.json#L26)) and run `composr dump-autoload` to enable to autoload the custom helper class. Custom helpers placed in the specified directory will be made available.
+
 
 ## ProdModule
 

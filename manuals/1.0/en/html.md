@@ -55,4 +55,4 @@ Qiq
 
 A renderer bound to a `RenderInetrface` and injected into a ResourceObject generates a representation of the resource. The resource itself is indifferent about its representation.
 
-It can be injected on a per-resource basis, so multiple template engines can be used simultaneously.
+Since it is injected on a per-resource basis, multiple template engines can be used simultaneously.
