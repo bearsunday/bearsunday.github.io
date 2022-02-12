@@ -17,7 +17,7 @@ The following template engines are available for HTML representation.
 
 [Twig](https://twig.symfony.com) was first released in 2009 and has many users, [Qiq](https://qiqphp.com) is a new template engine released in 2021.
 
-Qiq is a newer template engine released in 2021.Twig　defaults to implicit escaping and uses Twig's own syntax for control structures. In contrast, Qiq requires explicit escaping and is based on PHP syntax. The Twig code base is large and feature-rich, while Qiq is compact and simple.
+Qiq is a newer template engine released in 2021.Twig　defaults to implicit escaping and uses Twig's own syntax for control structures. In contrast, Qiq requires explicit escaping and is based on PHP syntax. The Twig code base is large and feature-rich, while Qiq is compact and simple. （It's a bit verbose, but writing Qiq in the full PHP syntax makes it IDE and static analysis friendly.）
 
 ### Syntax comparison
 
@@ -33,7 +33,8 @@ PHP
 Twig
 
 ```
-{% raw %}{{ var }}
+{% raw %}{{ var | raw }}
+{{ var }}
 {{ var | helper }}
 {% for user in users %}
   * {{ user.name }}
@@ -44,11 +45,18 @@ Twig
 Qiq
 
 ```
-{% raw %}{{h $var }}または {{ $this->h($var }}
+{% raw %}{{% var }}
+{{h $var }}
 {{h helper($var) }}
 {{ foreach($users => $user) }}
-  * {{ $user->name }}
-{{ endforeach }}{% endraw %}
+  * {{h $user->name }}
+{{ endforeach }}
+
+{{ var }} // not displayed {% endraw %}
+```
+```php
+<?php /** @var Template $this */ ?>
+<?= $this->h($var) ?>
 ```
 
 ## Renderer

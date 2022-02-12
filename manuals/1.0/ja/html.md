@@ -17,12 +17,13 @@ HTML表現のために以下のテンプレートエンジンが利用可能で�
 
 [Twig](https://twig.symfony.com)は最初のリリースが2009年にされ多くのユーザーがいます。[Qiq](https://qiqphp-ja.github.io)は2021年にリリースされた新しいテンプレートエンジンです。
 
-Twigが暗黙的エスケープをデフォルトにし制御構造などをTwig独自構文にしています。それに対して、Qiqは明示的なエスケープを要求し、PHP構文が基本のテンプレートです。 Twigのコードベースは大きく機能も豊富ですがそれに対してQiqはコンパクトでシンプルです。
+Twigが暗黙的エスケープをデフォルトにし制御構造などをTwig独自構文にしています。それに対して、Qiqは明示的なエスケープを要求し、PHP構文が基本のテンプレートです。 Twigのコードベースは大きく機能も豊富ですがそれに対してQiqはコンパクトでシンプルです。 （冗長になりますがQiqを完全なPHP構文で記述するとIDEや静的解析フレンドリーになります。）
 
 ### 構文比較
 
 PHP
 ```php
+<?= $var ?>
 <?= htmlspecialchars($var, ENT_QUOTES|ENT_DISALLOWED, 'utf-8') ?>
 <?= htmlspecialchars(helper($var, ENT_QUOTES|ENT_DISALLOWED, 'utf-8')) ?>
 <?php foreach ($users => $user): ?>
@@ -33,7 +34,8 @@ PHP
 Twig
 
 ```
-{% raw %}{{ var }}
+{% raw %}{{ var | raw }}
+{{ var }}
 {{ var | helper }}
 {% for user in users %}
   * {{ user.name }}
@@ -44,11 +46,18 @@ Twig
 Qiq
 
 ```
-{% raw %}{{h $var }}または {{ $this->h($var }}
+{% raw %}{{% var }}
+{{h $var }}
 {{h helper($var) }}
 {{ foreach($users => $user) }}
-  * {{ $user->name }}
-{{ endforeach }}{% endraw %}
+  * {{h $user->name }}
+{{ endforeach }}
+
+{{ var }} // 表示されない{% endraw %}
+```
+```php
+<?php /** @var Template $this */ ?>
+<?= $this->h($var) ?>
 ```
 
 ## レンダラー
