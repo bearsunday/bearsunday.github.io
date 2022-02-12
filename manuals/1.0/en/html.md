@@ -11,7 +11,7 @@ The following template engines are available for HTML representation.
 
 * [Twig v1](html-twig-v1.html)
 * [Twig v2](html-twig-v2.html)
-* [Qiq](html-qiq.html) (WIP) 
+* [Qiq](html-qiq.html)
 
 ## Twig vs Qiq
 
