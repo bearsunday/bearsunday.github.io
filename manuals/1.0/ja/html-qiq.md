@@ -53,7 +53,7 @@ $context = 'cli-html-app';
 Indexリソースのテンプレートを`var/qiq/template/Index.php`に用意します。
 
 ```
-{% raw %}<h1>{{ $this->greeting }}</h1>{% endraw %}
+{% raw %}<h1>{{h $this->greeting }}</h1>{% endraw %}
 ```
 
 ResourceObjectの`$body`がテンプレートに`$this`としてアサインされます。
@@ -68,9 +68,9 @@ content-type: text/html; charset=utf-8
 
 ## カスタムヘルパー
 
-[カスタムヘルパー](https://qiqphp-ja.github.io/1.x/helpers/custom.html#1-8-4)は`Qiq\Helper\`のnamespaceで作成します。例: `Qiq\Helper\Foo`
+[カスタムヘルパー](https://qiqphp-ja.github.io/1.x/helpers/custom.html#1-8-4) は`Qiq\Helper\`のnamespaceで作成します。例: `Qiq\Helper\Foo`
 
-composer.jsonの`autoload`に`Qiq\Helper`を指定し(例: [composer.json](https://github.com/bearsunday/BEAR.QiqModule/blob/1.x/demo/composer.json#L26)) 、`composr dump-autoload`を実行してヘルパークラスをオートロード可能にします。指定ディレクトリに設置するとカスタムヘルパーが利用可能になります。
+composer.jsonの`autoload`に`Qiq\Helper`を指定し(例: [composer.json](https://github.com/bearsunday/BEAR.QiqModule/blob/1.x/demo/composer.json#L26)) 、`composer dump-autoload`を実行してヘルパークラスをオートロード可能にします。指定ディレクトリに設置するとカスタムヘルパーが利用可能になります。
 
 ## ProdModule
 
