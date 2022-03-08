@@ -320,8 +320,8 @@ protected function configure()
                 ['password' => 'user_password']
             ],
             (new InjectionPoints)                       // InjectionPoints　$setter_injection
-                ->addMethod('setGuzzle', 'token')
-                ->addOptionalMethod('setOptionalToken'),
+                ->addMethod('setGuzzle')
+                ->addOptionalMethod('setOptionalToken', 'token'),
             'initialize'                                // string $postConstruct
         );
     $this->bind()->annotatedWith('user_id')->toInstance($_ENV['user_id']);
