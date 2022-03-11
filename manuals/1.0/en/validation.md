@@ -58,14 +58,12 @@ src/Resource/App/User.php
 
 ```php?start_inline
 
-use BEAR\Resource\Annotation\JsonSchema; // Add this line
+use BEAR\Resource\Annotation\JsonSchema; // この行を追加
 
 class User extends ResourceObject
 {
-    /**
-     * @JsonSchema(schema="user.json")
-     */
-    public function onGet()
+    #[JsonSchema('user.json')]
+    public function onGet(): static
     {
         $this->body = [
             'firstName' => 'mucha',
@@ -109,9 +107,7 @@ use BEAR\Resource\Annotation\JsonSchema; // Add this line
 
 class User extends ResourceObject
 {
-    /**
-     * @JsonSchema(key="user", schema="user.json")
-     */
+    #[JsonSchema(key:'user', schema:'user.json')]
     public function onGet()
     {
         $this->body = [
@@ -138,9 +134,7 @@ use BEAR\Resource\Annotation\JsonSchema; // Add this line
 
 class Todo extends ResourceObject
 {
-    /**
-     *@JsonSchema(key="user", schema="user.json", params="todo.post.json")
-     */
+    #[JsonSchema(key:'user', schema:'user.json', params:'todo.post.json')]
     public function onPost(string $title)
 ```
 
@@ -163,6 +157,14 @@ We place the JSON schema file
 ```
 
 By constantly verifying in a standardized way instead of proprietary documentation, the specification is **reliable and understandable** to both humans and machines.
+
+### target
+
+To apply schema validation to the representation of the resource object (the rendered result) rather than to the body of the ResourceObject, specify the option `target='view'`.
+
+```php
+#[JsonSchema(schema: 'user.json', target: 'view')]
+```
 
 ### Related Links
 
