@@ -7,14 +7,13 @@ permalink: /manuals/1.0/ja/validation.html
 
 # バリデーション
 
-
  * JSONスキーマでリソースAPIを定義する事ができます。
  * `@Valid`, `@OnValidate`アノテーションでバリデーションコードを分離する事ができます。
  * Webフォームによるバリデーションは[フォーム](form.html)をご覧ください。
 
 # JSONスキーマ
 
-[JSON スキーマ](http://json-schema.org/)とは、JSON objectの記述と検証のための標準です。`＠JsonSchema`とアノテートされたリソースクラスのメソッドが返すリソース`body`に対してJSONスキーマによる検証が行われます。
+[JSON スキーマ](http://json-schema.org/)とは、JSON objectの記述と検証のための標準です。`#[JsonSchema]`アトリビュートが付加されたリソースクラスのメソッドが返すリソース`body`に対してJSONスキーマによる検証が行われます。
 
 ### インストール
 
@@ -26,7 +25,7 @@ use BEAR\Package\AbstractAppModule;
 
 class AppModule extends AbstractAppModule
 {
-    protected function configure()
+    protected function configure(): void
     {
         // ...
         $this->install(
@@ -48,9 +47,9 @@ mkdir var/json_validate
 
 `var/json_schema/`にリソースのbodyの仕様となるJSONスキーマファイル、`var/json_validate/`には入力バリデーションのためのJSONスキーマファイルを格納します。
 
-### @JsonSchema アノテーション
+### #[JsonSchema]アトリビュート
 
-リソースクラスのメソッドで`@JsonSchema`とアノテートします。`schema`プロパティにはJSONスキーマファイル名を指定します。
+リソースクラスのメソッドで`#[JsonSchema]`のアトリビュートを加えます。`schema`プロパティにはJSONスキーマファイル名を指定します。
 
 ### schema
 
@@ -62,10 +61,8 @@ use BEAR\Resource\Annotation\JsonSchema; // この行を追加
 
 class User extends ResourceObject
 {
-    /**
-     * @JsonSchema(schema="user.json")
-     */
-    public function onGet()
+    #[JsonSchema('user.json')]
+    public function onGet(): static
     {
         $this->body = [
             'firstName' => 'mucha',
@@ -112,9 +109,7 @@ use BEAR\Resource\Annotation\JsonSchema; // Add this line
 
 class User extends ResourceObject
 {
-    /**
-     * @JsonSchema(key="user", schema="user.json")
-     */
+    #[JsonSchema(key:'user', schema:'user.json')]
     public function onGet()
     {
         $this->body = [
@@ -136,14 +131,11 @@ class User extends ResourceObject
 
 
 ```php?start_inline
-
 use BEAR\Resource\Annotation\JsonSchema; // この行を追加
 
 class Todo extends ResourceObject
 {
-    /**
-     *@JsonSchema(key="user", schema="user.json", params="todo.post.json")
-     */
+    #[JsonSchema(key:'user', schema:'user.json', params:'todo.post.json')]
     public function onPost(string $title)
 ```
 
@@ -166,6 +158,15 @@ JSONスキーマを設置します。
 ```
 
 独自ドキュメントの代わりに標準化された方法で常に検証することで、その仕様が**人間にもマシンにも理解できる**確実なものになります。
+
+### target
+
+ResourceObjectのbodyに対してでなく、リソースオブジェクトの表現（レンダリングされた結果）に対してスキーマバリデーションを適用にするには`target='view'`オプションを指定します。
+HALフォーマットで`_link`のスキーマが記述できます。
+
+```php
+#[JsonSchema(schema: 'user.json', target: 'view')]
+```
 
 ###  関連リンク
 
