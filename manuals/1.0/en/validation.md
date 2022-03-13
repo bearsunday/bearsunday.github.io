@@ -58,7 +58,7 @@ src/Resource/App/User.php
 
 ```php?start_inline
 
-use BEAR\Resource\Annotation\JsonSchema; // この行を追加
+use BEAR\Resource\Annotation\JsonSchema; // Add this line
 
 class User extends ResourceObject
 {
