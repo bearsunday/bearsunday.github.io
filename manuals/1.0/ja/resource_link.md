@@ -1,6 +1,6 @@
 ---
 layout: docs-ja
-title: リソース
+title: リソースリンク
 category: Manual
 permalink: /manuals/1.0/ja/resource_link.html
 ---
@@ -148,7 +148,7 @@ $graph = $resource
   ->request();
 ```
 
-リソースクライアントは@Linkアノテーションに指定されたクロール名を発見するとその **rel** 名でリソースを接続してリソースグラフを作成します。
+リソースクライアントは`#[Link]`アトリビュートに指定されたクロール名を発見するとその**rel** 名でリソースを接続してリソースグラフを作成します。
 
 ```
 var_export($graph->body);

@@ -1,17 +1,17 @@
 ---
-layout: docs-ja
-title: リソースベストプラクティス
+layout: docs-en
+title: Resource Best Practise
 category: Manual
-permalink: /manuals/1.0/ja/resource_bp.html
+permalink: /manuals/1.0/en/resource_bp.html
 ---
 
-## ベストプラクティス
+## Best Practices
 
-RESTではリソースは他のリソースと接続されています。リンクをうまく使うとコードは簡潔になり、読みやすくテストや変更が容易なコードになります。
+In REST, resources are connected to other resources. Good use of links makes code concise, easy to read, test and change.
 
-### #[Embed]
+### #[Embed].
 
-他のリソースの状態を`get`する代わりに`#[Embed]`でリソースを埋め込みます。
+Embed a resource with `#[Embed]` instead of `get` the state of another resource.
 
 ```php?start_inline
 // OK but not the best
@@ -44,7 +44,7 @@ class Index extends ResourceObject
 
 ### #[Link]
 
-他のリソースの状態を変えるときに`#[Link]`で示された次のアクションを`href()`（ハイパーリファレンス）を使って辿ります。
+The next action indicated by `#[Link]` when changing the state of another resource is traced using `href()` (hyper reference).
 
 ```php?start_inline
 // OK but not the best
@@ -85,7 +85,7 @@ class Todo extends ResourceObject
 
 ### #[ResourceParam]
 
-他のリソースをリクエストするために他のリソース結果が必要な場合は`#[ResourceParam]`を使います。
+Use `#[ResourceParam]` if you need other resource results to request other resources.
 
 ```php?start_inline
 // OK but not the best
