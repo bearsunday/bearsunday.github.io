@@ -5,8 +5,11 @@ category: Manual
 permalink: /manuals/1.0/ja/resource_cache.html
 ---
 
-
 ## リソースキャッシュ
+
+
+
+
 
 ### #[Cacheable]
 
@@ -17,12 +20,9 @@ use BEAR\RepositoryModule\Annotation\Cacheable;
 class User extends ResourceObject
 ```
 
-`@Cacheable`とアノテートすると`get`リクエストは読み込み用のレポジトリ`QueryRepository`が使われ、時間無制限のキャッシュとして機能します。
-`get`以外のリクエストがあると該当する`QueryRepository`のリソースが更新されます。
+`#[Cacheable]`アトリビュートを加えると時間無制限のキャッシュになり値は**クエリーレポジトリ**という名前のキャッシュストレージに格納されます、`get`以外のリクエストがあるとレスポンスが更新されます。この時パラメーターを見て同一のリソースの更新かが判断れます。
 
-`@Cacheable`から読まれるリソースオブジェクトはHTTPに準じた`Last-Modified`と`ETag`ヘッダーが付加されます。
-
-同一クラスの`onGet`以外のリクエストメソッドがリクエストされ引数を見てリソースが変更されたと判断すると`QueryRepository`の内容も更新されます。
+キャッシュされたレスポンスはHTTPに準じた`Last-Modified`と`ETag`ヘッダーが付加されます。
 
 
 ```php?start_inline
@@ -43,8 +43,7 @@ class Todo extends ResourceObject
 }
 ```
 
-例えばこのクラスでは`->post(10, 'shopping')`というリクエストがあると`id=10`の`QueryRepository`の内容が更新されます。
-この自動更新を利用しない時は`update`をfalseにします。
+例えばこのクラスでは`->post(10, 'shopping')`というリクエストがあると`id=10`のクエリーレポジトリの内容が更新されます。この自動更新を利用しない時は`update`をfalseにします。
 
 ```php?start_inline
  #[Cacheable update: false]
@@ -72,8 +71,8 @@ class News extends ResourceObject
    public function onPut(string $id, string $name, int $age)): static
 ```
 
-別のクラスのリソースや関連する複数のリソースの`QueryRepository`の内容を更新することができます。
-`@Purge`はリソースのキャッシュを消去し`@Refresh`はキャッシュの再生成をメソッド実行直後に行います。
+別のクラスのリソースや関連する複数のリソースのクエリーレポジトリの内容を更新することができます。
+`#[Purge]`はリソースのキャッシュを消去し`#[Refresh]`はキャッシュの再生成をメソッド実行直後に行います。
 
 uri-templateに与えられる値は他と同様に`$body`にアサインした値が実引数に優先したものです。
 
