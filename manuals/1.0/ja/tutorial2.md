@@ -13,7 +13,7 @@ permalink: /manuals/1.0/ja/tutorial2.html
 * CakePHPが開発してるDBマイグレーションツール [Phinx](https://book.cakephp.org/3.0/ja/phinx.html) 
 * PHPのインターフェイスとSQL文実行を束縛する [Ray.MediaQuery](https://github.com/ray-di/Ray.MediaQuery)
 
-[tutorial2](https://github.com/bearsunday/tutorial2/commits/v2)のコミットを参考にして進めましょう。
+[tutorial2](https://github.com/bearsunday/tutorial2/commits/v2.1)のコミットを参考にして進めましょう。
 
 ## プロジェクト作成
 
@@ -223,7 +223,6 @@ class AppModule extends AbstractAppModule
 }
 ```
 
-
 ## SQL
 
 チケット用の３つのSQLを`var/sql`に保存します。[^13]
@@ -367,6 +366,37 @@ interface TicketCommandInterface
 
 インターフェイスを**副作用が発生するcommand**または**値を返すquery**という2つの関心に分けていますが、リポジトリパターンのように1つにまとめたり
 [ADRパターン](https://github.com/pmjones/adr)のように1インターフェイス1メソッドにしても構いません。アプリケーション設計者が方針を決定します。
+
+
+
+## エンティティ
+
+デフォルトではデータベースの読み込みは連想配列(fetchAssoc)で行われますが、`entity`を指定すると各行がエンティティオブジェクトになります。
+
+```
+#[DbQuery('ticket_item') entity: Ticket::class]
+```
+
+各行の値は名前引数でコンストラクタに渡されます。[^named]
+
+[^named]: [PHP 8.0+ 名前付き引数 ¶](https://www.php.net/manual/ja/functions.arguments.php#functions.named-arguments)、PHP7.xの場合にはコラムの順番になります。
+
+```php
+<?php
+
+declare(strict_types=1);
+
+namespace MyVendor\Ticket\Entity;
+
+class Ticket
+{
+    public function __construct(
+        public readonly string $id,
+        public readonly string $title,
+        public readonly string $dateCreated
+    ) {}
+}
+```
 
 ## リソース
 
@@ -673,14 +703,14 @@ class WorkflowTest extends TestCase
 
 起点となるルートページも必要です。
 
-`src/Resource/Page/Index.php`
+`src/Resource/App/Index.php`
 
 ```php
 <?php
 
 declare(strict_types=1);
 
-namespace MyVendor\Ticket\Resource\Page;
+namespace MyVendor\Ticket\Resource\App;
 
 use BEAR\Resource\Annotation\Link;
 use BEAR\Resource\ResourceObject;
@@ -797,7 +827,7 @@ ResourceObjectではメソッドシグネチャーがAPIの入力パラメータ
 composer doc
 ```
 
-    
+​    
 
 IDL(インターフェイス定義言語）を記述する労力を削減しますが、より価値があるのはドキュメントが最新のPHPコードに追従し常に正確な事です。
 CIに組み込み常にコードとAPIドキュメントが同期している状態にするのがいいでしょう。
