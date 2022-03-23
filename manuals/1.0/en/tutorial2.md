@@ -15,7 +15,7 @@ In this tutorial, you will learn how to develop high quality standards-based RES
 * A DB migration tool developed by CakePHP [Phinx](https://book.cakephp.org/3.0/ja/phinx.html)
 * Binding PHP interfaces to SQL statement execution [Ray. MediaQuery](https://github.com/ray-di/Ray.MediaQuery)
 
-Let's proceed with the commits found in [tutorial2](https://github.com/bearsunday/tutorial2/commits/v2).
+Let's proceed with the commits found in [tutorial2](https://github.com/bearsunday/tutorial2/commits/v2.1).
 
 ## Create the project
 
@@ -369,6 +369,35 @@ You do not need to write any implementation for this interface. An object that p
 
 The interface is divided into two concerns: **command** which has side effects, and **query** which returns a value.
 It can be one interface and one method as in [ADR pattern](https://github.com/pmjones/adr). The application designer decides the policy.
+
+## Entity
+
+By default, database reading is done with an associative array (fetchAssoc), but if `entity` is specified, each row becomes an entity object.
+
+```
+#[DbQuery('ticket_item') entity: Ticket::class]
+```
+
+The value of each row is passed to the constructor by name argument. [^named]
+
+[^named]: [PHP 8.0+ named arguments ¶](https://www.php.net/manual/en/functions.arguments.php#functions.named-arguments), column order for PHP 7.x.
+
+```php
+<?php
+
+declare(strict_types=1);
+
+namespace MyVendor\Ticket\Entity;
+
+class Ticket
+{
+    public function __construct(
+        public readonly string $id,
+        public readonly string $title,
+        public readonly string $dateCreated
+    ) {}
+}
+```
 
 ## Resources
 
