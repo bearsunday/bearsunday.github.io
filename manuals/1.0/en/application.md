@@ -102,9 +102,7 @@ For example the `cli` context relates to a `CliModule`, then binds all of the DI
 
 ### Context Agnostic
 
-The values of each context will be only used when generating an object graph.
-It is not recommended for your application code and libraries to change their behaviour based on the context.
-Instead, the behavior should only change through **code that is dependent on an interface**[^dip] and **changes of dependencies by context**.
+The context value is used only to create the root object and then disappears. There is no global "mode" that can be referenced by the application, and the application can not know what context it is currently running in. The behavior should only change through **code that is dependent on an interface**[^dip] and changes of dependencies by context.
 
 ---
 
