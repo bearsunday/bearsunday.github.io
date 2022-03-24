@@ -58,8 +58,8 @@ use BEAR\Resource\Annotation\Embed;
 
 class News extends ResourceObject
 {
-    #Embed(rel: 'sports', src: '/news/sports')]
-    #Embed(rel: 'weather', src: '/news/weather')]
+    #[Embed(rel: 'sports', src: '/news/sports')]
+    #[Embed(rel: 'weather', src: '/news/weather')]
     public function onGet(): static
 ```
 
@@ -103,7 +103,7 @@ $blog = $this
  * `linkNew($rel)` リンク先のリソースがリンク元のリソースに追加されます
  * `linkCrawl($rel)` リンクをクロールしてリソースグラフを作成します。
 
-##＃ クロール
+### クロール
 
 クロールはリスト（配列）になっているリソースを順番にリンクを辿り、複雑なリソースグラフを構成することができます。
 クローラーがwebページをクロールするように、リソースクライアントはハイパーリンクをクロールしソースグラフを生成します。
@@ -111,7 +111,7 @@ $blog = $this
 #### クロール例
 
 author, post, meta, tag, tag/name がそれぞれ関連づけられてあるリソースグラフを考えてみます。
-このリソースグラフに **post-tree** という名前を付け、それぞれのリソースの`#[Link]アトリビュートでハイパーリファレンス **href** を指定します。
+このリソースグラフに **post-tree** という名前を付け、それぞれのリソースの`#[Link]`アトリビュートでハイパーリファレンス **href** を指定します。
 
 
 

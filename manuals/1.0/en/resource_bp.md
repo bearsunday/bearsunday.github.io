@@ -34,7 +34,7 @@ class Index extends ResourceObject
 // Better
 class Index extends ResourceObject
 {
-    #[@mbed(rel: 'todos', src: 'app://self/todos{?status}')]
+    #[@Embed(rel: 'todos', src: 'app://self/todos{?status}')]
     public function onGet(string $status): static
     {
         return $this;

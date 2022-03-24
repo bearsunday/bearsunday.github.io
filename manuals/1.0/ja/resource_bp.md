@@ -131,7 +131,7 @@ class User extends ResourceObject
     #[Embed(rel: 'profile', src: 'app://self/profile')]
     public function onGet(string $id, string $name): static
     {
-        $this->body['profile']->addQuery(['name'=>$name]);
+        $this->body['profile']->addQuery(['name' => $name]);
 
         return $this;
     }
