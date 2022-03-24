@@ -58,7 +58,7 @@ use BEAR\Resource\Annotation\Embed;
 
 class News extends ResourceObject
 {
-    #Embed(rel: 'sports', src: '/news/sports')]
+    #[Embed(rel: 'sports', src: '/news/sports')]
     #[Embed(rel: 'weather', src: '/news/weather')]
     public function onGet(): static
 ```
