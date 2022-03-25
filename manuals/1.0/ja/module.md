@@ -6,18 +6,14 @@ permalink: /manuals/1.0/ja/module.html
 ---
 # モジュール
 
-モジュールはアプリケーションの設定です。DIとAOPの束縛を行います。
-
-BEAR.Sundayでは設置場所や記述フォーマットが固定されているいわゆる設定ファイルや、Configクラスはありません。
-その代わりに機能ごとに独立したモジュールに設定値をコンストラクタインジェクションしてDIとAOPの設定をします。
-（設定もインジェククトするので設定をコンテキスト毎に変えるのも簡単です）
+モジュールはDIとAOPの束縛のセットです。 BEAR.Sundayではいわゆる設定ファイルや、Configクラス、実行モードなどがありません。各コンポーネントが必要とする値は依存性の注入で与えられます。モジュールがその依存性束縛を行います。
 
 起点となるモジュールが`AppModule` (src/Module/AppModule.php)です。
-`AppModule`で必要なモジュールを`install`してアプリケーション全体を構成します。
+`AppModule`で他の必要なモジュールを`install`します。
 
-コンテキストに依存しない設定値はモジュールにそのまま記述し、環境により変更されるようなものやクレデンシャル情報は`$_ENV`値を使います。
+モジュールが必要とする値（ランタイムではなく、コンパイルタイムで必要な値）は手動のコンストラクタインジェクションで束縛を行います。
 
-```php?start_inline
+```php
 class AppModule extends AbstractAppModule
 {
     /**
@@ -26,7 +22,7 @@ class AppModule extends AbstractAppModule
     protected function configure()
     {
         // 追加モジュール
-        $this->install(new AuraSqlModule('mysql:host=localhost;dbname=test', 'username', 'password');
+        $this->install(new AuraSqlModule('mysql:host=localhost;dbname=test', getenv('db_username'), getenv('db_password'));
         $this->install(new TwigModule));
         // package標準のモジュール
         $this->install(new PackageModule));
@@ -34,9 +30,9 @@ class AppModule extends AbstractAppModule
 }
 ```
 
-## DIの設定
+## DIの束縛
 
-BEAR.Sundayの使用するRay.Diでは、インターフェイスとクラスやそのクラスを生成するファクトリー等を束縛(バインド)してオブジェクトグラフを構成します。
+代表的な束縛を以下に記します。
 
 ```php?start_inline
 // クラスの束縛
@@ -53,10 +49,7 @@ $this->bind($interface)->to($class)->in(Scope::SINGLETON);
 $this->bind($interface)->toConstructor($class, $named);
 ```
 
-束縛は先にされたものが優先されますが、モジュールを`override`すると先にされた束縛を上書きすることができます。
-
 詳しくは[DI](di.html)をご覧ください。
-
 
 ## AOPの設定
 
@@ -78,10 +71,33 @@ $this->bindInterceptor(
 
 詳しくは[AOP](aop.html)をご覧ください。
 
-## 環境
+## 束縛の優先順位
 
-BEAR.Sundayは"取得可能"な`dev`や`prod`などのグローバルな環境値（現在の動作モード）はありません。
+### 同じモジュール内
 
-アプリケーションはどの環境値(コンテキスト)で動作しているか無知です。これはコードをクリーンに保つための意図的なもので、環境値に応じてプログラムが`if`文で振る舞いを変えるのではなく、環境値に応じたオブジェクトがインジェクトされ振る舞いが変ります。
+先に束縛した方が優先します。この場合はFoo1が優先されます。
 
-環境値はDI/AOPの構成のためだけにローカル変数として使われ、値は保持されません。
+```php
+$this->bind(FooInterface::class)->to(Foo1::class);
+$this->bind(FooInterface::class)->to(Foo2::class);
+```
+
+### モジュールインストール
+
+先にインストールしたモジュールが優先します。この場合はFoo1Moduleが優先されます。
+
+```php
+$this->install(new Foo1Module);
+$this->install(new Foo2Module);
+```
+
+後からのモジュールを優先する場合には`override`を使います。この場合はFoo2Moduleが優先されます。
+
+```php
+$this->install(new Foo1Module);
+$this->override(new Foo2Module);
+```
+
+### コンテキスト文字列
+
+左のモジュールの束縛が優先されます。`prod-hal-app`ならAppModuleよりHalModule、HalModuleよりProdModuleが優先してインストールされます。
