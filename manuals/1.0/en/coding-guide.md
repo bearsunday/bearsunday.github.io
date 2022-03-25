@@ -95,6 +95,10 @@ We should also put @params and @Link after description if possible.
 */
 ```
 
+## Resources
+
+See [Resource Best Practices](resource_bp.html) for best practices for resources.
+
 ## Globals
 
 We do not recommend referencing global values in resources or application classes. It is only used with Modules.
