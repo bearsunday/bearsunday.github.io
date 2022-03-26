@@ -57,29 +57,29 @@ namespace Vendor\App\Input;
 
 final class User
 {
-    public $id;
-    public $name;
+    public int $id;
+    public string $name;
 }
 ```
 
-ネームスペースは任意です。Inputクラスでは入力データをまとめたり検証したりするメソッドを実装する事ができます。[^3]
-
-[^3]:publicプロパティとして定義しないで、`__set()`マジックメソッドでバリデーションをする事もできます。
+この時、コンストラクタがあるとコールされます。[^php8]
+[^php8]: この時PHP8.xでは名前付き引数で呼ばれますが、PHP7.xでは順序引数でコールされます。
 
 ```php?start_inline
+<?php
+
+namespace Vendor\App\Input;
+
 final class User
 {
-    public $givenName;
-    public $familyName;
-    
-    public function getFullName() : string
-    {
-        return "{$this->givenName} {$this->familyName}";
-    }
+    public function __constrcut(
+        public readonly int $id,
+        public readonly string $name
+    } {}
 }
 ```
 
-配列受け取りはInputクラスの集合として入力を受け取る時にも便利です。
+ネームスペースは任意です。Inputクラスでは入力データをまとめたり検証したりするメソッドを実装する事ができます。
 
 ## Webコンテキスト束縛
 
