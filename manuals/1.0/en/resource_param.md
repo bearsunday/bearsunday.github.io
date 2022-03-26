@@ -60,6 +60,7 @@ final class User
 }
 ```
 At this time, if there is a constructor, it will be called. [^php8]
+
 [^php8]: called with named arguments in PHP8.x at this time, but with ordinal arguments in PHP7.x.
 
 ```php?start_inline

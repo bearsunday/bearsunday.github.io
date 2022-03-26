@@ -63,6 +63,7 @@ final class User
 ```
 
 この時、コンストラクタがあるとコールされます。[^php8]
+
 [^php8]: この時PHP8.xでは名前付き引数で呼ばれますが、PHP7.xでは順序引数でコールされます。
 
 ```php?start_inline
