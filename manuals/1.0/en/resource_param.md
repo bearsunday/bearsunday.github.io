@@ -59,25 +59,24 @@ final class User
     public $name;
 }
 ```
-
-The namespace is optional; the Input class can implement methods to summarize and validate input data. [^3]
-
-[^3]:You can also use the `__set()` magic method for validation without defining it as a public property.
+At this time, if there is a constructor, it will be called. [^php8]
+[^php8]: called with named arguments in PHP8.x at this time, but with ordinal arguments in PHP7.x.
 
 ```php?start_inline
+<?php
+
+namespace Vendor\App\Input;
+
 final class User
 {
-    public $givenName;
-    public $familyName;
-    
-    public function getFullName() : string
-    {
-        return "{$this->givenName} {$this->familyName}";
-    }
+    public function __constrcut(
+        public readonly int $id,
+        public readonly string $name
+    } {}
 }
 ```
 
-Array receiving is also useful when receiving input as a set of Input classes.
+The namespace is optional; the Input class can implement methods to summarize and validate input data.
 
 ## Web context binding
 
