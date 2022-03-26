@@ -198,4 +198,4 @@ $this->body = [
 
 BEAR.Sundayのリソースオブジェクトの機能は独立したパッケージで単体使用もできます。BEAR.Resource [README](https://github.com/bearsunday/BEAR.Resource/blob/1.x/README.ja.md)もご覧ください。
 
-[resource_cache.html]: 
+---
