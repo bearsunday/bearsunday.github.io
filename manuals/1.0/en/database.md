@@ -6,7 +6,13 @@ permalink: /manuals/1.0/en/database.html
 ---
 # Database
 
-## Libraries
+The following modules are available for database use, with different problem solving methods. They are all independent libraries for SQL based on [PDO](https://www.php.net/manual/ja/intro.pdo.php).
+
+* ExtendedPdo with PDO extended ([Aura.sql](https://github.com/auraphp/Aura.Sql))
+* Query Builder ([Aura.SqlQuery](https://github.com/auraphp/Aura.SqlQuery))
+* Binding PHP interface and SQL execution ([Ray.MediaQuery](database_media.html))
+
+## Module
 
 Modules are provided for using the database. They are all independent libraries for SQL.
 
