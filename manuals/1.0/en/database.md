@@ -12,6 +12,10 @@ The following modules are available for database use, with different problem sol
 * Query Builder ([Aura.SqlQuery](https://github.com/auraphp/Aura.SqlQuery))
 * Binding PHP interface and SQL execution ([Ray.MediaQuery](database_media.html))
 
+Having static SQL in a file[^locator] makes it easier to use and tune with other SQL tools. SqlQuery can dynamically assemble queries, but the rest of the library is for basic static SQL execution. Ray.MediaQuery can also replace parts of the SQL with those assembled by the builder.
+
+[^locator]: [query-locater](https://github.com/koriym/Koriym.QueryLocator) is a library for handling SQL as files, which is useful with Aura.Sql.
+
 ## Module
 
 Modules are provided for using the database. They are all independent libraries for SQL.
