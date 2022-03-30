@@ -112,7 +112,7 @@ echo $sth->queryString;
 ### fetch*() メソッド
 
 `prepare()`、`bindValue()`、 `execute()`を繰り返してデータベースから値を取得する代わりに`fetch*()`メソッドを使うとボイラープレートコードを減らすことができます。
-（内部では`perform()`メソッドを実行しているので配列のプレースフォルもサポートしています）
+（内部では`perform()`メソッドを実行しているので配列のプレイスホルダーもサポートしています）
 
 ```php?start_inline
 $stm  = 'SELECT * FROM test WHERE foo = :foo AND bar = :bar';
