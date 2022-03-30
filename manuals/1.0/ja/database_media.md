@@ -81,7 +81,7 @@ protected function configure(): void
 
 ### 注入
 
-インtーフェイスからオブジェクトが直接生成され、インジェクトされます。実装クラスのコーディングが不要です。
+インターフェイスからオブジェクトが直接生成され、インジェクトされます。実装クラスのコーディングが不要です。
 
 ```php
 class Todo
@@ -156,7 +156,7 @@ final class Todo
 * 認証のためのヘッダーなどのカスタムはGuzzleの`ClinetInterface`をバインドして行います。
 
 ```php
-$this->bind(ClientInterface::class)->toProvider(YourGuzzleClientProvicer::class);
+$this->bind(ClientInterface::class)->toProvider(YourGuzzleClientProvider::class);
 ```
 
 ## パラメーター
@@ -192,7 +192,7 @@ $this->bind(DateTimeInterface::class)->to(UnixEpochTime::class);
 
 ### VO
 
-`DateTime`以外のバリューオブジェクトが渡されると`toScalar`インターフェイスを実装した`ToScalar()`メソッド、もしくは`__toString()`メソッドの返り値が引数になります。
+`DateTime`以外のバリューオブジェクトが渡されると`toScalar`インターフェイスを実装した`toScalar()`メソッド、もしくは`__toString()`メソッドの返り値が引数になります。
 
 ```php
 interface MemoAddInterface
