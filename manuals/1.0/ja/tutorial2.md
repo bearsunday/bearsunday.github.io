@@ -168,7 +168,7 @@ All Done. Took 0.0248s
 モジュールをcomposerインストールします。
 
 ```
-composer require ray/identity-value-module ray/media-query
+composer require ray/identity-value-module ray/media-query -w
 ```
 
 AppModuleでパッケージをインストールします。

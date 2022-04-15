@@ -170,7 +170,7 @@ For more information about writing migration classes, see [Phinx Manual: Writing
 Install the module as a composer.
 
 ```
-composer require ray/identity-value-module ray/media-query
+composer require ray/identity-value-module ray/media-query -w
 ```
 
 Install the package with AppModule.
