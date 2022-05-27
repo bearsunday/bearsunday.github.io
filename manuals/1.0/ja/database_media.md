@@ -103,8 +103,10 @@ SQL実行がメソッドにマップされ、IDで指定されたSQLをメソッ
 例えばIDが`todo_item`の指定では`todo_item.sql`SQL文に`['id => $id]`をバインドして実行します。
 
 * `$sqlDir`ディレクトリにSQLファイルを用意します。
-* SQL実行の戻り値が単一行なら`item`、複数行なら`list`のpostfixを付けます。
+* SQL実行の戻り値が単一行なら`type: 'row'`、複数行なら`type: 'row_list'`（デフォルト)のアトリビュートを付けます。[^v0dot5]
 * SQLファイルには複数のSQL文が記述できます。最後の行のSELECTが返り値になります。
+
+[^v0dot5]: 以前のバージョン`0.5`までは次のようにSQLファイル名で判別していました。"SQL実行の戻り値が単一行なら`item`、複数行なら`list`のpostfixを付けます。"
 
 #### Entity
 
@@ -113,7 +115,7 @@ SQL実行がメソッドにマップされ、IDで指定されたSQLをメソッ
 ```php
 interface TodoItemInterface
 {
-    #[DbQuery('todo_item', entity: Todo::class)]
+    #[DbQuery('todo_item', entity: Todo::class, type: 'row')]
     public function getItem(string $id): Todo;
 }
 ```
@@ -330,3 +332,4 @@ public function add1(string $id, string $title): void;
 /** @DbQuery("user_add") */
 public function add2(string $id, string $title): void;
 ```
+---

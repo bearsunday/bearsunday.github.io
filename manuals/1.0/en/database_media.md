@@ -109,8 +109,10 @@ SQL execution is mapped to a method, and the SQL specified by ID is bound and ex
 For example, if the ID is `todo_item`, `todo_item.sql` SQL statement will be executed with `['id => $id]` bound.
 
 * Prepare the SQL file in the `$sqlDir` directory.
-* Add a postfix of `item` if the return value of the SQL execution is a single line, or `list` if it is multiple lines.
+* Attribute `type: 'row'` if the return value of SQL execution is a single row, or `type: 'row_list'` (default) if it is multiple rows. [^v0dot5]
 * The SQL file can contain multiple SQL statements. The last line of SELECT will be the return value.
+
+[^v0dot5]: Until the previous version `0.5`, the SQL file was identified by its name as follows:" If the return value of the SQL execution is a single row, add a postfix of `item`; if it is multiple rows, add a postfix of `list`."
 
 #### Entity
 
@@ -119,7 +121,7 @@ For example, if the ID is `todo_item`, `todo_item.sql` SQL statement will be exe
 ```php
 interface TodoItemInterface
 {
-    #[DbQuery('todo_item', entity: Todo::class)]
+    #[DbQuery('todo_item', entity: Todo::class, type:'row')]
     public function getItem(string $id): Todo;
 }
 ```
