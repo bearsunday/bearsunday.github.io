@@ -53,7 +53,7 @@ $context = 'cli-html-app';
 
 ## テンプレート
 
-Indexリソースのテンプレートを`var/qiq/template/Index.php`に用意します。
+Indexリソースのテンプレートを`var/qiq/template/Page/Index.php`に用意します。
 
 ```
 {% raw %}<h1>{{h $this->greeting }}</h1>{% endraw %}
