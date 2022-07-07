@@ -53,7 +53,7 @@ $context = 'cli-html-app';
 
 ## Template 
 
-Prepare the template for the Index resource in `var/qiq/template/Index.php`.
+Prepare the template for the Index resource in `var/qiq/template/Page/Index.php`.
 
 ```
 {% raw %}<h1>{{h $this->greeting }}</h1>{% endraw %}
