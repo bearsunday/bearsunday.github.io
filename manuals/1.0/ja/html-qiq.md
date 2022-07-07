@@ -31,11 +31,14 @@ use BEAR\AppMeta\AppMeta;
 use BEAR\QiqModule\QiqModule;
 use Ray\Di\AbstractModule;
 
+use function dirname;
+
 class HtmlModule extends AbstractModule
 {
     protected function configure()
     {
-        $this->install(new QiqModule($this->appDir . '/var/qiq/template'));
+        $appDir = dirname(__DIR__, 2);
+        $this->install(new QiqModule($appDir . '/var/qiq/template'));
     }
 }
 ```
