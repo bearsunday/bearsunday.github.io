@@ -19,7 +19,7 @@ Next, Provide a directory to store templates and helpers.
 
 ```
 cd /path/to/project
-cp vendor/bear/qiq-module/var/qiq var
+cp -r vendor/bear/qiq-module/var/qiq var
 ```
 
 Provide the `html` context file `src/Module/HtmlModule.php` and install `QiqModule`.
