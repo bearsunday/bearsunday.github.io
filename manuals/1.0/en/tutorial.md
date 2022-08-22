@@ -812,7 +812,7 @@ use MyVendor\Weekday\Bootstrap;
 
 // JSON Application (smallest)
 require dirname(__DIR__) . '/autoload.php';
-exit((new Bootstrap())('app', $GLOBALS, $_SERVER));
+exit((new Bootstrap())('prod-app', $GLOBALS, $_SERVER));
 ```
 
 ```php?start_inline

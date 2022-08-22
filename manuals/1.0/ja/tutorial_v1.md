@@ -843,7 +843,7 @@ use MyVendor\Weekday\Bootstrap;
 
 // JSONアプリケーション （最小）
 require dirname(__DIR__) . '/autoload.php';
-exit((new Bootstrap())('app', $GLOBALS, $_SERVER));
+exit((new Bootstrap())('prod-app', $GLOBALS, $_SERVER));
 ```
 
 ```php?start_inline
@@ -856,13 +856,13 @@ require dirname(__DIR__) . '/autoload.php';
 exit((new Bootstrap())('prod-hal-app', $GLOBALS, $_SERVER));
 ```
 
-コンテキストに応じたインスタンスを生成するPHPコードが生成されます。アプリケーションの`var/tmp/{context}/di`フォルダを確認してみましょう。
-これらのファイルは普段見る必要はありませんが、オブジェクトがどのように作られているかを確認することができます。
+`prod`コンテクストを付加した時はコンテキストに応じたインスタンスを生成するPHPコードが生成されます。アプリケーションの`var/tmp/{context}/di`フォルダを確認してみましょう。
+これらのファイルは普段見る必要はありませんが、インスタンスがどのように作られているかを確認することができます。
 
 コンテキストを変える事でどの依存がどう変わったかを`diff`コマンドで調べることもできます。
 
 ```bash
-diff -q var/tmp/app/di/ var/tmp/prod-hal-app/di/
+diff -q var/tmp/prod-app/di/ var/tmp/prod-hal-app/di/
 ```
 
 ## REST API
