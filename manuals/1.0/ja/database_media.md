@@ -79,6 +79,8 @@ protected function configure(): void
 }
 ```
 
+MediaQueryModuleはAuraSqlModuleのインストールが必要です。
+
 ### 注入
 
 インターフェイスからオブジェクトが直接生成され、インジェクトされます。実装クラスのコーディングが不要です。

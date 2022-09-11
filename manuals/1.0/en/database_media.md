@@ -83,6 +83,8 @@ protected function configure(): void
 }
 ```
 
+MediaQueryModule requires AuraSqlModule to be installed.
+
 ### Request object injection
 
 You don't need to provide any implementation classes. It will be generated and injected.
