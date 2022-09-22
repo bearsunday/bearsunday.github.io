@@ -7,75 +7,99 @@ permalink: /manuals/1.0/ja/test.html
 
 # テスト
 
-適切なテストを書くことはより良いソフトウェアを書くのに役立ちます。
-
-全ての依存がインジェクトされ、横断的関心事がAOPで提供されるクリーンなBEAR.Sundayのアプリケーションはテストフレンドリーです。フレームワーク固有の密結合したベースクラスやヘルパーメソッドなしで高いカバレッジのテストを記述することができます。
+全ての依存がインジェクトされ、横断的関心事がAOPで提供されるBEAR.Sundayのクリーンなアプリケーションはテストフレンドリーです。
 
 ## テスト実行
-`vendor/bin/phpunit`または`composer test`コマンドで`phpmd`や`phpcs`と共にテストを実行します。他にもこのようなcomposerコマンドがあります。
+composerコマンドが用意されています。
 
 ```
+composer test     // phpunitテスト
 composer coverge  // testカバレッジ
+composer sa       // 静的解析
 composer cs       // コーディングスタンダード検査
 composer cs-fix   // コーディングスタンダード修復
+
 ```
 
 ## リソース	テストケース作成
 
-**全てがリソース**のBEAR.Sundayではリソース操作がテストの基本です。
-
-これは`Myvendor\MyProject`アプリを`html-app`コンテキストで実行して、`page://self/todo`リソースに`POST`すれば`201 (Created)`が返ってくることをテストするコードです。
+**全てがリソース**のBEAR.Sundayではリソース操作がテストの基本です。`Injector::getInstance`でリソースクライアントを取得してリソースの入出力テストを行います。
 
 ```php
 <?php
 
+use BEAR\Resource\ResourceInterface;
+
 class TodoTest extends TestCase
 {
-    /**
-     * @var \BEAR\Resource\ResourceInterface
-     */
-    private $resource;
+    private ResourceInterface $resource;
+    
     protected function setUp()
     {
-        $this->resource = (new AppInjector('Myvendor\MyProject', 'html-app'))->getInstance(ResourceInterface::class);
+        $injector = Injector::getInstance('test-html-app');
+        $this->resource = $injector->getInstance(ResourceInterface::class);
     }
+
     public function testOnPost()
     {
-        $page = $this->resource->post->uri('page://self/todo')(['title' => 'test']);
-        /* @var $page ResourceObject */
+        $page = $this->resource->post('page://self/todo', ['title' => 'test']);
         $this->assertSame(StatusCode::CREATED, $page->code);
     }
 }
 ```
 
- * AppリソースでCRUDテストは[App/TodoTest](https://github.com/koriym/Polidog.Todo/blob/master/tests/Resource/App/TodoTest.php)を参考にしてください。
- * Pageリソースのテストは[Page/Index](https://github.com/koriym/Polidog.Todo/blob/master/tests/Resource/Page/IndexTest.php)を参考にしてください。
+## テスト用の束縛
 
-## アプリケーション・インジェクター
+テスト用に束縛を変更する方法は２つあります。全テストの束縛を横断的に変更する方法と、１テストの中だけで特定目的だけで束縛を変える方法です。前者は`TestModule`を用意して束縛します。
 
-AppInjector(アプリケーションインジェクター)はアプリケーションで利用するすべてのクラスのインスタンスを特定のコンテキストを指定して生成することができ、リソースオブジェクトやその依存を直接テストすることができます。
 
-```php?start_inline
-$injector = new AppInjector('MyVendor\MyProject', 'test-app'));
+TestModule 例
+`DateTimeInterface`でインジェクトされる現在時刻が全てUNIXエポックになります。
 
-// リソースクライアント
-$resource = $injector->getInstance(ResourceInterface::class);
-$index = $resource->uri('page://self/index')();
-/* @var $index Index */
-$this->assertSame(StatusCode::OK, $page->code);
-$todos = $page->body['todos'];
-
-// リソースクラスを直接生成して直接コール
-$user = $resource->newInstance('app://self/user');
-// or
-$user = $injector->getInstance(User::class);
-$name = $index->onGet(1)->body['name']; // BEAR
-
-// フォームのバリデーション検査
-$form = $injector->getInstance(TodoForm::class);
-$submit = ['name' => 'BEAR'];
-$isValid = $this->form->apply($submit); // true
+```php
+$this->bind(DateTimeInterface::class)->toInstance(new DateTimeImmutable('1970-01-01 00:00:00'));
+$this->bind(Auth::class)->to(FakeAuth::class);
 ```
+
+１つのテストのための一時的な束縛の変更は`Injector::getOverrideInstance`で上書きする束縛を指定します。
+
+```php
+public function testBindFake(): void
+{
+    $module = new class extends AbstractModule {
+        protected function configure()
+        {
+            $this->bind(FooInterface::class)->to(FakeFoo::class);
+        }
+    };
+    $injector = Injector::getOverrideInstance('hal-app', $module);
+}
+```
+
+モックの例
+
+```php
+public function testMockBInd(): void
+{
+  
+    $mock = $this->createMock(FooInterface::class);
+    $mock->method('doSomething')->willReturn('foo');
+    $module = new class($mock) extends AbstractModule {
+        public function __constcuct(
+            private FooInterface $foo
+        ){}
+protected function configure()
+        {
+            $this->bind(FooInterface::class)->toInstance($this->foo);
+        }
+    };
+    $injector = Injector::getOverrideInstance('hal-app', $module);
+}
+```
+
+## ハイパーメディアテスト
+
+リソースの入出力だけなく、ハイパーメディアのテストを記述してワークフローをテストコードという形で表現することができます。ワークフローテストはHTTPテストで継承され１つのコードでPHPとHTTP双方のレベルで実行されます。PHPのテストは`curl`で行われ、その時、リクエスト・レスポンスがログが記録されます。
 
 ## テストダブル
 
@@ -86,186 +110,12 @@ $isValid = $this->form->apply($submit); // true
  * フェイク (実際のオブジェクトに近い働きをするがより単純な実装を使う)
  * スパイ (実際のオブジェクトに対する入出力の記録を検証)
 
-全ての依存がインジェクトされるBEAR.SundayではDIでテストダブルを実現することは容易ですが、テストダブルフレームワーク[Ray.TestDouble](https://github.com/ray-di/Ray.TestDouble)を使うとさらに便利になり**スパイ**もできるようになります。
+全ての依存がインジェクトされるBEAR.SundayではDIでテストダブルを実現することは容易です。
 
-composerインストール
+## 良いテストのために
 
-```
-$ composer require ray/test-double 1.x-dev --dev
-```
-
-`TestModule`など作成してモジュールインストールします。
-
-```php?start_inline
-use BEAR\Package\AbstractAppModule;
-use Ray\TestDouble\TestDoubleModule;
-
-class AppModule extends AbstractAppModule
-{
-    protected function configure()
-    {
-        // ...
-        $this->install(new TestDoubleModule);
-    }
-}
-```
-
-テストダブルの対象に`@Fakeable`とアノテートとします。
-
-```php?start_inline
-use Ray\TestDouble\Annotation\Fakeable;
-
-/**
- * @Fakeable
- */
-class Foo
-{
-    public function getDate() {
-        return date("Ymd");
-    }
-}
-```
-
-テストダブルのクラスには`Fake`プリフェックスをつけて`tests/fake-src`フォルダに保存します。元クラスを`extend`して入れ替えるクラスだけを実装します。
-
-```php?start_inline
-class FakeFoo extend Foo
-{
-    public function getDate() {
-        return '20170801'; // 単に値を返すだけのスタブ
-    }
-}
-```
-
-オートロードが働くように`composer.json`に`autoload-dev`を追加します。
-
-```json
-"autoload-dev": {
-    "psr-4": {
-        "MyVendor\\MyProject\\": "tests/fake-src"
-    }
-},
-```
-
-`test`コンテキストで実行すると`Foo`の代わりに`FakeFoo`が呼ばれるようになります。
-
-```php?start_inline
-$resource = (new AppInjector('MyVendor\MyProject', 'test-app'))->getInstance(ResourceInterface::class);
-```
-
-### スパイ
-
-入出力を記録して**スパイ**するクラスに`@Spy`とアノテートします。
-
-```php
-<?php
-use Ray\TestDouble\Annotation\Spy;
-
-/**
- * @Spy
- */
-class Calc
-{
-    public function add($a, $b)
-    {
-        return $a + $b;
-    }
-}
-```
-
-`Spy`クラスから(クラス名,メソッド名)を指定して`getLogs()`するとメソッドの引数や実行結果が保存されている`SpyLog`値オブジェクトが取得できます。そのオブジェクトを使って`@Spy`とアノテートしたクラスの入出力や呼び出し回数をテストすることができます。
-
-```php?start_inline
-public function testSpy()
-{
-    $injector = (new AppInjector('MyVendor\MyProject', 'test-app'))->getInstance(InjectorInterface::class);
-    $calc = $injector->getInstance(Calc::class);
-    $result = $calc->add(1, 2); // 3
-
-    // スパイログを取得
-    $spy = $injector->getInstance(Spy::class);
-    $logs = $spy->getLogs(Calc::class, 'add');
-    $this->assertSame(1, count($logs)); // call time
-    /* @var $log SpyLog */
-    $log = $logs[0]; // first call log
-
-    // メソッドがコールされた時の引数と結果を検査
-    $this->assertSame([1, 2], $log->arguments);
-    $this->assertSame(3, $log->result);
-}
-```
-
-Fakeクラスをスパイしてテストダブルへの呼び出しを検査することもできます。
-
-```php?start_inline
-/**
- * @Spy
- */
-class FakeUserRole extend UserRole
-{
-    public function getRoleById(string $id) : string
-    {
-        // ...条件
-        return $role
-    }
-}
-```
-
-## 無名クラスを使った束縛
-
-PHPの無名クラスを使って一時的に依存を束縛することができます。
-
-```
-public function testAnonymousClassBinding()
-    $injector = new AppInjector('FakeVendor\HelloWorld', 'hal-app');
-    $module = new class extends AbstractModule {
-        protected function configure()
-        {
-            $this->bind(FooInterface::class)->to(Foo::class);
-        }
-    };
-app');
-    $index = $injector->getOverrideInstance($module, Index::class);
-    $name = $index(['id' => 1])->body['name'];
-    $this->assertSame('BEAR', $name);
-}
-```
-
-## スタブを束縛
-
-phpunitの`createMock()`メソッドなどのモッキングツールでスタブを作成してそのインスタンスと束縛することもできます。
-
-```
-public function testStub()
-{
-    $injector = new AppInjector('FakeVendor\HelloWorld', 'hal-app');
-    $stub = $this->createMock(FooInterface::class);
-    $stub->method('doSomething')
-    　　　　->willReturn('foo');
-    $module = new class($stub) extends AbstractModule {
-
-        private $stub;
-
-        public function __construct(FooInterface $stub)
-        {
-            $this->stub = $stub;
-        }
-
-        protected function configure()
-        {
-            $this->bind(FooInterface::class)->toInstance($this->mock);
-        }
-    };
-    $index = $injector->getOverrideInstance($module, Index::class);
-    $name = $index(['id' => 1])->body['name'];
-    $this->assertSame('BEAR', $name);
-}
-```
-
-## ベストプラクティス
-
- * 実装ではなく、インターフェイスをテストする
- * フェイククラスを好む。スタブはOK。モックには批判的な意見もあり複雑なものを避ける。
+ * 実装ではなく、インターフェイスをテストする。
+ * フェイククラスを好む。スタブはOK。モックには批判的な意見もあり利用には注意する。
 
 参考URL
 
