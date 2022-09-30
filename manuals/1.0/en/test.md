@@ -7,9 +7,7 @@ permalink: /manuals/1.0/en/test.html
 
 # Test
 
-Proper testing makes software better with continuity.
-
-A clean application of BEAR.Sunday is test friendly, with all dependencies injected and crosscutting interests provided in the AOP.
+Proper testing makes software better with continuity. A clean application of BEAR.Sunday is test friendly, with all dependencies injected and crosscutting interests provided in the AOP.
 
 ## Run test
 
@@ -40,13 +38,13 @@ class TodoTest extends TestCase
 {
     private ResourceInterface $resource;
     
-    protected function setUp()
+    protected function setUp(): void
     {
         $injector = Injector::getInstance('test-html-app');
         $this->resource = $injector->getInstance(ResourceInterface::class);
     }
 
-    public function testOnPost()
+    public function testOnPost(): void
     {
         $page = $this->resource->post('page://self/todo', ['title' => 'test']);
         $this->assertSame(StatusCode::CREATED, $page->code);
@@ -96,7 +94,7 @@ Temporary bundle changes for a single test specify the bundle to override with `
 public function testBindFake(): void
 {
     $module = new class extends AbstractModule {
-        protected function configure()
+        protected function configure(): void
         {
             $this->bind(FooInterface::class)->to(FakeFoo::class);
         }
@@ -117,7 +115,7 @@ public function testMockBInd(): void
         public function __constcuct(
             private FooInterface $foo
         ){}
-protected function configure()
+        protected function configure(): void
         {
             $this->bind(FooInterface::class)->toInstance($this->foo);
         }

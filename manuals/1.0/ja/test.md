@@ -36,13 +36,13 @@ class TodoTest extends TestCase
 {
     private ResourceInterface $resource;
     
-    protected function setUp()
+    protected function setUp(): void
     {
         $injector = Injector::getInstance('test-html-app');
         $this->resource = $injector->getInstance(ResourceInterface::class);
     }
 
-    public function testOnPost()
+    public function testOnPost(): void
     {
         $page = $this->resource->post('page://self/todo', ['title' => 'test']);
         $this->assertSame(StatusCode::CREATED, $page->code);
