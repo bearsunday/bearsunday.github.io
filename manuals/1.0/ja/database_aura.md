@@ -18,7 +18,7 @@ composer require ray/aura-sql-module
 
 アプリケーションモジュール`src/Module/AppModule.php`で`AuraSqlModule`をインストールします。
 
-```php?start_inline
+```php
 use BEAR\Package\AbstractAppModule;
 use BEAR\AppMeta\AppMeta;
 use BEAR\Package\PackageModule;
@@ -31,16 +31,29 @@ class AppModule extends AbstractAppModule
         // ...
         $this->install(
           new AuraSqlModule(
-            'mysql:host=localhost;dbname=test',
+            'mysql:host=localhost;dbname=test' // またはgetenv('PDO_DSN')
             'username',
             'password',
-            // $options,
-            // $attributes
           )
         );  // この行を追加
         $this->install(new PackageModule));
     }
 }
+```
+
+設定時に直接値を指定するのではなく、実行時に毎回環境変数から取得するためには`AuraSqlEnvModule`を使います。
+接続先と認証情報の値を直接指定する代わりに、該当する環境変数のキーを渡します。
+
+```php
+        $this->install(
+            new AuraSqlEnvModule(
+                'PDO_DSN',             // getenv('PDO_DSN')
+                'PDO_USER',            // getenv('PDO_USER')
+                'PDO_PASSWORD',        // getenv('PDO_PASSWORD')
+                'PDO_SLAVE'            // getenv('PDO_SLAVE')
+                $options,              // optional key=>value array of driver-specific connection options
+                $queris                // Queries to execute after the connection.
+        );
 ```
 
 ## Aura.Sql
@@ -193,7 +206,7 @@ foreach ($pdo->yieldPairs($stm, $bind) as $key => $val) {
 
 ## リプリケーション
 
-マスター／スレーブの接続を自動で行うためには4つ目の引数にスレーブDBのIPを指定します。
+マスター／スレーブ構成のデータベース接続を行うためには4つ目の引数にスレーブDBのホストを指定します。
 
 ```php?start_inline
 $this->install(
@@ -201,7 +214,7 @@ $this->install(
     'mysql:host=localhost;dbname=test',
     'username',
     'password',
-    'slave1,slave2' // スレーブIPをカンマ区切りで指定
+    'slave1,slave2' // スレーブのホストをカンマ区切りで指定
   )
 );
 ```
@@ -267,34 +280,45 @@ class User
 }
 ```
 
-## 複数DB
+## 複数データベースの接続
 
-接続先の違う複数の`PdoExtendedInterface`オブジェクトを受け取るためには
-`@Named`アノテーションで指定します。
+接続先の異なるデータベースのPDOインスタンスをインジェクトするには識別子[^qualifier]をつけます。
 
-```php?start_inline
-/**
- * @Inject
- * @Named("log_db")
- */
-public function setLoggerDb(ExtendedPdoInterface $pdo)
+```php
+    public function __constrcut(
+        private readonly #[Log] ExtendedPdoInterface $logDb,
+        private readonly #[Mail] ExtendedPdoInterface $mailDb,
+    ){}
+```
+
+[^qualifier]: 識別子（クオリファイアー）についてはRay.Diのマニュアルの[束縛アトリビュート](https://ray-di.github.io/manuals/1.0/ja/binding_attributes.html)をご覧ください。
+
+`NamedPdoModule`でその識別子と接続情報を指定してインストールします。
+
+```php
+class AppModule extends AbstractAppModule
 {
-    // ...
+    protected function configure()
+    {
+        // ...
+        $this->install(new NamedPdoModule(Log::class, 'mysql:host=localhost;dbname=log', 'username', 
+        $this->install(new NamedPdoModule(Mail::class, 'mysql:host=localhost;dbname=mail', 'username', 
+    }
 }
 ```
 
-モジュールでは`NamedPdoModule`で識別子を指定して束縛します。
+接続情報を環境変数から都度取得するときはNamedPdoEnvModuleを使います。
 
-```php?start_inline
-$this->install(
-  new NamedPdoModule(
-    'log_db', // @Namedで指定するデータベースの種類
-    'mysql:host=localhost;dbname=log',
-    'username',
-    'pass',
-    'slave1,slave12'
-  )
-);
+```php
+class AppModule extends AbstractAppModule
+{
+    protected function configure()
+    {
+        // ...
+        $this->install(new NamedPdoEnvModule(Log::class, 'LOG_DSN', 'LOG_USERNAME',  
+        $this->install(new NamedPdoEnvModule(Mail::class, 'MAIL_DSN', 'MAIL_USERNAME', 
+    }
+}
 ```
 
 ## トランザクション
@@ -653,3 +677,5 @@ class AppModule extends AbstractAppModule
     }
 }
 ```
+
+---
