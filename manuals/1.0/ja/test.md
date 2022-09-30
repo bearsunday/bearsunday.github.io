@@ -122,8 +122,6 @@ public function testMockBInd(): void
     $injector = Injector::getOverrideInstance('hal-app', $module);
 }
 ```
-### 
-
 ## ハイパーメディアテスト
 
 リソーステストは各エンドポイントの入出力テストです。対してハイパーメディアテストはそのエンドポイントどう繋ぐかというワークフローの振る舞いをテストします。
