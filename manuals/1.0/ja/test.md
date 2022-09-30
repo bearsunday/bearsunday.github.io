@@ -82,7 +82,7 @@ class TestModule extends AbstractModule
 テスト用束縛が上書きされたインジェクター
 
 ```php
-$injector = Injector::getOverrideInstance('test-hal-app', $module);
+$injector = Injector::getInstance('test-hal-app', $module);
 ```
 
 #### 一時的束縛変更

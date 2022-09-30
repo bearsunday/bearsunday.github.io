@@ -83,10 +83,10 @@ class TestModule extends AbstractModule
 Injector with test context.
 
 ```php
-$injector = Injector::getOverrideInstance('test-hal-app', $module);
+$injector = Injector::getInstance('test-hal-app', $module);
 ```
 
-#### temporary-bundle-change
+#### Temporary binding change
 
 Temporary bundle changes for a single test specify the bundle to override with `Injector::getOverrideInstance`.
 
@@ -134,6 +134,7 @@ Workflow tests are inherited from HTTP tests and are tested at both the PHP and 
 
  * Test the interface, not the implementation.
  * Create a fake class rather than using a mock library.
+ * Testing is a specification. Ease of reading rather than ease of coding.
 
 Reference
 
