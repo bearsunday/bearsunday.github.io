@@ -54,10 +54,14 @@ class TodoTest extends TestCase
 
 [テストダブル](https://ja.wikipedia.org/wiki/%E3%83%86%E3%82%B9%E3%83%88%E3%83%80%E3%83%96%E3%83%AB) (Test Double) とは、ソフトウェアテストでテスト対象が依存しているコンポーネントを置き換える代用品のことです。テストダブルは以下のパターンがあります。
 
-* スタブ (テスト対象にダミーデータを与える)
-* モック (下位モジュールを正しく利用しているかを実際のモジュールを用いないで検証)
-* フェイク (実際のオブジェクトに近い働きをするがより単純な実装を使う)
-* スパイ (実際のオブジェクトに対する入出力の記録を検証)
+* スタブ (テスト対象に「間接的な入力」を提供)
+* モック  (テスト対象からの「間接的な出力」をテストダブルの内部で検証）
+* スパイ (テスト対象からの「間接的な出力」を記録)
+* フェイク (実際のオブジェクトに近い働きのより単純な実装)
+* _ダミー_（テスト対象の生成に必要だが呼び出しが行われない）
+
+テスト対象のシステム([SUT](https://ja.wikipedia.org/wiki/%E3%83%86%E3%82%B9%E3%83%88%E5%AF%BE%E8%B1%A1%E3%82%B7%E3%82%B9%E3%83%86%E3%83%A0)）がテストダブルの出力を使用するのがスタブです。例えばいつも`true`を返すようなメソッドを持つテストダブルはスタブです。モックはSUTからテストダブルへの間接的出力の検証をテストコードではなく、テストダブル内部で行います。スパイはモックと同じようにSUTの間接的出力の検証を行うためのものですが、その検証をテストコードで行うためにテストコードから読み取り可能な記録が行われます。
+
 
 ### テストダブルの束縛
 
@@ -85,12 +89,14 @@ class TestModule extends AbstractModule
 $injector = Injector::getInstance('test-hal-app', $module);
 ```
 
-#### 一時的束縛変更
+## 一時的束縛変更
 
 １つのテストのための一時的な束縛の変更は`Injector::getOverrideInstance`で上書きする束縛を指定します。
 
+### スタブ、フェイク
+
 ```php
-public function testBindFake(): void
+public function testBindStub(): void
 {
     $module = new class extends AbstractModule {
         protected function configure(): void
@@ -102,14 +108,18 @@ public function testBindFake(): void
 }
 ```
 
-モックの例
+### モック
+
+アサーションをテストダブル内部で実行します。
 
 ```php
-public function testMockBInd(): void
-{
-  
+public function testBindMock(): void
+{  
     $mock = $this->createMock(FooInterface::class);
-    $mock->method('doSomething')->willReturn('foo');
+    //  update() が一度だけコールされ、その際のパラメータは文字列 'something' となるということを期待
+    $mock->expects($this->once())
+             ->method('update')
+             ->with($this->equalTo('something'));
     $module = new class($mock) extends AbstractModule {
         public function __constcuct(
             private FooInterface $foo
@@ -122,6 +132,41 @@ public function testMockBInd(): void
     $injector = Injector::getOverrideInstance('hal-app', $module);
 }
 ```
+
+### スパイ
+
+スパイ対象のインターフェイスまたはクラス名を指定して`SpyModule`をインストールします。[^spy-module] スパイ対象が含まれるSUTを動作させた後に、スパイログで呼び出し回数や呼び出しの値を検証します。
+
+[^spy-module]: SpyModuleの利用には[ray/test-double](https://github.com/ray-di/Ray.TestDouble)のインストールが必要です。
+
+```php
+public function testBindSpy(): void
+{
+    $module = new class extends AbstractModule {
+        protected function configure(): void
+        {
+            $this->install(new SpyModule([FooInterface::class]));
+        }
+    };
+    $injector = Injector::getOverrideInstance('hal-app', $module);
+    $resource = $injector->getInstance(ResourceInterface::class);
+    // 直接、間接に関わらずFooInterfaceオブジェクトのSpyログが記録されます。
+    $resource->get('/');
+    // Spyログの取り出し
+    $spyLog = $injector->getInstance(\Ray\TestDouble\LoggerInterface::class);
+    // @var array<int, Log> $addLog
+    $addLog = $spyLog->getLogs(FooInterface, 'add');   
+    $this->assertSame(1, count($addLog), 'Should have received once');
+    // SUTからの引数の検証
+    $this->assertSame([1, 2], $addLog[0]->arguments);
+    $this->assertSame(1, $addLog[0]->namedArguments['a']);
+}
+```
+
+### ダミー
+
+インターフェイスにNullオブジェクトを束縛するには[Null束縛](https://ray-di.github.io/manuals/1.0/ja/null_object_binding.html)を使います。
+
 ## ハイパーメディアテスト
 
 リソーステストは各エンドポイントの入出力テストです。対してハイパーメディアテストはそのエンドポイントどう繋ぐかというワークフローの振る舞いをテストします。
@@ -138,3 +183,5 @@ WorkflowテストはHTTPテストに継承され、１つのコードでPHPとHT
 
  * [Stop mocking, start testing](https://nedbatchelder.com/blog/201206/tldw_stop_mocking_start_testing.html)
  * [Mockists Are Dead](https://www.thoughtworks.com/insights/blog/mockists-are-dead-long-live-classicists)
+
+---
