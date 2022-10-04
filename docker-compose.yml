@@ -1,7 +1,7 @@
 version: "3"
 services:
   app:
-    container_name: jekyll
+    container_name: jekyllbearsunday
     build:
       context: .
       dockerfile: Dockerfile
