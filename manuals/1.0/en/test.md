@@ -56,10 +56,11 @@ class TodoTest extends TestCase
 
 A Test Double is a substitute that replaces a component on which the software test object depends. Test doubles can have the following patterns
 
-* Stub (providing dummy data to the test target)
-* Mock (verifying correct use of a subordinate module without using the actual module)
-* Fake (works similar to the real object but uses a simpler implementation)
-* Spy (verifies input/output records against the real object)
+* Stub (provides "indirect input" to the test target)
+* Mock ( validate "indirect output" from the test target inside a test double)
+* Spy (records "indirect output" from the target to be tested)
+* Fake (simpler implementation that works closer to the actual object)
+* _Dummy_ (necessary to generate the test target but no call is made)
 
 ### Test Double Binding
 
@@ -103,14 +104,16 @@ public function testBindFake(): void
 }
 ```
 
-Mock Example
+### Mock
 
 ```php
-public function testMockBInd(): void
-{
-  
+public function testBindMock(): void
+{ 
     $mock = $this->createMock(FooInterface::class);
-    $mock->method('doSomething')->willReturn('foo');
+    // expect that update() will be called once and the parameter will be the string 'something'.
+    mock->expects($this->once())
+             ->method('update')
+             ->with($this->equalTo('something'));
     $module = new class($mock) extends AbstractModule {
         public function __constcuct(
             private FooInterface $foo
@@ -123,6 +126,39 @@ public function testMockBInd(): void
     $injector = Injector::getOverrideInstance('hal-app', $module);
 }
 ```
+### spy
+
+Installs a `SpyModule` by specifying the interface or class name of the spy target. [^spy-module] After running the SUT containing the spy target, verify the number of calls and the value of the calls in the spy log.
+
+[^spy-module]: [ray/test-double](https://github.com/ray-di/Ray.TestDouble) must be installed to use SpyModule.
+
+```php
+public function testBindSpy(): void
+{
+    $module = new class extends AbstractModule {
+        protected function configure(): void
+        {
+            $this->install(new SpyModule([FooInterface::class]));
+        }
+    };
+    $injector = Injector::getOverrideInstance('hal-app', $module);
+    $resource = $injector->getInstance(ResourceInterface::class);
+    // Spy logs of FooInterface objects are logged, whether directly or indirectly.
+    $resource->get('/');
+    // Spyログの取り出し
+    $spyLog = $injector->getInstance(\Ray\TestDouble\LoggerInterface::class);
+    // @var array<int, Log> $addLog
+    $addLog = $spyLog->getLogs(FooInterface, 'add');   
+    $this->assertSame(1, count($addLog), 'Should have received once');
+    // Argument validation from SUT
+    $this->assertSame([1, 2], $addLog[0]->arguments);
+    $this->assertSame(1, $addLog[0]->namedArguments['a']);
+}
+```
+
+### Dummy
+
+Use [Null Binding](https://ray-di.github.io/manuals/1.0/ja/null_object_binding.html) to bind a null object to an interface.
 
 ## Hypermedia Test
 
@@ -133,7 +169,7 @@ Workflow tests are inherited from HTTP tests and are tested at both the PHP and 
 ## Best Practice
 
  * Test the interface, not the implementation.
- * Create a fake class rather than using a mock library.
+ * Create a actual fake class rather than using a mock library.
  * Testing is a specification. Ease of reading rather than ease of coding.
 
 Reference
