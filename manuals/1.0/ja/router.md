@@ -21,7 +21,7 @@ echo (string) $request;
 デフォルトのWebルーターではHTTPリクエストのパス(`$_SERVER['REQUEST_URI']`)に対応したリソースクラスにアクセスされます。
 例えば`/index`のリクエストは`{Vendor名}\{Project名}\Resource\Page\Index`クラスのHTTPメソッドに応じたPHPメソッドにアクセスされます。
 
-ルーターの設定やスクリプトは必要ありません。
+Webルーターは規約ベースのルーターです。設定やスクリプトは必要ありません。
 
 ```php?start_inline
 namespace MyVendor\MyProject\Resource\Page;
@@ -53,7 +53,6 @@ BEAR.SundayアプリケーションはWebとCLIの双方で動作します。
 ## パラメーター
 
 HTTPメソッドに対応して実行されるPHPメソッドの名前と渡される値は以下の通りです。
-
 
 | HTTPメソッド | PHPメソッド  |　渡される値  |
 |---|---|---|
@@ -223,6 +222,18 @@ class Index extends ResourceObject
     {
         $userLink = $this->router->generate('/user', ['name' => 'bear']);
         // '/user/bear'
+```
+
+### リクエストメソッド
+
+リクエストメソッドを指定する必要はありません。
+
+### リクエストヘッダー
+
+通常リクエストヘッダーはAura.Routerに渡されていませんが `RequestHeaderModule`をインストールするとAura.Routerでヘッダーを使ったマッチングが可能になります。
+
+```php
+$this->install(new RequestHeaderModule());
 ```
 
 ## 独自のルーターコンポーネント
