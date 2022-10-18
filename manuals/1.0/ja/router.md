@@ -230,7 +230,7 @@ class Index extends ResourceObject
 
 ### リクエストヘッダー
 
-通常リクエストヘッダーはAura.Routerに渡されていませんが `RequestHeaderModule`をインストールするとAura.Routerでヘッダーを使ったマッチングを可能になります。
+通常リクエストヘッダーはAura.Routerに渡されていませんが `RequestHeaderModule`をインストールするとAura.Routerでヘッダーを使ったマッチングが可能になります。
 
 ```php
 $this->install(new RequestHeaderModule());
