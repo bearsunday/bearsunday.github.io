@@ -19,7 +19,7 @@ composer require bear/qiq-module
 
 ```
 cd /path/to/project
-cp vendor/bear/qiq-module/var/qiq var
+cp -r vendor/bear/qiq-module/var/qiq var
 ```
 
 `html`コンテキストファイル`src/Module/HtmlModule.php`を用意して`QiqModule`をインストールします。
