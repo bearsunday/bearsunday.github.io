@@ -796,7 +796,7 @@ Content-Type: text/html; charset=utf-8
 ```
 
 もしこの時htmlが表示されなければ、テンプレートエンジンのエラーが発生しています。
-その時はログファイル(`var/log/app.cli-html-app.log`)でエラーを確認しましょう。
+その時はログファイル(`var/log/cli-html-app/last.logref.log`)でエラーを確認しましょう。
 
 次にWebサービスを行うために`public/index.php`も変更します。
 
