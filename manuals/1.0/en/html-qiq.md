@@ -35,7 +35,8 @@ class HtmlModule extends AbstractModule
 {
     protected function configure()
     {
-        $this->install(new QiqModule($this->appDir . '/var/qiq/template'));
+        $appMeta = new AppMeta('MyVendor\MyPackage');
+        $this->install(new QiqModule($appMeta->appDir . '/var/qiq/template'));
     }
 }
 ```
