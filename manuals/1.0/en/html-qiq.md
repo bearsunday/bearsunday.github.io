@@ -27,18 +27,17 @@ Provide the `html` context file `src/Module/HtmlModule.php` and install `QiqModu
 ```php?start_inline
 namespace MyVendor\MyPackage\Module;
 
-use BEAR\AppMeta\AppMeta;
+use BEAR\Package\AbstractAppModule;
 use BEAR\QiqModule\QiqModule;
-use Ray\Di\AbstractModule;
 
-class HtmlModule extends AbstractModule
+
+class HtmlModule extends AbstractAppModule
 {
     protected function configure()
     {
         $this->install(new QiqModule($this->appDir . '/var/qiq/template'));
     }
-}
-```
+}```
 
 ## Change context
 
@@ -50,7 +49,7 @@ $context = 'cli-html-app';
 
 ## Template 
 
-Prepare the template for the Index resource in `var/qiq/template/Index.php`.
+Prepare the template for the Index resource in `var/qiq/template/Page/Index.php`.
 
 ```
 {% raw %}<h1>{{h $this->greeting }}</h1>{% endraw %}

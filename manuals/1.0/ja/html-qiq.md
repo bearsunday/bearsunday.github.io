@@ -27,11 +27,11 @@ cp -r vendor/bear/qiq-module/var/qiq var
 ```php?start_inline
 namespace MyVendor\MyPackage\Module;
 
-use BEAR\AppMeta\AppMeta;
+use BEAR\Package\AbstractAppModule;
 use BEAR\QiqModule\QiqModule;
-use Ray\Di\AbstractModule;
 
-class HtmlModule extends AbstractModule
+
+class HtmlModule extends AbstractAppModule
 {
     protected function configure()
     {
@@ -50,7 +50,7 @@ $context = 'cli-html-app';
 
 ## テンプレート
 
-Indexリソースのテンプレートを`var/qiq/template/Index.php`に用意します。
+Indexリソースのテンプレートを`var/qiq/template/Page/Index.php`に用意します。
 
 ```
 {% raw %}<h1>{{h $this->greeting }}</h1>{% endraw %}
