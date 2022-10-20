@@ -27,11 +27,11 @@ cp -r vendor/bear/qiq-module/var/qiq var
 ```php?start_inline
 namespace MyVendor\MyPackage\Module;
 
-use BEAR\AppMeta\AppMeta;
+use BEAR\Package\AbstractAppModule;
 use BEAR\QiqModule\QiqModule;
-use Ray\Di\AbstractModule;
 
-class HtmlModule extends AbstractModule
+
+class HtmlModule extends AbstractAppModule
 {
     protected function configure()
     {
