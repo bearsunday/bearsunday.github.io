@@ -374,7 +374,7 @@ interface TicketCommandInterface
 デフォルトではデータベースの読み込みは連想配列(fetchAssoc)で行われますが、`entity`を指定すると各行がエンティティオブジェクトになります。
 
 ```
-#[DbQuery('ticket_item', entity: Ticket::class, type:'row')]
+#[DbQuery('ticket_item', entity: Ticket::class)]
 ```
 
 各行の値は名前引数でコンストラクタに渡されます。[^named]

@@ -376,7 +376,7 @@ It can be one interface and one method as in [ADR pattern](https://github.com/pm
 By default, database reading is done with an associative array (fetchAssoc), but if `entity` is specified, each row becomes an entity object.
 
 ```
-#[DbQuery('ticket_item', entity: Ticket::class, type:'row')]
+#[DbQuery('ticket_item', entity: Ticket::class)]
 ```
 
 The value of each row is passed to the constructor by name argument. [^named]
