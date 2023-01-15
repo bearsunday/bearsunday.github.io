@@ -255,7 +255,7 @@ You can get the number of pages with `count()`, and you can get the page object 
 
 ```php
 $pages = ($todoList)();
-$cnt = count($page); // When count() is called, the count SQL is generated and queried.
+$cnt = count($pages); // When count() is called, the count SQL is generated and queried.
 $page = $pages[2]; // A page query is executed when an array access is made.
 
 // $page->data // sliced data
