@@ -116,7 +116,7 @@ The values required by the application code are all injected. The setting files 
 
 ## Classes and object
 
-* Trait(http://php.net/manual/ja/language.oop5.traits.php) is not recommended except for injection.
+* * [Traits](http://php.net/manual/en/language.oop5.traits.php) are not recommended. Traits for injection such as `ResourceInject` that reduce boilerplate code for injection were added in PHP8 [constructor property promotion (declaring properties in the constructor signature)](https://www.php.net/manual/en/language.oop5.decon.php#language.oop5.decon.constructor.promotion). Use constructor injection.
 * It is not recommended for the child classes to use the parent class methods. Common functions are not shared by inheritance and trait, they are dedicated classes and they are injected and used. [Composite from inheritance](https://en.wikipedia.org/wiki/Composition_over_inheritance).
 * A class with only one method should reflect the function to the class name and should set the name of the method to `__invoke ()` so that function access can be made.
 
@@ -329,3 +329,5 @@ We recommend the following PHPStorm plugin. Set it with `PHPStorm > Preference >
 * [PHP Annotations](https://github.com/Haehnchen/idea-php-annotation-plugin)
 * PHP Advanced AutoComplete
 * Database Navigator
+
+---

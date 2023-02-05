@@ -25,8 +25,6 @@ use BEAR\Resource\Annotation\Embed;
 use BEAR\Resource\Annotation\Link;
 use BEAR\Resource\Code;
 use BEAR\Resource\ResourceObject;
-use BEAR\Sunday\Inject\ResourceInject;
-use Ray\AuraSqlModule\AuraSqlInject;
 
 #[CacheableResponse]
 class Entry extends ResourceObject
@@ -97,8 +95,10 @@ class Entry extends ResourceObject
 
 ## クラスとオブジェクト
 
-* インジェクション以外で[トレイト](http://php.net/manual/ja/language.oop5.traits.php)は推奨されません。
+* [トレイト](http://php.net/manual/ja/language.oop5.traits.php)は推奨されません。[^no-trait]
 * 親クラスのメソッドを子クラスが使うことは推奨されません。共通する機能は継承やtraitで共有ではなくクラスにしてインジェクトして使います。[継承より合成](https://en.wikipedia.org/wiki/Composition_over_inheritance)します。
+
+[^no-trait]:`ResourceInject`などのインジェクション用トレイトはインジェクションのボイラープレートコードを削減するために存在しましたが、PHP8で追加された[コンストラクタの引数をプロパティへ昇格させる機能](https://www.php.net/manual/ja/language.oop5.decon.php#language.oop5.decon.constructor.promotion)により意味を失いました。コンストラクタインジェクションを使いましょう。
 
 ## スクリプトコマンド
 
@@ -182,3 +182,5 @@ BEAR.SundayはHTMLのWebフォームで`POST`リクエストの時に`X-HTTP-Met
 * [PHP Annotations](https://github.com/Haehnchen/idea-php-annotation-plugin)
 * PHP Advanced AutoComplete
 * Database Navigator
+
+---
