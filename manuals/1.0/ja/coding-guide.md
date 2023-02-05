@@ -174,13 +174,4 @@ BEAR.SundayはHTMLのWebフォームで`POST`リクエストの時に`X-HTTP-Met
 
 リソースクライアントを使ったリソーステストを基本にします。リソースの値を確認して、必要があれば表現(HTMLやJSON)のテストを加えます。
 
-## 開発ツール
-
-以下のPHPStormプラグインを推奨します。`PHPStorm > Preference > Plugins`で設定します。
-
-* [BEAR Sunday](https://github.com/kuma-guy/idea-php-bear-sunday-plugin)
-* [PHP Annotations](https://github.com/Haehnchen/idea-php-annotation-plugin)
-* PHP Advanced AutoComplete
-* Database Navigator
-
 ---

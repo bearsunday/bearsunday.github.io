@@ -321,13 +321,4 @@ It is recommended not to include the `.env` file in the project repository.
 Basically you test resources with resource client. You request a resource then examine the returned response value.
 If you need to test the representation part, such as HTML or JSON, you may add an additional test for it.
 
-## Development tools
-
-We recommend the following PHPStorm plugin. Set it with `PHPStorm > Preference > Plugins`.
-
-* [BEAR Sunday](https://github.com/kuma-guy/idea-php-bear-sunday-plugin)
-* [PHP Annotations](https://github.com/Haehnchen/idea-php-annotation-plugin)
-* PHP Advanced AutoComplete
-* Database Navigator
-
 ---
