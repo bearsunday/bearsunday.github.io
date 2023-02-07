@@ -25,8 +25,6 @@ use BEAR\Resource\Annotation\Embed;
 use BEAR\Resource\Annotation\Link;
 use BEAR\Resource\Code;
 use BEAR\Resource\ResourceObject;
-use BEAR\Sunday\Inject\ResourceInject;
-use Ray\AuraSqlModule\AuraSqlInject;
 
 #[CacheableResponse]
 class Entry extends ResourceObject
@@ -59,7 +57,7 @@ class Entry extends ResourceObject
 }
 ```
 
-リソースの[docBlockコメント]([https://phpdoc.org/docs/latest/getting-started/your-first-set-of-documentation.html])はオプションです。リソースURIや引数名だけで説明不十分な時にメソッドの要約（一行）、説明（複数行可）、`@params`を付加します。`@params`の後は空行を空けカスタムアノテーションはその後に記述します。
+リソースの[docBlockコメント]([https://phpdoc.org/docs/latest/getting-started/your-first-set-of-documentation.html])はオプションです。リソースURIや引数名だけで説明不十分な時にメソッドの要約（一行）、説明（複数行可）、`@params`を付加します。
 
 ```php?start_inline
 /**
@@ -97,8 +95,10 @@ class Entry extends ResourceObject
 
 ## クラスとオブジェクト
 
-* インジェクション以外で[トレイト](http://php.net/manual/ja/language.oop5.traits.php)は推奨されません。
+* [トレイト](http://php.net/manual/ja/language.oop5.traits.php)は推奨されません。[^no-trait]
 * 親クラスのメソッドを子クラスが使うことは推奨されません。共通する機能は継承やtraitで共有ではなくクラスにしてインジェクトして使います。[継承より合成](https://en.wikipedia.org/wiki/Composition_over_inheritance)します。
+
+[^no-trait]:`ResourceInject`などのインジェクション用トレイトはインジェクションのボイラープレートコードを削減するために存在しましたが、PHP8で追加された[コンストラクタの引数をプロパティへ昇格させる機能](https://www.php.net/manual/ja/language.oop5.decon.php#language.oop5.decon.constructor.promotion)により意味を失いました。コンストラクタインジェクションを使いましょう。
 
 ## スクリプトコマンド
 
@@ -159,9 +159,9 @@ BEAR.SundayはHTMLのWebフォームで`POST`リクエストの時に`X-HTTP-Met
 
 ## AOP
 
- * インターセプターの適用を必須にしてはいけません。例えば`@Log`や`@Transactional`などのインターセプターを外しても、ログやトランザクションなどの横断的な機能は失われますがプログラムの本質的な動作しますがこのようにします。
+ * インターセプターの適用を必須にしてはいけません。例えばログやDBのトランザクションなどはインターセプターの有無でプログラムの本質的な動作は変わりません。
  * メソッド内の依存をインターセプターがインジェクトしないようにします。メソッド実装時にしか決定できない値は`@Assisted`インジェクションで引数にインジェクトします。
- * 複数のインタセプターがある場合にその実行順に依存しないようにします。
+ * 複数のインタセプターがある場合にその実行順に可能な限り依存しないようにします。
  * 無条件に全メソッドに適用するインターセプターであれば`bootstrap.php`での記述を考慮してください。
  * 横断的関心事と、本質的関心事を分けるために使われるものです。特定のメソッドのhackのためにインターセプトするような使い方は推奨されません。
 
@@ -169,16 +169,15 @@ BEAR.SundayはHTMLのWebフォームで`POST`リクエストの時に`X-HTTP-Met
 
  * Webだけでしか動作しないアプリケーションは推奨されません。テスト可能にするためにコンソールでも動作するようにします。
  * `.env`ファイルをプロジェクトリポジトリに含まない事が推奨されます。
+ * `.env`の代わりにスキーマを記述する[Koriym.EnvJson](https://github.com/koriym/Koriym.EnvJson)の利用を検討してください。
 
 ## テスト
 
-リソースクライアントを使ったリソーステストを基本にします。リソースの値を確認して、必要があれば表現(HTMLやJSON)のテストを加えます。
+* リソースクライアントを使ったリソーステストを中心にし、必要があればリソースの表現のテスト(HTMLなど)を加えます。
+* ハイパーメディアテストはユースケースをテストとして残すことができます。
+* `prod`はプロダクション用のコンテキストです。テストで`prod`コンテキストの利用は最低限、できれば無しにしましょう。
 
-## 開発ツール
+## HTMLテンプレート
 
-以下のPHPStormプラグインを推奨します。`PHPStorm > Preference > Plugins`で設定します。
-
-* [BEAR Sunday](https://github.com/kuma-guy/idea-php-bear-sunday-plugin)
-* [PHP Annotations](https://github.com/Haehnchen/idea-php-annotation-plugin)
-* PHP Advanced AutoComplete
-* Database Navigator
+* 大きなループ文を避けます。ループの中のif文は[ジェネレーター](https://www.php.net/manual/ja/language.generators.overview.php) で置き換えれないか検討しましょう。
+---
