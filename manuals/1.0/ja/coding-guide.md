@@ -180,4 +180,5 @@ BEAR.SundayはHTMLのWebフォームで`POST`リクエストの時に`X-HTTP-Met
 ## HTMLテンプレート
 
 * 大きなループ文を避けます。ループの中のif文は[ジェネレーター](https://www.php.net/manual/ja/language.generators.overview.php) で置き換えれないか検討しましょう。
+
 ---
