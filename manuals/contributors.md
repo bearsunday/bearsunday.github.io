@@ -15,7 +15,7 @@ permalink: /contributors.html
 - [<img alt="kuma-guy" src="https://avatars.githubusercontent.com/u/7978290?v=3&s=117" width="117">](https://github.com/kuma-guy)
 - [<img alt="sasezaki" src="https://avatars.githubusercontent.com/u/42755?v=3&s=117" width="117">](https://github.com/sasezaki)
 - [<img alt="remore" src="https://avatars.githubusercontent.com/u/424277?v=3&s=117" width="117">](https://github.com/remore)
-- [<img alt="qckanemoto" src="https://avatars.githubusercontent.com/u/4360663?v=3&s=117" width="117">](https://github.com/qckanemoto)
+- [<img alt="ttskch" src="https://avatars.githubusercontent.com/u/4360663?v=3&s=117" width="117">](https://github.com/ttskch)
 - [<img alt="nishigori" src="https://avatars.githubusercontent.com/u/928692?v=3&s=117" width="117">](https://github.com/nishigori)
 - [<img alt="nateabele" src="https://avatars.githubusercontent.com/u/18288?v=3&s=117" width="117">](https://github.com/nateabele)
 - [<img alt="MugeSo" src="https://avatars.githubusercontent.com/u/250446?v=3&s=117" width="117">](https://github.com/MugeSo)
