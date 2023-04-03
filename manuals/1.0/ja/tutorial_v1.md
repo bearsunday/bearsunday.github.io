@@ -319,12 +319,19 @@ class Weekday extends ResourceObject
 }
 ```
 
-テストも追加します。
+WeekdayTest.php内 テストも追加します。
 
 ```diff
-+    public function tesInvalidDateTime(): void
+namespace MyVendor\Weekday\Resource\App;
+
+use BEAR\Resource\ResourceInterface;
++   use MyVendor\Weekday\Exception\InvalidDateTime;
+use MyVendor\Weekday\Injector;
+use PHPUnit\Framework\TestCase;
+
++    public function testInvalidDateTime(): void
 +    {
-+        $this->expectException(InvalidDateTime::class);
++        $this->expectException(InvalidDateTimeException::class);
 +        $this->resource->get('app://self/weekday', ['year' => '-1', 'month' => '1', 'day' => '1']);
 +    }
 ```
