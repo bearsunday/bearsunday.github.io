@@ -299,8 +299,8 @@ declare(strict_types=1);
 namespace MyVendor\Weekday\Resource\App;
 
 use BEAR\Resource\ResourceObject;
-+use DateTimeImmutable;
-use MyVendor\Weekday\Exception\InvalidDateTime;
+use DateTimeImmutable;
++   use MyVendor\Weekday\Exception\InvalidDateTime;
 
 class Weekday extends ResourceObject
 {
@@ -331,7 +331,7 @@ use PHPUnit\Framework\TestCase;
 
 +    public function testInvalidDateTime(): void
 +    {
-+        $this->expectException(InvalidDateTimeException::class);
++        $this->expectException(InvalidDateTime::class);
 +        $this->resource->get('app://self/weekday', ['year' => '-1', 'month' => '1', 'day' => '1']);
 +    }
 ```
