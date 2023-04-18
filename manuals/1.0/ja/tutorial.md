@@ -6,7 +6,8 @@ permalink: /manuals/1.0/ja/tutorial.html
 ---
 # チュートリアル
 
-このチュートリアルではBEAR.Sundayの基本機能の**DI**、**AOP**、**REST API**を紹介します。[^1]
+このチュートリアルではBEAR.Sundayの基本機能の**DI**、**AOP**、**REST API**を紹介します。
+[tutorial1](https://github.com/bearsunday/tutorial1/commits/v2-php8.2)のコミットを参考にして進めましょう。
 
 ## プロジェクト作成
 
@@ -1088,5 +1089,4 @@ BEAR.Sundayは**DI**で依存を結び、AOPで横断的関心事を結び、RES
 
 ※ 以前のPHP7対応のチュートリアルは[tutorial_v1](tutorial_v1.html)にあります。
 
-[^1]:このプロジェクトのソースコードは各セクション毎に[bearsunday/Tutorial](https://github.com/bearsunday/Tutorial/commits/v2)にコミットしています。適宜参照してください。
 [^2]:通常は**vendor**名は個人またはチーム（組織）の名前を入力します。githubのアカウント名やチーム名が適当でしょう。**project**にはアプリケーション名を入力します。
