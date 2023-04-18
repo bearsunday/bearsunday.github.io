@@ -13,7 +13,7 @@ permalink: /manuals/1.0/ja/tutorial2.html
 * CakePHPが開発してるDBマイグレーションツール [Phinx](https://book.cakephp.org/3.0/ja/phinx.html) 
 * PHPのインターフェイスとSQL文実行を束縛する [Ray.MediaQuery](https://github.com/ray-di/Ray.MediaQuery)
 
-[tutorial2](https://github.com/bearsunday/tutorial2/commits/v2.1)のコミットを参考にして進めましょう。
+[tutorial2](https://github.com/bearsunday/tutorial2/commits/v2-php8.2.1)のコミットを参考にして進めましょう。
 
 ## プロジェクト作成
 

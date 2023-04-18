@@ -7,7 +7,7 @@ permalink: /manuals/1.0/en/tutorial.html
 # Tutorial
 
 This tutorial introduces the basic features of BEAR.Sunday that use resources, DI, AOP, REST API etc.
-Each section of the source code of this project is committed at [bearsunday/Tutorial](https://github.com/bearsunday/Tutorial/commits/v2).
+Each section of the source code of this project is committed at [bearsunday/Tutorial](https://github.com/bearsunday/tutorial/commits/v2-php8.2).
 
 
 ## Get started
