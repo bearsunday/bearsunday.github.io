@@ -66,3 +66,4 @@ permalink: /contributors.html
 - [<img alt="ysato" src="https://avatars0.githubusercontent.com/u/56924527?s=460&u=8a807ba28cb5eca31912fd69922116fe71ed5e01&v=4" width="117">](https://github.com/ysato)
 - [<img alt="Pon57" src="https://avatars.githubusercontent.com/u/15137243?v=4" width="117">](https://github.com/Pon57)
 - [<img alt="KazuyaUchida" src="https://avatars.githubusercontent.com/u/86758002?v=4" width="117">](https://github.com/KazuyaUchida)
+- [<img alt="mstysk" src="https://avatars.githubusercontent.com/u/2937579?v=4" width="117">](https://github.com/mstysk)
