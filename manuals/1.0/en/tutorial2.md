@@ -338,7 +338,7 @@ use Ray\MediaQuery\Annotation\DbQuery;
 
 interface TicketQueryInterface
 {
-    #[DbQuery('ticket_item')]
+    #[DbQuery('ticket_item', type:'row')]
     public function item(string $id): array;
 
     #[DbQuery('ticket_list')]
@@ -364,6 +364,7 @@ interface TicketCommandInterface
 ```
 
 The `#[DbQuery]` attribute specifies a SQL statement.
+Also, `type: 'row'` must be specified to get the value in a single row.
 
 You do not need to write any implementation for this interface. An object that performs the specified SQL query will be created automatically.
 
@@ -375,7 +376,7 @@ It can be one interface and one method as in [ADR pattern](https://github.com/pm
 By default, database reading is done with an associative array (fetchAssoc), but if `entity` is specified, each row becomes an entity object.
 
 ```
-#[DbQuery('ticket_item') entity: Ticket::class]
+#[DbQuery('ticket_item', entity: Ticket::class)]
 ```
 
 The value of each row is passed to the constructor by name argument. [^named]
