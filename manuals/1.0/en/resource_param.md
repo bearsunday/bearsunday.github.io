@@ -7,36 +7,44 @@ permalink: /manuals/1.0/en/resource_param.html
 
 # Resource Parameters
 
-## Basic
+## Basics
 
 Web runtime values such as HTTP requests and cookies that require ResourceObjects are passed directly to method arguments.
 
-For requests from HTTP, the arguments of the `onGet` and `onPost` methods are passed `$_GET` and `$_POST`, respectively, depending on the variable name. For example, $id in the following is passed as $_GET['id'].
+For requests from HTTP, the arguments of the `onGet` and `onPost` methods are passed `$_GET` and `$_POST`, respectively, depending on the variable name. For example, `$id` in the following is passed `$_GET['id']`. Arguments passed as strings when the input is HTTP will be casted to the specified type.
+
 
 ```php?start_inline
 class Index extends ResourceObject
 {
     public function onGet(int $id): static
     {
+        // ....
 ```
 
-## Array parameters
+## Parameter types.
 
-Parameters can be nested data [^2]; data sent in JSON or nested query strings can be received in arrays.
+### Scalar parameters
 
-[^2]:[parse_str](https://www.php.net/manual/ja/function.parse-str.php)参照 
+All parameters passed via HTTP are strings, but if you specify a non-string type such as `int`, it will be cast.
+
+### Array parameters
+
+Parameters can be nested data [^2]; data sent as JSON or nested query strings can be received as arrays.
+
+See [^2]:[parse_str](https://www.php.net/manual/ja/function.parse-str.php)
 
 ```php?start_inline
-class Index extends ResourceObject
+class Index extends ResourceObject.
 {
     public function onPost(array $user):static
     {
         $name = $user['name']; // bear
 ```
 
-## Input class parameters
+## Class Parameters
 
-It can also be received in a parameter-only Input object.
+Parameters can also be received in a dedicated Input class.
 
 ```php?start_inline
 class Index extends ResourceObject
@@ -44,40 +52,64 @@ class Index extends ResourceObject
     public function onPost(User $user): static
     {
         $name = $user->name; // bear
-```
+````
 
-Input classes are predefined with parameters as public properties。
+The Input class is pre-defined with the parameters as public properties.
 
-```php?start_inline
+````php?start_inline
 <?php
 
-namespace Vendor\App\Input;
+namespace VendorAppInput;.
 
 final class User
 {
-    public $id;
-    public $name;
+    public int $id; public string $name; public string $id; public string $name; public string $id; public string $id
+    public string $name; }
 }
-```
+````
+
 At this time, if there is a constructor, it will be called. [^php8]
 
-[^php8]: called with named arguments in PHP8.x at this time, but with ordinal arguments in PHP7.x.
+[^php8]: This is called with named arguments in PHP8.x, but with ordered arguments in PHP7.x. ````php?
 
 ```php?start_inline
 <?php
 
-namespace Vendor\App\Input;
+namespace VendorAppInput;.
 
 final class User
 {
     public function __constrcut(
-        public readonly int $id,
+        public readonly int $id, public readonly string $name
         public readonly string $name
-    } {}
+    }
 }
 ```
 
 The namespace is optional; the Input class can implement methods to summarize and validate input data.
+
+
+### Enumerated Parameters
+
+You can limit the possible values by specifying the PHP8.1 [enumerated type](https://www.php.net/manual/ja/language.types.enumerations.php).
+
+```php
+enum IceCreamId: int
+{
+    case VANILLA = 1;
+    case PISTACHIO = 2; }
+}
+```php
+
+````php
+class Index extends ResourceObject
+{
+    public function onGet(IceCreamId $id): static
+    {
+        $iceCreamId // 1 or 2
+```
+
+The above will raise a `NotBackedEnumException` if anything other than 1 or 2 is passed.
 
 ## Web context binding
 
