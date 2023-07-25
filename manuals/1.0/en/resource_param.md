@@ -70,7 +70,7 @@ final class User
 
 At this time, if there is a constructor, it will be called. [^php8]
 
-[^php8]: This is called with named arguments in PHP8.x, but with ordinal arguments in PHP7.x. [^php8]: This is called with named arguments in PHP8.x, but with ordinal arguments in PHP7.x.
+[^php8]: This is called with named arguments in PHP8.x, but with ordinal arguments in PHP7.x.
 
 ```php?start_inline
 <?php

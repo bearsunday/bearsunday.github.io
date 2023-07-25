@@ -11,7 +11,7 @@ permalink: /manuals/1.0/ja/resource_param.html
 
 ResourceObjectが必要なHTTPリクエストやCookieなどのWebのランタイムの値は、メソッドの引数に直接渡されます。
 
-HTTPからリクエストでは`onGet`、`onPost`メソッドの引数にはそれぞれ`$_GET`、`$_POST`が変数名に応じて渡されます。例えば下記の`$id`は`$_GET['id']`が渡されます。入力がHTTPの場合に文字列として渡された引数は指定した型にキャスストされます。
+HTTPからリクエストでは`onGet`、`onPost`メソッドの引数にはそれぞれ`$_GET`、`$_POST`が変数名に応じて渡されます。例えば下記の`$id`は`$_GET['id']`が渡されます。入力がHTTPの場合に文字列として渡された引数は指定した型にキャストされます。
 
 
 ```php?start_inline
