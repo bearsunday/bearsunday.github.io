@@ -35,7 +35,7 @@ Parameters can be nested data [^2]; data sent as JSON or nested query strings ca
 See [^2]:[parse_str](https://www.php.net/manual/ja/function.parse-str.php)
 
 ```php?start_inline
-class Index extends ResourceObject.
+class Index extends ResourceObject
 {
     public function onPost(array $user):static
     {
