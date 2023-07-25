@@ -52,7 +52,6 @@ class Index extends ResourceObject
     public function onPost(User $user): static
     {
         $name = $user->name; // bear
-````
 
 The Input class is pre-defined with the parameters as public properties.
 
@@ -63,26 +62,26 @@ namespace VendorAppInput;.
 
 final class User
 {
-    public int $id; public string $name; public string $id; public string $name; public string $id; public string $id
+    public int $id;
     public string $name;
 }
 ````
 
 At this time, if there is a constructor, it will be called. [^php8]
 
-[^php8]: This is called with named arguments in PHP8.x, but with ordered arguments in PHP7.x. ````php?
+[^php8]: This is called with named arguments in PHP8.x, but with ordered arguments in PHP7.x.
 
 ```php?start_inline
 <?php
 
-namespace VendorAppInput;.
+namespace VendorAppInput;
 
 final class User
 {
     public function __constrcut(
-        public readonly int $id, public readonly string $name
+        public readonly int $id,
         public readonly string $name
-    }
+    } {}
 }
 ```
 
@@ -97,11 +96,10 @@ You can limit the possible values by specifying the PHP8.1 [enumerated type](htt
 enum IceCreamId: int
 {
     case VANILLA = 1;
-    case PISTACHIO = 2; }
+    case PISTACHIO = 2;
 }
-```php
 
-````php
+```php
 class Index extends ResourceObject
 {
     public function onGet(IceCreamId $iceCreamId): static

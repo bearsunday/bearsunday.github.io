@@ -109,7 +109,7 @@ class Index extends ResourceObject
         $iceCreamId // 1 or 2
 ```
 
-上記の場合1か2以外が渡されると`NotBackedEnumException`が発生します。
+上記の場合1か2以外が渡されると`ParameterInvalidEnumException`が発生します。
 
 ## Webコンテキスト束縛
 
