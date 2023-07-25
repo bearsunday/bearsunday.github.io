@@ -116,7 +116,7 @@ The values required by the application code are all injected. The setting files 
 
 ## Classes and object
 
-* Trait(http://php.net/manual/ja/language.oop5.traits.php) is not recommended except for injection.
+* * [Traits](http://php.net/manual/en/language.oop5.traits.php) are not recommended. Traits for injection such as `ResourceInject` that reduce boilerplate code for injection were added in PHP8 [constructor property promotion (declaring properties in the constructor signature)](https://www.php.net/manual/en/language.oop5.decon.php#language.oop5.decon.constructor.promotion). Use constructor injection.
 * It is not recommended for the child classes to use the parent class methods. Common functions are not shared by inheritance and trait, they are dedicated classes and they are injected and used. [Composite from inheritance](https://en.wikipedia.org/wiki/Composition_over_inheritance).
 * A class with only one method should reflect the function to the class name and should set the name of the method to `__invoke ()` so that function access can be made.
 
@@ -139,6 +139,8 @@ phpcbf src
 ```
 
 ## Resources
+
+Please also refer to [Resouce best practice](/manuals/1.0/en/resource.html#best-practice).
 
 ### Code
 
@@ -167,133 +169,8 @@ BEAR.Sunday can overwrite methods using the `X-HTTP-Method-Override` header or` 
 
 ### Hyperlink
 
-Resources with links should be indicated with `@Link`.
-
-```php?start_inline
-class User
-{
-    /**
-     * @Link(rel="profile", href="/profile{?id})
-     * @Link(rel="blog", href="/blog{?id})
-     */
-    public function onGet($id)
-```
-
-Resource requests with the following actions are recommended to be traversed with `href ()` (hyperreference).
-
-```php?start_inline
-public function onPost(string $title) : ResourceObject
-{
-    // ...
-    $this->code = 201;
-    $this->headers['Location'] = "/task?id={$id}";
-
-    return $this;
-}
-```
-
-In `OnPut` method, you deal with the resource state with idempotence. For example, resource creation with UUID or update resource state.
-
-`OnPatch` is implemented when changing the state of a part of a resource.
-
-
-Resource requests with the following actions are recommended to be traversed with `href()`(hyperreference).
-
-```php?start_inline
-class Order
-{
-    /**
-     * @Link(rel="payment", href="/payment{?order_id, credit_card_number}", method="put")
-     */
-    public function onPost($drink)
-```
-```php?start_inline
-// 上記の注文リソースを作成して支払いリソースにリクエストします
-$order = $this->resource
-    ->post
-    ->uri('app://self/order')
-    ->withQuery(['drink' => 'latte'])
-    ->eager
-    ->request();
-$payment = ['credit_card_number' => '123456789'];
-$response = $resource->href('payment', $payment);
-```
-
-### Embedded Resources
-
-If the resource refers to other resources, it is advisable to include it with `@Embed`.
-
-```php?start_inline
-/**
- * @Embed(rel="user", src="/user{?user_id}")
- */
-public function onGet(string $userId) : ResourceObject
-{
-```
-
-```php?start_inline
-/**
- * @Embed(rel="uid", src="/uid")
- */
-public function onPost(string $userId, string $title) : ResourceObject
-{
-    $uid = $this['uid']()->body;
-```
-
-You may need to add queries for a resource request. Even if you still don't know the specific parameters, you can already add it by `@Embed`.
-
-```php?start_inline
-/**
- * @Embed(rel="user", src="/user")
- */
-public function onGet() : ResourceObject
-{
-    ...
-    $query = ['userId' => $userId];
-    $user = $this['user']->withQuery($query)()->body; // /user?user={$userId}
-```
-
-Then use `addQuery ()` to append to a query in a `@ Embed` URI.
-
-```php?start_inline
-/**
- * @Embed(rel="user", src="/user&category=1")
- */
-public function onGet() : ResourceObject
-{
-    ...
-    $query = ['userId' => $userId];
-    $user = $this['user']->addQuery($query)()->body; // /user?category=1&user=$userId
-```
-
-### Argument binding
-
-To use the value of `$_GET` on a different method other than onGet, use `@QueryParam`. Superglobal variables like $_POST and $_SERVER are [Web Context Parameters](https://github.com/ray-di/Ray.WebParamModule) that you should bind to an argument.
-
-```php?start_inline
-/**
- * @QueryParam(key="id", param="userId")
- */
-public function foo($userId = null) : ResourceObject
-{
-   // $userId = $_GET['id'];
-```
-
-To use the value of another resource as an argument, use `@ ResourceParam`.
-
-```php?start_inline
-/**
- * @ResourceParam(param=“name”, uri="/login#nickname")
- */
-public function onGet($name) : ResourceObject
-{
-```  
-
-Resource clients should embed them with `@Embed` and use `@Link` as much as possible. Embedded resources become request strings with `toUri()` and `toUriWithMethod ()`, which makes testing easier.
-
-## Resource
-
-Please also refer to [Resouce best practice](/manuals/1.0/en/resource.html#best-practice).
+* It is recommended that resources with links be indicated by `#[Link]`.
+* It is recommended that resources be embedded as a graph of semantic coherence with `#[Embed]`.
 
 ## DI
 
@@ -316,16 +193,14 @@ To make applications testable, it should also work on the console, and not only 
 
 It is recommended not to include the `.env` file in the project repository.
 
-## Test
+## Testing
 
-Basically you test resources with resource client. You request a resource then examine the returned response value.
-If you need to test the representation part, such as HTML or JSON, you may add an additional test for it.
+* Focus on resource testing using resource clients, adding resource representation testing (e.g. HTML) if needed.
+* Hypermedia tests can leave use cases as tests.
+* `prod` is the context for production. Use of the `prod` context in tests should be minimal, preferably none.
 
-## Development tools
+## HTML templates
 
-We recommend the following PHPStorm plugin. Set it with `PHPStorm > Preference > Plugins`.
+* Avoid large loop statements. Consider replacing if statements in loops with [Generator](https://www.php.net/manual/en/language.generators.overview.php).
 
-* [BEAR Sunday](https://github.com/kuma-guy/idea-php-bear-sunday-plugin)
-* [PHP Annotations](https://github.com/Haehnchen/idea-php-annotation-plugin)
-* PHP Advanced AutoComplete
-* Database Navigator
+---

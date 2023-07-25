@@ -38,7 +38,7 @@ class Weekday extends ResourceObject
 {
     public function onGet(int $year, int $month, int $day): static
     {
-        $dateTime = DateTimeImmutable::createFromFormat('Y-m-d', "$year-$month-$day");
+        $dateTime = (new DateTimeImmutable)->createFromFormat('Y-m-d', "$year-$month-$day");
         $weekday = $dateTime->format('D');
         $this->body = ['weekday' => $weekday];
 
@@ -273,7 +273,7 @@ PHPエラーが発生した場合でもエラーハンドラーがキャッチ�
 ### assertの場合
 
 ```php
-$dateTime =DateTimeImmutable::createFromFormat('Y-m-d', "$year-$month-$day");
+$dateTime =(new DateTimeImmutable)->createFromFormat('Y-m-d', "$year-$month-$day");
 assert($dateTime instanceof DateTimeImmutable);
 ```
 
@@ -297,7 +297,7 @@ class InvalidDateTimeException extends RuntimeException
 
 値の検査をしたコードに修正します。
 
-```diff
+
 <?php
 
 declare(strict_types=1);
@@ -312,7 +312,7 @@ class Weekday extends ResourceObject
 {
     public function onGet(int $year, int $month, int $day): static
     {
-        $dateTime = DateTimeImmutable::createFromFormat('Y-m-d', "$year-$month-$day");
+        $dateTime = (new DateTimeImmutable)->createFromFormat('Y-m-d', "$year-$month-$day");
 +        if (! $dateTime instanceof DateTimeImmutable) {
 +            throw new InvalidDateTimeException("$year-$month-$day");
 +        }
@@ -461,7 +461,7 @@ class Weekday extends ResourceObject
 
     public function onGet(int $year, int $month, int $day): static
     {
-        $weekday = \DateTime::createFromFormat('Y-m-d', "$year-$month-$day")->format('D');
+        $weekday = (new DateTimeImmutable)->createFromFormat('Y-m-d', "$year-$month-$day")->format('D');
         $this->body = [
             'weekday' => $weekday
         ];
@@ -797,7 +797,7 @@ Content-Type: text/html; charset=utf-8
 ```
 
 もしこの時htmlが表示されなければ、テンプレートエンジンのエラーが発生しています。
-その時はログファイル(`var/log/app.cli-html-app.log`)でエラーを確認しましょう。
+その時はログファイル(`var/log/cli-html-app/last.logref.log`)でエラーを確認しましょう。
 
 次にWebサービスを行うために`public/index.php`も変更します。
 
@@ -1089,4 +1089,5 @@ BEAR.Sundayは**DI**で依存を結び、AOPで横断的関心事を結び、RES
 
 ※ 以前のPHP7対応のチュートリアルは[tutorial_v1](tutorial_v1.html)にあります。
 
+[^1]:このプロジェクトのソースコードは各セクション毎に[bearsunday/Tutorial](https://github.com/bearsunday/tutorial1/commits/v2-php8.2)にコミットしています。適宜参照してください。>>>> master
 [^2]:通常は**vendor**名は個人またはチーム（組織）の名前を入力します。githubのアカウント名やチーム名が適当でしょう。**project**にはアプリケーション名を入力します。

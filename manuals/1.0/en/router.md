@@ -17,11 +17,10 @@ echo (string) $request;
 
 ## Web Router
 
-
 The default web router accesses the resource class corresponding to the HTTP request path (`$_SERVER['REQUEST_URI']`).
 For example, a request of `/index` is accessed by a PHP method corresponding to the HTTP method of the `{Vendor name}\{Project name}\Resource\Page\Index` class.
 
-Router settings and scripts are not necessary.
+The Web Router is a convention-based router. No configuration or scripting is required.
 
 ```php?start_inline
 namespace MyVendor\MyProject\Resource\Page;
@@ -223,6 +222,18 @@ class Index extends ResourceObject
     {
         $userLink = $this->router->generate('/user', ['name' => 'bear']);
         // '/user/bear'
+```
+
+### Request Method
+
+It is not necessary to specify a request method.
+
+### Request Header
+
+Normally request headers are not passed to Aura.Router, but installing `RequestHeaderModule` allows Aura.Router to match using headers.
+
+```php
+$this->install(new RequestHeaderModule());
 ```
 
 ## Custom Router Component

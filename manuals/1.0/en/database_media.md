@@ -111,10 +111,6 @@ SQL execution is mapped to a method, and the SQL specified by ID is bound and ex
 For example, if the ID is `todo_item`, `todo_item.sql` SQL statement will be executed with `['id => $id]` bound.
 
 * Prepare the SQL file in the `$sqlDir` directory.
-* Attribute `type: 'row'` if the return value of SQL execution is a single row, or `type: 'row_list'` (default) if it is multiple rows. [^v0dot5]
-* The SQL file can contain multiple SQL statements. The last line of SELECT will be the return value.
-
-[^v0dot5]: Until the previous version `0.5`, the SQL file was identified by its name as follows:" If the return value of the SQL execution is a single row, add a postfix of `item`; if it is multiple rows, add a postfix of `list`."
 
 #### Entity
 
@@ -157,6 +153,30 @@ final class Todo
         public string $id,
         public string $title
     ) {}
+}
+```
+
+#### type: 'row'
+
+If the return value of SQL execution is a single row, specify the attribute `type: 'row'`. However, if the return value of the interface is an entity class, it can be omitted. [^v0dot5].
+
+[^v0dot5]: Until the previous version `0.5`, the SQL file was identified by its name as follows:" If the return value of the SQL execution is a single row, add a postfix of `item`; if it is multiple rows, add a postfix of `list`."
+
+```php
+/** If the return value is Entity */
+interface TodoItemInterface
+{
+    #[DbQuery('todo_item', entity: Todo::class)]
+    public function getItem(string $id): Todo;
+}
+```
+
+```php
+/** If the return value is array */
+interface TodoItemInterface
+{
+    #[DbQuery('todo_item', entity: Todo::class, type: 'row')]
+    public function getItem(string $id): array;
 }
 ```
 
@@ -255,7 +275,7 @@ You can get the number of pages with `count()`, and you can get the page object 
 
 ```php
 $pages = ($todoList)();
-$cnt = count($page); // When count() is called, the count SQL is generated and queried.
+$cnt = count($pages); // When count() is called, the count SQL is generated and queried.
 $page = $pages[2]; // A page query is executed when an array access is made.
 
 // $page->data // sliced data

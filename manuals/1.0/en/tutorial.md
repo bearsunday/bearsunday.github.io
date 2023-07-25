@@ -40,7 +40,7 @@ class Weekday extends ResourceObject
 {
     public function onGet(int $year, int $month, int $day): static
     {
-        $dateTime = DateTimeImmutable::createFromFormat('Y-m-d', "$year-$month-$day");
+        $dateTime = (new DateTimeImmutable)->createFromFormat('Y-m-d', "$year-$month-$day");
         $weekday = $dateTime->format('D');
         $this->body = ['weekday' => $weekday];
 
@@ -270,7 +270,7 @@ To pass the static parsing check, you can either `assert` the result of `DateTim
 ### assert
 
 ```php
-$dateTime =DateTimeImmutable::createFromFormat('Y-m-d', "$year-$month-$day");
+$dateTime =(new DateTimeImmutable)->createFromFormat('Y-m-d', "$year-$month-$day");
 assert($dateTime instanceof DateTimeImmutable);
 ```
 
@@ -309,7 +309,7 @@ class Weekday extends ResourceObject
 {
     public function onGet(int $year, int $month, int $day): static
     {
-        $dateTime = DateTimeImmutable::createFromFormat('Y-m-d', "$year-$month-$day");
+        $dateTime = (new DateTimeImmutable)->createFromFormat('Y-m-d', "$year-$month-$day");
 +        if (! $dateTime instanceof DateTimeImmutable) {
 +            throw new InvalidDateTimeException("$year-$month-$day");
 +        }
@@ -455,7 +455,7 @@ class Weekday extends ResourceObject
 
     public function onGet(int $year, int $month, int $day): static
     {
-        $weekday = \DateTime::createFromFormat('Y-m-d', "$year-$month-$day")->format('D');
+        $weekday = (new DateTimeImmutable)->createFromFormat('Y-m-d', "$year-$month-$day")->format('D');
         $this->body = [
             'weekday' => $weekday
         ];
