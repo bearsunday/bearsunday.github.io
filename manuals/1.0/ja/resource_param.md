@@ -11,7 +11,7 @@ permalink: /manuals/1.0/ja/resource_param.html
 
 ResourceObjectが必要なHTTPリクエストやCookieなどのWebのランタイムの値は、メソッドの引数に直接渡されます。
 
-HTTPからリクエストでは`onGet`、`onPost`メソッドの引数にはそれぞれ`$_GET`、`$_POST`が変数名に応じて渡されます。例えば下記の$idは$_GET['id']が渡されます。
+HTTPからリクエストでは`onGet`、`onPost`メソッドの引数にはそれぞれ`$_GET`、`$_POST`が変数名に応じて渡されます。例えば下記の`$id`は`$_GET['id']`が渡されます。入力がHTTPの場合に文字列として渡された引数は指定した型にキャストされます。
 
 
 ```php?start_inline
@@ -19,10 +19,16 @@ class Index extends ResourceObject
 {
     public function onGet(int $id): static
     {
+        // ....
 ```
 
+## パラメーターの型
 
-## 配列パラメーター
+### スカラーパラメーター
+
+HTTPで渡されるパラメーターは全て文字列ですが`int`など文字列以外の型を指定するとキャストされます。
+
+### 配列パラメーター
 
 パラメーターはネストされたデータ [^2] でも構いません。JSONやネストされたクエリ文字列で送信されたデータは配列で受け取る事ができます。
 
@@ -36,9 +42,9 @@ class Index extends ResourceObject
         $name = $user['name']; // bear
 ```
 
-## Inputクラスパラメーター
+### クラスパラメーター
 
-パラメータ専用のInputオブジェクトで受け取ることもできます。
+パラメータ専用のInputクラスで受け取ることもできます。
 
 ```php?start_inline
 class Index extends ResourceObject
@@ -81,6 +87,29 @@ final class User
 ```
 
 ネームスペースは任意です。Inputクラスでは入力データをまとめたり検証したりするメソッドを実装する事ができます。
+
+
+### 列挙型パラメーター
+
+PHP8.1の[列挙型](https://www.php.net/manual/ja/language.types.enumerations.php)を指定して取り得る値を制限することができます。
+
+```php
+enum IceCreamId: int
+{
+    case VANILLA = 1;
+    case PISTACHIO = 2;
+}
+```
+
+```php
+class Index extends ResourceObject
+{
+    public function onGet(IceCreamId $iceCreamId): static
+    {
+        $id = $iceCreamId->value // 1 or 2
+```
+
+上記の場合1か2以外が渡されると`ParameterInvalidEnumException`が発生します。
 
 ## Webコンテキスト束縛
 
@@ -138,6 +167,8 @@ class News extends ResourceObject
 ## コンテントネゴシエーション
 
 HTTPリクエストの`content-type`ヘッダーがサポートされていてます。 `application/json`と`x-www-form-urlencoded`メディアタイプを判別してパラメーターに値が渡されます。[^json]
+
+---
 
 [^json]:APIリクエストをJSONで送信する場合には`content-type`ヘッダーに`application/json`をセットしてください。
 
