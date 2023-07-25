@@ -104,7 +104,7 @@ enum IceCreamId: int
 ````php
 class Index extends ResourceObject
 {
-    public function onGet(IceCreamId $id): static
+    public function onGet(IceCreamId $iceCreamId): static
     {
         $iceCreamId // 1 or 2
 ```
