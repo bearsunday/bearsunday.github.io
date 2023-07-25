@@ -64,7 +64,7 @@ namespace VendorAppInput;.
 final class User
 {
     public int $id; public string $name; public string $id; public string $name; public string $id; public string $id
-    public string $name; }
+    public string $name;
 }
 ````
 
