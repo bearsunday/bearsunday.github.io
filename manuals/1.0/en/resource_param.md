@@ -105,7 +105,7 @@ class Index extends ResourceObject
 {
     public function onGet(IceCreamId $iceCreamId): static
     {
-        $iceCreamId // 1 or 2
+        $id = $iceCreamId->value // 1 or 2
 ```
 
 In the above case, if anything other than 1 or 2 is passed, a `ParameterInvalidEnumException` will be raised.
