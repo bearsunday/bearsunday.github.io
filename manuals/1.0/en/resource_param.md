@@ -42,7 +42,7 @@ class Index extends ResourceObject
         $name = $user['name']; // bear
 ```
 
-## Class Parameters
+### Class Parameters
 
 Parameters can also be received in a dedicated Input class.
 

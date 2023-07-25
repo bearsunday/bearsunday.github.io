@@ -42,7 +42,7 @@ class Index extends ResourceObject
         $name = $user['name']; // bear
 ```
 
-## クラスパラメーター
+### クラスパラメーター
 
 パラメータ専用のInputクラスで受け取ることもできます。
 
