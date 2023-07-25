@@ -106,7 +106,7 @@ class Index extends ResourceObject
 {
     public function onGet(IceCreamId $iceCreamId): static
     {
-        $id = $iceCreamId // 1 or 2
+        $id = $iceCreamId->value // 1 or 2
 ```
 
 上記の場合1か2以外が渡されると`ParameterInvalidEnumException`が発生します。
