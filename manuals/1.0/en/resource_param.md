@@ -9,7 +9,7 @@ permalink: /manuals/1.0/en/resource_param.html
 
 ## Basics
 
-Web runtime values such as HTTP requests and cookies that require ResourceObjects are passed directly to method arguments.
+Web runtime values such as HTTP requests and cookies that require ResourceObjects are passed directly to the method arguments.
 
 For requests from HTTP, the arguments of the `onGet` and `onPost` methods are passed `$_GET` and `$_POST`, respectively, depending on the variable name. For example, `$id` in the following is passed `$_GET['id']`. Arguments passed as strings when the input is HTTP will be casted to the specified type.
 
@@ -22,7 +22,7 @@ class Index extends ResourceObject
         // ....
 ```
 
-## Parameter types.
+## Parameter type
 
 ### Scalar parameters
 
@@ -32,7 +32,7 @@ All parameters passed via HTTP are strings, but if you specify a non-string type
 
 Parameters can be nested data [^2]; data sent as JSON or nested query strings can be received as arrays.
 
-See [^2]:[parse_str](https://www.php.net/manual/ja/function.parse-str.php)
+[^2]:[parse_str](https://www.php.net/manual/ja/function.parse-str.php)参照
 
 ```php?start_inline
 class Index extends ResourceObject
@@ -52,29 +52,30 @@ class Index extends ResourceObject
     public function onPost(User $user): static
     {
         $name = $user->name; // bear
+```
 
-The Input class is pre-defined with the parameters as public properties.
+The Input class is defined in advance with parameters as public properties.
 
-````php?start_inline
+```php?start_inline
 <?php
 
-namespace VendorAppInput;.
+namespace Vendor\App\Input;
 
 final class User
 {
     public int $id;
     public string $name;
 }
-````
+```
 
 At this time, if there is a constructor, it will be called. [^php8]
 
-[^php8]: This is called with named arguments in PHP8.x, but with ordered arguments in PHP7.x.
+[^php8]: This is called with named arguments in PHP8.x, but with ordinal arguments in PHP7.x. [^php8]: This is called with named arguments in PHP8.x, but with ordinal arguments in PHP7.x.
 
 ```php?start_inline
 <?php
 
-namespace VendorAppInput;
+namespace Vendor\App\Input;
 
 final class User
 {
@@ -85,12 +86,11 @@ final class User
 }
 ```
 
-The namespace is optional; the Input class can implement methods to summarize and validate input data.
+The Input class can implement methods to summarize and validate input data.
 
+### Enum parameters
 
-### Enumerated Parameters
-
-You can limit the possible values by specifying the PHP8.1 [enumerated type](https://www.php.net/manual/ja/language.types.enumerations.php).
+You can specify an [enumerated type](https://www.php.net/manual/en/language.types.enumerations.php) in PHP8.1 to limit the possible values.
 
 ```php
 enum IceCreamId: int
@@ -98,6 +98,7 @@ enum IceCreamId: int
     case VANILLA = 1;
     case PISTACHIO = 2;
 }
+```
 
 ```php
 class Index extends ResourceObject
@@ -107,7 +108,7 @@ class Index extends ResourceObject
         $iceCreamId // 1 or 2
 ```
 
-The above will raise a `NotBackedEnumException` if anything other than 1 or 2 is passed.
+In the above case, if anything other than 1 or 2 is passed, a `ParameterInvalidEnumException` will be raised.
 
 ## Web context binding
 
