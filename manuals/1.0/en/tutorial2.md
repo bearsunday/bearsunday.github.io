@@ -15,7 +15,7 @@ In this tutorial, you will learn how to develop high quality standards-based RES
 * A DB migration tool developed by CakePHP [Phinx](https://book.cakephp.org/3.0/ja/phinx.html)
 * Binding PHP interfaces to SQL statement execution [Ray. MediaQuery](https://github.com/ray-di/Ray.MediaQuery)
 
-Let's proceed with the commits found in [tutorial2](https://github.com/bearsunday/tutorial2/commits/v2-php8.2-php8.2).
+Let's proceed with the commits found in [tutorial2](https://github.com/bearsunday/tutorial2/commits/v2-php8.2).
 
 ## Create the project
 

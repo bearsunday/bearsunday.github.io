@@ -6,7 +6,8 @@ permalink: /manuals/1.0/ja/tutorial.html
 ---
 # チュートリアル
 
-このチュートリアルではBEAR.Sundayの基本機能の**DI**、**AOP**、**REST API**を紹介します。[^1]
+このチュートリアルではBEAR.Sundayの基本機能の**DI**、**AOP**、**REST API**を紹介します。
+[tutorial1](https://github.com/bearsunday/tutorial1/commits/v2-php8.2)のコミットを参考にして進めましょう。
 
 ## プロジェクト作成
 
@@ -296,7 +297,7 @@ class InvalidDateTimeException extends RuntimeException
 
 値の検査をしたコードに修正します。
 
-```diff
+
 <?php
 
 declare(strict_types=1);
