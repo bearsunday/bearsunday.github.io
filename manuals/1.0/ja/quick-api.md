@@ -210,7 +210,7 @@ class Task extends ResourceObject
     use NowInject;
     use QueryLocatorInject;
 
-    public function onGet(string $id = null) : ResourceObject
+    public function onGet(string $id = null): static
     {
         $this->body = $id ?
             $this->pdo->fetchOne($this->query['task_item'], ['id' => $id]) :
@@ -219,7 +219,7 @@ class Task extends ResourceObject
         return $this;
     }
 
-    public function onPost(string $title) : ResourceObject
+    public function onPost(string $title): static
     {
         $params = [
             'title' => $title,
@@ -234,7 +234,7 @@ class Task extends ResourceObject
         return $this;
     }
 
-    public function onPatch(string $id) : ResourceObject
+    public function onPatch(string $id): static
     {
         $params = [
             'id' => $id,
@@ -406,7 +406,7 @@ class Task extends ResourceObject
     /**
      * @Assisted({"pdo", "query"})
      */
-    public function onGet(string $id = null, ExtendedPdoInterface $pdo = null, QueryLocatorInterface $query = null) : ResourceObject
+    public function onGet(string $id = null, ExtendedPdoInterface $pdo = null, QueryLocatorInterface $query = null): static
     {
         $this->body = $id ?
             $pdo->fetchOne($query['task_item'], ['id' => $id]) :
@@ -418,7 +418,7 @@ class Task extends ResourceObject
     /**
      * @Assisted({"pdo", "query", "now"})
      */
-    public function onPost(string $title, ExtendedPdoInterface $pdo = null, QueryLocatorInterface $query = null, NowInterface $now = null) : ResourceObject
+    public function onPost(string $title, ExtendedPdoInterface $pdo = null, QueryLocatorInterface $query = null, NowInterface $now = null): static
     {
         $params = [
             'title' => $title,
@@ -436,7 +436,7 @@ class Task extends ResourceObject
     /**
      * @Assisted({"pdo", "query"})
      */
-    public function onPatch(string $id, ExtendedPdoInterface $pdo = null, QueryLocatorInterface $query = null) : ResourceObject
+    public function onPatch(string $id, ExtendedPdoInterface $pdo = null, QueryLocatorInterface $query = null): static
     {
         $params = [
             'id' => $id,
@@ -473,7 +473,7 @@ class TaskQb extends ResourceObject
     /**
      * @Assisted({"pdo", "select"})
      */
-    public function onGet(string $id = null, ExtendedPdoInterface $pdo = null, SelectInterface $select = null) : ResourceObject
+    public function onGet(string $id = null, ExtendedPdoInterface $pdo = null, SelectInterface $select = null): static
     {
         $select->cols(['id', 'title', 'completed'])->from('task');
         if ($id) {
@@ -488,7 +488,7 @@ class TaskQb extends ResourceObject
     /**
      * @Assisted({"pdo", "insert", "now"})
      */
-    public function onPost(string $title, ExtendedPdoInterface $pdo = null, InsertInterface $insert = null, NowInterface $now = null) : ResourceObject
+    public function onPost(string $title, ExtendedPdoInterface $pdo = null, InsertInterface $insert = null, NowInterface $now = null): static
     {
         $params = [
             'title' => $title,
@@ -511,7 +511,7 @@ class TaskQb extends ResourceObject
     /**
      * @Assisted({"pdo", "query"})
      */
-    public function onPatch(string $id, ExtendedPdoInterface $pdo = null, UpdateInterface $update = null) : ResourceObject
+    public function onPatch(string $id, ExtendedPdoInterface $pdo = null, UpdateInterface $update = null): static
     {
         $values = [
             'id' => $id,
@@ -527,7 +527,7 @@ class TaskQb extends ResourceObject
         return $this;
     }
 
-    private function onGetItem(string $id, ExtendedPdoInterface $pdo, SelectInterface $select) : ResourceObject
+    private function onGetItem(string $id, ExtendedPdoInterface $pdo, SelectInterface $select): static
     {
         $select->where('id = :id')->bindValue('id', $id);
         $this->body = $pdo->fetchOne($select->getStatement(), $select->getBindValues());

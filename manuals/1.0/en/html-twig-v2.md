@@ -167,7 +167,7 @@ class Todos extends ResourceObject
     use AuraSqlInject;
     use QueryLocatorInject;
 
-    public function onGet() : ResourceObject
+    public function onGet(): static
     {
         $this->body = $this->pdo->fetchAll($this->query['todos_list']);
         return $this;
@@ -189,7 +189,7 @@ class Index extends ResourceObject
     /**
      * @Embed(rel="todos", src="app://self/todos")
      */
-    public function onGet() : ResourceObject
+    public function onGet(): static
     {
         return $this;
     }

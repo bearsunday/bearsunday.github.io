@@ -20,7 +20,7 @@ class Index extends ResourceObject
     public $code = 200;
     public $headers = [];
 
-    public function onGet(int $a, int $b) : ResourceObject
+    public function onGet(int $a, int $b): static
     {
         $this->body = [
             'sum' => $a + $b  // $_GET['a'] + $_GET['b']
@@ -34,7 +34,7 @@ class Index extends ResourceObject
 ```php?start_inline
 class Todo extends ResourceObject
 {
-    public function onPost(string $id, string $todo) : ResourceObject
+    public function onPost(string $id, string $todo): static
     {
         $this->code = 201; // ステータスコード
         $this->headers = [ // ヘッダー
@@ -99,7 +99,7 @@ HTTPからリクエストされた時に`onGet`メソッドの引数には`$_GET
 ```php?start_inline
 class Index extends ResourceObject
 {
-    public function onGet(int $id) : ResourceObject
+    public function onGet(int $id): static
     {
 ```    
 
@@ -112,7 +112,7 @@ JSONやネストされたクエリ文字列で送信されたデータは配列�
 ```php?start_inline
 class Index extends ResourceObject
 {
-    public function onPost(array $user) : ResourceObject
+    public function onPost(array $user): static
     {
         $name = $user['name']; // bear
 ```
@@ -120,7 +120,7 @@ class Index extends ResourceObject
 ```php?start_inline
 class Index extends ResourceObject
 {
-    public function onPost(User $user) : ResourceObject
+    public function onPost(User $user): static
     {
         $name = $user->name; // bear
 ```
@@ -174,7 +174,7 @@ class News extends ResourceObject
     /**
      * @QueryParam("id")
      */
-    public function foo(string $id) : ResourceObject
+    public function foo(string $id): static
     {
       // $id = $_GET['id'];
 ```
@@ -189,7 +189,7 @@ class News extends ResourceObject
     /**
      * @CookieParam(key="id", param="tokenId")
      */
-    public function foo(string $tokenId) : ResourceObject
+    public function foo(string $tokenId): static
     {
       // $tokenId = $_COOKIE['id'];
 ```
@@ -218,7 +218,7 @@ class News extends ResourceObject
         string $app_mode,         // $_ENV['app_mode'];
         string $token,            // $_POST['token'];
         string $server            // $_SERVER['SERVER_NAME'];
-    ) : ResourceObject {
+    ): static {
 ```
 
 この機能を使うためには引数のデフォルトに`null`が必要です。
@@ -236,7 +236,7 @@ class News extends ResourceObject
     /**
      * @ResourceParam(param=“name”, uri="app://self//login#nickname")
      */
-    public function onGet(string $name) : ResourceObject
+    public function onGet(string $name): static
     {
 ```
 
@@ -345,7 +345,7 @@ class Index extends ResourceObject
 {
     use ResourceInject;
 
-    public function onGet() : ResourceObject
+    public function onGet(): static
     {
         $this->body = [
             'posts' => $this->resource->get('app://self/blog/posts', ['id' => 1])
@@ -415,7 +415,7 @@ $blog = $this
     /**
      * @Link(rel="profile", href="/profile{?id}")
      */
-    public function onGet($id) : ResourceObject
+    public function onGet($id): static
     {
         $this->body = [
             'id' => 10
@@ -448,7 +448,7 @@ use BEAR\Resource\Annotation\Link;
 /**
  * @Link(crawl="post-tree", rel="post", href="app://self/post?author_id={id}")
  */
-public function onGet($id = null) : ResourceObject
+public function onGet($id = null): static
 ```
 
 `linkCrawl`は`crawl`の付いたリンクを[クロール](https://github.com/koriym/BEAR.Resource#crawl)してリソースを集めます。
@@ -466,7 +466,7 @@ class News extends ResourceObject
      * @Embed(rel="sports", src="/news/sports")
      * @Embed(rel="weather", src="/news/weather")
      */
-    public function onGet() : ResourceObject
+    public function onGet(): static
 ```
 
 埋め込まれるのはリソース**リクエスト**です。レンダリングの時に実行されますが、その前に`addQuery()`メソッドで引数を加えたり`withQuery()`で引数を置き換えることができます。
@@ -481,7 +481,7 @@ class News extends ResourceObject
     /**
      * @Embed(rel="website", src="/website{?id}")
      */
-    public function onGet(string $id) : ResourceObject
+    public function onGet(string $id): static
     {
         // ...
         $this->body['website']->addQuery(['title' => $title]); // 引数追加
@@ -519,12 +519,12 @@ use BEAR\RepositoryModule\Annotation\Cacheable;
  */
 class Todo extends ResourceObject
 {
-    public function onGet(string $id) : ResourceObject
+    public function onGet(string $id): static
     {
         // read
     }
 
-    public function onPost(string $id, string $name) : ResourceObject
+    public function onPost(string $id, string $name): static
     {
         // update
     }
@@ -563,7 +563,7 @@ class News extends ResourceObject
    * @Purge(uri="app://self/user/friend?user_id={id}")
    * @Refresh(uri="app://self/user/profile?user_id={id}")
    */
-   public function onPut(string $id, string $name, int $age)) : ResourceObject
+   public function onPut(string $id, string $name, int $age)): static
 ```
 
 別のクラスのリソースや関連する複数のリソースの`QueryRepository`の内容を更新することができます。
@@ -581,7 +581,7 @@ class News extends ResourceObject
    * @Purge(uri="app://self/user/friend?user_id={id}")
    * @Refresh(uri="app://self/user/profile?user_id={id}")
    */
-   public function onPut($id, $name, $age) : ResourceObject
+   public function onPut($id, $name, $age): static
 ```
 
 ## クエリーリポジトリの直接操作
@@ -628,7 +628,7 @@ class Index extends ResourceObject
 {
     use ResourceInject;
 
-    public function onGet(string $status) : ResourceObject
+    public function onGet(string $status): static
     {
         $this->body = [
             'todos' => $this->resource->uri('app://self/todos')(['status' => $status]) // lazy request
@@ -644,7 +644,7 @@ class Index extends ResourceObject
     /**
      * @Embed(rel="todos", src="app://self/todos{?status}")
      */
-    public function onGet(string $status) : ResourceObject
+    public function onGet(string $status): static
     {
         return $this;
     }
@@ -661,7 +661,7 @@ class Todo extends ResourceObject
 {
     use ResourceInject;
 
-    public function onPost(string $title) : ResourceObject
+    public function onPost(string $title): static
     {
         $this->resource->post('app://self/todo', ['title' => $title]);
         $this->code = 301;
@@ -679,7 +679,7 @@ class Todo extends ResourceObject
     /**
      * @Link(rel="create", href="app://self/todo", method="post")
      */
-    public function onPost(string $title) : ResourceObject
+    public function onPost(string $title): static
     {
         $this->resource->href('create', ['title' => $title]);
         $this->code = 301;
@@ -700,7 +700,7 @@ class User extends ResourceObject
 {
     use ResourceInject;
 
-    public function onGet(string $id) : ResourceObject
+    public function onGet(string $id): static
     {
         $nickname = $this->resource->get('app://self/login-user', ['id' => $id])->body['nickname'];
         $this->body = [
@@ -719,7 +719,7 @@ class User extends ResourceObject
     /**
      * @ResourceParam(param=“name”, uri="app://self//login-user#nickname")
      */
-    public function onGet(string $id, string $name) : ResourceObject
+    public function onGet(string $id, string $name): static
     {
         $this->body = [
             'profile' => $this->resource->get('app://self/profile', ['name' => $name])->body
@@ -736,7 +736,7 @@ class User extends ResourceObject
      * @ResourceParam(param=“name”, uri="app://self//login-user#nickname")
      * @Embed(rel="profile", src="app://self/profile")
      */
-    public function onGet(string $id, string $name) : ResourceObject
+    public function onGet(string $id, string $name): static
     {
         $this->body['profile']->addQuery(['name'=>$name]);
 

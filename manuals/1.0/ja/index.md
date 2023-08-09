@@ -49,7 +49,7 @@ class Index extends ResourceObject
         $this->renderer = $render;
     }
 
-    public function onGet(string $name) : ResourceObject
+    public function onGet(string $name): static
     {
         // set resource state
         $this->body = $state;

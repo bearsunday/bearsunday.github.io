@@ -85,7 +85,7 @@ public function onGet() {
 ```php?start_inline
 #[Embed(rel="todos", src="/todos{?status}")]
 #[Embed(rel="me", src="/me")]
-public function onGet(string $status) : ResourceObject
+public function onGet(string $status): static
 
 ```
 

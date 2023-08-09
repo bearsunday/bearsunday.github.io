@@ -454,7 +454,7 @@ class Weekday extends ResourceObject
 +    {
 +    }
 
-    public function onGet(int $year, int $month, int $day) : ResourceObject
+    public function onGet(int $year, int $month, int $day): static
     {
         $weekday = \DateTime::createFromFormat('Y-m-d', "$year-$month-$day")->format('D');
         $this->body = [
@@ -674,7 +674,7 @@ class Index extends ResourceObject
     /**
      * @Embed(rel="weekday", src="app://self/weekday{?year,month,day}")
      */
-    public function onGet(int $year, int $month, int $day) : ResourceObject
+    public function onGet(int $year, int $month, int $day): static
     {
         $this->body += [
             'year' => $year,
@@ -710,7 +710,7 @@ class Index extends ResourceObject
 {
     use ResourceInject;
 
-    public function onGet(int $year, int $month, int $day) : ResourceObject
+    public function onGet(int $year, int $month, int $day): static
     {
       $params = get_defined_vars(); // ['year' => $year, 'month' => $month, 'day' => $day]
       $this->body = $params + [
@@ -935,7 +935,7 @@ class Todos extends ResourceObject
 {
     use DatabaseInject;
 
-    public function onGet(int $id) : ResourceObject
+    public function onGet(int $id): static
     {
         $this->body = $this
             ->db
@@ -953,7 +953,7 @@ class Todos extends ResourceObject
      * @Transactional
      * @ReturnCreatedResource
      */
-    public function onPost(string $todo) : ResourceObject
+    public function onPost(string $todo): static
     {
         $statement = $this->db->insert(
             'todo',
@@ -972,7 +972,7 @@ class Todos extends ResourceObject
     /**
      * @Transactional
      */
-    public function onPut(int $id, string $todo) : ResourceObject
+    public function onPut(int $id, string $todo): static
     {
         $this->db->update(
             'todo',

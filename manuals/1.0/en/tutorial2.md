@@ -653,7 +653,7 @@ class WorkflowTest extends TestCase
         $a = $this->injector->getInstance(TicketQueryInterface::class);
     }
 
-    public function testIndex(): ResourceObject
+    public function testIndex(): static
     {
         $index = $this->resource->get('/');
         $this->assertSame(200, $index->code);
@@ -664,7 +664,7 @@ class WorkflowTest extends TestCase
     /**
      * @depends testIndex
      */
-    public function testGoTickets(ResourceObject $response): ResourceObject
+    public function testGoTickets(ResourceObject $response): static
     {
 
         $json = (string) $response;
@@ -678,7 +678,7 @@ class WorkflowTest extends TestCase
     /**
      * @depends testGoTickets
      */
-    public function testDoPost(ResourceObject $response): ResourceObject
+    public function testDoPost(ResourceObject $response): static
     {
         $json = (string) $response;
         $href = json_decode($json)->_links->{'doPost'}->href;
@@ -691,7 +691,7 @@ class WorkflowTest extends TestCase
     /**
      * @depends testDoPost
      */
-    public function testGoTicket(ResourceObject $response): ResourceObject
+    public function testGoTicket(ResourceObject $response): static
     {
         $href = $response->headers[ResponseHeader::LOCATION];
         $ro = $this->resource->get($href);

@@ -23,7 +23,7 @@ class Index extends ResourceObject
     public $code = 200;
     public $headers = [];
 
-    public function onGet(int $a, int $b) : ResourceObject
+    public function onGet(int $a, int $b): static
     {
         $this->body = [
             'sum' => $a + $b // $_GET['a'] + $_GET['b']
@@ -37,7 +37,7 @@ class Index extends ResourceObject
 ```php?start_inline
 class Todo extends ResourceObject
 {
-    public function onPost(string $id, string $todo) : ResourceObject
+    public function onPost(string $id, string $todo): static
     {
         $this->code = 201; // status code
         $this->headers = [ // header
@@ -147,7 +147,7 @@ class Index extends ResourceObject
 {
     use ResourceInject;
 
-    public function onGet() : ResourceObject
+    public function onGet(): static
     {
         $this->body = [
             'posts' => $this->resource->get('app://self/blog/posts', ['id' => 1])

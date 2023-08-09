@@ -25,7 +25,7 @@ class Download extends ResourceObject
         'Content-Disposition' => 'attachment; filename="image.jpg"'
     ];
 
-    public function onGet() : ResourceObject
+    public function onGet(): static
     {
         $fp = fopen(__DIR__ . '/BEAR.jpg', 'r');
         $this->body = $fp;
@@ -60,7 +60,7 @@ class Image extends ResourceObject
 {
     use StreamTransferInject;
 
-    public function onGet(string $name = 'inline image') : ResourceObject
+    public function onGet(string $name = 'inline image'): static
     {
         $fp = fopen(__DIR__ . '/image.jpg', 'r');
         stream_filter_append($fp, 'convert.base64-encode'); // image base64 format

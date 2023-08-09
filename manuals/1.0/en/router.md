@@ -28,7 +28,7 @@ namespace MyVendor\MyProject\Resource\Page;
 // page://self/index
 class Index extends ResourceObject
 {
-    public function onGet() : ResourceObject // GET request
+    public function onGet(): static // GET request
     {
     }
 }
@@ -218,7 +218,7 @@ class Index extends ResourceObject
         $this->router = $router;
     }
 
-    public function onGet() : ResourceObject
+    public function onGet(): static
     {
         $userLink = $this->router->generate('/user', ['name' => 'bear']);
         // '/user/bear'

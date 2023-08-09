@@ -35,7 +35,7 @@ class Entry extends ResourceObject
     ) {}
 
     #[Embed(rel: "author", src: "/author{?author_id}")]
-    public function onGet(string $author_id, string $slug) : ResourceObject
+    public function onGet(string $author_id, string $slug): static
     {
         // ...
 
@@ -48,7 +48,7 @@ class Entry extends ResourceObject
         string $body,
         string $uid,
         string $slug
-    ) : ResourceObject {
+    ): static {
         // ...
         $this->code = Code::CREATED;
 

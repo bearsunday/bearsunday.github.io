@@ -72,7 +72,7 @@ class Todo extends ResourceObject
     )
 
     #[Link(rel: 'create', href: 'app://self/todo', method: 'post')]
-    public function onPost(string $title) : ResourceObject
+    public function onPost(string $title): static
     {
         $this->resource->href('create', ['title' => $title]);
         $this->code = 301;
@@ -114,7 +114,7 @@ class User extends ResourceObject
     )
 
     #[ResourceParam(param: 'name', uri: 'app://self//login-user#nickname')]
-    public function onGet(string $id, string $name) : ResourceObject
+    public function onGet(string $id, string $name): static
     {
         $this->body = [
             'profile' => $this->resource->get('app://self/profile', ['name' => $name])->body

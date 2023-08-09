@@ -485,7 +485,7 @@ class Ticket extends ResourceObject
      * @JsonSchema(schema="ticket.json")
      * @Query("ticket_item_by_id", type="row")
      */
-    public function onGet(string $id): ResourceObject
+    public function onGet(string $id): static
     {
         unset($id);
 
@@ -558,7 +558,7 @@ class Tickets extends ResourceObject
      * @JsonSchema(schema="tickets.json")
      * @Query("ticket_list")
      */
-    public function onGet(): ResourceObject
+    public function onGet(): static
     {
         return $this;
     }
@@ -572,7 +572,7 @@ class Tickets extends ResourceObject
         string $title,
         string $description = '',
         string $assignee = ''
-    ): ResourceObject {
+    ): static {
         $id = (string) $this->uuid;
         $time = (string) $this->now;
         ($this->createTicket)([
