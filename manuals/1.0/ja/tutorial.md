@@ -297,7 +297,7 @@ class InvalidDateTimeException extends RuntimeException
 
 値の検査をしたコードに修正します。
 
-
+```diff
 <?php
 
 declare(strict_types=1);
