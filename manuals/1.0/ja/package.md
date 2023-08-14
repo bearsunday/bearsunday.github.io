@@ -70,7 +70,7 @@ Web公開フォルダです。
 [![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/ray-di/Ray.Aop/badges/quality-score.png?b=2.x)](https://scrutinizer-ci.com/g/ray-di/Ray.Aop/)
 [![codecov](https://codecov.io/gh/ray-di/Ray.Aop/branch/2.x/graph/badge.svg?token=eh3c9AF4Mr)](https://codecov.io/gh/ray-di/Ray.Aop)
 [![Type Coverage](https://shepherd.dev/github/ray-di/Ray.Aop/coverage.svg)](https://shepherd.dev/github/ray-di/Ray.Aop)
-[![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/ray-di/Ray.Aop/Continuous%20Integration/2.x)](https://github.com/ray-di/Ray.Aop/actions)
+[![Continuous Integration](https://github.com/ray-di/Ray.Aop/actions/workflows/continuous-integration.yml/badge.svg)](https://github.com/ray-di/Ray.Aop/actions/workflows/continuous-integration.yml)
 
 Javeの [AOPアライアンス](http://aopalliance.sourceforge.net/) に準拠したAOPフレームワークです。
 
@@ -78,7 +78,7 @@ Javeの [AOPアライアンス](http://aopalliance.sourceforge.net/) に準拠�
 [![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/ray-di/Ray.Di/badges/quality-score.png?b=2.x)](https://scrutinizer-ci.com/g/ray-di/Ray.Di/)
 [![codecov](https://codecov.io/gh/ray-di/Ray.Di/branch/2.x/graph/badge.svg?token=eh3c9AF4Mr)](https://codecov.io/gh/ray-di/Ray.Di)
 [![Type Coverage](https://shepherd.dev/github/ray-di/Ray.Di/coverage.svg)](https://shepherd.dev/github/ray-di/Ray.Di)
-[![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/ray-di/Ray.Di/Continuous%20Integration/2.x)](https://github.com/ray-di/Ray.Di/actions)
+[![Continuous Integration](https://github.com/ray-di/Ray.Di/actions/workflows/continuous-integration.yml/badge.svg)](https://github.com/ray-di/Ray.Di/actions/workflows/continuous-integration.yml)
 
 [google/guice](https://github.com/google/guice) スタイルのDIフレームワークです。`ray/aop`を含みます。
 
@@ -86,7 +86,7 @@ Javeの [AOPアライアンス](http://aopalliance.sourceforge.net/) に準拠�
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/bearsunday/BEAR.Resource/badges/quality-score.png?b=1.x)](https://scrutinizer-ci.com/g/bearsunday/BEAR.Resource/?branch=1.x)
 [![codecov](https://codecov.io/gh/bearsunday/BEAR.Resource/branch/1.x/graph/badge.svg?token=eh3c9AF4Mr)](https://codecov.io/gh/bearsunday/BEAR.Resource)
 [![Type Coverage](https://shepherd.dev/github/bearsunday/BEAR.Resource/coverage.svg)](https://shepherd.dev/github/bearsunday/BEAR.Resource)
-![Continuous Integration](https://github.com/bearsunday/BEAR.Resource/workflows/Continuous%20Integration/badge.svg)
+[![Continuous Integration](https://github.com/bearsunday/BEAR.Resource/actions/workflows/continuous-integration.yml/badge.svg)](https://github.com/bearsunday/BEAR.Resource/actions/workflows/continuous-integration.yml)
 
 PHPのオブジェクトをRESTサービスとして使用するRESTフレームワークです。`ray/di`を含みます。
 
@@ -94,7 +94,7 @@ PHPのオブジェクトをRESTサービスとして使用するRESTフレーム
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/bearsunday/BEAR.Sunday/badges/quality-score.png?b=1.x)](https://scrutinizer-ci.com/g/bearsunday/BEAR.Sunday/?branch=1.x)
 [![codecov](https://codecov.io/gh/bearsunday/BEAR.Sunday/branch/1.x/graph/badge.svg?token=eh3c9AF4Mr)](https://codecov.io/gh/bearsunday/BEAR.Sunday)
 [![Type Coverage](https://shepherd.dev/github/bearsunday/BEAR.Sunday/coverage.svg)](https://shepherd.dev/github/bearsunday/BEAR.Sunday)
-![Continuous Integration](https://github.com/bearsunday/BEAR.Sunday/workflows/Continuous%20Integration/badge.svg)
+[![Continuous Integration](https://github.com/bearsunday/BEAR.Sunday/actions/workflows/continuous-integration.yml/badge.svg)](https://github.com/bearsunday/BEAR.Sunday/actions/workflows/continuous-integration.yml)
 
 フレームワークのインターフェイスパッケージです。`bear/resource`を含みます。
 
@@ -102,7 +102,7 @@ PHPのオブジェクトをRESTサービスとして使用するRESTフレーム
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/bearsunday/BEAR.Package/badges/quality-score.png?b=1.x)](https://scrutinizer-ci.com/g/bearsunday/BEAR.Package/?branch=1.x)
 [![codecov](https://codecov.io/gh/bearsunday/BEAR.Package/branch/1.x/graph/badge.svg?token=eh3c9AF4Mr)](https://codecov.io/gh/bearsunday/BEAR.Pacakge)
 [![Type Coverage](https://shepherd.dev/github/bearsunday/BEAR.Package/coverage.svg)](https://shepherd.dev/github/bearsunday/BEAR.Package)
-![Continuous Integration](https://github.com/bearsunday/BEAR.Package/workflows/Continuous%20Integration/badge.svg)
+[![Continuous Integration](https://github.com/bearsunday/BEAR.Package/actions/workflows/continuous-integration.yml/badge.svg)](https://github.com/bearsunday/BEAR.Package/actions/workflows/continuous-integration.yml)
 
 `bear/sunday`の実装パッケージです。`bear/sunday`を含みます。
 
