@@ -708,6 +708,30 @@ class Index extends ResourceObject
 php bin/page.php get '/?year=2000&month=1&day=1'
 ```
 
+```php
+500 Internal Server Error
+content-type: application/vnd.error+json
+
+{
+    "message": "Internal Server Error",
+    "logref": "477f34d9",
+    "request": "get page://self/?year=1991&month=8&day=1",
+    "exceptions": "Ray\\Di\\Exception\\Unbound(dependency 'MyVendor\\Weekday\\Resource\\App\\Weekday' with name '' used in src/Resource/Page/Index.php:12 ($weekday))",
+```
+
+エラーが出てしまいました。これはIndexに注入されるWeekdayが束縛されてない(Unbound)というエラーです。
+
+```diff
++   $this->bind(Weekday::class);
+    $this->install(new AuraSqlModule(sprintf('sqlite:%s/var/db/todo.sq3', this->appMeta->appDir)));
+    $this->install(new PackageModule());
+```
+
+上記のようにAppModuleでWeekdayを束縛して再度実行します。
+
+```bash
+php bin/page.php get '/?year=2000&month=1&day=1'
+```
 ```
 200 OK
 Content-Type: application/hal+json
