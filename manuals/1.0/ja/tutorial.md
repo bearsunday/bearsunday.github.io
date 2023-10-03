@@ -727,7 +727,10 @@ content-type: application/vnd.error+json
     $this->install(new PackageModule());
 ```
 
-上記のようにAppModuleでWeekdayを束縛して再度実行します。
+上記のようにAppModuleでWeekdayを束縛します。
+このような具象クラスの束縛を[アンターゲット束縛](https://ray-di.github.io/manuals/1.0/ja/untargeted_bindings.html)と呼びます。通常はインターフェイスに具象クラスを束縛しますが、インターフェイスを持たない具象は直接束縛します。
+
+再度実行します。
 
 ```bash
 php bin/page.php get '/?year=2000&month=1&day=1'

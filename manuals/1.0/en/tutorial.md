@@ -714,8 +714,10 @@ Error! This is an error that the Weekday injected into the Index is unbound.
      $this->install(new AuraSqlModule(sprintf('sqlite:%s/var/db/todo.sq3', this->appMeta->appDir)));
      $this->install(new PackageModule());.
 ```
+Bind Weekday with AppModule as above.
+Such binding of a concrete class is called [untargeted binding](https://ray-di.github.io/manuals/1.0/en/untargeted_bindings.html). Normally, a concrete class is bound to an interface, but a concrete class without an interface is bound directly.
 
-Bind the Weekday in AppModule as above and run it again.
+Run it again.
 
 ````bash
 php bin/page.php get '/?year=2000&month=1&day=1'
