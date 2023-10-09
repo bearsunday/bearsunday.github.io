@@ -696,6 +696,32 @@ At this stage let's check how this resource is rendered.
 ```bash
 php bin/page.php get '/?year=2000&month=1&day=1'
 ```
+```php
+500 Internal Server Error
+content-type: application/vnd.error+json
+
+{
+    "message": "Internal Server Error",
+    "logref": "477f34d9",
+    "request": "get page://self/?year=1991&month=8&day=1",
+    "exceptions": "Ray\\Di\\Exception\\Unbound(dependency 'MyVendor\\Weekday\\Resource\\App\\Weekday' with name '' used in src/Resource/Page/Index.php:12 ($weekday))",
+```
+
+Error! This is an error that the Weekday injected into the Index is unbound.
+
+```diff
++    $this->bind(Weekday::class);
+     $this->install(new AuraSqlModule(sprintf('sqlite:%s/var/db/todo.sq3', this->appMeta->appDir)));
+     $this->install(new PackageModule());.
+```
+Bind Weekday with AppModule as above.
+Such binding of a concrete class is called [untargeted binding](https://ray-di.github.io/manuals/1.0/en/untargeted_bindings.html). Normally, a concrete class is bound to an interface, but a concrete class without an interface is bound directly.
+
+Run it again.
+
+````bash
+php bin/page.php get '/?year=2000&month=1&day=1'
+```
 
 ```
 200 OK
