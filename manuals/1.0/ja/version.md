@@ -19,7 +19,6 @@ BEAR.SundayはサポートされているPHP([Supported Versions](http://php.net
 
 End of life ([EOL](http://php.net/eol.php))
 
-* `8.0` (26 Nov 2023)
 * `5.5` (21 Jul 2016)
 * `5.6` (31 Dec 2018)
 * `7.0` (3 Dec 2018)
@@ -27,6 +26,7 @@ End of life ([EOL](http://php.net/eol.php))
 * `7.2` (30 Nov 2020)
 * `7.3` (6 Dec 2021)
 * `7.4` (28 Nov 2022)
+* `8.0` (26 Nov 2023)
 
 新規のオプションパッケージは現在の安定板をベースに開発されます。機能とパフォーマンスそれにセキュリティの観点から現在の安定板のPHPを使うことを勧めします。[BEAR.SupportedVersions](https://github.com/bearsunday/BEAR.SupportedVersions/)のCIで各バージョンのテストが確認できます。
 
