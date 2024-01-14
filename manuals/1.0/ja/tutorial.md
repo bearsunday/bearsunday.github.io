@@ -804,7 +804,7 @@ exit((new Bootstrap())(PHP_SAPI === 'cli' ? 'cli-html-app' : 'html-app', $GLOBAL
 {% raw %}{% extends 'layout/base.html.twig' %}
 {% block title %}Weekday{% endblock %}
 {% block content %}
-The weekday of {{ year }}/{{ month }}/{{ day }} is {{ weekday.weekday }}.
+The weekday of {{ year }}/{{ month }}/{{ day }} is {{ weekday }}.
 {% endblock %}{% endraw %}
 ```
 

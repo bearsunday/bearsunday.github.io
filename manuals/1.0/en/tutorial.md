@@ -793,7 +793,7 @@ In this way `text/html` media output can be set. Lastly, save your Twig template
 {% raw %}{% extends 'layout/base.html.twig' %}
 {% block title %}Weekday{% endblock %}
 {% block content %}
-The weekday of {{ year }}/{{ month }}/{{ day }} is {{ weekday.weekday }}.
+The weekday of {{ year }}/{{ month }}/{{ day }} is {{ weekday }}.
 {% endblock %}{% endraw %}
 ```
 
