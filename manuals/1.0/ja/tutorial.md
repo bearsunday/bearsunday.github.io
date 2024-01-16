@@ -857,16 +857,19 @@ composer require ray/aura-sql-module
 ```
 
 `src/Module/AppModule::configure()`でモジュールのインストールをします。
+その時`DateTimeImmutable`を束縛して、現在時刻を`DateTimeImmutable`で受け取れるようにしましょう。
 
 ```diff
 <?php
 +use Ray\AuraSqlModule\AuraSqlModule;
++use DateTimeImmutable;
 
 class AppModule extends AbstractAppModule
 {
     protected function configure(): void
     {
         // ...
++        $this->bind(DateTimeImmutable::class);        
 +        $this->install(new AuraSqlModule(sprintf('sqlite:%s/var/db/todo.sqlite3', $this->appMeta->appDir)));
         $this->install(new PackageModule());
     }
@@ -894,10 +897,11 @@ use function sprintf;
 #[Cacheable]
 class Todos extends ResourceObject
 {
-    public function __construct(private ExtendedPdoInterface $pdo, private DateTimeImmutable $date)
-    {
+    public function __construct(
+        private readonly ExtendedPdoInterface $pdo,
+        private readonly DateTimeImmutable $date,
+    ) {
     }
-
     public function onGet(string $id = ''): static
     {
         $sql = $id ? /** @lang SQL */'SELECT * FROM todo WHERE id=:id' : /** @lang SQL */'SELECT * FROM todo';
