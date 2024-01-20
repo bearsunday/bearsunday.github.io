@@ -331,14 +331,16 @@ PHPStormではエディタの右上に緑色のチェックが出ていて問題
 
 namespace MyVendor\Ticket\Query;
 
+use MyVendor\Ticket\Entity\Ticket;
 use Ray\MediaQuery\Annotation\DbQuery;
 
 interface TicketQueryInterface
 {
-    #[DbQuery('ticket_item', type: 'row')]
-    public function item(string $id): array;
+    #[DbQuery('ticket_item', entity: Ticket::class, type: 'row')]
+    public function item(string $id): Ticket|null;
 
-    #[DbQuery('ticket_list')]
+    /** @return array<Ticket> */
+    #[DbQuery('ticket_list', entity: Ticket::class)]
     public function list(): array;
 }
 ```
