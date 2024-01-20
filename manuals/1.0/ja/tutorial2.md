@@ -428,7 +428,7 @@ class Ticket extends ResourceObject
    #[JsonSchema("ticket.json")]
    public function onGet(string $id = ''): static
     {
-        $this->body = $this->query->item($id);
+        $this->body = (array) $this->query->item($id);
 
         return $this;
     }
@@ -513,8 +513,8 @@ Ticketリソースにアトリビュート`#[Embed]`を追加します。
     public function onGet(string $id = ''): static
     {
 +        assert($this->body['project'] instanceof Request);
--        $this->body = $this->query->item($id);
-+        $this->body += $this->query->item($id);
+-        $this->body = (array) $this->query->item($id);
++        $this->body += (array) $this->query->item($id);
 ```
 
 `#[Embed]`アトリビュートの`src`で指定されたリソースのリクエストがbodyプロパティの`rel`キーにインジェクトされ、レンダリング時に遅延評価され文字列表現になります。

@@ -428,7 +428,7 @@ class Ticket extends ResourceObject
    #[JsonSchema("ticket.json")]
    public function onGet(string $id = ''): static
     {
-        $this->body = $this->query->item($id);
+        $this->body = (array) $this->query->item($id);
 
         return $this;
     }
@@ -513,8 +513,8 @@ Add the attribute `#[Embed]` to the Ticket resource.
     public function onGet(string $id = ''): static
     {
 +        assert($this->body['project'] instanceof Request);
--        $this->body = $this->query->item($id);
-+        $this->body += $this->query->item($id);
+-        $this->body = (array) $this->query->item($id);
++        $this->body += (array) $this->query->item($id);
 ```
 
 The request for the resource specified by the `#[Embed]` attribute `src` will be injected into the `rel` key of the body property, and will be lazily evaluated into a string representation when rendered.
