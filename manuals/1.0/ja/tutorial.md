@@ -856,8 +856,8 @@ sqlite> .exit
 composer require ray/aura-sql-module
 ```
 
-`src/Module/AppModule::configure()`でモジュールのインストールをします。
-その時`DateTimeImmutable`を束縛して、現在時刻を`DateTimeImmutable`で受け取れるようにしましょう。
+`src/Module/AppModule::configure()`でモジュールのインストールを行います。
+その時`DateTimeImmutable`を束縛して、コンストラクタで現在時刻を受け取れるようにしましょう。
 
 ```diff
 <?php
@@ -902,6 +902,7 @@ class Todos extends ResourceObject
         private readonly DateTimeImmutable $date,
     ) {
     }
+
     public function onGet(string $id = ''): static
     {
         $sql = $id ? /** @lang SQL */'SELECT * FROM todo WHERE id=:id' : /** @lang SQL */'SELECT * FROM todo';
