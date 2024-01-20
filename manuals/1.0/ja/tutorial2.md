@@ -130,7 +130,7 @@ final class Ticket extends AbstractMigration
     public function change(): void
     {
         $table = $this->table('ticket', ['id' => false, 'primary_key' => ['id']]);
-        $table->addColumn('id', 'uuid')
+        $table->addColumn('id', 'uuid', ['null' => false])
             ->addColumn('title', 'string')
             ->addColumn('date_created', 'datetime')
             ->create();
@@ -331,14 +331,16 @@ PHPStormではエディタの右上に緑色のチェックが出ていて問題
 
 namespace MyVendor\Ticket\Query;
 
+use MyVendor\Ticket\Entity\Ticket;
 use Ray\MediaQuery\Annotation\DbQuery;
 
 interface TicketQueryInterface
 {
-    #[DbQuery('ticket_item', type: 'row')]
-    public function item(string $id): array;
+    #[DbQuery('ticket_item']
+    public function item(string $id): Ticket|null;
 
-    #[DbQuery('ticket_list')]
+    /** @return array<Ticket> */
+    #[DbQuery('ticket_list']
     public function list(): array;
 }
 ```
@@ -360,21 +362,33 @@ interface TicketCommandInterface
 }
 ```
 
-`#[DbQuery]`アトリビュートでSQL文を指定します。また、値を単一行で取得する時には`type: 'row'`の指定が必要です。
+`#[DbQuery]`アトリビュートでSQL文を指定します。
 
 このインターフェイスに対する実装を用意する必要はありません。 指定されたSQLのクエリーを行うオブジェクトが自動生成されます。
 
 インターフェイスを**副作用が発生するcommand**または**値を返すquery**という2つの関心に分けていますが、リポジトリパターンのように1つにまとめたり
 [ADRパターン](https://github.com/pmjones/adr)のように1インターフェイス1メソッドにしても構いません。アプリケーション設計者が方針を決定します。
 
-
-
 ## エンティティ
 
-デフォルトではデータベースの読み込みは連想配列(fetchAssoc)で行われますが、`entity`を指定すると各行がエンティティオブジェクトになります。
+メソッドの返り値に`array`を指定すると、データベースの結果はそのまま連想配列と得られますが、メソッドの返り値にエンティティの型を指定すると、その型にハイドレーションされます。
+
+```php
+#[DbQuery('ticket_item']
+public function item(string $id): array // 配列が得られる
+```
+
+```php
+#[DbQuery('ticket_item']
+public function item(string $id): Ticket|null; // Ticketエンティティが得られる
+```
+
+複数行(row_list)の時は`/** @return array<Ticket>*/`とphpdocで`Ticket`が配列で返ることを指定します。
 
 ```
-#[DbQuery('ticket_item', entity: Ticket::class)]
+/** @return array<Ticket> */
+#[DbQuery('ticket_list')]
+public function list(): array; // Ticketエンティティの配列が得られる
 ```
 
 各行の値は名前引数でコンストラクタに渡されます。[^named]
@@ -426,7 +440,7 @@ class Ticket extends ResourceObject
    #[JsonSchema("ticket.json")]
    public function onGet(string $id = ''): static
     {
-        $this->body = $this->query->item($id);
+        $this->body = (array) $this->query->item($id);
 
         return $this;
     }
@@ -511,8 +525,8 @@ Ticketリソースにアトリビュート`#[Embed]`を追加します。
     public function onGet(string $id = ''): static
     {
 +        assert($this->body['project'] instanceof Request);
--        $this->body = $this->query->item($id);
-+        $this->body += $this->query->item($id);
+-        $this->body = (array) $this->query->item($id);
++        $this->body += (array) $this->query->item($id);
 ```
 
 `#[Embed]`アトリビュートの`src`で指定されたリソースのリクエストがbodyプロパティの`rel`キーにインジェクトされ、レンダリング時に遅延評価され文字列表現になります。

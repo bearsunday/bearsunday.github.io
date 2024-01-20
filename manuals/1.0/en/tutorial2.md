@@ -132,7 +132,7 @@ final class Ticket extends AbstractMigration
     public function change(): void
     {
         $table = $this->table('ticket', ['id' => false, 'primary_key' => ['id']]);
-        $table->addColumn('id', 'uuid')
+        $table->addColumn('id', 'uuid', ['null' => false])
             ->addColumn('title', 'string')
             ->addColumn('date_created', 'datetime')
             ->create();
@@ -338,10 +338,11 @@ use Ray\MediaQuery\Annotation\DbQuery;
 
 interface TicketQueryInterface
 {
-    #[DbQuery('ticket_item', type:'row')]
-    public function item(string $id): array;
+    #[DbQuery('ticket_item']
+    public function item(string $id): Ticket|null;
 
-    #[DbQuery('ticket_list')]
+    /** @return array<Ticket> */
+    #[DbQuery('ticket_list']
     public function list(): array;
 }
 ```
@@ -363,22 +364,32 @@ interface TicketCommandInterface
 }
 ```
 
-The `#[DbQuery]` attribute specifies a SQL statement.
-Also, `type: 'row'` must be specified to get the value in a single row.
-
-You do not need to write any implementation for this interface. An object that performs the specified SQL query will be created automatically.
+Specify an SQL statement with the `#[DbQuery]` attribute. You do not need to write any implementation for this interface. An object that performs the specified SQL query will be created automatically.
 
 The interface is divided into two concerns: **command** which has side effects, and **query** which returns a value.
 It can be one interface and one method as in [ADR pattern](https://github.com/pmjones/adr). The application designer decides the policy.
 
 ## Entity
 
-By default, database reading is done with an associative array (fetchAssoc), but if `entity` is specified, each row becomes an entity object.
+If you specify `array` for the return value of a method, you will get the database result as it is, an associative array, but if you specify an entity type for the return value of the method, it will be hydrated to that type.
+
+``php
+#[DbQuery('ticket_item')
+public function item(string $id): array // you get an array.
+```
+
+```php
+#[DbQuery('ticket_item')].
+public function item(string $id): ticket|null; // yields a Ticket entity.
+```
+
+For multiple rows (row_list), use `/** @return array<Ticket>*/` and phpdoc to specify that ``Ticket`` is returned as an array.
 
 ```
-#[DbQuery('ticket_item', entity: Ticket::class)]
+/** @return array<Ticket> */
+#[DbQuery('ticket_list')].
+public function list(): array; // yields an array of Ticket entities.
 ```
-
 The value of each row is passed to the constructor by name argument. [^named]
 
 [^named]: [PHP 8.0+ named arguments ¶](https://www.php.net/manual/en/functions.arguments.php#functions.named-arguments), column order for PHP 7.x.
@@ -428,7 +439,7 @@ class Ticket extends ResourceObject
    #[JsonSchema("ticket.json")]
    public function onGet(string $id = ''): static
     {
-        $this->body = $this->query->item($id);
+        $this->body = (array) $this->query->item($id);
 
         return $this;
     }
@@ -513,8 +524,8 @@ Add the attribute `#[Embed]` to the Ticket resource.
     public function onGet(string $id = ''): static
     {
 +        assert($this->body['project'] instanceof Request);
--        $this->body = $this->query->item($id);
-+        $this->body += $this->query->item($id);
+-        $this->body = (array) $this->query->item($id);
++        $this->body += (array) $this->query->item($id);
 ```
 
 The request for the resource specified by the `#[Embed]` attribute `src` will be injected into the `rel` key of the body property, and will be lazily evaluated into a string representation when rendered.
