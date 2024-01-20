@@ -338,10 +338,11 @@ use Ray\MediaQuery\Annotation\DbQuery;
 
 interface TicketQueryInterface
 {
-    #[DbQuery('ticket_item', type:'row')]
-    public function item(string $id): array;
+    #[DbQuery('ticket_item']
+    public function item(string $id): Ticket|null;
 
-    #[DbQuery('ticket_list')]
+    /** @return array<Ticket> */
+    #[DbQuery('ticket_list']
     public function list(): array;
 }
 ```
@@ -363,8 +364,7 @@ interface TicketCommandInterface
 }
 ```
 
-The `#[DbQuery]` attribute specifies a SQL statement.
-Also, `type: 'row'` must be specified to get the value in a single row.
+Specify an SQL statement with the `#[DbQuery]` attribute. At that time, you need to specify `type: 'row'` when you want to get the value in a single row as an array.
 
 You do not need to write any implementation for this interface. An object that performs the specified SQL query will be created automatically.
 
@@ -373,10 +373,19 @@ It can be one interface and one method as in [ADR pattern](https://github.com/pm
 
 ## Entity
 
-By default, database reading is done with an associative array (fetchAssoc), but if `entity` is specified, each row becomes an entity object.
+By default, database reading is done with an associative array (fetchAssoc), but if an entity is specified as the return value, it will be assigned to the entity.
 
 ```
-#[DbQuery('ticket_item', entity: Ticket::class)]
+#[DbQuery('ticket_item']
+public function item(string $id): Ticket|null;
+```
+
+For multiple rows (row_list), use `/** @return array<Ticket>*/` and phpdoc to specify that an array of `Tickets` is returned.
+
+```
+/** @return array<Ticket> */
+#[DbQuery('ticket_list')]
+public function list(): array;
 ```
 
 The value of each row is passed to the constructor by name argument. [^named]

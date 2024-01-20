@@ -336,11 +336,11 @@ use Ray\MediaQuery\Annotation\DbQuery;
 
 interface TicketQueryInterface
 {
-    #[DbQuery('ticket_item', entity: Ticket::class, type: 'row')]
+    #[DbQuery('ticket_item']
     public function item(string $id): Ticket|null;
 
     /** @return array<Ticket> */
-    #[DbQuery('ticket_list', entity: Ticket::class)]
+    #[DbQuery('ticket_list']
     public function list(): array;
 }
 ```
@@ -362,7 +362,7 @@ interface TicketCommandInterface
 }
 ```
 
-`#[DbQuery]`アトリビュートでSQL文を指定します。また、値を単一行で取得する時には`type: 'row'`の指定が必要です。
+`#[DbQuery]`アトリビュートでSQL文を指定します。その時、値を配列で単一行で取得する時には`type: 'row'`の指定が必要です。
 
 このインターフェイスに対する実装を用意する必要はありません。 指定されたSQLのクエリーを行うオブジェクトが自動生成されます。
 
@@ -373,10 +373,19 @@ interface TicketCommandInterface
 
 ## エンティティ
 
-デフォルトではデータベースの読み込みは連想配列(fetchAssoc)で行われますが、`entity`を指定すると各行がエンティティオブジェクトになります。
+デフォルトではデータベースの読み込みは連想配列(fetchAssoc)で行われますが、返り値にエンティティを指定するとエンティティに代入されます。
 
 ```
-#[DbQuery('ticket_item', entity: Ticket::class)]
+#[DbQuery('ticket_item']
+public function item(string $id): Ticket|null;
+```
+
+複数行(row_list)の時は`/** @return array<Ticket>*/`とphpdocで`Ticket`が配列で返ることを指定します。
+
+```
+/** @return array<Ticket> */
+#[DbQuery('ticket_list')]
+public function list(): array;
 ```
 
 各行の値は名前引数でコンストラクタに渡されます。[^named]
