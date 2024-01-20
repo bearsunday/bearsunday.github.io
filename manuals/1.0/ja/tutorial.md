@@ -883,17 +883,20 @@ sqlite> .exit
 composer require ray/aura-sql-module
 ```
 
-`src/Module/AppModule::configure()`でモジュールのインストールをします。
+`src/Module/AppModule::configure()`でモジュールのインストールを行います。
+その時`DateTimeImmutable`を束縛して、コンストラクタで現在時刻を受け取れるようにしましょう。
 
 ```diff
 <?php
 +use Ray\AuraSqlModule\AuraSqlModule;
++use DateTimeImmutable;
 
 class AppModule extends AbstractAppModule
 {
     protected function configure(): void
     {
         // ...
++        $this->bind(DateTimeImmutable::class);        
 +        $this->install(new AuraSqlModule(sprintf('sqlite:%s/var/db/todo.sqlite3', $this->appMeta->appDir)));
         $this->install(new PackageModule());
     }
@@ -921,8 +924,10 @@ use function sprintf;
 #[Cacheable]
 class Todos extends ResourceObject
 {
-    public function __construct(private ExtendedPdoInterface $pdo, private DateTimeImmutable $date)
-    {
+    public function __construct(
+        private readonly ExtendedPdoInterface $pdo,
+        private readonly DateTimeImmutable $date,
+    ) {
     }
 
     public function onGet(string $id = ''): static
@@ -990,7 +995,7 @@ declare(strict_types=1);
 use MyVendor\Weekday\Bootstrap;
 
 require dirname(__DIR__) . '/autoload.php';
-exit(( new Bootstrap() )('prod-cli-hal-api-app', $GLOBALS, $_SERVER));
+exit((new Bootstrap() )('prod-cli-hal-api-app', $GLOBALS, $_SERVER));
 ```
 
 コンソールコマンドでリクエストします。`POST`ですがBEAR.Sundayではクエリーの形でパラメーターを渡します。

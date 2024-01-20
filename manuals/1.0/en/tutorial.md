@@ -873,17 +873,20 @@ AuraSqlModule. Let's install it here.
 composer require ray/aura-sql-module
 ```
 
-Install the module with `src/Module/AppModule::configure()`.
+Install the module in `src/Module/AppModule::configure()`.
+Then bind `DateTimeImmutable` so that the constructor can receive the current time.
 
 ```diff
 <?php
 +use Ray\AuraSqlModule\AuraSqlModule;
++use DateTimeImmutable;
 
 class AppModule extends AbstractAppModule
 {
     protected function configure(): void
     {
         // ...
++        $this->bind(DateTimeImmutable::class);        
 +        $this->install(new AuraSqlModule(sprintf('sqlite:%s/var/db/todo.sqlite3', $this->appMeta->appDir)));
         $this->install(new PackageModule());
     }
@@ -911,8 +914,10 @@ use function sprintf;
 #[Cacheable]
 class Todos extends ResourceObject
 {
-    public function __construct(private ExtendedPdoInterface $pdo, private DateTimeImmutable $date)
-    {
+    public function __construct(
+        private readonly ExtendedPdoInterface $pdo,
+        private readonly DateTimeImmutable $date,
+    ) {
     }
 
     public function onGet(string $id = ''): static
@@ -969,7 +974,7 @@ declare(strict_types=1);
 use MyVendor\Weekday\Bootstrap;
 
 require dirname(__DIR__) . '/autoload.php';
-exit(( new Bootstrap() )('prod-cli-hal-api-app', $GLOBALS, $_SERVER));
+exit((new Bootstrap())('prod-cli-hal-api-app', $GLOBALS, $_SERVER));
 ```
 
 Request with console command. `POST`, but for convenience we pass parameters in the form of a query.
