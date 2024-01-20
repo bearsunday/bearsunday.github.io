@@ -362,22 +362,25 @@ interface TicketCommandInterface
 }
 ```
 
-`#[DbQuery]`アトリビュートでSQL文を指定します。その時、値を配列で単一行で取得する時には`type: 'row'`の指定が必要です。
+`#[DbQuery]`アトリビュートでSQL文を指定します。
 
 このインターフェイスに対する実装を用意する必要はありません。 指定されたSQLのクエリーを行うオブジェクトが自動生成されます。
 
 インターフェイスを**副作用が発生するcommand**または**値を返すquery**という2つの関心に分けていますが、リポジトリパターンのように1つにまとめたり
 [ADRパターン](https://github.com/pmjones/adr)のように1インターフェイス1メソッドにしても構いません。アプリケーション設計者が方針を決定します。
 
-
-
 ## エンティティ
 
-デフォルトではデータベースの読み込みは連想配列(fetchAssoc)で行われますが、返り値にエンティティを指定するとエンティティに代入されます。
+メソッドの返り値に`array`を指定すると、データベースの結果はそのまま連想配列と得られますが、メソッドの返り値にエンティティの型を指定すると、その型にハイドレーションされます。
 
-```
+```php
 #[DbQuery('ticket_item']
-public function item(string $id): Ticket|null;
+public function item(string $id): array // 配列が得られる
+```
+
+```php
+#[DbQuery('ticket_item']
+public function item(string $id): Ticket|null; // Ticketエンティティが得られる
 ```
 
 複数行(row_list)の時は`/** @return array<Ticket>*/`とphpdocで`Ticket`が配列で返ることを指定します。
@@ -385,7 +388,7 @@ public function item(string $id): Ticket|null;
 ```
 /** @return array<Ticket> */
 #[DbQuery('ticket_list')]
-public function list(): array;
+public function list(): array; // Ticketエンティティの配列が得られる
 ```
 
 各行の値は名前引数でコンストラクタに渡されます。[^named]

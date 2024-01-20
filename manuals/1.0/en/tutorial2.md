@@ -364,30 +364,32 @@ interface TicketCommandInterface
 }
 ```
 
-Specify an SQL statement with the `#[DbQuery]` attribute. At that time, you need to specify `type: 'row'` when you want to get the value in a single row as an array.
-
-You do not need to write any implementation for this interface. An object that performs the specified SQL query will be created automatically.
+Specify an SQL statement with the `#[DbQuery]` attribute. You do not need to write any implementation for this interface. An object that performs the specified SQL query will be created automatically.
 
 The interface is divided into two concerns: **command** which has side effects, and **query** which returns a value.
 It can be one interface and one method as in [ADR pattern](https://github.com/pmjones/adr). The application designer decides the policy.
 
 ## Entity
 
-By default, database reading is done with an associative array (fetchAssoc), but if an entity is specified as the return value, it will be assigned to the entity.
+If you specify `array` for the return value of a method, you will get the database result as it is, an associative array, but if you specify an entity type for the return value of the method, it will be hydrated to that type.
 
-```
-#[DbQuery('ticket_item']
-public function item(string $id): Ticket|null;
+``php
+#[DbQuery('ticket_item')
+public function item(string $id): array // you get an array.
 ```
 
-For multiple rows (row_list), use `/** @return array<Ticket>*/` and phpdoc to specify that an array of `Tickets` is returned.
+```php
+#[DbQuery('ticket_item')].
+public function item(string $id): ticket|null; // yields a Ticket entity.
+```
+
+For multiple rows (row_list), use `/** @return array<Ticket>*/` and phpdoc to specify that ``Ticket`` is returned as an array.
 
 ```
 /** @return array<Ticket> */
-#[DbQuery('ticket_list')]
-public function list(): array;
+#[DbQuery('ticket_list')].
+public function list(): array; // yields an array of Ticket entities.
 ```
-
 The value of each row is passed to the constructor by name argument. [^named]
 
 [^named]: [PHP 8.0+ named arguments ¶](https://www.php.net/manual/en/functions.arguments.php#functions.named-arguments), column order for PHP 7.x.
