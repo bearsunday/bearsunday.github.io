@@ -6,7 +6,7 @@ A resource orientated framework with a REST Hypermedia centered architecture, im
 
 The documentations are rendered with  [Jekyll](http://jekyllrb.com) and hosted at [http://bearsunday.github.io/](https://bearsunday.github.io/).
 
-### Start Server
+### Start Server with Docker
 
 AMD
 ```
@@ -16,4 +16,10 @@ AMD
 ARM
 ```
 docker compose up
+```
+
+### Start Server in local Ruby environment
+
+```
+bundle exec jekyll serve --watch
 ```
