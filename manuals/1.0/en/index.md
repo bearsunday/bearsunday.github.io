@@ -56,7 +56,7 @@ BEAR.Sunday transcends traditional web applications, offering seamless integrati
 
 ## Web Cache
 
-The resource-oriented architecture of BEAR.Sunday naturally lends itself to distributed caching, inherent to the Web. By adhering to Web fundamentals, BEAR.Sunday leverages CDN-centric distributed cache systems to achieve the high performance and availability demanded by modern web applications.
+By integrating resource-oriented architecture with modern CDN technology, we achieve distributed caching that surpasses traditional server-side TTL caching. BEAR.Sunday's design philosophy adheres to the fundamental principles of the Web, utilizing a CDN-centered distributed caching system to ensure high performance and availability.
 
 - **Distributed Caching**: By caching on the client, CDN, and server-side, both CPU and network costs are minimized.
 
