@@ -4,109 +4,78 @@ title: Introduction
 category: Manual
 permalink: /manuals/1.0/en/
 ---
-# What is BEAR.Sunday?
 
-BEAR.Sunday is a framework for creating elegant, truly RESTful **API centric** web applications in PHP.
+# What is BEAR.Sunday
 
-It helps you to create beautiful decoupled object orientated code. How does it do this?
-
-## Object Frameworks
-
-Many web frameworks give you lots of components, modules and features. BEAR.Sunday however gives you just 3 consistent **framework** patterns into which you can then wire up to your favourite libraries and custom gizmos.
-
-### Ray.Di
-
-Ray.Di is a modern and powerful [Dependency Injection](https://en.wikipedia.org/wiki/Dependency_injection) framework that enables this unobtrusive wiring up of dependencies, libraries and instantiated PHP objects.
-
-### Ray.Aop
-
-Ray.Aop is an [Aspect Orientated Programming](https://en.wikipedia.org/wiki/Aspect-oriented_programming) framework that allows you to wrap objects with other objects by binding them together. This is great when your core business logic should have no knowledge that it is being wrapped by for example an authentication or logging aspect.
+BEAR.Sunday is a PHP application framework that combines a clean object-oriented design with a resource-oriented architecture that follows the basic principles of the Web. It emphasizes standards compliance, long-term perspective, high efficiency, flexibility, self-description, and simplicity.
 
 
-### BEAR.Resource
+## Framework
 
-BEAR.Resource allows you to treat all entry points to your app as [RESTful](https://en.wikipedia.org/wiki/Representational_state_transfer) resources. Resources can then be consumed uniformly across your app. This can be done externally via HTTP or internally via the resource client.
+BEAR.Sunday consists of three frameworks.
 
-Treating all of your data as a resource then simplifies the how you get to your app.
+`Ray.Di` interfaces object dependencies based on the [Principle of Dependency Inversion](http://en.wikipedia.org/wiki/Dependency_inversion_principle).
+
+`Ray.Aop` connects intrinsic and transversal interests with [aspect-oriented programming](http://en.wikipedia.org/wiki/Aspect-oriented_programming).
+
+`BEAR.Resource` connects application data and functionality with resources with [REST constraints](https://en.wikipedia.org/wiki/Representational_state_transfer).
+
+The framework provides constraints and design principles that guide the entire application, promoting consistent design and implementation, resulting in high-quality, clean code.
 
 ## Libraries
 
-BEAR.Sunday is not like other MVC frameworks that contains libraries that support databases, authentication or the likes.
+Unlike full-stack frameworks, BEAR.Sunday does not include its own libraries for specific tasks like authentication or database management. Instead, it favors the use of high-quality third-party libraries.
 
-Instead, you can hook your own great libraries that are available on [Packagist](https://packagist.org/) like the [Aura](http://auraphp.com/) component libraries.
+This approach is rooted in two key design philosophies: firstly, the belief that "frameworks remain, libraries change," acknowledging that while the framework provides a stable foundation, libraries evolve to meet changing needs over time. Secondly, it empowers "application architects with the right and responsibility to choose libraries" that best fit their application's requirements, constraints, and goals.
 
-## Resource Orientated Pattern
+BEAR.Sunday draws a clear distinction between frameworks and libraries, emphasizing the role of the framework as an application constraint.
 
-BEAR.Sunday does not follow MVC instead it is a variation of [Resource-Method-Representation](http://www.peej.co.uk/articles/rmr-architecture.html)
+## Architecture
 
-![4R](/images/screen/4r.png)
+BEAR.Sunday departs from the traditional MVC (Model-View-Controller) architecture, embracing a resource-oriented architecture (ROA). In this paradigm, data and business logic are unified as resources, and the design revolves around links and operations on those resources. While ROA is commonly used for REST API design, BEAR.Sunday extends it to the entire web application.
 
-Resource state is created by calling stateless  requests on RESTful methods, the internal renderer then handles the `representation` and becomes the response.
+## Long-term perspective
 
-```php?start_inline
-class Index extends ResourceObject
-{
-    public $code = 200;
-    public $headers = ['access-control-allow-origin' => '*'];
-    public $body = [];
+BEAR.Sunday is designed with a long-term view, focusing on application maintainability:
 
-    private $renderer;
+- **Constraints**: The consistent application constraints imposed by DI, AOP, and REST remain unchanged over time.
 
-    public function __construct(RenderInterface $render)
-    {
-        $this->renderer = $render;
-    }
+- **Eternal 1.x**:Since its 1.0 release in 2015, BEAR.Sunday has not introduced any backward-incompatible changes. This freedom from the debt of compatibility fixes and their associated tests is a significant advantage. Applications can always be upgraded to the latest version without the burden of compatibility fixes or additional testing.
 
-    public function onGet(string $name): static
-    {
-        // set resource state
-        $this->body = $state;
+- **Standards Compliance**: BEAR.Sunday adheres to various standards, including HTTP, JsonSchema, and others. For DI, it follows Google Guice, and for AOP, it aligns with the Java Aop Alliance.
 
-        return $this;
-    }
+## Connectivity
 
-    public function __toString()
-    {
-        // contextual renderer makes representation (JSON, HTML)
-        return $this->renderer->render($this);
-    }
+BEAR.Sunday transcends traditional web applications, offering seamless integration with a diverse range of clients:
 
-    public function transfer(TransferInterface $responder, array $server)
-    {
-        // contextual responder output (CLI, HTTP)
-        $responder($this, $server);
-    }
-}
-```
+- **HTTP Client**: All resources are directly accessible via HTTP, unlike models or controllers in MVC.
 
-### Resources
+- **composer package**: Resources from applications installed under the vendor directory via Composer can be invoked directly, enabling coordination between multiple applications without resorting to microservices.
 
-What initially makes up a web application is a group of resources. In BEAR.Sunday these can be created as Resource Objects. (Object as a service) The resources can then be accessed locally via PHP or by HTTP requests. In both cases using a consistent URI interface. Each Resource object can then be exposed as a service either or both inside and outside of your application. Using Hypermedia using specially provided annotations you can either `@Link` or `@Embed` other resources.
+- **Multilingual framework**: BEAR.Thrift facilitates efficient interoperability with other languages and PHP versions.
 
-### Methods
+## Web Cache
 
-Each resource object is accessible through an HTTP verb based method. HTTP parameters can also be specified in the method and are then able to be passed in. Once invoked resource properties can then be constructed inside this method. Just like in a controller action in an MVC framework other domain models or resources can be called and accessed.
+The resource-oriented architecture of BEAR.Sunday naturally lends itself to distributed caching, inherent to the Web. By adhering to Web fundamentals, BEAR.Sunday leverages CDN-centric distributed cache systems to achieve the high performance and availability demanded by modern web applications.
 
-Method construction can then be built up using a variation of [Onion Architecture](http://www.infoq.com/news/2014/10/ddd-onion-architecture) or [Clean Architecture](http://blog.8thlight.com/uncle-bob/2012/08/13/the-clean-architecture.html). Logging, validation or authentication etc can then be implemented using `Aspect Orientated Programming` wrapping the original target method.
+- **Distributed Caching**: By caching on the client, CDN, and server-side, both CPU and network costs are minimized.
 
-### Representation
+- **IDENTIFICATION**: ETag-based verification ensures that only modified content is retrieved, enhancing network efficiency.
 
-Each resource has the representation of its current state rendered through an injected renderer. Methods themselves do not know anything about a representation's existence at all. This representation is handled by the resources' `Responder`
+- **Fault tolerance**: The adoption of event-driven content enables a system based on permanent CDN caching. Even if PHP or the database goes down, content remains available, enhancing resilience.
 
-![Clean Method](/images/screen/clean-method.png)
+## Performance
 
-## Collaboration
+BEAR.Sunday strikes a balance between flexibility and performance, with a design focused on efficiency:
 
-1. A web handler transforms a client request into an application resource request.
+- **Injection and Compilation**: By performing dependency injection at compile time, runtime overhead is minimized, resulting in faster application startup and execution.
 
-1. The `Method` that received the `Resource` request then constructs itself (the resource).
+- **Caching**: Resource-oriented architecture enables CDN-centric caching, minimizing PHP execution and database access.
 
-1. The resources assigned `Renderer` then renders the string value `Representation` of that resources state.
+- **Fast Boot**: Compiling framework functionality into a root object optimizes the bootstrap process, enabling ultra-fast responses when used with runtimes like Swoole.
 
-1. The `Responder` returns the `Representation` to the client
+## Because Everything is a Resource
 
-## Why a new pattern?
+BEAR.Sunday embraces the essence of the Web, where "Everything is a Resource." As a PHP web application framework, it excels by providing superior constraints based on object-oriented and REST principles, applicable to the entire application.
 
-The conventional object orientated pattern maps an application to HTTP. Controllers know nothing about HTTP or REST.
-
-In this new pattern you create an object that is mapped to HTTP. Making REST the framework in which do your development in. Unlocking the power of REST this `Resource Orientated` pattern allows you to use HTTP as the application protocol.
+These constraints encourage developers to design and implement consistently and improve the quality of the application in the long run. At the same time, the constraints provide developers with freedom and enhance creativity in building the application.

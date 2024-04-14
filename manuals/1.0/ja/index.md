@@ -4,109 +4,86 @@ title: イントロダクション
 category: Manual
 permalink: /manuals/1.0/ja/
 ---
+
 # BEAR.Sundayとは
 
-BEAR.SundayとはPHPのWebアプリケーションフレームワークです。
-BEAR.Sundayの目標は、標準に準拠し高品質で**API中心**のRESTfulアプリケーションの**フレームワーク**を提供することです。
+BEAR.Sundayは、クリーンなオブジェクト指向設計と、Webの基本原則に沿ったリソース指向アーキテクチャを組み合わせたPHPのアプリケーションフレームワークです。標準準拠、長期的視点、高効率、柔軟性、自己記述、それに加えてシンプルである事を重視します。
 
 ## フレームワーク
 
-**BEAR.Sunday**は3つのオブジェクトフレームワークで構成されています。
+BEAR.Sundayは3つのフレームワークで構成されています。
 
-`Ray.Di`は[依存関係逆転の原則](http://en.wikipedia.org/wiki/Dependency_inversion_principle)に基づいてオブジェクトをインターフェイスで結びます。
+`Ray.Di`は[依存関係逆転の原則](http://en.wikipedia.org/wiki/Dependency_inversion_principle)に基づいてオブジェクトの依存をインターフェイスで結びます。
 
 `Ray.Aop`は[アスペクト指向プログラミング](http://en.wikipedia.org/wiki/Aspect-oriented_programming)で本質的関心と横断的関心を結びます。
 
-`BEAR.Resource`はアプリケーションの情報や機能をリソースにして[REST制約](https://en.wikipedia.org/wiki/Representational_state_transfer)で結びます。
+`BEAR.Resource`はアプリケーションのデータや機能をリソースにして[REST制約](https://en.wikipedia.org/wiki/Representational_state_transfer)で結びます。
 
-アプリケーションもWebと同じように統一されたメソッドとURIでリソースを操作します。強力なDIとAOPでREST API中心に構築されたクリーンなアプリケーションは変更に強く拡張性に優れます。
-
+フレームワークは、アプリケーション全体に適用される制約と設計原則です。一貫性のある設計と実装を促進し、高品質でクリーンなアプリケーションの構築の力になります。
 
 ## ライブラリ
 
-BEAR.Sundayアプリケーションフレームワークは一般的なMVCフレームワークと違って認証やデータベースなどの特定の仕事のための独自のライブラリを持ちません。
-高品質なAuraフレームワークのライブラリや、Packagistで利用可能なサードパーティのライブラリを使用します。
+BEAR.Sunday はフルスタック フレームワークとは異なり、認証やデータベースなどの特定のタスクのための独自のライブラリは提供しません。その代わりに、高品質なサードパーティ製のライブラリを使用することを好みます。
 
-## リソース指向パターン
+このアプローチは2つの設計思想に基づいています。1つ目は「フレームワークは変わらないがライブラリは変わる」という考え方です。フレームワークがアプリケーションの基盤として安定した構造を提供し続ける一方で、ライブラリは時間の経過とともに進化し、アプリケーションの特定のニーズを満たします。
 
-BEAR.SundayはMVCパターンではなく、RESTfulアプリケーション用の[Resource-Method-Representation](http://www.peej.co.uk/articles/rmr-architecture.html)パターンのバリエーションです。
+2つ目は「ライブラリを選択する権利と責任はアプリケーションアーキテクトにある」というものです。アプリケーションアーキテクトは、アプリケーションの要件、制約、および目的に最も適したライブラリを選択する能力と責任を委ねられています。
 
-![4R](/images/screen/4r.png)
+BEAR.Sundayは、フレームワークとライブラリの違いを"不易流行"として明確に区別し、アプリケーション制約としてのフレームワークの役割を重視します。
 
-ステートレスなリクエストは`Method`で`Resource`状態をつくり、内部のRendererが`Representation`にしてレスポンスになります。
+## アーキテクチャ
 
-```php?start_inline
-class Index extends ResourceObject
-{
-    public $code = 200;
-    public $headers = ['access-control-allow-origin' => '*'];
-    public $body = [];
+BEAR.Sundayは、従来のMVC（Model-View-Controller）アーキテクチャとは異なり、リソース指向アーキテクチャ(ROA)を採用しています。こアーキテクチャでは、アプリケーションの設計において、データとビジネスロジックを統一されたリソースとして扱い、それらに対するリンクと操作を中心に設計を行います。リソース指向アーキテクチャはREST APIの設計で広く使用されていますが、BEAR.SundayはそれをWebアプリケーション全体の設計にも適用しています。
 
-    private $renderer;
+## 長期的な視点
 
-    public function __construct(RenderInterface $render)
-    {
-        $this->renderer = $render;
-    }
+BEAR.Sunday は、アプリケーションの長期的な維持を念頭に置いて設計されています。
 
-    public function onGet(string $name): static
-    {
-        // set resource state
-        $this->body = $state;
+- **制約**: DI、AOP、RESTの制約に従った一貫したアプリケーション制約は、時間の経過とともに変わることがありません。
 
-        return $this;
-    }
+- **永遠の1.x**: 2015年の1.0リリース以来、後方互換性の破壊を伴う変更はありません。定期的な互換性対応の改修とそのテストが必要という負債がありません。アプリケーションは常に最新バージョンにアップグレードでき、互換性のための改修やテストの負債はありません。
 
-    public function __toString()
-    {
-        // contextual renderer makes representation (JSON, HTML)
-        return $this->renderer->render($this);
-    }
+- **標準準拠**：HTTP標準、JsonSchema などの標準に従い、DIはGoogle Guice、AOPはJavaのAop Allianceに基づいています。
 
-    public function transfer(TransferInterface $responder, array $server)
-    {
-        // contextual responder output (CLI, HTTP)
-        $responder($this, $server);
-    }
-}
-```
+## 接続性
 
-### Resource
+BEAR.Sundayは、Webアプリケーションを超えて、さまざまなクライアントとのシームレスな統合を可能にします。
 
-WebのリソースをオブジェクトにしたものがResourceObjectです。(Object as a Service)
-固有のURIがマップされHTTPに準じたリクエストメソッドでリソースの状態を変更します。
-他のリソースを`@Embed`で埋め込んだり、次のアクションに`@Link`することでハイパーメディアにすることもできます。
+- **HTTPクライアント**:
+  HTTPを使用して全てのリソースにアクセスすることが可能です。MVCのモデルやコントローラーと違い、BEAR.Sundayのリソースはクライアントから直接のアクセスが可能です。
 
-### Method
+- **composerパッケージ**:
+  composerでvednor下にインストールしたアプリケーションのリソースを直接呼び出す事ができます。マイクロサービスを使うことになしに複数のアプリケーションを協調する事ができます。
 
-Webからのリクエストはユニークにルートされます。HTTPメソッドに応じたパラメーターで呼ばれ、Method内で自身のリソースプロパティを構成します。
-MVCのコントローラーのようにドメインモデルや他のリソースにアクセスする事もあります。
+- **多言語フレームワーク**:
+  BEAR.Thriftを使用して、PHP以外の言語や異なるバージョンのPHPとの連携を可能にします。
 
-Methodの構造は[オニオンアーキテクチャ](http://www.infoq.com/jp/news/2014/11/ddd-onion-architecture)や[クリーンアーキテクチャ](http://blog.8thlight.com/uncle-bob/2012/08/13/the-clean-architecture.html)のバリエーションの１つです。
-認証やバリデーション、ログなどのユースケースはアスペクト指向プログラミングでMethodに任意の層でラップされます。
+## Webキャッシュ
 
-### Representation
+リソース指向アーキテクチャは、Web本来の分散キャッシングを可能にします。BEAR.Sundayの設計思想はWebの基本原則に沿っており、CDNを中心とした分散キャッシュシステムを活用することで、現代のWebアプリケーションに求められる高いパフォーマンスと可用性を実現します。
 
-個別に注入されたRendererは文字列評価時にリソースの状態をRepresentationにします。MethodではRepresentationに関心を持ちません。Representationになったリソースはリソース内の`Responder`でクライアントに出力されます。
+- **分散キャッシュ**: キャッシュをクライアント、CDN、サーバーサイドに保存することで、CPU コストとネットワークコストの双方を削減します。
 
-![Clean Method](/images/screen/clean-method.png)
+- **同一性確認**:
+  ETagを使用してキャッシュされたコンテンツの同一性を確認し、コンテンツの変更があった場合にのみ再取得することで、ネットワーク効率を向上させます。
 
-## コラボレーション
+- **耐障害性**:
+  イベントドリブンコンテンツの採用により、キャッシュに有効期限を設けないCDNキャッシュを基本にしたシステムは、PHPやDBがダウンした場合でもコンテンツを提供し続けます。
 
- 1. ウェブハンドラーはクライアントリクエストをアプリケーションのリソースリクエストに変更します。
+## パフォーマンス
 
- 1. リクエストを受けた`Resource`内の`Method`は自身を構成します。
+BEAR.Sundayは、最大限の柔軟性を確保しながらもパフォーマンスと効率性に重点を置いて設計されています。
 
- 1. 文字列評価で`Resource`内のレンダラーがリソース状態を`Representation`にします。
+- **インジェクションとコンパイル**: 依存関係の注入をコンパイル時に行うことで、実行時のオーバーヘッドを最小限に抑え、アプリケーションの起動と実行を高速化します。
 
- 1. レスポンダーが`Representation`をクライアントにレスポンスとして返します。
+- **キャッシング**:
+  リソース指向アーキテクチャにより、CDNを中心としたキャッシングが可能になり、PHP の実行やデータベースアクセスを最小限に抑えます。
 
+- **高速起動**:
+  フレームワークの機能をルートオブジェクトとしてコンパイルすることで、最適化されたブートストラップを実現し、Swooleなどのランタイムを使用した超高速なレスポンスを可能にします。
 
-## なぜ新しいパターン？
+## Because Everything is a Resource
 
-従来のパターンはオブジェクト指向パラダイムのアプリケーションをHTTPにマップしたものです。
-純粋なコントローラーはHTTPやRESTに対して無知です。
+「全てがリソース」のBEAR.Sundayは、Webの本質であるリソースを中心に設計されたPHPのWebアプリケーションフレームワークです。その真の価値は、オブジェクト指向原則とREST原則に基づいた優れた制約をアプリケーション全体の制約として提供することにあります。
 
-新パターンではHTTPにマップするオブジェクトを作成します。RESTをフレームワークとして、適合するコンポーネントを作成します。
-
-RESTの力を引き出し、HTTPをアプリケーションプロトコルとして扱うリソース指向のためのパターンです。
+この制約は、開発者に一貫性のある設計と実装を促し、長期的な視点に立ったアプリケーションの品質を高めます。同時に、この制約は開発者に自由をもたらし、アプリケーション構築の創造性を高めます。
