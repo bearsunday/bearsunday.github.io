@@ -7,8 +7,7 @@ permalink: /manuals/1.0/en/
 
 # What is BEAR.Sunday
 
-BEAR.Sunday is a PHP application framework that combines a clean object-oriented design with a resource-oriented architecture that follows the basic principles of the Web. It emphasizes standards compliance, long-term perspective, high efficiency, flexibility, self-description, and simplicity.
-
+BEAR.Sunday is a PHP application framework that combines clean object-oriented design with a resource-oriented architecture aligned with the fundamental principles of the web. This framework emphasizes compliance with standards, a long-term perspective, high efficiency, flexibility, self-description, and importantly, simplicity.
 
 ## Framework
 
@@ -40,7 +39,7 @@ BEAR.Sunday is designed with a long-term view, focusing on application maintaina
 
 - **Constraints**: The consistent application constraints imposed by DI, AOP, and REST remain unchanged over time.
 
-- **Eternal 1.x**:Since its 1.0 release in 2015, BEAR.Sunday has not introduced any backward-incompatible changes. This eliminates the debt of compatibility fixes and their associated tests, providing a significant advantage. Applications can always be upgraded to the latest version without the burden of compatibility fixes or additional testing.
+- **Eternal 1.x**:The System That Never Breaks Backward Compatibility. Since its initial release in 2015, BEAR.Sunday has continuously evolved without introducing any backward-incompatible changes. This steadfast approach eliminates the need for compatibility fixes and their associated testing, thereby preventing future technical debt. The system remains cutting-edge, ensuring easy upgrades and access to the latest features without compatibility concerns.
 
 - **Standards Compliance**: BEAR.Sunday adheres to various standards, including HTTP, JsonSchema, and others. For DI, it follows Google Guice, and for AOP, it aligns with the Java Aop Alliance.
 
@@ -56,7 +55,7 @@ BEAR.Sunday transcends traditional web applications, offering seamless integrati
 
 ## Web Cache
 
-The resource-oriented architecture of BEAR.Sunday naturally lends itself to distributed caching, inherent to the Web. By adhering to Web fundamentals, BEAR.Sunday leverages CDN-centric distributed cache systems to achieve the high performance and availability demanded by modern web applications.
+By integrating resource-oriented architecture with modern CDN technology, we achieve distributed caching that surpasses traditional server-side TTL caching. BEAR.Sunday's design philosophy adheres to the fundamental principles of the Web, utilizing a CDN-centered distributed caching system to ensure high performance and availability.
 
 - **Distributed Caching**: By caching on the client, CDN, and server-side, both CPU and network costs are minimized.
 
@@ -66,13 +65,7 @@ The resource-oriented architecture of BEAR.Sunday naturally lends itself to dist
 
 ## Performance
 
-BEAR.Sunday is designed with a focus on performance and efficiency while ensuring maximum flexibility. By compiling the framework's functionality into a root object and resolving dependencies during compilation, it achieves an optimized bootstrap process. This compilation step results in improved startup times and overall execution speed.
-
-- **Injection and Compilation**: By performing dependency injection at compile time, runtime overhead is minimized, resulting in faster application startup and execution.
-
-- **Caching**: Resource-oriented architecture enables CDN-centric caching, minimizing PHP execution and database access.
-
-- **Fast Boot**: Compiling framework functionality into a root object optimizes the bootstrap process, enabling ultra-fast responses when used with runtimes like Swoole.
+BEAR.Sunday is designed with a focus on performance and efficiency while maintaining maximum flexibility. This approach enables a highly optimized bootstrap, positively impacting both user experience and system resources. Performance is always one of the primary concerns for BEAR.Sunday, playing a central role in our design and development decisions.
 
 ## Because Everything is a Resource
 
