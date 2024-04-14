@@ -7,8 +7,7 @@ permalink: /manuals/1.0/en/
 
 # What is BEAR.Sunday
 
-BEAR.Sunday is a PHP application framework that combines a clean object-oriented design with a resource-oriented architecture that follows the basic principles of the Web. It emphasizes standards compliance, long-term perspective, high efficiency, flexibility, self-description, and simplicity.
-
+BEAR.Sunday is a PHP application framework that combines clean object-oriented design with a resource-oriented architecture aligned with the fundamental principles of the web. This framework emphasizes compliance with standards, a long-term perspective, high efficiency, flexibility, self-description, and importantly, simplicity.
 
 ## Framework
 
