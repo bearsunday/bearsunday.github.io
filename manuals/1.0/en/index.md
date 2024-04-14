@@ -20,13 +20,13 @@ BEAR.Sunday consists of three frameworks.
 
 `BEAR.Resource` connects application data and functionality with resources with [REST constraints](https://en.wikipedia.org/wiki/Representational_state_transfer).
 
-The framework provides constraints and design principles that guide the entire application, promoting consistent design and implementation, resulting in high-quality, clean code.
+The framework provides constraints and design principles that guide the entire application, promoting consistent design and implementation, and resulting in high-quality, clean code.
 
 ## Libraries
 
 Unlike full-stack frameworks, BEAR.Sunday does not include its own libraries for specific tasks like authentication or database management. Instead, it favors the use of high-quality third-party libraries.
 
-This approach is rooted in two key design philosophies: firstly, the belief that "frameworks remain, libraries change," acknowledging that while the framework provides a stable foundation, libraries evolve to meet changing needs over time. Secondly, it empowers "application architects with the right and responsibility to choose libraries" that best fit their application's requirements, constraints, and goals.
+This approach is based on two key design philosophies: firstly, the belief that "frameworks remain, libraries change," acknowledging that while the framework provides a stable foundation, libraries evolve to meet changing needs over time. Secondly, it empowers "application architects with the right and responsibility to choose libraries" that best fit their application's requirements, constraints, and goals.
 
 BEAR.Sunday draws a clear distinction between frameworks and libraries, emphasizing the role of the framework as an application constraint.
 
@@ -40,7 +40,7 @@ BEAR.Sunday is designed with a long-term view, focusing on application maintaina
 
 - **Constraints**: The consistent application constraints imposed by DI, AOP, and REST remain unchanged over time.
 
-- **Eternal 1.x**:Since its 1.0 release in 2015, BEAR.Sunday has not introduced any backward-incompatible changes. This freedom from the debt of compatibility fixes and their associated tests is a significant advantage. Applications can always be upgraded to the latest version without the burden of compatibility fixes or additional testing.
+- **Eternal 1.x**:Since its 1.0 release in 2015, BEAR.Sunday has not introduced any backward-incompatible changes. This eliminates the debt of compatibility fixes and their associated tests, providing a significant advantage. Applications can always be upgraded to the latest version without the burden of compatibility fixes or additional testing.
 
 - **Standards Compliance**: BEAR.Sunday adheres to various standards, including HTTP, JsonSchema, and others. For DI, it follows Google Guice, and for AOP, it aligns with the Java Aop Alliance.
 
@@ -52,7 +52,7 @@ BEAR.Sunday transcends traditional web applications, offering seamless integrati
 
 - **composer package**: Resources from applications installed under the vendor directory via Composer can be invoked directly, enabling coordination between multiple applications without resorting to microservices.
 
-- **Multilingual framework**: BEAR.Thrift facilitates efficient interoperability with other languages and PHP versions.
+- **Multilingual framework**: BEAR.Thrift facilitates seamless and efficient interoperability with other languages and PHP versions.
 
 ## Web Cache
 
@@ -60,13 +60,13 @@ The resource-oriented architecture of BEAR.Sunday naturally lends itself to dist
 
 - **Distributed Caching**: By caching on the client, CDN, and server-side, both CPU and network costs are minimized.
 
-- **IDENTIFICATION**: ETag-based verification ensures that only modified content is retrieved, enhancing network efficiency.
+- **Identification**: ETag-based verification ensures that only modified content is retrieved, enhancing network efficiency.
 
 - **Fault tolerance**: The adoption of event-driven content enables a system based on permanent CDN caching. Even if PHP or the database goes down, content remains available, enhancing resilience.
 
 Performance
 
-BEAR.Sunday is designed with a focus on performance and efficiency while ensuring maximum flexibility. By compiling the framework's functionality into a root object and resolving dependencies during compilation, it achieves an optimized bootstrap process. This compilation step results in improved startup times and overall execution speed.
+BEAR.Sunday is designed with a focus on performance and efficiency while ensuring maximum flexibility. By compiling the framework's functionality into a root object and resolving dependencies during compilation, it achieves an optimized bootstrap process. This compilation step improves startup times and overall execution speed.
 
 ## Because Everything is a Resource
 
