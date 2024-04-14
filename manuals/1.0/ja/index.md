@@ -12,7 +12,7 @@ BEAR.Sundayの目標は、高品質でAPI中心のWebアプリケーションの
 
 ## フレームワーク
 
-**BEAR.Sunday**は3つのオブジェクトフレームワークで構成されています。
+BEAR.Sundayは3つのフレームワークで構成されています。
 
 `Ray.Di`は[依存関係逆転の原則](http://en.wikipedia.org/wiki/Dependency_inversion_principle)に基づいてオブジェクトの依存をインターフェイスで結びます。
 
@@ -20,7 +20,7 @@ BEAR.Sundayの目標は、高品質でAPI中心のWebアプリケーションの
 
 `BEAR.Resource`はアプリケーションの情報や機能をリソースにして[REST制約](https://en.wikipedia.org/wiki/Representational_state_transfer)で結びます。
 
-アプリケーションもWebと同じように統一されたメソッドとURIでリソースを操作します。強力なDIとAOPでREST API中心に構築されたクリーンなアプリケーションは変更に強く拡張性に優れます。
+フレームワークは、アプリケーション全体に適用される制約と設計原則です。一貫性のある設計と実装を促進し、高品質でクリーンなアプリケーションの構築の力になります。
 
 ## ライブラリ
 
