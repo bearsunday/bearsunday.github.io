@@ -61,7 +61,8 @@ By integrating resource-oriented architecture with modern CDN technology, we ach
 
 - **Identification**: ETag-based verification ensures that only modified content is retrieved, enhancing network efficiency.
 
-- **Fault tolerance**: The adoption of event-driven content enables a system based on permanent CDN caching. Even if PHP or the database goes down, content remains available, enhancing resilience.
+- **Fault tolerance**: Event-based cache invalidation allows all content to be stored in CDN caches without TTL limitations. This improves fault tolerance to the point where the system remains available even if the PHP or database servers go down.
+
 
 ## Performance
 
