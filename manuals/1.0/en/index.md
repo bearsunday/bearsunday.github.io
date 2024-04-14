@@ -15,7 +15,7 @@ BEAR.Sunday consists of three frameworks.
 
 `Ray.Di` interfaces object dependencies based on the [Principle of Dependency Inversion](http://en.wikipedia.org/wiki/Dependency_inversion_principle).
 
-`Ray.Aop` connects intrinsic and transversal interests with [aspect-oriented programming](http://en.wikipedia.org/wiki/Aspect-oriented_programming).
+`Ray.Aop` connects core concerns and cross-cutting concerns with [aspect-oriented programming](http://en.wikipedia.org/wiki/Aspect-oriented_programming).
 
 `BEAR.Resource` connects application data and functionality with resources with [REST constraints](https://en.wikipedia.org/wiki/Representational_state_transfer).
 
