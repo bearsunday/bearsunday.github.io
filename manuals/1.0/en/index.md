@@ -64,15 +64,9 @@ The resource-oriented architecture of BEAR.Sunday naturally lends itself to dist
 
 - **Fault tolerance**: The adoption of event-driven content enables a system based on permanent CDN caching. Even if PHP or the database goes down, content remains available, enhancing resilience.
 
-## Performance
+Performance
 
-BEAR.Sunday strikes a balance between flexibility and performance, with a design focused on efficiency:
-
-- **Injection and Compilation**: By performing dependency injection at compile time, runtime overhead is minimized, resulting in faster application startup and execution.
-
-- **Caching**: Resource-oriented architecture enables CDN-centric caching, minimizing PHP execution and database access.
-
-- **Fast Boot**: Compiling framework functionality into a root object optimizes the bootstrap process, enabling ultra-fast responses when used with runtimes like Swoole.
+BEAR.Sunday is designed with a focus on performance and efficiency while ensuring maximum flexibility. By compiling the framework's functionality into a root object and resolving dependencies during compilation, it achieves an optimized bootstrap process. This compilation step results in improved startup times and overall execution speed.
 
 ## Because Everything is a Resource
 
