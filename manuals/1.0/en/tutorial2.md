@@ -415,7 +415,7 @@ class Ticket
 
 The resource class depends on the query interface.
 
-## tikcet resource
+## Ticket resource
 
 Create a `ticket` resource in `src/Resource/App/Ticket.php`.
 
@@ -876,7 +876,7 @@ Applications should aim for evolvability without breaking development efficiency
 
 [^1]:.env should not be git committed.
 [^2]:For example, if it is an e-commerce site, the test will represent the transition of each application state, such as product list, add to cart, order, payment, etc.
-[^3]:[PHPStorm Database Tools and SQL](https://pleiades.io/help/phpstorm/relational-databases.html))
+[^3]:[PHPStorm Database Tools and SQL](https://pleiades.io/help/phpstorm/relational-databases.html)
 [^4]:[Database Diagrams](https://pleiades.io/help/phpstorm/creating-diagrams.html), etc. to check the query plan and execution plan to improve the quality of the SQL you create.
 [^5]: Ray.MediaQuery also supports HTTP API requests.
 [^6]: MediaQuery also supports HTTP API requests. This hierarchical structure of content is called **Taxonomy** in IA (Information Architecture). See [Understanding Information Architecture](https://understandinggroup.com/ia-theory/understanding-information-architecture).

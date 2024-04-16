@@ -256,7 +256,7 @@ Note that the default value of `null` for the value object argument is never use
 public function __invoke(Uuid $uuid = null): void; // UUID is generated and passed.
 ````
 
-## Pagenation
+## Pagination
 
 The `#[Pager]` annotation allows paging of SELECT queries.
 
