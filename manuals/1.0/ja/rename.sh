@@ -42,3 +42,6 @@ mv html-qiq.md 201.html-qiq.md
 mv html-twig-v1.md 202.html-twig-v1.md
 mv html-twig-v2.md 203.html-twig-v2.md
 mv resource_bp.md 121.resource_bp.md
+mv resource_cache.md 122.resource_cache.md
+mv request.md 151.request.md
+mv api_tutorial.md 231.api_tutorial.md
