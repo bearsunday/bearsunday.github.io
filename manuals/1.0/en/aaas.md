@@ -5,8 +5,7 @@ category: Manual
 permalink: /manuals/1.0/en/aaas.html
 ---
 
-##
-Application Import
+## Application Import
 
 Resources created with BEAR.Sunday have unrivaled re-usability.
 You can run multiple applications at the same time and use resources of other applications. You do not need to set up separate web servers.
