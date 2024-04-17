@@ -41,5 +41,5 @@ def generate_combined_file(language, intro_message)
 end
 
 # 以下の行を使用して関数を2言語で呼び出す
-generate_combined_file("ja", "これはBEAR.Sundayの全てのマニュアルを1つに集めたページです。")
-generate_combined_file("en", "This is the page that collects all BEAR.Sunday manuals in one place.")
+generate_combined_file("ja", "これはBEAR.Sundayの全てのマニュアルページを一つにまとめたページです。")
+generate_combined_file("en", "This page collects all BEAR.Sunday manuals in one place.")
