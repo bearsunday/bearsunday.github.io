@@ -8,18 +8,12 @@ The documentations are rendered with  [Jekyll](http://jekyllrb.com) and hosted a
 
 ### Start Server with Docker
 
-AMD
 ```
-./bin/serve.sh
-```
-
-ARM
-```
-docker compose up
+./bin/served.sh
 ```
 
 ### Start Server in local Ruby environment
 
 ```
-bundle exec jekyll serve --watch
+./bin/servel.sh
 ```
