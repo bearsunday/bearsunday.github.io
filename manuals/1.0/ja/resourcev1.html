@@ -1,0 +1,995 @@
+<!doctype html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>リソース &#124; BEAR.Sunday</title>
+    <meta name="description" content="BEAR.Sunday is a resource orientated framework with a REST centered architecture, implementing Dependency Injection and Aspect Orientated Programming' at its core.">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/github-markdown-css/2.10.0/github-markdown.css">
+    <link rel="stylesheet" href="/css/syntax.css">
+    
+    <link rel="stylesheet" href="/css/bearsunday.css">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="apple-touch-icon" href="/icon.png">
+</head>
+<body data-page-category="Manual" data-spy="scroll" data-target="#ArticleToc" data-offset="65">
+<header>
+    <nav class="navbar navbar-expand flex-column flex-md-row bg-light">
+        <a class="navbar-brand mr-0 mr-md-2" href="/index.html"></a>
+        <div class="navbar-nav-scroll">
+            <ul class="navbar-nav flex-row">
+                <li class="nav-item">
+                    <a class="nav-link " href="/index.html">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="/manuals/1.0/en/index.html">Manual</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link " href="/contributors.html">Contributors</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/slide.html">Slide</a>
+                </li>
+            </ul>
+        </div>
+        
+        <ul class="navbar-nav ml-md-auto d-none d-md-flex language-list">
+            <li>
+                <a class="" href="/manuals/1.0/en/resourcev1.html">En</a>
+            </li>
+            <li>
+                <a class="active" href="/manuals/1.0/ja/resourcev1.html">Ja</a>
+            </li>
+        </ul>
+        
+    </nav>
+</header>
+
+<main class="container-fluid">
+    <div class="row flex-xl-nowrap">
+        <div class="col-md-3 col-lg-2">
+            <div class="side-bar">
+                <nav class="navbar navbar-expand-md navbar-light">
+    <div class="navigation-header">
+        <div class="ml-auto d-sm-block d-md-none">
+            <ul class="navbar-nav language-list">
+                <li>
+                    <a class="" href="/manuals/1.0/en/resourcev1.html">En</a>
+                </li>
+                <li>
+                    <a class="active" href="/manuals/1.0/ja/resourcev1.html">Ja</a>
+                </li>
+            </ul>
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#Navber" aria-controls="Navber" aria-expanded="false" aria-label="ナビゲーションの切替">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+    </div>
+    <div class="collapse navbar-collapse" id="Navber">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/index.html">イントロダクション</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/version.html">バージョン</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/quick-start.html">クイックスタート</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/tutorial.html">チュートリアル</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/tutorial2.html">チュートリアル 2</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/package.html">パッケージ</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/application.html">アプリケーション</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/module.html">モジュール</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/di.html">DI</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/aop.html">AOP</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/resource.html">リソース</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/resource_param.html">・パラメーター</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/resource_link.html">・リンク</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/resource_renderer.html">・レンダリングと転送</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/router.html">ルーター</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/production.html">プロダクション</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/ja/import.html">インポート</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/database.html">データベース</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/html.html">HTML</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/validation.html">バリデーション</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/form.html">フォーム</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/content-negotiation.html">コンテントネゴシエーション</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/hypermedia-api.html">ハイパーメディア API</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/psr7.html">リクエスト / PSR-7</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/js-ui.html">JavaScript UI</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/stream.html">ストリーム出力</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/cache.html">キャッシュ</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/swoole.html">Swoole</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/coding-guide.html">コーディングガイド</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/types.html">タイプ</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/test.html">テスト</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/examples.html">サンプル</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/upgrade/injector.html">アップグレード</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/attribute.html">アトリビュート</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/apidoc.html">API Doc</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/1page.html">1 Page</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+            </div>
+        </div>
+        <div class="col-md-9 col-lg-8">
+            <article id="article" class="markdown-body">
+                <h1 id="リソース">リソース</h1>
+
+<p>BEAR.Sundayアプリケーションはリンクで接続されたリソースの集合です。</p>
+
+<h2 id="サービスとしてのオブジェクト">サービスとしてのオブジェクト</h2>
+
+<p><code class="language-plaintext highlighter-rouge">ResourceObject</code>はHTTPのメソッドがPHPのメソッドにマップされたサービスとしてのオブジェクト (Object as a service)です。ステートレスなリクエストで自身のリソース状態を表現にして転送します。
+(<a href="http://ja.wikipedia.org/wiki/REST">Representational State Transfer)</a></p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">Index</span> <span class="kd">extends</span> <span class="nc">ResourceObject</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="nv">$code</span> <span class="o">=</span> <span class="mi">200</span><span class="p">;</span>
+    <span class="k">public</span> <span class="nv">$headers</span> <span class="o">=</span> <span class="p">[];</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onGet</span><span class="p">(</span><span class="kt">int</span> <span class="nv">$a</span><span class="p">,</span> <span class="kt">int</span> <span class="nv">$b</span><span class="p">):</span> <span class="kt">static</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">body</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s1">'sum'</span> <span class="o">=&gt;</span> <span class="nv">$a</span> <span class="o">+</span> <span class="nv">$b</span>  <span class="c1">// $_GET['a'] + $_GET['b']</span>
+        <span class="p">];</span>
+
+        <span class="k">return</span> <span class="nv">$this</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">Todo</span> <span class="kd">extends</span> <span class="nc">ResourceObject</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onPost</span><span class="p">(</span><span class="kt">string</span> <span class="nv">$id</span><span class="p">,</span> <span class="kt">string</span> <span class="nv">$todo</span><span class="p">):</span> <span class="kt">static</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">code</span> <span class="o">=</span> <span class="mi">201</span><span class="p">;</span> <span class="c1">// ステータスコード</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">headers</span> <span class="o">=</span> <span class="p">[</span> <span class="c1">// ヘッダー</span>
+            <span class="s1">'Location'</span> <span class="o">=&gt;</span> <span class="s1">'/todo/new_id'</span>
+        <span class="p">];</span>
+
+        <span class="k">return</span> <span class="nv">$this</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>PHPのリソースクラスはWebのURIと同じような<code class="language-plaintext highlighter-rouge">app://self/blog/posts/?id=3</code>, <code class="language-plaintext highlighter-rouge">page://self/index</code>などのURIを持ち、HTTPのメソッドに準じた<code class="language-plaintext highlighter-rouge">onGet</code>, <code class="language-plaintext highlighter-rouge">onPost</code>, <code class="language-plaintext highlighter-rouge">onPut</code>, <code class="language-plaintext highlighter-rouge">onPatch</code>, <code class="language-plaintext highlighter-rouge">onDelete</code>インターフェイスを持ちます。</p>
+
+<p>メソッドでは自身のリソース状態<code class="language-plaintext highlighter-rouge">code</code>,<code class="language-plaintext highlighter-rouge">headers</code>,<code class="language-plaintext highlighter-rouge">body</code>を変更し<code class="language-plaintext highlighter-rouge">$this</code>を返します。</p>
+
+<h2 id="uri">URI</h2>
+
+<p>PHPのクラスはURIにマップされていて、アプリケーションではクラス名の代わりにURIを使ってリソースにアクセスします。
+アプリケーション名が<code class="language-plaintext highlighter-rouge">koriym\todo</code>というアプリケーションの場合、URIとクラスはこのように対応します。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>URI</th>
+      <th>Class</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">page://self/index</code></td>
+      <td><code class="language-plaintext highlighter-rouge">Koriym\Todo\Resource\Page\Index</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">app://self/blog/posts</code></td>
+      <td><code class="language-plaintext highlighter-rouge">Koriym\Todo\Resource\App\Blog\Posts</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<ul>
+  <li>page://self/indexのindexは省略する事ができます。page://self/indexとpage://self/は同じです。</li>
+  <li>HTTPのURIと同じようにクエリを使う事もできます。 (app://self/blog/posts/?id=3)</li>
+</ul>
+
+<p>標準ではリソースは二種類用意されています。１つは<code class="language-plaintext highlighter-rouge">App</code>アプリケーションリソースです。アプリケーションのAPIです。
+もう１つは<code class="language-plaintext highlighter-rouge">Page</code>リソースです。<code class="language-plaintext highlighter-rouge">Page</code>リソースは<code class="language-plaintext highlighter-rouge">App</code>リソースを利用してWebページを表現します。</p>
+
+<h2 id="メソッド">メソッド</h2>
+
+<p>リソースはHTTPのメソッドに対応した6つのメソッドでアクセスすることができます。</p>
+
+<h3 id="get">GET</h3>
+<p>リソースの状態を取得します。安全なメソッドです。このメソッドではリソースの状態を変えてはいけません。</p>
+
+<h3 id="put">PUT</h3>
+<p>リクエストしたURIでリソースの状態を置き換えます。このメソッドは安全ではなくリソースの状態を変更します。
+メソッドには<a href="https://ja.wikipedia.org/wiki/%E5%86%AA%E7%AD%89">冪等性</a>がありメソッドを何度実行しても結果は同じです。</p>
+
+<h3 id="patch">PATCH</h3>
+<p>リソースを部分的に変更します。</p>
+
+<h3 id="post">POST</h3>
+<p>リクエストしたURIに新しいリソースを追加します。このメソッドは安全ではなくリソースの状態を変更します。冪等性はなくリクエストの回数分リソースが追加されます。</p>
+
+<h3 id="delete">DELETE</h3>
+<p>リソースの削除をします。冪等性があります。</p>
+
+<h3 id="options">OPTIONS</h3>
+<p>リソースのリクエストに必要なパラメーターとレスポンスに関する情報を取得します。安全なメソッドです。</p>
+
+<h2 id="パラメーター">パラメーター</h2>
+
+<p>HTTPからリクエストされた時に<code class="language-plaintext highlighter-rouge">onGet</code>メソッドの引数には<code class="language-plaintext highlighter-rouge">$_GET</code>、<code class="language-plaintext highlighter-rouge">onPost</code>には<code class="language-plaintext highlighter-rouge">$_POST</code>が変数名に応じて渡されます。例えば下記の$idは$_GET[‘id’]が渡されます。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">Index</span> <span class="kd">extends</span> <span class="nc">ResourceObject</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onGet</span><span class="p">(</span><span class="kt">int</span> <span class="nv">$id</span><span class="p">):</span> <span class="kt">static</span>
+    <span class="p">{</span>
+</code></pre></div></div>
+
+<p>GET,POST以外のメソッド<code class="language-plaintext highlighter-rouge">onPut</code>,<code class="language-plaintext highlighter-rouge">onPatch</code>, <code class="language-plaintext highlighter-rouge">onDelete</code>の引数にはリクエストボディの値が<code class="language-plaintext highlighter-rouge">content-type</code>ヘッダーで指定されたフォーマットで与えられます。 <sup id="fnref:1" role="doc-noteref"><a href="#fn:1" class="footnote" rel="footnote">1</a></sup>
+例えば<code class="language-plaintext highlighter-rouge">application/json</code>ならJSONフォーマットで、<code class="language-plaintext highlighter-rouge">x-www-form-urlencoded</code>ならURL経由で渡されるクエリ文字列と同じフォーマット key1=val1&amp;key2=vale2&amp;..として扱われます。</p>
+
+<p>パラメーターはネストされたデータ <sup id="fnref:2" role="doc-noteref"><a href="#fn:2" class="footnote" rel="footnote">2</a></sup> でも構いません。
+JSONやネストされたクエリ文字列で送信されたデータは配列やクラスでも受け取る事ができます。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">Index</span> <span class="kd">extends</span> <span class="nc">ResourceObject</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onPost</span><span class="p">(</span><span class="kt">array</span> <span class="nv">$user</span><span class="p">):</span> <span class="kt">static</span>
+    <span class="p">{</span>
+        <span class="nv">$name</span> <span class="o">=</span> <span class="nv">$user</span><span class="p">[</span><span class="s1">'name'</span><span class="p">];</span> <span class="c1">// bear</span>
+</code></pre></div></div>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">Index</span> <span class="kd">extends</span> <span class="nc">ResourceObject</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onPost</span><span class="p">(</span><span class="kt">User</span> <span class="nv">$user</span><span class="p">):</span> <span class="kt">static</span>
+    <span class="p">{</span>
+        <span class="nv">$name</span> <span class="o">=</span> <span class="nv">$user</span><span class="o">-&gt;</span><span class="n">name</span><span class="p">;</span> <span class="c1">// bear</span>
+</code></pre></div></div>
+
+<p>受け取るクラス（Inputクラス）は事前にパラメーターをpublicプロパティにしたものを定義しておきます。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&lt;?</span><span class="n">php</span>
+
+<span class="kn">namespace</span> <span class="nn">Vendor\App\Input</span><span class="p">;</span>
+
+<span class="k">final</span> <span class="kd">class</span> <span class="nc">User</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="nv">$id</span><span class="p">;</span>
+    <span class="k">public</span> <span class="nv">$name</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>ネームスペースは任意です。Inputクラスでは入力データをまとめたり検証したりするメソッドを実装する事ができます。<sup id="fnref:3" role="doc-noteref"><a href="#fn:3" class="footnote" rel="footnote">3</a></sup></p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">final</span> <span class="kd">class</span> <span class="nc">User</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="nv">$givenName</span><span class="p">;</span>
+    <span class="k">public</span> <span class="nv">$familyName</span><span class="p">;</span>
+    
+    <span class="k">public</span> <span class="k">function</span> <span class="n">getFullName</span><span class="p">()</span> <span class="p">:</span> <span class="kt">string</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="s2">"</span><span class="si">{</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="n">givenName</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="n">familyName</span><span class="si">}</span><span class="s2">"</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>配列受け取りはInputクラスの集合として入力を受け取る時にも便利です。</p>
+
+<h3 id="バインドパラメーター">バインドパラメーター</h3>
+
+<p>リソースクラスのメソッドの引数をWebコンテキストや他リソースの状態と束縛することができます。</p>
+
+<h4 id="webコンテキストパラメーター">Webコンテキストパラメーター</h4>
+
+<p><code class="language-plaintext highlighter-rouge">$_GET</code>や<code class="language-plaintext highlighter-rouge">$_COOKIE</code>などのPHPのスーパーグローバルの値をメソッド内で取得するのではなく、メソッドの引数に束縛することができます。</p>
+
+<p>キーの名前と引数の名前が同じ場合</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">use</span> <span class="nc">Ray\WebContextParam\Annotation\QueryParam</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">News</span> <span class="kd">extends</span> <span class="nc">ResourceObject</span>
+<span class="p">{</span>
+    <span class="cd">/**
+     * @QueryParam("id")
+     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">foo</span><span class="p">(</span><span class="kt">string</span> <span class="nv">$id</span><span class="p">):</span> <span class="kt">static</span>
+    <span class="p">{</span>
+      <span class="c1">// $id = $_GET['id'];</span>
+</code></pre></div></div>
+
+<p>キーの名前と引数の名前が違う場合は<code class="language-plaintext highlighter-rouge">key</code>と<code class="language-plaintext highlighter-rouge">param</code>で指定します。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">use</span> <span class="nc">Ray\WebContextParam\Annotation\CookieParam</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">News</span> <span class="kd">extends</span> <span class="nc">ResourceObject</span>
+<span class="p">{</span>
+    <span class="cd">/**
+     * @CookieParam(key="id", param="tokenId")
+     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">foo</span><span class="p">(</span><span class="kt">string</span> <span class="nv">$tokenId</span><span class="p">):</span> <span class="kt">static</span>
+    <span class="p">{</span>
+      <span class="c1">// $tokenId = $_COOKIE['id'];</span>
+</code></pre></div></div>
+
+<p>フルリスト</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">use</span> <span class="nc">Ray\WebContextParam\Annotation\QueryParam</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">Ray\WebContextParam\Annotation\CookieParam</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">Ray\WebContextParam\Annotation\EnvParam</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">Ray\WebContextParam\Annotation\FormParam</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">Ray\WebContextParam\Annotation\ServerParam</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">News</span> <span class="kd">extends</span> <span class="nc">ResourceObject</span>
+<span class="p">{</span>
+    <span class="cd">/**
+     * @QueryParam(key="id", param="userId")
+     * @CookieParam(key="id", param="tokenId")
+     * @EnvParam("app_mode")
+     * @FormParam("token")
+     * @ServerParam(key="SERVER_NAME", param="server")
+     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">foo</span><span class="p">(</span>
+        <span class="kt">string</span> <span class="nv">$userId</span><span class="p">,</span>           <span class="c1">// $_GET['id'];</span>
+        <span class="kt">string</span> <span class="nv">$tokenId</span> <span class="o">=</span> <span class="s2">"0000"</span><span class="p">,</span> <span class="c1">// $_COOKIE['id'] or "0000" when unset;</span>
+        <span class="kt">string</span> <span class="nv">$app_mode</span><span class="p">,</span>         <span class="c1">// $_ENV['app_mode'];</span>
+        <span class="kt">string</span> <span class="nv">$token</span><span class="p">,</span>            <span class="c1">// $_POST['token'];</span>
+        <span class="kt">string</span> <span class="nv">$server</span>            <span class="c1">// $_SERVER['SERVER_NAME'];</span>
+    <span class="p">):</span> <span class="kt">static</span> <span class="p">{</span>
+</code></pre></div></div>
+
+<p>この機能を使うためには引数のデフォルトに<code class="language-plaintext highlighter-rouge">null</code>が必要です。
+またクライアントが値を指定した時は指定した値が優先され、束縛した値は無効になります。</p>
+
+<h4 id="リソースパラメーター">リソースパラメーター</h4>
+
+<p><code class="language-plaintext highlighter-rouge">@ResourceParam</code>アノテーションを使えば他のリソースリクエストの結果をメソッドの引数に束縛できます。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">use</span> <span class="nc">BEAR\Resource\Annotation\ResourceParam</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">News</span> <span class="kd">extends</span> <span class="nc">ResourceObject</span>
+<span class="p">{</span>
+    <span class="cd">/**
+     * @ResourceParam(param=“name”, uri="app://self//login#nickname")
+     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onGet</span><span class="p">(</span><span class="kt">string</span> <span class="nv">$name</span><span class="p">):</span> <span class="kt">static</span>
+    <span class="p">{</span>
+</code></pre></div></div>
+
+<p>この例ではメソッドが呼ばれると<code class="language-plaintext highlighter-rouge">login</code>リソースに<code class="language-plaintext highlighter-rouge">get</code>リクエストを行い<code class="language-plaintext highlighter-rouge">$body['nickname']</code>を<code class="language-plaintext highlighter-rouge">$name</code>で受け取ります。</p>
+
+<h2 id="レンダリング">レンダリング</h2>
+
+<p><code class="language-plaintext highlighter-rouge">ResourceObject</code>クラスのリクエストメソッド(<code class="language-plaintext highlighter-rouge">onGet</code>など）はリソースがHTMLで表現されるかJSONで表現されるかなどの表現に対して関心を持ちません。
+コンテキストによって<code class="language-plaintext highlighter-rouge">ResourceObject</code>にインジェクトされたリソースレンダラーがJSONやHTMLにレンダリングしてリソース表現(view)にします。</p>
+
+<p>レンダリングはリソースが文字列評価された時に行われます。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="nv">$weekday</span> <span class="o">=</span> <span class="nv">$api</span><span class="o">-&gt;</span><span class="n">resource</span><span class="o">-&gt;</span><span class="nf">get</span><span class="p">(</span><span class="s1">'app://self/weekday'</span><span class="p">,</span> <span class="p">[</span><span class="s1">'year'</span> <span class="o">=&gt;</span> <span class="mi">2000</span><span class="p">,</span> <span class="s1">'month'</span><span class="o">=&gt;</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">'day'</span><span class="o">=&gt;</span> <span class="mi">1</span><span class="p">]);</span>
+<span class="nb">var_dump</span><span class="p">(</span><span class="nv">$weekday</span><span class="o">-&gt;</span><span class="n">body</span><span class="p">);</span> <span class="c1">// as array</span>
+<span class="c1">//array(1) {</span>
+<span class="c1">//    ["weekday"]=&gt;</span>
+<span class="c1">//  string(3) "Sat"</span>
+<span class="c1">//}</span>
+
+<span class="k">echo</span> <span class="nv">$weekday</span><span class="p">;</span> <span class="c1">// as string</span>
+<span class="c1">//{</span>
+<span class="c1">//    "weekday": "Sat",</span>
+<span class="c1">//    "_links": {</span>
+<span class="c1">//    "self": {</span>
+<span class="c1">//        "href": "/weekday/2000/1/1"</span>
+<span class="c1">//        }</span>
+<span class="c1">//    }</span>
+<span class="c1">//}</span>
+</code></pre></div></div>
+
+<p>コンテキストに応じてインジェクトされるので普段は意識する必要はありません。</p>
+
+<p>リソース特有の表現が必要な時は以下のように独自のレンダラーをインジェクトします。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">Index</span> <span class="kd">extends</span> <span class="nc">ResourceObject</span>
+<span class="p">{</span>
+    <span class="c1">// ...</span>
+    <span class="cd">/**
+     * @Inject
+     * @Named("my_renderer")
+     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">setRenderer</span><span class="p">(</span><span class="kt">RenderInterface</span> <span class="nv">$renderer</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="k">parent</span><span class="o">::</span><span class="nf">setRenderer</span><span class="p">(</span><span class="nv">$renderer</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>or</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">Index</span> <span class="kd">extends</span> <span class="nc">ResourceObject</span>
+<span class="p">{</span>
+    <span class="cd">/**
+     * @Inject
+     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">setRenderer</span><span class="p">(</span><span class="kt">RenderInterface</span> <span class="nv">$renderer</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">renderer</span> <span class="o">=</span> <span class="k">new</span> <span class="kd">class</span> <span class="kd">implements</span> <span class="nc">RenderInterface</span> <span class="p">{</span>
+            <span class="k">public</span> <span class="k">function</span> <span class="n">render</span><span class="p">(</span><span class="kt">ResourceObject</span> <span class="nv">$ro</span><span class="p">)</span>
+            <span class="p">{</span>
+                <span class="nv">$ro</span><span class="o">-&gt;</span><span class="n">headers</span><span class="p">[</span><span class="s1">'content-type'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'application/json;'</span><span class="p">;</span>
+                <span class="nv">$ro</span><span class="o">-&gt;</span><span class="n">view</span> <span class="o">=</span> <span class="nb">json_encode</span><span class="p">(</span><span class="nv">$ro</span><span class="o">-&gt;</span><span class="n">body</span><span class="p">);</span>
+
+                <span class="k">return</span> <span class="nv">$ro</span><span class="o">-&gt;</span><span class="n">view</span><span class="p">;</span>
+            <span class="p">}</span>
+        <span class="p">};</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="転送">転送</h2>
+
+<p>トランスポンダーが表現(view)をクライアント（コンソールやWebクライアント）に転送します。
+転送は単に<code class="language-plaintext highlighter-rouge">header</code>関数や<code class="language-plaintext highlighter-rouge">echo</code>で行われることがほとんどですが、<a href="stream.html">ストリーム出力</a>で転送することもできます。</p>
+
+<p>レンダラーと同じように普段は意識する必要はありません。</p>
+
+<p>リソース特有の転送を行う時は以下のメソッドをオーバーライドします。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">Index</span> <span class="kd">extends</span> <span class="nc">ResourceObject</span>
+<span class="p">{</span>
+    <span class="c1">// ...</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">transfer</span><span class="p">(</span><span class="kt">TransferInterface</span> <span class="nv">$responder</span><span class="p">,</span> <span class="kt">array</span> <span class="nv">$server</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nv">$responder</span><span class="p">(</span><span class="nv">$this</span><span class="p">,</span> <span class="nv">$server</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>このようにリソースはリクエストによって自身のリソース状態を変更、それを表現にして転送する機能を各クラスが持っています。</p>
+
+<h2 id="クライアント">クライアント</h2>
+
+<p>インジェクトしたリソースクライアントを使用して他のリソースのリクエストをします。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">use</span> <span class="nc">BEAR\Sunday\Inject\ResourceInject</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">Index</span> <span class="kd">extends</span> <span class="nc">ResourceObject</span>
+<span class="p">{</span>
+    <span class="kn">use</span> <span class="nc">ResourceInject</span><span class="p">;</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onGet</span><span class="p">():</span> <span class="kt">static</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">body</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s1">'posts'</span> <span class="o">=&gt;</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">resource</span><span class="o">-&gt;</span><span class="nf">get</span><span class="p">(</span><span class="s1">'app://self/blog/posts'</span><span class="p">,</span> <span class="p">[</span><span class="s1">'id'</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">])</span>
+        <span class="p">];</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+<p>このリクエストは<code class="language-plaintext highlighter-rouge">app://self/blog/posts</code>リソースに<code class="language-plaintext highlighter-rouge">?id=1</code>というクエリーでリクエストを実行します。
+この他にも以下の表記があります。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// PHP 5.x and up </span>
+<span class="nv">$posts</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">resource</span><span class="o">-&gt;</span><span class="n">get</span><span class="o">-&gt;</span><span class="nf">uri</span><span class="p">(</span><span class="s1">'app://self/posts'</span><span class="p">)</span><span class="o">-&gt;</span><span class="nf">withQuery</span><span class="p">([</span><span class="s1">'id'</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">])</span><span class="o">-&gt;</span><span class="n">eager</span><span class="o">-&gt;</span><span class="nf">request</span><span class="p">();</span>
+<span class="c1">// PHP 7.x and up</span>
+<span class="nv">$posts</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">resource</span><span class="o">-&gt;</span><span class="n">get</span><span class="o">-&gt;</span><span class="nf">uri</span><span class="p">(</span><span class="s1">'app://self/posts'</span><span class="p">)([</span><span class="s1">'id'</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">]);</span>
+<span class="c1">// getは省略可</span>
+<span class="nv">$posts</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">resource</span><span class="o">-&gt;</span><span class="nf">uri</span><span class="p">(</span><span class="s1">'app://self/posts'</span><span class="p">)([</span><span class="s1">'id'</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">]);</span>
+<span class="c1">// bear/resource 1.11 and up </span>
+<span class="nv">$posts</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">resource</span><span class="o">-&gt;</span><span class="nf">get</span><span class="p">(</span><span class="s1">'app://self/posts'</span><span class="p">,</span> <span class="p">[</span><span class="s1">'id'</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">]);</span>
+</code></pre></div></div>
+
+<p>以上はリクエストをすぐに行う<code class="language-plaintext highlighter-rouge">eager</code>リクエストですが、リクエスト結果ではなくリクエストそのものを取得し、実行を遅延することもできます。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$request</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">resource</span><span class="o">-&gt;</span><span class="nf">uri</span><span class="p">(</span><span class="s1">'app://self/posts'</span><span class="p">);</span> <span class="c1">// callable</span>
+<span class="nv">$posts</span> <span class="o">=</span> <span class="nv">$request</span><span class="p">([</span><span class="s1">'id'</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">]);</span>
+</code></pre></div></div>
+
+<p>このリクエストをテンプレートやリソースに埋め込むと、その要素が使用されるときに評価されリクエストが実行されます。つまり評価されない時はリクエストは行われず実行コストがかかりません。</p>
+
+<h2 id="リンクリクエスト">リンクリクエスト</h2>
+
+<p>クライアントはハイパーリンクで接続されているリソースをリンクすることができます。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$blog</span> <span class="o">=</span> <span class="nv">$this</span>
+    <span class="o">-&gt;</span><span class="n">resource</span>
+    <span class="o">-&gt;</span><span class="n">get</span>
+    <span class="o">-&gt;</span><span class="nf">uri</span><span class="p">(</span><span class="s1">'app://self/user'</span><span class="p">)</span>
+    <span class="o">-&gt;</span><span class="nf">withQuery</span><span class="p">([</span><span class="s1">'id'</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">])</span>
+    <span class="o">-&gt;</span><span class="nf">linkSelf</span><span class="p">(</span><span class="s2">"blog"</span><span class="p">)</span>
+    <span class="o">-&gt;</span><span class="n">eager</span>
+    <span class="o">-&gt;</span><span class="nf">request</span><span class="p">()</span>
+    <span class="o">-&gt;</span><span class="n">body</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>リンクは３種類あります。<code class="language-plaintext highlighter-rouge">$rel</code>をキーにして元のリソースの<code class="language-plaintext highlighter-rouge">body</code>リンク先のリソースが埋め込まれます。</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">linkSelf($rel)</code> リンク先と入れ替わります。</li>
+  <li><code class="language-plaintext highlighter-rouge">linkNew($rel)</code> リンク先のリソースがリンク元のリソースに追加されます</li>
+  <li><code class="language-plaintext highlighter-rouge">linkCrawl($rel)</code> リンクをクロールして”リソースツリー”を作成します。</li>
+</ul>
+
+<h3 id="クロールリンク">クロールリンク</h3>
+
+<p>ツリー構造をもつリソース、例えばユーザーからブログ、ブログから記事、記事からコメント、コメントから評価にリンクされているようなツリー構造のリソースは<code class="language-plaintext highlighter-rouge">linkCrawl()</code>で上手く取得できます。
+詳しくは<a href="https://github.com/bearsunday/BEAR.Resource/blob/1.x/README.ja.md#%E3%82%AF%E3%83%AD%E3%83%BC%E3%83%AB">クロール</a>をご覧ください。</p>
+
+<h2 id="リンクアノテーション">リンクアノテーション</h2>
+
+<p>他のリソースをハイパーリンクする<code class="language-plaintext highlighter-rouge">@Link</code>と他のリソースを内部に埋め込む<code class="language-plaintext highlighter-rouge">@Embed</code>アノテーションが利用できます。</p>
+
+<h3 id="link">@Link</h3>
+
+<p>リンクを<code class="language-plaintext highlighter-rouge">rel</code>と<code class="language-plaintext highlighter-rouge">href</code>で指定します。<code class="language-plaintext highlighter-rouge">hal</code>コンテキストではHALのリンクフォーマットとして扱われます。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="cd">/**
+     * @Link(rel="profile", href="/profile{?id}")
+     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onGet</span><span class="p">(</span><span class="nv">$id</span><span class="p">):</span> <span class="kt">static</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">body</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s1">'id'</span> <span class="o">=&gt;</span> <span class="mi">10</span>
+        <span class="p">];</span>
+
+        <span class="k">return</span> <span class="nv">$this</span><span class="p">;</span>
+    <span class="p">}</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">@Link</code>の<code class="language-plaintext highlighter-rouge">href</code>のURIの<code class="language-plaintext highlighter-rouge">{?id}</code>は<code class="language-plaintext highlighter-rouge">$body</code>の値です。（メソッドの<code class="language-plaintext highlighter-rouge">$id</code>ではありません）<a href="https://github.com/ioseb/uri-template">RFC6570 URI template</a>でURIが生成され、HALでの出力は以下のようになります。</p>
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+    </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"_links"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"self"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+            </span><span class="nl">"href"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/test"</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="nl">"profile"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+            </span><span class="nl">"href"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/profile?id=10"</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>BEARのリソースリクエストでは<code class="language-plaintext highlighter-rouge">linkSelf()</code>, <code class="language-plaintext highlighter-rouge">linkNew</code>, <code class="language-plaintext highlighter-rouge">linkCrawl</code>の時にリソースリンクとして使われます。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">use</span> <span class="nc">BEAR\Resource\Annotation\Link</span><span class="p">;</span>
+
+<span class="cd">/**
+ * @Link(crawl="post-tree", rel="post", href="app://self/post?author_id={id}")
+ */</span>
+<span class="k">public</span> <span class="k">function</span> <span class="n">onGet</span><span class="p">(</span><span class="nv">$id</span> <span class="o">=</span> <span class="kc">null</span><span class="p">):</span> <span class="kt">static</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">linkCrawl</code>は<code class="language-plaintext highlighter-rouge">crawl</code>の付いたリンクを<a href="https://github.com/koriym/BEAR.Resource#crawl">クロール</a>してリソースを集めます。</p>
+
+<h2 id="埋め込みリソース">埋め込みリソース</h2>
+
+<p>リソースの中に<code class="language-plaintext highlighter-rouge">@Embed</code>の<code class="language-plaintext highlighter-rouge">src</code>で指定した別のリソースを埋め込むことができます。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">use</span> <span class="nc">BEAR\Resource\Annotation\Embed</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">News</span> <span class="kd">extends</span> <span class="nc">ResourceObject</span>
+<span class="p">{</span>
+    <span class="cd">/**
+     * @Embed(rel="sports", src="/news/sports")
+     * @Embed(rel="weather", src="/news/weather")
+     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onGet</span><span class="p">():</span> <span class="kt">static</span>
+</code></pre></div></div>
+
+<p>埋め込まれるのはリソース<strong>リクエスト</strong>です。レンダリングの時に実行されますが、その前に<code class="language-plaintext highlighter-rouge">addQuery()</code>メソッドで引数を加えたり<code class="language-plaintext highlighter-rouge">withQuery()</code>で引数を置き換えることができます。</p>
+
+<p><code class="language-plaintext highlighter-rouge">src</code>にはURI templateが利用でき、<strong>リクエストメソッドの引数</strong>がバインドされます。（リソースの<code class="language-plaintext highlighter-rouge">$body</code>ではありません）</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">use</span> <span class="nc">BEAR\Resource\Annotation\Embed</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">News</span> <span class="kd">extends</span> <span class="nc">ResourceObject</span>
+<span class="p">{</span>
+    <span class="cd">/**
+     * @Embed(rel="website", src="/website{?id}")
+     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onGet</span><span class="p">(</span><span class="kt">string</span> <span class="nv">$id</span><span class="p">):</span> <span class="kt">static</span>
+    <span class="p">{</span>
+        <span class="c1">// ...</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">body</span><span class="p">[</span><span class="s1">'website'</span><span class="p">]</span><span class="o">-&gt;</span><span class="nf">addQuery</span><span class="p">([</span><span class="s1">'title'</span> <span class="o">=&gt;</span> <span class="nv">$title</span><span class="p">]);</span> <span class="c1">// 引数追加</span>
+</code></pre></div></div>
+
+<p><a href="https://github.com/blongden/hal">HAL</a>レンダラーでは<code class="language-plaintext highlighter-rouge">_embedded </code>として扱われます。</p>
+
+<h2 id="リソースキャッシュ">リソースキャッシュ</h2>
+
+<h3 id="cacheable">@Cacheable</h3>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">use</span> <span class="nc">BEAR\RepositoryModule\Annotation\Cacheable</span><span class="p">;</span>
+
+<span class="cd">/**
+ * @Cacheable
+ */</span>
+<span class="kd">class</span> <span class="nc">User</span> <span class="kd">extends</span> <span class="nc">ResourceObject</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">@Cacheable</code>とアノテートすると<code class="language-plaintext highlighter-rouge">get</code>リクエストは読み込み用のレポジトリ<code class="language-plaintext highlighter-rouge">QueryRepository</code>が使われ、時間無制限のキャッシュとして機能します。
+<code class="language-plaintext highlighter-rouge">get</code>以外のリクエストがあると該当する<code class="language-plaintext highlighter-rouge">QueryRepository</code>のリソースが更新されます。</p>
+
+<p><code class="language-plaintext highlighter-rouge">@Cacheable</code>から読まれるリソースオブジェクトはHTTPに準じた<code class="language-plaintext highlighter-rouge">Last-Modified</code>と<code class="language-plaintext highlighter-rouge">ETag</code>ヘッダーが付加されます。</p>
+
+<p>同一クラスの<code class="language-plaintext highlighter-rouge">onGet</code>以外のリクエストメソッドがリクエストされ引数を見てリソースが変更されたと判断すると<code class="language-plaintext highlighter-rouge">QueryRepository</code>の内容も更新されます。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">use</span> <span class="nc">BEAR\RepositoryModule\Annotation\Cacheable</span><span class="p">;</span>
+
+<span class="cd">/**
+ * @Cacheable
+ */</span>
+<span class="kd">class</span> <span class="nc">Todo</span> <span class="kd">extends</span> <span class="nc">ResourceObject</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onGet</span><span class="p">(</span><span class="kt">string</span> <span class="nv">$id</span><span class="p">):</span> <span class="kt">static</span>
+    <span class="p">{</span>
+        <span class="c1">// read</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onPost</span><span class="p">(</span><span class="kt">string</span> <span class="nv">$id</span><span class="p">,</span> <span class="kt">string</span> <span class="nv">$name</span><span class="p">):</span> <span class="kt">static</span>
+    <span class="p">{</span>
+        <span class="c1">// update</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>例えばこのクラスでは<code class="language-plaintext highlighter-rouge">-&gt;post(10, 'shopping')</code>というリクエストがあると<code class="language-plaintext highlighter-rouge">id=10</code>の<code class="language-plaintext highlighter-rouge">QueryRepository</code>の内容が更新されます。
+この自動更新を利用しない時は<code class="language-plaintext highlighter-rouge">update</code>をfalseにします。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cd">/**
+ * @Cacheable(update=false)
+ */</span>
+</code></pre></div></div>
+
+<p>時間を指定するには、<code class="language-plaintext highlighter-rouge">expiry</code>を使って、<code class="language-plaintext highlighter-rouge">short</code>, <code class="language-plaintext highlighter-rouge">medium</code>あるいは<code class="language-plaintext highlighter-rouge">long</code>のいずれかを指定できます。</p>
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cd">/**
+ * @Cacheable(expiry="short")
+ */</span>
+</code></pre></div></div>
+
+<h2 id="purge-refresh">@Purge @Refresh</h2>
+
+<p>もう１つの方法は<code class="language-plaintext highlighter-rouge">@Purge</code>アノテーションや、<code class="language-plaintext highlighter-rouge">@Refresh</code>アノテーションで更新対象のURIを指定することです。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">use</span> <span class="nc">BEAR\RepositoryModule\Annotation\Purge</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">BEAR\RepositoryModule\Annotation\Refresh</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">News</span> <span class="kd">extends</span> <span class="nc">ResourceObject</span>
+<span class="p">{</span>
+  <span class="cd">/**
+   * @Purge(uri="app://self/user/friend?user_id={id}")
+   * @Refresh(uri="app://self/user/profile?user_id={id}")
+   */</span>
+   <span class="k">public</span> <span class="k">function</span> <span class="n">onPut</span><span class="p">(</span><span class="kt">string</span> <span class="nv">$id</span><span class="p">,</span> <span class="kt">string</span> <span class="nv">$name</span><span class="p">,</span> <span class="kt">int</span> <span class="nv">$age</span><span class="p">))</span><span class="o">:</span> <span class="k">static</span>
+</code></pre></div></div>
+
+<p>別のクラスのリソースや関連する複数のリソースの<code class="language-plaintext highlighter-rouge">QueryRepository</code>の内容を更新することができます。
+<code class="language-plaintext highlighter-rouge">@Purge</code>はリソースのキャッシュを消去し<code class="language-plaintext highlighter-rouge">@Refresh</code>はキャッシュの再生成をメソッド実行直後に行います。</p>
+
+<p>uri-templateに与えられる値は他と同様に<code class="language-plaintext highlighter-rouge">$body</code>にアサインした値が実引数に優先したものです。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">use</span> <span class="nc">BEAR\RepositoryModule\Annotation\Purge</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">BEAR\RepositoryModule\Annotation\Refresh</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">News</span> <span class="kd">extends</span> <span class="nc">ResourceObject</span>
+<span class="p">{</span>
+  <span class="cd">/**
+   * @Purge(uri="app://self/user/friend?user_id={id}")
+   * @Refresh(uri="app://self/user/profile?user_id={id}")
+   */</span>
+   <span class="k">public</span> <span class="k">function</span> <span class="n">onPut</span><span class="p">(</span><span class="nv">$id</span><span class="p">,</span> <span class="nv">$name</span><span class="p">,</span> <span class="nv">$age</span><span class="p">):</span> <span class="kt">static</span>
+</code></pre></div></div>
+
+<h2 id="クエリーリポジトリの直接操作">クエリーリポジトリの直接操作</h2>
+
+<p>クエリーリポジトリに格納されているデータは<code class="language-plaintext highlighter-rouge">QueryRepositoryInterface</code>で受け取ったクライアントで直接<code class="language-plaintext highlighter-rouge">put</code>（保存）したり<code class="language-plaintext highlighter-rouge">get</code>したりすることができます。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">use</span> <span class="nc">BEAR\QueryRepository\QueryRepositoryInterface</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">Foo</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">__construct</span><span class="p">(</span><span class="kt">QueryRepositoryInterface</span> <span class="nv">$repository</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">repository</span> <span class="o">=</span> <span class="nv">$repository</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="n">foo</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="c1">// 保存</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">repository</span><span class="o">-&gt;</span><span class="nf">put</span><span class="p">(</span><span class="nv">$this</span><span class="p">);</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">repository</span><span class="o">-&gt;</span><span class="nf">put</span><span class="p">(</span><span class="nv">$resourceObject</span><span class="p">);</span>
+
+        <span class="c1">// 消去</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">repository</span><span class="o">-&gt;</span><span class="nf">purge</span><span class="p">(</span><span class="nv">$resourceObject</span><span class="o">-&gt;</span><span class="n">uri</span><span class="p">);</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">repository</span><span class="o">-&gt;</span><span class="nf">purge</span><span class="p">(</span><span class="k">new</span> <span class="nc">Uri</span><span class="p">(</span><span class="s1">'app://self/user'</span><span class="p">));</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">repository</span><span class="o">-&gt;</span><span class="nf">purge</span><span class="p">(</span><span class="k">new</span> <span class="nc">Uri</span><span class="p">(</span><span class="s1">'app://self/ad/?id={id}'</span><span class="p">,</span> <span class="p">[</span><span class="s1">'id'</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">]));</span>
+
+        <span class="c1">// 読み込み</span>
+        <span class="k">list</span><span class="p">(</span><span class="nv">$code</span><span class="p">,</span> <span class="nv">$headers</span><span class="p">,</span> <span class="nv">$body</span><span class="p">,</span> <span class="nv">$view</span><span class="p">)</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">repository</span><span class="o">-&gt;</span><span class="nf">get</span><span class="p">(</span><span class="k">new</span> <span class="nc">Uri</span><span class="p">(</span><span class="s1">'app://self/user'</span><span class="p">));</span>
+     <span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="ベストプラクティス">ベストプラクティス<a name="best-practice"></a></h2>
+
+<p>RESTではリソースは他のリソースと接続されています。リンクをうまく使うとコードは簡潔になり、読みやすくテストや変更が容易なコードになります。</p>
+
+<h3 id="embed">@Embed</h3>
+
+<p>他のリソースの状態を<code class="language-plaintext highlighter-rouge">get</code>する代わりに<code class="language-plaintext highlighter-rouge">@Embed</code>でリソースを埋め込みます。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// OK but not the best</span>
+<span class="kd">class</span> <span class="nc">Index</span> <span class="kd">extends</span> <span class="nc">ResourceObject</span>
+<span class="p">{</span>
+    <span class="kn">use</span> <span class="nc">ResourceInject</span><span class="p">;</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onGet</span><span class="p">(</span><span class="kt">string</span> <span class="nv">$status</span><span class="p">):</span> <span class="kt">static</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">body</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s1">'todos'</span> <span class="o">=&gt;</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">resource</span><span class="o">-&gt;</span><span class="nf">uri</span><span class="p">(</span><span class="s1">'app://self/todos'</span><span class="p">)([</span><span class="s1">'status'</span> <span class="o">=&gt;</span> <span class="nv">$status</span><span class="p">])</span> <span class="c1">// lazy request</span>
+        <span class="p">];</span>
+
+        <span class="k">return</span> <span class="nv">$this</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// Better</span>
+<span class="kd">class</span> <span class="nc">Index</span> <span class="kd">extends</span> <span class="nc">ResourceObject</span>
+<span class="p">{</span>
+    <span class="cd">/**
+     * @Embed(rel="todos", src="app://self/todos{?status}")
+     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onGet</span><span class="p">(</span><span class="kt">string</span> <span class="nv">$status</span><span class="p">):</span> <span class="kt">static</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="nv">$this</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="link-1">@Link</h3>
+
+<p>他のリソースの状態を変えるときに<code class="language-plaintext highlighter-rouge">@Link</code>で示された次のアクションを<code class="language-plaintext highlighter-rouge">href()</code>（ハイパーリファレンス）を使って辿ります。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// OK but not the best</span>
+<span class="kd">class</span> <span class="nc">Todo</span> <span class="kd">extends</span> <span class="nc">ResourceObject</span>
+<span class="p">{</span>
+    <span class="kn">use</span> <span class="nc">ResourceInject</span><span class="p">;</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onPost</span><span class="p">(</span><span class="kt">string</span> <span class="nv">$title</span><span class="p">):</span> <span class="kt">static</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">resource</span><span class="o">-&gt;</span><span class="nf">post</span><span class="p">(</span><span class="s1">'app://self/todo'</span><span class="p">,</span> <span class="p">[</span><span class="s1">'title'</span> <span class="o">=&gt;</span> <span class="nv">$title</span><span class="p">]);</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">code</span> <span class="o">=</span> <span class="mi">301</span><span class="p">;</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">headers</span><span class="p">[</span><span class="nc">ResponseHeader</span><span class="o">::</span><span class="no">LOCATION</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'/'</span><span class="p">;</span>
+
+        <span class="k">return</span> <span class="nv">$this</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// Better</span>
+<span class="kd">class</span> <span class="nc">Todo</span> <span class="kd">extends</span> <span class="nc">ResourceObject</span>
+<span class="p">{</span>
+    <span class="kn">use</span> <span class="nc">ResourceInject</span><span class="p">;</span>
+
+    <span class="cd">/**
+     * @Link(rel="create", href="app://self/todo", method="post")
+     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onPost</span><span class="p">(</span><span class="kt">string</span> <span class="nv">$title</span><span class="p">):</span> <span class="kt">static</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">resource</span><span class="o">-&gt;</span><span class="nf">href</span><span class="p">(</span><span class="s1">'create'</span><span class="p">,</span> <span class="p">[</span><span class="s1">'title'</span> <span class="o">=&gt;</span> <span class="nv">$title</span><span class="p">]);</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">code</span> <span class="o">=</span> <span class="mi">301</span><span class="p">;</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">headers</span><span class="p">[</span><span class="nc">ResponseHeader</span><span class="o">::</span><span class="no">LOCATION</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'/'</span><span class="p">;</span>
+
+        <span class="k">return</span> <span class="nv">$this</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="resourceparam">＠ResourceParam</h3>
+
+<p>他のリソースをリクエストするために他のリソース結果が必要な場合は<code class="language-plaintext highlighter-rouge">＠ResourceParam</code>を使います。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// OK but not the best</span>
+<span class="kd">class</span> <span class="nc">User</span> <span class="kd">extends</span> <span class="nc">ResourceObject</span>
+<span class="p">{</span>
+    <span class="kn">use</span> <span class="nc">ResourceInject</span><span class="p">;</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onGet</span><span class="p">(</span><span class="kt">string</span> <span class="nv">$id</span><span class="p">):</span> <span class="kt">static</span>
+    <span class="p">{</span>
+        <span class="nv">$nickname</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">resource</span><span class="o">-&gt;</span><span class="nf">get</span><span class="p">(</span><span class="s1">'app://self/login-user'</span><span class="p">,</span> <span class="p">[</span><span class="s1">'id'</span> <span class="o">=&gt;</span> <span class="nv">$id</span><span class="p">])</span><span class="o">-&gt;</span><span class="n">body</span><span class="p">[</span><span class="s1">'nickname'</span><span class="p">];</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">body</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s1">'profile'</span><span class="o">=&gt;</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">resource</span><span class="o">-&gt;</span><span class="nf">get</span><span class="p">(</span><span class="s1">'app://self/profile'</span><span class="p">,</span> <span class="p">[</span><span class="s1">'name'</span> <span class="o">=&gt;</span> <span class="nv">$nickname</span><span class="p">])</span><span class="o">-&gt;</span><span class="n">body</span>
+        <span class="p">];</span>
+
+        <span class="k">return</span> <span class="nv">$this</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// Better</span>
+<span class="kd">class</span> <span class="nc">User</span> <span class="kd">extends</span> <span class="nc">ResourceObject</span>
+<span class="p">{</span>
+    <span class="kn">use</span> <span class="nc">ResourceInject</span><span class="p">;</span>
+
+    <span class="cd">/**
+     * @ResourceParam(param=“name”, uri="app://self//login-user#nickname")
+     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onGet</span><span class="p">(</span><span class="kt">string</span> <span class="nv">$id</span><span class="p">,</span> <span class="kt">string</span> <span class="nv">$name</span><span class="p">):</span> <span class="kt">static</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">body</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s1">'profile'</span> <span class="o">=&gt;</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">resource</span><span class="o">-&gt;</span><span class="nf">get</span><span class="p">(</span><span class="s1">'app://self/profile'</span><span class="p">,</span> <span class="p">[</span><span class="s1">'name'</span> <span class="o">=&gt;</span> <span class="nv">$name</span><span class="p">])</span><span class="o">-&gt;</span><span class="n">body</span>
+        <span class="p">];</span>
+
+        <span class="k">return</span> <span class="nv">$this</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// Best</span>
+<span class="kd">class</span> <span class="nc">User</span> <span class="kd">extends</span> <span class="nc">ResourceObject</span>
+<span class="p">{</span>
+    <span class="cd">/**
+     * @ResourceParam(param=“name”, uri="app://self//login-user#nickname")
+     * @Embed(rel="profile", src="app://self/profile")
+     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onGet</span><span class="p">(</span><span class="kt">string</span> <span class="nv">$id</span><span class="p">,</span> <span class="kt">string</span> <span class="nv">$name</span><span class="p">):</span> <span class="kt">static</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">body</span><span class="p">[</span><span class="s1">'profile'</span><span class="p">]</span><span class="o">-&gt;</span><span class="nf">addQuery</span><span class="p">([</span><span class="s1">'name'</span><span class="o">=&gt;</span><span class="nv">$name</span><span class="p">]);</span>
+
+        <span class="k">return</span> <span class="nv">$this</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="bodyのシンタックスシュガー">bodyのシンタックスシュガー</h3>
+
+<p><code class="language-plaintext highlighter-rouge">$this</code>へのarrayアクセスは<code class="language-plaintext highlighter-rouge">$this-&gt;body</code>のアクセスになります。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$this</span><span class="p">[</span><span class="s1">'price'</span><span class="p">]</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span>
+<span class="c1">// is same as</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="n">body</span><span class="p">[</span><span class="s1">'price'</span><span class="p">]</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span>
+</code></pre></div></div>
+
+<h2 id="bearresource">BEAR.Resource</h2>
+
+<p>リソースクラスに関するより詳しい情報はBEAR.Resourceの<a href="https://github.com/bearsunday/BEAR.Resource/blob/1.x/README.ja.md">README</a>もご覧ください。</p>
+
+<hr />
+<div class="footnotes" role="doc-endnotes">
+  <ol>
+    <li id="fn:1" role="doc-endnote">
+      <p><a href="https://www.php.net/manual/ja/features.file-upload.put-method.php">PUT メソッドのサポート</a>参照 <a href="#fnref:1" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+    <li id="fn:2" role="doc-endnote">
+      <p><a href="https://www.php.net/manual/ja/function.parse-str.php">parse_str</a>参照 <a href="#fnref:2" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+    <li id="fn:3" role="doc-endnote">
+      <p>publicプロパティとして定義しないで、<code class="language-plaintext highlighter-rouge">__set()</code>マジックメソッドでバリデーションをする事もできます。 <a href="#fnref:3" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+  </ol>
+</div>
+
+            </article>
+        </div>
+        <div id="ArticleToc" class="col-lg-2 d-none d-lg-block">
+            <nav class="nav side-bar-right"></nav>
+        </div>
+    </div>
+</main>
+<footer>
+    <div class="container d-md-flex">
+        <i class="bear-icon d-none d-lg-block"></i>
+        <small>
+            © 2011-2024 BEAR.Sunday
+        </small>
+        <ul class="navbar-nav flex-row ml-md-auto d-none d-md-flex">
+            <li>
+                <a href="https://gitter.im/bearsunday/BEAR.Sunday?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge">Gitter</a>
+            </li>
+            <li>
+                <a href="https://github.com/bearsunday/BEAR.Sunday">Github</a>
+            </li>
+            <li>
+                <a href="https://twitter.com/BEARSunday">Twitter</a>
+            </li>
+            <li>
+                <a href="https://www.facebook.com/pages/BEARSunday/110116939178462?ref=hl">Facebook</a>
+            </li>
+            <li>
+                <a href="http://koriym.github.io/">Blog (JA)</a>
+            </li>
+            <li>
+                <a href="https://github.com/bearsunday/bearsunday.github.io">PR ?</a>
+            </li>
+        </ul>
+    </div>
+</footer>
+<script src="//code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+<script>
+    window.ga = function () { ga.q.push(arguments) }; ga.q = []; ga.l = +new Date;
+    ga('create', 'UA-6074569-8', 'bearsunday.github.io'); ga('send', 'pageview');
+</script>
+<script src="https://www.google-analytics.com/analytics.js" async defer></script>
+
+<script src="/js/generate-table-of-contents/index.min.js"></script>
+<script>
+    var toc = generateTableOfContents(document.getElementById('article'));
+    var sideBarRight = $('.side-bar-right');
+    sideBarRight.append(toc);
+
+    var scrollOffset = $('body').attr('data-offset');
+    var articlePaddingTop = $('article').css('padding-top').replace('px', '');
+    sideBarRight.find('a').on('click', function (e) {
+        e.preventDefault();
+        var targetId = $(this).attr('href');
+        var targetPositionTop = $(targetId).offset().top - scrollOffset - articlePaddingTop;
+        window.scrollTo(0, targetPositionTop)
+    });
+</script>
+
+</body>
+</html>
+

@@ -1,0 +1,343 @@
+<!doctype html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>モジュール &#124; BEAR.Sunday</title>
+    <meta name="description" content="BEAR.Sunday is a resource orientated framework with a REST centered architecture, implementing Dependency Injection and Aspect Orientated Programming' at its core.">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/github-markdown-css/2.10.0/github-markdown.css">
+    <link rel="stylesheet" href="/css/syntax.css">
+    
+    <link rel="stylesheet" href="/css/bearsunday.css">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="apple-touch-icon" href="/icon.png">
+</head>
+<body data-page-category="Manual" data-spy="scroll" data-target="#ArticleToc" data-offset="65">
+<header>
+    <nav class="navbar navbar-expand flex-column flex-md-row bg-light">
+        <a class="navbar-brand mr-0 mr-md-2" href="/index.html"></a>
+        <div class="navbar-nav-scroll">
+            <ul class="navbar-nav flex-row">
+                <li class="nav-item">
+                    <a class="nav-link " href="/index.html">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="/manuals/1.0/en/index.html">Manual</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link " href="/contributors.html">Contributors</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/slide.html">Slide</a>
+                </li>
+            </ul>
+        </div>
+        
+        <ul class="navbar-nav ml-md-auto d-none d-md-flex language-list">
+            <li>
+                <a class="" href="/manuals/1.0/en/module.html">En</a>
+            </li>
+            <li>
+                <a class="active" href="/manuals/1.0/ja/module.html">Ja</a>
+            </li>
+        </ul>
+        
+    </nav>
+</header>
+
+<main class="container-fluid">
+    <div class="row flex-xl-nowrap">
+        <div class="col-md-3 col-lg-2">
+            <div class="side-bar">
+                <nav class="navbar navbar-expand-md navbar-light">
+    <div class="navigation-header">
+        <div class="ml-auto d-sm-block d-md-none">
+            <ul class="navbar-nav language-list">
+                <li>
+                    <a class="" href="/manuals/1.0/en/module.html">En</a>
+                </li>
+                <li>
+                    <a class="active" href="/manuals/1.0/ja/module.html">Ja</a>
+                </li>
+            </ul>
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#Navber" aria-controls="Navber" aria-expanded="false" aria-label="ナビゲーションの切替">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+    </div>
+    <div class="collapse navbar-collapse" id="Navber">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/index.html">イントロダクション</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/version.html">バージョン</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/quick-start.html">クイックスタート</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/tutorial.html">チュートリアル</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/tutorial2.html">チュートリアル 2</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/package.html">パッケージ</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/application.html">アプリケーション</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" href="/manuals/1.0/ja/module.html">モジュール</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/di.html">DI</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/aop.html">AOP</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/resource.html">リソース</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/resource_param.html">・パラメーター</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/resource_link.html">・リンク</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/resource_renderer.html">・レンダリングと転送</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/router.html">ルーター</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/production.html">プロダクション</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/ja/import.html">インポート</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/database.html">データベース</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/html.html">HTML</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/validation.html">バリデーション</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/form.html">フォーム</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/content-negotiation.html">コンテントネゴシエーション</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/hypermedia-api.html">ハイパーメディア API</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/psr7.html">リクエスト / PSR-7</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/js-ui.html">JavaScript UI</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/stream.html">ストリーム出力</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/cache.html">キャッシュ</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/swoole.html">Swoole</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/coding-guide.html">コーディングガイド</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/types.html">タイプ</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/test.html">テスト</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/examples.html">サンプル</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/upgrade/injector.html">アップグレード</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/attribute.html">アトリビュート</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/apidoc.html">API Doc</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/1page.html">1 Page</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+            </div>
+        </div>
+        <div class="col-md-9 col-lg-8">
+            <article id="article" class="markdown-body">
+                <h1 id="モジュール">モジュール</h1>
+
+<p>モジュールはDIとAOPの束縛のセットです。 BEAR.Sundayではいわゆる設定ファイルや、Configクラス、実行モードなどがありません。各コンポーネントが必要とする値は依存性の注入で与えられます。モジュールがその依存性束縛を行います。</p>
+
+<p>起点となるモジュールが<code class="language-plaintext highlighter-rouge">AppModule</code> (src/Module/AppModule.php)です。
+<code class="language-plaintext highlighter-rouge">AppModule</code>で他の必要なモジュールを<code class="language-plaintext highlighter-rouge">install</code>します。</p>
+
+<p>モジュールが必要とする値（ランタイムではなく、コンパイルタイムで必要な値）は手動のコンストラクタインジェクションで束縛を行います。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">AppModule</span> <span class="kd">extends</span> <span class="nc">AbstractAppModule</span>
+<span class="p">{</span>
+    <span class="cd">/**
+     * {@inheritdoc}
+     */</span>
+    <span class="k">protected</span> <span class="k">function</span> <span class="n">configure</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="c1">// 追加モジュール</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">install</span><span class="p">(</span><span class="k">new</span> <span class="nc">AuraSqlModule</span><span class="p">(</span><span class="s1">'mysql:host=localhost;dbname=test'</span><span class="p">,</span> <span class="nb">getenv</span><span class="p">(</span><span class="s1">'db_username'</span><span class="p">),</span> <span class="nb">getenv</span><span class="p">(</span><span class="s1">'db_password'</span><span class="p">));</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">install</span><span class="p">(</span><span class="k">new</span> <span class="nc">TwigModule</span><span class="p">));</span>
+        <span class="c1">// package標準のモジュール</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">install</span><span class="p">(</span><span class="k">new</span> <span class="nc">PackageModule</span><span class="p">));</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="diの束縛">DIの束縛</h2>
+
+<p>代表的な束縛を以下に記します。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// クラスの束縛</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">bind</span><span class="p">(</span><span class="nv">$interface</span><span class="p">)</span><span class="o">-&gt;</span><span class="nf">to</span><span class="p">(</span><span class="nv">$class</span><span class="p">);</span>
+<span class="c1">// プロバイダー（ファクトリー）の束縛</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">bind</span><span class="p">(</span><span class="nv">$interface</span><span class="p">)</span><span class="o">-&gt;</span><span class="nf">toProvider</span><span class="p">(</span><span class="nv">$provider</span><span class="p">);</span>
+<span class="c1">// インスタンス束縛</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">bind</span><span class="p">(</span><span class="nv">$interface</span><span class="p">)</span><span class="o">-&gt;</span><span class="nf">toInstance</span><span class="p">(</span><span class="nv">$instance</span><span class="p">);</span>
+<span class="c1">// 名前付き束縛</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">bind</span><span class="p">(</span><span class="nv">$interface</span><span class="p">)</span><span class="o">-&gt;</span><span class="nf">annotatedWith</span><span class="p">(</span><span class="nv">$annotation</span><span class="p">)</span><span class="o">-&gt;</span><span class="nf">to</span><span class="p">(</span><span class="nv">$class</span><span class="p">);</span>
+<span class="c1">// シングルトン</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">bind</span><span class="p">(</span><span class="nv">$interface</span><span class="p">)</span><span class="o">-&gt;</span><span class="nf">to</span><span class="p">(</span><span class="nv">$class</span><span class="p">)</span><span class="o">-&gt;</span><span class="nf">in</span><span class="p">(</span><span class="nc">Scope</span><span class="o">::</span><span class="no">SINGLETON</span><span class="p">);</span>
+<span class="c1">// コンストラクタ束縛</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">bind</span><span class="p">(</span><span class="nv">$interface</span><span class="p">)</span><span class="o">-&gt;</span><span class="nf">toConstructor</span><span class="p">(</span><span class="nv">$class</span><span class="p">,</span> <span class="nv">$named</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>詳しくは<a href="di.html">DI</a>をご覧ください。</p>
+
+<h2 id="aopの設定">AOPの設定</h2>
+
+<p>AOPはクラスとメソッドを<code class="language-plaintext highlighter-rouge">Matcher</code>で”検索”して、マッチするメソッドにインターセプターを束縛します。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">bindInterceptor</span><span class="p">(</span>
+    <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">matcher</span><span class="o">-&gt;</span><span class="nf">any</span><span class="p">(),</span>                   <span class="c1">// どのクラスの</span>
+    <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">matcher</span><span class="o">-&gt;</span><span class="nf">startsWith</span><span class="p">(</span><span class="s1">'delete'</span><span class="p">),</span>    <span class="c1">// "delete"で始まるメソッド名のメソッドには</span>
+    <span class="p">[</span><span class="nc">Logger</span><span class="o">::</span><span class="n">class</span><span class="p">]</span>                          <span class="c1">// Loggerインターセプターを束縛</span>
+<span class="p">);</span>
+
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">bindInterceptor</span><span class="p">(</span>
+    <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">matcher</span><span class="o">-&gt;</span><span class="nf">SubclassesOf</span><span class="p">(</span><span class="nc">AdminPage</span><span class="o">::</span><span class="n">class</span><span class="p">),</span>  <span class="c1">// AdminPageの継承または実装クラスの</span>
+    <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">matcher</span><span class="o">-&gt;</span><span class="nf">annotatedWith</span><span class="p">(</span><span class="nc">Auth</span><span class="o">::</span><span class="n">class</span><span class="p">),</span>      <span class="c1">// @Authアノテーションがアノテートされているメソッドには</span>
+    <span class="p">[</span><span class="nc">AdminAuthentication</span><span class="o">::</span><span class="n">class</span><span class="p">]</span>                     <span class="c1">// AdminAuthenticationインターセプターを束縛</span>
+<span class="p">);</span>
+</code></pre></div></div>
+
+<p>詳しくは<a href="aop.html">AOP</a>をご覧ください。</p>
+
+<h2 id="束縛の優先順位">束縛の優先順位</h2>
+
+<h3 id="同じモジュール内">同じモジュール内</h3>
+
+<p>先に束縛した方が優先します。この場合はFoo1が優先されます。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">bind</span><span class="p">(</span><span class="nc">FooInterface</span><span class="o">::</span><span class="n">class</span><span class="p">)</span><span class="o">-&gt;</span><span class="nf">to</span><span class="p">(</span><span class="nc">Foo1</span><span class="o">::</span><span class="n">class</span><span class="p">);</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">bind</span><span class="p">(</span><span class="nc">FooInterface</span><span class="o">::</span><span class="n">class</span><span class="p">)</span><span class="o">-&gt;</span><span class="nf">to</span><span class="p">(</span><span class="nc">Foo2</span><span class="o">::</span><span class="n">class</span><span class="p">);</span>
+</code></pre></div></div>
+
+<h3 id="モジュールインストール">モジュールインストール</h3>
+
+<p>先にインストールしたモジュールが優先します。この場合はFoo1Moduleが優先されます。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">install</span><span class="p">(</span><span class="k">new</span> <span class="nc">Foo1Module</span><span class="p">);</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">install</span><span class="p">(</span><span class="k">new</span> <span class="nc">Foo2Module</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>後からのモジュールを優先する場合には<code class="language-plaintext highlighter-rouge">override</code>を使います。この場合はFoo2Moduleが優先されます。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">install</span><span class="p">(</span><span class="k">new</span> <span class="nc">Foo1Module</span><span class="p">);</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">override</span><span class="p">(</span><span class="k">new</span> <span class="nc">Foo2Module</span><span class="p">);</span>
+</code></pre></div></div>
+
+<h3 id="コンテキスト文字列">コンテキスト文字列</h3>
+
+<p>左のモジュールの束縛が優先されます。<code class="language-plaintext highlighter-rouge">prod-hal-app</code>ならAppModuleよりHalModule、HalModuleよりProdModuleが優先してインストールされます。</p>
+
+            </article>
+        </div>
+        <div id="ArticleToc" class="col-lg-2 d-none d-lg-block">
+            <nav class="nav side-bar-right"></nav>
+        </div>
+    </div>
+</main>
+<footer>
+    <div class="container d-md-flex">
+        <i class="bear-icon d-none d-lg-block"></i>
+        <small>
+            © 2011-2024 BEAR.Sunday
+        </small>
+        <ul class="navbar-nav flex-row ml-md-auto d-none d-md-flex">
+            <li>
+                <a href="https://gitter.im/bearsunday/BEAR.Sunday?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge">Gitter</a>
+            </li>
+            <li>
+                <a href="https://github.com/bearsunday/BEAR.Sunday">Github</a>
+            </li>
+            <li>
+                <a href="https://twitter.com/BEARSunday">Twitter</a>
+            </li>
+            <li>
+                <a href="https://www.facebook.com/pages/BEARSunday/110116939178462?ref=hl">Facebook</a>
+            </li>
+            <li>
+                <a href="http://koriym.github.io/">Blog (JA)</a>
+            </li>
+            <li>
+                <a href="https://github.com/bearsunday/bearsunday.github.io">PR ?</a>
+            </li>
+        </ul>
+    </div>
+</footer>
+<script src="//code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+<script>
+    window.ga = function () { ga.q.push(arguments) }; ga.q = []; ga.l = +new Date;
+    ga('create', 'UA-6074569-8', 'bearsunday.github.io'); ga('send', 'pageview');
+</script>
+<script src="https://www.google-analytics.com/analytics.js" async defer></script>
+
+<script src="/js/generate-table-of-contents/index.min.js"></script>
+<script>
+    var toc = generateTableOfContents(document.getElementById('article'));
+    var sideBarRight = $('.side-bar-right');
+    sideBarRight.append(toc);
+
+    var scrollOffset = $('body').attr('data-offset');
+    var articlePaddingTop = $('article').css('padding-top').replace('px', '');
+    sideBarRight.find('a').on('click', function (e) {
+        e.preventDefault();
+        var targetId = $(this).attr('href');
+        var targetPositionTop = $(targetId).offset().top - scrollOffset - articlePaddingTop;
+        window.scrollTo(0, targetPositionTop)
+    });
+</script>
+
+</body>
+</html>
+

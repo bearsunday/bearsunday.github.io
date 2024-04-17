@@ -1,0 +1,420 @@
+<!doctype html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>API Doc &#124; BEAR.Sunday</title>
+    <meta name="description" content="BEAR.Sunday is a resource orientated framework with a REST centered architecture, implementing Dependency Injection and Aspect Orientated Programming' at its core.">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/github-markdown-css/2.10.0/github-markdown.css">
+    <link rel="stylesheet" href="/css/syntax.css">
+    
+    <link rel="stylesheet" href="/css/bearsunday.css">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="apple-touch-icon" href="/icon.png">
+</head>
+<body data-page-category="Manual" data-spy="scroll" data-target="#ArticleToc" data-offset="65">
+<header>
+    <nav class="navbar navbar-expand flex-column flex-md-row bg-light">
+        <a class="navbar-brand mr-0 mr-md-2" href="/index.html"></a>
+        <div class="navbar-nav-scroll">
+            <ul class="navbar-nav flex-row">
+                <li class="nav-item">
+                    <a class="nav-link " href="/index.html">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="/manuals/1.0/en/index.html">Manual</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link " href="/contributors.html">Contributors</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/slide.html">Slide</a>
+                </li>
+            </ul>
+        </div>
+        
+        <ul class="navbar-nav ml-md-auto d-none d-md-flex language-list">
+            <li>
+                <a class="" href="/manuals/1.0/en/apidoc.html">En</a>
+            </li>
+            <li>
+                <a class="active" href="/manuals/1.0/ja/apidoc.html">Ja</a>
+            </li>
+        </ul>
+        
+    </nav>
+</header>
+
+<main class="container-fluid">
+    <div class="row flex-xl-nowrap">
+        <div class="col-md-3 col-lg-2">
+            <div class="side-bar">
+                <nav class="navbar navbar-expand-md navbar-light">
+    <div class="navigation-header">
+        <div class="ml-auto d-sm-block d-md-none">
+            <ul class="navbar-nav language-list">
+                <li>
+                    <a class="" href="/manuals/1.0/en/apidoc.html">En</a>
+                </li>
+                <li>
+                    <a class="active" href="/manuals/1.0/ja/apidoc.html">Ja</a>
+                </li>
+            </ul>
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#Navber" aria-controls="Navber" aria-expanded="false" aria-label="ナビゲーションの切替">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+    </div>
+    <div class="collapse navbar-collapse" id="Navber">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/index.html">イントロダクション</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/version.html">バージョン</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/quick-start.html">クイックスタート</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/tutorial.html">チュートリアル</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/tutorial2.html">チュートリアル 2</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/package.html">パッケージ</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/application.html">アプリケーション</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/module.html">モジュール</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/di.html">DI</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/aop.html">AOP</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/resource.html">リソース</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/resource_param.html">・パラメーター</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/resource_link.html">・リンク</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/resource_renderer.html">・レンダリングと転送</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/router.html">ルーター</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/production.html">プロダクション</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/ja/import.html">インポート</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/database.html">データベース</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/html.html">HTML</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/validation.html">バリデーション</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/form.html">フォーム</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/content-negotiation.html">コンテントネゴシエーション</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/hypermedia-api.html">ハイパーメディア API</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/psr7.html">リクエスト / PSR-7</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/js-ui.html">JavaScript UI</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/stream.html">ストリーム出力</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/cache.html">キャッシュ</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/swoole.html">Swoole</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/coding-guide.html">コーディングガイド</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/types.html">タイプ</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/test.html">テスト</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/examples.html">サンプル</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/upgrade/injector.html">アップグレード</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/attribute.html">アトリビュート</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" href="/manuals/1.0/ja/apidoc.html">API Doc</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/1page.html">1 Page</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+            </div>
+        </div>
+        <div class="col-md-9 col-lg-8">
+            <article id="article" class="markdown-body">
+                <h1 id="api-doc">API Doc</h1>
+
+<p>BEAR.ApiDocは、アプリケーションからAPIドキュメントを生成します。</p>
+
+<p>コードとJSONスキーマから自動生成されるドキュメントは、手間を減らし正確なAPIドキュメントを維持し続けることができます。</p>
+
+<h2 id="利用方法">利用方法</h2>
+
+<p>BEAR.ApiDocをインストールします。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>composer require bear/api-doc --dev
+</code></pre></div></div>
+
+<p>設定ファイルをコピーします。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cp ./vendor/bear/api-doc/apidoc.xml.dist ./apidoc.xml
+</code></pre></div></div>
+
+<h2 id="ソース">ソース</h2>
+
+<p>BEAR.ApiDocはphpdoc、メソッドシグネチャ、JSONスキーマから情報を取得してドキュメントを生成します。</p>
+
+<h4 id="phpdoc">PHPDOC</h4>
+
+<p>phpdocでは以下の部分が取得されます。
+認証などリソースに横断的に適用される情報は別のドキュメントページを用意して<code class="language-plaintext highlighter-rouge">@link</code>でリンクします。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cd">/**
+ * {title}
+ *
+ * {description}
+ *
+ * {@link htttp;//example.com/docs/auth 認証}
+ */</span>
+ <span class="kd">class</span> <span class="nc">Foo</span> <span class="kd">extends</span> <span class="nc">ResourceObject</span>
+ <span class="p">{</span>
+ <span class="p">}</span>
+</code></pre></div></div>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cd">/**
+ * {title}
+ *
+ * {description}
+ *
+ * @param string $id ユーザーID
+ */</span>
+ <span class="k">public</span> <span class="k">function</span> <span class="n">onGet</span><span class="p">(</span><span class="kt">string</span> <span class="nv">$id</span> <span class="o">=</span><span class="s1">'kuma'</span><span class="p">):</span> <span class="kt">static</span>
+ <span class="p">{</span>
+ <span class="p">}</span>
+</code></pre></div></div>
+
+<ul>
+  <li>メソッドのphpdocに<code class="language-plaintext highlighter-rouge">@param</code>記述が無い場合、メソッドシグネチャーから引数の情報を取得します。</li>
+  <li>情報取得の優先順はphpdoc、JSONスキーマ、プロファイルの順です。</li>
+</ul>
+
+<h2 id="設定ファイル">設定ファイル</h2>
+
+<p>設定はXMLで記述されます。
+最低限の指定は以下の通りです。</p>
+
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
+<span class="nt">&lt;apidoc</span>
+        <span class="na">xmlns:xsi=</span><span class="s">"http://www.w3.org/2001/XMLSchema-instance"</span>
+        <span class="na">xsi:noNamespaceSchemaLocation=</span><span class="s">"https://bearsunday.github.io/BEAR.ApiDoc/apidoc.xsd"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;appName&gt;</span>MyVendor\MyProject<span class="nt">&lt;/appName&gt;</span>
+    <span class="nt">&lt;scheme&gt;</span>app<span class="nt">&lt;/scheme&gt;</span>
+    <span class="nt">&lt;docDir&gt;</span>docs<span class="nt">&lt;/docDir&gt;</span>
+    <span class="nt">&lt;format&gt;</span>html<span class="nt">&lt;/format&gt;</span>
+<span class="nt">&lt;/apidoc&gt;</span>
+</code></pre></div></div>
+
+<h3 id="必須属性">必須属性</h3>
+
+<h4 id="appname">appName</h4>
+
+<p>アプリケーションの名前空間</p>
+
+<h4 id="scheme">scheme</h4>
+
+<p>APIドキュメントにするスキーマ名。<code class="language-plaintext highlighter-rouge">page</code>または<code class="language-plaintext highlighter-rouge">app</code></p>
+
+<h4 id="docdir">docDir</h4>
+
+<p>出力ディレクトリ名</p>
+
+<h4 id="format">format</h4>
+
+<p>出力フォーマット。HTMLまたはMD(Mark down</p>
+
+<h3 id="オプション属性">オプション属性</h3>
+
+<h4 id="title">title</h4>
+
+<p>APIタイトル</p>
+
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;title&gt;</span>MyBlog API<span class="nt">&lt;/title&gt;</span>
+</code></pre></div></div>
+
+<h4 id="description">description</h4>
+
+<p>APIディスクリプション</p>
+
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;description&gt;</span>MyBlog API description<span class="nt">&lt;/description&gt;</span>
+</code></pre></div></div>
+
+<h4 id="links">links</h4>
+
+<p>リンク。<code class="language-plaintext highlighter-rouge">href</code>でリンク先URL、<code class="language-plaintext highlighter-rouge">rel</code>でその内容を表します。</p>
+
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;links&gt;</span>
+    <span class="nt">&lt;link</span> <span class="na">href=</span><span class="s">"https://www.example.com/issue"</span> <span class="na">rel=</span><span class="s">"issue"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;link</span> <span class="na">href=</span><span class="s">"https://www.example.com/help"</span> <span class="na">rel=</span><span class="s">"help"</span> <span class="nt">/&gt;</span>
+<span class="nt">&lt;/links&gt;</span>
+</code></pre></div></div>
+
+<h4 id="alps">alps</h4>
+
+<p>APIで使われる語句を定義する”ALPSプロファイル”を指定します。</p>
+
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;alps&gt;</span>alps/profile.json<span class="nt">&lt;/alps&gt;</span>
+</code></pre></div></div>
+
+<h2 id="プロファイル">プロファイル</h2>
+
+<p>BEAR.ApiDocはアプリケーションに追加情報を与える<a href="https://tools.ietf.org/html/rfc6906">RFC 6906 プロファイル</a>の<a href="http://alps.io/">ALPS</a>フォーマットをサポートします。</p>
+
+<p>APIのリクエストやレスポンスのキーで使う語句をセマンティックディスクリプタ（意味的記述子）と呼びますが、プロファイルそのの辞書を作っておけばリクエスト毎に語句を説明する必要がなくなります。
+語句の定義が集中することで表記揺れを防ぎ、理解共有を助けます。</p>
+
+<p>以下は<code class="language-plaintext highlighter-rouge">firstName</code>,<code class="language-plaintext highlighter-rouge">familyName</code>というディスクリプタをそれぞれ<code class="language-plaintext highlighter-rouge">title</code>、<code class="language-plaintext highlighter-rouge">def</code>で定義した例です。
+<code class="language-plaintext highlighter-rouge">title</code>は言葉を記述して意味を明らかにしますが、<code class="language-plaintext highlighter-rouge">def</code>は<a href="https://schema.org/">Schema.org</a> などのボキャブラリサイトで定義されたスタンダードな語句をリンクします。</p>
+
+<p>ALPSプロファイルはXMLまたはJSONで記述します。</p>
+
+<p>profile.xml</p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
+<span class="nt">&lt;alps</span>
+     <span class="na">xmlns:xsi=</span><span class="s">"http://www.w3.org/2001/XMLSchema-instance"</span>
+     <span class="na">xsi:noNamespaceSchemaLocation=</span><span class="s">"https://alps-io.github.io/schemas/alps.xsd"</span><span class="nt">&gt;</span>
+    <span class="c">&lt;!-- Ontology --&gt;</span>
+    <span class="nt">&lt;descriptor</span> <span class="na">id=</span><span class="s">"firstName"</span> <span class="na">title=</span><span class="s">"The person's first name."</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;descriptor</span> <span class="na">id=</span><span class="s">"familyName"</span> <span class="na">def=</span><span class="s">"https://schema.org/familyName"</span><span class="nt">/&gt;</span>
+<span class="nt">&lt;/alps&gt;</span>
+</code></pre></div></div>
+
+<p>profile.json</p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{
+  "$schema": "https://alps-io.github.io/schemas/alps.json",
+  "alps": {
+    "descriptor": [
+      {"id": "firstName", "title": "The person's first name."},
+      {"id": "familyName", "def": "https://schema.org/familyName"},
+    ]
+  }
+}
+</code></pre></div></div>
+
+<p>ApiDocに登場する語句の説明はphpdoc &gt; JsonSchema &gt; ALPSの順で優先します。</p>
+
+<h2 id="リンク">リンク</h2>
+
+<ul>
+  <li><a href="https://bearsunday.github.io/BEAR.ApiDoc/">Demo</a></li>
+  <li><a href="http://alps.io/">ALPS</a></li>
+  <li><a href="https://github.com/koriym/app-state-diagram">ALPS-ASD</a></li>
+  <li><a href="https://qiita.com/koriym/items/2e928efb2167d559052e">メディアタイプとALPSプロファイル</a></li>
+</ul>
+
+            </article>
+        </div>
+        <div id="ArticleToc" class="col-lg-2 d-none d-lg-block">
+            <nav class="nav side-bar-right"></nav>
+        </div>
+    </div>
+</main>
+<footer>
+    <div class="container d-md-flex">
+        <i class="bear-icon d-none d-lg-block"></i>
+        <small>
+            © 2011-2024 BEAR.Sunday
+        </small>
+        <ul class="navbar-nav flex-row ml-md-auto d-none d-md-flex">
+            <li>
+                <a href="https://gitter.im/bearsunday/BEAR.Sunday?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge">Gitter</a>
+            </li>
+            <li>
+                <a href="https://github.com/bearsunday/BEAR.Sunday">Github</a>
+            </li>
+            <li>
+                <a href="https://twitter.com/BEARSunday">Twitter</a>
+            </li>
+            <li>
+                <a href="https://www.facebook.com/pages/BEARSunday/110116939178462?ref=hl">Facebook</a>
+            </li>
+            <li>
+                <a href="http://koriym.github.io/">Blog (JA)</a>
+            </li>
+            <li>
+                <a href="https://github.com/bearsunday/bearsunday.github.io">PR ?</a>
+            </li>
+        </ul>
+    </div>
+</footer>
+<script src="//code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+<script>
+    window.ga = function () { ga.q.push(arguments) }; ga.q = []; ga.l = +new Date;
+    ga('create', 'UA-6074569-8', 'bearsunday.github.io'); ga('send', 'pageview');
+</script>
+<script src="https://www.google-analytics.com/analytics.js" async defer></script>
+
+<script src="/js/generate-table-of-contents/index.min.js"></script>
+<script>
+    var toc = generateTableOfContents(document.getElementById('article'));
+    var sideBarRight = $('.side-bar-right');
+    sideBarRight.append(toc);
+
+    var scrollOffset = $('body').attr('data-offset');
+    var articlePaddingTop = $('article').css('padding-top').replace('px', '');
+    sideBarRight.find('a').on('click', function (e) {
+        e.preventDefault();
+        var targetId = $(this).attr('href');
+        var targetPositionTop = $(targetId).offset().top - scrollOffset - articlePaddingTop;
+        window.scrollTo(0, targetPositionTop)
+    });
+</script>
+
+</body>
+</html>
+

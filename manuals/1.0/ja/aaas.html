@@ -1,0 +1,526 @@
+<!doctype html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Application as a Service &#124; BEAR.Sunday</title>
+    <meta name="description" content="BEAR.Sunday is a resource orientated framework with a REST centered architecture, implementing Dependency Injection and Aspect Orientated Programming' at its core.">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/github-markdown-css/2.10.0/github-markdown.css">
+    <link rel="stylesheet" href="/css/syntax.css">
+    
+    <link rel="stylesheet" href="/css/bearsunday.css">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="apple-touch-icon" href="/icon.png">
+</head>
+<body data-page-category="Manual" data-spy="scroll" data-target="#ArticleToc" data-offset="65">
+<header>
+    <nav class="navbar navbar-expand flex-column flex-md-row bg-light">
+        <a class="navbar-brand mr-0 mr-md-2" href="/index.html"></a>
+        <div class="navbar-nav-scroll">
+            <ul class="navbar-nav flex-row">
+                <li class="nav-item">
+                    <a class="nav-link " href="/index.html">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="/manuals/1.0/en/index.html">Manual</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link " href="/contributors.html">Contributors</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/slide.html">Slide</a>
+                </li>
+            </ul>
+        </div>
+        
+        <ul class="navbar-nav ml-md-auto d-none d-md-flex language-list">
+            <li>
+                <a class="" href="/manuals/1.0/en/aaas.html">En</a>
+            </li>
+            <li>
+                <a class="active" href="/manuals/1.0/ja/aaas.html">Ja</a>
+            </li>
+        </ul>
+        
+    </nav>
+</header>
+
+<main class="container-fluid">
+    <div class="row flex-xl-nowrap">
+        <div class="col-md-3 col-lg-2">
+            <div class="side-bar">
+                <nav class="navbar navbar-expand-md navbar-light">
+    <div class="navigation-header">
+        <div class="ml-auto d-sm-block d-md-none">
+            <ul class="navbar-nav language-list">
+                <li>
+                    <a class="" href="/manuals/1.0/en/aaas.html">En</a>
+                </li>
+                <li>
+                    <a class="active" href="/manuals/1.0/ja/aaas.html">Ja</a>
+                </li>
+            </ul>
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#Navber" aria-controls="Navber" aria-expanded="false" aria-label="ナビゲーションの切替">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+    </div>
+    <div class="collapse navbar-collapse" id="Navber">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/index.html">イントロダクション</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/version.html">バージョン</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/quick-start.html">クイックスタート</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/tutorial.html">チュートリアル</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/tutorial2.html">チュートリアル 2</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/package.html">パッケージ</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/application.html">アプリケーション</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/module.html">モジュール</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/di.html">DI</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/aop.html">AOP</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/resource.html">リソース</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/resource_param.html">・パラメーター</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/resource_link.html">・リンク</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/resource_renderer.html">・レンダリングと転送</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/router.html">ルーター</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/production.html">プロダクション</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/ja/import.html">インポート</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/database.html">データベース</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/html.html">HTML</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/validation.html">バリデーション</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/form.html">フォーム</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/content-negotiation.html">コンテントネゴシエーション</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/hypermedia-api.html">ハイパーメディア API</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/psr7.html">リクエスト / PSR-7</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/js-ui.html">JavaScript UI</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/stream.html">ストリーム出力</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/cache.html">キャッシュ</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/swoole.html">Swoole</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/coding-guide.html">コーディングガイド</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/types.html">タイプ</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/test.html">テスト</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/examples.html">サンプル</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/upgrade/injector.html">アップグレード</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/attribute.html">アトリビュート</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/apidoc.html">API Doc</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/1page.html">1 Page</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+            </div>
+        </div>
+        <div class="col-md-9 col-lg-8">
+            <article id="article" class="markdown-body">
+                <h2 id="aaas-application-as-a-service">AaaS (Application as a Service)</h2>
+
+<p>作成したAPIアプリケーションはWebやコンソール（バッチ）からアクセスできますが、他のPHPプロジェクトからライブラリとしてアクセスする事もできます。
+このチュートリアルで作成したリポジトリは<a href="https://github.com/bearsunday/Tutorial2.git">https://github.com/bearsunday/Tutorial2.git</a>にpushしてあります。</p>
+
+<p>このプロジェクトをライブラリとして利用してみましょう。まず最初に新しいプロジェクトフォルダを作って<code class="language-plaintext highlighter-rouge">composer.json</code>を用意します。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mkdir app
+cd app
+mkdir -p ticket/log
+mkdir ticket/tmp
+</code></pre></div></div>
+
+<p>composer.json</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+    </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"my-vendor/app"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"A BEAR.Sunday application"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"project"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"license"</span><span class="p">:</span><span class="w"> </span><span class="s2">"proprietary"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"require"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"my-vendor/ticket"</span><span class="p">:</span><span class="w"> </span><span class="s2">"dev-master"</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="nl">"repositories"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+            </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"vcs"</span><span class="p">,</span><span class="w">
+            </span><span class="nl">"url"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://github.com/bearsunday/Tutorial2.git"</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+    </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>composer installでプロジェクトがライブラリとしてインストールされます。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>composer install
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">Ticket API</code>はプロジェクトフォルダにある<code class="language-plaintext highlighter-rouge">.env</code>を読むように設定されてました。<code class="language-plaintext highlighter-rouge">vendor/my-vendor/app/.env</code>に保存出来なくもないですが、ここでは別の方法で環境変数をセットアップしましょう。</p>
+
+<p>このような<code class="language-plaintext highlighter-rouge">app/.env</code>ファイルを用意します。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">export </span><span class="nv">TKT_DB_HOST</span><span class="o">=</span>localhost
+<span class="nb">export </span><span class="nv">TKT_DB_NAME</span><span class="o">=</span>ticket
+<span class="nb">export </span><span class="nv">TKT_DB_USER</span><span class="o">=</span>root
+<span class="nb">export </span><span class="nv">TKT_DB_PASS</span><span class="o">=</span><span class="s1">''</span>
+<span class="nb">export </span><span class="nv">TKT_DB_SLAVE</span><span class="o">=</span><span class="s1">''</span>
+<span class="nb">export </span><span class="nv">TKT_DB_DSN</span><span class="o">=</span>mysql:host<span class="o">=</span><span class="k">${</span><span class="nv">TKT_DB_HOST</span><span class="k">}</span><span class="se">\;</span><span class="nv">dbname</span><span class="o">=</span><span class="k">${</span><span class="nv">TKT_DB_NAME</span><span class="k">}</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">source</code>コマンドで環境変数にexportすることができます。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source .env
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">Ticket API</code>を他のプロジェクトから利用する最も簡単なスクリプトは以下のようなものです。
+アプリケーション名とコンテキストを指定してアプリケーションオブジェクト<code class="language-plaintext highlighter-rouge">$ticket</code>を取得してリソースアクセスします。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+<span class="kn">use</span> <span class="nc">BEAR\Package\Bootstrap</span><span class="p">;</span>
+
+<span class="k">require</span> <span class="k">__DIR__</span> <span class="mf">.</span> <span class="s1">'/vendor/autoload.php'</span><span class="p">;</span>
+
+<span class="nv">$ticket</span> <span class="o">=</span> <span class="p">(</span><span class="k">new</span> <span class="nc">Bootstrap</span><span class="p">)</span><span class="o">-&gt;</span><span class="nf">getApp</span><span class="p">(</span><span class="s1">'MyVendor\Ticket'</span><span class="p">,</span> <span class="s1">'app'</span><span class="p">);</span>
+<span class="nv">$response</span> <span class="o">=</span> <span class="nv">$ticket</span><span class="o">-&gt;</span><span class="n">resource</span><span class="o">-&gt;</span><span class="nf">post</span><span class="p">(</span><span class="s1">'app://self/ticket'</span><span class="p">,</span>
+    <span class="p">[</span><span class="s1">'title'</span> <span class="o">=&gt;</span> <span class="s1">'run'</span><span class="p">]</span>
+<span class="p">);</span>
+
+<span class="k">echo</span> <span class="nv">$response</span><span class="o">-&gt;</span><span class="n">code</span> <span class="mf">.</span> <span class="kc">PHP_EOL</span><span class="p">;</span>
+
+
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">index.php</code>と保存して実行してみましょう。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>php index.php
+</code></pre></div></div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>201
+</code></pre></div></div>
+
+<p>APIを他のメソッドに渡したり、他のフレームワークなどののコンテナに格納するためには<code class="language-plaintext highlighter-rouge">callable</code>オブジェクトにします。
+<code class="language-plaintext highlighter-rouge">$createTicket</code>は普通の関数のように扱うことができます。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+<span class="kn">use</span> <span class="nc">BEAR\Package\Bootstrap</span><span class="p">;</span>
+
+<span class="k">require</span> <span class="k">__DIR__</span> <span class="mf">.</span> <span class="s1">'/vendor/autoload.php'</span><span class="p">;</span>
+
+<span class="nv">$ticket</span> <span class="o">=</span> <span class="p">(</span><span class="k">new</span> <span class="nc">Bootstrap</span><span class="p">)</span><span class="o">-&gt;</span><span class="nf">getApp</span><span class="p">(</span><span class="s1">'MyVendor\Ticket'</span><span class="p">,</span> <span class="s1">'app'</span><span class="p">);</span>
+<span class="nv">$createTicket</span> <span class="o">=</span> <span class="nv">$ticket</span><span class="o">-&gt;</span><span class="n">resource</span><span class="o">-&gt;</span><span class="n">post</span><span class="o">-&gt;</span><span class="nf">uri</span><span class="p">(</span><span class="s1">'app://self/ticket'</span><span class="p">);</span>
+<span class="c1">// invoke callable object</span>
+<span class="nv">$response</span> <span class="o">=</span> <span class="nv">$createTicket</span><span class="p">([</span><span class="s1">'title'</span> <span class="o">=&gt;</span> <span class="s1">'run'</span><span class="p">]);</span>
+<span class="k">echo</span> <span class="nv">$response</span><span class="o">-&gt;</span><span class="n">code</span> <span class="mf">.</span> <span class="kc">PHP_EOL</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>うまく動きましたか？しかし、このままでは<code class="language-plaintext highlighter-rouge">tmp</code>/ <code class="language-plaintext highlighter-rouge">log</code>ディレクトリは<code class="language-plaintext highlighter-rouge">vendor</code>の下のアプリが使われてしまいますね。
+このようにアプリケーションのメタ情報を変更するとディレクトリの位置を変更することができます。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+
+<span class="kn">use</span> <span class="nc">BEAR\AppMeta\Meta</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">BEAR\Package\Bootstrap</span><span class="p">;</span>
+
+<span class="k">require</span> <span class="k">__DIR__</span> <span class="mf">.</span> <span class="s1">'/vendor/autoload.php'</span><span class="p">;</span>
+
+<span class="nv">$meta</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Meta</span><span class="p">(</span><span class="s1">'MyVendor\Ticket'</span><span class="p">,</span> <span class="s1">'app'</span><span class="p">);</span>
+<span class="nv">$meta</span><span class="o">-&gt;</span><span class="n">tmpDir</span> <span class="o">=</span> <span class="k">__DIR__</span> <span class="mf">.</span> <span class="s1">'/ticket/tmp'</span><span class="p">;</span>
+<span class="nv">$meta</span><span class="o">-&gt;</span><span class="n">logDir</span> <span class="o">=</span> <span class="k">__DIR__</span> <span class="mf">.</span> <span class="s1">'/ticket/log'</span><span class="p">;</span>
+<span class="nv">$ticket</span> <span class="o">=</span> <span class="p">(</span><span class="k">new</span> <span class="nc">Bootstrap</span><span class="p">)</span><span class="o">-&gt;</span><span class="nf">newApp</span><span class="p">(</span><span class="nv">$meta</span><span class="p">,</span> <span class="s1">'app'</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">Ticket API</code>はREST APIとしてHTTPやコンソールからアクセスできるだけでなく、BEAR.Sundayではない他のプロジェクトのライブラリとしても使えるようになりました！</p>
+
+<hr />
+
+<h1 id="from-tutorial1">from tutorial1</h1>
+
+<h2 id="アプリケーションのインポート">アプリケーションのインポート</h2>
+
+<p>BEAR.Sundayで作られたリソースは再利用性に優れています。複数のアプリケーションを同時に動作させ、他のアプリケーションのリソースを利用することができます。別々のWebサーバーを立てる必要はありません。</p>
+
+<p>他のアプリケーションのリソースを利用して見ましょう。</p>
+
+<p>通常はアプリケーションをパッケージとして利用しますが、ここではチュートリアルのために<code class="language-plaintext highlighter-rouge">my-vendor</code>に新規でアプリケーションを作成して手動でオートローダーを設定します。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">mkdir </span>my-vendor
+<span class="nb">cd </span>my-vendor
+composer create-project bear/skeleton Acme.Blog
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">composer.json</code>で<code class="language-plaintext highlighter-rouge">autoload</code>のセクションに<code class="language-plaintext highlighter-rouge">Acme\\Blog</code>を追加します。</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nl">"autoload"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"psr-4"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"MyVendor\\Weekday\\"</span><span class="p">:</span><span class="w"> </span><span class="s2">"src/"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"Acme\\Blog\\"</span><span class="p">:</span><span class="w"> </span><span class="s2">"my-vendor/Acme.Blog/src/"</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="err">,</span><span class="w">
+</span></code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">autoload</code>をダンプします。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>composer dump-autoload
+</code></pre></div></div>
+
+<p>これで<code class="language-plaintext highlighter-rouge">Acme\Blog</code>アプリケーションが配置できました。</p>
+
+<p>次にアプリケーションをインポートするために<code class="language-plaintext highlighter-rouge">src/Module/AppModule.php</code>で<code class="language-plaintext highlighter-rouge">ImportAppModule</code>を上書き(override)インストールします。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+<span class="c1">// ...</span>
+<span class="kn">use</span> <span class="nc">BEAR\Resource\Module\ImportAppModule</span><span class="p">;</span> <span class="c1">// add this line</span>
+<span class="kn">use</span> <span class="nc">BEAR\Resource\ImportApp</span><span class="p">;</span> <span class="c1">// add this line</span>
+<span class="kn">use</span> <span class="nc">BEAR\Package\Context</span><span class="p">;</span> <span class="c1">// add this line</span>
+
+<span class="kd">class</span> <span class="nc">AppModule</span> <span class="kd">extends</span> <span class="nc">AbstractAppModule</span>
+<span class="p">{</span>
+    <span class="k">protected</span> <span class="k">function</span> <span class="n">configure</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="c1">// ...</span>
+        <span class="nv">$importConfig</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="k">new</span> <span class="nc">ImportApp</span><span class="p">(</span><span class="s1">'blog'</span><span class="p">,</span> <span class="s1">'Acme\Blog'</span><span class="p">,</span> <span class="s1">'prod-hal-app'</span><span class="p">)</span> <span class="c1">// host, name, context</span>
+        <span class="p">];</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">override</span><span class="p">(</span><span class="k">new</span> <span class="nc">ImportAppModule</span><span class="p">(</span><span class="nv">$importConfig</span> <span class="p">,</span> <span class="nc">Context</span><span class="o">::</span><span class="n">class</span><span class="p">));</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>これは<code class="language-plaintext highlighter-rouge">Acme\Blog</code>アプリケーションを<code class="language-plaintext highlighter-rouge">prod-hal-app</code>コンテキストで作成したリソースを<code class="language-plaintext highlighter-rouge">blog</code>というホストで使用することができます。</p>
+
+<p><code class="language-plaintext highlighter-rouge">src/Resource/App/Import.php</code>にImportリソースを作成して確かめてみましょう。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+<span class="kn">namespace</span> <span class="nn">MyVendor\Weekday\Resource\App</span><span class="p">;</span>
+
+<span class="kn">use</span> <span class="nc">BEAR\Resource\ResourceObject</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">BEAR\Sunday\Inject\ResourceInject</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">Import</span> <span class="kd">extends</span> <span class="nc">ResourceObject</span>
+<span class="p">{</span>
+    <span class="kn">use</span> <span class="nc">ResourceInject</span><span class="p">;</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onGet</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">body</span> <span class="o">=</span><span class="p">[</span>
+            <span class="s1">'blog'</span> <span class="o">=&gt;</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">resource</span><span class="o">-&gt;</span><span class="nf">uri</span><span class="p">(</span><span class="s1">'page://blog/index'</span><span class="p">)[</span><span class="s1">'greeting'</span><span class="p">]</span>
+        <span class="p">];</span>
+
+        <span class="k">return</span> <span class="nv">$this</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">page://blog/index</code>リソースの<code class="language-plaintext highlighter-rouge">greeting</code>が<code class="language-plaintext highlighter-rouge">blog</code>に代入されているはずです。<code class="language-plaintext highlighter-rouge">@Embed</code>も同様に使えます。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>php bin/app.php get /import
+</code></pre></div></div>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>200 OK
+content-type: application/hal+json
+
+<span class="o">{</span>
+    <span class="s2">"blog"</span>: <span class="s2">"Hello BEAR.Sunday"</span>,
+    <span class="s2">"_links"</span>: <span class="o">{</span>
+        <span class="s2">"self"</span>: <span class="o">{</span>
+            <span class="s2">"href"</span>: <span class="s2">"/import"</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>他のアプリケーションのリソースを利用することができました！データ取得をHTTP越しにする必要もありません。</p>
+
+<p>合成されたアプリケーションも他からみたら１つのアプリケーションの１つのレイヤーです。
+<a href="http://en.wikipedia.org/wiki/Representational_state_transfer#Layered_system">レイヤードシステム</a>はRESTの特徴の１つです。</p>
+
+<p>それでは最後に作成したアプリケーションのリソースを呼び出す最小限のスクリプトをコーディングして見ましょう。<code class="language-plaintext highlighter-rouge">bin/test.php</code>を作成します。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">use</span> <span class="nc">BEAR\Package\Bootstrap</span><span class="p">;</span>
+
+<span class="k">require</span> <span class="nb">dirname</span><span class="p">(</span><span class="k">__DIR__</span><span class="p">)</span> <span class="mf">.</span> <span class="s1">'/autoload.php'</span><span class="p">;</span>
+
+<span class="nv">$api</span> <span class="o">=</span> <span class="p">(</span><span class="k">new</span> <span class="nc">Bootstrap</span><span class="p">)</span><span class="o">-&gt;</span><span class="nf">getApp</span><span class="p">(</span><span class="s1">'MyVendor\Weekday'</span><span class="p">,</span> <span class="s1">'prod-hal-app'</span><span class="p">);</span>
+
+<span class="nv">$blog</span> <span class="o">=</span> <span class="nv">$api</span><span class="o">-&gt;</span><span class="n">resource</span><span class="o">-&gt;</span><span class="nf">uri</span><span class="p">(</span><span class="s1">'app://self/import'</span><span class="p">)[</span><span class="s1">'blog'</span><span class="p">];</span>
+<span class="nb">var_dump</span><span class="p">(</span><span class="nv">$blog</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">MyVendor\Weekday</code>アプリを<code class="language-plaintext highlighter-rouge">prod-hal-app</code>で起動して<code class="language-plaintext highlighter-rouge">app://self/import</code>リソースの<code class="language-plaintext highlighter-rouge">blog</code>をvar_dumpするコードです。</p>
+
+<p>試して見ましょう。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>php bin/import.php
+</code></pre></div></div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>string(17) "Hello BEAR.Sunday"
+</code></pre></div></div>
+
+<p>他にも</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$weekday</span> <span class="o">=</span> <span class="nv">$api</span><span class="o">-&gt;</span><span class="n">resource</span><span class="o">-&gt;</span><span class="nf">uri</span><span class="p">(</span><span class="s1">'app://self/weekday'</span><span class="p">)([</span><span class="s1">'year'</span> <span class="o">=&gt;</span> <span class="mi">2000</span><span class="p">,</span> <span class="s1">'month'</span><span class="o">=&gt;</span><span class="mi">1</span><span class="p">,</span> <span class="s1">'day'</span><span class="o">=&gt;</span><span class="mi">1</span><span class="p">]);</span>
+<span class="nb">var_dump</span><span class="p">(</span><span class="nv">$weekday</span><span class="o">-&gt;</span><span class="n">body</span><span class="p">);</span> <span class="c1">// as array</span>
+<span class="c1">//array(1) {</span>
+<span class="c1">//    ["weekday"]=&gt;</span>
+<span class="c1">//  string(3) "Sat"</span>
+<span class="c1">//}</span>
+
+<span class="k">echo</span> <span class="nv">$weekday</span><span class="p">;</span> <span class="c1">// as string</span>
+<span class="c1">//{</span>
+<span class="c1">//    "weekday": "Sat",</span>
+<span class="c1">//    "_links": {</span>
+<span class="c1">//    "self": {</span>
+<span class="c1">//        "href": "/weekday/2000/1/1"</span>
+<span class="c1">//        }</span>
+<span class="c1">//    }</span>
+<span class="c1">//}</span>
+</code></pre></div></div>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$html</span> <span class="o">=</span> <span class="p">(</span><span class="k">new</span> <span class="nc">Bootstrap</span><span class="p">)</span><span class="o">-&gt;</span><span class="nf">getApp</span><span class="p">(</span><span class="s1">'MyVendor\Weekday'</span><span class="p">,</span> <span class="s1">'prod-html-app'</span><span class="p">);</span>
+<span class="nv">$index</span> <span class="o">=</span> <span class="nv">$html</span><span class="o">-&gt;</span><span class="n">resource</span><span class="o">-&gt;</span><span class="nf">uri</span><span class="p">(</span><span class="s1">'page://self/index'</span><span class="p">)([</span><span class="s1">'year'</span> <span class="o">=&gt;</span> <span class="mi">2000</span><span class="p">,</span> <span class="s1">'month'</span><span class="o">=&gt;</span><span class="mi">1</span><span class="p">,</span> <span class="s1">'day'</span><span class="o">=&gt;</span><span class="mi">1</span><span class="p">]);</span>
+<span class="nb">var_dump</span><span class="p">(</span><span class="nv">$index</span><span class="o">-&gt;</span><span class="n">code</span><span class="p">);</span>
+<span class="c1">//int(200)</span>
+
+<span class="k">echo</span> <span class="nv">$index</span><span class="p">;</span>
+<span class="c1">//&lt;!DOCTYPE html&gt;</span>
+<span class="c1">//&lt;html&gt;</span>
+<span class="c1">//&lt;body&gt;</span>
+<span class="c1">//The weekday of 2000/1/1 is Sat.</span>
+<span class="c1">//&lt;/body&gt;</span>
+<span class="c1">//&lt;/html&gt;</span>
+</code></pre></div></div>
+
+<p>ステートレスなリクエストでレスポンスが返ってくるRESTのリソースはPHPの関数のようなものです。<code class="language-plaintext highlighter-rouge">body</code>で値を取得したり<code class="language-plaintext highlighter-rouge">(string)</code>でJSONやHTMLなどの表現にすることができます。autoloadの部分を除けば二行、連結すればたった一行のスクリプトで  アプリケーションのどのリソースでも操作することができます。</p>
+
+<p>このようにBEAR.Sundayで作られたリソースは他のCMSやフレームワークからも簡単に利用することができます。複数のアプリケーションの値を一度に扱うことができます。</p>
+
+
+            </article>
+        </div>
+        <div id="ArticleToc" class="col-lg-2 d-none d-lg-block">
+            <nav class="nav side-bar-right"></nav>
+        </div>
+    </div>
+</main>
+<footer>
+    <div class="container d-md-flex">
+        <i class="bear-icon d-none d-lg-block"></i>
+        <small>
+            © 2011-2024 BEAR.Sunday
+        </small>
+        <ul class="navbar-nav flex-row ml-md-auto d-none d-md-flex">
+            <li>
+                <a href="https://gitter.im/bearsunday/BEAR.Sunday?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge">Gitter</a>
+            </li>
+            <li>
+                <a href="https://github.com/bearsunday/BEAR.Sunday">Github</a>
+            </li>
+            <li>
+                <a href="https://twitter.com/BEARSunday">Twitter</a>
+            </li>
+            <li>
+                <a href="https://www.facebook.com/pages/BEARSunday/110116939178462?ref=hl">Facebook</a>
+            </li>
+            <li>
+                <a href="http://koriym.github.io/">Blog (JA)</a>
+            </li>
+            <li>
+                <a href="https://github.com/bearsunday/bearsunday.github.io">PR ?</a>
+            </li>
+        </ul>
+    </div>
+</footer>
+<script src="//code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+<script>
+    window.ga = function () { ga.q.push(arguments) }; ga.q = []; ga.l = +new Date;
+    ga('create', 'UA-6074569-8', 'bearsunday.github.io'); ga('send', 'pageview');
+</script>
+<script src="https://www.google-analytics.com/analytics.js" async defer></script>
+
+<script src="/js/generate-table-of-contents/index.min.js"></script>
+<script>
+    var toc = generateTableOfContents(document.getElementById('article'));
+    var sideBarRight = $('.side-bar-right');
+    sideBarRight.append(toc);
+
+    var scrollOffset = $('body').attr('data-offset');
+    var articlePaddingTop = $('article').css('padding-top').replace('px', '');
+    sideBarRight.find('a').on('click', function (e) {
+        e.preventDefault();
+        var targetId = $(this).attr('href');
+        var targetPositionTop = $(targetId).offset().top - scrollOffset - articlePaddingTop;
+        window.scrollTo(0, targetPositionTop)
+    });
+</script>
+
+</body>
+</html>
+

@@ -1,0 +1,518 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Javascript UI &#124; BEAR.Sunday</title>
+    <meta name="description" content="BEAR.Sunday is a resource orientated framework with a REST centered architecture, implementing Dependency Injection and Aspect Orientated Programming' at its core.">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/github-markdown-css/2.10.0/github-markdown.css">
+    <link rel="stylesheet" href="/css/syntax.css">
+    
+    <link rel="stylesheet" href="/css/bearsunday.css">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="apple-touch-icon" href="/icon.png">
+</head>
+<body data-page-category="Manual" data-spy="scroll" data-target="#ArticleToc" data-offset="65">
+<header>
+    <nav class="navbar navbar-expand flex-column flex-md-row bg-light">
+        <a class="navbar-brand mr-0 mr-md-2" href="/index.html"></a>
+        <div class="navbar-nav-scroll">
+            <ul class="navbar-nav flex-row">
+                <li class="nav-item">
+                    <a class="nav-link " href="/index.html">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="/manuals/1.0/en/index.html">Manual</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link " href="/contributors.html">Contributors</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/slide.html">Slide</a>
+                </li>
+            </ul>
+        </div>
+        
+        <ul class="navbar-nav ml-md-auto d-none d-md-flex language-list">
+            <li>
+                <a class="active" href="/manuals/1.0/en/js-ui.html">En</a>
+            </li>
+            <li>
+                <a class="" href="/manuals/1.0/ja/js-ui.html">Ja</a>
+            </li>
+        </ul>
+        
+    </nav>
+</header>
+
+<main class="container-fluid">
+    <div class="row flex-xl-nowrap">
+        <div class="col-md-3 col-lg-2">
+            <div class="side-bar">
+                <nav class="navbar navbar-expand-md navbar-light">
+    <div class="navigation-header">
+        <div class="ml-auto d-sm-block d-md-none">
+            <ul class="navbar-nav language-list">
+                <li>
+                    <a class="active" href="/manuals/1.0/en/js-ui.html">En</a>
+                </li>
+                <li>
+                    <a class="" href="/manuals/1.0/ja/js-ui.html">Ja</a>
+                </li>
+            </ul>
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#Navber" aria-controls="Navber" aria-expanded="false" aria-label="ナビゲーションの切替">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+    </div>
+    <div class="collapse navbar-collapse" id="Navber">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/">Introduction</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/version.html">Version</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/quick-start.html">Quick Start</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/tutorial.html">Tutorial</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/tutorial2.html">Tutorial 2</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/package.html">Package</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/application.html">Application</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/module.html">Module</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/di.html">DI</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/aop.html">AOP</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/resource.html">Resource</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/resource_param.html">・Parameter</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/resource_link.html">・Link</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/resource_renderer.html">・Rendering and Transfer</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/router.html">Router</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/production.html">Production</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/import.html">Import</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/database.html">Database</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/validation.html">Validation</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/html.html">HTML</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/form.html">Form</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/content-negotiation.html">Content Negotiation</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/hypermedia-api.html">Hypermedia API</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/psr7.html">Request / PSR-7</a>
+            </li>
+            <li>
+                <a class="nav-link active" href="/manuals/1.0/en/js-ui.html">JavaScript UI</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/stream.html">Stream Response</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/cache.html">Cache</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/swoole.html">Swoole</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/coding-guide.html">Coding Guide</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/types.html">Type</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/test.html">Test</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/examples.html">Examples</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/attribute.html">Attribute</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/apidoc.html">API Doc</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/1page.html">1 Page</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+            </div>
+        </div>
+        <div class="col-md-9 col-lg-8">
+            <article id="article" class="markdown-body">
+                <h1 id="javascript-ui">Javascript UI</h1>
+
+<p>Instead of rendering views with PHP template engines such Twig etc, we will be doing so using server-side JavaScript. On the PHP side we will be carrying out the authorisation, authentication, initialization and API delivery then we will do the rendering of the UI using JS.</p>
+
+<p>Currently within our project architecture, we will only be making changes to annotated resources so should be simple.</p>
+
+<h2 id="prerequisites">Prerequisites</h2>
+
+<ul>
+  <li>PHP 7.1</li>
+  <li><a href="https://nodejs.org/">Node.js</a></li>
+  <li><a href="https://yarnpkg.com/">yarn</a></li>
+  <li><a href="http://php.net/manual/en/book.v8js.php">V8Js</a> (Development option)</li>
+</ul>
+
+<p>Note: If you do not install V8Js then JS will be run using Node.js.</p>
+
+<h2 id="terminology">Terminology</h2>
+
+<ul>
+  <li><strong>CSR</strong> Client Side Rendering (via Web Browser)</li>
+  <li><strong>SSR</strong> Server Side Rendering (via V8 or Node.js)</li>
+</ul>
+
+<h2 id="javascript">JavaScript</h2>
+
+<h3 id="installation">Installation</h3>
+
+<p>Install <code class="language-plaintext highlighter-rouge">koriym/ssr-module</code> into the project.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// composer create-project bear/skeleton MyVendor.MyProject <span class="o">&amp;&amp;</span> <span class="nb">cd </span>MyVendor.MyProject<span class="p">;</span>
+composer require bear/ssr-module
+</code></pre></div></div>
+
+<p>Install the UI skeleton app <code class="language-plaintext highlighter-rouge">koriym/js-ui-skeleton</code>.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>composer require koriym/js-ui-skeleton 1.x-dev
+<span class="nb">cp</span> <span class="nt">-r</span> vendor/koriym/js-ui-skeleton/ui <span class="nb">.</span>
+<span class="nb">cp</span> <span class="nt">-r</span> vendor/koriym/js-ui-skeleton/package.json <span class="nb">.</span>
+yarn <span class="nb">install</span>
+</code></pre></div></div>
+
+<h3 id="running-the-ui-application">Running the UI application</h3>
+
+<p>Lets start by running the demo application.
+From the displayed web page lets select the rendering engine and run the JS application.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>yarn run ui
+</code></pre></div></div>
+<p>This applications inputs can be set using the <code class="language-plaintext highlighter-rouge">ui/dev/config/</code> config files.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+<span class="nv">$app</span> <span class="o">=</span> <span class="s1">'index'</span><span class="p">;</span>                   <span class="c1">// =index.bundle.js</span>
+<span class="nv">$state</span> <span class="o">=</span> <span class="p">[</span>                        <span class="c1">// Application state</span>
+    <span class="s1">'hello'</span> <span class="o">=&gt;</span><span class="p">[</span><span class="s1">'name'</span> <span class="o">=&gt;</span> <span class="s1">'World'</span><span class="p">]</span>
+<span class="p">];</span>
+<span class="nv">$metas</span> <span class="o">=</span> <span class="p">[</span>                        <span class="c1">// value used in SSR only</span>
+    <span class="s1">'title'</span> <span class="o">=&gt;</span><span class="s1">'page-title'</span>
+<span class="p">];</span>
+
+<span class="k">return</span> <span class="p">[</span><span class="nv">$app</span><span class="p">,</span> <span class="nv">$state</span><span class="p">,</span> <span class="nv">$metas</span><span class="p">];</span>
+</code></pre></div></div>
+<p>Lets copy the configuration file and try changing the input values.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cp ui/dev/config/index.php ui/dev/config/myapp.php
+</code></pre></div></div>
+
+<p>Reload the browser and try out the new settings.</p>
+
+<p>In this way without changing the JavaScript or core PHP application we can alter the UI data and check that it is working.</p>
+
+<p>The PHP configuration files that have been edited in this section are only used when executing <code class="language-plaintext highlighter-rouge">yarn run ui</code>.
+All the PHP side needs is the output bundled JS file.</p>
+
+<h3 id="creating-the-ui-application">Creating the UI application.</h3>
+
+<p>Using the variables that have been passed in from PHP, create a <strong>render</strong> function that returns a rendered string.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>const render = (state, metas) =&gt; (
+  __AWESOME_UI__ // Using a SSR compatible library or JS template engine return an output string.
+)
+</code></pre></div></div>
+
+<p>The <code class="language-plaintext highlighter-rouge">state</code> value is needed in the document root, <code class="language-plaintext highlighter-rouge">metas</code> contains other variables, such as those needed in &lt;head&gt;. The <code class="language-plaintext highlighter-rouge">render</code> function name cannot be changed.</p>
+
+<p>Here we can grab the name and create a greeting string to be returned.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>const render = state =&gt; (
+  `Hello ${state.name}`
+)
+</code></pre></div></div>
+
+<p>Save this as <code class="language-plaintext highlighter-rouge">ui/src/page/index/hello/server.js</code> and register this as a Webpack entry point in<code class="language-plaintext highlighter-rouge">ui/entry.js</code>.</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="na">hello</span><span class="p">:</span> <span class="dl">'</span><span class="s1">src/page/hello/server</span><span class="dl">'</span><span class="p">,</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
+<p>Having done this a <code class="language-plaintext highlighter-rouge">hello.bundle.js</code> bundled file is created for us.</p>
+
+<p>Create a file at <code class="language-plaintext highlighter-rouge">ui/dev/config/myapp.php</code> to test run this application.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+<span class="nv">$app</span> <span class="o">=</span> <span class="s1">'hello'</span><span class="p">;</span>
+<span class="nv">$state</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">[</span><span class="s1">'name'</span> <span class="o">=&gt;</span> <span class="s1">'World'</span><span class="p">]</span>
+<span class="p">];</span>
+<span class="nv">$metas</span> <span class="o">=</span> <span class="p">[];</span>
+
+<span class="k">return</span> <span class="p">[</span><span class="nv">$app</span><span class="p">,</span> <span class="nv">$state</span><span class="p">,</span> <span class="nv">$metas</span><span class="p">];</span>
+</code></pre></div></div>
+
+<p>Thats it! Reload the browser to try it out.</p>
+
+<p>Inside the render function you can use any UI framework such as React or Vue.js to create a rich UI.
+In a regular application in order to limit the number of dependencies in the <code class="language-plaintext highlighter-rouge">server.js</code> entry file import the render module as below.</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="nx">render</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">./render</span><span class="dl">'</span><span class="p">;</span>
+<span class="nb">global</span><span class="p">.</span><span class="nx">render</span> <span class="o">=</span> <span class="nx">render</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>Thus far there has been nothing happening on the PHP side. Development on the SSR application and PHP development can done independently.</p>
+
+<h2 id="php">PHP</h2>
+
+<h3 id="module-installation">Module Installation</h3>
+
+<p>Install <code class="language-plaintext highlighter-rouge">SsrModule</code> in AppModule.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+<span class="kn">use</span> <span class="nc">BEAR\SsrModule\SsrModule</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">AppModule</span> <span class="kd">extends</span> <span class="nc">AbstractAppModule</span>
+<span class="p">{</span>
+    <span class="k">protected</span> <span class="k">function</span> <span class="n">configure</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="c1">// ...</span>
+        <span class="nv">$build</span> <span class="o">=</span> <span class="nb">dirname</span><span class="p">(</span><span class="k">__DIR__</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="mf">.</span> <span class="s1">'/var/www/build'</span><span class="p">;</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">install</span><span class="p">(</span><span class="k">new</span> <span class="nc">SsrModule</span><span class="p">(</span><span class="nv">$build</span><span class="p">));</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>The <code class="language-plaintext highlighter-rouge">$build</code> directory is where the JS files live.(The Webpack output location set in <code class="language-plaintext highlighter-rouge">ui/ui.config.js</code>)</p>
+
+<h3 id="ssr-annotation">@Ssr Annotation</h3>
+
+<p>Annotate the resource function to be SSR’d with <code class="language-plaintext highlighter-rouge">@Ssr</code>. The JS application name is required in <code class="language-plaintext highlighter-rouge">app</code>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&lt;?</span><span class="n">php</span>
+
+<span class="kn">namespace</span> <span class="nn">MyVendor\MyRedux\Resource\Page</span><span class="p">;</span>
+
+<span class="kn">use</span> <span class="nc">BEAR\Resource\ResourceObject</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">BEAR\SsrModule\Annotation\Ssr</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">Index</span> <span class="kd">extends</span> <span class="nc">ResourceObject</span>
+<span class="p">{</span>
+    <span class="cd">/**
+     * @Ssr(app="index_ssr")
+     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onGet</span><span class="p">(</span><span class="nv">$name</span> <span class="o">=</span> <span class="s1">'BEAR.Sunday'</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">body</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s1">'hello'</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="s1">'name'</span> <span class="o">=&gt;</span> <span class="nv">$name</span><span class="p">]</span>
+        <span class="p">];</span>
+
+        <span class="k">return</span> <span class="nv">$this</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>When you want to pass in distinct values for SSR and CSR set a key in <code class="language-plaintext highlighter-rouge">state</code> and <code class="language-plaintext highlighter-rouge">metas</code>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cd">/**
+ * @Ssr(
+ *   app="index_ssr",
+ *   state={"name", "age"},
+ *   metas={"title"}
+ * )
+ */</span>
+<span class="k">public</span> <span class="k">function</span> <span class="n">onGet</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">body</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s1">'name'</span> <span class="o">=&gt;</span> <span class="s1">'World'</span><span class="p">,</span>
+        <span class="s1">'age'</span> <span class="o">=&gt;</span> <span class="mf">4.6E8</span><span class="p">;</span>
+        <span class="s1">'title'</span> <span class="o">=&gt;</span> <span class="s1">'Age of the World'</span>
+    <span class="p">];</span>
+
+    <span class="k">return</span> <span class="nv">$this</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>To see exactly how you pass in <code class="language-plaintext highlighter-rouge">state</code> and <code class="language-plaintext highlighter-rouge">metas</code> to achieve SSR see the sample application <code class="language-plaintext highlighter-rouge">ui/src/page/index/server</code>. The only influence is from the annotated method, the rest comes straight from the API or HTML rendering configuration.</p>
+
+<h3 id="runtime-php-application-settings">Runtime PHP Application Settings</h3>
+
+<p>Edit <code class="language-plaintext highlighter-rouge">ui/ui.config.js</code>, set the Webpack build location in <code class="language-plaintext highlighter-rouge">build</code> and web directory in <code class="language-plaintext highlighter-rouge">public</code>. The <code class="language-plaintext highlighter-rouge">build</code> directory is the same that you set in the SsrModule installation.</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">path</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">path</span><span class="dl">'</span><span class="p">);</span>
+
+<span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="na">public</span><span class="p">:</span> <span class="nx">path</span><span class="p">.</span><span class="nx">join</span><span class="p">(</span><span class="nx">__dirname</span><span class="p">,</span> <span class="dl">'</span><span class="s1">../var/www</span><span class="dl">'</span><span class="p">),</span>
+  <span class="na">build</span><span class="p">:</span> <span class="nx">path</span><span class="p">.</span><span class="nx">join</span><span class="p">(</span><span class="nx">__dirname</span><span class="p">,</span> <span class="dl">'</span><span class="s1">../var/www/build</span><span class="dl">'</span><span class="p">)</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
+<h3 id="running-the-php-application">Running the PHP application</h3>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>yarn run dev
+</code></pre></div></div>
+
+<p>Run using live updating.
+When the PHP file is changed it will be automatically reloaded, if there is a change in a React component without hitting refresh the component will update. If you want to run the app without live updating you can by running <code class="language-plaintext highlighter-rouge">yarn run start</code>.</p>
+
+<p>For other commands such <code class="language-plaintext highlighter-rouge">lint</code> or <code class="language-plaintext highlighter-rouge">test</code> etc. please see <a href="https://github.com/koriym/Koriym.JsUiSkeleton/blob/1.x/README.md#command">commands</a>.</p>
+
+<h2 id="performance">Performance</h2>
+
+<p>The ability to save the V8 Snapshot into APC means we can see dramatic performance benefits. In <code class="language-plaintext highlighter-rouge">ProdModule</code> install <code class="language-plaintext highlighter-rouge">ApcSsrModule</code>.
+ReactJs or your application snapshot is saved in <code class="language-plaintext highlighter-rouge">APCu</code> and can be reused. V8 is required.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">install</span><span class="p">(</span><span class="k">new</span> <span class="nc">ApcSsrModule</span><span class="p">);</span>
+</code></pre></div></div>
+<p>To use caches other than APC look at  the code in <code class="language-plaintext highlighter-rouge">ApcSsrModule</code> as a reference to make your own module. It is possible to use a cache compatible with PSR16.</p>
+
+<p>In order to tune performance at compile time pulling in your JS code (and ReactJs etc) into the V8 snapshot can give you further performance improvements.
+For more info please see the following.</p>
+
+<ul>
+  <li><a href="http://stesie.github.io/2016/02/snapshot-performance">20x performance boost with V8Js snapshots</a></li>
+  <li><a href="https://github.com/phpv8/v8js/issues/205">v8js - Possibility to Improve Performance with Precompiled Templates/Classes ?</a></li>
+</ul>
+
+<h2 id="debugging">Debugging</h2>
+
+<ul>
+  <li>Chrome Plugin <a href="https://chrome.google.com/webstore/detail/react-developer-tools/fmkadmapgofadopljbjfkapdkoienihi">React developer tools</a> or <a href="https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd">Redux devTools</a> can be used.</li>
+  <li>When a 500 error is returned look at the response details by using <code class="language-plaintext highlighter-rouge">var/log</code> or <code class="language-plaintext highlighter-rouge">curl</code> etc.</li>
+</ul>
+
+<h2 id="references">References</h2>
+
+<ul>
+  <li><a href="http://postd.cc/es6-cheatsheet/">ECMAScript 6</a></li>
+  <li><a href="https://github.com/airbnb/javascript">Airbnb JavaScript Styleguide</a></li>
+  <li><a href="https://facebook.github.io/react/">React</a></li>
+  <li><a href="http://redux.js.org/">Redux</a></li>
+  <li><a href="https://github.com/reactjs/redux">Redux github</a></li>
+  <li><a href="https://github.com/gaearon/redux-devtools">Redux devtools</a></li>
+  <li><a href="http://karma-runner.github.io/1.0/index.html">Karma test runner</a></li>
+  <li><a href="https://mochajs.org/">Mocha test framework</a></li>
+  <li><a href="http://chaijs.com/">Chai assertion library</a></li>
+  <li><a href="https://yarnpkg.com/">Yarn package manager</a></li>
+  <li><a href="https://webpack.js.org/">Webpack module bundler</a></li>
+</ul>
+
+<h2 id="other-view-libraries">Other view libraries</h2>
+
+<ul>
+  <li><a href="https://vuejs.org/">Vue.js</a></li>
+  <li><a href="http://handlebarsjs.com/">Handlesbar.js</a></li>
+  <li><a href="http://olado.github.io/doT/index.html">doT.js</a></li>
+  <li><a href="https://pugjs.org/api/getting-started.html">pug</a></li>
+  <li><a href="http://twitter.github.io/hogan.js/">Hogan</a> (Twitter)</li>
+  <li><a href="https://mozilla.github.io/nunjucks/">Nunjucks</a>(Mozilla)</li>
+  <li><a href="http://www.dustjs.com/">dust.js</a> (LinkedIn)</li>
+  <li><a href="http://markojs.com/">marko</a> (Ebay)</li>
+</ul>
+
+            </article>
+        </div>
+        <div id="ArticleToc" class="col-lg-2 d-none d-lg-block">
+            <nav class="nav side-bar-right"></nav>
+        </div>
+    </div>
+</main>
+<footer>
+    <div class="container d-md-flex">
+        <i class="bear-icon d-none d-lg-block"></i>
+        <small>
+            © 2011-2024 BEAR.Sunday
+        </small>
+        <ul class="navbar-nav flex-row ml-md-auto d-none d-md-flex">
+            <li>
+                <a href="https://gitter.im/bearsunday/BEAR.Sunday?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge">Gitter</a>
+            </li>
+            <li>
+                <a href="https://github.com/bearsunday/BEAR.Sunday">Github</a>
+            </li>
+            <li>
+                <a href="https://twitter.com/BEARSunday">Twitter</a>
+            </li>
+            <li>
+                <a href="https://www.facebook.com/pages/BEARSunday/110116939178462?ref=hl">Facebook</a>
+            </li>
+            <li>
+                <a href="http://koriym.github.io/">Blog (JA)</a>
+            </li>
+            <li>
+                <a href="https://github.com/bearsunday/bearsunday.github.io">PR ?</a>
+            </li>
+        </ul>
+    </div>
+</footer>
+<script src="//code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+<script>
+    window.ga = function () { ga.q.push(arguments) }; ga.q = []; ga.l = +new Date;
+    ga('create', 'UA-6074569-8', 'bearsunday.github.io'); ga('send', 'pageview');
+</script>
+<script src="https://www.google-analytics.com/analytics.js" async defer></script>
+
+<script src="/js/generate-table-of-contents/index.min.js"></script>
+<script>
+    var toc = generateTableOfContents(document.getElementById('article'));
+    var sideBarRight = $('.side-bar-right');
+    sideBarRight.append(toc);
+
+    var scrollOffset = $('body').attr('data-offset');
+    var articlePaddingTop = $('article').css('padding-top').replace('px', '');
+    sideBarRight.find('a').on('click', function (e) {
+        e.preventDefault();
+        var targetId = $(this).attr('href');
+        var targetPositionTop = $(targetId).offset().top - scrollOffset - articlePaddingTop;
+        window.scrollTo(0, targetPositionTop)
+    });
+</script>
+
+</body>
+</html>

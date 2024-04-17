@@ -1,0 +1,640 @@
+<!doctype html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Cache &#124; BEAR.Sunday</title>
+    <meta name="description" content="BEAR.Sunday is a resource orientated framework with a REST centered architecture, implementing Dependency Injection and Aspect Orientated Programming' at its core.">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/github-markdown-css/2.10.0/github-markdown.css">
+    <link rel="stylesheet" href="/css/syntax.css">
+    
+    <link rel="stylesheet" href="/css/bearsunday.css">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="apple-touch-icon" href="/icon.png">
+</head>
+<body data-page-category="Manual" data-spy="scroll" data-target="#ArticleToc" data-offset="65">
+<header>
+    <nav class="navbar navbar-expand flex-column flex-md-row bg-light">
+        <a class="navbar-brand mr-0 mr-md-2" href="/index.html"></a>
+        <div class="navbar-nav-scroll">
+            <ul class="navbar-nav flex-row">
+                <li class="nav-item">
+                    <a class="nav-link " href="/index.html">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="/manuals/1.0/en/index.html">Manual</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link " href="/contributors.html">Contributors</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/slide.html">Slide</a>
+                </li>
+            </ul>
+        </div>
+        
+        <ul class="navbar-nav ml-md-auto d-none d-md-flex language-list">
+            <li>
+                <a class="" href="/manuals/1.0/en/cache.html">En</a>
+            </li>
+            <li>
+                <a class="active" href="/manuals/1.0/ja/cache.html">Ja</a>
+            </li>
+        </ul>
+        
+    </nav>
+</header>
+
+<main class="container-fluid">
+    <div class="row flex-xl-nowrap">
+        <div class="col-md-3 col-lg-2">
+            <div class="side-bar">
+                <nav class="navbar navbar-expand-md navbar-light">
+    <div class="navigation-header">
+        <div class="ml-auto d-sm-block d-md-none">
+            <ul class="navbar-nav language-list">
+                <li>
+                    <a class="" href="/manuals/1.0/en/cache.html">En</a>
+                </li>
+                <li>
+                    <a class="active" href="/manuals/1.0/ja/cache.html">Ja</a>
+                </li>
+            </ul>
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#Navber" aria-controls="Navber" aria-expanded="false" aria-label="ナビゲーションの切替">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+    </div>
+    <div class="collapse navbar-collapse" id="Navber">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/index.html">イントロダクション</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/version.html">バージョン</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/quick-start.html">クイックスタート</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/tutorial.html">チュートリアル</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/tutorial2.html">チュートリアル 2</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/package.html">パッケージ</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/application.html">アプリケーション</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/module.html">モジュール</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/di.html">DI</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/aop.html">AOP</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/resource.html">リソース</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/resource_param.html">・パラメーター</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/resource_link.html">・リンク</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/resource_renderer.html">・レンダリングと転送</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/router.html">ルーター</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/production.html">プロダクション</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/ja/import.html">インポート</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/database.html">データベース</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/html.html">HTML</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/validation.html">バリデーション</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/form.html">フォーム</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/content-negotiation.html">コンテントネゴシエーション</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/hypermedia-api.html">ハイパーメディア API</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/psr7.html">リクエスト / PSR-7</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/js-ui.html">JavaScript UI</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/stream.html">ストリーム出力</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/cache.html">キャッシュ</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/swoole.html">Swoole</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/coding-guide.html">コーディングガイド</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/types.html">タイプ</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/test.html">テスト</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/examples.html">サンプル</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/upgrade/injector.html">アップグレード</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/attribute.html">アトリビュート</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/apidoc.html">API Doc</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/1page.html">1 Page</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+            </div>
+        </div>
+        <div class="col-md-9 col-lg-8">
+            <article id="article" class="markdown-body">
+                <h1 id="cache">Cache</h1>
+
+<blockquote>
+  <p>There are only two hard things in Computer Science: cache invalidation and naming things.</p>
+
+  <p>– Phil Karlton</p>
+</blockquote>
+
+<h2 id="概要">概要</h2>
+
+<p>優れたキャッシュシステムはユーザー体験の本質的な質を向上させ、資源利用コストと環境負荷を下げます。
+BEAR.Sundayは従来のTTLによる単純なキャッシュに加えて、以下のキャッシュ機能をサポートします。</p>
+
+<ul>
+  <li>イベント駆動のキャッシュ無効化</li>
+  <li>キャッシュの依存解決</li>
+  <li>ドーナッツキャッシュとドーナッツの穴キャッシュ</li>
+  <li>CDNコントロール</li>
+  <li>条件付きリクエスト</li>
+</ul>
+
+<h3 id="分散キャッシュフレームワーク">分散キャッシュフレームワーク</h3>
+
+<p>REST制約に従った分散キャッシュシステムは、計算資源だけでなくネットワーク資源も節約します。</p>
+
+<p>PHPが直接扱うRedisやAPCなどの<strong>サーバーサイドキャッシュ</strong>、コンテンツ配信ネットワーク(CDN)として知られる<strong>共有キャッシュ</strong>、WebブラウザやAPIクライアントでキャッシュされる<strong>クライアントサイドキャッシュ</strong>、BEAR.SundayはこれらのキャッシュとモダンCDNを統合したキャッシングフレームワークを提供します。</p>
+
+<p><img src="https://user-images.githubusercontent.com/529021/137062427-c733c832-0631-4a43-a6ee-4204e6be007c.png" alt="distributed cache" /></p>
+
+<h2 id="タグベースでのキャッシュ無効化">タグベースでのキャッシュ無効化</h2>
+
+<p><img width="369" alt="dependency graph 2021-10-19 21 38 02" src="https://user-images.githubusercontent.com/529021/137910748-b6e95839-eeb7-4ade-a564-3cdcd5fdc09e.png" /></p>
+
+<p>コンテンツキャッシュには依存性の問題があります。コンテンツAがコンテンツBに依存し、BがCに依存している場合、Cが更新されるとCのキャッシュとETagだけでなく、Cに依存するBのキャッシュとETag、Bに依存するAのキャッシュとETagも更新されなければなりません。</p>
+
+<p>BEAR.Sundayはそれぞれのリソースが依存リソースのURIをタグとして保持する事でこの問題を解決します。<code class="language-plaintext highlighter-rouge">#[Embed]</code>で埋め込まれたリソースに変更があると、関係する全てのリソースのキャッシュとETagが無効化され、次のリクエストのためにキャッシュの再生性が行われます。</p>
+
+<h2 id="ドーナッツキャッシュ">ドーナッツキャッシュ</h2>
+
+<p><img width="200" alt="donut caching" src="https://user-images.githubusercontent.com/529021/137097856-f9428918-5b76-4c0e-8cea-2472c15d82e9.png" /></p>
+
+<p>ドーナツキャッシュはキャッシュの最適化のための部分キャッシュ技術の１つです。コンテンツをキャッシュ可能な箇所とそうでない箇所に分けて合成します。</p>
+
+<p>例えば”<code class="language-plaintext highlighter-rouge">Welcome to $name</code>“というキャッシュできないリソースが含まれるコンテンツを考えてみてください。キャッシュできない(do-not cache)部分と、その他のキャッシュ可能な部分と合成して出力します。</p>
+
+<p><img width="557" alt="image" src="https://user-images.githubusercontent.com/529021/139617102-1f7f436c-a1f4-4c6c-b90b-de24491e4c8c.png" /></p>
+
+<p>この場合コンテンツ全体としては動的なので、ドーナッツ全体はキャッシュされません。そのためETagも出力されません。</p>
+
+<h2 id="ドーナッツの穴キャッシュ">ドーナッツの穴キャッシュ</h2>
+
+<p><img width="544" alt="image" src="https://user-images.githubusercontent.com/529021/139617571-31aea99a-533f-4b95-b3f3-6c613407d377.png" /></p>
+
+<p>ドーナッツの穴部分がキャッシュ可能の時もドーナッツキャッシュと同じように扱えます。</p>
+
+<p>上記の例では、1時間に一度変更される天気予報のリソースがキャッシュされニュースリソースに含まれます。この場合、ドーナツ全体（ニュース）としてのコンテンツは静的なので全体もキャッシュされETagも付与されます。</p>
+
+<p>この時にキャッシュの依存性が発生します。 ドーナッツの穴部分のコンテンツが更新された時に、キャッシュされたドーナッツ全体も再生成される必要があります。</p>
+
+<p>素晴らしい事にこの依存解決は自動で行われます。その時に計算資源を最小化するためにドーナツ部分の計算は再利用されます。穴の部分（天気リソース）が更新されると全体のコンテンツのキャッシュとETagも自動で更新されます。</p>
+
+<h3 id="リカーシブドーナッツ">リカーシブ・ドーナッツ</h3>
+
+<p><img width="191" alt="recursive donut 2021-10-19 21 27 06" src="https://user-images.githubusercontent.com/529021/137909083-2c5176f7-edb7-422b-bccc-1db90460fc15.png" /></p>
+
+<p>ドーナッツ構造は再起され適用されます。
+例えば、AがBを含みBがCを含むコンテンツのCが変更された時に、変更されたCの部分を除いてAのキャッシュとBのキャッシュは再利用されます。AとBのキャッシュ、ETagは再生成されますが、A、Bのコンテンツ取得のためのDBアクセスやビューのレンダリングは行われません。
+例えば、AがBを含み、BがCを含むコンテンツの場合に、Cが変更された時に、変更されたCの部分を除いてAのキャッシュとBのキャッシュは再利用されます。AやBのコンテンツ取得のためのDBアクセスやビューのレンダリングは行われません。新しく部分合成されたAとBのキャッシュ、ETagは再生成されます。</p>
+
+<p>最適化された構造の部分キャッシュが、最小のコストでコンテンツ再生成を行います。クライアントはコンテンツのキャッシュ構造について知る必要がありません。</p>
+
+<h2 id="イベントドリブン型コンテンツ">イベントドリブン型コンテンツ</h2>
+
+<p>従来、CDNはアプリケーションロジックを必要とするコンテンツは「動的」であり、したがってCDNではキャッシュはできないと考えられてきました。しかしFastlyやAkamaiなどの一部のCDNは即時または数秒以内でのタグベースでのキャッシュ無効化が可能になり、<a href="https://www.fastly.com/blog/leveraging-your-cdn-cache-uncacheable-content">この考えは過去のもの</a>になろうとしています。</p>
+
+<p>BEAR.Sundayの依存解決はサーバーサイドだけでなく共有キャッシュでも行われます。AOPが変更を検知し共有キャッシュにPURGEリクエストを行うことで、サーバーサイドと同じように共有キャッシュ上の関連キャッシュの無効化が行われます。</p>
+
+<h2 id="条件付きリクエスト">条件付きリクエスト</h2>
+
+<p><img width="468" alt="conditional request" src="https://user-images.githubusercontent.com/529021/137151061-8d7a5605-3aa3-494c-91c5-c1deddd987dd.png" /></p>
+
+<p>コンテンツの変更はAOPで管理され、コンテンツのエンティティタグ(ETag)は自動で更新されます。ETagを使ったHTTPの条件付きリクエストは計算資源の利用を最小化するだけでなく、<code class="language-plaintext highlighter-rouge">304 Not Modified</code>を返すだけの応答はネットワーク資源の利用も最小化します。</p>
+
+<h1 id="利用法">利用法</h1>
+
+<p>キャッシュ対象のクラスにドーナッツキャッシュの場合（埋め込みコンテンツがキャッシュ不可能な場合）は<code class="language-plaintext highlighter-rouge">#[DonutCache]</code>、それ以外の場合は<code class="language-plaintext highlighter-rouge">#[CacheableResponse]</code>とアトリビュートを付与します。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">use</span> <span class="nc">BEAR\RepositoryModule\Annotation\CacheableResponse</span><span class="p">;</span>
+
+<span class="c1">#[CacheableResponse]</span>
+<span class="kd">class</span> <span class="nc">BlogPosting</span> <span class="kd">extends</span> <span class="nc">ResourceObject</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="nv">$headers</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="nc">RequestHeader</span><span class="o">::</span><span class="no">CACHE_CONTROL</span> <span class="o">=&gt;</span> <span class="nc">CacheControl</span><span class="o">::</span><span class="no">NO_CACHE</span>
+    <span class="p">];</span>
+
+    <span class="c1">#[Embed(rel: "comment", src: "page://self/html/comment")]</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onGet</span><span class="p">(</span><span class="kt">int</span> <span class="nv">$id</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span> <span class="kt">static</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">body</span><span class="p">[</span><span class="s1">'article'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'hello world'</span><span class="p">;</span>
+
+        <span class="k">return</span> <span class="nv">$this</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onDelete</span><span class="p">(</span><span class="kt">int</span> <span class="nv">$id</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span> <span class="kt">static</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="nv">$this</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>キャッシュ対象メソッドを選択したい場合はクラスに属性を指定しないで、メソッドに指定します。その場合はキャッシュ変更メソッドに<code class="language-plaintext highlighter-rouge">#[RefreshCache]</code>という属性を付与します。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">Todo</span> <span class="kd">extends</span> <span class="nc">ResourceObject</span>
+<span class="p">{</span>
+    <span class="c1">#[CacheableResponse]</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onPut</span><span class="p">(</span><span class="kt">int</span> <span class="nv">$id</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="kt">string</span> <span class="nv">$todo</span><span class="p">):</span> <span class="kt">static</span>
+    <span class="p">{</span>
+    <span class="p">}</span>
+
+    <span class="c1">#[RefreshCache]</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onDelete</span><span class="p">(</span><span class="kt">int</span> <span class="nv">$id</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span> <span class="kt">static</span>
+    <span class="p">{</span>
+    <span class="p">}</span>	
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>どちらかの方法でアトリビュートを付与すると、概要で紹介した全ての機能が適用されます。
+イベントドリブン型コンテンツを想定してデフォルトでは時間(TTL)によるキャッシュの無効化は行われません</p>
+
+<p><code class="language-plaintext highlighter-rouge">#[DonutCache]</code>の場合はコンテンツ全体はキャッシュされず、<code class="language-plaintext highlighter-rouge"> #[CacheableResponse]</code>の場合はされる事に注意してください。</p>
+
+<h2 id="ttl">TTL</h2>
+
+<p>TTLの指定は<code class="language-plaintext highlighter-rouge">DonutRepositoryInterface::put()</code>で行います。
+<code class="language-plaintext highlighter-rouge">ttl</code>はドーナツの穴以外のキャッシュ時間、<code class="language-plaintext highlighter-rouge">sMaxAge</code>はCDNのキャッシュ時間です。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">use</span> <span class="nc">BEAR\RepositoryModule\Annotation\CacheableResponse</span><span class="p">;</span>
+
+<span class="c1">#[CacheableResponse]</span>
+<span class="kd">class</span> <span class="nc">BlogPosting</span> <span class="kd">extends</span> <span class="nc">ResourceObject</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">__construct</span><span class="p">(</span><span class="kt">private</span> <span class="nc">DonutRepositoryInterface</span> <span class="nv">$repository</span><span class="p">)</span>
+    <span class="p">{}</span>
+
+    <span class="c1">#[Embed(rel: "comment", src: "page://self/html/comment")]</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onGet</span><span class="p">():</span> <span class="kt">static</span>
+    <span class="p">{</span>
+        <span class="c1">// process ...</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">repository</span><span class="o">-&gt;</span><span class="nf">put</span><span class="p">(</span><span class="nv">$this</span><span class="p">,</span> <span class="n">ttl</span><span class="o">:</span><span class="mi">10</span><span class="p">,</span> <span class="n">sMaxAge</span><span class="o">:</span><span class="mi">100</span><span class="p">);</span><span class="err">　</span>
+
+        <span class="k">return</span> <span class="nv">$this</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+<h3 id="ttlの既定値">TTLの既定値</h3>
+
+<p>イベントドリブン型コンテンツでは、コンテンツが変更されたらキャッシュにすぐに反映されなければなりません。そのため、既定値のTTLはCDNのモジュールのインストールによって変わります。CDNがタグベースでのキャッシュ化を無効化をサポートしていればTTLは無期限（1年間）で、サポートの無い場合には10秒です。</p>
+
+<p>キャッシュ反映時間は、Fastlyなら即時、Akamaiなら数秒、それ以外なら10秒が期待される時間です。</p>
+
+<p>カスタマイズするには<code class="language-plaintext highlighter-rouge">CdnCacheControlHeader</code>を参考に<code class="language-plaintext highlighter-rouge">CdnCacheControlHeaderSetterInterface</code>を実装して束縛します。</p>
+
+<h2 id="キャッシュ無効化">キャッシュ無効化</h2>
+
+<p>手動でキャッシュを無効化するには<code class="language-plaintext highlighter-rouge">DonutRepositoryInterface</code>のメソッドを用います。
+指定されたキャッシュだけでなく、そのETag、依存にしている他のリソースののキャッシュとそのETagがサーバーサイド、及び可能な場合はCDN上のキャッシュも共に無効化されます。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">interface</span> <span class="nc">DonutRepositoryInterface</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">purge</span><span class="p">(</span><span class="kt">AbstractUri</span> <span class="nv">$uri</span><span class="p">):</span> <span class="kt">void</span><span class="p">;</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">invalidateTags</span><span class="p">(</span><span class="kt">array</span> <span class="nv">$tags</span><span class="p">):</span> <span class="kt">void</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="uriによる無効化">URIによる無効化</h3>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// example</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="n">repository</span><span class="o">-&gt;</span><span class="nf">purge</span><span class="p">(</span><span class="k">new</span> <span class="nc">Uri</span><span class="p">(</span><span class="s1">'app://self/blog/comment'</span><span class="p">));</span>
+</code></pre></div></div>
+
+<h3 id="タグによる無効化">タグによる無効化</h3>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$this</span><span class="o">-&gt;</span><span class="n">repository</span><span class="o">-&gt;</span><span class="nf">invalidateTags</span><span class="p">([</span><span class="s1">'template_a'</span><span class="p">,</span> <span class="s1">'campaign_b'</span><span class="p">]);</span>
+</code></pre></div></div>
+<h3 id="cdnでタグの無効化">CDNでタグの無効化</h3>
+
+<p>CDNでタグベースでのキャッシュ無効化を有効にするためには<code class="language-plaintext highlighter-rouge">PurgerInterface</code>を実装して束縛する必要があります。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">use</span> <span class="nc">BEAR\QueryRepository\PurgerInterface</span><span class="p">;</span>
+
+<span class="kd">interface</span> <span class="nc">PurgerInterface</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">__invoke</span><span class="p">(</span><span class="kt">string</span> <span class="nv">$tag</span><span class="p">):</span> <span class="kt">void</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="依存タグの指定">依存タグの指定</h3>
+
+<p>PURGE用のキーを指定するためには<code class="language-plaintext highlighter-rouge">SURROGATE_KEY</code>ヘッダーで指定します。複数文字列の時はスペースをセパレータに使います。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">use</span> <span class="nc">BEAR\QueryRepository\Header</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">Foo</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="nv">$headers</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="nc">Header</span><span class="o">::</span><span class="no">SURROGATE_KEY</span> <span class="o">=&gt;</span> <span class="s1">'template_a campaign_b'</span>
+    <span class="p">];</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">template_a</code>または<code class="language-plaintext highlighter-rouge">campaign_b</code>のタグによるキャッシュの無効化が行われた場合、FooのキャッシュとFooのETagはサーバーサイド、CDN共に無効になります。</p>
+
+<h3 id="リソースの依存">リソースの依存</h3>
+
+<p><code class="language-plaintext highlighter-rouge">UriTagInterface</code>を使ってURIを依存タグ文字列に変換します。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">public</span> <span class="k">function</span> <span class="n">__construct</span><span class="p">(</span><span class="kt">private</span> <span class="nc">UriTagInterface</span> <span class="nv">$uriTag</span><span class="p">)</span>
+<span class="p">{}</span>
+</code></pre></div></div>
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$this</span><span class="o">-&gt;</span><span class="n">headers</span><span class="p">[</span><span class="nc">Header</span><span class="o">::</span><span class="no">SURROGATE_KEY</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="n">uriTag</span><span class="p">)(</span><span class="k">new</span> <span class="nc">Uri</span><span class="p">(</span><span class="s1">'app://self/foo'</span><span class="p">));</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">app://self/foo</code>に変更があった場合にこのキャッシュはサーバーサイド、CDN共に無効化されます。</p>
+
+<h3 id="連想配列をリソースの依存に">連想配列をリソースの依存に</h3>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// bodyの内容</span>
+<span class="p">[</span>
+    <span class="p">[</span><span class="s1">'id'</span> <span class="o">=&gt;</span> <span class="s1">'1'</span><span class="p">,</span> <span class="s1">'name'</span> <span class="o">=&gt;</span> <span class="s1">'a'</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">'id'</span> <span class="o">=&gt;</span> <span class="s1">'2'</span><span class="p">,</span> <span class="s1">'name'</span> <span class="o">=&gt;</span> <span class="s1">'b'</span><span class="p">],</span>
+<span class="p">]</span>
+</code></pre></div></div>
+<p>上記のような<code class="language-plaintext highlighter-rouge">body</code>連想配列から、依存するURIタグリストを生成する場合は<code class="language-plaintext highlighter-rouge">fromAssoc()</code>メソッドでURIテンプレートを指定します。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$this</span><span class="o">-&gt;</span><span class="n">headers</span><span class="p">[</span><span class="nc">Header</span><span class="o">::</span><span class="no">SURROGATE_KEY</span><span class="p">]</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">uriTag</span><span class="o">-&gt;</span><span class="nf">fromAssoc</span><span class="p">(</span>
+    <span class="n">uriTemplate</span><span class="o">:</span> <span class="s1">'app://self/item{?id}'</span><span class="p">,</span>
+    <span class="n">assoc</span><span class="o">:</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">body</span>
+<span class="p">);</span>
+</code></pre></div></div>
+
+<p>上記の場合、<code class="language-plaintext highlighter-rouge">app://self/item?id=1</code>及び<code class="language-plaintext highlighter-rouge">app://self/item?id=2</code>に変更があった場合に、このキャッシュはサーバーサイド、CDN共に無効化されます。</p>
+
+<h2 id="cdn">CDN</h2>
+
+<p>特定CDN対応のモジュールをインストールするとベンダー固有のヘッダーが出力されます。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">install</span><span class="p">(</span><span class="k">new</span> <span class="nc">FastlyModule</span><span class="p">())</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">install</span><span class="p">(</span><span class="k">new</span> <span class="nc">AkamaiModule</span><span class="p">())</span>
+</code></pre></div></div>
+
+<h2 id="マルチcdn">マルチCDN</h2>
+
+<p>CDNを多段構成にして、役割に応じたTTLを設定することもできます。例えばこの図では上流に多機能なCDNを配置して、下流にはコンベンショナルなCDNを配置しています。コンテンツのインバリデーションなどは上流のCDNに対して行い、下流のCDNはそれを利用するようにします。</p>
+
+<p><img width="344" alt="multi cdn diagram" src="https://user-images.githubusercontent.com/529021/137098809-ec949a15-8efb-4d03-9808-3be15523ade7.png" /></p>
+
+<h1 id="レスポンスヘッダー">レスポンスヘッダー</h1>
+
+<p>CDNのキャッシュコントロールについてはBEAR.Sundayが自動で行いCDN用のヘッダーを出力します。クライアントのキャッシュコントロールはコンテンツに応じてResourceObjectの<code class="language-plaintext highlighter-rouge">$header</code>に記述します。</p>
+
+<p>セキュリティやメンテナンスの観点からこのセクションは重要です。
+全てのResourceObjectで<code class="language-plaintext highlighter-rouge">Cache-Control</code>を指定するようにしましょう。</p>
+
+<h3 id="キャッシュ不可">キャッシュ不可</h3>
+
+<p>キャッシュができないコンテンツは必ず指定しましょう。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">ResponseHeader</span><span class="o">::</span><span class="no">CACHE_CONTROL</span> <span class="o">=&gt;</span> <span class="nc">CacheControl</span><span class="o">::</span><span class="no">NO_STORE</span>
+</code></pre></div></div>
+
+<h3 id="条件付きリクエスト-1">条件付きリクエスト</h3>
+
+<p>サーバーにコンテンツ変更がないかを確認してから、キャッシュを利用します。サーバーサイドのコンテンツの変更は検知され反映されます。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">ResponseHeader</span><span class="o">::</span><span class="no">CACHE_CONTROL</span> <span class="o">=&gt;</span> <span class="nc">CacheControl</span><span class="o">::</span><span class="no">NO_CACHE</span>
+</code></pre></div></div>
+
+<h3 id="クライアントキャッシュ時間の指定">クライアントキャッシュ時間の指定</h3>
+
+<p>クライントでキャッシュされます。最も効率的なキャッシュですが、サーバーサイドでコンテンツが変更されても指定した時間に反映されません。</p>
+
+<p>またブラウザのリロード動作ではこのキャッシュは利用されません。<code class="language-plaintext highlighter-rouge">&lt;a&gt;</code>タグで遷移、またはURL入力した場合にキャッシュが利用されます。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">ResponseHeader</span><span class="o">::</span><span class="no">CACHE_CONTROL</span> <span class="o">=&gt;</span> <span class="s1">'max-age=60'</span>
+</code></pre></div></div>
+
+<p>レスポンス速度を重視する場合には、SWRの指定も検討しましょう。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">ResponseHeader</span><span class="o">::</span><span class="no">CACHE_CONTROL</span> <span class="o">=&gt;</span> <span class="s1">'max-age=30 stale-while-revalidate=10'</span>
+</code></pre></div></div>
+
+<p>この場合、max-ageの30秒を超えた時にオリジンサーバーからフレッシュなレスポンス取得が完了するまで、SWRで指定された最大10秒間はそれまでの古いキャッシュ(stale)レスポンスを返します。つまりキャッシュが更新されるのは最後のキャッシュ更新から30秒から40秒間の間のいずれかになりますが、どのリクエストもキャッシュからの応答になり高速です。</p>
+
+<h4 id="rfc7234対応クライアント">RFC7234対応クライアント</h4>
+
+<p>APIでクライアントキャッシュを利用する場合にはRFC7234対応APIクライアントを利用します。</p>
+
+<ul>
+  <li>iOS <a href="https://nshipster.com/nsurlcache/">NSURLCache</a></li>
+  <li>Android <a href="https://developer.android.com/reference/android/net/http/HttpResponseCache">HttpResponseCache</a></li>
+  <li>PHP <a href="https://github.com/Kevinrob/guzzle-cache-middleware">guzzle-cache-middleware</a></li>
+  <li>JavaScript(Node) <a href="https://www.npmjs.com/package/cacheable-request">cacheable-request</a></li>
+  <li>Go <a href="https://github.com/lox/httpcache">lox/httpcache</a></li>
+  <li>Ruby <a href="https://github.com/plataformatec/faraday-http-cache">faraday-http-cache</a></li>
+  <li>Python <a href="https://pypi.org/project/requests-cache/">requests-cache</a></li>
+</ul>
+
+<h3 id="プライベート">プライベート</h3>
+
+<p>キャッシュを他のクライアントと共有しない時には<code class="language-plaintext highlighter-rouge">private</code>を指定します。クライアントサイドのみキャッシュ保存されます。この場合サーバーサイドではキャッシュ指定をしないようにします。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">ResponseHeader</span><span class="o">::</span><span class="no">CACHE_CONTROL</span> <span class="o">=&gt;</span> <span class="s1">'private, max-age=30'</span>
+</code></pre></div></div>
+
+<blockquote>
+  <p>共用キャッシュを利用する場合でもほとんどの場合において<code class="language-plaintext highlighter-rouge">public</code>を指定する必要はありません。</p>
+</blockquote>
+
+<h2 id="キャッシュ設計">キャッシュ設計</h2>
+
+<p>API（またはコンテンツ）は<strong>情報API</strong> (Information API)、<strong>計算API</strong> (Computation API)は２つに分けることができます。計算APIは再現が難しく真に動的でキャッシュに不適なコンテンツです。一方の情報APIはDBから読み出され、PHPで加工されたとしても本質的には静的なコンテンツのAPIです。</p>
+
+<p>適切なキャシュを適用するためにコンテンツを分析します。</p>
+
+<ul>
+  <li>情報APIか計算APIか</li>
+  <li>依存関係は</li>
+  <li>内包関係は</li>
+  <li>無効化はイベントがトリガーか、それともTTLか</li>
+  <li>イベントはアプリケーションが検知可能か、監視が必要か</li>
+  <li>TTLは予測可能か不可能か</li>
+</ul>
+
+<p>キャッシュ設計をアプリケーション設計プロセスの一部にして、仕様にする事も検討しましょう。 ライフサイクルを通してプロジェクトの安全性にも寄与するはずです。</p>
+
+<h3 id="アダプティブ-ttl">アダプティブ TTL</h3>
+
+<p>コンテンツの生存期間が予測可能で、その期間にイベントによる更新が行われない時はそれをクライントやCDNに正しく伝えます。例えば株価のAPIを扱う時、現在が金曜日の夜だとすると月曜の取引開始時間までは情報更新が行われない事が分かっています。その時間までの秒数を計算してTTLとして指定し、取引時間の時には適切なTTLを指定します。</p>
+
+<p>クライアントは更新がないと分かっているリソースにリクエストする必要はありません。</p>
+
+<h2 id="cacheable">#[Cacheable]</h2>
+
+<p>従来の#[Cacheable]によるTTLキャッシュもサポートされます。</p>
+
+<p>例）サーバーサイドで30秒キャシュ、クライアントでも30秒キャシュ。</p>
+
+<p>サーバーサイドで指定してるのでクライアントサイドでも同じ秒数でキャッシュされます。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">use</span> <span class="nc">BEAR\RepositoryModule\Annotation\Cacheable</span><span class="p">;</span>
+
+<span class="c1">#[Cacheable(expirySecond: 30)]</span>
+<span class="kd">class</span> <span class="nc">CachedResource</span> <span class="kd">extends</span> <span class="nc">ResourceObject</span>
+<span class="p">{</span>
+</code></pre></div></div>
+
+<p>例）指定した有効期限(<code class="language-plaintext highlighter-rouge">$body['expiry_at']</code>の日付)までサーバー、クライアント供にキャッシュ</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">use</span> <span class="nc">BEAR\RepositoryModule\Annotation\Cacheable</span><span class="p">;</span>
+
+<span class="c1">#[Cacheable(expiryAt: 'expiry_at')]</span>
+<span class="kd">class</span> <span class="nc">CachedResource</span> <span class="kd">extends</span> <span class="nc">ResourceObject</span>
+<span class="p">{</span>
+</code></pre></div></div>
+
+<p>その他は<a href="https://bearsunday.github.io/manuals/1.0/ja/http-cache.html">HTTPキャッシュ</a>ページをご覧ください。</p>
+
+<h2 id="結論">結論</h2>
+
+<p>Webのコンテンツは情報（データ）型のものと計算（プロセス）型のものがあります。前者は本質的には静的ですが、コンテンツの変更や依存性の管理の問題で完全に静的コンテンツとして扱うのが難しく、コンテンツの変更が発生していないのにTTLによるキャッシュの無効化が行われていました。 BEAR.Sundayのキャッシングフレームワークは情報型のコンテンツを可能な限り静的に扱い、キャッシュの力を最大化します。</p>
+
+<h2 id="用語">用語</h2>
+
+<ul>
+  <li><a href="https://developer.mozilla.org/ja/docs/Web/HTTP/Conditional_requests">条件付きリクエスト</a></li>
+  <li><a href="https://developer.mozilla.org/ja/docs/Web/HTTP/Headers/ETag">ETag (バージョン識別子)</a></li>
+  <li><a href="https://www.fastly.com/blog/rise-event-driven-content-or-how-cache-more-edge">イベントドリブン型コンテンツ</a></li>
+  <li><a href="https://www.infoq.com/jp/news/2011/12/MvcDonutCaching/">ドーナッツキャッシュ / 部分キャッシュ</a></li>
+  <li><a href="https://docs.fastly.com/ja/guides/getting-started-with-surrogate-keys">サロゲートキー / タグベースの無効化</a></li>
+  <li>ヘッダー
+    <ul>
+      <li><a href="https://developer.mozilla.org/ja/docs/Web/HTTP/Headers/Cache-Control">Cache-Control</a></li>
+      <li><a href="https://blog.cloudflare.com/cdn-cache-control/">CDN-Cache-Control</a></li>
+      <li><a href="https://developer.mozilla.org/ja/docs/Web/HTTP/Headers/Vary">Vary</a></li>
+      <li><a href="https://www.infoq.com/jp/news/2020/12/ux-stale-while-revalidate/">Stale-While-Revalidate (SWR)</a></li>
+    </ul>
+  </li>
+</ul>
+
+            </article>
+        </div>
+        <div id="ArticleToc" class="col-lg-2 d-none d-lg-block">
+            <nav class="nav side-bar-right"></nav>
+        </div>
+    </div>
+</main>
+<footer>
+    <div class="container d-md-flex">
+        <i class="bear-icon d-none d-lg-block"></i>
+        <small>
+            © 2011-2024 BEAR.Sunday
+        </small>
+        <ul class="navbar-nav flex-row ml-md-auto d-none d-md-flex">
+            <li>
+                <a href="https://gitter.im/bearsunday/BEAR.Sunday?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge">Gitter</a>
+            </li>
+            <li>
+                <a href="https://github.com/bearsunday/BEAR.Sunday">Github</a>
+            </li>
+            <li>
+                <a href="https://twitter.com/BEARSunday">Twitter</a>
+            </li>
+            <li>
+                <a href="https://www.facebook.com/pages/BEARSunday/110116939178462?ref=hl">Facebook</a>
+            </li>
+            <li>
+                <a href="http://koriym.github.io/">Blog (JA)</a>
+            </li>
+            <li>
+                <a href="https://github.com/bearsunday/bearsunday.github.io">PR ?</a>
+            </li>
+        </ul>
+    </div>
+</footer>
+<script src="//code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+<script>
+    window.ga = function () { ga.q.push(arguments) }; ga.q = []; ga.l = +new Date;
+    ga('create', 'UA-6074569-8', 'bearsunday.github.io'); ga('send', 'pageview');
+</script>
+<script src="https://www.google-analytics.com/analytics.js" async defer></script>
+
+<script src="/js/generate-table-of-contents/index.min.js"></script>
+<script>
+    var toc = generateTableOfContents(document.getElementById('article'));
+    var sideBarRight = $('.side-bar-right');
+    sideBarRight.append(toc);
+
+    var scrollOffset = $('body').attr('data-offset');
+    var articlePaddingTop = $('article').css('padding-top').replace('px', '');
+    sideBarRight.find('a').on('click', function (e) {
+        e.preventDefault();
+        var targetId = $(this).attr('href');
+        var targetPositionTop = $(targetId).offset().top - scrollOffset - articlePaddingTop;
+        window.scrollTo(0, targetPositionTop)
+    });
+</script>
+
+</body>
+</html>
+

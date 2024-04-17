@@ -1,0 +1,759 @@
+<!doctype html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>クイックAPI &#124; BEAR.Sunday</title>
+    <meta name="description" content="BEAR.Sunday is a resource orientated framework with a REST centered architecture, implementing Dependency Injection and Aspect Orientated Programming' at its core.">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/github-markdown-css/2.10.0/github-markdown.css">
+    <link rel="stylesheet" href="/css/syntax.css">
+    
+    <link rel="stylesheet" href="/css/bearsunday.css">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="apple-touch-icon" href="/icon.png">
+</head>
+<body data-page-category="Manual" data-spy="scroll" data-target="#ArticleToc" data-offset="65">
+<header>
+    <nav class="navbar navbar-expand flex-column flex-md-row bg-light">
+        <a class="navbar-brand mr-0 mr-md-2" href="/index.html"></a>
+        <div class="navbar-nav-scroll">
+            <ul class="navbar-nav flex-row">
+                <li class="nav-item">
+                    <a class="nav-link " href="/index.html">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="/manuals/1.0/en/index.html">Manual</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link " href="/contributors.html">Contributors</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/slide.html">Slide</a>
+                </li>
+            </ul>
+        </div>
+        
+        <ul class="navbar-nav ml-md-auto d-none d-md-flex language-list">
+            <li>
+                <a class="" href="/manuals/1.0/en/quick-api.html">En</a>
+            </li>
+            <li>
+                <a class="active" href="/manuals/1.0/ja/quick-api.html">Ja</a>
+            </li>
+        </ul>
+        
+    </nav>
+</header>
+
+<main class="container-fluid">
+    <div class="row flex-xl-nowrap">
+        <div class="col-md-3 col-lg-2">
+            <div class="side-bar">
+                <nav class="navbar navbar-expand-md navbar-light">
+    <div class="navigation-header">
+        <div class="ml-auto d-sm-block d-md-none">
+            <ul class="navbar-nav language-list">
+                <li>
+                    <a class="" href="/manuals/1.0/en/quick-api.html">En</a>
+                </li>
+                <li>
+                    <a class="active" href="/manuals/1.0/ja/quick-api.html">Ja</a>
+                </li>
+            </ul>
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#Navber" aria-controls="Navber" aria-expanded="false" aria-label="ナビゲーションの切替">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+    </div>
+    <div class="collapse navbar-collapse" id="Navber">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/index.html">イントロダクション</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/version.html">バージョン</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/quick-start.html">クイックスタート</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/tutorial.html">チュートリアル</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/tutorial2.html">チュートリアル 2</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/package.html">パッケージ</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/application.html">アプリケーション</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/module.html">モジュール</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/di.html">DI</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/aop.html">AOP</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/resource.html">リソース</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/resource_param.html">・パラメーター</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/resource_link.html">・リンク</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/resource_renderer.html">・レンダリングと転送</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/router.html">ルーター</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/production.html">プロダクション</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/ja/import.html">インポート</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/database.html">データベース</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/html.html">HTML</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/validation.html">バリデーション</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/form.html">フォーム</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/content-negotiation.html">コンテントネゴシエーション</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/hypermedia-api.html">ハイパーメディア API</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/psr7.html">リクエスト / PSR-7</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/js-ui.html">JavaScript UI</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/stream.html">ストリーム出力</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/cache.html">キャッシュ</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/swoole.html">Swoole</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/coding-guide.html">コーディングガイド</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/types.html">タイプ</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/test.html">テスト</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/examples.html">サンプル</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/upgrade/injector.html">アップグレード</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/attribute.html">アトリビュート</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/apidoc.html">API Doc</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/1page.html">1 Page</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+            </div>
+        </div>
+        <div class="col-md-9 col-lg-8">
+            <article id="article" class="markdown-body">
+                <h1 id="クイックapi">クイックAPI</h1>
+
+<p>このチュートリアルではデータベースを用いた<a href="https://github.com/koriym/Koriym.DbAppPackage">API用のパッケージ</a>と以下の４つのSQLファイルを使ってWeb APIを作成します。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span> <span class="n">id</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">completed</span> <span class="k">FROM</span> <span class="n">task</span><span class="p">;</span>
+<span class="k">SELECT</span> <span class="n">id</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">completed</span> <span class="k">FROM</span> <span class="n">task</span> <span class="k">WHERE</span> <span class="n">id</span> <span class="o">=</span> <span class="p">:</span><span class="n">id</span><span class="p">;</span>
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">task</span> <span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="n">completed</span><span class="p">,</span> <span class="n">created</span><span class="p">)</span> <span class="k">VALUES</span> <span class="p">(:</span><span class="n">title</span><span class="p">,</span> <span class="p">:</span><span class="n">completed</span><span class="p">,</span> <span class="p">:</span><span class="n">created</span><span class="p">);</span>
+<span class="k">UPDATE</span> <span class="n">task</span> <span class="k">SET</span> <span class="n">completed</span> <span class="o">=</span> <span class="mi">1</span> <span class="k">WHERE</span> <span class="n">id</span> <span class="o">=</span> <span class="p">:</span><span class="n">id</span><span class="p">;</span>
+</code></pre></div></div>
+
+<h1 id="インストール">インストール</h1>
+
+<p>API用プロジェクトのスケルトンをcomposerインストールします。　</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>composer create-project bear/skeleton MyVendor.Task
+</code></pre></div></div>
+
+<p>ベンダー名とパッケージ名をそれぞれ<code class="language-plaintext highlighter-rouge">MyVendor</code>、<code class="language-plaintext highlighter-rouge">Task</code>と入力します。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>What is the vendor name ?
+
+(MyVendor):
+
+What is the project name ?
+
+(MyProject):Task
+</code></pre></div></div>
+
+<h1 id="データベース">データベース</h1>
+
+<p>データベースパッケージをcomposerインストールします。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cd MyVendor.Task
+composer require koriym/db-app-package
+php vendor/koriym/db-app-package/bin/install.php
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">AppModule::configure()</code>でインストールしている<code class="language-plaintext highlighter-rouge">PackageModule</code>を<code class="language-plaintext highlighter-rouge">DbAppPackage</code>に変更します。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">AppModule</span> <span class="kd">extends</span> <span class="nc">AbstractAppModule</span>
+<span class="p">{</span>
+    <span class="cd">/**
+     * {@inheritdoc}
+     */</span>
+    <span class="k">protected</span> <span class="k">function</span> <span class="n">configure</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="c1">// ...</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">install</span><span class="p">(</span><span class="k">new</span> <span class="nc">DbAppPackage</span><span class="p">(</span><span class="nv">$_ENV</span><span class="p">[</span><span class="s1">'DB_DSN'</span><span class="p">],</span> <span class="nv">$_ENV</span><span class="p">[</span><span class="s1">'DB_USER'</span><span class="p">],</span> <span class="nv">$_ENV</span><span class="p">[</span><span class="s1">'DB_PASS'</span><span class="p">],</span> <span class="nv">$_ENV</span><span class="p">[</span><span class="s1">'DB_READ'</span><span class="p">]));</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><a href="https://github.com/koriym/Koriym.DbAppPackage"><code class="language-plaintext highlighter-rouge">DbAppPackage</code></a>は<code class="language-plaintext highlighter-rouge">PackageModule</code>に以下の特定のパッケージを追加したものです。</p>
+
+<ul>
+  <li><a href="https://github.com/auraphp/Aura.Router/tree/2.x">Aura.Router v2</a> Webルーター</li>
+  <li><a href="https://github.com/auraphp/Aura.Sql">Aura.Sql v2</a> PDOを拡張したSQLアダプター</li>
+  <li><a href="https://github.com/auraphp/Aura.SqlQuery">Aura.SqlQuery v2</a> クエリービルダー</li>
+  <li><a href="https://phinx.org/">Phinx</a> データベースマイグレーション</li>
+  <li><a href="https://github.com/koriym/Koriym.QueryLocator">Koriym.QueryLocator</a> SQLロケーター</li>
+  <li><a href="https://github.com/koriym/Koriym.DevPdoStatement">Koriym.DevPdoDtatement</a> SQLクエリー調査のための開発用PDOStatement</li>
+  <li><a href="https://github.com/koriym/Koriym.Now">Koriym.Now</a> 現在時刻</li>
+</ul>
+
+<h2 id="接続設定">接続設定</h2>
+
+<p><code class="language-plaintext highlighter-rouge">.env</code>ファイルでデータベース接続を設定します。<code class="language-plaintext highlighter-rouge">DB_DSN</code>のフォーマットは<a href="http://php.net/manual/ja/pdo.connections.php">PDO</a>です。環境に合わせて適宜変更します。</p>
+
+<p>MySQL</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>DB_DSN=mysql:host=localhost;dbname=task
+DB_USER=root
+DB_PASS=
+DB_READ=
+</code></pre></div></div>
+
+<p>sqlite</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>DB_DSN=sqlite:/tmp/task.sq3
+DB_USER=
+DB_PASS=
+DB_READ=
+</code></pre></div></div>
+
+<p>スレイブDBを利用する場合は複数のサーバーリストをカンマ区切りで<code class="language-plaintext highlighter-rouge">DB_READ</code>に設定します。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>DB_READ=slave1.example.com,slave2.example.com
+</code></pre></div></div>
+
+<h2 id="作成">作成</h2>
+
+<p>データベースを作成します。（<code class="language-plaintext highlighter-rouge">sqlite</code>の場合は必要ありません）</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>php bin/create_db.php
+</code></pre></div></div>
+
+<p><a href="http://docs.phinx.org/en/latest/">Phinx</a>でマイグレーションファイルの生成を行います。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>php vendor/bin/phinx create -c var/db/phinx.php MyNewMigration  
+</code></pre></div></div>
+
+<p>作成されたマイグレーション編集します。<a href="http://docs.phinx.org/en/latest/migrations.html" title="Phinx マニュアル: Writing Migrations">[?]</a></p>
+
+<p><code class="language-plaintext highlighter-rouge">var/db/20160222042911_my_new_migration.php</code></p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+<span class="kn">use</span> <span class="nc">Phinx\Migration\AbstractMigration</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">Phinx\Db\Adapter\MysqlAdapter</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">MyNewMigration</span> <span class="kd">extends</span> <span class="nc">AbstractMigration</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">change</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="c1">// create the table</span>
+        <span class="nv">$table</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">table</span><span class="p">(</span><span class="s1">'task'</span><span class="p">);</span>
+        <span class="nv">$table</span><span class="o">-&gt;</span><span class="nf">addColumn</span><span class="p">(</span><span class="s1">'title'</span><span class="p">,</span> <span class="s1">'string'</span><span class="p">,</span> <span class="p">[</span><span class="s1">'limit'</span> <span class="o">=&gt;</span> <span class="mi">100</span><span class="p">])</span>
+            <span class="o">-&gt;</span><span class="nf">addColumn</span><span class="p">(</span><span class="s1">'completed'</span><span class="p">,</span> <span class="s1">'text'</span><span class="p">,</span> <span class="p">[</span><span class="s1">'limit'</span> <span class="o">=&gt;</span> <span class="nc">MysqlAdapter</span><span class="o">::</span><span class="no">INT_TINY</span><span class="p">])</span>
+            <span class="o">-&gt;</span><span class="nf">addColumn</span><span class="p">(</span><span class="s1">'created'</span><span class="p">,</span> <span class="s1">'datetime'</span><span class="p">)</span>
+            <span class="o">-&gt;</span><span class="nf">create</span><span class="p">();</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>マイグレーションを実行します。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>php vendor/bin/phinx migrate -c var/db/phinx.php
+php vendor/bin/phinx migrate -c var/db/phinx.php -e test
+</code></pre></div></div>
+
+<h1 id="ルーティング">ルーティング</h1>
+
+<p><code class="language-plaintext highlighter-rouge">GET /task/1</code>Webリクエストを<code class="language-plaintext highlighter-rouge">Task::onGet($id)</code>メソッドにルートするために<code class="language-plaintext highlighter-rouge">var/conf/aura.route.php</code>
+を編集します。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cd">/** @var $router \BEAR\Package\Provide\Router\AuraRoute */</span>
+<span class="nv">$router</span><span class="o">-&gt;</span><span class="nf">route</span><span class="p">(</span><span class="s1">'/task'</span><span class="p">,</span> <span class="s1">'/task/{id}'</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">POST</code>や<code class="language-plaintext highlighter-rouge">PATCH</code>もそれぞ対応するメソッドにルートされます。</p>
+
+<h1 id="sql">SQL</h1>
+
+<p>SQLファイルを設置します。</p>
+
+<p><code class="language-plaintext highlighter-rouge">var/db/sql/task_list.sql</code></p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span> <span class="n">id</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">completed</span> <span class="k">FROM</span> <span class="n">task</span><span class="p">;</span>
+</code></pre></div></div>
+<p><code class="language-plaintext highlighter-rouge">var/db/sql/task_item.sql</code></p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span> <span class="n">id</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">completed</span> <span class="k">FROM</span> <span class="n">task</span> <span class="k">WHERE</span> <span class="n">id</span> <span class="o">=</span> <span class="p">:</span><span class="n">id</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">var/db/sql/task_insert.sql</code></p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">task</span> <span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="n">completed</span><span class="p">,</span> <span class="n">created</span><span class="p">)</span> <span class="k">VALUES</span> <span class="p">(:</span><span class="n">title</span><span class="p">,</span> <span class="p">:</span><span class="n">completed</span><span class="p">,</span> <span class="p">:</span><span class="n">created</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">var/db/sql/task_update.sql</code></p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">UPDATE</span> <span class="n">task</span> <span class="k">SET</span> <span class="n">completed</span> <span class="o">=</span> <span class="mi">1</span> <span class="k">WHERE</span> <span class="n">id</span> <span class="o">=</span> <span class="p">:</span><span class="n">id</span><span class="p">;</span>
+</code></pre></div></div>
+
+<h1 id="リソース">リソース</h1>
+
+<p>SQLを実行するリソースクラスを<code class="language-plaintext highlighter-rouge">src/Resource/App/Task.php</code>に作成します。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">declare</span><span class="p">(</span><span class="n">strict_types</span><span class="o">=</span><span class="mi">1</span><span class="p">);</span>
+
+<span class="kn">namespace</span> <span class="nn">MyVendor\Task\Resource\App</span><span class="p">;</span>
+
+<span class="kn">use</span> <span class="nc">BEAR\Resource\ResourceObject</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">Koriym\Now\NowInject</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">Koriym\QueryLocator\QueryLocatorInject</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">Ray\AuraSqlModule\AuraSqlInject</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">Task</span> <span class="kd">extends</span> <span class="nc">ResourceObject</span>
+<span class="p">{</span>
+    <span class="kn">use</span> <span class="nc">AuraSqlInject</span><span class="p">;</span>
+    <span class="kn">use</span> <span class="nc">NowInject</span><span class="p">;</span>
+    <span class="kn">use</span> <span class="nc">QueryLocatorInject</span><span class="p">;</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onGet</span><span class="p">(</span><span class="kt">string</span> <span class="nv">$id</span> <span class="o">=</span> <span class="kc">null</span><span class="p">):</span> <span class="kt">static</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">body</span> <span class="o">=</span> <span class="nv">$id</span> <span class="o">?</span>
+            <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">pdo</span><span class="o">-&gt;</span><span class="nf">fetchOne</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="n">query</span><span class="p">[</span><span class="s1">'task_item'</span><span class="p">],</span> <span class="p">[</span><span class="s1">'id'</span> <span class="o">=&gt;</span> <span class="nv">$id</span><span class="p">])</span> <span class="o">:</span>
+            <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">pdo</span><span class="o">-&gt;</span><span class="nf">fetchAssoc</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="n">query</span><span class="p">[</span><span class="s1">'task_list'</span><span class="p">]);</span>
+
+        <span class="k">return</span> <span class="nv">$this</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onPost</span><span class="p">(</span><span class="kt">string</span> <span class="nv">$title</span><span class="p">):</span> <span class="kt">static</span>
+    <span class="p">{</span>
+        <span class="nv">$params</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s1">'title'</span> <span class="o">=&gt;</span> <span class="nv">$title</span><span class="p">,</span>
+            <span class="s1">'created'</span> <span class="o">=&gt;</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">now</span><span class="p">,</span>
+            <span class="s1">'completed'</span> <span class="o">=&gt;</span> <span class="kc">false</span>
+        <span class="p">];</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">pdo</span><span class="o">-&gt;</span><span class="nf">perform</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="n">query</span><span class="p">[</span><span class="s1">'task_insert'</span><span class="p">],</span> <span class="nv">$params</span><span class="p">);</span>
+        <span class="nv">$id</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">pdo</span><span class="o">-&gt;</span><span class="nf">lastInsertId</span><span class="p">(</span><span class="s1">'id'</span><span class="p">);</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">code</span> <span class="o">=</span> <span class="mi">201</span><span class="p">;</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">headers</span><span class="p">[</span><span class="s1">'Location'</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"/task?id=</span><span class="si">{</span><span class="nv">$id</span><span class="si">}</span><span class="s2">"</span><span class="p">;</span>
+
+        <span class="k">return</span> <span class="nv">$this</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onPatch</span><span class="p">(</span><span class="kt">string</span> <span class="nv">$id</span><span class="p">):</span> <span class="kt">static</span>
+    <span class="p">{</span>
+        <span class="nv">$params</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s1">'id'</span> <span class="o">=&gt;</span> <span class="nv">$id</span><span class="p">,</span>
+            <span class="s1">'completed'</span> <span class="o">=&gt;</span> <span class="kc">true</span>
+        <span class="p">];</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">pdo</span><span class="o">-&gt;</span><span class="nf">perform</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="n">query</span><span class="p">[</span><span class="s1">'task_update'</span><span class="p">],</span> <span class="nv">$params</span><span class="p">);</span>
+
+        <span class="k">return</span> <span class="nv">$this</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h1 id="実行">実行</h1>
+
+<p>まずはリソースをコンソールで実行します。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>php bin/app.php options /task
+php bin/app.php post '/task?title=run'
+php bin/app.php patch /task/1
+php bin/app.php get /task/1
+</code></pre></div></div>
+
+<p>次に同じリソースをWebでアクセスするためにWebサーバーをスタートさせます。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>php -S 127.0.0.1:8080 bin/app.php
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">curl</code>コマンドでアクセスします。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl -i -X OPTIONS http://127.0.0.1:8080/task
+curl -i -X POST --form "title=mail" http://127.0.0.1:8080/task
+curl -i -X PATCH http://127.0.0.1:8080/task/1
+curl -i -X GET http://127.0.0.1:8080/task/1
+</code></pre></div></div>
+
+<h2 id="テスト">テスト</h2>
+
+<p>リソースの操作をテストするためにTaskリソースのテストコードを<code class="language-plaintext highlighter-rouge">/tests/Resource/App/TaskTest.php</code>に追加します。<a href="https://phpunit.de/manual/current/ja/writing-tests-for-phpunit.html" title="PHPUnit 用のテストの書き方">[?]</a></p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="kn">namespace</span> <span class="nn">MyVendor\Task\Resource\Page</span><span class="p">;</span>
+
+<span class="kn">use</span> <span class="nc">BEAR\Resource\ResourceObject</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">Koriym\DbAppPackage\AbstractDatabaseTestCase</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">TaskTest</span> <span class="kd">extends</span> <span class="nc">AbstractDatabaseTestCase</span>
+<span class="p">{</span>
+    <span class="k">const</span> <span class="no">URI</span> <span class="o">=</span> <span class="s1">'app://self/task'</span><span class="p">;</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="n">testOnPost</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="nv">$query</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'title'</span> <span class="o">=&gt;</span> <span class="s1">'shopping'</span><span class="p">];</span>
+        <span class="nv">$page</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">resource</span><span class="o">-&gt;</span><span class="n">post</span><span class="o">-&gt;</span><span class="nf">uri</span><span class="p">(</span><span class="k">self</span><span class="o">::</span><span class="no">URI</span><span class="p">)</span><span class="o">-&gt;</span><span class="nf">withQuery</span><span class="p">(</span><span class="nv">$query</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">eager</span><span class="o">-&gt;</span><span class="nf">request</span><span class="p">();</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">assertSame</span><span class="p">(</span><span class="mi">201</span><span class="p">,</span> <span class="nv">$page</span><span class="o">-&gt;</span><span class="n">code</span><span class="p">);</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">assertArrayHasKey</span><span class="p">(</span><span class="s1">'Location'</span><span class="p">,</span> <span class="nv">$page</span><span class="o">-&gt;</span><span class="n">headers</span><span class="p">);</span>
+
+        <span class="k">return</span> <span class="nv">$page</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="cd">/**
+     * @depends testOnPost
+     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">testPatch</span><span class="p">(</span><span class="kt">ResourceObject</span> <span class="nv">$page</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nv">$uri</span> <span class="o">=</span> <span class="nb">sprintf</span><span class="p">(</span><span class="s1">'app://self%s'</span><span class="p">,</span> <span class="nv">$page</span><span class="o">-&gt;</span><span class="n">headers</span><span class="p">[</span><span class="s1">'Location'</span><span class="p">]);</span>
+        <span class="nv">$page</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">resource</span><span class="o">-&gt;</span><span class="n">patch</span><span class="o">-&gt;</span><span class="nf">uri</span><span class="p">(</span><span class="nv">$uri</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">eager</span><span class="o">-&gt;</span><span class="nf">request</span><span class="p">();</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">assertSame</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="nv">$page</span><span class="o">-&gt;</span><span class="n">code</span><span class="p">);</span>
+
+        <span class="k">return</span> <span class="nv">$page</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="cd">/**
+     * @depends testOnPost
+     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">testGet</span><span class="p">(</span><span class="kt">ResourceObject</span> <span class="nv">$page</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nv">$uri</span> <span class="o">=</span> <span class="nb">sprintf</span><span class="p">(</span><span class="s1">'app://self%s'</span><span class="p">,</span> <span class="nv">$page</span><span class="o">-&gt;</span><span class="n">headers</span><span class="p">[</span><span class="s1">'Location'</span><span class="p">]);</span>
+        <span class="nv">$page</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">resource</span><span class="o">-&gt;</span><span class="n">get</span><span class="o">-&gt;</span><span class="nf">uri</span><span class="p">(</span><span class="nv">$uri</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">eager</span><span class="o">-&gt;</span><span class="nf">request</span><span class="p">();</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">assertSame</span><span class="p">(</span><span class="s1">'shopping'</span><span class="p">,</span> <span class="nv">$page</span><span class="o">-&gt;</span><span class="n">body</span><span class="p">[</span><span class="s1">'title'</span><span class="p">]);</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">assertSame</span><span class="p">(</span><span class="s1">'1'</span><span class="p">,</span> <span class="nv">$page</span><span class="o">-&gt;</span><span class="n">body</span><span class="p">[</span><span class="s1">'completed'</span><span class="p">]);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">phpunit</code>を実行します。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>phpunit
+
+...
+OK (5 tests, 8 assertions)
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">composer test</code>を実行するとコーディングスタイルをチェックする<a href="https://github.com/squizlabs/PHP_CodeSniffer/wiki">phpcs</a>, <a href="https://phpmd.org/about.html">phpmd</a>も合わせて実行されます。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>composer test
+</code></pre></div></div>
+
+<h3 id="フィクスチャ">フィクスチャ</h3>
+
+<p><a href="https://phpunit.de/manual/current/ja/database.html#database.set-up-fixture">フィクスチャ</a>とは、アプリケーションやデータベースの初期状態のことです。テストによっては特定のデータベースの状態を前提にしたいことがあります。MySql専用ですがフィクスチャの用意はを簡単です。</p>
+
+<p>まずDBUnitのための接続情報を<code class="language-plaintext highlighter-rouge">tests/phpunit.xml</code>に追加します</p>
+
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;phpunit</span> <span class="na">bootstrap=</span><span class="s">"tests/bootstrap.php"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;php&gt;</span>
+        <span class="nt">&lt;var</span> <span class="na">name=</span><span class="s">"DB_DSN"</span> <span class="na">value=</span><span class="s">"mysql:host=localhost"</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;var</span> <span class="na">name=</span><span class="s">"DB_USER"</span> <span class="na">value=</span><span class="s">"root"</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;var</span> <span class="na">name=</span><span class="s">"DB_PASSWD"</span> <span class="na">value=</span><span class="s">""</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;var</span> <span class="na">name=</span><span class="s">"DB_DBNAME"</span> <span class="na">value=</span><span class="s">"task_test"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/php&gt;</span>
+    ```
+</code></pre></div></div>
+
+<p>DBを保存したい状態にしておいて、テストクラスと同じ階層の<code class="language-plaintext highlighter-rouge">fixtures </code>ディレクトリに<code class="language-plaintext highlighter-rouge">mysqldump </code>コマンドで既存のデータベースの状態をdumpします。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mysqldump <span class="nt">--xml</span> <span class="nt">-t</span> <span class="nt">-u</span> <span class="o">[</span>username] <span class="nt">--password</span><span class="o">=[</span>password] <span class="o">[</span>database] <span class="o">&gt;</span> /path/to/file.xml
+</code></pre></div></div>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>├── TaskTest.php
+└── fixtures
+    ├── tag.xml
+    └── task.xml
+</code></pre></div></div>
+
+<p>複数のxmlは合成され１つのフィクスチャになり、テスト実行前のデータベース状態を再現できます。</p>
+
+<h2 id="スクリプト">スクリプト</h2>
+
+<p>再度環境構築をするために<code class="language-plaintext highlighter-rouge">composer.json</code>の<code class="language-plaintext highlighter-rouge">scripts</code>に以下のコードを追加します。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>"scripts": {
+    "setup": [
+        "php bin/create_db.php",
+        "php vendor/bin/phinx migrate -c var/db/phinx.php"
+    ],
+</code></pre></div></div>
+
+<p>setupコマンドで環境構築できます。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>composer setup
+</code></pre></div></div>
+
+<h2 id="その他の方法">その他の方法</h2>
+
+<p>依存をコンストラクタではなく、メソッドのパラメーターで受け取る事もできます。（アシスティッドインジェクション）</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">declare</span><span class="p">(</span><span class="n">strict_types</span><span class="o">=</span><span class="mi">1</span><span class="p">);</span>
+
+<span class="kn">namespace</span> <span class="nn">MyVendor\Task\Resource\App</span><span class="p">;</span>
+
+<span class="kn">use</span> <span class="nc">Aura\Sql\ExtendedPdoInterface</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">BEAR\Resource\ResourceObject</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">Koriym\Now\NowInterface</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">Koriym\QueryLocator\QueryLocatorInterface</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">Ray\Di\Di\Assisted</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">Task</span> <span class="kd">extends</span> <span class="nc">ResourceObject</span>
+<span class="p">{</span>
+    <span class="cd">/**
+     * @Assisted({"pdo", "query"})
+     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onGet</span><span class="p">(</span><span class="kt">string</span> <span class="nv">$id</span> <span class="o">=</span> <span class="kc">null</span><span class="p">,</span> <span class="kt">ExtendedPdoInterface</span> <span class="nv">$pdo</span> <span class="o">=</span> <span class="kc">null</span><span class="p">,</span> <span class="kt">QueryLocatorInterface</span> <span class="nv">$query</span> <span class="o">=</span> <span class="kc">null</span><span class="p">):</span> <span class="kt">static</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">body</span> <span class="o">=</span> <span class="nv">$id</span> <span class="o">?</span>
+            <span class="nv">$pdo</span><span class="o">-&gt;</span><span class="nf">fetchOne</span><span class="p">(</span><span class="nv">$query</span><span class="p">[</span><span class="s1">'task_item'</span><span class="p">],</span> <span class="p">[</span><span class="s1">'id'</span> <span class="o">=&gt;</span> <span class="nv">$id</span><span class="p">])</span> <span class="o">:</span>
+            <span class="nv">$pdo</span><span class="o">-&gt;</span><span class="nf">fetchAssoc</span><span class="p">(</span><span class="nv">$query</span><span class="p">[</span><span class="s1">'task_list'</span><span class="p">]);</span>
+
+        <span class="k">return</span> <span class="nv">$this</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="cd">/**
+     * @Assisted({"pdo", "query", "now"})
+     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onPost</span><span class="p">(</span><span class="kt">string</span> <span class="nv">$title</span><span class="p">,</span> <span class="kt">ExtendedPdoInterface</span> <span class="nv">$pdo</span> <span class="o">=</span> <span class="kc">null</span><span class="p">,</span> <span class="kt">QueryLocatorInterface</span> <span class="nv">$query</span> <span class="o">=</span> <span class="kc">null</span><span class="p">,</span> <span class="kt">NowInterface</span> <span class="nv">$now</span> <span class="o">=</span> <span class="kc">null</span><span class="p">):</span> <span class="kt">static</span>
+    <span class="p">{</span>
+        <span class="nv">$params</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s1">'title'</span> <span class="o">=&gt;</span> <span class="nv">$title</span><span class="p">,</span>
+            <span class="s1">'created'</span> <span class="o">=&gt;</span> <span class="p">(</span><span class="n">string</span><span class="p">)</span> <span class="nv">$now</span><span class="p">,</span>
+            <span class="s1">'completed'</span> <span class="o">=&gt;</span> <span class="kc">false</span>
+        <span class="p">];</span>
+        <span class="nv">$pdo</span><span class="o">-&gt;</span><span class="nf">perform</span><span class="p">(</span><span class="nv">$query</span><span class="p">[</span><span class="s1">'task_insert'</span><span class="p">],</span> <span class="nv">$params</span><span class="p">);</span>
+        <span class="nv">$id</span> <span class="o">=</span> <span class="nv">$pdo</span><span class="o">-&gt;</span><span class="nf">lastInsertId</span><span class="p">(</span><span class="s1">'id'</span><span class="p">);</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">code</span> <span class="o">=</span> <span class="mi">201</span><span class="p">;</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">headers</span><span class="p">[</span><span class="s1">'Location'</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"/task?id=</span><span class="si">{</span><span class="nv">$id</span><span class="si">}</span><span class="s2">"</span><span class="p">;</span>
+
+        <span class="k">return</span> <span class="nv">$this</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="cd">/**
+     * @Assisted({"pdo", "query"})
+     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onPatch</span><span class="p">(</span><span class="kt">string</span> <span class="nv">$id</span><span class="p">,</span> <span class="kt">ExtendedPdoInterface</span> <span class="nv">$pdo</span> <span class="o">=</span> <span class="kc">null</span><span class="p">,</span> <span class="kt">QueryLocatorInterface</span> <span class="nv">$query</span> <span class="o">=</span> <span class="kc">null</span><span class="p">):</span> <span class="kt">static</span>
+    <span class="p">{</span>
+        <span class="nv">$params</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s1">'id'</span> <span class="o">=&gt;</span> <span class="nv">$id</span><span class="p">,</span>
+            <span class="s1">'completed'</span> <span class="o">=&gt;</span> <span class="kc">true</span>
+        <span class="p">];</span>
+        <span class="nv">$pdo</span><span class="o">-&gt;</span><span class="nf">perform</span><span class="p">(</span><span class="nv">$query</span><span class="p">[</span><span class="s1">'task_update'</span><span class="p">],</span> <span class="nv">$params</span><span class="p">);</span>
+
+        <span class="k">return</span> <span class="nv">$this</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>条件によって動的に変わるSQLは<a href="http://bearsunday.github.io/manuals/1.0/ja/database.html#aurasqlquery">Aura.SqlQuery</a>クエリービルダーを利用するのが良いでしょう。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">declare</span><span class="p">(</span><span class="n">strict_types</span><span class="o">=</span><span class="mi">1</span><span class="p">);</span>
+
+<span class="kn">namespace</span> <span class="nn">MyVendor\Task\Resource\App</span><span class="p">;</span>
+
+<span class="kn">use</span> <span class="nc">Aura\Sql\ExtendedPdoInterface</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">Aura\SqlQuery\Common\InsertInterface</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">Aura\SqlQuery\Common\SelectInterface</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">Aura\SqlQuery\Common\UpdateInterface</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">BEAR\Resource\ResourceObject</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">Koriym\Now\NowInterface</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">Ray\Di\Di\Assisted</span><span class="p">;</span>
+
+<span class="cd">/**
+ * with assisted injection + query builder
+ */</span>
+<span class="kd">class</span> <span class="nc">TaskQb</span> <span class="kd">extends</span> <span class="nc">ResourceObject</span>
+<span class="p">{</span>
+    <span class="cd">/**
+     * @Assisted({"pdo", "select"})
+     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onGet</span><span class="p">(</span><span class="kt">string</span> <span class="nv">$id</span> <span class="o">=</span> <span class="kc">null</span><span class="p">,</span> <span class="kt">ExtendedPdoInterface</span> <span class="nv">$pdo</span> <span class="o">=</span> <span class="kc">null</span><span class="p">,</span> <span class="kt">SelectInterface</span> <span class="nv">$select</span> <span class="o">=</span> <span class="kc">null</span><span class="p">):</span> <span class="kt">static</span>
+    <span class="p">{</span>
+        <span class="nv">$select</span><span class="o">-&gt;</span><span class="nf">cols</span><span class="p">([</span><span class="s1">'id'</span><span class="p">,</span> <span class="s1">'title'</span><span class="p">,</span> <span class="s1">'completed'</span><span class="p">])</span><span class="o">-&gt;</span><span class="nf">from</span><span class="p">(</span><span class="s1">'task'</span><span class="p">);</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nv">$id</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">onGetItem</span><span class="p">(</span><span class="nv">$id</span><span class="p">,</span> <span class="nv">$pdo</span><span class="p">,</span> <span class="nv">$select</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="nv">$sql</span> <span class="o">=</span> <span class="nv">$select</span><span class="o">-&gt;</span><span class="nf">getStatement</span><span class="p">();</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">body</span> <span class="o">=</span> <span class="nv">$pdo</span><span class="o">-&gt;</span><span class="nf">fetchAssoc</span><span class="p">(</span><span class="nv">$sql</span><span class="p">);</span>
+
+        <span class="k">return</span> <span class="nv">$this</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="cd">/**
+     * @Assisted({"pdo", "insert", "now"})
+     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onPost</span><span class="p">(</span><span class="kt">string</span> <span class="nv">$title</span><span class="p">,</span> <span class="kt">ExtendedPdoInterface</span> <span class="nv">$pdo</span> <span class="o">=</span> <span class="kc">null</span><span class="p">,</span> <span class="kt">InsertInterface</span> <span class="nv">$insert</span> <span class="o">=</span> <span class="kc">null</span><span class="p">,</span> <span class="kt">NowInterface</span> <span class="nv">$now</span> <span class="o">=</span> <span class="kc">null</span><span class="p">):</span> <span class="kt">static</span>
+    <span class="p">{</span>
+        <span class="nv">$params</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s1">'title'</span> <span class="o">=&gt;</span> <span class="nv">$title</span><span class="p">,</span>
+            <span class="s1">'created'</span> <span class="o">=&gt;</span> <span class="p">(</span><span class="n">string</span><span class="p">)</span> <span class="nv">$now</span><span class="p">,</span>
+            <span class="s1">'completed'</span> <span class="o">=&gt;</span> <span class="kc">false</span>
+        <span class="p">];</span>
+        <span class="nv">$insert</span>
+            <span class="o">-&gt;</span><span class="nf">into</span><span class="p">(</span><span class="s1">'task'</span><span class="p">)</span>
+            <span class="o">-&gt;</span><span class="nf">cols</span><span class="p">([</span><span class="s1">'title'</span><span class="p">,</span> <span class="s1">'completed'</span><span class="p">,</span> <span class="s1">'created'</span><span class="p">])</span>
+            <span class="o">-&gt;</span><span class="nf">bindValues</span><span class="p">(</span><span class="nv">$params</span><span class="p">);</span>
+        <span class="nv">$pdo</span><span class="o">-&gt;</span><span class="nf">perform</span><span class="p">(</span><span class="nv">$insert</span><span class="o">-&gt;</span><span class="nf">getStatement</span><span class="p">(),</span> <span class="nv">$insert</span><span class="o">-&gt;</span><span class="nf">getBindValues</span><span class="p">());</span>
+        <span class="nv">$name</span> <span class="o">=</span> <span class="nv">$insert</span><span class="o">-&gt;</span><span class="nf">getLastInsertIdName</span><span class="p">(</span><span class="s1">'id'</span><span class="p">);</span>
+        <span class="nv">$id</span> <span class="o">=</span> <span class="nv">$pdo</span><span class="o">-&gt;</span><span class="nf">lastInsertId</span><span class="p">(</span><span class="nv">$name</span><span class="p">);</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">code</span> <span class="o">=</span> <span class="mi">201</span><span class="p">;</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">headers</span><span class="p">[</span><span class="s1">'Location'</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"/task?id=</span><span class="si">{</span><span class="nv">$id</span><span class="si">}</span><span class="s2">"</span><span class="p">;</span>
+
+        <span class="k">return</span> <span class="nv">$this</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="cd">/**
+     * @Assisted({"pdo", "query"})
+     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onPatch</span><span class="p">(</span><span class="kt">string</span> <span class="nv">$id</span><span class="p">,</span> <span class="kt">ExtendedPdoInterface</span> <span class="nv">$pdo</span> <span class="o">=</span> <span class="kc">null</span><span class="p">,</span> <span class="kt">UpdateInterface</span> <span class="nv">$update</span> <span class="o">=</span> <span class="kc">null</span><span class="p">):</span> <span class="kt">static</span>
+    <span class="p">{</span>
+        <span class="nv">$values</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s1">'id'</span> <span class="o">=&gt;</span> <span class="nv">$id</span><span class="p">,</span>
+            <span class="s1">'completed'</span> <span class="o">=&gt;</span> <span class="kc">true</span>
+        <span class="p">];</span>
+        <span class="nv">$update</span>
+            <span class="o">-&gt;</span><span class="nf">table</span><span class="p">(</span><span class="s1">'task'</span><span class="p">)</span>
+            <span class="o">-&gt;</span><span class="nf">cols</span><span class="p">([</span><span class="s1">'title'</span><span class="p">,</span> <span class="s1">'completed'</span><span class="p">,</span> <span class="s1">'created'</span><span class="p">])</span>
+            <span class="o">-&gt;</span><span class="nf">where</span><span class="p">(</span><span class="s1">'id = :id'</span><span class="p">)</span>
+            <span class="o">-&gt;</span><span class="nf">bindValues</span><span class="p">(</span><span class="nv">$values</span><span class="p">);</span>
+        <span class="nv">$pdo</span><span class="o">-&gt;</span><span class="nf">perform</span><span class="p">(</span><span class="nv">$update</span><span class="o">-&gt;</span><span class="nf">getStatement</span><span class="p">(),</span> <span class="nv">$update</span><span class="o">-&gt;</span><span class="nf">getBindValues</span><span class="p">());</span>
+
+        <span class="k">return</span> <span class="nv">$this</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">private</span> <span class="k">function</span> <span class="n">onGetItem</span><span class="p">(</span><span class="kt">string</span> <span class="nv">$id</span><span class="p">,</span> <span class="kt">ExtendedPdoInterface</span> <span class="nv">$pdo</span><span class="p">,</span> <span class="kt">SelectInterface</span> <span class="nv">$select</span><span class="p">):</span> <span class="kt">static</span>
+    <span class="p">{</span>
+        <span class="nv">$select</span><span class="o">-&gt;</span><span class="nf">where</span><span class="p">(</span><span class="s1">'id = :id'</span><span class="p">)</span><span class="o">-&gt;</span><span class="nf">bindValue</span><span class="p">(</span><span class="s1">'id'</span><span class="p">,</span> <span class="nv">$id</span><span class="p">);</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">body</span> <span class="o">=</span> <span class="nv">$pdo</span><span class="o">-&gt;</span><span class="nf">fetchOne</span><span class="p">(</span><span class="nv">$select</span><span class="o">-&gt;</span><span class="nf">getStatement</span><span class="p">(),</span> <span class="nv">$select</span><span class="o">-&gt;</span><span class="nf">getBindValues</span><span class="p">());</span>
+
+        <span class="k">return</span> <span class="nv">$this</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+</code></pre></div></div>
+
+<h1 id="まとめ">まとめ</h1>
+
+<p>DBの接続情報を<code class="language-plaintext highlighter-rouge">.env</code>で設定して、SQLのファイルをHTTPのURLにマップされたリソースから呼び出してWeb APIを作成しました。テストでDB状態を復元するにはフィクスチャを使います。フィクスチャには<code class="language-plaintext highlighter-rouge">phpunit.xml</code>に接続情報が必要です。</p>
+
+<p><code class="language-plaintext highlighter-rouge">sql</code>フォルダに集められたSQLは一覧性に優れ、SQL単体テストも容易ですがSQL文を直接リソースクラスに記述することもできます。動的に生成するSQLクエリーはクエリービルダーが向いています。依存はコンストラクタだけではなく、実行時のメソッドでも受け取れます。</p>
+
+<p>このチュートリアルで作成したプロジェクトの作成履歴はMyVendor.Taskの<a href="https://github.com/bearsunday/MyVendor.Task/commits/master">commitログ</a>で見ることができます。</p>
+
+<p><em>(この<a href="https://github.com/bearsunday/bearsunday.github.io/blob/master/manuals/1.0/ja/quick-api.md">マニュアル</a>でわかりにくいところや、間違えているところがあれば<a href="https://github.com/bearsunday/bearsunday.github.io/issues">issue</a>で教えてください。)</em></p>
+
+            </article>
+        </div>
+        <div id="ArticleToc" class="col-lg-2 d-none d-lg-block">
+            <nav class="nav side-bar-right"></nav>
+        </div>
+    </div>
+</main>
+<footer>
+    <div class="container d-md-flex">
+        <i class="bear-icon d-none d-lg-block"></i>
+        <small>
+            © 2011-2024 BEAR.Sunday
+        </small>
+        <ul class="navbar-nav flex-row ml-md-auto d-none d-md-flex">
+            <li>
+                <a href="https://gitter.im/bearsunday/BEAR.Sunday?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge">Gitter</a>
+            </li>
+            <li>
+                <a href="https://github.com/bearsunday/BEAR.Sunday">Github</a>
+            </li>
+            <li>
+                <a href="https://twitter.com/BEARSunday">Twitter</a>
+            </li>
+            <li>
+                <a href="https://www.facebook.com/pages/BEARSunday/110116939178462?ref=hl">Facebook</a>
+            </li>
+            <li>
+                <a href="http://koriym.github.io/">Blog (JA)</a>
+            </li>
+            <li>
+                <a href="https://github.com/bearsunday/bearsunday.github.io">PR ?</a>
+            </li>
+        </ul>
+    </div>
+</footer>
+<script src="//code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+<script>
+    window.ga = function () { ga.q.push(arguments) }; ga.q = []; ga.l = +new Date;
+    ga('create', 'UA-6074569-8', 'bearsunday.github.io'); ga('send', 'pageview');
+</script>
+<script src="https://www.google-analytics.com/analytics.js" async defer></script>
+
+<script src="/js/generate-table-of-contents/index.min.js"></script>
+<script>
+    var toc = generateTableOfContents(document.getElementById('article'));
+    var sideBarRight = $('.side-bar-right');
+    sideBarRight.append(toc);
+
+    var scrollOffset = $('body').attr('data-offset');
+    var articlePaddingTop = $('article').css('padding-top').replace('px', '');
+    sideBarRight.find('a').on('click', function (e) {
+        e.preventDefault();
+        var targetId = $(this).attr('href');
+        var targetPositionTop = $(targetId).offset().top - scrollOffset - articlePaddingTop;
+        window.scrollTo(0, targetPositionTop)
+    });
+</script>
+
+</body>
+</html>
+

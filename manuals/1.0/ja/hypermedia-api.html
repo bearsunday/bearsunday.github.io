@@ -1,0 +1,391 @@
+<!doctype html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>ハイパーメディアAPI &#124; BEAR.Sunday</title>
+    <meta name="description" content="BEAR.Sunday is a resource orientated framework with a REST centered architecture, implementing Dependency Injection and Aspect Orientated Programming' at its core.">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/github-markdown-css/2.10.0/github-markdown.css">
+    <link rel="stylesheet" href="/css/syntax.css">
+    
+    <link rel="stylesheet" href="/css/bearsunday.css">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="apple-touch-icon" href="/icon.png">
+</head>
+<body data-page-category="Manual" data-spy="scroll" data-target="#ArticleToc" data-offset="65">
+<header>
+    <nav class="navbar navbar-expand flex-column flex-md-row bg-light">
+        <a class="navbar-brand mr-0 mr-md-2" href="/index.html"></a>
+        <div class="navbar-nav-scroll">
+            <ul class="navbar-nav flex-row">
+                <li class="nav-item">
+                    <a class="nav-link " href="/index.html">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="/manuals/1.0/en/index.html">Manual</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link " href="/contributors.html">Contributors</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/slide.html">Slide</a>
+                </li>
+            </ul>
+        </div>
+        
+        <ul class="navbar-nav ml-md-auto d-none d-md-flex language-list">
+            <li>
+                <a class="" href="/manuals/1.0/en/hypermedia-api.html">En</a>
+            </li>
+            <li>
+                <a class="active" href="/manuals/1.0/ja/hypermedia-api.html">Ja</a>
+            </li>
+        </ul>
+        
+    </nav>
+</header>
+
+<main class="container-fluid">
+    <div class="row flex-xl-nowrap">
+        <div class="col-md-3 col-lg-2">
+            <div class="side-bar">
+                <nav class="navbar navbar-expand-md navbar-light">
+    <div class="navigation-header">
+        <div class="ml-auto d-sm-block d-md-none">
+            <ul class="navbar-nav language-list">
+                <li>
+                    <a class="" href="/manuals/1.0/en/hypermedia-api.html">En</a>
+                </li>
+                <li>
+                    <a class="active" href="/manuals/1.0/ja/hypermedia-api.html">Ja</a>
+                </li>
+            </ul>
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#Navber" aria-controls="Navber" aria-expanded="false" aria-label="ナビゲーションの切替">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+    </div>
+    <div class="collapse navbar-collapse" id="Navber">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/index.html">イントロダクション</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/version.html">バージョン</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/quick-start.html">クイックスタート</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/tutorial.html">チュートリアル</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/tutorial2.html">チュートリアル 2</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/package.html">パッケージ</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/application.html">アプリケーション</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/module.html">モジュール</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/di.html">DI</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/aop.html">AOP</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/resource.html">リソース</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/resource_param.html">・パラメーター</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/resource_link.html">・リンク</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/resource_renderer.html">・レンダリングと転送</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/router.html">ルーター</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/production.html">プロダクション</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/ja/import.html">インポート</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/database.html">データベース</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/html.html">HTML</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/validation.html">バリデーション</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/form.html">フォーム</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/content-negotiation.html">コンテントネゴシエーション</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" href="/manuals/1.0/ja/hypermedia-api.html">ハイパーメディア API</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/psr7.html">リクエスト / PSR-7</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/js-ui.html">JavaScript UI</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/stream.html">ストリーム出力</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/cache.html">キャッシュ</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/swoole.html">Swoole</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/coding-guide.html">コーディングガイド</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/types.html">タイプ</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/test.html">テスト</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/examples.html">サンプル</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/upgrade/injector.html">アップグレード</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/attribute.html">アトリビュート</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/apidoc.html">API Doc</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/1page.html">1 Page</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+            </div>
+        </div>
+        <div class="col-md-9 col-lg-8">
+            <article id="article" class="markdown-body">
+                <h1 id="ハイパーメディアapi">ハイパーメディアAPI</h1>
+
+<h2 id="hal">HAL</h2>
+
+<p>BEAR.Sundayは<a href="https://en.wikipedia.org/wiki/Hypertext_Application_Language">HAL</a>ハイパーメディア(<code class="language-plaintext highlighter-rouge">application/hal+json</code>)APIをサポートします。</p>
+
+<p>HALのリソースモデルは以下の要素で構成されます。</p>
+
+<ul>
+  <li>リンク</li>
+  <li>埋め込みリソース</li>
+  <li>状態</li>
+</ul>
+
+<p>HALは従来のリソースの状態のみを表すJSONにリンクの<code class="language-plaintext highlighter-rouge">_links</code>と他リソースを埋め込む<code class="language-plaintext highlighter-rouge">_embedded</code>を加えたものです。HALはAPIを探索可能にしてそのAPIドキュメントをAPI自体から発見することができます。</p>
+
+<h3 id="links">Links</h3>
+
+<p>以下は有効なHALの例です。自身(<code class="language-plaintext highlighter-rouge">self</code>)のURIへのリンクを持っています。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{
+    "_links": {
+        "self": { "href": "/user" }
+    }
+}
+</code></pre></div></div>
+
+<h3 id="link-relations">Link Relations</h3>
+
+<p>リンクには<code class="language-plaintext highlighter-rouge">rel</code>（relation）があり、どの様な関係でリンクされているかを表ます。HTMLの<code class="language-plaintext highlighter-rouge">&lt;link&gt;</code>タグや<code class="language-plaintext highlighter-rouge">&lt;a&gt;</code>タグで使われる<code class="language-plaintext highlighter-rouge">rel</code>と同様です。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{
+    "_links": {
+        "next": { "href": "/page=2" }
+    }
+}
+</code></pre></div></div>
+
+<p>HALについてさらに詳しくは<a href="http://stateless.co/hal_specification.html">http://stateless.co/hal_specification.html</a>をご覧ください。</p>
+
+<h2 id="リソースクラス">リソースクラス</h2>
+
+<p>アノテーションでリンクを貼ったり他のリソースを埋め込むことができます。</p>
+
+<h3 id="link">#[Link]</h3>
+
+<p>リンクが静的なものは<code class="language-plaintext highlighter-rouge">#[Link]</code>属性で表し、動的なものは<code class="language-plaintext highlighter-rouge">body['_links']</code>に代入します。宣言的に記述できる<code class="language-plaintext highlighter-rouge">#[Link]</code>属性が良いでしょう。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">#[Link(rel="user", href="/user")]</span>
+<span class="c1">#[Link(rel="latest-post", href="/latest-post", title="latest post entrty")]</span>
+<span class="k">public</span> <span class="k">function</span> <span class="n">onGet</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p>or</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">public</span> <span class="k">function</span> <span class="n">onGet</span><span class="p">()</span> <span class="p">{</span>
+    <span class="c1">// 権限のある場合のみリンクを貼る</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nv">$hasCommentPrivilege</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">body</span> <span class="o">+=</span> <span class="p">[</span>
+            <span class="s1">'_links'</span> <span class="o">=&gt;</span> <span class="p">[</span>
+                <span class="s1">'comment'</span> <span class="o">=&gt;</span> <span class="p">[</span>
+                    <span class="s1">'href'</span> <span class="o">=&gt;</span> <span class="s1">'/comments/{post-id}'</span><span class="p">,</span>
+                    <span class="s1">'templated'</span> <span class="o">=&gt;</span> <span class="kc">true</span>
+                <span class="p">]</span>
+            <span class="p">]</span>
+        <span class="p">];</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+</code></pre></div></div>
+
+<h3 id="embed">#[Embed]</h3>
+
+<p>他のリソースを静的に埋め込むには<code class="language-plaintext highlighter-rouge">@Embed</code>アノテーションを使い、動的に埋め込むには<code class="language-plaintext highlighter-rouge">body</code>にリクエストを代入します。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">#[Embed(rel="todos", src="/todos{?status}")]</span>
+<span class="c1">#[Embed(rel="me", src="/me")]</span>
+<span class="k">public</span> <span class="k">function</span> <span class="n">onGet</span><span class="p">(</span><span class="kt">string</span> <span class="nv">$status</span><span class="p">):</span> <span class="kt">static</span>
+
+</code></pre></div></div>
+
+<p>or</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$this</span><span class="o">-&gt;</span><span class="n">body</span><span class="p">[</span><span class="s1">'_embedded'</span><span class="p">][</span><span class="s1">'todos'</span><span class="p">]</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">resource</span><span class="o">-&gt;</span><span class="nf">uri</span><span class="p">(</span><span class="s1">'app://self/todos'</span><span class="p">);</span>
+</code></pre></div></div>
+
+<h2 id="apiドキュメント">APIドキュメント</h2>
+
+<p>Curiesの設置されたAPIサーバーをAPIドキュメントサーバーにもすることができます。APIドキュメントの作成の手間や実際のAPIとのずれやその検証、メンテナンスといった問題を解決します。</p>
+
+<p>サービスするためには<code class="language-plaintext highlighter-rouge">bear/api-doc</code>をインストールして<code class="language-plaintext highlighter-rouge">BEAR\ApiDoc\ApiDoc</code>ページクラスを継承して設置します。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>composer require bear/api-doc
+</code></pre></div></div>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+<span class="kn">namespace</span> <span class="nn">MyVendor\MyPorject\Resource\Page\Rels</span><span class="p">;</span>
+
+<span class="kn">use</span> <span class="nc">BEAR\ApiDoc\ApiDoc</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">Index</span> <span class="kd">extends</span> <span class="nc">ApiDoc</span>
+<span class="p">{</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Json Schemaのフォルダをwebに公開します。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ln -s var/json_schema public/schemas
+</code></pre></div></div>
+
+<p>DocblockコメントとJson Shcemaを使ってAPIドキュメントが自動生成されます。ページクラスは独自のレンダラーを持ち<code class="language-plaintext highlighter-rouge">$context</code>の影響を受けないで、人のためのドキュメント(<code class="language-plaintext highlighter-rouge">text/html</code>) をサービスします。<code class="language-plaintext highlighter-rouge">$context</code>の影響を受けないので<code class="language-plaintext highlighter-rouge">App</code>、<code class="language-plaintext highlighter-rouge">Page</code>どちらでも設置可能です。</p>
+
+<p>CURIEsがルートに設置されていれば、API自体がハイパーメディアではない生JSONの場合でも利用可能です。リアルタイムに生成されるドキュメントは常にプロパティ情報やバリデーション制約が正確に反映されます。</p>
+
+<h3 id="デモ">デモ</h3>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git clone https://github.com/koriym/Polidog.Todo.git
+cd Polidog.Todo/
+composer install
+composer setup
+composer doc
+</code></pre></div></div>
+
+<p><a href="https://github.com/koriym/Polidog.Todo/blob/master/docs/index.md">docs/index.md</a>にAPI docが作成されます。</p>
+
+<h2 id="ブラウズ可能">ブラウズ可能</h2>
+
+<p>HALで記述されたAPIセットは<strong>ヘッドレスのRESTアプリケーション</strong>として機能します。</p>
+
+<p>WebベースのHAL BrowserやコンソールのCURLコマンドでWebサイトと同じようにルートからリンクを辿って始めて全てのリソースにアクセスできます。</p>
+
+<ul>
+  <li><a href="https://github.com/mikekelly/hal-browser">HAL Browser</a> - <a href="http://haltalk.herokuapp.com/explorer/browser.html#/">example</a></li>
+  <li><a href="https://weluse.github.io/hyperagent/">hyperagent.js</a></li>
+</ul>
+
+<h2 id="siren">Siren</h2>
+
+<p><a href="https://github.com/kevinswiber/siren">Siren</a>ハイパーメディア(<code class="language-plaintext highlighter-rouge">application/vnd.siren+json</code>)をサポートした<a href="https://github.com/kuma-guy/BEAR.SirenModule">Sirenモジュール</a> も利用可能です。</p>
+
+            </article>
+        </div>
+        <div id="ArticleToc" class="col-lg-2 d-none d-lg-block">
+            <nav class="nav side-bar-right"></nav>
+        </div>
+    </div>
+</main>
+<footer>
+    <div class="container d-md-flex">
+        <i class="bear-icon d-none d-lg-block"></i>
+        <small>
+            © 2011-2024 BEAR.Sunday
+        </small>
+        <ul class="navbar-nav flex-row ml-md-auto d-none d-md-flex">
+            <li>
+                <a href="https://gitter.im/bearsunday/BEAR.Sunday?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge">Gitter</a>
+            </li>
+            <li>
+                <a href="https://github.com/bearsunday/BEAR.Sunday">Github</a>
+            </li>
+            <li>
+                <a href="https://twitter.com/BEARSunday">Twitter</a>
+            </li>
+            <li>
+                <a href="https://www.facebook.com/pages/BEARSunday/110116939178462?ref=hl">Facebook</a>
+            </li>
+            <li>
+                <a href="http://koriym.github.io/">Blog (JA)</a>
+            </li>
+            <li>
+                <a href="https://github.com/bearsunday/bearsunday.github.io">PR ?</a>
+            </li>
+        </ul>
+    </div>
+</footer>
+<script src="//code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+<script>
+    window.ga = function () { ga.q.push(arguments) }; ga.q = []; ga.l = +new Date;
+    ga('create', 'UA-6074569-8', 'bearsunday.github.io'); ga('send', 'pageview');
+</script>
+<script src="https://www.google-analytics.com/analytics.js" async defer></script>
+
+<script src="/js/generate-table-of-contents/index.min.js"></script>
+<script>
+    var toc = generateTableOfContents(document.getElementById('article'));
+    var sideBarRight = $('.side-bar-right');
+    sideBarRight.append(toc);
+
+    var scrollOffset = $('body').attr('data-offset');
+    var articlePaddingTop = $('article').css('padding-top').replace('px', '');
+    sideBarRight.find('a').on('click', function (e) {
+        e.preventDefault();
+        var targetId = $(this).attr('href');
+        var targetPositionTop = $(targetId).offset().top - scrollOffset - articlePaddingTop;
+        window.scrollTo(0, targetPositionTop)
+    });
+</script>
+
+</body>
+</html>
+

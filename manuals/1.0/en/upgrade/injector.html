@@ -1,0 +1,344 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Injector Upgrade Guide &#124; BEAR.Sunday</title>
+    <meta name="description" content="BEAR.Sunday is a resource orientated framework with a REST centered architecture, implementing Dependency Injection and Aspect Orientated Programming' at its core.">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/github-markdown-css/2.10.0/github-markdown.css">
+    <link rel="stylesheet" href="/css/syntax.css">
+    
+    <link rel="stylesheet" href="/css/bearsunday.css">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="apple-touch-icon" href="/icon.png">
+</head>
+<body data-page-category="Manual" data-spy="scroll" data-target="#ArticleToc" data-offset="65">
+<header>
+    <nav class="navbar navbar-expand flex-column flex-md-row bg-light">
+        <a class="navbar-brand mr-0 mr-md-2" href="/index.html"></a>
+        <div class="navbar-nav-scroll">
+            <ul class="navbar-nav flex-row">
+                <li class="nav-item">
+                    <a class="nav-link " href="/index.html">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="/manuals/1.0/en/index.html">Manual</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link " href="/contributors.html">Contributors</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/slide.html">Slide</a>
+                </li>
+            </ul>
+        </div>
+        
+        <ul class="navbar-nav ml-md-auto d-none d-md-flex language-list">
+            <li>
+                <a class="active" href="/manuals/1.0/en/upgrade/injector.html">En</a>
+            </li>
+            <li>
+                <a class="" href="/manuals/1.0/ja/upgrade/injector.html">Ja</a>
+            </li>
+        </ul>
+        
+    </nav>
+</header>
+
+<main class="container-fluid">
+    <div class="row flex-xl-nowrap">
+        <div class="col-md-3 col-lg-2">
+            <div class="side-bar">
+                <nav class="navbar navbar-expand-md navbar-light">
+    <div class="navigation-header">
+        <div class="ml-auto d-sm-block d-md-none">
+            <ul class="navbar-nav language-list">
+                <li>
+                    <a class="active" href="/manuals/1.0/en/upgrade/injector.html">En</a>
+                </li>
+                <li>
+                    <a class="" href="/manuals/1.0/ja/upgrade/injector.html">Ja</a>
+                </li>
+            </ul>
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#Navber" aria-controls="Navber" aria-expanded="false" aria-label="ナビゲーションの切替">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+    </div>
+    <div class="collapse navbar-collapse" id="Navber">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/">Introduction</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/version.html">Version</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/quick-start.html">Quick Start</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/tutorial.html">Tutorial</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/tutorial2.html">Tutorial 2</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/package.html">Package</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/application.html">Application</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/module.html">Module</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/di.html">DI</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/aop.html">AOP</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/resource.html">Resource</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/resource_param.html">・Parameter</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/resource_link.html">・Link</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/resource_renderer.html">・Rendering and Transfer</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/router.html">Router</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/production.html">Production</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/import.html">Import</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/database.html">Database</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/validation.html">Validation</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/html.html">HTML</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/form.html">Form</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/content-negotiation.html">Content Negotiation</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/hypermedia-api.html">Hypermedia API</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/psr7.html">Request / PSR-7</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/js-ui.html">JavaScript UI</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/stream.html">Stream Response</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/cache.html">Cache</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/swoole.html">Swoole</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/coding-guide.html">Coding Guide</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/types.html">Type</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/test.html">Test</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/examples.html">Examples</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/attribute.html">Attribute</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/apidoc.html">API Doc</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/1page.html">1 Page</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+            </div>
+        </div>
+        <div class="col-md-9 col-lg-8">
+            <article id="article" class="markdown-body">
+                <h1 id="injector-upgrade-guide">Injector Upgrade Guide</h1>
+
+<h2 id="changes">Changes</h2>
+
+<p><a href="https://github.com/bearsunday/BEAR.Package/releases/tag/1.10.0">BEAR.Package 1.10</a>, <code class="language-plaintext highlighter-rouge">Bootstrap</code> and <code class="language-plaintext highlighter-rouge">AppInjector</code> has been replaced by <code class="language-plaintext highlighter-rouge">Injector</code>.</p>
+
+<div class="language-diff highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gd">-AppInjector
+-Bootstrap
+</span><span class="gi">+Injector.
+</span></code></pre></div></div>
+
+<p>In the case of <code class="language-plaintext highlighter-rouge">BEAR\Package\Injector::getInstance()</code>, the Depending on the context, different injectors are passed for production and development.
+Production writes out a  DI script file with <code class="language-plaintext highlighter-rouge">ScriptInjector</code>, or no writing out DI files for development <code class="language-plaintext highlighter-rouge">Ray\Di\Injector</code>.</p>
+
+<p>The interface and the usage is the same.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$injector</span> <span class="o">=</span> <span class="nc">Injector</span><span class="o">::</span><span class="nf">getInstance</span><span class="p">(</span><span class="nv">$context</span><span class="p">);</span>
+<span class="nv">$instance</span> <span class="o">=</span> <span class="nv">$injector</span><span class="o">-&gt;</span><span class="nf">getInsntance</span><span class="p">(</span><span class="nv">$interface</span><span class="p">,</span> <span class="n">name</span><span class="p">);</span>
+</code></pre></div></div>
+
+<h2 id="advantages">Advantages</h2>
+
+<ul>
+  <li>
+    <p>The <code class="language-plaintext highlighter-rouge">ScriptInjector</code> doesn’t erase files on the first request and is more secure.</p>
+  </li>
+  <li>
+    <p>The <code class="language-plaintext highlighter-rouge">RayRay\DiDi\Injector</code> does not output a DI file to <code class="language-plaintext highlighter-rouge">var\tmp</code>. Development injection is faster (especially with Docker).</p>
+  </li>
+  <li>
+    <p>Optimized for container environments.</p>
+  </li>
+  <li>
+    <p>The <code class="language-plaintext highlighter-rouge">AppInjector</code> has been optimized for different compile and runtime environments.</p>
+  </li>
+</ul>
+
+<p>In the old <code class="language-plaintext highlighter-rouge">AppInjector</code>, the injector instance is retrieved every time. However, with the new <code class="language-plaintext highlighter-rouge">Injector</code>, a singleton will be shared between tests.
+Speeds are dramatically improved and you won’t run out of connections on a DB connection per test.</p>
+
+<p>The more application- and context-spanning accesses are possible in the same memory space, the more difficult it is to implement. Clean and improved.
+Swoole and other runtime environments (not PHP’s shared-nothing architecture) But it runs safer and faster.</p>
+
+<h2 id="how-to-upgrade">How to upgrade</h2>
+
+<h3 id="step-1">Step 1</h3>
+
+<p>Put the <code class="language-plaintext highlighter-rouge">Injector</code> of the application in <code class="language-plaintext highlighter-rouge">src/Injector.php</code> and add the following lines of code Change the <code class="language-plaintext highlighter-rouge">Vendor\Package</code> to your project name.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+<span class="kn">namespace</span> <span class="nn">Vendor\Package</span><span class="p">;</span>
+
+<span class="kn">use</span> <span class="nc">BEAR\Package\Injector</span> <span class="k">as</span> <span class="nc">PackageInjector</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">Ray\Di\InjectorInterface</span><span class="p">;</span>
+
+<span class="k">final</span> <span class="kd">class</span> <span class="nc">Injector</span>
+<span class="p">{</span>
+    <span class="k">private</span> <span class="k">function</span> <span class="n">__construct</span><span class="p">()</span>
+    <span class="p">{</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="n">getInstance</span><span class="p">(</span><span class="kt">string</span> <span class="nv">$context</span><span class="p">)</span> <span class="p">:</span> <span class="kt">InjectorInterface</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="nc">PackageInjector</span><span class="o">::</span><span class="nf">getInstance</span><span class="p">(</span><span class="k">__NAMESPACE__</span><span class="p">,</span> <span class="nv">$context</span><span class="p">,</span> <span class="nb">dirname</span><span class="p">(</span><span class="k">__DIR__</span><span class="p">));</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="step-2">Step 2</h3>
+
+<p>Change the <code class="language-plaintext highlighter-rouge">bootstrap.php</code>.</p>
+
+<div class="language-diff highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gd">-$app = (new Bootstrap)-&gt;getApp($name, $context, __DIR__);
+</span><span class="gi">+$app = \Vendor\Package\Injector::getInstance($context)-&gt;getInstance(\BEAR\Sunday\Extension\Application\AppInterface::class);
+</span></code></pre></div></div>
+
+<h3 id="step-3">Step 3</h3>
+
+<p>Change the AppInjector used in <code class="language-plaintext highlighter-rouge">tests/</code>.</p>
+
+<div class="language-diff highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gd">-new AppInjector('Vendor\Package', 'test-hal-api-app');
+</span><span class="gi">+\Vendor\Package\Injector::getInstance('test-hal-api-app');
+</span></code></pre></div></div>
+
+<p>Getting an injector for another application in a multi-application project Use the Inner Inner Inner Designer of BEARPackage in the case of</p>
+
+<div class="language-diff highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gd">-new AppInjector('Vendor\Package', 'test-hal-api-app');
+</span><span class="gi">+\BEAR\Package\Injector::getInstance('Vendor\Package', 'test-hal-api-app', $appDir);
+</span></code></pre></div></div>
+
+<p>That’s it.</p>
+
+<h2 id="compatibility">Compatibility</h2>
+
+<p>Backward compatibility is preserved. The class <code class="language-plaintext highlighter-rouge">@deprecate</code> is still available and will not be deprecated.
+BEAR.Sunday project complies with semver seriously.</p>
+
+            </article>
+        </div>
+        <div id="ArticleToc" class="col-lg-2 d-none d-lg-block">
+            <nav class="nav side-bar-right"></nav>
+        </div>
+    </div>
+</main>
+<footer>
+    <div class="container d-md-flex">
+        <i class="bear-icon d-none d-lg-block"></i>
+        <small>
+            © 2011-2024 BEAR.Sunday
+        </small>
+        <ul class="navbar-nav flex-row ml-md-auto d-none d-md-flex">
+            <li>
+                <a href="https://gitter.im/bearsunday/BEAR.Sunday?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge">Gitter</a>
+            </li>
+            <li>
+                <a href="https://github.com/bearsunday/BEAR.Sunday">Github</a>
+            </li>
+            <li>
+                <a href="https://twitter.com/BEARSunday">Twitter</a>
+            </li>
+            <li>
+                <a href="https://www.facebook.com/pages/BEARSunday/110116939178462?ref=hl">Facebook</a>
+            </li>
+            <li>
+                <a href="http://koriym.github.io/">Blog (JA)</a>
+            </li>
+            <li>
+                <a href="https://github.com/bearsunday/bearsunday.github.io">PR ?</a>
+            </li>
+        </ul>
+    </div>
+</footer>
+<script src="//code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+<script>
+    window.ga = function () { ga.q.push(arguments) }; ga.q = []; ga.l = +new Date;
+    ga('create', 'UA-6074569-8', 'bearsunday.github.io'); ga('send', 'pageview');
+</script>
+<script src="https://www.google-analytics.com/analytics.js" async defer></script>
+
+<script src="/js/generate-table-of-contents/index.min.js"></script>
+<script>
+    var toc = generateTableOfContents(document.getElementById('article'));
+    var sideBarRight = $('.side-bar-right');
+    sideBarRight.append(toc);
+
+    var scrollOffset = $('body').attr('data-offset');
+    var articlePaddingTop = $('article').css('padding-top').replace('px', '');
+    sideBarRight.find('a').on('click', function (e) {
+        e.preventDefault();
+        var targetId = $(this).attr('href');
+        var targetPositionTop = $(targetId).offset().top - scrollOffset - articlePaddingTop;
+        window.scrollTo(0, targetPositionTop)
+    });
+</script>
+
+</body>
+</html>

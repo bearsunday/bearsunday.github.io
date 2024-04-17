@@ -1,0 +1,464 @@
+<!doctype html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>HTTPキャッシュ &#124; BEAR.Sunday</title>
+    <meta name="description" content="BEAR.Sunday is a resource orientated framework with a REST centered architecture, implementing Dependency Injection and Aspect Orientated Programming' at its core.">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/github-markdown-css/2.10.0/github-markdown.css">
+    <link rel="stylesheet" href="/css/syntax.css">
+    
+    <link rel="stylesheet" href="/css/bearsunday.css">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="apple-touch-icon" href="/icon.png">
+</head>
+<body data-page-category="Manual" data-spy="scroll" data-target="#ArticleToc" data-offset="65">
+<header>
+    <nav class="navbar navbar-expand flex-column flex-md-row bg-light">
+        <a class="navbar-brand mr-0 mr-md-2" href="/index.html"></a>
+        <div class="navbar-nav-scroll">
+            <ul class="navbar-nav flex-row">
+                <li class="nav-item">
+                    <a class="nav-link " href="/index.html">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="/manuals/1.0/en/index.html">Manual</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link " href="/contributors.html">Contributors</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/slide.html">Slide</a>
+                </li>
+            </ul>
+        </div>
+        
+        <ul class="navbar-nav ml-md-auto d-none d-md-flex language-list">
+            <li>
+                <a class="" href="/manuals/1.0/en/http-cache.html">En</a>
+            </li>
+            <li>
+                <a class="active" href="/manuals/1.0/ja/http-cache.html">Ja</a>
+            </li>
+        </ul>
+        
+    </nav>
+</header>
+
+<main class="container-fluid">
+    <div class="row flex-xl-nowrap">
+        <div class="col-md-3 col-lg-2">
+            <div class="side-bar">
+                <nav class="navbar navbar-expand-md navbar-light">
+    <div class="navigation-header">
+        <div class="ml-auto d-sm-block d-md-none">
+            <ul class="navbar-nav language-list">
+                <li>
+                    <a class="" href="/manuals/1.0/en/http-cache.html">En</a>
+                </li>
+                <li>
+                    <a class="active" href="/manuals/1.0/ja/http-cache.html">Ja</a>
+                </li>
+            </ul>
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#Navber" aria-controls="Navber" aria-expanded="false" aria-label="ナビゲーションの切替">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+    </div>
+    <div class="collapse navbar-collapse" id="Navber">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/index.html">イントロダクション</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/version.html">バージョン</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/quick-start.html">クイックスタート</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/tutorial.html">チュートリアル</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/tutorial2.html">チュートリアル 2</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/package.html">パッケージ</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/application.html">アプリケーション</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/module.html">モジュール</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/di.html">DI</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/aop.html">AOP</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/resource.html">リソース</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/resource_param.html">・パラメーター</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/resource_link.html">・リンク</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/resource_renderer.html">・レンダリングと転送</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/router.html">ルーター</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/production.html">プロダクション</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/ja/import.html">インポート</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/database.html">データベース</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/html.html">HTML</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/validation.html">バリデーション</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/form.html">フォーム</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/content-negotiation.html">コンテントネゴシエーション</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/hypermedia-api.html">ハイパーメディア API</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/psr7.html">リクエスト / PSR-7</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/js-ui.html">JavaScript UI</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/stream.html">ストリーム出力</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" href="/manuals/1.0/ja/cache.html">キャッシュ</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/swoole.html">Swoole</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/coding-guide.html">コーディングガイド</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/types.html">タイプ</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/test.html">テスト</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/examples.html">サンプル</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/upgrade/injector.html">アップグレード</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/attribute.html">アトリビュート</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/apidoc.html">API Doc</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/1page.html">1 Page</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+            </div>
+        </div>
+        <div class="col-md-9 col-lg-8">
+            <article id="article" class="markdown-body">
+                <h1 id="httpキャッシュ">HTTPキャッシュ</h1>
+
+<p><a href="https://triple-underscore.github.io/RFC2616-ja.html#section-13">RFC2616 Hypertext Transfer Protocol (HTTP/1.1): Caching</a>ではHTTPキャッシュの目的を以下のように定めています。</p>
+
+<blockquote>
+  <p>HTTP/1.1 のキャッシングの目的は<strong>リクエストを送る必要を無くしたり、全レスポンスを送る必要を無くす事</strong>です。</p>
+</blockquote>
+
+<p>BEAR.Sundayでは<code class="language-plaintext highlighter-rouge">@Cacheable</code>アノテーションによるサーバーサイドでのキャッシュが仕組みがありますが、これを<a href="https://triple-underscore.github.io/RFC7234-ja.html">RFC7234 HTTPキャッシュ</a>にも適用してネットワークキャッシュ（クライアントサイドキャッシュ）をサポートします。</p>
+
+<p>REST標準のキャッシュ制約に従う事で<strong>RFC7234</strong>をサポートしたHTTPクライアントでは、クラアイントでのコーディングなしにクライアントサイドキャッシュやキャッシュサーバーの使用が可能になります。</p>
+
+<h2 id="cache-controlヘッダー">Cache-Controlヘッダー</h2>
+
+<h3 id="ディレクティブ">ディレクティブ</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>ディレクティブ</th>
+      <th>説明</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>public</td>
+      <td>クライアント間の共有キャッシュの利用</td>
+    </tr>
+    <tr>
+      <td>private</td>
+      <td>クライアントでキャッシュを共有しない</td>
+    </tr>
+    <tr>
+      <td>no-store</td>
+      <td>キャッシュしません</td>
+    </tr>
+    <tr>
+      <td>no-cache</td>
+      <td>キャッシュの利用にオリジンサーバーへの検証が必要。<sup id="fnref:3" role="doc-noteref"><a href="#fn:3" class="footnote" rel="footnote">1</a></sup></td>
+    </tr>
+    <tr>
+      <td>must-revalidate</td>
+      <td>期限の切れたキャッシュの利用に必ず検証が必要。</td>
+    </tr>
+    <tr>
+      <td>max-age</td>
+      <td>キャッシュの有効期限</td>
+    </tr>
+    <tr>
+      <td>s-maxage</td>
+      <td>共有キャッシュの有効期限</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="publicとprivate">publicとprivate</h3>
+
+<p><code class="language-plaintext highlighter-rouge">public</code>の場合、レスポンスにHTTP認証が関連付けられているとしても、レスポンスのステータスコードが通常キャッシュ可能になっていない場合でもキャッシュできます。通常は<code class="language-plaintext highlighter-rouge">max-age</code>など明示的なキャッシュ情報によってレスポンスがキャッシュ可能であることが指定されているため<code class="language-plaintext highlighter-rouge">public</code>は必要ありません。</p>
+
+<p>一方、<code class="language-plaintext highlighter-rouge">private</code>レスポンスは、ブラウザのキャッシュには格納できますが、通常、対象ユーザーは1人のため、中間キャッシュに格納することは認められません。たとえば個人的なユーザー情報はそのユーザーのクライアントでのみキャッシュされCDNではキャッシュされません。</p>
+
+<h3 id="no-cacheとno-store">no-cacheとno-store</h3>
+
+<p><code class="language-plaintext highlighter-rouge">no-cache</code>はキャッシュ可能かどうか、つまりレスポンスに変更があったかどうかを確認する必要があることを示します。リクエストヘッダーの検証トークン（ETag）を検査し、リソースに変更がなければHTTPコード<code class="language-plaintext highlighter-rouge">304</code>を返答し、レスポンスボディを省略する事ができます。</p>
+
+<p><code class="language-plaintext highlighter-rouge">no-store</code>は単純にレスポンスのすべてのキャッシュを禁止します。</p>
+
+<p>###</p>
+<h3 id="最適なcache-control-ポリシーの定義">最適なCache-Control ポリシーの定義<sup id="fnref:5" role="doc-noteref"><a href="#fn:5" class="footnote" rel="footnote">2</a></sup></h3>
+
+<p><img src="https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/images/http-cache-decision-tree.png?hl=ja" /></p>
+
+<h2 id="cacheable">@Cacheable</h2>
+
+<p>例）サーバーサイドで30秒キャシュ、クライアントでも30秒キャシュ。</p>
+
+<p>サーバーサイドで指定してるのでクライアントサイドでも同じ秒数でキャッシュされます。この時に<code class="language-plaintext highlighter-rouge">@HttpCache</code>アノテーションは必要ありません。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">use</span> <span class="nc">BEAR\RepositoryModule\Annotation\Cacheable</span><span class="p">;</span>
+
+<span class="cd">/**
+ * @Cacheable(expirySecond=30)
+ */</span>
+<span class="kd">class</span> <span class="nc">CachedResource</span> <span class="kd">extends</span> <span class="nc">ResourceObject</span>
+<span class="p">{</span>
+</code></pre></div></div>
+
+<p>例）指定した有効期限(<code class="language-plaintext highlighter-rouge">$body['expiry_at']</code>の日付)までサーバー、クライアント供にキャッシュ</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">use</span> <span class="nc">BEAR\RepositoryModule\Annotation\Cacheable</span><span class="p">;</span>
+
+<span class="cd">/**
+ * @Cacheable(expiryAt="expiry_at")
+ */</span>
+<span class="kd">class</span> <span class="nc">CachedResource</span> <span class="kd">extends</span> <span class="nc">ResourceObject</span>
+<span class="p">{</span>
+</code></pre></div></div>
+
+<h2 id="httpcache">@HttpCache</h2>
+
+<p>例）プライベートで30秒キャシュ</p>
+
+<p>認証情報などクライアントで共用できないプラベート情報は<code class="language-plaintext highlighter-rouge">isPrivate</code>を指定します。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">use</span> <span class="nc">BEAR\RepositoryModule\Annotation\HttpCache</span><span class="p">;</span>
+
+<span class="cd">/**
+ * @HttpCache(isPrivate=true, max-age=60)
+ */</span>
+<span class="kd">class</span> <span class="nc">CachedResource</span> <span class="kd">extends</span> <span class="nc">ResourceObject</span>
+<span class="p">{</span>
+</code></pre></div></div>
+
+<p>例）更新されていないか都度確認します<sup id="fnref:2" role="doc-noteref"><a href="#fn:2" class="footnote" rel="footnote">3</a></sup>。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">use</span> <span class="nc">BEAR\RepositoryModule\Annotation\NoHttpCache</span><span class="p">;</span>
+
+<span class="cd">/**
+ * @HttpCache(noCache=true)
+ */</span>
+<span class="kd">class</span> <span class="nc">CachedResource</span> <span class="kd">extends</span> <span class="nc">ResourceObject</span>
+<span class="p">{</span>
+</code></pre></div></div>
+
+<p>例）上記と同じですが、更新されていないならプライベートキャッシュのみを利用します。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">use</span> <span class="nc">BEAR\RepositoryModule\Annotation\NoHttpCache</span><span class="p">;</span>
+
+<span class="cd">/**
+ * @HttpCache(is_private=true, noCache=true)
+ */</span>
+<span class="kd">class</span> <span class="nc">CachedResource</span> <span class="kd">extends</span> <span class="nc">ResourceObject</span>
+<span class="p">{</span>
+</code></pre></div></div>
+
+<h3 id="nohttpcache">@NoHttpCache</h3>
+
+<p>クライアントキャッシュしない時は<code class="language-plaintext highlighter-rouge">@NoHttpCache</code>で指定します。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">use</span> <span class="nc">BEAR\RepositoryModule\Annotation\NoHttpCache</span><span class="p">;</span>
+
+<span class="cd">/**
+ * @NoHttpCache
+ */</span>
+<span class="kd">class</span> <span class="nc">UncacheableResource</span> <span class="kd">extends</span> <span class="nc">ResourceObject</span>
+<span class="p">{</span>
+</code></pre></div></div>
+
+<p>この時に<code class="language-plaintext highlighter-rouge">@Cacheable</code>でサーバーサイドでキャッシュすることは可能です。</p>
+
+<h2 id="レスポンスヘッダ">レスポンスヘッダ</h2>
+
+<p>キャッシュされたレスポンスには<code class="language-plaintext highlighter-rouge">Last-Modified</code>、<code class="language-plaintext highlighter-rouge">Etag</code>、<code class="language-plaintext highlighter-rouge">Age</code>ヘッダーが付加されます。
+<code class="language-plaintext highlighter-rouge">Last-Modified</code>ヘッダーはキャッシュが保存された時間、<code class="language-plaintext highlighter-rouge">Age</code>ヘッダーは保存されてからの経過時間が表示されます。</p>
+
+<p>キャッシュがヒットしたかどうかは<code class="language-plaintext highlighter-rouge">Age</code>ヘッダー（キャッシュ生成後経過秒数）の存在で分かります。<sup id="fnref:1" role="doc-noteref"><a href="#fn:1" class="footnote" rel="footnote">4</a></sup></p>
+
+<h2 id="リクエストヘッダ">リクエストヘッダ</h2>
+
+<p><code class="language-plaintext highlighter-rouge">Vary</code>ヘッダーで指定したリクエストヘッダでレスポンスが変わることを指定できます。言語や、ユーザーエージェント等、認証ID別にキャッシュを持つことができます。</p>
+
+<h2 id="rfc7234対応クライアント">RFC7234対応クライアント</h2>
+
+<ul>
+  <li>iOS <a href="https://nshipster.com/nsurlcache/">NSURLCache</a></li>
+  <li>Android <a href="https://developer.android.com/reference/android/net/http/HttpResponseCache">HttpResponseCache</a></li>
+  <li>PHP <a href="https://github.com/Kevinrob/guzzle-cache-middleware">guzzle-cache-middleware</a></li>
+  <li>JavaScript(Node) <a href="https://www.npmjs.com/package/cacheable-request">cacheable-request</a></li>
+  <li>Go <a href="https://github.com/lox/httpcache">lox/httpcache</a></li>
+  <li>Ruby <a href="https://github.com/plataformatec/faraday-http-cache">faraday-http-cache</a></li>
+  <li>Python <a href="https://pypi.org/project/requests-cache/">requests-cache</a></li>
+</ul>
+
+<h2 id="有効なキャッシュのために">有効なキャッシュのために</h2>
+
+<ul>
+  <li>一貫したURIを使用する。<sup id="fnref:7" role="doc-noteref"><a href="#fn:7" class="footnote" rel="footnote">5</a></sup></li>
+  <li>クラアイントサイドでのキャッシュを優先して検討する</li>
+  <li>適切な有効期限(<code class="language-plaintext highlighter-rouge">max-age</code>）を設定する。</li>
+  <li>ユーザー単位で格納されるリソースも<code class="language-plaintext highlighter-rouge">private</code>でキャッシュする。</li>
+  <li>本当にキャッシュできないコンテンツのみ<code class="language-plaintext highlighter-rouge">no-store</code>を使用する。</li>
+  <li>HTTP APIクライアントにRFC7234対応クライアントを使用する。</li>
+</ul>
+
+<h2 id="link">Link</h2>
+
+<ul>
+  <li><a href="https://www.youtube.com/watch?v=761puUy8ir4">HTTP Caching - Client and Network Caching with RFC 7234</a></li>
+  <li><a href="https://blog.apisyouwonthate.com/speeding-up-apis-apps-smart-toasters-with-http-response-caching-a67becf829c6">Speeding Up APIs/Apps/Smart Toasters with HTTP Response Caching</a></li>
+</ul>
+
+<hr />
+
+<div class="footnotes" role="doc-endnotes">
+  <ol>
+    <li id="fn:3" role="doc-endnote">
+      <p><code class="language-plaintext highlighter-rouge">no-cache</code>という名前ですが、キャッシュは行います。 <a href="#fnref:3" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+    <li id="fn:5" role="doc-endnote">
+      <p>https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/http-caching?hl=ja より引用 <a href="#fnref:5" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+    <li id="fn:2" role="doc-endnote">
+      <p><code class="language-plaintext highlighter-rouge">ETag</code>と<code class="language-plaintext highlighter-rouge">If-not-modified</code>リクエストヘッダーが使われます。 <a href="#fnref:2" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+    <li id="fn:1" role="doc-endnote">
+      <p>キャッシュテストに便利です。 <a href="#fnref:1" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+    <li id="fn:7" role="doc-endnote">
+      <p>大文字と小文字が区別されます。 <a href="#fnref:7" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+  </ol>
+</div>
+
+            </article>
+        </div>
+        <div id="ArticleToc" class="col-lg-2 d-none d-lg-block">
+            <nav class="nav side-bar-right"></nav>
+        </div>
+    </div>
+</main>
+<footer>
+    <div class="container d-md-flex">
+        <i class="bear-icon d-none d-lg-block"></i>
+        <small>
+            © 2011-2024 BEAR.Sunday
+        </small>
+        <ul class="navbar-nav flex-row ml-md-auto d-none d-md-flex">
+            <li>
+                <a href="https://gitter.im/bearsunday/BEAR.Sunday?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge">Gitter</a>
+            </li>
+            <li>
+                <a href="https://github.com/bearsunday/BEAR.Sunday">Github</a>
+            </li>
+            <li>
+                <a href="https://twitter.com/BEARSunday">Twitter</a>
+            </li>
+            <li>
+                <a href="https://www.facebook.com/pages/BEARSunday/110116939178462?ref=hl">Facebook</a>
+            </li>
+            <li>
+                <a href="http://koriym.github.io/">Blog (JA)</a>
+            </li>
+            <li>
+                <a href="https://github.com/bearsunday/bearsunday.github.io">PR ?</a>
+            </li>
+        </ul>
+    </div>
+</footer>
+<script src="//code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+<script>
+    window.ga = function () { ga.q.push(arguments) }; ga.q = []; ga.l = +new Date;
+    ga('create', 'UA-6074569-8', 'bearsunday.github.io'); ga('send', 'pageview');
+</script>
+<script src="https://www.google-analytics.com/analytics.js" async defer></script>
+
+<script src="/js/generate-table-of-contents/index.min.js"></script>
+<script>
+    var toc = generateTableOfContents(document.getElementById('article'));
+    var sideBarRight = $('.side-bar-right');
+    sideBarRight.append(toc);
+
+    var scrollOffset = $('body').attr('data-offset');
+    var articlePaddingTop = $('article').css('padding-top').replace('px', '');
+    sideBarRight.find('a').on('click', function (e) {
+        e.preventDefault();
+        var targetId = $(this).attr('href');
+        var targetPositionTop = $(targetId).offset().top - scrollOffset - articlePaddingTop;
+        window.scrollTo(0, targetPositionTop)
+    });
+</script>
+
+</body>
+</html>
+

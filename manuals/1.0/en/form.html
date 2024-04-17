@@ -1,0 +1,437 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Form &#124; BEAR.Sunday</title>
+    <meta name="description" content="BEAR.Sunday is a resource orientated framework with a REST centered architecture, implementing Dependency Injection and Aspect Orientated Programming' at its core.">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/github-markdown-css/2.10.0/github-markdown.css">
+    <link rel="stylesheet" href="/css/syntax.css">
+    
+    <link rel="stylesheet" href="/css/bearsunday.css">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="apple-touch-icon" href="/icon.png">
+</head>
+<body data-page-category="Manual" data-spy="scroll" data-target="#ArticleToc" data-offset="65">
+<header>
+    <nav class="navbar navbar-expand flex-column flex-md-row bg-light">
+        <a class="navbar-brand mr-0 mr-md-2" href="/index.html"></a>
+        <div class="navbar-nav-scroll">
+            <ul class="navbar-nav flex-row">
+                <li class="nav-item">
+                    <a class="nav-link " href="/index.html">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="/manuals/1.0/en/index.html">Manual</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link " href="/contributors.html">Contributors</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/slide.html">Slide</a>
+                </li>
+            </ul>
+        </div>
+        
+        <ul class="navbar-nav ml-md-auto d-none d-md-flex language-list">
+            <li>
+                <a class="active" href="/manuals/1.0/en/form.html">En</a>
+            </li>
+            <li>
+                <a class="" href="/manuals/1.0/ja/form.html">Ja</a>
+            </li>
+        </ul>
+        
+    </nav>
+</header>
+
+<main class="container-fluid">
+    <div class="row flex-xl-nowrap">
+        <div class="col-md-3 col-lg-2">
+            <div class="side-bar">
+                <nav class="navbar navbar-expand-md navbar-light">
+    <div class="navigation-header">
+        <div class="ml-auto d-sm-block d-md-none">
+            <ul class="navbar-nav language-list">
+                <li>
+                    <a class="active" href="/manuals/1.0/en/form.html">En</a>
+                </li>
+                <li>
+                    <a class="" href="/manuals/1.0/ja/form.html">Ja</a>
+                </li>
+            </ul>
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#Navber" aria-controls="Navber" aria-expanded="false" aria-label="ナビゲーションの切替">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+    </div>
+    <div class="collapse navbar-collapse" id="Navber">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/">Introduction</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/version.html">Version</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/quick-start.html">Quick Start</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/tutorial.html">Tutorial</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/tutorial2.html">Tutorial 2</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/package.html">Package</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/application.html">Application</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/module.html">Module</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/di.html">DI</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/aop.html">AOP</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/resource.html">Resource</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/resource_param.html">・Parameter</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/resource_link.html">・Link</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/resource_renderer.html">・Rendering and Transfer</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/router.html">Router</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/production.html">Production</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/import.html">Import</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/database.html">Database</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/validation.html">Validation</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/html.html">HTML</a>
+            </li>
+            <li>
+                <a class="nav-link active" href="/manuals/1.0/en/form.html">Form</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/content-negotiation.html">Content Negotiation</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/hypermedia-api.html">Hypermedia API</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/psr7.html">Request / PSR-7</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/js-ui.html">JavaScript UI</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/stream.html">Stream Response</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/cache.html">Cache</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/swoole.html">Swoole</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/coding-guide.html">Coding Guide</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/types.html">Type</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/test.html">Test</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/examples.html">Examples</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/attribute.html">Attribute</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/apidoc.html">API Doc</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/1page.html">1 Page</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+            </div>
+        </div>
+        <div class="col-md-9 col-lg-8">
+            <article id="article" class="markdown-body">
+                <h1 id="form">Form</h1>
+
+<p>Each related function of Web Forms using <a href="https://github.com/auraphp/Aura.Input">Aura.Input</a> and <a href="https://github.com/auraphp/Aura.Filter">Aura.Filter</a> is aggregated to a single class so that it is easy to test and change.
+We can use a corresponding class for the use of Web Forms and validation.</p>
+
+<h2 id="install">Install</h2>
+
+<p>Install <code class="language-plaintext highlighter-rouge">ray/web-form-module</code> via composer to add form using Aura.Input</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>composer require ray/web-form-module
+</code></pre></div></div>
+
+<p>Install <code class="language-plaintext highlighter-rouge">AuraInputModule</code> in our application module <code class="language-plaintext highlighter-rouge">src/Module/AppModule.php</code></p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">use</span> <span class="nc">BEAR\Package\AbstractAppModule</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">Ray\WebFormModule\WebFormModule</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">AppModule</span> <span class="kd">extends</span> <span class="nc">AbstractAppModule</span>
+<span class="p">{</span>
+    <span class="k">protected</span> <span class="k">function</span> <span class="n">configure</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="c1">// ...</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">install</span><span class="p">(</span><span class="k">new</span> <span class="nc">AuraInputModule</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="web-form">Web Form</h2>
+
+<p>Create <strong>a form class</strong> that defines the registration and the rules of form elements, then bind it to a method using <code class="language-plaintext highlighter-rouge">@FormValidation</code> annotation.
+The method runs only when the sent data is validated.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">use</span> <span class="nc">Ray\WebFormModule\AbstractForm</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">Ray\WebFormModule\SetAntiCsrfTrait</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">MyForm</span> <span class="kd">extends</span> <span class="nc">AbstractForm</span>
+<span class="p">{</span>
+    <span class="cd">/**
+     * {@inheritdoc}
+     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">init</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="c1">// set input fields</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">setField</span><span class="p">(</span><span class="s1">'name'</span><span class="p">,</span> <span class="s1">'text'</span><span class="p">)</span>
+             <span class="o">-&gt;</span><span class="nf">setAttribs</span><span class="p">([</span>
+                 <span class="s1">'id'</span> <span class="o">=&gt;</span> <span class="s1">'name'</span>
+             <span class="p">]);</span>
+        <span class="c1">// set rules and user defined error message</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">filter</span><span class="o">-&gt;</span><span class="nf">validate</span><span class="p">(</span><span class="s1">'name'</span><span class="p">)</span><span class="o">-&gt;</span><span class="nf">is</span><span class="p">(</span><span class="s1">'alnum'</span><span class="p">);</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">filter</span><span class="o">-&gt;</span><span class="nf">useFieldMessage</span><span class="p">(</span><span class="s1">'name'</span><span class="p">,</span> <span class="s1">'Name must be alphabetic only.'</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>We can register the input elements in the <code class="language-plaintext highlighter-rouge">init()</code> method of the form class and apply the rules of validation and sanitation.
+Please refer to <a href="https://github.com/auraphp/Aura.Filter/blob/2.x/docs/validate.md">Rules To Validate Fields</a> of Aura.Filter with respect to validation rules, and <a href="https://github.com/auraphp/Aura.Filter/blob/2.x/docs/sanitize.md">Rules To Sanitize Fields</a> with respect to sanitize rules.</p>
+
+<p>We validate an associative array of the argument of the method.
+If we want to change the input, we can set the values by implementing <code class="language-plaintext highlighter-rouge">submit()</code> method of <code class="language-plaintext highlighter-rouge">SubmitInterface</code> interface.</p>
+
+<h2 id="formvalidation-annotation">@FormValidation Annotation</h2>
+
+<p>Annotate the method that we want to validate with the <code class="language-plaintext highlighter-rouge">@FormValidation</code>, so that the validation is done in the form object specified by the <code class="language-plaintext highlighter-rouge">form</code> property before execution.
+When validation fails, the method with the <code class="language-plaintext highlighter-rouge">ValidationFailed</code> suffix is called.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">use</span> <span class="nc">Ray\Di\Di\Inject</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">Ray\Di\Di\Named</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">Ray\WebFormModule\Annotation\FormValidation</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">Ray\WebFormModule\FormInterface</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">MyController</span>
+<span class="p">{</span>
+    <span class="cd">/**
+     * @var FormInterface
+     */</span>
+    <span class="k">protected</span> <span class="nv">$form</span><span class="p">;</span>
+
+    <span class="cd">/**
+     * @Inject
+     * @Named("contact_form")
+     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">setForm</span><span class="p">(</span><span class="kt">FormInterface</span> <span class="nv">$form</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">form</span> <span class="o">=</span> <span class="nv">$form</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="cd">/**
+     * @FormValidation
+     * // or
+     * @FormValidation(form="form", onFailure="onPostValidationFailed")
+     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onPost</span><span class="p">(</span><span class="nv">$name</span><span class="p">,</span> <span class="nv">$age</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="c1">// validation success</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onPostValidationFailed</span><span class="p">(</span><span class="nv">$name</span><span class="p">,</span> <span class="nv">$age</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="c1">// validation failed</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>We can explicitly specify the name and the method by changing the <code class="language-plaintext highlighter-rouge">form</code> property of <code class="language-plaintext highlighter-rouge">@FormValidation</code> annotation or the <code class="language-plaintext highlighter-rouge">onValidationFailed</code> property.</p>
+
+<p>The submit parameters will be passed to the <code class="language-plaintext highlighter-rouge">onPostValidationFailed</code> method.</p>
+
+<h2 id="view">View</h2>
+
+<p>Specify the element name to get the <code class="language-plaintext highlighter-rouge">input</code> elements and error messages</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="nv">$form</span><span class="o">-&gt;</span><span class="nf">input</span><span class="p">(</span><span class="s1">'name'</span><span class="p">);</span> <span class="c1">// &lt;input id="name" type="text" name="name" size="20" maxlength="20" /&gt;</span>
+  <span class="nv">$form</span><span class="o">-&gt;</span><span class="nf">error</span><span class="p">(</span><span class="s1">'name'</span><span class="p">);</span> <span class="c1">// "Please enter a double-byte characters or letters in the name." or blank</span>
+</code></pre></div></div>
+
+<p>The same applies to Twig template</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{{</span> <span class="n">form</span><span class="mf">.</span><span class="nf">input</span><span class="p">(</span><span class="s1">'name'</span><span class="p">)</span> <span class="p">}}</span>
+<span class="p">{{</span> <span class="n">form</span><span class="mf">.</span><span class="nf">error</span><span class="p">(</span><span class="s1">'name'</span><span class="p">)</span> <span class="p">}}</span>
+</code></pre></div></div>
+
+<h2 id="csrf-protections">CSRF Protections</h2>
+
+<p>We can add a CSRF(Cross site request forgeries) object to the form to apply CSRF protections.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">use</span> <span class="nc">Ray\WebFormModule\SetAntiCsrfTrait</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">MyForm</span> <span class="kd">extends</span> <span class="nc">AbstractAuraForm</span>
+<span class="p">{</span>
+    <span class="kn">use</span> <span class="nc">SetAntiCsrfTrait</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>In order to increase the security level, add a custom CSRF class that contains the user authentication to the form class.
+Please refer to the <a href="https://github.com/auraphp/Aura.Input#applying-csrf-protections">Applying CSRF Protections</a> of Aura.Input for more information.</p>
+
+<h2 id="inputvalidation-annotation">@InputValidation annotation</h2>
+
+<p>If we annotate the method with <code class="language-plaintext highlighter-rouge">@InputValidation</code> instead of <code class="language-plaintext highlighter-rouge">@FormValidation</code>, the exception <code class="language-plaintext highlighter-rouge">Ray\WebFormModule\Exception\ValidationException</code> is thrown when validation fails.
+For convenience, HTML representation is not used in this case.</p>
+
+<p>When we <code class="language-plaintext highlighter-rouge">echo</code> the <code class="language-plaintext highlighter-rouge">error</code> property of the caught exception, we can see the representation of the media type <a href="https://github.com/blongden/vnd.error">application/vnd.error+json</a>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">http_response_code</span><span class="p">(</span><span class="mi">400</span><span class="p">);</span>
+<span class="k">echo</span> <span class="nv">$e</span><span class="o">-&gt;</span><span class="n">error</span><span class="p">;</span>
+
+<span class="c1">// {</span>
+<span class="c1">//     "message": "Validation failed",</span>
+<span class="c1">//     "path": "/path/to/error",</span>
+<span class="c1">//     "validation_messages": {</span>
+<span class="c1">//         "name": [</span>
+<span class="c1">//             "Please enter a double-byte characters or letters in the name."</span>
+<span class="c1">//         ]</span>
+<span class="c1">//     }</span>
+<span class="c1">// }</span>
+</code></pre></div></div>
+
+<p>We can add the necessary information to <code class="language-plaintext highlighter-rouge">vnd.error+json</code> using <code class="language-plaintext highlighter-rouge">@VndError</code> annotation.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cd">/**
+ * @FormValidation(form="contactForm")
+ * @VndError(
+ *   message="foo validation failed",
+ *   logref="a1000", path="/path/to/error",
+ *   href={"_self"="/path/to/error", "help"="/path/to/help"}
+ * )
+ */</span>
+ <span class="k">public</span> <span class="k">function</span> <span class="n">onPost</span><span class="p">()</span>
+</code></pre></div></div>
+
+<h2 id="formvnderrormodule">FormVndErrorModule</h2>
+
+<p>If we install <code class="language-plaintext highlighter-rouge">Ray\WebFormModule\FormVndErrorModule</code>, the method annotated with <code class="language-plaintext highlighter-rouge">@FormValidation</code>
+will throw an exception in the same way as the method annotated with <code class="language-plaintext highlighter-rouge">@InputValidation</code>.
+We can use the page resources as API.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">FooModule</span> <span class="kd">extends</span> <span class="nc">AbstractModule</span>
+<span class="p">{</span>
+    <span class="k">protected</span> <span class="k">function</span> <span class="n">configure</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">install</span><span class="p">(</span><span class="k">new</span> <span class="nc">AuraInputModule</span><span class="p">);</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">override</span><span class="p">(</span><span class="k">new</span> <span class="nc">FormVndErrorModule</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="demo">Demo</h2>
+
+<p>Try the demo app <a href="https://github.com/bearsunday/MyVendor.ContactForm">MyVendor.ContactForm</a> to get an idea on how forms such as
+a confirmation form and multiple forms in a single page work.</p>
+
+            </article>
+        </div>
+        <div id="ArticleToc" class="col-lg-2 d-none d-lg-block">
+            <nav class="nav side-bar-right"></nav>
+        </div>
+    </div>
+</main>
+<footer>
+    <div class="container d-md-flex">
+        <i class="bear-icon d-none d-lg-block"></i>
+        <small>
+            © 2011-2024 BEAR.Sunday
+        </small>
+        <ul class="navbar-nav flex-row ml-md-auto d-none d-md-flex">
+            <li>
+                <a href="https://gitter.im/bearsunday/BEAR.Sunday?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge">Gitter</a>
+            </li>
+            <li>
+                <a href="https://github.com/bearsunday/BEAR.Sunday">Github</a>
+            </li>
+            <li>
+                <a href="https://twitter.com/BEARSunday">Twitter</a>
+            </li>
+            <li>
+                <a href="https://www.facebook.com/pages/BEARSunday/110116939178462?ref=hl">Facebook</a>
+            </li>
+            <li>
+                <a href="http://koriym.github.io/">Blog (JA)</a>
+            </li>
+            <li>
+                <a href="https://github.com/bearsunday/bearsunday.github.io">PR ?</a>
+            </li>
+        </ul>
+    </div>
+</footer>
+<script src="//code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+<script>
+    window.ga = function () { ga.q.push(arguments) }; ga.q = []; ga.l = +new Date;
+    ga('create', 'UA-6074569-8', 'bearsunday.github.io'); ga('send', 'pageview');
+</script>
+<script src="https://www.google-analytics.com/analytics.js" async defer></script>
+
+<script src="/js/generate-table-of-contents/index.min.js"></script>
+<script>
+    var toc = generateTableOfContents(document.getElementById('article'));
+    var sideBarRight = $('.side-bar-right');
+    sideBarRight.append(toc);
+
+    var scrollOffset = $('body').attr('data-offset');
+    var articlePaddingTop = $('article').css('padding-top').replace('px', '');
+    sideBarRight.find('a').on('click', function (e) {
+        e.preventDefault();
+        var targetId = $(this).attr('href');
+        var targetPositionTop = $(targetId).offset().top - scrollOffset - articlePaddingTop;
+        window.scrollTo(0, targetPositionTop)
+    });
+</script>
+
+</body>
+</html>

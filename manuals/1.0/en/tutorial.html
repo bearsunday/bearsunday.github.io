@@ -1,0 +1,1253 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Tutorial &#124; BEAR.Sunday</title>
+    <meta name="description" content="BEAR.Sunday is a resource orientated framework with a REST centered architecture, implementing Dependency Injection and Aspect Orientated Programming' at its core.">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/github-markdown-css/2.10.0/github-markdown.css">
+    <link rel="stylesheet" href="/css/syntax.css">
+    
+    <link rel="stylesheet" href="/css/bearsunday.css">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="apple-touch-icon" href="/icon.png">
+</head>
+<body data-page-category="Manual" data-spy="scroll" data-target="#ArticleToc" data-offset="65">
+<header>
+    <nav class="navbar navbar-expand flex-column flex-md-row bg-light">
+        <a class="navbar-brand mr-0 mr-md-2" href="/index.html"></a>
+        <div class="navbar-nav-scroll">
+            <ul class="navbar-nav flex-row">
+                <li class="nav-item">
+                    <a class="nav-link " href="/index.html">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="/manuals/1.0/en/index.html">Manual</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link " href="/contributors.html">Contributors</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/slide.html">Slide</a>
+                </li>
+            </ul>
+        </div>
+        
+        <ul class="navbar-nav ml-md-auto d-none d-md-flex language-list">
+            <li>
+                <a class="active" href="/manuals/1.0/en/tutorial.html">En</a>
+            </li>
+            <li>
+                <a class="" href="/manuals/1.0/ja/tutorial.html">Ja</a>
+            </li>
+        </ul>
+        
+    </nav>
+</header>
+
+<main class="container-fluid">
+    <div class="row flex-xl-nowrap">
+        <div class="col-md-3 col-lg-2">
+            <div class="side-bar">
+                <nav class="navbar navbar-expand-md navbar-light">
+    <div class="navigation-header">
+        <div class="ml-auto d-sm-block d-md-none">
+            <ul class="navbar-nav language-list">
+                <li>
+                    <a class="active" href="/manuals/1.0/en/tutorial.html">En</a>
+                </li>
+                <li>
+                    <a class="" href="/manuals/1.0/ja/tutorial.html">Ja</a>
+                </li>
+            </ul>
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#Navber" aria-controls="Navber" aria-expanded="false" aria-label="ナビゲーションの切替">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+    </div>
+    <div class="collapse navbar-collapse" id="Navber">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/">Introduction</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/version.html">Version</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/quick-start.html">Quick Start</a>
+            </li>
+            <li>
+                <a class="nav-link active" href="/manuals/1.0/en/tutorial.html">Tutorial</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/tutorial2.html">Tutorial 2</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/package.html">Package</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/application.html">Application</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/module.html">Module</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/di.html">DI</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/aop.html">AOP</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/resource.html">Resource</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/resource_param.html">・Parameter</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/resource_link.html">・Link</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/resource_renderer.html">・Rendering and Transfer</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/router.html">Router</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/production.html">Production</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/import.html">Import</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/database.html">Database</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/validation.html">Validation</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/html.html">HTML</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/form.html">Form</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/content-negotiation.html">Content Negotiation</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/hypermedia-api.html">Hypermedia API</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/psr7.html">Request / PSR-7</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/js-ui.html">JavaScript UI</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/stream.html">Stream Response</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/cache.html">Cache</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/swoole.html">Swoole</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/coding-guide.html">Coding Guide</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/types.html">Type</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/test.html">Test</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/examples.html">Examples</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/attribute.html">Attribute</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/apidoc.html">API Doc</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/1page.html">1 Page</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+            </div>
+        </div>
+        <div class="col-md-9 col-lg-8">
+            <article id="article" class="markdown-body">
+                <h1 id="tutorial">Tutorial</h1>
+
+<p>This tutorial introduces the basic features of BEAR.Sunday that use resources, DI, AOP, REST API etc.
+Each section of the source code of this project is committed at <a href="https://github.com/bearsunday/tutorial/commits/v2-php8.2">bearsunday/tutorial1</a>.</p>
+
+<h2 id="get-started">Get started</h2>
+
+<p>Let’s make a web service that returns the weekday for a given year-month-day.</p>
+
+<p>First, create a new project with <a href="https://getcomposer.org/">composer</a>.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>composer create-project bear/skeleton MyVendor.Weekday
+</code></pre></div></div>
+
+<p>Add the first application resource file at <code class="language-plaintext highlighter-rouge">src/Resource/App/Weekday.php</code></p>
+
+<h2 id="resource">Resource</h2>
+
+<p>First, create an application resource file in <code class="language-plaintext highlighter-rouge">src/Resource/App/Weekday.php</code>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+
+<span class="k">declare</span><span class="p">(</span><span class="n">strict_types</span><span class="o">=</span><span class="mi">1</span><span class="p">);</span>
+
+<span class="kn">namespace</span> <span class="nn">MyVendor\Weekday\Resource\App</span><span class="p">;</span>
+
+<span class="kn">use</span> <span class="nc">BEAR\Resource\ResourceObject</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">DateTimeImmutable</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">Weekday</span> <span class="kd">extends</span> <span class="nc">ResourceObject</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onGet</span><span class="p">(</span><span class="kt">int</span> <span class="nv">$year</span><span class="p">,</span> <span class="kt">int</span> <span class="nv">$month</span><span class="p">,</span> <span class="kt">int</span> <span class="nv">$day</span><span class="p">):</span> <span class="kt">static</span>
+    <span class="p">{</span>
+        <span class="nv">$dateTime</span> <span class="o">=</span> <span class="p">(</span><span class="k">new</span> <span class="nc">DateTimeImmutable</span><span class="p">)</span><span class="o">-&gt;</span><span class="nf">createFromFormat</span><span class="p">(</span><span class="s1">'Y-m-d'</span><span class="p">,</span> <span class="s2">"</span><span class="nv">$year</span><span class="s2">-</span><span class="nv">$month</span><span class="s2">-</span><span class="nv">$day</span><span class="s2">"</span><span class="p">);</span>
+        <span class="nv">$weekday</span> <span class="o">=</span> <span class="nv">$dateTime</span><span class="o">-&gt;</span><span class="nf">format</span><span class="p">(</span><span class="s1">'D'</span><span class="p">);</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">body</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'weekday'</span> <span class="o">=&gt;</span> <span class="nv">$weekday</span><span class="p">];</span>
+
+        <span class="k">return</span> <span class="nv">$this</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>This <code class="language-plaintext highlighter-rouge">MyVendor\Weekday\Resource\App\Weekday</code> resource class is mapped to the <code class="language-plaintext highlighter-rouge">/weekday</code> path (by default, Bear.Sunday automatically creates route based on the filename - this point will be explained later).
+The request query is automatically converted to PHP method parameters (internally, Bear.Sunday introspect the method parameters).</p>
+
+<p>Let’s try to access it in the console. Let’s try the error first.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>php bin/app.php get /weekday
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>400 Bad Request
+content-type: application/vnd.error+json
+
+{
+    "message": "Bad Request",
+    "logref": "e29567cd",
+</code></pre></div></div>
+
+<p>Errors are returned with the <a href="https://github.com/blongden/vnd.error">application/vnd.error+json</a> media type.
+<code class="language-plaintext highlighter-rouge">400</code> is the error code for a problem with the request. Errors are marked with a <code class="language-plaintext highlighter-rouge">logref</code> ID and can be found in <code class="language-plaintext highlighter-rouge">var/log/</code> for a detailed description of the error.</p>
+
+<p>Next, we will try a correct request with an argument.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>php bin/app.php get <span class="s1">'/weekday?year=2001&amp;month=1&amp;day=1'</span>
+</code></pre></div></div>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>200 OK
+Content-Type: application/hal+json
+
+<span class="o">{</span>
+    <span class="s2">"weekday"</span>: <span class="s2">"Mon"</span>,
+    <span class="s2">"_links"</span>: <span class="o">{</span>
+        <span class="s2">"self"</span>: <span class="o">{</span>
+            <span class="s2">"href"</span>: <span class="s2">"/weekday?year=2001&amp;month=1&amp;day=1"</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>The result is returned successfully with the <code class="language-plaintext highlighter-rouge">application/hal+json</code> media type.
+The previous example can be executed as a webservice as well. To do this, fire the built-in PHP server:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>php <span class="nt">-S</span> 127.0.0.1:8080 bin/app.php
+</code></pre></div></div>
+
+<p>Send a HTTP <code class="language-plaintext highlighter-rouge">GET</code> request with <code class="language-plaintext highlighter-rouge">curl</code> (or type the URL in your browser):</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl -i 'http://127.0.0.1:8080/weekday?year=2001&amp;month=1&amp;day=1'
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>HTTP/1.1 200 OK
+Host: 127.0.0.1:8080
+Date: Tue, 04 May 2021 01:55:59 GMT
+Connection: close
+X-Powered-By: PHP/8.0.3
+Content-Type: application/hal+json
+
+{
+    "weekday": "Mon",
+    "_links": {
+        "self": {
+            "href": "/weekday/2001/1/1"
+        }
+    }
+}
+</code></pre></div></div>
+
+<p>This resource class only has a GET method, therefore <code class="language-plaintext highlighter-rouge">405 Method Not Allowed</code> will be returned with any other HTTP method. Try it out!</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl -i -X POST 'http://127.0.0.1:8080/weekday?year=2001&amp;month=1&amp;day=1'
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>HTTP/1.1 405 Method Not Allowed
+...
+</code></pre></div></div>
+
+<p>You can use the OPTIONS method to retrieve the supported HTTP methods and the required parameters in the request. (<a href="https://tools.ietf.org/html/rfc7231#section-4.3.7">RFC7231</a>)</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl -i -X OPTIONS http://127.0.0.1:8080/weekday
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>HTTP/1.1 200 OK
+...
+Content-Type: application/json
+Allow: GET
+
+{
+    "GET": {
+        "parameters": {
+            "year": {
+                "type": "integer"
+            },
+            "month": {
+                "type": "integer"
+            },
+            "day": {
+                "type": "integer"
+            }
+        },
+        "required": [
+            "year",
+            "month",
+            "day"
+        ]
+    }
+}
+</code></pre></div></div>
+<h2 id="test">Test</h2>
+
+<p>Let’s create a resource test using <a href="https://phpunit.readthedocs.io/ja/latest/">PHPUnit</a>.
+Create test file at <code class="language-plaintext highlighter-rouge">tests/Resource/App/WeekdayTest.php</code>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+
+<span class="k">declare</span><span class="p">(</span><span class="n">strict_types</span><span class="o">=</span><span class="mi">1</span><span class="p">);</span>
+
+<span class="kn">namespace</span> <span class="nn">MyVendor\Weekday\Resource\App</span><span class="p">;</span>
+
+<span class="kn">use</span> <span class="nc">BEAR\Resource\ResourceInterface</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">MyVendor\Weekday\Injector</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">PHPUnit\Framework\TestCase</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">WeekdayTest</span> <span class="kd">extends</span> <span class="nc">TestCase</span>
+<span class="p">{</span>
+    <span class="k">private</span> <span class="kt">ResourceInterface</span> <span class="nv">$resource</span><span class="p">;</span>
+
+    <span class="k">protected</span> <span class="k">function</span> <span class="n">setUp</span><span class="p">():</span> <span class="kt">void</span>
+    <span class="p">{</span>
+        <span class="nv">$injector</span> <span class="o">=</span> <span class="nc">Injector</span><span class="o">::</span><span class="nf">getInstance</span><span class="p">(</span><span class="s1">'app'</span><span class="p">);</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">resource</span> <span class="o">=</span> <span class="nv">$injector</span><span class="o">-&gt;</span><span class="nf">getInstance</span><span class="p">(</span><span class="nc">ResourceInterface</span><span class="o">::</span><span class="n">class</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="n">testOnGet</span><span class="p">():</span> <span class="kt">void</span>
+    <span class="p">{</span>
+        <span class="nv">$ro</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">resource</span><span class="o">-&gt;</span><span class="nf">get</span><span class="p">(</span><span class="s1">'app://self/weekday'</span><span class="p">,</span> <span class="p">[</span><span class="s1">'year'</span> <span class="o">=&gt;</span> <span class="s1">'2001'</span><span class="p">,</span> <span class="s1">'month'</span> <span class="o">=&gt;</span> <span class="s1">'1'</span><span class="p">,</span> <span class="s1">'day'</span> <span class="o">=&gt;</span> <span class="s1">'1'</span><span class="p">]);</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">assertSame</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="nv">$ro</span><span class="o">-&gt;</span><span class="n">code</span><span class="p">);</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">assertSame</span><span class="p">(</span><span class="s1">'Mon'</span><span class="p">,</span> <span class="nv">$ro</span><span class="o">-&gt;</span><span class="n">body</span><span class="p">[</span><span class="s1">'weekday'</span><span class="p">]);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>In <code class="language-plaintext highlighter-rouge">setUp()</code>, an application injector that can be created by any object of the application given a context (app).
+The <code class="language-plaintext highlighter-rouge">Injector</code> is used to get the resource client (<code class="language-plaintext highlighter-rouge">ResourceInterface</code>), and the test method <code class="language-plaintext highlighter-rouge">testOnGet</code> is used to request and test the resource.</p>
+
+<p>Let’s run it.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./vendor/bin/phpunit
+</code></pre></div></div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>PHPUnit 9.5.4 by Sebastian Bergmann and contributors.
+
+....                                                                4 / 4 (100%)
+
+Time: 00:00.281, Memory: 14.00 MB
+</code></pre></div></div>
+
+<p>There are other commands to perform test and code checking.
+To get test coverage, run <code class="language-plaintext highlighter-rouge">composer coverage</code>.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>composer coverage
+</code></pre></div></div>
+
+<p><a href="https://pecl.php.net/package/pcov">pcov</a> provides a faster coverage measurement.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>composer pcov
+</code></pre></div></div>
+
+<p>You can see the details of the coverage by opening <code class="language-plaintext highlighter-rouge">build/coverage/index.html</code> with a web browser.</p>
+
+<p>You can inspect whether you are following coding standard with <code class="language-plaintext highlighter-rouge">composer cs</code> command.
+Fix it with <code class="language-plaintext highlighter-rouge">composer cs-fix</code> command.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>composer cs
+</code></pre></div></div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>composer cs-fix
+</code></pre></div></div>
+<h2 id="static-analysis">Static Analysis</h2>
+
+<p>Static analysis of the code is done with the <code class="language-plaintext highlighter-rouge">composer sa</code> command.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>composer sa
+</code></pre></div></div>
+
+<p>When I ran the code so far, the following error was detected by phpstan.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> ------ --------------------------------------------------------- 
+  Line   src/Resource/App/Weekday.php                             
+ ------ --------------------------------------------------------- 
+  15     Cannot call method format() on DateTimeImmutable|false.  
+ ------ --------------------------------------------------------- 
+</code></pre></div></div>
+
+<p>The previous code did not take into account the fact that <code class="language-plaintext highlighter-rouge">DateTimeImmutable::createFromFormat</code> will return false if an invalid value (such as -1 for the year) is passed.</p>
+
+<p>Let’s try it.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>php bin/app.php get '/weekday?year=-1&amp;month=1&amp;day=1'
+</code></pre></div></div>
+
+<p>PHP errors are still caught by the error handler and error messages are displayed with the correct <code class="language-plaintext highlighter-rouge">application/vnd.error+json</code> media type, but
+To pass the static parsing check, you can either <code class="language-plaintext highlighter-rouge">assert</code> the result of <code class="language-plaintext highlighter-rouge">DateTimeImmutable</code> or add code to check the type and throw an exception.</p>
+<h3 id="assert">assert</h3>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$dateTime</span> <span class="o">=</span><span class="p">(</span><span class="k">new</span> <span class="nc">DateTimeImmutable</span><span class="p">)</span><span class="o">-&gt;</span><span class="nf">createFromFormat</span><span class="p">(</span><span class="s1">'Y-m-d'</span><span class="p">,</span> <span class="s2">"</span><span class="nv">$year</span><span class="s2">-</span><span class="nv">$month</span><span class="s2">-</span><span class="nv">$day</span><span class="s2">"</span><span class="p">);</span>
+<span class="nb">assert</span><span class="p">(</span><span class="nv">$dateTime</span> <span class="k">instanceof</span> <span class="nc">DateTimeImmutable</span><span class="p">);</span>
+</code></pre></div></div>
+
+<h3 id="exception">Exception</h3>
+
+<p>First, create a dedicated exception <code class="language-plaintext highlighter-rouge">src/Exception/InvalidDateTimeException.php</code>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+
+<span class="k">declare</span><span class="p">(</span><span class="n">strict_types</span><span class="o">=</span><span class="mi">1</span><span class="p">);</span>
+
+<span class="kn">namespace</span> <span class="nn">MyVendor\Weekday\Exception</span><span class="p">;</span>
+
+<span class="kn">use</span> <span class="nc">RuntimeException</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">InvalidDateTimeException</span> <span class="kd">extends</span> <span class="nc">RuntimeException</span>
+<span class="p">{</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Modify the code to inspect the value.</p>
+
+<div class="language-diff highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gd">&lt;?php
+</span>
+declare(strict_types=1);
+
+namespace MyVendor\Weekday\Resource\App;
+
+use BEAR\Resource\ResourceObject;
+<span class="p">use DateTimeImmutable;
+</span><span class="gi">+use MyVendor\Weekday\Exception\InvalidDateTimeException;
+</span>
+class Weekday extends ResourceObject
+<span class="err">{</span>
+    public function onGet(int $year, int $month, int $day): static
+    {
+        $dateTime = (new DateTimeImmutable)-&gt;createFromFormat('Y-m-d', "$year-$month-$day");
+<span class="gi">+        if (! $dateTime instanceof DateTimeImmutable) {
++            throw new InvalidDateTimeException("$year-$month-$day");
++        }
+</span>
+        $weekday = $dateTime-&gt;format('D');
+        $this-&gt;body = ['weekday' =&gt; $weekday];
+
+        return $this;
+    }
+<span class="err">}</span>
+</code></pre></div></div>
+
+<p>We’ll also add a unit test.</p>
+
+<div class="language-diff highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gi">+    public function tesInvalidDateTime(): void
++    {
++        $this-&gt;expectException(InvalidDateTimeException::class);
++        $this-&gt;resource-&gt;get('app://self/weekday', ['year' =&gt; '-1', 'month' =&gt; '1', 'day' =&gt; '1']);
++    }
+</span></code></pre></div></div>
+
+<h4 id="best-practices-for-exception-creation">Best Practices for Exception Creation</h4>
+<blockquote>
+  <p>There is nothing wrong with the code itself, since the exception was caused by a mistake in the input. Such an exception that turns up at runtime is a <code class="language-plaintext highlighter-rouge">RuntimeException</code>. We have extended it to create a dedicated exception.
+On the other hand, if the exception is caused by a bug and you need to fix the code, you can extend <code class="language-plaintext highlighter-rouge">LogicException</code> to create an exception. Instead of using the message of the exception to describe the type, create a dedicated exception for each.</p>
+</blockquote>
+
+<h4 id="defensive-programming">Defensive programming</h4>
+
+<blockquote>
+  <p>This fix eliminates the possibility of false values in <code class="language-plaintext highlighter-rouge">$dateTime</code> when executing <code class="language-plaintext highlighter-rouge">$dateTime-&gt;format('D');</code>. This kind of programming that avoids problems before they occur is called defensive programming, and static analysis is useful for checking it.</p>
+</blockquote>
+
+<h4 id="testing-before-committing">Testing before committing</h4>
+
+<p><code class="language-plaintext highlighter-rouge">composer tests</code> performs coding convention (cs) and static analysis (sa) tests in addition to <code class="language-plaintext highlighter-rouge">composer test</code>.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>composer tests
+</code></pre></div></div>
+
+<h2 id="routing">Routing</h2>
+
+<p>A default router is set to <code class="language-plaintext highlighter-rouge">WebRouter</code> which simply maps URL’s to the resource class directory.
+To receive a dynamic parameter in URI path, we can use <code class="language-plaintext highlighter-rouge">AuraRouter</code>. This can be done with an override install of the <code class="language-plaintext highlighter-rouge">AuraRouterModule</code> in <code class="language-plaintext highlighter-rouge">src/Module/AppModule.php</code>.
+Get it with <a href="http://getcomposer.org">composer</a> first.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>composer require bear/aura-router-module ^2.0
+</code></pre></div></div>
+
+<p>Next, install the <code class="language-plaintext highlighter-rouge">AuraRouterModule</code> in <code class="language-plaintext highlighter-rouge">src/Module/AppModule.php</code></p>
+
+<div class="language-diff highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gd">&lt;?php
+</span>
+declare(strict_types=1);
+
+namespace MyVendor\Weekday\Module;
+
+use BEAR\Dotenv\Dotenv;
+<span class="p">use BEAR\Package\AbstractAppModule;
+use BEAR\Package\PackageModule;
+</span><span class="gi">+use BEAR\Package\Provide\Router\AuraRouterModule;
+</span><span class="p">use function dirname;
+</span>
+class AppModule extends AbstractAppModule
+<span class="err">{</span>
+    protected function configure(): void
+    {
+        (new Dotenv())-&gt;load(dirname(__DIR__, 2));
+<span class="gi">+        $appDir = $this-&gt;appMeta-&gt;appDir;
++        $this-&gt;install(new AuraRouterModule($appDir . '/var/conf/aura.route.php'));
+</span>        $this-&gt;install(new PackageModule());
+    }
+<span class="err">}</span>
+
+</code></pre></div></div>
+
+<p>This module looks for a router script file at <code class="language-plaintext highlighter-rouge">var/conf/aura.route.php</code>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+<span class="cd">/** 
+ * @see http://bearsunday.github.io/manuals/1.0/ja/router.html
+ * @var \Aura\Router\Map $map 
+ */</span>
+
+<span class="nv">$map</span><span class="o">-&gt;</span><span class="nf">route</span><span class="p">(</span><span class="s1">'/weekday'</span><span class="p">,</span> <span class="s1">'/weekday/{year}/{month}/{day}'</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>Let’s try it out.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>php bin/app.php get /weekday/1981/09/08
+</code></pre></div></div>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>200 OK
+Content-Type: application/hal+json
+
+<span class="o">{</span>
+    <span class="s2">"weekday"</span>: <span class="s2">"Tue"</span>,
+    <span class="s2">"_links"</span>: <span class="o">{</span>
+        <span class="s2">"self"</span>: <span class="o">{</span>
+            <span class="s2">"href"</span>: <span class="s2">"/weekday/1981/09/08"</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h2 id="di">DI</h2>
+
+<p>To demonstrate the power of DI, let’s log a result !</p>
+
+<p>First create <code class="language-plaintext highlighter-rouge">src/MyLoggerInterface.php</code> which logs the days of the week.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+
+<span class="k">declare</span><span class="p">(</span><span class="n">strict_types</span><span class="o">=</span><span class="mi">1</span><span class="p">);</span>
+
+<span class="kn">namespace</span> <span class="nn">MyVendor\Weekday</span><span class="p">;</span>
+
+<span class="kd">interface</span> <span class="nc">MyLoggerInterface</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">log</span><span class="p">(</span><span class="kt">string</span> <span class="nv">$message</span><span class="p">):</span> <span class="kt">void</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Change the resource to use this logger.</p>
+
+<div class="language-diff highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gd">&lt;?php
+</span><span class="p">namespace MyVendor\Weekday\Resource\App;
+</span>
+use BEAR\Resource\ResourceObject;
+<span class="p">use MyVendor\Weekday\MyLoggerInterface;
+</span>
+class Weekday extends ResourceObject
+<span class="err">{</span>
++    public function __construct(public MyLoggerInterface $logger)
+<span class="gi">+    {
++    }
+</span>
+    public function onGet(int $year, int $month, int $day): static
+    {
+        $weekday = (new DateTimeImmutable)-&gt;createFromFormat('Y-m-d', "$year-$month-$day")-&gt;format('D');
+        $this-&gt;body = [
+            'weekday' =&gt; $weekday
+        ];
+<span class="gi">+        $this-&gt;logger-&gt;log("$year-$month-$day {$weekday}");
+</span>
+        return $this;
+    }
+<span class="err">}</span>
+</code></pre></div></div>
+<p>A naive approach is to instantiate a logger object with the new operator whenever you need it.
+However this approach is strongly discouraged (and make testing much harder). Instead, your objects should receive a created instance as a constructor dependency.
+This is called the <a href="https://en.wikipedia.org/wiki/Dependency_injection">DI pattern</a>.</p>
+
+<p>Next we will implement <code class="language-plaintext highlighter-rouge">MyLoggerInterface</code> in<code class="language-plaintext highlighter-rouge"> MyLogger</code>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+
+<span class="k">declare</span><span class="p">(</span><span class="n">strict_types</span><span class="o">=</span><span class="mi">1</span><span class="p">);</span>
+
+<span class="kn">namespace</span> <span class="nn">MyVendor\Weekday</span><span class="p">;</span>
+
+<span class="kn">use</span> <span class="nc">BEAR\AppMeta\AbstractAppMeta</span><span class="p">;</span>
+
+<span class="kn">use</span> <span class="k">function</span> <span class="nf">error_log</span><span class="p">;</span>
+
+<span class="kn">use</span> <span class="k">const</span> <span class="nf">PHP_EOL</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">MyLogger</span> <span class="kd">implements</span> <span class="nc">MyLoggerInterface</span>
+<span class="p">{</span>
+    <span class="k">private</span> <span class="kt">string</span> <span class="nv">$logFile</span><span class="p">;</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="n">__construct</span><span class="p">(</span><span class="kt">AbstractAppMeta</span> <span class="nv">$meta</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">logFile</span> <span class="o">=</span> <span class="nv">$meta</span><span class="o">-&gt;</span><span class="n">logDir</span> <span class="mf">.</span> <span class="s1">'/weekday.log'</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="n">log</span><span class="p">(</span><span class="kt">string</span> <span class="nv">$message</span><span class="p">):</span> <span class="kt">void</span>
+    <span class="p">{</span>
+        <span class="nb">error_log</span><span class="p">(</span><span class="nv">$message</span> <span class="mf">.</span> <span class="kc">PHP_EOL</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">logFile</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>In order to implement <code class="language-plaintext highlighter-rouge">MyLogger</code> you need the application’s log directory information (<code class="language-plaintext highlighter-rouge">AbstractAppMeta</code>), but this is also accepted as <code class="language-plaintext highlighter-rouge">dependency</code> in the constructor.
+In other words, the <code class="language-plaintext highlighter-rouge">Weekday</code> resource depends on<code class="language-plaintext highlighter-rouge"> MyLogger</code>, but <code class="language-plaintext highlighter-rouge">MyLogger</code> also depends on the log directory information. Objects built with DI in this way are dependencies depend on .. and dependency assignments are made.</p>
+
+<p>It is the DI tool (dependency injector) that makes this dependency solution.</p>
+
+<p>Edit the <code class="language-plaintext highlighter-rouge">configure</code> method of<code class="language-plaintext highlighter-rouge"> src/Module/AppModule.php</code> to bind <code class="language-plaintext highlighter-rouge">MyLoggerInterface</code> and<code class="language-plaintext highlighter-rouge"> MyLogger</code> with the DI tool.</p>
+
+<div class="language-diff highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">class AppModule extends AbstractAppModule
+</span><span class="err">{</span>
+    protected function configure(): void
+    {
+        (new Dotenv())-&gt;load(dirname(__DIR__, 2));
+        $appDir = $this-&gt;appMeta-&gt;appDir;
+        $this-&gt;install(new AuraRouterModule($appDir . '/var/conf/aura.route.php'));
+<span class="gi">+        $this-&gt;bind(MyLoggerInterface::class)-&gt;to(MyLogger::class);
+</span>        $this-&gt;install(new PackageModule());
+    }
+<span class="err">}</span>
+</code></pre></div></div>
+
+<p>Now all classes can now accept loggers with <code class="language-plaintext highlighter-rouge">MyLoggerInterface</code> in the constructor.
+Let’s make sure that the result is output to <code class="language-plaintext highlighter-rouge">var/log/cli-hal-api-app/weekday.log</code>.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>php bin/app.php get /weekday/2011/05/23
+</code></pre></div></div>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cat </span>var/log/cli-hal-api-app/weekday.log
+</code></pre></div></div>
+
+<h2 id="aop">AOP</h2>
+
+<p>We can benchmarking method invocation like is often done like this.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$start</span> <span class="o">=</span> <span class="nb">microtime</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
+<span class="c1">// method invokation</span>
+<span class="nv">$time</span> <span class="o">=</span> <span class="nb">microtime</span><span class="p">(</span><span class="kc">true</span><span class="p">)</span> <span class="o">-</span> <span class="nv">$start</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>Changing code to benchmark each different method can be tedious.
+For such problems <a href="https://github.com/google/guice/wiki/AOP">Aspect Oriented Programming</a> works great. Using this concept you can compose a clean separation of a <code class="language-plaintext highlighter-rouge">cross cutting concern</code> and <code class="language-plaintext highlighter-rouge">core concern</code>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+
+<span class="k">declare</span><span class="p">(</span><span class="n">strict_types</span><span class="o">=</span><span class="mi">1</span><span class="p">);</span>
+
+<span class="kn">namespace</span> <span class="nn">MyVendor\Weekday\Interceptor</span><span class="p">;</span>
+
+<span class="kn">use</span> <span class="nc">MyVendor\Weekday\MyLoggerInterface</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">Ray\Aop\MethodInterceptor</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">Ray\Aop\MethodInvocation</span><span class="p">;</span>
+
+<span class="kn">use</span> <span class="k">function</span> <span class="n">microtime</span><span class="p">;</span>
+<span class="kn">use</span> <span class="k">function</span> <span class="n">sprintf</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">BenchMarker</span> <span class="kd">implements</span> <span class="nc">MethodInterceptor</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">__construct</span><span class="p">(</span><span class="kt">private</span> <span class="nc">MyLoggerInterface</span> <span class="nv">$logger</span><span class="p">)</span>
+    <span class="p">{</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="n">invoke</span><span class="p">(</span><span class="kt">MethodInvocation</span> <span class="nv">$invocation</span><span class="p">):</span> <span class="kt">mixed</span>
+    <span class="p">{</span>
+        <span class="nv">$start</span> <span class="o">=</span> <span class="nb">microtime</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
+        <span class="nv">$result</span> <span class="o">=</span> <span class="nv">$invocation</span><span class="o">-&gt;</span><span class="nf">proceed</span><span class="p">();</span> <span class="c1">// Execute the original method</span>
+        <span class="nv">$time</span> <span class="o">=</span> <span class="nb">microtime</span><span class="p">(</span><span class="kc">true</span><span class="p">)</span> <span class="o">-</span> <span class="nv">$start</span><span class="p">;</span>
+        <span class="nv">$message</span> <span class="o">=</span> <span class="nb">sprintf</span><span class="p">(</span><span class="s1">'%s: %0.5f(µs)'</span><span class="p">,</span> <span class="nv">$invocation</span><span class="o">-&gt;</span><span class="nf">getMethod</span><span class="p">()</span><span class="o">-&gt;</span><span class="nf">getName</span><span class="p">(),</span> <span class="nv">$time</span><span class="p">);</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">logger</span><span class="o">-&gt;</span><span class="nb">log</span><span class="p">(</span><span class="nv">$message</span><span class="p">);</span>
+
+        <span class="k">return</span> <span class="nv">$result</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>ou can invoke the original method with <code class="language-plaintext highlighter-rouge">$invocation-&gt;proceed();</code> inside an <code class="language-plaintext highlighter-rouge">invoke</code> method.
+You can then reset and stop the timer on before and after this is invoked. The target method object and method name is taken in the form of a <a href="https://github.com/ray-di/Ray.Aop/blob/2.x/src/MethodInvocation.php">MethodInvocation</a> object sent to the invoke method.</p>
+
+<p>Next, create an <a href="https://www.php.net/manual/en/language.attributes.overview.php">attribute</a> in <code class="language-plaintext highlighter-rouge">src/Annotation/BenchMark.php </code> to mark the methods you want to benchmark. to create it.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+
+<span class="k">declare</span><span class="p">(</span><span class="n">strict_types</span><span class="o">=</span><span class="mi">1</span><span class="p">);</span>
+
+<span class="kn">namespace</span> <span class="nn">MyVendor\Weekday\Annotation</span><span class="p">;</span>
+
+<span class="kn">use</span> <span class="nc">Attribute</span><span class="p">;</span>
+
+<span class="c1">#[Attribute(Attribute::TARGET_METHOD)]</span>
+<span class="k">final</span> <span class="kd">class</span> <span class="nc">BenchMark</span>
+<span class="p">{</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>In <code class="language-plaintext highlighter-rouge">AppModule</code>, bind the methods that apply the interceptor using <strong>Matcher</strong>.</p>
+
+<div class="language-diff highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gi">+use MyVendor\Weekday\Annotation\BenchMark;
++use MyVendor\Weekday\Interceptor\BenchMarker;
+</span>
+class AppModule extends AbstractAppModule
+<span class="err">{</span>
+    protected function configure(): void
+    {
+        (new Dotenv())-&gt;load(dirname(__DIR__, 2));
+        $appDir = $this-&gt;appMeta-&gt;appDir;
+        $this-&gt;install(new AuraRouterModule($appDir . '/var/conf/aura.route.php'));
+        $this-&gt;bind(MyLoggerInterface::class)-&gt;to(MyLogger::class);
+<span class="gi">+        $this-&gt;bindInterceptor(
++            $this-&gt;matcher-&gt;any(),                           // In any class,
++            $this-&gt;matcher-&gt;annotatedWith(BenchMark::class), // To #[BenchMark] attributed method
++            [BenchMarker::class]                             // Apply BenchMarker interceptor interception
++        );
+</span>        $this-&gt;install(new PackageModule());
+    }
+<span class="err">}</span>
+</code></pre></div></div>
+
+<p>Give the method you want to benchmark an attribute of <code class="language-plaintext highlighter-rouge">#[BenchMark]</code>.</p>
+
+<div class="language-diff highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gi">+use MyVendor\Weekday\Annotation\BenchMark;
+</span>
+class Weekday extends ResourceObject
+<span class="err">{</span>
+
+<span class="gi">+   #[BenchMark]
+</span>    public function onGet(int $year, int $month, int $day): static
+    {
+</code></pre></div></div>
+
+<p>Now, you can benchmark any method you want by adding the attribute <code class="language-plaintext highlighter-rouge">#[BenchMark]</code> to it.</p>
+
+<p>Adding functionality through attributes and interceptors is flexible. There is no change to the target method or the caller of the method.
+Annotations can be left as is or unbound to avoid benchmarking. For example, you can bind them only during development and warn the user if the number of seconds exceeds a certain value.</p>
+
+<p>Run it and make sure that the log of execution time is output to <code class="language-plaintext highlighter-rouge">var/log/weekday.log</code>.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>php bin/app.php get <span class="s1">'/weekday/2015/05/28'</span>
+</code></pre></div></div>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cat </span>var/log/cli-hal-api-app/weekday.log
+</code></pre></div></div>
+
+<h2 id="html">HTML</h2>
+
+<p>While modern applications will likely be API-first, you can turn this API application into an HTML application. Go ahead and create a new <code class="language-plaintext highlighter-rouge">page</code> resource at <code class="language-plaintext highlighter-rouge">src/Resource/Page/Index.php</code>. Even though <code class="language-plaintext highlighter-rouge">page</code> resource and <code class="language-plaintext highlighter-rouge">app</code> resource are effectively the same class, their role and location differs.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+
+<span class="k">declare</span><span class="p">(</span><span class="n">strict_types</span><span class="o">=</span><span class="mi">1</span><span class="p">);</span>
+
+<span class="kn">namespace</span> <span class="nn">MyVendor\Weekday\Resource\Page</span><span class="p">;</span>
+
+<span class="kn">use</span> <span class="nc">BEAR\Resource\ResourceObject</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">MyVendor\Weekday\Resource\App\Weekday</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">Index</span> <span class="kd">extends</span> <span class="nc">ResourceObject</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">__construct</span><span class="p">(</span><span class="kt">private</span> <span class="nc">Weekday</span> <span class="nv">$weekday</span><span class="p">)</span>
+    <span class="p">{</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onGet</span><span class="p">(</span><span class="kt">int</span> <span class="nv">$year</span><span class="p">,</span> <span class="kt">int</span> <span class="nv">$month</span><span class="p">,</span> <span class="kt">int</span> <span class="nv">$day</span><span class="p">):</span> <span class="kt">static</span>
+    <span class="p">{</span>
+        <span class="nv">$weekday</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">weekday</span><span class="o">-&gt;</span><span class="nf">onGet</span><span class="p">(</span><span class="nv">$year</span><span class="p">,</span> <span class="nv">$month</span><span class="p">,</span> <span class="nv">$day</span><span class="p">);</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">body</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s1">'year'</span> <span class="o">=&gt;</span> <span class="nv">$year</span><span class="p">,</span>
+            <span class="s1">'month'</span> <span class="o">=&gt;</span> <span class="nv">$month</span><span class="p">,</span>
+            <span class="s1">'day'</span> <span class="o">=&gt;</span> <span class="nv">$day</span><span class="p">,</span>
+            <span class="s1">'weekday'</span> <span class="o">=&gt;</span> <span class="nv">$weekday</span><span class="o">-&gt;</span><span class="n">body</span><span class="p">[</span><span class="s1">'weekday'</span><span class="p">]</span>
+        <span class="p">];</span>
+
+        <span class="k">return</span> <span class="nv">$this</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>The <code class="language-plaintext highlighter-rouge">page</code> resource class is essentially the same class as the <code class="language-plaintext highlighter-rouge">app</code> resource, except for its location and role.</p>
+
+<p>In a typical scenario, the <code class="language-plaintext highlighter-rouge">page</code> is a publicly available HTML page, and the <code class="language-plaintext highlighter-rouge">app</code> is a private resource when used with the <code class="language-plaintext highlighter-rouge">page</code>, close to the infrastructure layer such as a DB.
+Which one is made public is determined by the runtime context; in the MVC analogy, the app resource plays the role of the model and the page resource plays the role of the controller.
+The app resource is the model and the page resource is the controller.</p>
+
+<p>At this stage let’s check how this resource is rendered.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>php bin/page.php get <span class="s1">'/?year=2000&amp;month=1&amp;day=1'</span>
+</code></pre></div></div>
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mi">500</span> <span class="nc">Internal</span> <span class="nc">Server</span> <span class="nc">Error</span>
+<span class="n">content</span><span class="o">-</span><span class="n">type</span><span class="o">:</span> <span class="n">application</span><span class="o">/</span><span class="n">vnd</span><span class="mf">.</span><span class="n">error</span><span class="o">+</span><span class="n">json</span>
+
+<span class="p">{</span>
+    <span class="s2">"message"</span><span class="o">:</span> <span class="s2">"Internal Server Error"</span><span class="p">,</span>
+    <span class="s2">"logref"</span><span class="o">:</span> <span class="s2">"477f34d9"</span><span class="p">,</span>
+    <span class="s2">"request"</span><span class="o">:</span> <span class="s2">"get page://self/?year=1991&amp;month=8&amp;day=1"</span><span class="p">,</span>
+    <span class="s2">"exceptions"</span><span class="o">:</span> <span class="s2">"Ray</span><span class="se">\\</span><span class="s2">Di</span><span class="se">\\</span><span class="s2">Exception</span><span class="se">\\</span><span class="s2">Unbound(dependency 'MyVendor</span><span class="se">\\</span><span class="s2">Weekday</span><span class="se">\\</span><span class="s2">Resource</span><span class="se">\\</span><span class="s2">App</span><span class="se">\\</span><span class="s2">Weekday' with name '' used in src/Resource/Page/Index.php:12 (</span><span class="nv">$weekday</span><span class="s2">))"</span><span class="p">,</span>
+</code></pre></div></div>
+
+<p>Error! This is an error that the Weekday injected into the Index is unbound.</p>
+
+<div class="language-diff highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gi">+    $this-&gt;bind(Weekday::class);
+</span>     $this-&gt;install(new AuraSqlModule(sprintf('sqlite:%s/var/db/todo.sq3', this-&gt;appMeta-&gt;appDir)));
+     $this-&gt;install(new PackageModule());.
+</code></pre></div></div>
+<p>Bind Weekday with AppModule as above.
+Such binding of a concrete class is called <a href="https://ray-di.github.io/manuals/1.0/en/untargeted_bindings.html">untargeted binding</a>. Normally, a concrete class is bound to an interface, but a concrete class without an interface is bound directly.</p>
+
+<p>Run it again.</p>
+
+<pre><code class="language-`bash">php bin/page.php get '/?year=2000&amp;month=1&amp;day=1'
+</code></pre>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>200 OK
+Content-Type: application/hal+json
+
+{
+    "year": 2000,
+    "month": 1,
+    "day": 1,
+    "weekday": "Sat",
+    "_links": {
+        "self": {
+            "href": "/index?year=2000&amp;month=1&amp;day=1"
+        }
+    }
+}
+
+</code></pre></div></div>
+
+<p>The resource is output as <code class="language-plaintext highlighter-rouge">application/hal+json</code> media type, but to output it as HTML (text/html), install the HTML module. See <a href="/manuals/1.0/en/html.html">Manual for HTML</a>.</p>
+
+<p>Composer Install</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>composer require madapaja/twig-module ^2.0
+</code></pre></div></div>
+
+<p>Create <code class="language-plaintext highlighter-rouge">src/Module/HtmlModule.php</code>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+<span class="kn">namespace</span> <span class="nn">MyVendor\Weekday\Module</span><span class="p">;</span>
+
+<span class="kn">use</span> <span class="nc">Madapaja\TwigModule\TwigErrorPageModule</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">Madapaja\TwigModule\TwigModule</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">Ray\Di\AbstractModule</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">HtmlModule</span> <span class="kd">extends</span> <span class="nc">AbstractModule</span>
+<span class="p">{</span>
+    <span class="k">protected</span> <span class="k">function</span> <span class="n">configure</span><span class="p">():</span> <span class="kt">void</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">install</span><span class="p">(</span><span class="k">new</span> <span class="nc">TwigModule</span><span class="p">);</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">install</span><span class="p">(</span><span class="k">new</span> <span class="nc">TwigErrorPageModule</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Copy <code class="language-plaintext highlighter-rouge">templates</code> directory.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cp</span> <span class="nt">-r</span> vendor/madapaja/twig-module/var/templates var
+</code></pre></div></div>
+
+<p>Modify <code class="language-plaintext highlighter-rouge">bin/page.php</code> to set the context to <code class="language-plaintext highlighter-rouge">html-app</code>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+
+<span class="kn">use</span> <span class="nc">MyVendor\Weekday\Bootstrap</span><span class="p">;</span>
+
+<span class="k">require</span> <span class="nb">dirname</span><span class="p">(</span><span class="k">__DIR__</span><span class="p">)</span> <span class="mf">.</span> <span class="s1">'/autoload.php'</span><span class="p">;</span>
+<span class="k">exit</span><span class="p">((</span><span class="k">new</span> <span class="nc">Bootstrap</span><span class="p">())(</span><span class="kc">PHP_SAPI</span> <span class="o">===</span> <span class="s1">'cli'</span> <span class="o">?</span> <span class="s1">'cli-html-app'</span> <span class="o">:</span> <span class="s1">'html-app'</span><span class="p">,</span> <span class="nv">$GLOBALS</span><span class="p">,</span> <span class="nv">$_SERVER</span><span class="p">));</span>
+</code></pre></div></div>
+
+<p>In this way <code class="language-plaintext highlighter-rouge">text/html</code> media output can be set. Lastly, save your Twig template <code class="language-plaintext highlighter-rouge">var/templates/Page/Index.html.twig</code>.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">{</span>% extends <span class="s1">'layout/base.html.twig'</span> %<span class="o">}</span>
+<span class="o">{</span>% block title %<span class="o">}</span>Weekday<span class="o">{</span>% endblock %<span class="o">}</span>
+<span class="o">{</span>% block content %<span class="o">}</span>
+The weekday of <span class="o">{{</span> year <span class="o">}}</span>/<span class="o">{{</span> month <span class="o">}}</span>/<span class="o">{{</span> day <span class="o">}}</span> is <span class="o">{{</span> weekday <span class="o">}}</span><span class="nb">.</span>
+<span class="o">{</span>% endblock %<span class="o">}</span>
+</code></pre></div></div>
+
+<p>Set up is now complete. Check in the console that this kind of HTML is output.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>php bin/page.php get <span class="s1">'/?year=1991&amp;month=8&amp;day=1'</span>
+</code></pre></div></div>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code>200 OK
+Content-Type: text/html; charset=utf-8
+
+<span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="nt">&lt;html&gt;</span>
+...
+</code></pre></div></div>
+
+<p>In order to run the web service, we need to make a change to <code class="language-plaintext highlighter-rouge">public/index.php</code>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+
+<span class="kn">use</span> <span class="nc">MyVendor\Weekday\Bootstrap</span><span class="p">;</span>
+
+<span class="k">require</span> <span class="nb">dirname</span><span class="p">(</span><span class="k">__DIR__</span><span class="p">)</span> <span class="mf">.</span> <span class="s1">'/autoload.php'</span><span class="p">;</span>
+<span class="k">exit</span><span class="p">((</span><span class="k">new</span> <span class="nc">Bootstrap</span><span class="p">())(</span><span class="kc">PHP_SAPI</span> <span class="o">===</span> <span class="s1">'cli-server'</span> <span class="o">?</span> <span class="s1">'html-app'</span> <span class="o">:</span> <span class="s1">'prod-html-app'</span><span class="p">,</span> <span class="nv">$GLOBALS</span><span class="p">,</span> <span class="nv">$_SERVER</span><span class="p">));</span>
+</code></pre></div></div>
+
+<p>Boot up the PHP web server and check it out by accessing <a href="http://127.0.0.1:8080/?year=2001&amp;month=1&amp;day=1">http://127.0.0.1:8080/?year=2001&amp;month=1&amp;day=1</a>.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>php <span class="nt">-S</span> 127.0.0.1:8080 public/index.php
+</code></pre></div></div>
+
+<p>As the <a href="/manuals/1.0/en/application.html#context">context</a> changes, so does the behaviour of the application. Let’s try it.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&lt;?</span><span class="n">php</span>
+
+<span class="kn">use</span> <span class="nc">MyVendor\Weekday\Bootstrap</span><span class="p">;</span>
+
+<span class="c1">// JSON Application (smallest)</span>
+<span class="k">require</span> <span class="nb">dirname</span><span class="p">(</span><span class="k">__DIR__</span><span class="p">)</span> <span class="mf">.</span> <span class="s1">'/autoload.php'</span><span class="p">;</span>
+<span class="k">exit</span><span class="p">((</span><span class="k">new</span> <span class="nc">Bootstrap</span><span class="p">())(</span><span class="s1">'prod-app'</span><span class="p">,</span> <span class="nv">$GLOBALS</span><span class="p">,</span> <span class="nv">$_SERVER</span><span class="p">));</span>
+</code></pre></div></div>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&lt;?</span><span class="n">php</span>
+
+<span class="kn">use</span> <span class="nc">MyVendor\Weekday\Bootstrap</span><span class="p">;</span>
+
+<span class="c1">// Production HAL Application</span>
+<span class="k">require</span> <span class="nb">dirname</span><span class="p">(</span><span class="k">__DIR__</span><span class="p">)</span> <span class="mf">.</span> <span class="s1">'/autoload.php'</span><span class="p">;</span>
+<span class="k">exit</span><span class="p">((</span><span class="k">new</span> <span class="nc">Bootstrap</span><span class="p">())(</span><span class="s1">'prod-hal-app'</span><span class="p">,</span> <span class="nv">$GLOBALS</span><span class="p">,</span> <span class="nv">$_SERVER</span><span class="p">));</span>
+</code></pre></div></div>
+
+<p>For each context PHP code that builds up the application is produced and saved in <code class="language-plaintext highlighter-rouge">var/tmp/</code>. These files are not normally needed, but you can use it to check how your application object is created. Using the <code class="language-plaintext highlighter-rouge">diff</code> command you can check which dependencies have changed across contexts.</p>
+
+<h2 id="rest-api">REST API</h2>
+
+<p>Let’s make an application resource that uses SQLite3.
+First, using the console, create a database <code class="language-plaintext highlighter-rouge">var/db/todo.sqlite3</code>.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">mkdir </span>var/db
+sqlite3 var/db/todo.sqlite3
+
+sqlite&gt; create table todo<span class="o">(</span><span class="nb">id </span>integer primary key, todo, created_at<span class="o">)</span><span class="p">;</span>
+sqlite&gt; .exit
+</code></pre></div></div>
+
+<p>For database access you can choose from <a href="https://github.com/ray-di/Ray.AuraSqlModule">AuraSql</a>, <a href="https://github.com/ray-di/Ray.DbalModule">Doctrine Dbal</a>, <a href="https://github.com/ray-di/Ray.CakeDbModule"> CakeDB</a>.
+AuraSqlModule. Let’s install it here.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>composer require ray/aura-sql-module
+</code></pre></div></div>
+
+<p>Install the module in <code class="language-plaintext highlighter-rouge">src/Module/AppModule::configure()</code>.
+Then bind <code class="language-plaintext highlighter-rouge">DateTimeImmutable</code> so that the constructor can receive the current time.</p>
+
+<div class="language-diff highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gd">&lt;?php
+</span><span class="gi">+use Ray\AuraSqlModule\AuraSqlModule;
++use DateTimeImmutable;
+</span>
+class AppModule extends AbstractAppModule
+<span class="err">{</span>
+    protected function configure(): void
+    {
+        // ...
+<span class="gi">+        $this-&gt;bind(DateTimeImmutable::class);        
++        $this-&gt;install(new AuraSqlModule(sprintf('sqlite:%s/var/db/todo.sqlite3', $this-&gt;appMeta-&gt;appDir)));
+</span>        $this-&gt;install(new PackageModule());
+    }
+<span class="err">}</span>
+</code></pre></div></div>
+
+<p>Build up the <code class="language-plaintext highlighter-rouge">src/Resource/App/Todos.php</code> resource.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+
+<span class="k">declare</span><span class="p">(</span><span class="n">strict_types</span><span class="o">=</span><span class="mi">1</span><span class="p">);</span>
+
+<span class="kn">namespace</span> <span class="nn">MyVendor\Weekday\Resource\App</span><span class="p">;</span>
+
+<span class="kn">use</span> <span class="nc">Aura\Sql\ExtendedPdoInterface</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">BEAR\Package\Annotation\ReturnCreatedResource</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">BEAR\RepositoryModule\Annotation\Cacheable</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">BEAR\Resource\ResourceObject</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">DateTimeImmutable</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">Ray\AuraSqlModule\Annotation\Transactional</span><span class="p">;</span>
+
+<span class="kn">use</span> <span class="k">function</span> <span class="n">sprintf</span><span class="p">;</span>
+
+<span class="c1">#[Cacheable]</span>
+<span class="kd">class</span> <span class="nc">Todos</span> <span class="kd">extends</span> <span class="nc">ResourceObject</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">__construct</span><span class="p">(</span>
+        <span class="kt">private</span> <span class="n">readonly</span> <span class="nc">ExtendedPdoInterface</span> <span class="nv">$pdo</span><span class="p">,</span>
+        <span class="kt">private</span> <span class="n">readonly</span> <span class="nc">DateTimeImmutable</span> <span class="nv">$date</span><span class="p">,</span>
+    <span class="p">)</span> <span class="p">{</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onGet</span><span class="p">(</span><span class="kt">string</span> <span class="nv">$id</span> <span class="o">=</span> <span class="s1">''</span><span class="p">):</span> <span class="kt">static</span>
+    <span class="p">{</span>
+        <span class="nv">$sql</span> <span class="o">=</span> <span class="nv">$id</span> <span class="o">?</span> <span class="cd">/** @lang SQL */</span><span class="s1">'SELECT * FROM todo WHERE id=:id'</span> <span class="o">:</span> <span class="cd">/** @lang SQL */</span><span class="s1">'SELECT * FROM todo'</span><span class="p">;</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">body</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">pdo</span><span class="o">-&gt;</span><span class="nf">fetchAssoc</span><span class="p">(</span><span class="nv">$sql</span><span class="p">,</span> <span class="p">[</span><span class="s1">'id'</span> <span class="o">=&gt;</span> <span class="nv">$id</span><span class="p">]);</span>
+
+        <span class="k">return</span> <span class="nv">$this</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="c1">#[Transactional, ReturnCreatedResource]</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onPost</span><span class="p">(</span><span class="kt">string</span> <span class="nv">$todo</span><span class="p">):</span> <span class="kt">static</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">pdo</span><span class="o">-&gt;</span><span class="nf">perform</span><span class="p">(</span><span class="cd">/** @lang SQL */</span><span class="s1">'INSERT INTO todo (todo, created_at) VALUES (:todo, :created_at)'</span><span class="p">,</span> <span class="p">[</span>
+            <span class="s1">'todo'</span> <span class="o">=&gt;</span> <span class="nv">$todo</span><span class="p">,</span>
+            <span class="s1">'created_at'</span> <span class="o">=&gt;</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">date</span><span class="o">-&gt;</span><span class="nf">format</span><span class="p">(</span><span class="s1">'Y-m-d H:i:s'</span><span class="p">)</span>
+        <span class="p">]);</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">code</span> <span class="o">=</span> <span class="mi">201</span><span class="p">;</span> <span class="c1">// Created</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">headers</span><span class="p">[</span><span class="s1">'Location'</span><span class="p">]</span> <span class="o">=</span> <span class="nb">sprintf</span><span class="p">(</span><span class="s1">'/todos?id=%s'</span><span class="p">,</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">pdo</span><span class="o">-&gt;</span><span class="nf">lastInsertId</span><span class="p">());</span> <span class="c1">// new URL</span>
+
+        <span class="k">return</span> <span class="nv">$this</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="c1">#[Transactional]</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onPut</span><span class="p">(</span><span class="kt">int</span> <span class="nv">$id</span><span class="p">,</span> <span class="kt">string</span> <span class="nv">$todo</span><span class="p">):</span> <span class="kt">static</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">pdo</span><span class="o">-&gt;</span><span class="nf">perform</span><span class="p">(</span><span class="cd">/** @lang SQL */</span><span class="s1">'UPDATE todo SET todo = :todo WHERE id = :id'</span><span class="p">,</span> <span class="p">[</span>
+            <span class="s1">'id'</span> <span class="o">=&gt;</span> <span class="nv">$id</span><span class="p">,</span>
+            <span class="s1">'todo'</span> <span class="o">=&gt;</span> <span class="nv">$todo</span>
+        <span class="p">]);</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">code</span> <span class="o">=</span> <span class="mi">204</span><span class="p">;</span> <span class="c1">// No content</span>
+
+        <span class="k">return</span> <span class="nv">$this</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+<p>See the attributes. The class attribute <code class="language-plaintext highlighter-rouge">#[Cacheable]</code> indicates that the GET method of this resource is cacheable.
+The <code class="language-plaintext highlighter-rouge">#[Transactional]</code> of <code class="language-plaintext highlighter-rouge">onPost</code> or <code class="language-plaintext highlighter-rouge">onPut</code> indicates a transaction of database access.</p>
+
+<p>Creates an <code class="language-plaintext highlighter-rouge">onPost</code> <code class="language-plaintext highlighter-rouge">#[ReturnCreatedResource]</code> and returns the resource whose URL is given in the <code class="language-plaintext highlighter-rouge">Location</code>, including the body.
+At this time, <code class="language-plaintext highlighter-rouge">onGet</code> is actually called with the URI in the <code class="language-plaintext highlighter-rouge">Location</code> header, so the content of the <code class="language-plaintext highlighter-rouge">Location</code> header is guaranteed to be correct, and calling <code class="language-plaintext highlighter-rouge">onGet</code> will also create a cache.</p>
+
+<p>Let’s try a <code class="language-plaintext highlighter-rouge">POST</code>.</p>
+
+<p>In order to enable caching , create the context of <code class="language-plaintext highlighter-rouge">bin/app.php</code> <code class="language-plaintext highlighter-rouge">test</code> for caching.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+
+<span class="k">declare</span><span class="p">(</span><span class="n">strict_types</span><span class="o">=</span><span class="mi">1</span><span class="p">);</span>
+
+<span class="kn">use</span> <span class="nc">MyVendor\Weekday\Bootstrap</span><span class="p">;</span>
+
+<span class="k">require</span> <span class="nb">dirname</span><span class="p">(</span><span class="k">__DIR__</span><span class="p">)</span> <span class="mf">.</span> <span class="s1">'/autoload.php'</span><span class="p">;</span>
+<span class="k">exit</span><span class="p">((</span><span class="k">new</span> <span class="nc">Bootstrap</span><span class="p">())(</span><span class="s1">'prod-cli-hal-api-app'</span><span class="p">,</span> <span class="nv">$GLOBALS</span><span class="p">,</span> <span class="nv">$_SERVER</span><span class="p">));</span>
+</code></pre></div></div>
+
+<p>Request with console command. <code class="language-plaintext highlighter-rouge">POST</code>, but for convenience we pass parameters in the form of a query.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>php bin/test.php post <span class="s1">'/todos?todo=shopping'</span>
+</code></pre></div></div>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>201 Created
+Location: /todos?id<span class="o">=</span>1
+
+<span class="o">{</span>
+    <span class="s2">"id"</span>: <span class="s2">"1"</span>,
+    <span class="s2">"todo"</span>: <span class="s2">"shopping"</span>,
+    <span class="s2">"created"</span>: <span class="s2">"2017-06-04 15:58:03"</span>,
+    <span class="s2">"_links"</span>: <span class="o">{</span>
+        <span class="s2">"self"</span>: <span class="o">{</span>
+            <span class="s2">"href"</span>: <span class="s2">"/todos?id=1"</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>Our response returned a <code class="language-plaintext highlighter-rouge">201</code> status code, and a new resource <code class="language-plaintext highlighter-rouge">/todo/?id=1</code> has been created.　<a href="https://tools.ietf.org/html/rfc7231#section-6.3.2">RFC7231 Section-6.3.2</a>
+Next we will do a <code class="language-plaintext highlighter-rouge">GET</code>.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>php bin/test.php get <span class="s1">'/todos?id=1'</span>
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>200 OK
+ETag: 2527085682
+Last-Modified: Sun, 04 Jun 2017 15:23:39 GMT
+content-type: application/hal+json
+
+{
+    "id": "1",
+    "todo": "shopping",
+    "created": "2017-06-04 15:58:03",
+    "_links": {
+        "self": {
+            "href": "/todos?id=1"
+        }
+    }
+}
+</code></pre></div></div>
+
+<p>The HTTP API is now complete. Let’s start up the API server.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>php <span class="nt">-S</span> 127.0.0.1:8081 bin/app.php
+</code></pre></div></div>
+
+<p>Let’s do a GET <code class="language-plaintext highlighter-rouge">curl</code> request:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl <span class="nt">-i</span> <span class="s1">'http://127.0.0.1:8081/todos?id=1'</span>
+</code></pre></div></div>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>HTTP/1.1 200 OK
+Host: 127.0.0.1:8081
+Date: Sun, 02 May 2021 17:10:55 GMT
+Connection: close
+X-Powered-By: PHP/8.0.3
+Content-Type: application/hal+json
+ETag: 197839553
+Last-Modified: Sun, 02 May 2021 17:10:55 GMT
+Cache-Control: max-age<span class="o">=</span>31536000
+
+<span class="o">{</span>
+    <span class="s2">"id"</span>: <span class="s2">"1"</span>,
+</code></pre></div></div>
+
+<p>If you run the request several times, you will notice that the <code class="language-plaintext highlighter-rouge">Last-Modified</code> timestamp does not change. This is because the class is annotated with <code class="language-plaintext highlighter-rouge">#[Cacheable]</code>.</p>
+
+<p>On the <code class="language-plaintext highlighter-rouge">#[Cacheable]</code> attribute, if no <code class="language-plaintext highlighter-rouge">expiry</code> is set then it will be cached forever. However when updates <code class="language-plaintext highlighter-rouge">onPut($id, $todo)</code> or deletes <code class="language-plaintext highlighter-rouge">onDelete($id)</code> occur on the resource, the cached resource will automatically be flushed and refreshed for the given ID.
+Next we update the resource with a <code class="language-plaintext highlighter-rouge">PUT</code>.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl <span class="nt">-i</span> http://127.0.0.1:8081/todos <span class="nt">-X</span> PUT <span class="nt">-d</span> <span class="s2">"id=1&amp;todo=think"</span>
+</code></pre></div></div>
+<p>You will get a response of <code class="language-plaintext highlighter-rouge">204 No Content</code> indicating that there is no body.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>HTTP/1.1 204 No Content
+...
+</code></pre></div></div>
+
+<p>If you would rather send a JSON body with the PUT request you can run the following.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl <span class="nt">-i</span> http://127.0.0.1:8081/todos <span class="nt">-X</span> PUT <span class="nt">-H</span> <span class="s1">'Content-Type: application/json'</span> <span class="nt">-d</span> <span class="s1">'{"id": 1, "todo":"think" }'</span>
+</code></pre></div></div>
+
+<p>This time, when you perform a <code class="language-plaintext highlighter-rouge">GET</code> you can see that the <code class="language-plaintext highlighter-rouge">Last-Modified</code> has been updated.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl <span class="nt">-i</span> <span class="s1">'http://127.0.0.1:8081/todos?id=1'</span>
+</code></pre></div></div>
+
+<p>This <code class="language-plaintext highlighter-rouge">Last-Modified</code> time stamp has been provided by <code class="language-plaintext highlighter-rouge">#[Cacheable]</code>. No need to provide any special application admin or database columns.</p>
+
+<p>With <code class="language-plaintext highlighter-rouge">#[Cacheable]</code>, resource contents are managed in a “query repository” dedicated for storing resources, which is different from the database for writing, and <code class="language-plaintext highlighter-rouge">Etag</code> and <code class="language-plaintext highlighter-rouge">Last-Modified</code> headers are added automatically.</p>
+
+<h2 id="because-everything-is-a-resource">Because Everything is A Resource.</h2>
+
+<p>Uniform resource identifier(URI), a consistent interface, stateless access, powerful caching system, hyperlinks, layered system, and self-descriptive messages. A resource built with BEAR.Sunday implements all of these REST features.</p>
+
+<p>You can connect to data from other applications using hyperlinks, creating an API to be consumed from another CMS or framework is easy. The resource object is completely decoupled from any rendering.</p>
+
+<p>BEAR.Sunday is a <strong>connecting layer framework</strong> that connects dependencies with <strong>DI</strong>, cross-cutting interests with <strong>AOP</strong>, and application information as resources with the power of <strong>REST</strong>.</p>
+
+            </article>
+        </div>
+        <div id="ArticleToc" class="col-lg-2 d-none d-lg-block">
+            <nav class="nav side-bar-right"></nav>
+        </div>
+    </div>
+</main>
+<footer>
+    <div class="container d-md-flex">
+        <i class="bear-icon d-none d-lg-block"></i>
+        <small>
+            © 2011-2024 BEAR.Sunday
+        </small>
+        <ul class="navbar-nav flex-row ml-md-auto d-none d-md-flex">
+            <li>
+                <a href="https://gitter.im/bearsunday/BEAR.Sunday?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge">Gitter</a>
+            </li>
+            <li>
+                <a href="https://github.com/bearsunday/BEAR.Sunday">Github</a>
+            </li>
+            <li>
+                <a href="https://twitter.com/BEARSunday">Twitter</a>
+            </li>
+            <li>
+                <a href="https://www.facebook.com/pages/BEARSunday/110116939178462?ref=hl">Facebook</a>
+            </li>
+            <li>
+                <a href="http://koriym.github.io/">Blog (JA)</a>
+            </li>
+            <li>
+                <a href="https://github.com/bearsunday/bearsunday.github.io">PR ?</a>
+            </li>
+        </ul>
+    </div>
+</footer>
+<script src="//code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+<script>
+    window.ga = function () { ga.q.push(arguments) }; ga.q = []; ga.l = +new Date;
+    ga('create', 'UA-6074569-8', 'bearsunday.github.io'); ga('send', 'pageview');
+</script>
+<script src="https://www.google-analytics.com/analytics.js" async defer></script>
+
+<script src="/js/generate-table-of-contents/index.min.js"></script>
+<script>
+    var toc = generateTableOfContents(document.getElementById('article'));
+    var sideBarRight = $('.side-bar-right');
+    sideBarRight.append(toc);
+
+    var scrollOffset = $('body').attr('data-offset');
+    var articlePaddingTop = $('article').css('padding-top').replace('px', '');
+    sideBarRight.find('a').on('click', function (e) {
+        e.preventDefault();
+        var targetId = $(this).attr('href');
+        var targetPositionTop = $(targetId).offset().top - scrollOffset - articlePaddingTop;
+        window.scrollTo(0, targetPositionTop)
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,511 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Router &#124; BEAR.Sunday</title>
+    <meta name="description" content="BEAR.Sunday is a resource orientated framework with a REST centered architecture, implementing Dependency Injection and Aspect Orientated Programming' at its core.">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/github-markdown-css/2.10.0/github-markdown.css">
+    <link rel="stylesheet" href="/css/syntax.css">
+    
+    <link rel="stylesheet" href="/css/bearsunday.css">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="apple-touch-icon" href="/icon.png">
+</head>
+<body data-page-category="Manual" data-spy="scroll" data-target="#ArticleToc" data-offset="65">
+<header>
+    <nav class="navbar navbar-expand flex-column flex-md-row bg-light">
+        <a class="navbar-brand mr-0 mr-md-2" href="/index.html"></a>
+        <div class="navbar-nav-scroll">
+            <ul class="navbar-nav flex-row">
+                <li class="nav-item">
+                    <a class="nav-link " href="/index.html">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="/manuals/1.0/en/index.html">Manual</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link " href="/contributors.html">Contributors</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/slide.html">Slide</a>
+                </li>
+            </ul>
+        </div>
+        
+        <ul class="navbar-nav ml-md-auto d-none d-md-flex language-list">
+            <li>
+                <a class="active" href="/manuals/1.0/en/router.html">En</a>
+            </li>
+            <li>
+                <a class="" href="/manuals/1.0/ja/router.html">Ja</a>
+            </li>
+        </ul>
+        
+    </nav>
+</header>
+
+<main class="container-fluid">
+    <div class="row flex-xl-nowrap">
+        <div class="col-md-3 col-lg-2">
+            <div class="side-bar">
+                <nav class="navbar navbar-expand-md navbar-light">
+    <div class="navigation-header">
+        <div class="ml-auto d-sm-block d-md-none">
+            <ul class="navbar-nav language-list">
+                <li>
+                    <a class="active" href="/manuals/1.0/en/router.html">En</a>
+                </li>
+                <li>
+                    <a class="" href="/manuals/1.0/ja/router.html">Ja</a>
+                </li>
+            </ul>
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#Navber" aria-controls="Navber" aria-expanded="false" aria-label="ナビゲーションの切替">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+    </div>
+    <div class="collapse navbar-collapse" id="Navber">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/">Introduction</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/version.html">Version</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/quick-start.html">Quick Start</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/tutorial.html">Tutorial</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/tutorial2.html">Tutorial 2</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/package.html">Package</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/application.html">Application</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/module.html">Module</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/di.html">DI</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/aop.html">AOP</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/resource.html">Resource</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/resource_param.html">・Parameter</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/resource_link.html">・Link</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/resource_renderer.html">・Rendering and Transfer</a>
+            </li>
+            <li>
+                <a class="nav-link active" href="/manuals/1.0/en/router.html">Router</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/production.html">Production</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/import.html">Import</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/database.html">Database</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/validation.html">Validation</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/html.html">HTML</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/form.html">Form</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/content-negotiation.html">Content Negotiation</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/hypermedia-api.html">Hypermedia API</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/psr7.html">Request / PSR-7</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/js-ui.html">JavaScript UI</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/stream.html">Stream Response</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/cache.html">Cache</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/swoole.html">Swoole</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/coding-guide.html">Coding Guide</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/types.html">Type</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/test.html">Test</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/examples.html">Examples</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/attribute.html">Attribute</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/apidoc.html">API Doc</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/1page.html">1 Page</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+            </div>
+        </div>
+        <div class="col-md-9 col-lg-8">
+            <article id="article" class="markdown-body">
+                <h1 id="router">Router</h1>
+
+<p>The router converts resource requests for external contexts such as Web and console into resource requests inside BEAR.Sunday.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$request</span> <span class="o">=</span> <span class="nv">$app</span><span class="o">-&gt;</span><span class="n">router</span><span class="o">-&gt;</span><span class="nf">match</span><span class="p">(</span><span class="nv">$GLOBALS</span><span class="p">,</span> <span class="nv">$_SERVER</span><span class="p">);</span>
+<span class="k">echo</span> <span class="p">(</span><span class="n">string</span><span class="p">)</span> <span class="nv">$request</span><span class="p">;</span>
+<span class="c1">// get page://self/user?name=bear</span>
+</code></pre></div></div>
+
+<h2 id="web-router">Web Router</h2>
+
+<p>The default web router accesses the resource class corresponding to the HTTP request path (<code class="language-plaintext highlighter-rouge">$_SERVER['REQUEST_URI']</code>).
+For example, a request of <code class="language-plaintext highlighter-rouge">/index</code> is accessed by a PHP method corresponding to the HTTP method of the <code class="language-plaintext highlighter-rouge">{Vendor name}\{Project name}\Resource\Page\Index</code> class.</p>
+
+<p>The Web Router is a convention-based router. No configuration or scripting is required.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">namespace</span> <span class="nn">MyVendor\MyProject\Resource\Page</span><span class="p">;</span>
+
+<span class="c1">// page://self/index</span>
+<span class="kd">class</span> <span class="nc">Index</span> <span class="kd">extends</span> <span class="nc">ResourceObject</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onGet</span><span class="p">():</span> <span class="kt">static</span> <span class="c1">// GET request</span>
+    <span class="p">{</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="cli-router">CLI Router</h2>
+
+<p>In the <code class="language-plaintext highlighter-rouge">cli</code> context, the argument from the console is “input of external context”.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>php bin/page.php get /
+</code></pre></div></div>
+
+<p>The BEAR.Sunday application works on both the Web and the CLI.</p>
+
+<h2 id="multiple-words-uri">Multiple words URI</h2>
+
+<p>The path of the URI using hyphens and using multiple words uses the class name of Camel Case.
+For example <code class="language-plaintext highlighter-rouge">/wild-animal</code> requests are accessed to the <code class="language-plaintext highlighter-rouge">WildAnimal</code> class.</p>
+
+<h2 id="parameters">Parameters</h2>
+
+<p>The name of the PHP method executed corresponding to the HTTP method and the value passed are as follows.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>HTTP method</th>
+      <th>PHP method</th>
+      <th>Parameters</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>GET</td>
+      <td>onGet</td>
+      <td>$_GET</td>
+    </tr>
+    <tr>
+      <td>POST</td>
+      <td>onPost</td>
+      <td>$_POST or ※ standard input</td>
+    </tr>
+    <tr>
+      <td>PUT</td>
+      <td>onPut</td>
+      <td>※ standard input</td>
+    </tr>
+    <tr>
+      <td>PATCH</td>
+      <td>onPatch</td>
+      <td>※ standard input</td>
+    </tr>
+    <tr>
+      <td>DELETE</td>
+      <td>onDelete</td>
+      <td>※ standard input　</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>There are two media types available for request:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">application/x-www-form-urlencoded</code> // param1=one&amp;param2=two</li>
+  <li><code class="language-plaintext highlighter-rouge">application/json</code> // {“param1”: “one”, “param2”: “one”}</li>
+</ul>
+
+<p>Please also see the <a href="http://php.net/manual/en/features.file-upload.put-method.php">PUT method support</a> of the PHP manual.</p>
+
+<h2 id="method-override">Method Override</h2>
+
+<p>There are firewalls that do not allow HTTP PUT traffic or HTTP DELETE traffic.
+To deal with this constraint, you can send these requests in the following two ways.</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">X-HTTP-Method-Override</code> Send a PUT request or DELETE request using the header field of the POST request.</li>
+  <li><code class="language-plaintext highlighter-rouge">_method</code> Use the URI parameter. ex) POST /users?…&amp;_method=PUT</li>
+</ul>
+
+<h2 id="aura-router">Aura Router</h2>
+
+<p>To receive the request path as a parameter, use Aura Router.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>composer require bear/aura-router-module ^2.0
+</code></pre></div></div>
+
+<p>Install <code class="language-plaintext highlighter-rouge">AuraRouterModule</code> with the path of the router script.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">use</span> <span class="nc">BEAR\Package\AbstractAppModule</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">BEAR\Package\Provide\Router\AuraRouterModule</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">AppModule</span> <span class="kd">extends</span> <span class="nc">AbstractAppModule</span>
+<span class="p">{</span>
+    <span class="k">protected</span> <span class="k">function</span> <span class="n">configure</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="c1">// ...</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">install</span><span class="p">(</span><span class="k">new</span> <span class="nc">AuraRouterModule</span><span class="p">(</span><span class="nv">$appDir</span> <span class="mf">.</span> <span class="s1">'/var/conf/aura.route.php'</span><span class="p">));</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Delete cached DI files to activate new router.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rm -rf var/tmp/*
+</code></pre></div></div>
+
+<h3 id="router-script">Router Script</h3>
+
+<p>Router scripts set routes for <code class="language-plaintext highlighter-rouge">Map</code> objects passed globally.
+You do not need to specify a method for routing.
+The first argument specifies the path as the root name and the second argument specifies the path containing the place folder of the named token.</p>
+
+<p><code class="language-plaintext highlighter-rouge">var/conf/aura.route.php</code></p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+<span class="cm">/* @var \Aura\Router\Map $map */</span>
+<span class="nv">$map</span><span class="o">-&gt;</span><span class="nf">route</span><span class="p">(</span><span class="s1">'/blog'</span><span class="p">,</span> <span class="s1">'/blog/{id}'</span><span class="p">);</span>
+<span class="nv">$map</span><span class="o">-&gt;</span><span class="nf">route</span><span class="p">(</span><span class="s1">'/user'</span><span class="p">,</span> <span class="s1">'/user/{name}'</span><span class="p">)</span><span class="o">-&gt;</span><span class="nf">tokens</span><span class="p">([</span><span class="s1">'name'</span> <span class="o">=&gt;</span> <span class="s1">'[a-z]+'</span><span class="p">]);</span>
+<span class="nv">$map</span><span class="o">-&gt;</span><span class="nf">route</span><span class="p">(</span><span class="s1">'/blog/comment'</span><span class="p">,</span> <span class="s1">'/blog/{id}/comment'</span><span class="p">);</span>
+</code></pre></div></div>
+
+<ul>
+  <li>In the first line, accessing <code class="language-plaintext highlighter-rouge">/blog/bear</code> will be accessed as <code class="language-plaintext highlighter-rouge">page://self/blog?id=bear</code>.
+(= <code class="language-plaintext highlighter-rouge">Blog</code> class’s<code class="language-plaintext highlighter-rouge"> onGet($id)</code> method with the value <code class="language-plaintext highlighter-rouge">$id</code>=<code class="language-plaintext highlighter-rouge">bear</code>.)</li>
+  <li><code class="language-plaintext highlighter-rouge">token</code> is used to restrict parameters with regular expressions.</li>
+  <li><code class="language-plaintext highlighter-rouge">/blog/{id}/comment</code> to route <code class="language-plaintext highlighter-rouge">Blog\Comment</code> class.</li>
+</ul>
+
+<h3 id="preferred-router">Preferred router</h3>
+
+<p>If it is not routed by the Aura router, a web router will be used.
+In other words, it is OK to prepare the router script only for the URI that passes the parameters in the path.</p>
+
+<h3 id="parameter">Parameter</h3>
+
+<p><code class="language-plaintext highlighter-rouge">Aura router</code> have various methods to obtain parameters from the path.</p>
+
+<h3 id="custom-placeholder-token-matching">Custom Placeholder Token Matching</h3>
+
+<p>The script below routes only when <code class="language-plaintext highlighter-rouge">{date}</code> is in the proper format.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$map</span><span class="o">-&gt;</span><span class="nf">route</span><span class="p">(</span><span class="s1">'/calendar/from'</span><span class="p">,</span> <span class="s1">'/calendar/from/{date}'</span><span class="p">)</span>
+    <span class="o">-&gt;</span><span class="nf">tokens</span><span class="p">([</span>
+        <span class="s1">'date'</span> <span class="o">=&gt;</span> <span class="k">function</span> <span class="p">(</span><span class="nv">$date</span><span class="p">,</span> <span class="nv">$route</span><span class="p">,</span> <span class="nv">$request</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">try</span> <span class="p">{</span>
+                <span class="k">new</span> <span class="err">\</span><span class="nf">DateTime</span><span class="p">(</span><span class="nv">$date</span><span class="p">);</span>
+                <span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
+            <span class="p">}</span> <span class="k">catch</span><span class="p">(</span><span class="err">\</span><span class="nc">Exception</span> <span class="nv">$e</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">]);</span>
+</code></pre></div></div>
+
+<h3 id="optional-placeholder-tokens">Optional Placeholder Tokens</h3>
+
+<p>Sometimes it is useful to have a route with optional placeholder tokens for attributes. None, some, or all of the optional values may be present, and the route will still match.</p>
+
+<p>To specify optional attributes, use the notation {/attribute1,attribute2,attribute3} in the path. For example:</p>
+
+<p>ex）</p>
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$map</span><span class="o">-&gt;</span><span class="nf">route</span><span class="p">(</span><span class="s1">'archive'</span><span class="p">,</span> <span class="s1">'/archive{/year,month,day}'</span><span class="p">)</span>
+    <span class="o">-&gt;</span><span class="nf">tokens</span><span class="p">([</span>
+        <span class="s1">'year'</span> <span class="o">=&gt;</span> <span class="s1">'\d{4}'</span><span class="p">,</span>
+        <span class="s1">'month'</span> <span class="o">=&gt;</span> <span class="s1">'\d{2}'</span><span class="p">,</span>
+        <span class="s1">'day'</span> <span class="o">=&gt;</span> <span class="s1">'\d{2}'</span><span class="p">,</span>
+    <span class="p">]);</span>
+</code></pre></div></div>
+
+<p>Please note that there is the first slash <strong>inside</strong> of the place holder.
+Then all the paths below are routed to ‘archive’ and the value of the parameter is appended.</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">/archive            : ['year' =&gt; null,   'month' =&gt; null, 'day' = null]</code></li>
+  <li><code class="language-plaintext highlighter-rouge">/archive/1979       : ['year' =&gt; '1979', 'month' =&gt; null, 'day' = null]</code></li>
+  <li><code class="language-plaintext highlighter-rouge">/archive/1979/11    : ['year' =&gt; '1979', 'month' =&gt; '11', 'day' = null]</code></li>
+  <li><code class="language-plaintext highlighter-rouge">/archive/1979/11/07 : ['year' =&gt; '1979', 'month' =&gt; '11', 'day' = '07']</code></li>
+</ul>
+
+<p>Optional parameters are <strong>options in the order of</strong>. In other words, you can not specify “day” without “month”.</p>
+
+<h3 id="wildcard-attributes">Wildcard Attributes</h3>
+
+<p>Sometimes it is useful to allow the trailing part of the path be anything at all. To allow arbitrary trailing path segments on a route, call the wildcard() method. This will let you specify the attribute name under which the arbitrary trailing values will be stored.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$map</span><span class="o">-&gt;</span><span class="nf">route</span><span class="p">(</span><span class="s1">'wild'</span><span class="p">,</span> <span class="s1">'/wild'</span><span class="p">)</span>
+    <span class="o">-&gt;</span><span class="nf">wildcard</span><span class="p">(</span><span class="s1">'card'</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>All slash-separated path segments after the {id} will be captured as an array in the in wildcard attribute. For example:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">/wild             : ['card' =&gt; []]</code></li>
+  <li><code class="language-plaintext highlighter-rouge">/wild/foo         : ['card' =&gt; ['foo']]</code></li>
+  <li><code class="language-plaintext highlighter-rouge">/wild/foo/bar     : ['card' =&gt; ['foo', 'bar']]</code></li>
+  <li><code class="language-plaintext highlighter-rouge">/wild/foo/bar/baz : ['card' =&gt; ['foo', 'bar', 'baz']]</code></li>
+</ul>
+
+<p>For other advanced routes, please refer to Aura Router’s <a href="https://github.com/auraphp/Aura.Router/blob/3.x/docs/defining-routes.md">defining-routes</a>.</p>
+
+<h2 id="generating-paths-from-routes">Generating Paths From Routes</h2>
+
+<p>You can generate a URI from the name of the route and the value of the parameter.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">use</span> <span class="nc">BEAR\Sunday\Extension\Router\RouterInterface</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">Index</span> <span class="kd">extends</span> <span class="nc">ResourceObject</span>
+<span class="p">{</span>
+    <span class="cd">/**
+     * @var RouterInterface
+     */</span>
+    <span class="k">private</span> <span class="nv">$router</span><span class="p">;</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="n">__construct</span><span class="p">(</span><span class="kt">RouterInterface</span> <span class="nv">$router</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">router</span> <span class="o">=</span> <span class="nv">$router</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onGet</span><span class="p">():</span> <span class="kt">static</span>
+    <span class="p">{</span>
+        <span class="nv">$userLink</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">router</span><span class="o">-&gt;</span><span class="nf">generate</span><span class="p">(</span><span class="s1">'/user'</span><span class="p">,</span> <span class="p">[</span><span class="s1">'name'</span> <span class="o">=&gt;</span> <span class="s1">'bear'</span><span class="p">]);</span>
+        <span class="c1">// '/user/bear'</span>
+</code></pre></div></div>
+
+<h3 id="request-method">Request Method</h3>
+
+<p>It is not necessary to specify a request method.</p>
+
+<h3 id="request-header">Request Header</h3>
+
+<p>Normally request headers are not passed to Aura.Router, but installing <code class="language-plaintext highlighter-rouge">RequestHeaderModule</code> allows Aura.Router to match using headers.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">install</span><span class="p">(</span><span class="k">new</span> <span class="nc">RequestHeaderModule</span><span class="p">());</span>
+</code></pre></div></div>
+
+<h2 id="custom-router-component">Custom Router Component</h2>
+
+<p>Implement <a href="https://github.com/bearsunday/BEAR.Sunday/blob/1.x/src/Extension/Router/RouterInterface.php">RouterInterface</a> with by referring to <a href="https://github.com/bearsunday/BEAR.AuraRouterModule">BEAR.AuraRouterModule</a>.</p>
+
+<hr />
+<p>*<a href="https://github.com/bearsunday/bearsunday.github.io/blob/master/manuals/1.0/en/router.md">This document</a> needs to be proofread by native speaker. *</p>
+
+            </article>
+        </div>
+        <div id="ArticleToc" class="col-lg-2 d-none d-lg-block">
+            <nav class="nav side-bar-right"></nav>
+        </div>
+    </div>
+</main>
+<footer>
+    <div class="container d-md-flex">
+        <i class="bear-icon d-none d-lg-block"></i>
+        <small>
+            © 2011-2024 BEAR.Sunday
+        </small>
+        <ul class="navbar-nav flex-row ml-md-auto d-none d-md-flex">
+            <li>
+                <a href="https://gitter.im/bearsunday/BEAR.Sunday?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge">Gitter</a>
+            </li>
+            <li>
+                <a href="https://github.com/bearsunday/BEAR.Sunday">Github</a>
+            </li>
+            <li>
+                <a href="https://twitter.com/BEARSunday">Twitter</a>
+            </li>
+            <li>
+                <a href="https://www.facebook.com/pages/BEARSunday/110116939178462?ref=hl">Facebook</a>
+            </li>
+            <li>
+                <a href="http://koriym.github.io/">Blog (JA)</a>
+            </li>
+            <li>
+                <a href="https://github.com/bearsunday/bearsunday.github.io">PR ?</a>
+            </li>
+        </ul>
+    </div>
+</footer>
+<script src="//code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+<script>
+    window.ga = function () { ga.q.push(arguments) }; ga.q = []; ga.l = +new Date;
+    ga('create', 'UA-6074569-8', 'bearsunday.github.io'); ga('send', 'pageview');
+</script>
+<script src="https://www.google-analytics.com/analytics.js" async defer></script>
+
+<script src="/js/generate-table-of-contents/index.min.js"></script>
+<script>
+    var toc = generateTableOfContents(document.getElementById('article'));
+    var sideBarRight = $('.side-bar-right');
+    sideBarRight.append(toc);
+
+    var scrollOffset = $('body').attr('data-offset');
+    var articlePaddingTop = $('article').css('padding-top').replace('px', '');
+    sideBarRight.find('a').on('click', function (e) {
+        e.preventDefault();
+        var targetId = $(this).attr('href');
+        var targetPositionTop = $(targetId).offset().top - scrollOffset - articlePaddingTop;
+        window.scrollTo(0, targetPositionTop)
+    });
+</script>
+
+</body>
+</html>

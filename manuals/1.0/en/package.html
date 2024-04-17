@@ -1,0 +1,525 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Package &#124; BEAR.Sunday</title>
+    <meta name="description" content="BEAR.Sunday is a resource orientated framework with a REST centered architecture, implementing Dependency Injection and Aspect Orientated Programming' at its core.">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/github-markdown-css/2.10.0/github-markdown.css">
+    <link rel="stylesheet" href="/css/syntax.css">
+    
+    <link rel="stylesheet" href="/css/bearsunday.css">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="apple-touch-icon" href="/icon.png">
+</head>
+<body data-page-category="Manual" data-spy="scroll" data-target="#ArticleToc" data-offset="65">
+<header>
+    <nav class="navbar navbar-expand flex-column flex-md-row bg-light">
+        <a class="navbar-brand mr-0 mr-md-2" href="/index.html"></a>
+        <div class="navbar-nav-scroll">
+            <ul class="navbar-nav flex-row">
+                <li class="nav-item">
+                    <a class="nav-link " href="/index.html">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="/manuals/1.0/en/index.html">Manual</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link " href="/contributors.html">Contributors</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/slide.html">Slide</a>
+                </li>
+            </ul>
+        </div>
+        
+        <ul class="navbar-nav ml-md-auto d-none d-md-flex language-list">
+            <li>
+                <a class="active" href="/manuals/1.0/en/package.html">En</a>
+            </li>
+            <li>
+                <a class="" href="/manuals/1.0/ja/package.html">Ja</a>
+            </li>
+        </ul>
+        
+    </nav>
+</header>
+
+<main class="container-fluid">
+    <div class="row flex-xl-nowrap">
+        <div class="col-md-3 col-lg-2">
+            <div class="side-bar">
+                <nav class="navbar navbar-expand-md navbar-light">
+    <div class="navigation-header">
+        <div class="ml-auto d-sm-block d-md-none">
+            <ul class="navbar-nav language-list">
+                <li>
+                    <a class="active" href="/manuals/1.0/en/package.html">En</a>
+                </li>
+                <li>
+                    <a class="" href="/manuals/1.0/ja/package.html">Ja</a>
+                </li>
+            </ul>
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#Navber" aria-controls="Navber" aria-expanded="false" aria-label="ナビゲーションの切替">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+    </div>
+    <div class="collapse navbar-collapse" id="Navber">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/">Introduction</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/version.html">Version</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/quick-start.html">Quick Start</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/tutorial.html">Tutorial</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/tutorial2.html">Tutorial 2</a>
+            </li>
+            <li>
+                <a class="nav-link active" href="/manuals/1.0/en/package.html">Package</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/application.html">Application</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/module.html">Module</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/di.html">DI</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/aop.html">AOP</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/resource.html">Resource</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/resource_param.html">・Parameter</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/resource_link.html">・Link</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/resource_renderer.html">・Rendering and Transfer</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/router.html">Router</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/production.html">Production</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/import.html">Import</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/database.html">Database</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/validation.html">Validation</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/html.html">HTML</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/form.html">Form</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/content-negotiation.html">Content Negotiation</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/hypermedia-api.html">Hypermedia API</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/psr7.html">Request / PSR-7</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/js-ui.html">JavaScript UI</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/stream.html">Stream Response</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/cache.html">Cache</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/swoole.html">Swoole</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/coding-guide.html">Coding Guide</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/types.html">Type</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/test.html">Test</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/examples.html">Examples</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/attribute.html">Attribute</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/apidoc.html">API Doc</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/1page.html">1 Page</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+            </div>
+        </div>
+        <div class="col-md-9 col-lg-8">
+            <article id="article" class="markdown-body">
+                <h1 id="package">Package</h1>
+
+<p>BEAR.Sunday application is a composer package taking BEAR.Sunday framework as dependency package.
+You can also install another BEAR.Sunday application package as dependency.</p>
+
+<h2 id="application-organization">Application organization</h2>
+
+<p>The file layout of the BEAR.Sunday application conforms to <a href="https://github.com/php-pds/skeleton">php-pds/skeleton</a> standard.</p>
+
+<h3 id="invoke-sequence">Invoke sequence</h3>
+
+<ol>
+  <li>Console input(<code class="language-plaintext highlighter-rouge">bin/app.php</code>, <code class="language-plaintext highlighter-rouge">bin/page.php</code>) or web entry file (<code class="language-plaintext highlighter-rouge">public/index.php</code>) excute <code class="language-plaintext highlighter-rouge">bootstrap.php</code> function.</li>
+  <li><code class="language-plaintext highlighter-rouge">$app</code> application object is created by <code class="language-plaintext highlighter-rouge">$context</code> in <code class="language-plaintext highlighter-rouge">boostrap.php</code>.</li>
+  <li>A router in <code class="language-plaintext highlighter-rouge">$app</code> convert external resource request to internal resource request.</li>
+  <li>A resource request is invoked. The representation of the result transfered to a client.</li>
+</ol>
+
+<h3 id="bootstrap">bootstrap/</h3>
+
+<p>You can access same resource through console input or web access with same boot file.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>php bin/app.php options /todos // console API access　<span class="o">(</span>app resource<span class="o">)</span>
+</code></pre></div></div>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>php bin/page.php get <span class="s1">'/todos?id=1'</span> // console Web access <span class="o">(</span>page resource<span class="o">)</span>
+</code></pre></div></div>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>php <span class="nt">-S</span> 127.0.0.1bin/app.php // PHP server
+</code></pre></div></div>
+
+<p>You can create your own boot file for different context.</p>
+
+<h3 id="bin">bin/</h3>
+
+<p>Plavce command-line executable files.</p>
+
+<h3 id="src">src/</h3>
+
+<p>Place application class file.</p>
+
+<h3 id="publc">publc/</h3>
+
+<p>Web public folder.</p>
+
+<h3 id="var">var/</h3>
+
+<p><code class="language-plaintext highlighter-rouge">log</code> and <code class="language-plaintext highlighter-rouge">tmp</code> folder need write permission.</p>
+
+<h2 id="framework-package">Framework Package</h2>
+
+<h3 id="rayaop">ray/aop</h3>
+<p><a href="https://scrutinizer-ci.com/g/ray-di/Ray.Aop/"><img src="https://scrutinizer-ci.com/g/ray-di/Ray.Aop/badges/quality-score.png?b=2.x" alt="Scrutinizer Quality Score" /></a>
+<a href="https://codecov.io/gh/ray-di/Ray.Aop"><img src="https://codecov.io/gh/ray-di/Ray.Aop/branch/2.x/graph/badge.svg?token=eh3c9AF4Mr" alt="codecov" /></a>
+<a href="https://shepherd.dev/github/ray-di/Ray.Aop"><img src="https://shepherd.dev/github/ray-di/Ray.Aop/coverage.svg" alt="Type Coverage" /></a>
+<a href="https://github.com/ray-di/Ray.Aop/actions/workflows/continuous-integration.yml"><img src="https://github.com/ray-di/Ray.Aop/actions/workflows/continuous-integration.yml/badge.svg" alt="Continuous Integration" /></a></p>
+
+<p>An aspect oriented framework based on Java AOP Alliance API.</p>
+
+<h3 id="raydi">ray/di</h3>
+<p><a href="https://scrutinizer-ci.com/g/ray-di/Ray.Di/"><img src="https://scrutinizer-ci.com/g/ray-di/Ray.Di/badges/quality-score.png?b=2.x" alt="Scrutinizer Quality Score" /></a>
+<a href="https://codecov.io/gh/ray-di/Ray.Di"><img src="https://codecov.io/gh/ray-di/Ray.Di/branch/2.x/graph/badge.svg?token=eh3c9AF4Mr" alt="codecov" /></a>
+<a href="https://shepherd.dev/github/ray-di/Ray.Di"><img src="https://shepherd.dev/github/ray-di/Ray.Di/coverage.svg" alt="Type Coverage" /></a>
+<a href="https://github.com/ray-di/Ray.Di/actions/workflows/continuous-integration.yml"><img src="https://github.com/ray-di/Ray.Di/actions/workflows/continuous-integration.yml/badge.svg" alt="Continuous Integration" /></a></p>
+
+<p>A Google Guice style DI framework. It contains <code class="language-plaintext highlighter-rouge">ray/aop</code>.</p>
+
+<h3 id="bearresource">bear/resource</h3>
+<p><a href="https://scrutinizer-ci.com/g/bearsunday/BEAR.Resource/?branch=1.x"><img src="https://scrutinizer-ci.com/g/bearsunday/BEAR.Resource/badges/quality-score.png?b=1.x" alt="Scrutinizer Code Quality" /></a>
+<a href="https://codecov.io/gh/bearsunday/BEAR.Resource"><img src="https://codecov.io/gh/bearsunday/BEAR.Resource/branch/1.x/graph/badge.svg?token=eh3c9AF4Mr" alt="codecov" /></a>
+<a href="https://shepherd.dev/github/bearsunday/BEAR.Resource"><img src="https://shepherd.dev/github/bearsunday/BEAR.Resource/coverage.svg" alt="Type Coverage" /></a>
+<a href="https://github.com/bearsunday/BEAR.Resource/actions/workflows/continuous-integration.yml"><img src="https://github.com/bearsunday/BEAR.Resource/actions/workflows/continuous-integration.yml/badge.svg" alt="Continuous Integration" /></a></p>
+
+<p>A REST framework for PHP object as a service. It contains <code class="language-plaintext highlighter-rouge">ray/di</code>.</p>
+
+<h3 id="bearsunday">bear/sunday</h3>
+<p><a href="https://scrutinizer-ci.com/g/bearsunday/BEAR.Sunday/?branch=1.x"><img src="https://scrutinizer-ci.com/g/bearsunday/BEAR.Sunday/badges/quality-score.png?b=1.x" alt="Scrutinizer Code Quality" /></a>
+<a href="https://codecov.io/gh/bearsunday/BEAR.Sunday"><img src="https://codecov.io/gh/bearsunday/BEAR.Sunday/branch/1.x/graph/badge.svg?token=eh3c9AF4Mr" alt="codecov" /></a>
+<a href="https://shepherd.dev/github/bearsunday/BEAR.Sunday"><img src="https://shepherd.dev/github/bearsunday/BEAR.Sunday/coverage.svg" alt="Type Coverage" /></a>
+<a href="https://github.com/bearsunday/BEAR.Sunday/actions/workflows/continuous-integration.yml"><img src="https://github.com/bearsunday/BEAR.Sunday/actions/workflows/continuous-integration.yml/badge.svg" alt="Continuous Integration" /></a></p>
+
+<p>A web application interface package. It contains <code class="language-plaintext highlighter-rouge">bear/resource</code>.</p>
+
+<h3 id="bearpackage">bear/package</h3>
+<p><a href="https://scrutinizer-ci.com/g/bearsunday/BEAR.Package/?branch=1.x"><img src="https://scrutinizer-ci.com/g/bearsunday/BEAR.Package/badges/quality-score.png?b=1.x" alt="Scrutinizer Code Quality" /></a>
+<a href="https://codecov.io/gh/bearsunday/BEAR.Pacakge"><img src="https://codecov.io/gh/bearsunday/BEAR.Package/branch/1.x/graph/badge.svg?token=eh3c9AF4Mr" alt="codecov" /></a>
+<a href="https://shepherd.dev/github/bearsunday/BEAR.Package"><img src="https://shepherd.dev/github/bearsunday/BEAR.Package/coverage.svg" alt="Type Coverage" /></a>
+<a href="https://github.com/bearsunday/BEAR.Package/actions/workflows/continuous-integration.yml"><img src="https://github.com/bearsunday/BEAR.Package/actions/workflows/continuous-integration.yml/badge.svg" alt="Continuous Integration" /></a></p>
+
+<p>A web application implmentation package. It contains <code class="language-plaintext highlighter-rouge">bear/sunday</code>.</p>
+
+<h2 id="library-package">Library Package</h2>
+
+<p>Optional library package can be installed with <code class="language-plaintext highlighter-rouge">composer require</code> command.</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td><strong>Category</strong></td>
+      <td><strong>Composer package</strong></td>
+      <td><strong>Library</strong></td>
+    </tr>
+    <tr>
+      <td>Router</td>
+      <td> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td><a href="https://github.com/bearsunday/BEAR.AuraRouterModule">bear/aura-router-module</a></td>
+      <td><a href="https://github.com/auraphp/Aura.Router/tree/2.x">Aura.Router v2</a></td>
+    </tr>
+    <tr>
+      <td>Database</td>
+      <td> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td><a href="https://github.com/ray-di/Ray.MediaQuery">ray/media-query</a></td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td><a href="https://github.com/ray-di/Ray.AuraSqlModule">ray/aura-sql-module</a></td>
+      <td><a href="https://github.com/auraphp/Aura.Sql/tree/2.x">Aura.Sql v2</a></td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td><a href="https://github.com/ray-di/Ray.DbalModule">ray/dbal-module</a></td>
+      <td><a href="https://github.com/doctrine/dbal">Doctrine DBAL</a></td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td><a href="https://github.com/ray-di/Ray.CakeDbModule">ray/cake-database-module</a></td>
+      <td><a href="https://github.com/cakephp/database">CakePHP v3 database</a></td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td><a href="https://github.com/kawanamiyuu/Ray.DoctrineOrmModule">ray/doctrine-orm-module</a></td>
+      <td><a href="https://github.com/doctrine/doctrine2">Doctrine ORM</a></td>
+    </tr>
+    <tr>
+      <td>Storage</td>
+      <td> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td><a href="https://github.com/bearsunday/BEAR.QueryRepository">bear/query-repository</a></td>
+      <td>CQRS inspired repository</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td><a href="https://github.com/ray-di/Ray.QueryModule">bear/query-module</a></td>
+      <td>Separation of external access such as DB or Web API</td>
+    </tr>
+    <tr>
+      <td>Web</td>
+      <td> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td><a href="http://bearsunday.github.io/manuals/1.0/ja/html.html">madapaja/twig-module</a></td>
+      <td><a href="http://twig.sensiolabs.org/">Twig</a></td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td><a href="http://bearsunday.github.io/manuals/1.0/ja/form.html">ray/web-form-module</a></td>
+      <td>Web form</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td><a href="https://github.com/Ray-Di/Ray.AuraWebModule">ray/aura-web-module</a></td>
+      <td><a href="https://github.com/auraphp/Aura.Web">Aura.Web</a></td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td><a href="https://github.com/ray-di/Ray.AuraSessionModule">ray/aura-session-module</a></td>
+      <td><a href="https://github.com/auraphp/Aura.Session">Aura.Session</a></td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td><a href="https://github.com/kawanamiyuu/Ray.SymfonySessionModule">ray/symfony-session-module</a></td>
+      <td><a href="https://github.com/symfony/http-foundation/tree/master/Session">Symfony Session</a></td>
+    </tr>
+    <tr>
+      <td>Validation</td>
+      <td> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td><a href="https://github.com/ray-di/Ray.ValidateModule">ray/validate-module</a></td>
+      <td><a href="https://github.com/auraphp/Aura.Filter">Aura.Filter</a></td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td><a href="https://github.com/satomif/ExtraAuraFilterModule">satomif/extra-aura-filter-module</a></td>
+      <td><a href="https://github.com/auraphp/Aura.Filter">Aura.Filter</a></td>
+    </tr>
+    <tr>
+      <td>Authorization and Authentication</td>
+      <td> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td><a href="https://github.com/Ray-Di/Ray.OAuthModule">ray/oauth-module</a></td>
+      <td>OAuth</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td><a href="https://github.com/kuma-guy/BEAR.JwtAuthModule">kuma-guy/jwt-auth-module</a></td>
+      <td>JSON Web Token</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td><a href="https://github.com/ray-di/Ray.RoleModule">ray/role-module</a></td>
+      <td>Zend Acl</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td><a href="https://github.com/bearsunday/BEAR.AclResource">bear/acl-resource</a></td>
+      <td>ACL based embedded resource</td>
+    </tr>
+    <tr>
+      <td>Hypermedia</td>
+      <td> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td><a href="https://github.com/kuma-guy/BEAR.SirenModule">kuma-guy/siren-module</a></td>
+      <td>Siren</td>
+    </tr>
+    <tr>
+      <td>Development</td>
+      <td> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td><a href="https://github.com/ray-di/Ray.TestDouble">ray/test-double</a></td>
+      <td>Test Double</td>
+    </tr>
+    <tr>
+      <td>Asynchronous high performance</td>
+      <td> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td><a href="https://github.com/bearsunday/MyVendor.Swoole">MyVendor.Swoole</a></td>
+      <td><a href="https://github.com/swoole/swoole-src">Swoole</a></td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="vendor-package">Vendor Package</h2>
+
+<p>You can reuse common packages and tool combinations as modules with only modules and share modules of similar projects.<sup id="fnref:1" role="doc-noteref"><a href="#fn:1" class="footnote" rel="footnote">1</a></sup></p>
+
+<h2 id="semver">Semver</h2>
+
+<p>All packages adhere to <a href="http://semver.org/">Semantic Versioning</a>.</p>
+
+<hr />
+
+<div class="footnotes" role="doc-endnotes">
+  <ol>
+    <li id="fn:1" role="doc-endnote">
+      <p>See <a href="https://github.com/koriym/Koriym.DbAppPackage">Koriym.DbAppPackage</a> <a href="#fnref:1" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+  </ol>
+</div>
+
+            </article>
+        </div>
+        <div id="ArticleToc" class="col-lg-2 d-none d-lg-block">
+            <nav class="nav side-bar-right"></nav>
+        </div>
+    </div>
+</main>
+<footer>
+    <div class="container d-md-flex">
+        <i class="bear-icon d-none d-lg-block"></i>
+        <small>
+            © 2011-2024 BEAR.Sunday
+        </small>
+        <ul class="navbar-nav flex-row ml-md-auto d-none d-md-flex">
+            <li>
+                <a href="https://gitter.im/bearsunday/BEAR.Sunday?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge">Gitter</a>
+            </li>
+            <li>
+                <a href="https://github.com/bearsunday/BEAR.Sunday">Github</a>
+            </li>
+            <li>
+                <a href="https://twitter.com/BEARSunday">Twitter</a>
+            </li>
+            <li>
+                <a href="https://www.facebook.com/pages/BEARSunday/110116939178462?ref=hl">Facebook</a>
+            </li>
+            <li>
+                <a href="http://koriym.github.io/">Blog (JA)</a>
+            </li>
+            <li>
+                <a href="https://github.com/bearsunday/bearsunday.github.io">PR ?</a>
+            </li>
+        </ul>
+    </div>
+</footer>
+<script src="//code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+<script>
+    window.ga = function () { ga.q.push(arguments) }; ga.q = []; ga.l = +new Date;
+    ga('create', 'UA-6074569-8', 'bearsunday.github.io'); ga('send', 'pageview');
+</script>
+<script src="https://www.google-analytics.com/analytics.js" async defer></script>
+
+<script src="/js/generate-table-of-contents/index.min.js"></script>
+<script>
+    var toc = generateTableOfContents(document.getElementById('article'));
+    var sideBarRight = $('.side-bar-right');
+    sideBarRight.append(toc);
+
+    var scrollOffset = $('body').attr('data-offset');
+    var articlePaddingTop = $('article').css('padding-top').replace('px', '');
+    sideBarRight.find('a').on('click', function (e) {
+        e.preventDefault();
+        var targetId = $(this).attr('href');
+        var targetPositionTop = $(targetId).offset().top - scrollOffset - articlePaddingTop;
+        window.scrollTo(0, targetPositionTop)
+    });
+</script>
+
+</body>
+</html>

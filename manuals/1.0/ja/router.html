@@ -1,0 +1,516 @@
+<!doctype html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>ルーター &#124; BEAR.Sunday</title>
+    <meta name="description" content="BEAR.Sunday is a resource orientated framework with a REST centered architecture, implementing Dependency Injection and Aspect Orientated Programming' at its core.">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/github-markdown-css/2.10.0/github-markdown.css">
+    <link rel="stylesheet" href="/css/syntax.css">
+    
+    <link rel="stylesheet" href="/css/bearsunday.css">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="apple-touch-icon" href="/icon.png">
+</head>
+<body data-page-category="Manual" data-spy="scroll" data-target="#ArticleToc" data-offset="65">
+<header>
+    <nav class="navbar navbar-expand flex-column flex-md-row bg-light">
+        <a class="navbar-brand mr-0 mr-md-2" href="/index.html"></a>
+        <div class="navbar-nav-scroll">
+            <ul class="navbar-nav flex-row">
+                <li class="nav-item">
+                    <a class="nav-link " href="/index.html">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="/manuals/1.0/en/index.html">Manual</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link " href="/contributors.html">Contributors</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/slide.html">Slide</a>
+                </li>
+            </ul>
+        </div>
+        
+        <ul class="navbar-nav ml-md-auto d-none d-md-flex language-list">
+            <li>
+                <a class="" href="/manuals/1.0/en/router.html">En</a>
+            </li>
+            <li>
+                <a class="active" href="/manuals/1.0/ja/router.html">Ja</a>
+            </li>
+        </ul>
+        
+    </nav>
+</header>
+
+<main class="container-fluid">
+    <div class="row flex-xl-nowrap">
+        <div class="col-md-3 col-lg-2">
+            <div class="side-bar">
+                <nav class="navbar navbar-expand-md navbar-light">
+    <div class="navigation-header">
+        <div class="ml-auto d-sm-block d-md-none">
+            <ul class="navbar-nav language-list">
+                <li>
+                    <a class="" href="/manuals/1.0/en/router.html">En</a>
+                </li>
+                <li>
+                    <a class="active" href="/manuals/1.0/ja/router.html">Ja</a>
+                </li>
+            </ul>
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#Navber" aria-controls="Navber" aria-expanded="false" aria-label="ナビゲーションの切替">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+    </div>
+    <div class="collapse navbar-collapse" id="Navber">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/index.html">イントロダクション</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/version.html">バージョン</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/quick-start.html">クイックスタート</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/tutorial.html">チュートリアル</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/tutorial2.html">チュートリアル 2</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/package.html">パッケージ</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/application.html">アプリケーション</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/module.html">モジュール</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/di.html">DI</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/aop.html">AOP</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/resource.html">リソース</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/resource_param.html">・パラメーター</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/resource_link.html">・リンク</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/resource_renderer.html">・レンダリングと転送</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" href="/manuals/1.0/ja/router.html">ルーター</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/production.html">プロダクション</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/ja/import.html">インポート</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/database.html">データベース</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/html.html">HTML</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/validation.html">バリデーション</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/form.html">フォーム</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/content-negotiation.html">コンテントネゴシエーション</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/hypermedia-api.html">ハイパーメディア API</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/psr7.html">リクエスト / PSR-7</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/js-ui.html">JavaScript UI</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/stream.html">ストリーム出力</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/cache.html">キャッシュ</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/swoole.html">Swoole</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/coding-guide.html">コーディングガイド</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/types.html">タイプ</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/test.html">テスト</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/examples.html">サンプル</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/upgrade/injector.html">アップグレード</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/attribute.html">アトリビュート</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/apidoc.html">API Doc</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/1page.html">1 Page</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+            </div>
+        </div>
+        <div class="col-md-9 col-lg-8">
+            <article id="article" class="markdown-body">
+                <h1 id="ルーター">ルーター</h1>
+
+<p>ルーターはWebやコンソールなどの外部コンテキストのリソースリクエストを、BEAR.Sunday内部のリソースリクエストに変換します。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$request</span> <span class="o">=</span> <span class="nv">$app</span><span class="o">-&gt;</span><span class="n">router</span><span class="o">-&gt;</span><span class="nf">match</span><span class="p">(</span><span class="nv">$GLOBALS</span><span class="p">,</span> <span class="nv">$_SERVER</span><span class="p">);</span>
+<span class="k">echo</span> <span class="p">(</span><span class="n">string</span><span class="p">)</span> <span class="nv">$request</span><span class="p">;</span>
+<span class="c1">// get page://self/user?name=bear</span>
+</code></pre></div></div>
+
+<h2 id="webルーター">Webルーター</h2>
+
+<p>デフォルトのWebルーターではHTTPリクエストのパス(<code class="language-plaintext highlighter-rouge">$_SERVER['REQUEST_URI']</code>)に対応したリソースクラスにアクセスされます。
+例えば<code class="language-plaintext highlighter-rouge">/index</code>のリクエストは<code class="language-plaintext highlighter-rouge">{Vendor名}\{Project名}\Resource\Page\Index</code>クラスのHTTPメソッドに応じたPHPメソッドにアクセスされます。</p>
+
+<p>Webルーターは規約ベースのルーターです。設定やスクリプトは必要ありません。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">namespace</span> <span class="nn">MyVendor\MyProject\Resource\Page</span><span class="p">;</span>
+
+<span class="c1">// page://self/index</span>
+<span class="kd">class</span> <span class="nc">Index</span> <span class="kd">extends</span> <span class="nc">ResourceObject</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onGet</span><span class="p">():</span> <span class="kt">static</span> <span class="c1">// GETリクエスト</span>
+    <span class="p">{</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="cliルーター">CLIルーター</h2>
+
+<p><code class="language-plaintext highlighter-rouge">cli</code>コンテキストではコンソールからの引数が外部入力になります。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>php bin/page.php get /
+</code></pre></div></div>
+
+<p>BEAR.SundayアプリケーションはWebとCLIの双方で動作します。</p>
+
+<h2 id="複数の単語を使ったuri">複数の単語を使ったURI</h2>
+
+<p>ハイフンを使い複数の単語を使ったURIのパスはキャメルケースのクラス名を使います。
+例えば<code class="language-plaintext highlighter-rouge">/wild-animal</code>のリクエストは<code class="language-plaintext highlighter-rouge">WildAnimal</code>クラスにアクセスされます。</p>
+
+<h2 id="パラメーター">パラメーター</h2>
+
+<p>HTTPメソッドに対応して実行されるPHPメソッドの名前と渡される値は以下の通りです。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>HTTPメソッド</th>
+      <th>PHPメソッド</th>
+      <th>　渡される値</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>GET</td>
+      <td>onGet</td>
+      <td>$_GET</td>
+    </tr>
+    <tr>
+      <td>POST</td>
+      <td>onPost</td>
+      <td>$_POST または 標準入力</td>
+    </tr>
+    <tr>
+      <td>PUT</td>
+      <td>onPut</td>
+      <td>※標準入力</td>
+    </tr>
+    <tr>
+      <td>PATCH</td>
+      <td>onPatch</td>
+      <td>※標準入力</td>
+    </tr>
+    <tr>
+      <td>DELETE</td>
+      <td>onDelete</td>
+      <td>※標準入力　</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>リクエストのメディアタイプは以下の２つが利用できます。</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">application/x-www-form-urlencoded</code> // param1=one&amp;param2=two</li>
+  <li><code class="language-plaintext highlighter-rouge">application/json</code> // {“param1”: “one”, “param2”: “one”} (POSTの時は標準入力の値が使われます）</li>
+</ul>
+
+<p>PHPマニュアルの<a href="http://php.net/manual/ja/features.file-upload.put-method.php">PUT メソッドのサポート</a>もご覧ください。</p>
+
+<h2 id="メソッドオーバーライド">メソッドオーバーライド</h2>
+
+<p>HTTP PUT トラフィックや HTTP DELETE トラフィックを許可しないファイアウォールがあります。
+この制約に対応するため、次の2つの方法でこれらの要求を送ることができます。</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">X-HTTP-Method-Override</code> POSTリクエストのヘッダーフィールドを使用してPUTリクエストやDELETEリクエストを送る。</li>
+  <li><code class="language-plaintext highlighter-rouge">_method</code> URI パラメーターを使用する。例）POST /users?…&amp;_method=PUT</li>
+</ul>
+
+<h2 id="auraルーター">Auraルーター</h2>
+
+<p>リクエストのパスをパラメーターとして受け取る場合はAura Routerを使用します。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>composer require bear/aura-router-module ^2.0
+</code></pre></div></div>
+
+<p>ルータースクリプトのパスを指定して<code class="language-plaintext highlighter-rouge">AuraRouterModule</code>をインストールします。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">use</span> <span class="nc">BEAR\Package\AbstractAppModule</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">BEAR\Package\Provide\Router\AuraRouterModule</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">AppModule</span> <span class="kd">extends</span> <span class="nc">AbstractAppModule</span>
+<span class="p">{</span>
+    <span class="k">protected</span> <span class="k">function</span> <span class="n">configure</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="c1">// ...</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">install</span><span class="p">(</span><span class="k">new</span> <span class="nc">AuraRouterModule</span><span class="p">(</span><span class="nv">$appDir</span> <span class="mf">.</span> <span class="s1">'/var/conf/aura.route.php'</span><span class="p">));</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>キャッシュされているDIファイルを消去します。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rm -rf var/tmp/*
+</code></pre></div></div>
+
+<h3 id="ルータースクリプト">ルータースクリプト</h3>
+
+<p>ルータースクリプトではグローバルで渡された<code class="language-plaintext highlighter-rouge">Map</code>オブジェクトに対してルートを設定します。
+ルーティングにメソッドを指定する必要はありません。１つ目の引数はルート名としてパス、２つ目の引数に名前付きトークンのプレイスフォルダーを含んだパスを指定します。</p>
+
+<p><code class="language-plaintext highlighter-rouge">var/conf/aura.route.php</code></p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+<span class="cm">/* @var \Aura\Router\Map $map */</span>
+<span class="nv">$map</span><span class="o">-&gt;</span><span class="nf">route</span><span class="p">(</span><span class="s1">'/blog'</span><span class="p">,</span> <span class="s1">'/blog/{id}'</span><span class="p">);</span>
+<span class="nv">$map</span><span class="o">-&gt;</span><span class="nf">route</span><span class="p">(</span><span class="s1">'/blog/comment'</span><span class="p">,</span> <span class="s1">'/blog/{id}/comment'</span><span class="p">);</span>
+<span class="nv">$map</span><span class="o">-&gt;</span><span class="nf">route</span><span class="p">(</span><span class="s1">'/user'</span><span class="p">,</span> <span class="s1">'/user/{name}'</span><span class="p">)</span><span class="o">-&gt;</span><span class="nf">tokens</span><span class="p">([</span><span class="s1">'name'</span> <span class="o">=&gt;</span> <span class="s1">'[a-z]+'</span><span class="p">]);</span>
+</code></pre></div></div>
+
+<ul>
+  <li>
+    <p>最初の行では<code class="language-plaintext highlighter-rouge">/blog/bear</code>とアクセスがあると<code class="language-plaintext highlighter-rouge">page://self/blog?id=bear</code>としてアクセスされます。
+(=<code class="language-plaintext highlighter-rouge">Blog</code>クラスの<code class="language-plaintext highlighter-rouge">onGet($id)</code>メソッドに<code class="language-plaintext highlighter-rouge">$id</code>=<code class="language-plaintext highlighter-rouge">bear</code>の値でコールされます。)</p>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">/blog/{id}/comment</code>は<code class="language-plaintext highlighter-rouge">Blog\Comment</code>クラスにルートされます。</p>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">token()</code>はパラメーターを正規表現で制限するときに使用します。</p>
+  </li>
+</ul>
+
+<h3 id="優先ルーター">優先ルーター</h3>
+
+<p>Auraルーターでルートされない場合は、Webルーターが使われます。
+つまりパスでパラメーターを渡すURIだけにルータースクリプトを用意すればOKです。</p>
+
+<h3 id="パラメーター-1">パラメーター</h3>
+
+<p>パスからパラメーターを取得するためにAuraルーターは様々な方法が用意されています。</p>
+
+<h3 id="カスタムマッチング">カスタムマッチング</h3>
+
+<p>下のスクリプトは<code class="language-plaintext highlighter-rouge">{date}</code>が適切なフォーマットの時だけルートします。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$map</span><span class="o">-&gt;</span><span class="nf">route</span><span class="p">(</span><span class="s1">'/calendar/from'</span><span class="p">,</span> <span class="s1">'/calendar/from/{date}'</span><span class="p">)</span>
+    <span class="o">-&gt;</span><span class="nf">tokens</span><span class="p">([</span>
+        <span class="s1">'date'</span> <span class="o">=&gt;</span> <span class="k">function</span> <span class="p">(</span><span class="nv">$date</span><span class="p">,</span> <span class="nv">$route</span><span class="p">,</span> <span class="nv">$request</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">try</span> <span class="p">{</span>
+                <span class="k">new</span> <span class="err">\</span><span class="nf">DateTime</span><span class="p">(</span><span class="nv">$date</span><span class="p">);</span>
+                <span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
+            <span class="p">}</span> <span class="k">catch</span><span class="p">(</span><span class="err">\</span><span class="nc">Exception</span> <span class="nv">$e</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">]);</span>
+</code></pre></div></div>
+
+<h3 id="オプション">オプション</h3>
+
+<p>オプションのパラメーターを指定するためにはパスに<code class="language-plaintext highlighter-rouge">{/attribute1,attribute2,attribute3}</code>の表記を加えます。</p>
+
+<p>例）</p>
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$map</span><span class="o">-&gt;</span><span class="nf">route</span><span class="p">(</span><span class="s1">'archive'</span><span class="p">,</span> <span class="s1">'/archive{/year,month,day}'</span><span class="p">)</span>
+    <span class="o">-&gt;</span><span class="nf">tokens</span><span class="p">([</span>
+        <span class="s1">'year'</span> <span class="o">=&gt;</span> <span class="s1">'\d{4}'</span><span class="p">,</span>
+        <span class="s1">'month'</span> <span class="o">=&gt;</span> <span class="s1">'\d{2}'</span><span class="p">,</span>
+        <span class="s1">'day'</span> <span class="o">=&gt;</span> <span class="s1">'\d{2}'</span><span class="p">,</span>
+    <span class="p">]);</span>
+</code></pre></div></div>
+
+<p>プレイスホルダーの<strong>内側に</strong>最初のスラッシュがあるのに注意してください。
+そうすると下のパスは全て’archive’にルートされパラメーターの値が付加されます。</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">/archive            : ['year' =&gt; null,   'month' =&gt; null, 'day' = null]</code></li>
+  <li><code class="language-plaintext highlighter-rouge">/archive/1979       : ['year' =&gt; '1979', 'month' =&gt; null, 'day' = null]</code></li>
+  <li><code class="language-plaintext highlighter-rouge">/archive/1979/11    : ['year' =&gt; '1979', 'month' =&gt; '11', 'day' = null]</code></li>
+  <li><code class="language-plaintext highlighter-rouge">/archive/1979/11/07 : ['year' =&gt; '1979', 'month' =&gt; '11', 'day' = '07']</code></li>
+</ul>
+
+<p>オプションパラメーターは<strong>並ぶ順に</strong>オプションです。つまり”month”なしで”day”を指定することはできません。</p>
+
+<h3 id="ワイルドカード">ワイルドカード</h3>
+
+<p>任意の長さのパスの末尾パラメーターとして格納したいときには<code class="language-plaintext highlighter-rouge">wildcard()</code>メソッドを使います。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$map</span><span class="o">-&gt;</span><span class="nf">route</span><span class="p">(</span><span class="s1">'wild'</span><span class="p">,</span> <span class="s1">'/wild'</span><span class="p">)</span>
+    <span class="o">-&gt;</span><span class="nf">wildcard</span><span class="p">(</span><span class="s1">'card'</span><span class="p">);</span>
+</code></pre></div></div>
+<p>スラッシュで区切られたパスの値が配列になり<code class="language-plaintext highlighter-rouge">wildcard()</code>で指定したパラメーターに格納されます。</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">/wild             : ['card' =&gt; []]</code></li>
+  <li><code class="language-plaintext highlighter-rouge">/wild/foo         : ['card' =&gt; ['foo']]</code></li>
+  <li><code class="language-plaintext highlighter-rouge">/wild/foo/bar     : ['card' =&gt; ['foo', 'bar']]</code></li>
+  <li><code class="language-plaintext highlighter-rouge">/wild/foo/bar/baz : ['card' =&gt; ['foo', 'bar', 'baz']]</code></li>
+</ul>
+
+<p>その他の高度なルートに関してはAura Routerの<a href="https://github.com/auraphp/Aura.Router/blob/3.x/docs/defining-routes.md">defining-routes</a>をご覧ください。</p>
+
+<h3 id="リバースルーティング">リバースルーティング</h3>
+
+<p>ルートの名前とパラメーターの値からURIを生成することができます。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">use</span> <span class="nc">BEAR\Sunday\Extension\Router\RouterInterface</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">Index</span> <span class="kd">extends</span> <span class="nc">ResourceObject</span>
+<span class="p">{</span>
+    <span class="cd">/**
+     * @var RouterInterface
+     */</span>
+    <span class="k">private</span> <span class="nv">$router</span><span class="p">;</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="n">__construct</span><span class="p">(</span><span class="kt">RouterInterface</span> <span class="nv">$router</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">router</span> <span class="o">=</span> <span class="nv">$router</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onGet</span><span class="p">():</span> <span class="kt">static</span>
+    <span class="p">{</span>
+        <span class="nv">$userLink</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">router</span><span class="o">-&gt;</span><span class="nf">generate</span><span class="p">(</span><span class="s1">'/user'</span><span class="p">,</span> <span class="p">[</span><span class="s1">'name'</span> <span class="o">=&gt;</span> <span class="s1">'bear'</span><span class="p">]);</span>
+        <span class="c1">// '/user/bear'</span>
+</code></pre></div></div>
+
+<h3 id="リクエストメソッド">リクエストメソッド</h3>
+
+<p>リクエストメソッドを指定する必要はありません。</p>
+
+<h3 id="リクエストヘッダー">リクエストヘッダー</h3>
+
+<p>通常リクエストヘッダーはAura.Routerに渡されていませんが <code class="language-plaintext highlighter-rouge">RequestHeaderModule</code>をインストールするとAura.Routerでヘッダーを使ったマッチングが可能になります。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">install</span><span class="p">(</span><span class="k">new</span> <span class="nc">RequestHeaderModule</span><span class="p">());</span>
+</code></pre></div></div>
+
+<h2 id="独自のルーターコンポーネント">独自のルーターコンポーネント</h2>
+
+<ul>
+  <li><a href="https://github.com/bearsunday/BEAR.AuraRouterModule">BEAR.AuraRouterModule</a>を参考に<a href="https://github.com/bearsunday/BEAR.Sunday/blob/1.x/src/Extension/Router/RouterInterface.php">RouterInterface</a>を実装します。</li>
+</ul>
+
+            </article>
+        </div>
+        <div id="ArticleToc" class="col-lg-2 d-none d-lg-block">
+            <nav class="nav side-bar-right"></nav>
+        </div>
+    </div>
+</main>
+<footer>
+    <div class="container d-md-flex">
+        <i class="bear-icon d-none d-lg-block"></i>
+        <small>
+            © 2011-2024 BEAR.Sunday
+        </small>
+        <ul class="navbar-nav flex-row ml-md-auto d-none d-md-flex">
+            <li>
+                <a href="https://gitter.im/bearsunday/BEAR.Sunday?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge">Gitter</a>
+            </li>
+            <li>
+                <a href="https://github.com/bearsunday/BEAR.Sunday">Github</a>
+            </li>
+            <li>
+                <a href="https://twitter.com/BEARSunday">Twitter</a>
+            </li>
+            <li>
+                <a href="https://www.facebook.com/pages/BEARSunday/110116939178462?ref=hl">Facebook</a>
+            </li>
+            <li>
+                <a href="http://koriym.github.io/">Blog (JA)</a>
+            </li>
+            <li>
+                <a href="https://github.com/bearsunday/bearsunday.github.io">PR ?</a>
+            </li>
+        </ul>
+    </div>
+</footer>
+<script src="//code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+<script>
+    window.ga = function () { ga.q.push(arguments) }; ga.q = []; ga.l = +new Date;
+    ga('create', 'UA-6074569-8', 'bearsunday.github.io'); ga('send', 'pageview');
+</script>
+<script src="https://www.google-analytics.com/analytics.js" async defer></script>
+
+<script src="/js/generate-table-of-contents/index.min.js"></script>
+<script>
+    var toc = generateTableOfContents(document.getElementById('article'));
+    var sideBarRight = $('.side-bar-right');
+    sideBarRight.append(toc);
+
+    var scrollOffset = $('body').attr('data-offset');
+    var articlePaddingTop = $('article').css('padding-top').replace('px', '');
+    sideBarRight.find('a').on('click', function (e) {
+        e.preventDefault();
+        var targetId = $(this).attr('href');
+        var targetPositionTop = $(targetId).offset().top - scrollOffset - articlePaddingTop;
+        window.scrollTo(0, targetPositionTop)
+    });
+</script>
+
+</body>
+</html>
+

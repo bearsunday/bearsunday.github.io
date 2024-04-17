@@ -1,0 +1,406 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Application as a Service &#124; BEAR.Sunday</title>
+    <meta name="description" content="BEAR.Sunday is a resource orientated framework with a REST centered architecture, implementing Dependency Injection and Aspect Orientated Programming' at its core.">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/github-markdown-css/2.10.0/github-markdown.css">
+    <link rel="stylesheet" href="/css/syntax.css">
+    
+    <link rel="stylesheet" href="/css/bearsunday.css">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="apple-touch-icon" href="/icon.png">
+</head>
+<body data-page-category="Manual" data-spy="scroll" data-target="#ArticleToc" data-offset="65">
+<header>
+    <nav class="navbar navbar-expand flex-column flex-md-row bg-light">
+        <a class="navbar-brand mr-0 mr-md-2" href="/index.html"></a>
+        <div class="navbar-nav-scroll">
+            <ul class="navbar-nav flex-row">
+                <li class="nav-item">
+                    <a class="nav-link " href="/index.html">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="/manuals/1.0/en/index.html">Manual</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link " href="/contributors.html">Contributors</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/slide.html">Slide</a>
+                </li>
+            </ul>
+        </div>
+        
+        <ul class="navbar-nav ml-md-auto d-none d-md-flex language-list">
+            <li>
+                <a class="active" href="/manuals/1.0/en/aaas.html">En</a>
+            </li>
+            <li>
+                <a class="" href="/manuals/1.0/ja/aaas.html">Ja</a>
+            </li>
+        </ul>
+        
+    </nav>
+</header>
+
+<main class="container-fluid">
+    <div class="row flex-xl-nowrap">
+        <div class="col-md-3 col-lg-2">
+            <div class="side-bar">
+                <nav class="navbar navbar-expand-md navbar-light">
+    <div class="navigation-header">
+        <div class="ml-auto d-sm-block d-md-none">
+            <ul class="navbar-nav language-list">
+                <li>
+                    <a class="active" href="/manuals/1.0/en/aaas.html">En</a>
+                </li>
+                <li>
+                    <a class="" href="/manuals/1.0/ja/aaas.html">Ja</a>
+                </li>
+            </ul>
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#Navber" aria-controls="Navber" aria-expanded="false" aria-label="ナビゲーションの切替">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+    </div>
+    <div class="collapse navbar-collapse" id="Navber">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/">Introduction</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/version.html">Version</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/quick-start.html">Quick Start</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/tutorial.html">Tutorial</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/tutorial2.html">Tutorial 2</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/package.html">Package</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/application.html">Application</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/module.html">Module</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/di.html">DI</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/aop.html">AOP</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/resource.html">Resource</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/resource_param.html">・Parameter</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/resource_link.html">・Link</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/resource_renderer.html">・Rendering and Transfer</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/router.html">Router</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/production.html">Production</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/import.html">Import</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/database.html">Database</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/validation.html">Validation</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/html.html">HTML</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/form.html">Form</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/content-negotiation.html">Content Negotiation</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/hypermedia-api.html">Hypermedia API</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/psr7.html">Request / PSR-7</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/js-ui.html">JavaScript UI</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/stream.html">Stream Response</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/cache.html">Cache</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/swoole.html">Swoole</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/coding-guide.html">Coding Guide</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/types.html">Type</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/test.html">Test</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/examples.html">Examples</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/attribute.html">Attribute</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/apidoc.html">API Doc</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/1page.html">1 Page</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+            </div>
+        </div>
+        <div class="col-md-9 col-lg-8">
+            <article id="article" class="markdown-body">
+                <p>##
+Application Import</p>
+
+<p>Resources created with BEAR.Sunday have unrivaled re-usability.
+You can run multiple applications at the same time and use resources of other applications. You do not need to set up separate web servers.</p>
+
+<p>Let’s try using a resource in another application.</p>
+
+<p>Normally you would set up the new application as a package, For this tutorial let’s create a new <code class="language-plaintext highlighter-rouge">my-vendor</code> and manually add it to the auto loader. .</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">mkdir </span>my-vendor
+<span class="nb">cd </span>my-vendor
+composer create-project bear/skeleton Acme.Blog
+</code></pre></div></div>
+
+<p>In the <code class="language-plaintext highlighter-rouge">composer.json</code> in the <code class="language-plaintext highlighter-rouge">autoload</code> section add <code class="language-plaintext highlighter-rouge">Acme\\Blog</code>.</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nl">"autoload"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"psr-4"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"MyVendor\\Weekday\\"</span><span class="p">:</span><span class="w"> </span><span class="s2">"src/"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"Acme\\Blog\\"</span><span class="p">:</span><span class="w"> </span><span class="s2">"my-vendor/Acme.Blog/src/"</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="err">,</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Dump the <code class="language-plaintext highlighter-rouge">autoload</code>.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>composer dump-autoload
+</code></pre></div></div>
+
+<p>With this the configuration for the <code class="language-plaintext highlighter-rouge">Acme\Blog</code> application is complete.</p>
+
+<p>Next in order to import the application in <code class="language-plaintext highlighter-rouge">src/Module/AppModule.php</code> we use the <code class="language-plaintext highlighter-rouge">ImportAppModule</code> in <code class="language-plaintext highlighter-rouge">src/Module/AppModule.php</code> to install as an override.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+<span class="c1">// ...</span>
+<span class="kn">use</span> <span class="nc">BEAR\Resource\Module\ImportAppModule</span><span class="p">;</span> <span class="c1">// add this line</span>
+<span class="kn">use</span> <span class="nc">BEAR\Resource\ImportApp</span><span class="p">;</span> <span class="c1">// add this line</span>
+<span class="kn">use</span> <span class="nc">BEAR\Package\Context</span><span class="p">;</span> <span class="c1">// add this line</span>
+
+<span class="kd">class</span> <span class="nc">AppModule</span> <span class="kd">extends</span> <span class="nc">AbstractAppModule</span>
+<span class="p">{</span>
+    <span class="k">protected</span> <span class="k">function</span> <span class="n">configure</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="c1">// ...</span>
+        <span class="nv">$importConfig</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="k">new</span> <span class="nc">ImportApp</span><span class="p">(</span><span class="s1">'blog'</span><span class="p">,</span> <span class="s1">'Acme\Blog'</span><span class="p">,</span> <span class="s1">'prod-hal-app'</span><span class="p">)</span> <span class="c1">// host, name, context</span>
+        <span class="p">];</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">override</span><span class="p">(</span><span class="k">new</span> <span class="nc">ImportAppModule</span><span class="p">(</span><span class="nv">$importConfig</span> <span class="p">,</span> <span class="nc">Context</span><span class="o">::</span><span class="n">class</span><span class="p">));</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>With this a <code class="language-plaintext highlighter-rouge">Acme\Blog</code> application using a <code class="language-plaintext highlighter-rouge">prod-hal-app</code> context can create resources that will be available to the <code class="language-plaintext highlighter-rouge">blog</code> host.</p>
+
+<p>Let’s check it works by creating an Import resource in <code class="language-plaintext highlighter-rouge">src/Resource/App/Import.php</code>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+<span class="kn">namespace</span> <span class="nn">MyVendor\Weekday\Resource\App</span><span class="p">;</span>
+
+<span class="kn">use</span> <span class="nc">BEAR\Resource\ResourceObject</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">BEAR\Sunday\Inject\ResourceInject</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">Import</span> <span class="kd">extends</span> <span class="nc">ResourceObject</span>
+<span class="p">{</span>
+    <span class="kn">use</span> <span class="nc">ResourceInject</span><span class="p">;</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onGet</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">body</span> <span class="o">=</span><span class="p">[</span>
+            <span class="s1">'blog'</span> <span class="o">=&gt;</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">resource</span><span class="o">-&gt;</span><span class="nf">uri</span><span class="p">(</span><span class="s1">'page://blog/index'</span><span class="p">)[</span><span class="s1">'greeting'</span><span class="p">]</span>
+        <span class="p">];</span>
+
+        <span class="k">return</span> <span class="nv">$this</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>The <code class="language-plaintext highlighter-rouge">page://blog/index</code> resource should now be assigned to <code class="language-plaintext highlighter-rouge">blog</code>. <code class="language-plaintext highlighter-rouge">@Embed</code> can be used in the same way.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>php bin/app.php get /import
+</code></pre></div></div>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>200 OK
+content-type: application/hal+json
+
+<span class="o">{</span>
+    <span class="s2">"blog"</span>: <span class="s2">"Hello BEAR.Sunday"</span>,
+    <span class="s2">"_links"</span>: <span class="o">{</span>
+        <span class="s2">"self"</span>: <span class="o">{</span>
+            <span class="s2">"href"</span>: <span class="s2">"/import"</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>Great, we could now use another application’s resource. We do not even need to use HTTP to fetch this data.</p>
+
+<p>The combined application is now seen as 1 layer of a single application. A
+<a href="http://en.wikipedia.org/wiki/Representational_state_transfer#Layered_system">Layered System</a> is another feature of REST.</p>
+
+<p>Next lets look at how we use a resource in a system that is not BEAR.Sunday based. We create an app.php. You can place this anywhere but be careful that it picks up <code class="language-plaintext highlighter-rouge">autoload.php</code> path correctly.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">use</span> <span class="nc">BEAR\Package\Bootstrap</span><span class="p">;</span>
+
+<span class="k">require</span> <span class="k">__DIR__</span> <span class="mf">.</span> <span class="s1">'/autoload.php'</span><span class="p">;</span>
+
+<span class="nv">$api</span> <span class="o">=</span> <span class="p">(</span><span class="k">new</span> <span class="nc">Bootstrap</span><span class="p">)</span><span class="o">-&gt;</span><span class="nf">getApp</span><span class="p">(</span><span class="s1">'MyVendor\Weekday'</span><span class="p">,</span> <span class="s1">'prod-hal-app'</span><span class="p">);</span>
+
+<span class="nv">$blog</span> <span class="o">=</span> <span class="nv">$api</span><span class="o">-&gt;</span><span class="n">resource</span><span class="o">-&gt;</span><span class="nf">uri</span><span class="p">(</span><span class="s1">'app://self/import'</span><span class="p">)[</span><span class="s1">'blog'</span><span class="p">];</span>
+<span class="nb">var_dump</span><span class="p">(</span><span class="nv">$blog</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>Let’s try it..</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>php bin/import.php
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>string(17) "Hello BEAR.Sunday"
+</code></pre></div></div>
+
+<p>Other examples..</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$weekday</span> <span class="o">=</span> <span class="nv">$api</span><span class="o">-&gt;</span><span class="n">resource</span><span class="o">-&gt;</span><span class="nf">uri</span><span class="p">(</span><span class="s1">'app://self/weekday'</span><span class="p">)([</span><span class="s1">'year'</span> <span class="o">=&gt;</span> <span class="mi">2000</span><span class="p">,</span> <span class="s1">'month'</span><span class="o">=&gt;</span><span class="mi">1</span><span class="p">,</span> <span class="s1">'day'</span><span class="o">=&gt;</span><span class="mi">1</span><span class="p">]);</span>
+<span class="nb">var_dump</span><span class="p">(</span><span class="nv">$weekday</span><span class="o">-&gt;</span><span class="n">body</span><span class="p">);</span> <span class="c1">// as array</span>
+<span class="c1">//array(1) {</span>
+<span class="c1">//    ["weekday"]=&gt;</span>
+<span class="c1">//  string(3) "Sat"</span>
+<span class="c1">//}</span>
+
+<span class="k">echo</span> <span class="nv">$weekday</span><span class="p">;</span> <span class="c1">// as string</span>
+<span class="c1">//{</span>
+<span class="c1">//    "weekday": "Sat",</span>
+<span class="c1">//    "_links": {</span>
+<span class="c1">//    "self": {</span>
+<span class="c1">//        "href": "/weekday/2000/1/1"</span>
+<span class="c1">//        }</span>
+<span class="c1">//    }</span>
+<span class="c1">//}</span>
+</code></pre></div></div>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$html</span> <span class="o">=</span> <span class="p">(</span><span class="k">new</span> <span class="nc">Bootstrap</span><span class="p">)</span><span class="o">-&gt;</span><span class="nf">getApp</span><span class="p">(</span><span class="s1">'MyVendor\Weekday'</span><span class="p">,</span> <span class="s1">'prod-html-app'</span><span class="p">);</span>
+<span class="nv">$index</span> <span class="o">=</span> <span class="nv">$html</span><span class="o">-&gt;</span><span class="n">resource</span><span class="o">-&gt;</span><span class="nf">uri</span><span class="p">(</span><span class="s1">'page://self/index'</span><span class="p">)([</span><span class="s1">'year'</span> <span class="o">=&gt;</span> <span class="mi">2000</span><span class="p">,</span> <span class="s1">'month'</span><span class="o">=&gt;</span><span class="mi">1</span><span class="p">,</span> <span class="s1">'day'</span><span class="o">=&gt;</span><span class="mi">1</span><span class="p">]);</span>
+<span class="nb">var_dump</span><span class="p">(</span><span class="nv">$index</span><span class="o">-&gt;</span><span class="n">code</span><span class="p">);</span>
+<span class="c1">//int(200)</span>
+
+<span class="k">echo</span> <span class="nv">$index</span><span class="p">;</span>
+<span class="c1">//&lt;!DOCTYPE html&gt;</span>
+<span class="c1">//&lt;html&gt;</span>
+<span class="c1">//&lt;body&gt;</span>
+<span class="c1">//The weekday of 2000/1/1 is Sat.</span>
+<span class="c1">//&lt;/body&gt;</span>
+<span class="c1">//&lt;/html&gt;</span>
+</code></pre></div></div>
+
+<p>Response is returned with a stateless request REST’s resource is like a PHP function. You can get the value in <code class="language-plaintext highlighter-rouge">body</code> or you can express it like JSON or HTML with <code class="language-plaintext highlighter-rouge">(string)</code>. You can operate on any resource of the application with two lines except autoload, one line script if you concatenate it.</p>
+
+<p>In this way, resources created with BEAR.Sunday can be easily used from other CMS and framework. You can handle the values of multiple applications at once.</p>
+
+            </article>
+        </div>
+        <div id="ArticleToc" class="col-lg-2 d-none d-lg-block">
+            <nav class="nav side-bar-right"></nav>
+        </div>
+    </div>
+</main>
+<footer>
+    <div class="container d-md-flex">
+        <i class="bear-icon d-none d-lg-block"></i>
+        <small>
+            © 2011-2024 BEAR.Sunday
+        </small>
+        <ul class="navbar-nav flex-row ml-md-auto d-none d-md-flex">
+            <li>
+                <a href="https://gitter.im/bearsunday/BEAR.Sunday?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge">Gitter</a>
+            </li>
+            <li>
+                <a href="https://github.com/bearsunday/BEAR.Sunday">Github</a>
+            </li>
+            <li>
+                <a href="https://twitter.com/BEARSunday">Twitter</a>
+            </li>
+            <li>
+                <a href="https://www.facebook.com/pages/BEARSunday/110116939178462?ref=hl">Facebook</a>
+            </li>
+            <li>
+                <a href="http://koriym.github.io/">Blog (JA)</a>
+            </li>
+            <li>
+                <a href="https://github.com/bearsunday/bearsunday.github.io">PR ?</a>
+            </li>
+        </ul>
+    </div>
+</footer>
+<script src="//code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+<script>
+    window.ga = function () { ga.q.push(arguments) }; ga.q = []; ga.l = +new Date;
+    ga('create', 'UA-6074569-8', 'bearsunday.github.io'); ga('send', 'pageview');
+</script>
+<script src="https://www.google-analytics.com/analytics.js" async defer></script>
+
+<script src="/js/generate-table-of-contents/index.min.js"></script>
+<script>
+    var toc = generateTableOfContents(document.getElementById('article'));
+    var sideBarRight = $('.side-bar-right');
+    sideBarRight.append(toc);
+
+    var scrollOffset = $('body').attr('data-offset');
+    var articlePaddingTop = $('article').css('padding-top').replace('px', '');
+    sideBarRight.find('a').on('click', function (e) {
+        e.preventDefault();
+        var targetId = $(this).attr('href');
+        var targetPositionTop = $(targetId).offset().top - scrollOffset - articlePaddingTop;
+        window.scrollTo(0, targetPositionTop)
+    });
+</script>
+
+</body>
+</html>

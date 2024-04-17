@@ -1,0 +1,506 @@
+<!doctype html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>リソース (v2) &#124; BEAR.Sunday</title>
+    <meta name="description" content="BEAR.Sunday is a resource orientated framework with a REST centered architecture, implementing Dependency Injection and Aspect Orientated Programming' at its core.">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/github-markdown-css/2.10.0/github-markdown.css">
+    <link rel="stylesheet" href="/css/syntax.css">
+    
+    <link rel="stylesheet" href="/css/bearsunday.css">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="apple-touch-icon" href="/icon.png">
+</head>
+<body data-page-category="Manual" data-spy="scroll" data-target="#ArticleToc" data-offset="65">
+<header>
+    <nav class="navbar navbar-expand flex-column flex-md-row bg-light">
+        <a class="navbar-brand mr-0 mr-md-2" href="/index.html"></a>
+        <div class="navbar-nav-scroll">
+            <ul class="navbar-nav flex-row">
+                <li class="nav-item">
+                    <a class="nav-link " href="/index.html">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="/manuals/1.0/en/index.html">Manual</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link " href="/contributors.html">Contributors</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/slide.html">Slide</a>
+                </li>
+            </ul>
+        </div>
+        
+        <ul class="navbar-nav ml-md-auto d-none d-md-flex language-list">
+            <li>
+                <a class="" href="/manuals/1.0/en/resource.html">En</a>
+            </li>
+            <li>
+                <a class="active" href="/manuals/1.0/ja/resource.html">Ja</a>
+            </li>
+        </ul>
+        
+    </nav>
+</header>
+
+<main class="container-fluid">
+    <div class="row flex-xl-nowrap">
+        <div class="col-md-3 col-lg-2">
+            <div class="side-bar">
+                <nav class="navbar navbar-expand-md navbar-light">
+    <div class="navigation-header">
+        <div class="ml-auto d-sm-block d-md-none">
+            <ul class="navbar-nav language-list">
+                <li>
+                    <a class="" href="/manuals/1.0/en/resource.html">En</a>
+                </li>
+                <li>
+                    <a class="active" href="/manuals/1.0/ja/resource.html">Ja</a>
+                </li>
+            </ul>
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#Navber" aria-controls="Navber" aria-expanded="false" aria-label="ナビゲーションの切替">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+    </div>
+    <div class="collapse navbar-collapse" id="Navber">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/index.html">イントロダクション</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/version.html">バージョン</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/quick-start.html">クイックスタート</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/tutorial.html">チュートリアル</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/tutorial2.html">チュートリアル 2</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/package.html">パッケージ</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/application.html">アプリケーション</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/module.html">モジュール</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/di.html">DI</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/aop.html">AOP</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" href="/manuals/1.0/ja/resource.html">リソース</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/resource_param.html">・パラメーター</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/resource_link.html">・リンク</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/resource_renderer.html">・レンダリングと転送</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/router.html">ルーター</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/production.html">プロダクション</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/ja/import.html">インポート</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/database.html">データベース</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/html.html">HTML</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/validation.html">バリデーション</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/form.html">フォーム</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/content-negotiation.html">コンテントネゴシエーション</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/hypermedia-api.html">ハイパーメディア API</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/psr7.html">リクエスト / PSR-7</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/js-ui.html">JavaScript UI</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/stream.html">ストリーム出力</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/cache.html">キャッシュ</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/swoole.html">Swoole</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/coding-guide.html">コーディングガイド</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/types.html">タイプ</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/test.html">テスト</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/examples.html">サンプル</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/upgrade/injector.html">アップグレード</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/attribute.html">アトリビュート</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/apidoc.html">API Doc</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/1page.html">1 Page</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+            </div>
+        </div>
+        <div class="col-md-9 col-lg-8">
+            <article id="article" class="markdown-body">
+                <h1 id="リソース">リソース</h1>
+
+<p>BEAR.SundayアプリケーションはRESTfulなリソースの集合です。</p>
+
+<h2 id="サービスとしてのオブジェクト">サービスとしてのオブジェクト</h2>
+
+<p><code class="language-plaintext highlighter-rouge">ResourceObject</code>はHTTPのメソッドがPHPのメソッドにマップされたリソースの<strong>サービスのためのオブジェクト</strong>(Object-as-a-service)です。 ステートレスリクエストから、リソースの状態がリソース表現として生成され、クライアントに転送されます。(<a href="http://ja.wikipedia.org/wiki/REST">Representational State Transfer)</a></p>
+
+<p>以下は、ResourceObjectの例です。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">Index</span> <span class="kd">extends</span> <span class="nc">ResourceObject</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="nv">$code</span> <span class="o">=</span> <span class="mi">200</span><span class="p">;</span>
+    <span class="k">public</span> <span class="nv">$headers</span> <span class="o">=</span> <span class="p">[];</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onGet</span><span class="p">(</span><span class="kt">int</span> <span class="nv">$a</span><span class="p">,</span> <span class="kt">int</span> <span class="nv">$b</span><span class="p">):</span> <span class="kt">static</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">body</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s1">'sum'</span> <span class="o">=&gt;</span> <span class="nv">$a</span> <span class="o">+</span> <span class="nv">$b</span>  <span class="c1">// $_GET['a'] + $_GET['b']</span>
+        <span class="p">];</span>
+
+        <span class="k">return</span> <span class="nv">$this</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">Todo</span> <span class="kd">extends</span> <span class="nc">ResourceObject</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onPost</span><span class="p">(</span><span class="kt">string</span> <span class="nv">$id</span><span class="p">,</span> <span class="kt">string</span> <span class="nv">$todo</span><span class="p">):</span> <span class="kt">static</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">code</span> <span class="o">=</span> <span class="mi">201</span><span class="p">;</span> <span class="c1">// ステータスコード</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">headers</span> <span class="o">=</span> <span class="p">[</span> <span class="c1">// ヘッダー</span>
+            <span class="s1">'Location'</span> <span class="o">=&gt;</span> <span class="s1">'/todo/new_id'</span>
+        <span class="p">];</span>
+
+        <span class="k">return</span> <span class="nv">$this</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>PHPのリソースクラスはWebのURIと同じような<code class="language-plaintext highlighter-rouge">page://self/index</code>などのURIを持ち、HTTPのメソッドに準じた<code class="language-plaintext highlighter-rouge">onGet</code>, <code class="language-plaintext highlighter-rouge">onPost</code>などのonメソッドを持ちます。onメソッドで与えられたパラメーターから自身のリソース状態<code class="language-plaintext highlighter-rouge">code</code>,<code class="language-plaintext highlighter-rouge">headers</code>,<code class="language-plaintext highlighter-rouge">body</code>を決定し<code class="language-plaintext highlighter-rouge">$this</code>を返します。</p>
+
+<h2 id="uri">URI</h2>
+
+<p>URIはPHPのクラスにマップされています。アプリケーションではクラス名の代わりにURIを使ってリソースにアクセスします。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>URI</th>
+      <th>Class</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>page://self/</td>
+      <td>Koriym\Todo\Resource\Page\Index</td>
+    </tr>
+    <tr>
+      <td>page://self/index</td>
+      <td>Koriym\Todo\Resource\Page\Index</td>
+    </tr>
+    <tr>
+      <td>app://self/blog/posts?id=3</td>
+      <td>Koriym\Todo\Resource\App\Blog\Posts</td>
+    </tr>
+  </tbody>
+</table>
+
+<ul>
+  <li>indexは省略可能です。</li>
+</ul>
+
+<h3 id="スキーマ">スキーマ</h3>
+
+<p><code class="language-plaintext highlighter-rouge">page</code>は外部公開するパブリックなリソース、<code class="language-plaintext highlighter-rouge">app</code>は外部からアクセスのできないプライベートなリソースです。Webやコンソールなどの外部からのリソースリクエストを受け取ったpageリソースはappリソースをリクエストしてリソース状態を決定します。<sup id="fnref:context" role="doc-noteref"><a href="#fn:context" class="footnote" rel="footnote">1</a></sup></p>
+
+<h2 id="メソッド">メソッド</h2>
+
+<p>リソースはHTTPのメソッドに対応した6つのメソッドでアクセスすることができます。<sup id="fnref:method" role="doc-noteref"><a href="#fn:method" class="footnote" rel="footnote">2</a></sup></p>
+
+<h3 id="get">GET</h3>
+
+<p>特定のリソースの表現をリクエストします。このメソッドはリソースの状態を変更することのない安全なメソッドです。</p>
+
+<h3 id="post">POST</h3>
+
+<p>POSTメソッドは、リクエストに含まれる表現の処理を要求します。例えば、対象のURIに新しいリソースを追加することや、既存のリソースに表現を追加することなどです。PUT違ってリクエストには冪等性がなく、連続した複数回の実行は同じ結果になりません。</p>
+
+<h3 id="put">PUT</h3>
+
+<p>リクエストしたURIでリソースをリクエストのペイロードで置き換えます。対象のリソースが存在しない場合には作成します。
+POSTと違って冪等性があります。</p>
+
+<h3 id="delete">DELETE</h3>
+
+<p>特定のリソースを削除します。冪等性があります。</p>
+
+<h3 id="patch">PATCH</h3>
+
+<p>リソースを部分的に変更します。冪等性は保証されません。<sup id="fnref:patch" role="doc-noteref"><a href="#fn:patch" class="footnote" rel="footnote">3</a></sup></p>
+
+<h3 id="options">OPTIONS</h3>
+
+<p>ソースのリクエストに必要なパラメーターとレスポンスに関する情報を取得します。GETと同じように安全です。<sup id="fnref:json-schema" role="doc-noteref"><a href="#fn:json-schema" class="footnote" rel="footnote">4</a></sup></p>
+
+<h4 id="メソッドの特性一覧">メソッドの特性一覧</h4>
+
+<table>
+  <thead>
+    <tr>
+      <th>メソッド　</th>
+      <th><a href="https://developer.mozilla.org/ja/docs/Glossary/safe">安全性</a></th>
+      <th><a href="https://developer.mozilla.org/ja/docs/Glossary/Idempotent">冪等性</a>　</th>
+      <th><a href="https://developer.mozilla.org/ja/docs/Glossary/cacheable">キャッシュ</a></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>GET</td>
+      <td>あり</td>
+      <td>あり</td>
+      <td>可能</td>
+    </tr>
+    <tr>
+      <td>POST</td>
+      <td>なし</td>
+      <td>なし</td>
+      <td>不可</td>
+    </tr>
+    <tr>
+      <td>PUT</td>
+      <td>なし</td>
+      <td>あり</td>
+      <td>不可</td>
+    </tr>
+    <tr>
+      <td>PATCH</td>
+      <td>なし</td>
+      <td>あり</td>
+      <td>不可</td>
+    </tr>
+    <tr>
+      <td>DELETE</td>
+      <td>なし</td>
+      <td>あり</td>
+      <td>不可</td>
+    </tr>
+    <tr>
+      <td>OPTIONS</td>
+      <td>あり</td>
+      <td>あり</td>
+      <td>不可</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="パラメーター">パラメーター</h2>
+
+<p>レスポンスメソッドの引数には、変数名に対応したリクエストの値が渡されます。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">Index</span> <span class="kd">extends</span> <span class="nc">ResourceObject</span>
+<span class="p">{</span>
+    <span class="c1">// $_GET['id']が$idに</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onGet</span><span class="p">(</span><span class="kt">int</span> <span class="nv">$id</span><span class="p">):</span> <span class="kt">static</span>
+    <span class="p">{</span>
+    <span class="p">}</span>
+
+    <span class="c1">// $_POST['name']が$nameに</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onPost</span><span class="p">(</span><span class="kt">string</span> <span class="nv">$name</span><span class="p">):</span> <span class="kt">static</span>
+    <span class="p">{</span>
+    <span class="p">}</span>
+</code></pre></div></div>
+
+<p>その他のメソッドや、Cookieなどの外部変数をパラメーターに渡す方法は<a href="resource_param.html">リソースパラメーター</a>をご覧ください。</p>
+
+<h2 id="レンダリングと転送">レンダリングと転送</h2>
+
+<p>ResourceObjectのリクエストメソッドではリソースの表現について関心を持ちません。インジェクトされたレンダラーがリソースの表現を生成し、レスポンダーが出力します。詳しくは<a href="resource_renderer.html">レンダリングと転送</a>をご覧ください。</p>
+
+<h2 id="クライアント">クライアント</h2>
+
+<p>リソースクライアントを使用して他のリソースのリクエストします。このリクエストは<code class="language-plaintext highlighter-rouge">app://self/blog/posts</code>リソースに<code class="language-plaintext highlighter-rouge">?id=1</code>というクエリーでリクエストを実行します。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">use</span> <span class="nc">BEAR\Sunday\Inject\ResourceInject</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">Index</span> <span class="kd">extends</span> <span class="nc">ResourceObject</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">__construct</span><span class="p">(</span>
+    	<span class="kt">private</span> <span class="n">readonly</span> <span class="nc">ResourceInterface</span> <span class="nv">$resource</span>
+    <span class="p">){}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onGet</span><span class="p">():</span> <span class="kt">static</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">body</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s1">'posts'</span> <span class="o">=&gt;</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">resource</span><span class="o">-&gt;</span><span class="nf">get</span><span class="p">(</span><span class="s1">'app://self/blog/posts'</span><span class="p">,</span> <span class="p">[</span><span class="s1">'id'</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">])</span>
+        <span class="p">];</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+<p>この他にも以下の歴史的表記があります。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// PHP 5.x and up</span>
+<span class="nv">$posts</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">resource</span><span class="o">-&gt;</span><span class="n">get</span><span class="o">-&gt;</span><span class="nf">uri</span><span class="p">(</span><span class="s1">'app://self/posts'</span><span class="p">)</span><span class="o">-&gt;</span><span class="nf">withQuery</span><span class="p">([</span><span class="s1">'id'</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">])</span><span class="o">-&gt;</span><span class="n">eager</span><span class="o">-&gt;</span><span class="nf">request</span><span class="p">();</span>
+<span class="c1">// PHP 7.x and up</span>
+<span class="nv">$posts</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">resource</span><span class="o">-&gt;</span><span class="n">get</span><span class="o">-&gt;</span><span class="nf">uri</span><span class="p">(</span><span class="s1">'app://self/posts'</span><span class="p">)([</span><span class="s1">'id'</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">]);</span>
+<span class="c1">// getは省略可</span>
+<span class="nv">$posts</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">resource</span><span class="o">-&gt;</span><span class="nf">uri</span><span class="p">(</span><span class="s1">'app://self/posts'</span><span class="p">)([</span><span class="s1">'id'</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">]);</span>
+</code></pre></div></div>
+
+<h2 id="遅延評価">遅延評価</h2>
+
+<p>以上はリクエストをすぐに行う<code class="language-plaintext highlighter-rouge">eager</code>リクエストですが、リクエスト結果ではなくリクエストを生成し、実行を遅延することもできます。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$request</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">resource</span><span class="o">-&gt;</span><span class="nf">get</span><span class="p">(</span><span class="s1">'app://self/posts'</span><span class="p">);</span> <span class="c1">// callable</span>
+<span class="nv">$posts</span> <span class="o">=</span> <span class="nv">$request</span><span class="p">([</span><span class="s1">'id'</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">]);</span>
+</code></pre></div></div>
+
+<p>このリクエストをテンプレートやリソースに埋め込むと、遅延評価されます。つまり評価されない時はリクエストは行われず実行コストがかかりません。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$this</span><span class="o">-&gt;</span><span class="n">body</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">'lazy'</span> <span class="o">=&gt;</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">resource</span><span class="o">-&gt;</span><span class="nf">get</span><span class="p">(</span><span class="s1">'app://self/posts'</span><span class="p">)</span><span class="o">-&gt;</span><span class="nf">withQuery</span><span class="p">([</span><span class="s1">'id'</span> <span class="o">=&gt;</span> <span class="mi">3</span><span class="p">])</span><span class="o">-&gt;</span><span class="nf">requrest</span><span class="p">();</span>
+<span class="p">];</span>
+</code></pre></div></div>
+
+<h2 id="キャッシュ">キャッシュ</h2>
+
+<p>通常のTTLキャッシュと共に、RESTのクライアントキャッシュや、CDNを含めた高度な部分キャッシュ（ドーナッツキャッシュ）をサポートします。詳しくは<a href="cache.html">キャッシュ</a>をご覧ください。また従来の<code class="language-plaintext highlighter-rouge">@Cacheable</code>アノテーションに関しては以前の<a href="resourcev1.html#リソースキャッシュ">リソース(v1)</a>ドキュメントをご覧ください。</p>
+
+<h2 id="リンク">リンク</h2>
+
+<p>重要なREST制約の１つにリソースのリンクがあります。ResourceObjectは内部リンク、外部リンクの双方をサポートします。詳しくは<a href="resource_link.html">リソースリンク</a>をご覧ください。</p>
+
+<h2 id="bearresource">BEAR.Resource</h2>
+
+<p>BEAR.Sundayのリソースオブジェクトの機能は独立したパッケージで単体使用もできます。BEAR.Resource <a href="https://github.com/bearsunday/BEAR.Resource/blob/1.x/README.ja.md">README</a>もご覧ください。</p>
+
+<hr />
+<div class="footnotes" role="doc-endnotes">
+  <ol>
+    <li id="fn:context" role="doc-endnote">
+      <p>コンテキストを変えると、プライベートなappリソースを外部公開することもできます。例えばHTMLアプリケーションでpageリソースがHTMLを出力し（この時appリソースはプライベート）、モバイルアプリケーションではappリソースがAPIとして公開しJSONを出力することができます。 <a href="#fnref:context" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+    <li id="fn:method" role="doc-endnote">
+      <p>RESTのメソッドはCRUDとのマッピングではありません。リソース状態を変えない安全なものか、冪等性があるかなどで分けられます。 <a href="#fnref:method" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+    <li id="fn:patch" role="doc-endnote">
+      <p><a href="https://www.rfc-editor.org/rfc/rfc5789">https://www.rfc-editor.org/rfc/rfc5789</a> <a href="#fnref:patch" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+    <li id="fn:json-schema" role="doc-endnote">
+      <p>レスポンスの情報取得にはJsonSchemaの指定が必要です。 <a href="#fnref:json-schema" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+  </ol>
+</div>
+
+            </article>
+        </div>
+        <div id="ArticleToc" class="col-lg-2 d-none d-lg-block">
+            <nav class="nav side-bar-right"></nav>
+        </div>
+    </div>
+</main>
+<footer>
+    <div class="container d-md-flex">
+        <i class="bear-icon d-none d-lg-block"></i>
+        <small>
+            © 2011-2024 BEAR.Sunday
+        </small>
+        <ul class="navbar-nav flex-row ml-md-auto d-none d-md-flex">
+            <li>
+                <a href="https://gitter.im/bearsunday/BEAR.Sunday?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge">Gitter</a>
+            </li>
+            <li>
+                <a href="https://github.com/bearsunday/BEAR.Sunday">Github</a>
+            </li>
+            <li>
+                <a href="https://twitter.com/BEARSunday">Twitter</a>
+            </li>
+            <li>
+                <a href="https://www.facebook.com/pages/BEARSunday/110116939178462?ref=hl">Facebook</a>
+            </li>
+            <li>
+                <a href="http://koriym.github.io/">Blog (JA)</a>
+            </li>
+            <li>
+                <a href="https://github.com/bearsunday/bearsunday.github.io">PR ?</a>
+            </li>
+        </ul>
+    </div>
+</footer>
+<script src="//code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+<script>
+    window.ga = function () { ga.q.push(arguments) }; ga.q = []; ga.l = +new Date;
+    ga('create', 'UA-6074569-8', 'bearsunday.github.io'); ga('send', 'pageview');
+</script>
+<script src="https://www.google-analytics.com/analytics.js" async defer></script>
+
+<script src="/js/generate-table-of-contents/index.min.js"></script>
+<script>
+    var toc = generateTableOfContents(document.getElementById('article'));
+    var sideBarRight = $('.side-bar-right');
+    sideBarRight.append(toc);
+
+    var scrollOffset = $('body').attr('data-offset');
+    var articlePaddingTop = $('article').css('padding-top').replace('px', '');
+    sideBarRight.find('a').on('click', function (e) {
+        e.preventDefault();
+        var targetId = $(this).attr('href');
+        var targetPositionTop = $(targetId).offset().top - scrollOffset - articlePaddingTop;
+        window.scrollTo(0, targetPositionTop)
+    });
+</script>
+
+</body>
+</html>
+

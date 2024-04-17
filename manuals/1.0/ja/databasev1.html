@@ -1,0 +1,877 @@
+<!doctype html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>データベース &#124; BEAR.Sunday</title>
+    <meta name="description" content="BEAR.Sunday is a resource orientated framework with a REST centered architecture, implementing Dependency Injection and Aspect Orientated Programming' at its core.">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/github-markdown-css/2.10.0/github-markdown.css">
+    <link rel="stylesheet" href="/css/syntax.css">
+    
+    <link rel="stylesheet" href="/css/bearsunday.css">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="apple-touch-icon" href="/icon.png">
+</head>
+<body data-page-category="Manual" data-spy="scroll" data-target="#ArticleToc" data-offset="65">
+<header>
+    <nav class="navbar navbar-expand flex-column flex-md-row bg-light">
+        <a class="navbar-brand mr-0 mr-md-2" href="/index.html"></a>
+        <div class="navbar-nav-scroll">
+            <ul class="navbar-nav flex-row">
+                <li class="nav-item">
+                    <a class="nav-link " href="/index.html">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="/manuals/1.0/en/index.html">Manual</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link " href="/contributors.html">Contributors</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/slide.html">Slide</a>
+                </li>
+            </ul>
+        </div>
+        
+        <ul class="navbar-nav ml-md-auto d-none d-md-flex language-list">
+            <li>
+                <a class="" href="/manuals/1.0/en/databasev1.html">En</a>
+            </li>
+            <li>
+                <a class="active" href="/manuals/1.0/ja/databasev1.html">Ja</a>
+            </li>
+        </ul>
+        
+    </nav>
+</header>
+
+<main class="container-fluid">
+    <div class="row flex-xl-nowrap">
+        <div class="col-md-3 col-lg-2">
+            <div class="side-bar">
+                <nav class="navbar navbar-expand-md navbar-light">
+    <div class="navigation-header">
+        <div class="ml-auto d-sm-block d-md-none">
+            <ul class="navbar-nav language-list">
+                <li>
+                    <a class="" href="/manuals/1.0/en/databasev1.html">En</a>
+                </li>
+                <li>
+                    <a class="active" href="/manuals/1.0/ja/databasev1.html">Ja</a>
+                </li>
+            </ul>
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#Navber" aria-controls="Navber" aria-expanded="false" aria-label="ナビゲーションの切替">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+    </div>
+    <div class="collapse navbar-collapse" id="Navber">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/index.html">イントロダクション</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/version.html">バージョン</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/quick-start.html">クイックスタート</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/tutorial.html">チュートリアル</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/tutorial2.html">チュートリアル 2</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/package.html">パッケージ</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/application.html">アプリケーション</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/module.html">モジュール</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/di.html">DI</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/aop.html">AOP</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/resource.html">リソース</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/resource_param.html">・パラメーター</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/resource_link.html">・リンク</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/resource_renderer.html">・レンダリングと転送</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/router.html">ルーター</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/production.html">プロダクション</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/ja/import.html">インポート</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/database.html">データベース</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/html.html">HTML</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/validation.html">バリデーション</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/form.html">フォーム</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/content-negotiation.html">コンテントネゴシエーション</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/hypermedia-api.html">ハイパーメディア API</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/psr7.html">リクエスト / PSR-7</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/js-ui.html">JavaScript UI</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/stream.html">ストリーム出力</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/cache.html">キャッシュ</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/swoole.html">Swoole</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/coding-guide.html">コーディングガイド</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/types.html">タイプ</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/test.html">テスト</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/examples.html">サンプル</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/upgrade/injector.html">アップグレード</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/attribute.html">アトリビュート</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/apidoc.html">API Doc</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/1page.html">1 Page</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+            </div>
+        </div>
+        <div class="col-md-9 col-lg-8">
+            <article id="article" class="markdown-body">
+                <h1 id="データベース">データベース</h1>
+
+<p>データベースライブラリの利用のため<code class="language-plaintext highlighter-rouge">Aura.Sql</code>、<code class="language-plaintext highlighter-rouge">Doctrine DBAL</code>, <code class="language-plaintext highlighter-rouge">CakeDB</code>などのモジュールが用意されています。</p>
+
+<h2 id="aurasql">Aura.Sql</h2>
+
+<p><a href="https://github.com/auraphp/Aura.Sql">Aura.Sql</a>はPHPのPDOを拡張したデータベースライブラリです。</p>
+
+<h3 id="インストール">インストール</h3>
+
+<p>composerで<code class="language-plaintext highlighter-rouge">Ray.AuraSqlModule</code>をインストールします。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>composer require ray/aura-sql-module
+</code></pre></div></div>
+
+<p>アプリケーションモジュール<code class="language-plaintext highlighter-rouge">src/Module/AppModule.php</code>で<code class="language-plaintext highlighter-rouge">AuraSqlModule</code>をインストールします。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">use</span> <span class="nc">BEAR\Package\AbstractAppModule</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">BEAR\AppMeta\AppMeta</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">BEAR\Package\PackageModule</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">Ray\AuraSqlModule\AuraSqlModule</span><span class="p">;</span> <span class="c1">// この行を追加</span>
+
+<span class="kd">class</span> <span class="nc">AppModule</span> <span class="kd">extends</span> <span class="nc">AbstractAppModule</span>
+<span class="p">{</span>
+    <span class="k">protected</span> <span class="k">function</span> <span class="n">configure</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="c1">// ...</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">install</span><span class="p">(</span>
+          <span class="k">new</span> <span class="nc">AuraSqlModule</span><span class="p">(</span>
+            <span class="s1">'mysql:host=localhost;dbname=test'</span><span class="p">,</span>
+            <span class="s1">'username'</span><span class="p">,</span>
+            <span class="s1">'password'</span><span class="p">,</span>
+            <span class="c1">// $options,</span>
+            <span class="c1">// $attributes</span>
+          <span class="p">)</span>
+        <span class="p">);</span>  <span class="c1">// この行を追加</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">install</span><span class="p">(</span><span class="k">new</span> <span class="nc">PackageModule</span><span class="p">));</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>これでDIの設定が整いました。コンストラクタや<code class="language-plaintext highlighter-rouge">AuraSqlInject</code>トレイトを利用して<code class="language-plaintext highlighter-rouge">PDO</code>を拡張したDBオブジェクト<code class="language-plaintext highlighter-rouge">ExtendedPDO</code>を受け取ります。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">use</span> <span class="nc">Aura\Sql\ExtendedPdoInterface</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">Index</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">__construct</span><span class="p">(</span><span class="kt">ExtendedPdoInterface</span> <span class="nv">$pdo</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">pdo</span><span class="p">;</span> <span class="c1">// \Aura\Sql\ExtendedPdo</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">use</span> <span class="nc">Ray\AuraSqlModule\AuraSqlInject</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">Index</span>
+<span class="p">{</span>
+    <span class="kn">use</span> <span class="nc">AuraSqlInject</span><span class="p">;</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onGet</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">pdo</span><span class="p">;</span> <span class="c1">// \Aura\Sql\ExtendedPdo</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">Ray.AuraSqlModule</code>は<a href="https://github.com/auraphp/Aura.SqlQuery">Aura.SqlQuery</a>を含んでいてMySQLやPostgresなどのSQLを組み立てるのに利用できます。</p>
+
+<h3 id="perform-メソッド">perform() メソッド</h3>
+
+<p><code class="language-plaintext highlighter-rouge">perform()</code>メソッドは、1つのプレイスホルダーしかないSQLに配列の値をバインドすることが出来ます。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$stm</span> <span class="o">=</span> <span class="s1">'SELECT * FROM test WHERE foo IN (:foo)'</span>
+<span class="nv">$array</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'foo'</span><span class="p">,</span> <span class="s1">'bar'</span><span class="p">,</span> <span class="s1">'baz'</span><span class="p">];</span>
+</code></pre></div></div>
+
+<p>既存のPDOの場合</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// the native PDO way does not work (PHP Notice:  Array to string conversion)</span>
+<span class="c1">// ネイティブのPDOでは`:foo`に配列を指定することは出来ません</span>
+<span class="nv">$sth</span> <span class="o">=</span> <span class="nv">$pdo</span><span class="o">-&gt;</span><span class="nf">prepare</span><span class="p">(</span><span class="nv">$stm</span><span class="p">);</span>
+<span class="nv">$sth</span><span class="o">-&gt;</span><span class="nf">bindValue</span><span class="p">(</span><span class="s1">'foo'</span><span class="p">,</span> <span class="nv">$array</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>Aura.SqlのExtendedPDOの場合</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$stm</span> <span class="o">=</span> <span class="s1">'SELECT * FROM test WHERE foo IN (:foo)'</span>
+<span class="nv">$values</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'foo'</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="s1">'foo'</span><span class="p">,</span> <span class="s1">'bar'</span><span class="p">,</span> <span class="s1">'baz'</span><span class="p">]];</span>
+<span class="nv">$sth</span> <span class="o">=</span> <span class="nv">$pdo</span><span class="o">-&gt;</span><span class="nf">perform</span><span class="p">(</span><span class="nv">$stm</span><span class="p">,</span> <span class="nv">$values</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">:foo</code>に<code class="language-plaintext highlighter-rouge">['foo', 'bar', 'baz']</code>がバインドがされます。<code class="language-plaintext highlighter-rouge">queryString</code>で実際のクエリーを調べることが出来ます。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">echo</span> <span class="nv">$sth</span><span class="o">-&gt;</span><span class="n">queryString</span><span class="p">;</span>
+<span class="c1">// the query string has been modified by ExtendedPdo to become</span>
+<span class="c1">// "SELECT * FROM test WHERE foo IN ('foo', 'bar', 'baz')"</span>
+</code></pre></div></div>
+
+<h3 id="fetch-メソッド">fetch*() メソッド</h3>
+
+<p><code class="language-plaintext highlighter-rouge">prepare()</code>、<code class="language-plaintext highlighter-rouge">bindValue()</code>、 <code class="language-plaintext highlighter-rouge">execute()</code>を繰り返してデータベースから値を取得する代わりに<code class="language-plaintext highlighter-rouge">fetch*()</code>メソッドを使うとボイラープレートコードを減らすことができます。
+（内部では<code class="language-plaintext highlighter-rouge">perform()</code>メソッドを実行しているので配列のプレースフォルもサポートしています）</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$stm</span>  <span class="o">=</span> <span class="s1">'SELECT * FROM test WHERE foo = :foo AND bar = :bar'</span><span class="p">;</span>
+<span class="nv">$bind</span> <span class="o">=</span> <span class="k">array</span><span class="p">(</span><span class="s1">'foo'</span> <span class="o">=&gt;</span> <span class="s1">'baz'</span><span class="p">,</span> <span class="s1">'bar'</span> <span class="o">=&gt;</span> <span class="s1">'dib'</span><span class="p">);</span>
+<span class="c1">// ネイティブのPDOで"fetch all"を行う場合</span>
+<span class="nv">$pdo</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">PDO</span><span class="p">(</span><span class="mf">...</span><span class="p">);</span>
+<span class="nv">$sth</span> <span class="o">=</span> <span class="nv">$pdo</span><span class="o">-&gt;</span><span class="nf">prepare</span><span class="p">(</span><span class="nv">$stm</span><span class="p">);</span>
+<span class="nv">$sth</span><span class="o">-&gt;</span><span class="nf">execute</span><span class="p">(</span><span class="nv">$bind</span><span class="p">);</span>
+<span class="nv">$result</span> <span class="o">=</span> <span class="nv">$sth</span><span class="o">-&gt;</span><span class="nf">fetchAll</span><span class="p">(</span><span class="no">PDO</span><span class="o">::</span><span class="no">FETCH_ASSOC</span><span class="p">);</span>
+
+<span class="c1">// ExtendedPdoで"fetch all"を行う場合</span>
+<span class="nv">$pdo</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ExtendedPdo</span><span class="p">(</span><span class="mf">...</span><span class="p">);</span>
+<span class="nv">$result</span> <span class="o">=</span> <span class="nv">$pdo</span><span class="o">-&gt;</span><span class="nf">fetchAll</span><span class="p">(</span><span class="nv">$stm</span><span class="p">,</span> <span class="nv">$bind</span><span class="p">);</span>
+
+<span class="c1">// fetchAssoc()は全ての行がコラム名のキーを持つ連想配列が返ります。</span>
+<span class="nv">$result</span> <span class="o">=</span> <span class="nv">$pdo</span><span class="o">-&gt;</span><span class="nf">fetchAssoc</span><span class="p">(</span><span class="nv">$stm</span><span class="p">,</span> <span class="nv">$bind</span><span class="p">);</span>
+
+<span class="c1">// fetchGroup() is like fetchAssoc() except that the values aren't wrapped in</span>
+<span class="c1">// arrays. Instead, single column values are returned as a single dimensional</span>
+<span class="c1">// array and multiple columns are returned as an array of arrays</span>
+<span class="c1">// Set style to PDO::FETCH_NAMED when values are an array</span>
+<span class="c1">// (i.e. there are more than two columns in the select)</span>
+<span class="nv">$result</span> <span class="o">=</span> <span class="nv">$pdo</span><span class="o">-&gt;</span><span class="nf">fetchGroup</span><span class="p">(</span><span class="nv">$stm</span><span class="p">,</span> <span class="nv">$bind</span><span class="p">,</span> <span class="nv">$style</span> <span class="o">=</span> <span class="no">PDO</span><span class="o">::</span><span class="no">FETCH_COLUMN</span><span class="p">)</span>
+
+<span class="c1">// fetchOne()は最初の行をキーをコラム名にした連想配列で返します。</span>
+<span class="nv">$result</span> <span class="o">=</span> <span class="nv">$pdo</span><span class="o">-&gt;</span><span class="nf">fetchOne</span><span class="p">(</span><span class="nv">$stm</span><span class="p">,</span> <span class="nv">$bind</span><span class="p">);</span>
+
+<span class="c1">// fetchPairs()は最初の列の値をキーに二番目の列の値を値にした連想配列を返します  </span>
+<span class="nv">$result</span> <span class="o">=</span> <span class="nv">$pdo</span><span class="o">-&gt;</span><span class="nf">fetchPairs</span><span class="p">(</span><span class="nv">$stm</span><span class="p">,</span> <span class="nv">$bind</span><span class="p">);</span>
+
+<span class="c1">// fetchValue()は最初の列の値を返します。</span>
+<span class="nv">$result</span> <span class="o">=</span> <span class="nv">$pdo</span><span class="o">-&gt;</span><span class="nf">fetchValue</span><span class="p">(</span><span class="nv">$stm</span><span class="p">,</span> <span class="nv">$bind</span><span class="p">);</span>
+
+<span class="c1">// fetchAffected()は影響を受けた行数を返します。</span>
+<span class="nv">$stm</span> <span class="o">=</span> <span class="s2">"UPDATE test SET incr = incr + 1 WHERE foo = :foo AND bar = :bar"</span><span class="p">;</span>
+<span class="nv">$row_count</span> <span class="o">=</span> <span class="nv">$pdo</span><span class="o">-&gt;</span><span class="nf">fetchAffected</span><span class="p">(</span><span class="nv">$stm</span><span class="p">,</span> <span class="nv">$bind</span><span class="p">);</span>
+<span class="cp">?&gt;</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">fetchAll()</code>, <code class="language-plaintext highlighter-rouge">fetchAssoc()</code>, <code class="language-plaintext highlighter-rouge">fetchCol()</code>, 及び <code class="language-plaintext highlighter-rouge">fetchPairs()</code>のメソッドは三番目のオプションの引数に、それぞれの列に適用されるコールバックを指定することができます。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$result</span> <span class="o">=</span> <span class="nv">$pdo</span><span class="o">-&gt;</span><span class="nf">fetchAssoc</span><span class="p">(</span><span class="nv">$stm</span><span class="p">,</span> <span class="nv">$bind</span><span class="p">,</span> <span class="k">function</span> <span class="p">(</span><span class="o">&amp;</span><span class="nv">$row</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// add a column to the row</span>
+    <span class="nv">$row</span><span class="p">[</span><span class="s1">'my_new_col'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'Added this column from the callable.'</span><span class="p">;</span>
+<span class="p">});</span>
+<span class="cp">?&gt;</span>
+</code></pre></div></div>
+<h3 id="yield-メソッド">yield*() メソッド</h3>
+
+<p>メモリを節約するために<code class="language-plaintext highlighter-rouge">yield*()</code>メソッドを使うことができます。 <code class="language-plaintext highlighter-rouge">fetch*()</code>メソッドは全ての行を一度に取得しますが、
+<code class="language-plaintext highlighter-rouge">yield*()</code>メソッドはイテレーターが返ります。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$stm</span>  <span class="o">=</span> <span class="s1">'SELECT * FROM test WHERE foo = :foo AND bar = :bar'</span><span class="p">;</span>
+<span class="nv">$bind</span> <span class="o">=</span> <span class="k">array</span><span class="p">(</span><span class="s1">'foo'</span> <span class="o">=&gt;</span> <span class="s1">'baz'</span><span class="p">,</span> <span class="s1">'bar'</span> <span class="o">=&gt;</span> <span class="s1">'dib'</span><span class="p">);</span>
+
+<span class="c1">// fetchAll()のように行は連想配列です</span>
+<span class="k">foreach</span> <span class="p">(</span><span class="nv">$pdo</span><span class="o">-&gt;</span><span class="nf">yieldAll</span><span class="p">(</span><span class="nv">$stm</span><span class="p">,</span> <span class="nv">$bind</span><span class="p">)</span> <span class="k">as</span> <span class="nv">$row</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// ...</span>
+<span class="p">}</span>
+
+<span class="c1">// fetchAssoc()のようにキーが最初の列名で行が連想配列です。</span>
+<span class="k">foreach</span> <span class="p">(</span><span class="nv">$pdo</span><span class="o">-&gt;</span><span class="nf">yieldAssoc</span><span class="p">(</span><span class="nv">$stm</span><span class="p">,</span> <span class="nv">$bind</span><span class="p">)</span> <span class="k">as</span> <span class="nv">$key</span> <span class="o">=&gt;</span> <span class="nv">$row</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// ...</span>
+<span class="p">}</span>
+
+<span class="c1">// fetchCol()のように最初の列が値になった値を返します。</span>
+<span class="k">foreach</span> <span class="p">(</span><span class="nv">$pdo</span><span class="o">-&gt;</span><span class="nf">yieldCol</span><span class="p">(</span><span class="nv">$stm</span><span class="p">,</span> <span class="nv">$bind</span><span class="p">)</span> <span class="k">as</span> <span class="nv">$val</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// ...</span>
+<span class="p">}</span>
+
+<span class="c1">// fetchPairs()と同様に最初の列からキー/バリューのペアの値を返します。</span>
+<span class="k">foreach</span> <span class="p">(</span><span class="nv">$pdo</span><span class="o">-&gt;</span><span class="nf">yieldPairs</span><span class="p">(</span><span class="nv">$stm</span><span class="p">,</span> <span class="nv">$bind</span><span class="p">)</span> <span class="k">as</span> <span class="nv">$key</span> <span class="o">=&gt;</span> <span class="nv">$val</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// ...</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="リプリケーション">リプリケーション</h3>
+
+<p>マスター／スレーブの接続を自動で行うためには4つ目の引数にスレーブDBのIPを指定します。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">install</span><span class="p">(</span>
+  <span class="k">new</span> <span class="nc">AuraSqlModule</span><span class="p">(</span>
+    <span class="s1">'mysql:host=localhost;dbname=test'</span><span class="p">,</span>
+    <span class="s1">'username'</span><span class="p">,</span>
+    <span class="s1">'password'</span><span class="p">,</span>
+    <span class="s1">'slave1,slave2'</span> <span class="c1">// スレーブIPをカンマ区切りで指定</span>
+  <span class="p">)</span>
+<span class="p">);</span>
+</code></pre></div></div>
+
+<p>これでHTTPリクエストがGETの時がスレーブDB、その他のメソッドの時はマスターDBのDBオブジェクトがコンスタラクタに渡されます。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">use</span> <span class="nc">Aura\Sql\ExtendedPdoInterface</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">BEAR\Resource\ResourceObject</span><span class="p">;</span>
+<span class="kn">use</span> <span class="no">PDO</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">User</span> <span class="kd">extends</span> <span class="nc">ResourceObject</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="nv">$pdo</span><span class="p">;</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="n">__construct</span><span class="p">(</span><span class="kt">ExtendedPdoInterface</span> <span class="nv">$pdo</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">pdo</span> <span class="o">=</span> <span class="nv">$pdo</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onGet</span><span class="p">()</span>
+    <span class="p">{</span>
+         <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">pdo</span><span class="p">;</span> <span class="c1">// slave db</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onPost</span><span class="p">(</span><span class="nv">$todo</span><span class="p">)</span>
+    <span class="p">{</span>
+         <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">pdo</span><span class="p">;</span> <span class="c1">// master db</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">@ReadOnlyConnection</code>、<code class="language-plaintext highlighter-rouge">@WriteConnection</code>でアノテートされたメソッドはメソッド名に関わらず、呼ばれた時にアノテーションに応じたDBオブジェクトが<code class="language-plaintext highlighter-rouge">$this-&gt;pdo</code>に上書きされます。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">use</span> <span class="nc">Ray\AuraSqlModule\Annotation\ReadOnlyConnection</span><span class="p">;</span>  <span class="c1">// important</span>
+<span class="kn">use</span> <span class="nc">Ray\AuraSqlModule\Annotation\WriteConnection</span><span class="p">;</span>     <span class="c1">// important</span>
+
+<span class="kd">class</span> <span class="nc">User</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="nv">$pdo</span><span class="p">;</span> <span class="c1">// @ReadOnlyConnectionや@WriteConnectionのメソッドが呼ばれた時に上書きされる</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onPost</span><span class="p">(</span><span class="nv">$todo</span><span class="p">)</span>
+    <span class="p">{</span>
+         <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">read</span><span class="p">();</span>
+    <span class="p">}</span>
+
+    <span class="cd">/**
+     * @ReadOnlyConnection
+     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">read</span><span class="p">()</span>
+    <span class="p">{</span>
+         <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">pdo</span><span class="p">;</span> <span class="c1">// slave db</span>
+    <span class="p">}</span>
+
+    <span class="cd">/**
+     * @WriteConnection
+     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">write</span><span class="p">()</span>
+    <span class="p">{</span>
+         <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">pdo</span><span class="p">;</span> <span class="c1">// master db</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="複数db">複数DB</h3>
+
+<p>接続先の違う複数の<code class="language-plaintext highlighter-rouge">PdoExtendedInterface</code>オブジェクトを受け取るためには
+<code class="language-plaintext highlighter-rouge">@Named</code>アノテーションで指定します。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cd">/**
+ * @Inject
+ * @Named("log_db")
+ */</span>
+<span class="k">public</span> <span class="k">function</span> <span class="n">setLoggerDb</span><span class="p">(</span><span class="kt">ExtendedPdoInterface</span> <span class="nv">$pdo</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="c1">// ...</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>モジュールでは<code class="language-plaintext highlighter-rouge">NamedPdoModule</code>で識別子を指定して束縛します。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">install</span><span class="p">(</span>
+  <span class="k">new</span> <span class="nc">NamedPdoModule</span><span class="p">(</span>
+    <span class="s1">'log_db'</span><span class="p">,</span> <span class="c1">// @Namedで指定するデータベースの種類</span>
+    <span class="s1">'mysql:host=localhost;dbname=log'</span><span class="p">,</span>
+    <span class="s1">'username'</span><span class="p">,</span>
+    <span class="s1">'pass'</span><span class="p">,</span>
+    <span class="s1">'slave1,slave12'</span>
+  <span class="p">)</span>
+<span class="p">);</span>
+</code></pre></div></div>
+
+<h3 id="トランザクション">トランザクション</h3>
+
+<p><code class="language-plaintext highlighter-rouge">@Transactional</code>とアノテートしたメソッドはトランザクション管理されます。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">use</span> <span class="nc">Ray\AuraSqlModule\Annotation\Transactional</span><span class="p">;</span>
+
+<span class="c1">// ....</span>
+    <span class="cd">/**
+     * @Transactional
+     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">write</span><span class="p">()</span>
+    <span class="p">{</span>
+         <span class="c1">// 例外発生したら\Ray\AuraSqlModule\Exception\RollbackExceptionに</span>
+    <span class="p">}</span>
+</code></pre></div></div>
+
+<p>複数接続したデータベースのトランザクションを行うためには<code class="language-plaintext highlighter-rouge">@Transactional</code>アノテーションにプロパティを指定します。
+指定しない場合は<code class="language-plaintext highlighter-rouge">{"pdo"}</code>になります。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cd">/**
+ * @Transactional({"pdo", "userDb"})
+ */</span>
+<span class="k">public</span> <span class="k">function</span> <span class="n">write</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p>以下のように実行されます。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$this</span><span class="o">-&gt;</span><span class="n">pdo</span><span class="o">-&gt;</span><span class="nf">beginTransaction</span><span class="p">()</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="n">userDb</span><span class="o">-&gt;</span><span class="nf">beginTransaction</span><span class="p">()</span>
+
+<span class="c1">// ...</span>
+
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="n">pdo</span><span class="o">-&gt;</span><span class="nf">commit</span><span class="p">();</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="n">userDb</span><span class="o">-&gt;</span><span class="nf">commit</span><span class="p">();</span>
+</code></pre></div></div>
+
+<h2 id="aurasqlquery">Aura.SqlQuery</h2>
+
+<p><a href="https://github.com/auraphp/Aura.Sql">Aura.Sql</a>はPDOを拡張したライブラリですが、<a href="https://github.com/auraphp/Aura.SqlQuery">Aura.SqlQuery</a>は MySQL、Postgres,、SQLiteあるいは Microsoft SQL Serverといったデータベース固有のSQLのビルダーを提供します。</p>
+
+<p>データベースを指定してアプリケーションモジュール<code class="language-plaintext highlighter-rouge">src/Module/AppModule.php</code>でインストールします。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// ...</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">install</span><span class="p">(</span><span class="k">new</span> <span class="nc">AuraSqlQueryModule</span><span class="p">(</span><span class="s1">'mysql'</span><span class="p">));</span> <span class="c1">// pgsql, sqlite, or sqlsrv</span>
+</code></pre></div></div>
+
+<h3 id="select">SELECT</h3>
+
+<p>リソースではDBクエリービルダオブジェクトを受け取り、下記のメソッドを使ってSELECTクエリーを組み立てます。
+メソッドに特定の順番はなく複数回呼ぶことこともできます。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">use</span> <span class="nc">Ray\AuraSqlModule\AuraSqlInject</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">Ray\AuraSqlModule\AuraSqlSelectInject</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">User</span> <span class="n">extend</span> <span class="nc">ResourceObject</span>
+<span class="p">{</span>
+    <span class="kn">use</span> <span class="nc">AuraSqlInject</span><span class="p">;</span>
+    <span class="kn">use</span> <span class="nc">AuraSqlSelectInject</span><span class="p">;</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onGet</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">select</span>
+            <span class="o">-&gt;</span><span class="nf">distinct</span><span class="p">()</span>                    <span class="c1">// SELECT DISTINCT</span>
+            <span class="o">-&gt;</span><span class="nf">cols</span><span class="p">([</span>                        <span class="c1">// select these columns</span>
+                <span class="s1">'id'</span><span class="p">,</span>                       <span class="c1">// column name</span>
+                <span class="s1">'name AS namecol'</span><span class="p">,</span>          <span class="c1">// one way of aliasing</span>
+                <span class="s1">'col_name'</span> <span class="o">=&gt;</span> <span class="s1">'col_alias'</span><span class="p">,</span>  <span class="c1">// another way of aliasing</span>
+                <span class="s1">'COUNT(foo) AS foo_count'</span>   <span class="c1">// embed calculations directly</span>
+            <span class="p">])</span>
+            <span class="o">-&gt;</span><span class="nf">from</span><span class="p">(</span><span class="s1">'foo AS f'</span><span class="p">)</span>              <span class="c1">// FROM these tables</span>
+            <span class="o">-&gt;</span><span class="nf">fromSubselect</span><span class="p">(</span>                <span class="c1">// FROM sub-select AS my_sub</span>
+                <span class="s1">'SELECT ...'</span><span class="p">,</span>
+                <span class="s1">'my_sub'</span>
+            <span class="p">)</span>
+            <span class="o">-&gt;</span><span class="nb">join</span><span class="p">(</span>                         <span class="c1">// JOIN ...</span>
+                <span class="s1">'LEFT'</span><span class="p">,</span>                     <span class="c1">// left/inner/natural/etc</span>
+                <span class="s1">'doom AS d'</span>                 <span class="c1">// this table name</span>
+                <span class="s1">'foo.id = d.foo_id'</span>         <span class="c1">// ON these conditions</span>
+            <span class="p">)</span>
+            <span class="o">-&gt;</span><span class="nf">joinSubSelect</span><span class="p">(</span>                <span class="c1">// JOIN to a sub-select</span>
+                <span class="s1">'INNER'</span><span class="p">,</span>                    <span class="c1">// left/inner/natural/etc</span>
+                <span class="s1">'SELECT ...'</span><span class="p">,</span>               <span class="c1">// the subselect to join on</span>
+                <span class="s1">'subjoin'</span>                   <span class="c1">// AS this name</span>
+                <span class="s1">'sub.id = foo.id'</span>           <span class="c1">// ON these conditions</span>
+            <span class="p">)</span>
+            <span class="o">-&gt;</span><span class="nf">where</span><span class="p">(</span><span class="s1">'bar &gt; :bar'</span><span class="p">)</span>           <span class="c1">// AND WHERE these conditions</span>
+            <span class="o">-&gt;</span><span class="nf">where</span><span class="p">(</span><span class="s1">'zim = ?'</span><span class="p">,</span> <span class="s1">'zim_val'</span><span class="p">)</span>   <span class="c1">// bind 'zim_val' to the ? placeholder</span>
+            <span class="o">-&gt;</span><span class="nf">orWhere</span><span class="p">(</span><span class="s1">'baz &lt; :baz'</span><span class="p">)</span>         <span class="c1">// OR WHERE these conditions</span>
+            <span class="o">-&gt;</span><span class="nf">groupBy</span><span class="p">([</span><span class="s1">'dib'</span><span class="p">])</span>              <span class="c1">// GROUP BY these columns</span>
+            <span class="o">-&gt;</span><span class="nf">having</span><span class="p">(</span><span class="s1">'foo = :foo'</span><span class="p">)</span>          <span class="c1">// AND HAVING these conditions</span>
+            <span class="o">-&gt;</span><span class="nf">having</span><span class="p">(</span><span class="s1">'bar &gt; ?'</span><span class="p">,</span> <span class="s1">'bar_val'</span><span class="p">)</span>  <span class="c1">// bind 'bar_val' to the ? placeholder</span>
+            <span class="o">-&gt;</span><span class="nf">orHaving</span><span class="p">(</span><span class="s1">'baz &lt; :baz'</span><span class="p">)</span>        <span class="c1">// OR HAVING these conditions</span>
+            <span class="o">-&gt;</span><span class="nf">orderBy</span><span class="p">([</span><span class="s1">'baz'</span><span class="p">])</span>              <span class="c1">// ORDER BY these columns</span>
+            <span class="o">-&gt;</span><span class="nf">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>                     <span class="c1">// LIMIT 10</span>
+            <span class="o">-&gt;</span><span class="nf">offset</span><span class="p">(</span><span class="mi">40</span><span class="p">)</span>                    <span class="c1">// OFFSET 40</span>
+            <span class="o">-&gt;</span><span class="nf">forUpdate</span><span class="p">()</span>                   <span class="c1">// FOR UPDATE</span>
+            <span class="o">-&gt;</span><span class="nf">union</span><span class="p">()</span>                       <span class="c1">// UNION with a followup SELECT</span>
+            <span class="o">-&gt;</span><span class="nf">unionAll</span><span class="p">()</span>                    <span class="c1">// UNION ALL with a followup SELECT</span>
+            <span class="o">-&gt;</span><span class="nf">bindValue</span><span class="p">(</span><span class="s1">'foo'</span><span class="p">,</span> <span class="s1">'foo_val'</span><span class="p">)</span>   <span class="c1">// bind one value to a placeholder</span>
+            <span class="o">-&gt;</span><span class="nf">bindValues</span><span class="p">([</span>                  <span class="c1">// bind these values to named placeholders</span>
+                <span class="s1">'bar'</span> <span class="o">=&gt;</span> <span class="s1">'bar_val'</span><span class="p">,</span>
+                <span class="s1">'baz'</span> <span class="o">=&gt;</span> <span class="s1">'baz_val'</span><span class="p">,</span>
+            <span class="p">]);</span>
+
+        <span class="nv">$sth</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">pdo</span><span class="o">-&gt;</span><span class="nf">prepare</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="n">select</span><span class="o">-&gt;</span><span class="nf">getStatement</span><span class="p">());</span>
+
+        <span class="c1">// bind the values and execute</span>
+        <span class="nv">$sth</span><span class="o">-&gt;</span><span class="nf">execute</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="n">select</span><span class="o">-&gt;</span><span class="nf">getBindValues</span><span class="p">());</span>
+        <span class="nv">$result</span> <span class="o">=</span> <span class="nv">$sth</span><span class="o">-&gt;</span><span class="nf">fetch</span><span class="p">(</span><span class="err">\</span><span class="no">PDO</span><span class="o">::</span><span class="no">FETCH_ASSOC</span><span class="p">);</span>
+        <span class="c1">// or</span>
+        <span class="c1">// $result = $this-&gt;pdo-&gt;fetchAssoc($stm, $bind);</span>
+</code></pre></div></div>
+
+<p>組み立てたクエリーは<code class="language-plaintext highlighter-rouge">getStatement()</code>で文字列にしてクエリーを行います。</p>
+
+<h3 id="insert">INSERT</h3>
+
+<h4 id="単一行のinsert">単一行のINSERT</h4>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">use</span> <span class="nc">Ray\AuraSqlModule\AuraSqlInject</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">Ray\AuraSqlModule\AuraSqlInsertInject</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">User</span> <span class="n">extend</span> <span class="nc">ResourceObject</span>
+<span class="p">{</span>
+    <span class="kn">use</span> <span class="nc">AuraSqlInject</span><span class="p">;</span>
+    <span class="kn">use</span> <span class="nc">AuraSqlInsertInject</span><span class="p">;</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onPost</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">insert</span>
+            <span class="o">-&gt;</span><span class="nf">into</span><span class="p">(</span><span class="s1">'foo'</span><span class="p">)</span>                   <span class="c1">// INTO this table</span>
+            <span class="o">-&gt;</span><span class="nf">cols</span><span class="p">([</span>                        <span class="c1">// bind values as "(col) VALUES (:col)"</span>
+                <span class="s1">'bar'</span><span class="p">,</span>
+                <span class="s1">'baz'</span><span class="p">,</span>
+            <span class="p">])</span>
+            <span class="o">-&gt;</span><span class="nf">set</span><span class="p">(</span><span class="s1">'ts'</span><span class="p">,</span> <span class="s1">'NOW()'</span><span class="p">)</span>            <span class="c1">// raw value as "(ts) VALUES (NOW())"</span>
+            <span class="o">-&gt;</span><span class="nf">bindValue</span><span class="p">(</span><span class="s1">'foo'</span><span class="p">,</span> <span class="s1">'foo_val'</span><span class="p">)</span>   <span class="c1">// bind one value to a placeholder</span>
+            <span class="o">-&gt;</span><span class="nf">bindValues</span><span class="p">([</span>                  <span class="c1">// bind these values</span>
+                <span class="s1">'bar'</span> <span class="o">=&gt;</span> <span class="s1">'foo'</span><span class="p">,</span>
+                <span class="s1">'baz'</span> <span class="o">=&gt;</span> <span class="s1">'zim'</span><span class="p">,</span>
+            <span class="p">]);</span>
+
+        <span class="nv">$sth</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">pdo</span><span class="o">-&gt;</span><span class="nf">prepare</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="n">insert</span><span class="o">-&gt;</span><span class="nf">getStatement</span><span class="p">());</span>
+        <span class="nv">$sth</span><span class="o">-&gt;</span><span class="nf">execute</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="n">insert</span><span class="o">-&gt;</span><span class="nf">getBindValues</span><span class="p">());</span>
+        <span class="c1">// or</span>
+        <span class="c1">// $sth = $this-&gt;pdo-&gt;perform($this-&gt;insert-&gt;getStatement(), this-&gt;insert-&gt;getBindValues());</span>
+
+        <span class="c1">// get the last insert ID</span>
+        <span class="nv">$name</span> <span class="o">=</span> <span class="nv">$insert</span><span class="o">-&gt;</span><span class="nf">getLastInsertIdName</span><span class="p">(</span><span class="s1">'id'</span><span class="p">);</span>
+        <span class="nv">$id</span> <span class="o">=</span> <span class="nv">$pdo</span><span class="o">-&gt;</span><span class="nf">lastInsertId</span><span class="p">(</span><span class="nv">$name</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">cols()</code>メソッドはキーがコラム名、値をバインドする値にした連想配列を渡すこともできます。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code>        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">insert</span>
+            <span class="o">-&gt;</span><span class="nf">into</span><span class="p">(</span><span class="s1">'foo'</span><span class="p">)</span>                   <span class="c1">// insert into this table</span>
+            <span class="o">-&gt;</span><span class="nf">cols</span><span class="p">([</span>                        <span class="c1">// insert these columns and bind these values</span>
+                <span class="s1">'foo'</span> <span class="o">=&gt;</span> <span class="s1">'foo_value'</span><span class="p">,</span>
+                <span class="s1">'bar'</span> <span class="o">=&gt;</span> <span class="s1">'bar_value'</span><span class="p">,</span>
+                <span class="s1">'baz'</span> <span class="o">=&gt;</span> <span class="s1">'baz_value'</span><span class="p">,</span>
+            <span class="p">]);</span>
+</code></pre></div></div>
+
+<h4 id="複数行のinsert">複数行のINSERT</h4>
+
+<p>複数の行のINSERTを行うためには、最初の行の最後で<code class="language-plaintext highlighter-rouge">addRow()</code>メソッドを使います。その後に次のクエリーを組み立てます。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code>        <span class="c1">// insert into this table</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">insert</span><span class="o">-&gt;</span><span class="nf">into</span><span class="p">(</span><span class="s1">'foo'</span><span class="p">);</span>
+
+        <span class="c1">// set up the first row</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">insert</span><span class="o">-&gt;</span><span class="nf">cols</span><span class="p">([</span>
+            <span class="s1">'bar'</span> <span class="o">=&gt;</span> <span class="s1">'bar-0'</span><span class="p">,</span>
+            <span class="s1">'baz'</span> <span class="o">=&gt;</span> <span class="s1">'baz-0'</span>
+        <span class="p">]);</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">insert</span><span class="o">-&gt;</span><span class="nf">set</span><span class="p">(</span><span class="s1">'ts'</span><span class="p">,</span> <span class="s1">'NOW()'</span><span class="p">);</span>
+
+        <span class="c1">// set up the second row. the columns here are in a different order</span>
+        <span class="c1">// than in the first row, but it doesn't matter; the INSERT object</span>
+        <span class="c1">// keeps track and builds them the same order as the first row.</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">insert</span><span class="o">-&gt;</span><span class="nf">addRow</span><span class="p">();</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">insert</span><span class="o">-&gt;</span><span class="nf">set</span><span class="p">(</span><span class="s1">'ts'</span><span class="p">,</span> <span class="s1">'NOW()'</span><span class="p">);</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">insert</span><span class="o">-&gt;</span><span class="nf">cols</span><span class="p">([</span>
+            <span class="s1">'bar'</span> <span class="o">=&gt;</span> <span class="s1">'bar-1'</span><span class="p">,</span>
+            <span class="s1">'baz'</span> <span class="o">=&gt;</span> <span class="s1">'baz-1'</span>
+        <span class="p">]);</span>
+
+        <span class="c1">// set up further rows ...</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">insert</span><span class="o">-&gt;</span><span class="nf">addRow</span><span class="p">();</span>
+        <span class="c1">// ...</span>
+
+        <span class="c1">// execute a bulk insert of all rows</span>
+        <span class="nv">$sth</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">pdo</span><span class="o">-&gt;</span><span class="nf">prepare</span><span class="p">(</span><span class="nv">$insert</span><span class="o">-&gt;</span><span class="nf">getStatement</span><span class="p">());</span>
+        <span class="nv">$sth</span><span class="o">-&gt;</span><span class="nf">execute</span><span class="p">(</span><span class="nv">$insert</span><span class="o">-&gt;</span><span class="nf">getBindValues</span><span class="p">());</span>
+
+</code></pre></div></div>
+
+<blockquote>
+  <p>注:最初の行で始めて現れた列の値を指定しないで、行を追加しようとすると例外が投げられます。
+<code class="language-plaintext highlighter-rouge">addRow()</code>に列の連想配列を渡すと次の行で使われます。つまり最初の行で<code class="language-plaintext highlighter-rouge">col()</code>や<code class="language-plaintext highlighter-rouge">cols()</code>を指定しないこともできます。</p>
+</blockquote>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code>        <span class="c1">// set up the first row</span>
+        <span class="nv">$insert</span><span class="o">-&gt;</span><span class="nf">addRow</span><span class="p">([</span>
+            <span class="s1">'bar'</span> <span class="o">=&gt;</span> <span class="s1">'bar-0'</span><span class="p">,</span>
+            <span class="s1">'baz'</span> <span class="o">=&gt;</span> <span class="s1">'baz-0'</span>
+        <span class="p">]);</span>
+        <span class="nv">$insert</span><span class="o">-&gt;</span><span class="nf">set</span><span class="p">(</span><span class="s1">'ts'</span><span class="p">,</span> <span class="s1">'NOW()'</span><span class="p">);</span>
+
+        <span class="c1">// set up the second row</span>
+        <span class="nv">$insert</span><span class="o">-&gt;</span><span class="nf">addRow</span><span class="p">([</span>
+            <span class="s1">'bar'</span> <span class="o">=&gt;</span> <span class="s1">'bar-1'</span><span class="p">,</span>
+            <span class="s1">'baz'</span> <span class="o">=&gt;</span> <span class="s1">'baz-1'</span>
+        <span class="p">]);</span>
+        <span class="nv">$insert</span><span class="o">-&gt;</span><span class="nf">set</span><span class="p">(</span><span class="s1">'ts'</span><span class="p">,</span> <span class="s1">'NOW()'</span><span class="p">);</span>
+
+        <span class="c1">// etc.</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">addRows()</code>を使ってデータベースを一度にセットすることもできます。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code>        <span class="nv">$rows</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="p">[</span>
+                <span class="s1">'bar'</span> <span class="o">=&gt;</span> <span class="s1">'bar-0'</span><span class="p">,</span>
+                <span class="s1">'baz'</span> <span class="o">=&gt;</span> <span class="s1">'baz-0'</span>
+            <span class="p">],</span>
+            <span class="p">[</span>
+                <span class="s1">'bar'</span> <span class="o">=&gt;</span> <span class="s1">'bar-1'</span><span class="p">,</span>
+                <span class="s1">'baz'</span> <span class="o">=&gt;</span> <span class="s1">'baz-1'</span>
+            <span class="p">],</span>
+        <span class="p">];</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">insert</span><span class="o">-&gt;</span><span class="nf">addRows</span><span class="p">(</span><span class="nv">$rows</span><span class="p">);</span>
+</code></pre></div></div>
+
+<h3 id="update">UPDATE</h3>
+<p>下記のメソッドを使ってUPDATEクエリーを組み立てます。 メソッドに特定の順番はなく複数回呼ぶことこともできます。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code>        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">update</span>
+            <span class="o">-&gt;</span><span class="nf">table</span><span class="p">(</span><span class="s1">'foo'</span><span class="p">)</span>                  <span class="c1">// update this table</span>
+            <span class="o">-&gt;</span><span class="nf">cols</span><span class="p">([</span>                        <span class="c1">// bind values as "SET bar = :bar"</span>
+                <span class="s1">'bar'</span><span class="p">,</span>
+                <span class="s1">'baz'</span><span class="p">,</span>
+            <span class="p">])</span>
+            <span class="o">-&gt;</span><span class="nf">set</span><span class="p">(</span><span class="s1">'ts'</span><span class="p">,</span> <span class="s1">'NOW()'</span><span class="p">)</span>            <span class="c1">// raw value as "(ts) VALUES (NOW())"</span>
+            <span class="o">-&gt;</span><span class="nf">where</span><span class="p">(</span><span class="s1">'zim = :zim'</span><span class="p">)</span>           <span class="c1">// AND WHERE these conditions</span>
+            <span class="o">-&gt;</span><span class="nf">where</span><span class="p">(</span><span class="s1">'gir = ?'</span><span class="p">,</span> <span class="s1">'doom'</span><span class="p">)</span>      <span class="c1">// bind this value to the condition</span>
+            <span class="o">-&gt;</span><span class="nf">orWhere</span><span class="p">(</span><span class="s1">'gir = :gir'</span><span class="p">)</span>         <span class="c1">// OR WHERE these conditions</span>
+            <span class="o">-&gt;</span><span class="nf">bindValue</span><span class="p">(</span><span class="s1">'bar'</span><span class="p">,</span> <span class="s1">'bar_val'</span><span class="p">)</span>   <span class="c1">// bind one value to a placeholder</span>
+            <span class="o">-&gt;</span><span class="nf">bindValues</span><span class="p">([</span>                  <span class="c1">// bind these values to the query</span>
+                <span class="s1">'baz'</span> <span class="o">=&gt;</span> <span class="mi">99</span><span class="p">,</span>
+                <span class="s1">'zim'</span> <span class="o">=&gt;</span> <span class="s1">'dib'</span><span class="p">,</span>
+                <span class="s1">'gir'</span> <span class="o">=&gt;</span> <span class="s1">'doom'</span><span class="p">,</span>
+            <span class="p">]);</span>
+        <span class="nv">$sth</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">pdo</span><span class="o">-&gt;</span><span class="nf">prepare</span><span class="p">(</span><span class="nv">$update</span><span class="o">-&gt;</span><span class="nf">getStatement</span><span class="p">())</span>
+        <span class="nv">$sth</span><span class="o">-&gt;</span><span class="nf">execute</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="n">update</span><span class="o">-&gt;</span><span class="nf">getBindValues</span><span class="p">());</span>
+        <span class="c1">// or</span>
+        <span class="c1">// $sth = $this-&gt;pdo-&gt;perform($this-&gt;update-&gt;getStatement(), $this-&gt;update-&gt;getBindValues());</span>
+</code></pre></div></div>
+
+<p>キーを列名、値をバインドされた値（RAW値ではなりません）にした連想配列を<code class="language-plaintext highlighter-rouge">cols()</code>に渡すこともできます。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+        <span class="nv">$this</span><span class="o">-</span><span class="n">update</span><span class="o">-&gt;</span><span class="nf">table</span><span class="p">(</span><span class="s1">'foo'</span><span class="p">)</span>          <span class="c1">// update this table</span>
+            <span class="o">-&gt;</span><span class="nf">cols</span><span class="p">([</span>                        <span class="c1">// update these columns and bind these values</span>
+                <span class="s1">'foo'</span> <span class="o">=&gt;</span> <span class="s1">'foo_value'</span><span class="p">,</span>
+                <span class="s1">'bar'</span> <span class="o">=&gt;</span> <span class="s1">'bar_value'</span><span class="p">,</span>
+                <span class="s1">'baz'</span> <span class="o">=&gt;</span> <span class="s1">'baz_value'</span><span class="p">,</span>
+            <span class="p">]);</span>
+<span class="cp">?&gt;</span>
+</code></pre></div></div>
+
+<h3 id="delete">DELETE</h3>
+<p>下記のメソッドを使ってDELETEクエリーを組み立てます。 メソッドに特定の順番はなく複数回呼ぶことこともできます。</p>
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code>        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">delete</span>
+            <span class="o">-&gt;</span><span class="nf">from</span><span class="p">(</span><span class="s1">'foo'</span><span class="p">)</span>                   <span class="c1">// FROM this table</span>
+            <span class="o">-&gt;</span><span class="nf">where</span><span class="p">(</span><span class="s1">'zim = :zim'</span><span class="p">)</span>           <span class="c1">// AND WHERE these conditions</span>
+            <span class="o">-&gt;</span><span class="nf">where</span><span class="p">(</span><span class="s1">'gir = ?'</span><span class="p">,</span> <span class="s1">'doom'</span><span class="p">)</span>      <span class="c1">// bind this value to the condition</span>
+            <span class="o">-&gt;</span><span class="nf">orWhere</span><span class="p">(</span><span class="s1">'gir = :gir'</span><span class="p">)</span>         <span class="c1">// OR WHERE these conditions</span>
+            <span class="o">-&gt;</span><span class="nf">bindValue</span><span class="p">(</span><span class="s1">'bar'</span><span class="p">,</span> <span class="s1">'bar_val'</span><span class="p">)</span>   <span class="c1">// bind one value to a placeholder</span>
+            <span class="o">-&gt;</span><span class="nf">bindValues</span><span class="p">([</span>                  <span class="c1">// bind these values to the query</span>
+                <span class="s1">'baz'</span> <span class="o">=&gt;</span> <span class="mi">99</span><span class="p">,</span>
+                <span class="s1">'zim'</span> <span class="o">=&gt;</span> <span class="s1">'dib'</span><span class="p">,</span>
+                <span class="s1">'gir'</span> <span class="o">=&gt;</span> <span class="s1">'doom'</span><span class="p">,</span>
+            <span class="p">]);</span>
+        <span class="nv">$sth</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">pdo</span><span class="o">-&gt;</span><span class="nf">prepare</span><span class="p">(</span><span class="nv">$update</span><span class="o">-&gt;</span><span class="nf">getStatement</span><span class="p">())</span>
+        <span class="nv">$sth</span><span class="o">-&gt;</span><span class="nf">execute</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="n">delete</span><span class="o">-&gt;</span><span class="nf">getBindValues</span><span class="p">());</span>
+</code></pre></div></div>
+
+<h3 id="パジネーション">パジネーション</h3>
+
+<p><a href="https://packagist.org/packages/ray/aura-sql-module">ray/aura-sql-module</a>はRay.Sqlの生SQL、Ray.AuraSqlQueryのクエリービルダー双方でパジネーション（ページ分割）をサポートしています。
+バインドする値と１ページあたりのアイテム数、それに{page}をページ番号にしたuri_templateでページャーファクトリーを<code class="language-plaintext highlighter-rouge">newInstance()</code>で生成して、ページ番号で配列アクセスします。</p>
+
+<h4 id="aurasql用">Aura.Sql用</h4>
+<p>AuraSqlPagerFactoryInterface</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/* @var $factory \Ray\AuraSqlModule\Pagerfanta\AuraSqlPagerFactoryInterface */</span>
+<span class="nv">$pager</span> <span class="o">=</span> <span class="nv">$factory</span><span class="o">-&gt;</span><span class="nf">newInstance</span><span class="p">(</span><span class="nv">$pdo</span><span class="p">,</span> <span class="nv">$sql</span><span class="p">,</span> <span class="nv">$params</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="s1">'/?page={page}&amp;category=sports'</span><span class="p">);</span> <span class="c1">// 10 items per page</span>
+<span class="nv">$page</span> <span class="o">=</span> <span class="nv">$pager</span><span class="p">[</span><span class="mi">2</span><span class="p">];</span> <span class="c1">// page 2</span>
+<span class="cm">/* @var $page \Ray\AuraSqlModule\Pagerfanta\Page */</span>
+<span class="c1">// $page-&gt;data // sliced data (array|\Traversable)</span>
+<span class="c1">// $page-&gt;current; (int)</span>
+<span class="c1">// $page-&gt;total (int)</span>
+<span class="c1">// $page-&gt;hasNext (bool)</span>
+<span class="c1">// $page-&gt;hasPrevious (bool)</span>
+<span class="c1">// $page-&gt;maxPerPage; (int)</span>
+<span class="c1">// (string) $page // pager html (string)</span>
+</code></pre></div></div>
+
+<h4 id="aurasqlquery用">Aura.SqlQuery用</h4>
+<p>AuraSqlQueryPagerFactoryInterface</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// for Select</span>
+<span class="cm">/* @var $factory \Ray\AuraSqlModule\Pagerfanta\AuraSqlQueryPagerFactoryInterface */</span>
+<span class="nv">$pager</span> <span class="o">=</span> <span class="nv">$factory</span><span class="o">-&gt;</span><span class="nf">newInstance</span><span class="p">(</span><span class="nv">$pdo</span><span class="p">,</span> <span class="nv">$select</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="s1">'/?page={page}&amp;category=sports'</span><span class="p">);</span>
+<span class="nv">$page</span> <span class="o">=</span> <span class="nv">$pager</span><span class="p">[</span><span class="mi">2</span><span class="p">];</span> <span class="c1">// page 2</span>
+<span class="cm">/* @var $page \Ray\AuraSqlModule\Pagerfanta\Page */</span>
+</code></pre></div></div>
+<blockquote>
+  <p>注：Aura.Sqlは生SQLを直接編集していますが現在MySql形式のLIMIT句しか対応していません。</p>
+</blockquote>
+
+<p><code class="language-plaintext highlighter-rouge">$page</code>はイテレータブルです。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">foreach</span> <span class="p">(</span><span class="nv">$page</span> <span class="k">as</span> <span class="nv">$row</span><span class="p">)</span> <span class="p">{</span>
+ <span class="c1">// 各行の処理</span>
+<span class="p">}</span>
+</code></pre></div></div>
+<p>ページャーのリンクHTMLのテンプレートを変更するには<code class="language-plaintext highlighter-rouge">TemplateInterface</code>の束縛を変更します。
+テンプレート詳細に関しては<a href="https://github.com/whiteoctober/Pagerfanta#views">Pagerfanta</a>をご覧ください。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">use</span> <span class="nc">Pagerfanta\View\Template\TemplateInterface</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">Pagerfanta\View\Template\TwitterBootstrap3Template</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">Ray\AuraSqlModule\Annotation\PagerViewOption</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">AppModule</span> <span class="kd">extends</span> <span class="nc">AbstractAppModule</span>
+<span class="p">{</span>
+    <span class="k">protected</span> <span class="k">function</span> <span class="n">configure</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="c1">// ..</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">bind</span><span class="p">(</span><span class="nc">TemplateInterface</span><span class="o">::</span><span class="n">class</span><span class="p">)</span><span class="o">-&gt;</span><span class="nf">to</span><span class="p">(</span><span class="nc">TwitterBootstrap3Template</span><span class="o">::</span><span class="n">class</span><span class="p">);</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">bind</span><span class="p">()</span><span class="o">-&gt;</span><span class="nf">annotatedWith</span><span class="p">(</span><span class="nc">PagerViewOption</span><span class="o">::</span><span class="n">class</span><span class="p">)</span><span class="o">-&gt;</span><span class="nf">toInstance</span><span class="p">(</span><span class="nv">$pagerViewOption</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+
+            </article>
+        </div>
+        <div id="ArticleToc" class="col-lg-2 d-none d-lg-block">
+            <nav class="nav side-bar-right"></nav>
+        </div>
+    </div>
+</main>
+<footer>
+    <div class="container d-md-flex">
+        <i class="bear-icon d-none d-lg-block"></i>
+        <small>
+            © 2011-2024 BEAR.Sunday
+        </small>
+        <ul class="navbar-nav flex-row ml-md-auto d-none d-md-flex">
+            <li>
+                <a href="https://gitter.im/bearsunday/BEAR.Sunday?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge">Gitter</a>
+            </li>
+            <li>
+                <a href="https://github.com/bearsunday/BEAR.Sunday">Github</a>
+            </li>
+            <li>
+                <a href="https://twitter.com/BEARSunday">Twitter</a>
+            </li>
+            <li>
+                <a href="https://www.facebook.com/pages/BEARSunday/110116939178462?ref=hl">Facebook</a>
+            </li>
+            <li>
+                <a href="http://koriym.github.io/">Blog (JA)</a>
+            </li>
+            <li>
+                <a href="https://github.com/bearsunday/bearsunday.github.io">PR ?</a>
+            </li>
+        </ul>
+    </div>
+</footer>
+<script src="//code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+<script>
+    window.ga = function () { ga.q.push(arguments) }; ga.q = []; ga.l = +new Date;
+    ga('create', 'UA-6074569-8', 'bearsunday.github.io'); ga('send', 'pageview');
+</script>
+<script src="https://www.google-analytics.com/analytics.js" async defer></script>
+
+<script src="/js/generate-table-of-contents/index.min.js"></script>
+<script>
+    var toc = generateTableOfContents(document.getElementById('article'));
+    var sideBarRight = $('.side-bar-right');
+    sideBarRight.append(toc);
+
+    var scrollOffset = $('body').attr('data-offset');
+    var articlePaddingTop = $('article').css('padding-top').replace('px', '');
+    sideBarRight.find('a').on('click', function (e) {
+        e.preventDefault();
+        var targetId = $(this).attr('href');
+        var targetPositionTop = $(targetId).offset().top - scrollOffset - articlePaddingTop;
+        window.scrollTo(0, targetPositionTop)
+    });
+</script>
+
+</body>
+</html>
+

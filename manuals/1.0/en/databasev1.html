@@ -1,0 +1,843 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Database &#124; BEAR.Sunday</title>
+    <meta name="description" content="BEAR.Sunday is a resource orientated framework with a REST centered architecture, implementing Dependency Injection and Aspect Orientated Programming' at its core.">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/github-markdown-css/2.10.0/github-markdown.css">
+    <link rel="stylesheet" href="/css/syntax.css">
+    
+    <link rel="stylesheet" href="/css/bearsunday.css">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="apple-touch-icon" href="/icon.png">
+</head>
+<body data-page-category="Manual" data-spy="scroll" data-target="#ArticleToc" data-offset="65">
+<header>
+    <nav class="navbar navbar-expand flex-column flex-md-row bg-light">
+        <a class="navbar-brand mr-0 mr-md-2" href="/index.html"></a>
+        <div class="navbar-nav-scroll">
+            <ul class="navbar-nav flex-row">
+                <li class="nav-item">
+                    <a class="nav-link " href="/index.html">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="/manuals/1.0/en/index.html">Manual</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link " href="/contributors.html">Contributors</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/slide.html">Slide</a>
+                </li>
+            </ul>
+        </div>
+        
+        <ul class="navbar-nav ml-md-auto d-none d-md-flex language-list">
+            <li>
+                <a class="active" href="/manuals/1.0/en/databasev1.html">En</a>
+            </li>
+            <li>
+                <a class="" href="/manuals/1.0/ja/databasev1.html">Ja</a>
+            </li>
+        </ul>
+        
+    </nav>
+</header>
+
+<main class="container-fluid">
+    <div class="row flex-xl-nowrap">
+        <div class="col-md-3 col-lg-2">
+            <div class="side-bar">
+                <nav class="navbar navbar-expand-md navbar-light">
+    <div class="navigation-header">
+        <div class="ml-auto d-sm-block d-md-none">
+            <ul class="navbar-nav language-list">
+                <li>
+                    <a class="active" href="/manuals/1.0/en/databasev1.html">En</a>
+                </li>
+                <li>
+                    <a class="" href="/manuals/1.0/ja/databasev1.html">Ja</a>
+                </li>
+            </ul>
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#Navber" aria-controls="Navber" aria-expanded="false" aria-label="ナビゲーションの切替">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+    </div>
+    <div class="collapse navbar-collapse" id="Navber">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/">Introduction</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/version.html">Version</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/quick-start.html">Quick Start</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/tutorial.html">Tutorial</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/tutorial2.html">Tutorial 2</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/package.html">Package</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/application.html">Application</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/module.html">Module</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/di.html">DI</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/aop.html">AOP</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/resource.html">Resource</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/resource_param.html">・Parameter</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/resource_link.html">・Link</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/resource_renderer.html">・Rendering and Transfer</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/router.html">Router</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/production.html">Production</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/import.html">Import</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/database.html">Database</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/validation.html">Validation</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/html.html">HTML</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/form.html">Form</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/content-negotiation.html">Content Negotiation</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/hypermedia-api.html">Hypermedia API</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/psr7.html">Request / PSR-7</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/js-ui.html">JavaScript UI</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/stream.html">Stream Response</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/cache.html">Cache</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/swoole.html">Swoole</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/coding-guide.html">Coding Guide</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/types.html">Type</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/test.html">Test</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/examples.html">Examples</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/attribute.html">Attribute</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/apidoc.html">API Doc</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/1page.html">1 Page</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+            </div>
+        </div>
+        <div class="col-md-9 col-lg-8">
+            <article id="article" class="markdown-body">
+                <h1 id="database">Database</h1>
+
+<p><code class="language-plaintext highlighter-rouge">Aura.Sql</code>、<code class="language-plaintext highlighter-rouge">Doctrine DBAL</code>, <code class="language-plaintext highlighter-rouge">CakeDB</code> modules are available for database connections.</p>
+
+<h2 id="aurasql">Aura.Sql</h2>
+
+<p><a href="https://github.com/auraphp/Aura.Sql">Aura.Sql</a> is an Aura database library that extends from <code class="language-plaintext highlighter-rouge">PDO</code> .</p>
+
+<h3 id="installation">Installation</h3>
+
+<p>Install <code class="language-plaintext highlighter-rouge">Ray.AuraSqlModule</code> via composer.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>composer require ray/aura-sql-module
+</code></pre></div></div>
+
+<p>Installing <code class="language-plaintext highlighter-rouge">AuraSqlModule</code> in your application module<code class="language-plaintext highlighter-rouge">src/Module/AppModule.php</code>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">use</span> <span class="nc">BEAR\Package\AbstractAppModule</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">BEAR\AppMeta\AppMeta</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">BEAR\Package\PackageModule</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">Ray\AuraSqlModule\AuraSqlModule</span><span class="p">;</span> <span class="c1">// add this line</span>
+
+<span class="kd">class</span> <span class="nc">AppModule</span> <span class="kd">extends</span> <span class="nc">AbstractAppModule</span>
+<span class="p">{</span>
+    <span class="k">protected</span> <span class="k">function</span> <span class="n">configure</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="c1">// ...</span>
+        <span class="c1">// Add the below install method call and contents</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">install</span><span class="p">(</span>
+            <span class="k">new</span> <span class="nc">AuraSqlModule</span><span class="p">(</span>
+                <span class="s1">'mysql:host=localhost;dbname=test'</span><span class="p">,</span>
+                <span class="s1">'username'</span><span class="p">,</span>
+                <span class="s1">'password'</span><span class="p">,</span>
+                <span class="c1">// $options,</span>
+                <span class="c1">// $attributes</span>
+            <span class="p">)</span>
+        <span class="p">);</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">install</span><span class="p">(</span><span class="k">new</span> <span class="nc">PackageModule</span><span class="p">));</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Now the <code class="language-plaintext highlighter-rouge">DI</code> bindings are ready. The db object will be injected via a constructor or the <code class="language-plaintext highlighter-rouge">AuraSqlInject</code> setter trait.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">use</span> <span class="nc">Aura\Sql\ExtendedPdoInterface</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">Index</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">__construct</span><span class="p">(</span><span class="kt">ExtendedPdoInterface</span> <span class="nv">$pdo</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">pdo</span><span class="p">;</span> <span class="c1">// \Aura\Sql\ExtendedPdo</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">use</span> <span class="nc">Ray\AuraSqlModule\AuraSqlInject</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">Index</span>
+<span class="p">{</span>
+    <span class="kn">use</span> <span class="nc">AuraSqlInject</span><span class="p">;</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onGet</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">pdo</span><span class="p">;</span> <span class="c1">// \Aura\Sql\ExtendedPdo</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">Ray.AuraSqlModule</code> contains <a href="https://github.com/auraphp/Aura.SqlQuery">Aura.SqlQuery</a> to help you build sql queries.
+<a href="https://github.com/auraphp/Aura.SqlQuery">Aura.SqlQuery</a> also have other useful methods like <a href="https://github.com/auraphp/Aura.Sql/tree/2.x#array-quoting">Array Quoting</a>, <a href="https://github.com/auraphp/Aura.Sql/tree/2.x#new-yield-methods">fetch<em>()](https://github.com/auraphp/Aura.Sql/tree/2.x#new-fetch-methods), [perform()](https://github.com/auraphp/Aura.Sql/tree/2.x#the-perform-method) and [yield</em>()</a> that you can use for your needs, please check their documentation.</p>
+
+<h2 id="replication">Replication</h2>
+
+<p>To automatically perform master / slave connection, specify the IP of the slave DB as the fourth argument.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">install</span><span class="p">(</span>
+  <span class="k">new</span> <span class="nc">AuraSqlModule</span><span class="p">(</span>
+    <span class="s1">'mysql:host=localhost;dbname=test'</span><span class="p">,</span>
+    <span class="s1">'username'</span><span class="p">,</span>
+    <span class="s1">'password'</span><span class="p">,</span>
+    <span class="s1">'slave1,slave2'</span> <span class="c1">// specify slave IP as a comma separated value</span>
+  <span class="p">)</span>
+<span class="p">);</span>
+</code></pre></div></div>
+
+<p>You will now have a slave db connection when using HTTP GET, or a master db connection in other HTTP methods.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">use</span> <span class="nc">Aura\Sql\ExtendedPdoInterface</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">BEAR\Resource\ResourceObject</span><span class="p">;</span>
+<span class="kn">use</span> <span class="no">PDO</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">User</span> <span class="kd">extends</span> <span class="nc">ResourceObject</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="nv">$pdo</span><span class="p">;</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="n">__construct</span><span class="p">(</span><span class="kt">ExtendedPdoInterface</span> <span class="nv">$pdo</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">pdo</span> <span class="o">=</span> <span class="nv">$pdo</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onGet</span><span class="p">()</span>
+    <span class="p">{</span>
+         <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">pdo</span><span class="p">;</span> <span class="c1">// slave db</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onPost</span><span class="p">(</span><span class="nv">$todo</span><span class="p">)</span>
+    <span class="p">{</span>
+         <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">pdo</span><span class="p">;</span> <span class="c1">// master db</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">$this-&gt;pdo</code> is overwritten if the method is annotated with<code class="language-plaintext highlighter-rouge">@ReadOnlyConnection</code> or<code class="language-plaintext highlighter-rouge">@WriteConnection</code>. The master / slave db connection corresponds to the annotation.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">use</span> <span class="nc">Ray\AuraSqlModule\Annotation\ReadOnlyConnection</span><span class="p">;</span>  <span class="c1">// important</span>
+<span class="kn">use</span> <span class="nc">Ray\AuraSqlModule\Annotation\WriteConnection</span><span class="p">;</span>     <span class="c1">// important</span>
+
+<span class="kd">class</span> <span class="nc">User</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="nv">$pdo</span><span class="p">;</span> <span class="c1">// override when @ReadOnlyConnection or @WriteConnection annotated method called</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onPost</span><span class="p">(</span><span class="nv">$todo</span><span class="p">)</span>
+    <span class="p">{</span>
+         <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">read</span><span class="p">();</span>
+    <span class="p">}</span>
+
+    <span class="cd">/**
+     * @ReadOnlyConnection
+     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">read</span><span class="p">()</span>
+    <span class="p">{</span>
+         <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">pdo</span><span class="p">;</span> <span class="c1">// slave db</span>
+    <span class="p">}</span>
+
+    <span class="cd">/**
+     * @WriteConnection
+     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">write</span><span class="p">()</span>
+    <span class="p">{</span>
+         <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">pdo</span><span class="p">;</span> <span class="c1">// master db</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="connect-to-multiple-databases">Connect to multiple databases</h2>
+
+<p>To receive multiple <code class="language-plaintext highlighter-rouge">PdoExtendedInterface</code> objects with different connection destinations, use <code class="language-plaintext highlighter-rouge">@Named</code> annotation.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cd">/**
+ * @Inject
+ * @Named("log_db")
+ */</span>
+<span class="k">public</span> <span class="k">function</span> <span class="n">setLoggerDb</span><span class="p">(</span><span class="kt">ExtendedPdoInterface</span> <span class="nv">$pdo</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="c1">// ...</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Specify an identifier with <code class="language-plaintext highlighter-rouge">NamedPdoModule</code> and bind it.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">install</span><span class="p">(</span><span class="k">new</span> <span class="nc">NamedPdoModule</span><span class="p">(</span><span class="s1">'log_db'</span><span class="p">,</span> <span class="s1">'mysql:host=localhost;dbname=log'</span><span class="p">,</span> <span class="s1">'username'</span><span class="p">,</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">install</span><span class="p">(</span><span class="k">new</span> <span class="nc">NamedPdoModule</span><span class="p">(</span><span class="s1">'job_db'</span><span class="p">,</span> <span class="s1">'mysql:host=localhost;dbname=job'</span><span class="p">,</span> <span class="s1">'username'</span><span class="p">,</span>
+</code></pre></div></div>
+
+<p>In the module, you specify an identifier in <code class="language-plaintext highlighter-rouge">NamedPdoModule</code> and bind it.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">install</span><span class="p">(</span>
+  <span class="k">new</span> <span class="nc">NamedPdoModule</span><span class="p">(</span>
+    <span class="s1">'log_db'</span><span class="p">,</span> <span class="c1">// Type of database specified by @Named</span>
+    <span class="s1">'mysql:host=localhost;dbname=log'</span><span class="p">,</span>
+    <span class="s1">'username'</span><span class="p">,</span>
+    <span class="s1">'pass'</span><span class="p">,</span>
+    <span class="s1">'slave1,slave2'</span> <span class="c1">// specify slave IP as a comma separated value</span>
+  <span class="p">)</span>
+<span class="p">);</span>
+</code></pre></div></div>
+
+<h2 id="transactions">Transactions</h2>
+
+<p>Using the <code class="language-plaintext highlighter-rouge">@Transactional</code> annotation wraps methods with a transaction.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">use</span> <span class="nc">Ray\AuraSqlModule\Annotation\Transactional</span><span class="p">;</span>
+
+<span class="c1">// ....</span>
+    <span class="cd">/**
+     * @Transactional
+     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">write</span><span class="p">()</span>
+    <span class="p">{</span>
+         <span class="c1">// \Ray\AuraSqlModule\Exception\RollbackException thrown if it failed.</span>
+    <span class="p">}</span>
+</code></pre></div></div>
+
+<p>To do transactions on multiple connected databases, specify properties in the <code class="language-plaintext highlighter-rouge">@Transactional</code> annotation.
+If not specified, it becomes <code class="language-plaintext highlighter-rouge">{"pdo"}</code>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cd">/**
+ * @Transactional({"pdo", "userDb"})
+ */</span>
+<span class="k">public</span> <span class="k">function</span> <span class="n">write</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p>It is run as follows.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$this</span><span class="o">-&gt;</span><span class="n">pdo</span><span class="o">-&gt;</span><span class="nf">beginTransaction</span><span class="p">()</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="n">userDb</span><span class="o">-&gt;</span><span class="nf">beginTransaction</span><span class="p">()</span>
+
+<span class="c1">// ...</span>
+
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="n">pdo</span><span class="o">-&gt;</span><span class="nf">commit</span><span class="p">();</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="n">userDb</span><span class="o">-&gt;</span><span class="nf">commit</span><span class="p">();</span>
+</code></pre></div></div>
+
+<h2 id="aurasqlquery">Aura.SqlQuery</h2>
+
+<p><a href="https://github.com/auraphp/Aura.Sql">Aura.Sql</a> is an extension of PDO. <a href="https://github.com/auraphp/Aura.SqlQuery">Aura.SqlQuery</a> provides database-specific SQL builder for MySQL, Postgres, SQLite or Microsoft SQL Server.</p>
+
+<p>Specify the database and install it with the application module <code class="language-plaintext highlighter-rouge">src/Module/AppModule.php</code>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// ...</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">install</span><span class="p">(</span><span class="k">new</span> <span class="nc">AuraSqlQueryModule</span><span class="p">(</span><span class="s1">'mysql'</span><span class="p">));</span> <span class="c1">// pgsql, sqlite, or sqlsrv</span>
+</code></pre></div></div>
+
+<h3 id="select">SELECT</h3>
+
+<p>The resource receives the DB Query Builder object and constructs a SELECT query using the following methods.
+You can also call the method multiple times in any order.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">use</span> <span class="nc">Ray\AuraSqlModule\AuraSqlInject</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">Ray\AuraSqlModule\AuraSqlSelectInject</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">User</span> <span class="n">extend</span> <span class="nc">ResourceObject</span>
+<span class="p">{</span>
+    <span class="kn">use</span> <span class="nc">AuraSqlInject</span><span class="p">;</span>
+    <span class="kn">use</span> <span class="nc">AuraSqlSelectInject</span><span class="p">;</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onGet</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">select</span>
+            <span class="o">-&gt;</span><span class="nf">distinct</span><span class="p">()</span>                    <span class="c1">// SELECT DISTINCT</span>
+            <span class="o">-&gt;</span><span class="nf">cols</span><span class="p">([</span>                        <span class="c1">// select these columns</span>
+                <span class="s1">'id'</span><span class="p">,</span>                       <span class="c1">// column name</span>
+                <span class="s1">'name AS namecol'</span><span class="p">,</span>          <span class="c1">// one way of aliasing</span>
+                <span class="s1">'col_name'</span> <span class="o">=&gt;</span> <span class="s1">'col_alias'</span><span class="p">,</span>  <span class="c1">// another way of aliasing</span>
+                <span class="s1">'COUNT(foo) AS foo_count'</span>   <span class="c1">// embed calculations directly</span>
+            <span class="p">])</span>
+            <span class="o">-&gt;</span><span class="nf">from</span><span class="p">(</span><span class="s1">'foo AS f'</span><span class="p">)</span>              <span class="c1">// FROM these tables</span>
+            <span class="o">-&gt;</span><span class="nf">fromSubselect</span><span class="p">(</span>                <span class="c1">// FROM sub-select AS my_sub</span>
+                <span class="s1">'SELECT ...'</span><span class="p">,</span>
+                <span class="s1">'my_sub'</span>
+            <span class="p">)</span>
+            <span class="o">-&gt;</span><span class="nb">join</span><span class="p">(</span>                         <span class="c1">// JOIN ...</span>
+                <span class="s1">'LEFT'</span><span class="p">,</span>                     <span class="c1">// left/inner/natural/etc</span>
+                <span class="s1">'doom AS d'</span>                 <span class="c1">// this table name</span>
+                <span class="s1">'foo.id = d.foo_id'</span>         <span class="c1">// ON these conditions</span>
+            <span class="p">)</span>
+            <span class="o">-&gt;</span><span class="nf">joinSubSelect</span><span class="p">(</span>                <span class="c1">// JOIN to a sub-select</span>
+                <span class="s1">'INNER'</span><span class="p">,</span>                    <span class="c1">// left/inner/natural/etc</span>
+                <span class="s1">'SELECT ...'</span><span class="p">,</span>               <span class="c1">// the subselect to join on</span>
+                <span class="s1">'subjoin'</span>                   <span class="c1">// AS this name</span>
+                <span class="s1">'sub.id = foo.id'</span>           <span class="c1">// ON these conditions</span>
+            <span class="p">)</span>
+            <span class="o">-&gt;</span><span class="nf">where</span><span class="p">(</span><span class="s1">'bar &gt; :bar'</span><span class="p">)</span>           <span class="c1">// AND WHERE these conditions</span>
+            <span class="o">-&gt;</span><span class="nf">where</span><span class="p">(</span><span class="s1">'zim = ?'</span><span class="p">,</span> <span class="s1">'zim_val'</span><span class="p">)</span>   <span class="c1">// bind 'zim_val' to the ? placeholder</span>
+            <span class="o">-&gt;</span><span class="nf">orWhere</span><span class="p">(</span><span class="s1">'baz &lt; :baz'</span><span class="p">)</span>         <span class="c1">// OR WHERE these conditions</span>
+            <span class="o">-&gt;</span><span class="nf">groupBy</span><span class="p">([</span><span class="s1">'dib'</span><span class="p">])</span>              <span class="c1">// GROUP BY these columns</span>
+            <span class="o">-&gt;</span><span class="nf">having</span><span class="p">(</span><span class="s1">'foo = :foo'</span><span class="p">)</span>          <span class="c1">// AND HAVING these conditions</span>
+            <span class="o">-&gt;</span><span class="nf">having</span><span class="p">(</span><span class="s1">'bar &gt; ?'</span><span class="p">,</span> <span class="s1">'bar_val'</span><span class="p">)</span>  <span class="c1">// bind 'bar_val' to the ? placeholder</span>
+            <span class="o">-&gt;</span><span class="nf">orHaving</span><span class="p">(</span><span class="s1">'baz &lt; :baz'</span><span class="p">)</span>        <span class="c1">// OR HAVING these conditions</span>
+            <span class="o">-&gt;</span><span class="nf">orderBy</span><span class="p">([</span><span class="s1">'baz'</span><span class="p">])</span>              <span class="c1">// ORDER BY these columns</span>
+            <span class="o">-&gt;</span><span class="nf">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>                     <span class="c1">// LIMIT 10</span>
+            <span class="o">-&gt;</span><span class="nf">offset</span><span class="p">(</span><span class="mi">40</span><span class="p">)</span>                    <span class="c1">// OFFSET 40</span>
+            <span class="o">-&gt;</span><span class="nf">forUpdate</span><span class="p">()</span>                   <span class="c1">// FOR UPDATE</span>
+            <span class="o">-&gt;</span><span class="nf">union</span><span class="p">()</span>                       <span class="c1">// UNION with a followup SELECT</span>
+            <span class="o">-&gt;</span><span class="nf">unionAll</span><span class="p">()</span>                    <span class="c1">// UNION ALL with a followup SELECT</span>
+            <span class="o">-&gt;</span><span class="nf">bindValue</span><span class="p">(</span><span class="s1">'foo'</span><span class="p">,</span> <span class="s1">'foo_val'</span><span class="p">)</span>   <span class="c1">// bind one value to a placeholder</span>
+            <span class="o">-&gt;</span><span class="nf">bindValues</span><span class="p">([</span>                  <span class="c1">// bind these values to named placeholders</span>
+                <span class="s1">'bar'</span> <span class="o">=&gt;</span> <span class="s1">'bar_val'</span><span class="p">,</span>
+                <span class="s1">'baz'</span> <span class="o">=&gt;</span> <span class="s1">'baz_val'</span><span class="p">,</span>
+            <span class="p">]);</span>
+
+        <span class="nv">$sth</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">pdo</span><span class="o">-&gt;</span><span class="nf">prepare</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="n">select</span><span class="o">-&gt;</span><span class="nf">getStatement</span><span class="p">());</span>
+
+        <span class="c1">// bind the values and execute</span>
+        <span class="nv">$sth</span><span class="o">-&gt;</span><span class="nf">execute</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="n">select</span><span class="o">-&gt;</span><span class="nf">getBindValues</span><span class="p">());</span>
+        <span class="nv">$result</span> <span class="o">=</span> <span class="nv">$sth</span><span class="o">-&gt;</span><span class="nf">fetch</span><span class="p">(</span><span class="err">\</span><span class="no">PDO</span><span class="o">::</span><span class="no">FETCH_ASSOC</span><span class="p">);</span>
+        <span class="c1">// or</span>
+        <span class="c1">// $result = $this-&gt;pdo-&gt;fetchAssoc($stm, $bind);</span>
+</code></pre></div></div>
+
+<p>The created queries are queried as strings with the <code class="language-plaintext highlighter-rouge">getStatement()</code>.</p>
+
+<h3 id="insert">INSERT</h3>
+
+<h3 id="single-row-insert">Single row INSERT</h3>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">use</span> <span class="nc">Ray\AuraSqlModule\AuraSqlInject</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">Ray\AuraSqlModule\AuraSqlInsertInject</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">User</span> <span class="n">extend</span> <span class="nc">ResourceObject</span>
+<span class="p">{</span>
+    <span class="kn">use</span> <span class="nc">AuraSqlInject</span><span class="p">;</span>
+    <span class="kn">use</span> <span class="nc">AuraSqlInsertInject</span><span class="p">;</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onPost</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">insert</span>
+            <span class="o">-&gt;</span><span class="nf">into</span><span class="p">(</span><span class="s1">'foo'</span><span class="p">)</span>                   <span class="c1">// INTO this table</span>
+            <span class="o">-&gt;</span><span class="nf">cols</span><span class="p">([</span>                        <span class="c1">// bind values as "(col) VALUES (:col)"</span>
+                <span class="s1">'bar'</span><span class="p">,</span>
+                <span class="s1">'baz'</span><span class="p">,</span>
+            <span class="p">])</span>
+            <span class="o">-&gt;</span><span class="nf">set</span><span class="p">(</span><span class="s1">'ts'</span><span class="p">,</span> <span class="s1">'NOW()'</span><span class="p">)</span>            <span class="c1">// raw value as "(ts) VALUES (NOW())"</span>
+            <span class="o">-&gt;</span><span class="nf">bindValue</span><span class="p">(</span><span class="s1">'foo'</span><span class="p">,</span> <span class="s1">'foo_val'</span><span class="p">)</span>   <span class="c1">// bind one value to a placeholder</span>
+            <span class="o">-&gt;</span><span class="nf">bindValues</span><span class="p">([</span>                  <span class="c1">// bind these values</span>
+                <span class="s1">'bar'</span> <span class="o">=&gt;</span> <span class="s1">'foo'</span><span class="p">,</span>
+                <span class="s1">'baz'</span> <span class="o">=&gt;</span> <span class="s1">'zim'</span><span class="p">,</span>
+            <span class="p">]);</span>
+
+        <span class="nv">$sth</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">pdo</span><span class="o">-&gt;</span><span class="nf">prepare</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="n">insert</span><span class="o">-&gt;</span><span class="nf">getStatement</span><span class="p">());</span>
+        <span class="nv">$sth</span><span class="o">-&gt;</span><span class="nf">execute</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="n">insert</span><span class="o">-&gt;</span><span class="nf">getBindValues</span><span class="p">());</span>
+        <span class="c1">// or</span>
+        <span class="c1">// $sth = $this-&gt;pdo-&gt;perform($this-&gt;insert-&gt;getStatement(), this-&gt;insert-&gt;getBindValues());</span>
+
+        <span class="c1">// get the last insert ID</span>
+        <span class="nv">$name</span> <span class="o">=</span> <span class="nv">$insert</span><span class="o">-&gt;</span><span class="nf">getLastInsertIdName</span><span class="p">(</span><span class="s1">'id'</span><span class="p">);</span>
+        <span class="nv">$id</span> <span class="o">=</span> <span class="nv">$pdo</span><span class="o">-&gt;</span><span class="nf">lastInsertId</span><span class="p">(</span><span class="nv">$name</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>The <code class="language-plaintext highlighter-rouge">cols()</code> method allows you to pass an array of key-value pairs where the key is the column name and the value is a bind value (not a raw value).</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code>        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">insert</span>
+            <span class="o">-&gt;</span><span class="nf">into</span><span class="p">(</span><span class="s1">'foo'</span><span class="p">)</span>                   <span class="c1">// insert into this table</span>
+            <span class="o">-&gt;</span><span class="nf">cols</span><span class="p">([</span>                        <span class="c1">// insert these columns and bind these values</span>
+                <span class="s1">'foo'</span> <span class="o">=&gt;</span> <span class="s1">'foo_value'</span><span class="p">,</span>
+                <span class="s1">'bar'</span> <span class="o">=&gt;</span> <span class="s1">'bar_value'</span><span class="p">,</span>
+                <span class="s1">'baz'</span> <span class="o">=&gt;</span> <span class="s1">'baz_value'</span><span class="p">,</span>
+            <span class="p">]);</span>
+</code></pre></div></div>
+
+<h3 id="multi-line-insert">Multi-line INSERT</h3>
+
+<p>To do a multiple row INSERT, use the <code class="language-plaintext highlighter-rouge">addRow ()</code> method at the end of the first line. Then build the following query.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code>        <span class="c1">// insert into this table</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">insert</span><span class="o">-&gt;</span><span class="nf">into</span><span class="p">(</span><span class="s1">'foo'</span><span class="p">);</span>
+
+        <span class="c1">// set up the first row</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">insert</span><span class="o">-&gt;</span><span class="nf">cols</span><span class="p">([</span>
+            <span class="s1">'bar'</span> <span class="o">=&gt;</span> <span class="s1">'bar-0'</span><span class="p">,</span>
+            <span class="s1">'baz'</span> <span class="o">=&gt;</span> <span class="s1">'baz-0'</span>
+        <span class="p">]);</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">insert</span><span class="o">-&gt;</span><span class="nf">set</span><span class="p">(</span><span class="s1">'ts'</span><span class="p">,</span> <span class="s1">'NOW()'</span><span class="p">);</span>
+
+        <span class="c1">// set up the second row. the columns here are in a different order</span>
+        <span class="c1">// than in the first row, but it doesn't matter; the INSERT object</span>
+        <span class="c1">// keeps track and builds them the same order as the first row.</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">insert</span><span class="o">-&gt;</span><span class="nf">addRow</span><span class="p">();</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">insert</span><span class="o">-&gt;</span><span class="nf">set</span><span class="p">(</span><span class="s1">'ts'</span><span class="p">,</span> <span class="s1">'NOW()'</span><span class="p">);</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">insert</span><span class="o">-&gt;</span><span class="nf">cols</span><span class="p">([</span>
+            <span class="s1">'bar'</span> <span class="o">=&gt;</span> <span class="s1">'bar-1'</span><span class="p">,</span>
+            <span class="s1">'baz'</span> <span class="o">=&gt;</span> <span class="s1">'baz-1'</span>
+        <span class="p">]);</span>
+
+        <span class="c1">// set up further rows ...</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">insert</span><span class="o">-&gt;</span><span class="nf">addRow</span><span class="p">();</span>
+        <span class="c1">// ...</span>
+
+        <span class="c1">// execute a bulk insert of all rows</span>
+        <span class="nv">$sth</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">pdo</span><span class="o">-&gt;</span><span class="nf">prepare</span><span class="p">(</span><span class="nv">$insert</span><span class="o">-&gt;</span><span class="nf">getStatement</span><span class="p">());</span>
+        <span class="nv">$sth</span><span class="o">-&gt;</span><span class="nf">execute</span><span class="p">(</span><span class="nv">$insert</span><span class="o">-&gt;</span><span class="nf">getBindValues</span><span class="p">());</span>
+
+</code></pre></div></div>
+
+<blockquote>
+  <p>Note: If you try to add a row without specifying the value of the first column in the first row, an exception will be thrown.
+Passing an associative array of columns to <code class="language-plaintext highlighter-rouge">addRow()</code> will be used on the next line. That is, you can not specify <code class="language-plaintext highlighter-rouge">col()</code> or <code class="language-plaintext highlighter-rouge">cols()</code> on the first line.</p>
+</blockquote>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code>        <span class="c1">// set up the first row</span>
+        <span class="nv">$insert</span><span class="o">-&gt;</span><span class="nf">addRow</span><span class="p">([</span>
+            <span class="s1">'bar'</span> <span class="o">=&gt;</span> <span class="s1">'bar-0'</span><span class="p">,</span>
+            <span class="s1">'baz'</span> <span class="o">=&gt;</span> <span class="s1">'baz-0'</span>
+        <span class="p">]);</span>
+        <span class="nv">$insert</span><span class="o">-&gt;</span><span class="nf">set</span><span class="p">(</span><span class="s1">'ts'</span><span class="p">,</span> <span class="s1">'NOW()'</span><span class="p">);</span>
+
+        <span class="c1">// set up the second row</span>
+        <span class="nv">$insert</span><span class="o">-&gt;</span><span class="nf">addRow</span><span class="p">([</span>
+            <span class="s1">'bar'</span> <span class="o">=&gt;</span> <span class="s1">'bar-1'</span><span class="p">,</span>
+            <span class="s1">'baz'</span> <span class="o">=&gt;</span> <span class="s1">'baz-1'</span>
+        <span class="p">]);</span>
+        <span class="nv">$insert</span><span class="o">-&gt;</span><span class="nf">set</span><span class="p">(</span><span class="s1">'ts'</span><span class="p">,</span> <span class="s1">'NOW()'</span><span class="p">);</span>
+
+        <span class="c1">// etc.</span>
+</code></pre></div></div>
+
+<p>You can also set the database at once using <code class="language-plaintext highlighter-rouge">addRows()</code>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code>        <span class="nv">$rows</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="p">[</span>
+                <span class="s1">'bar'</span> <span class="o">=&gt;</span> <span class="s1">'bar-0'</span><span class="p">,</span>
+                <span class="s1">'baz'</span> <span class="o">=&gt;</span> <span class="s1">'baz-0'</span>
+            <span class="p">],</span>
+            <span class="p">[</span>
+                <span class="s1">'bar'</span> <span class="o">=&gt;</span> <span class="s1">'bar-1'</span><span class="p">,</span>
+                <span class="s1">'baz'</span> <span class="o">=&gt;</span> <span class="s1">'baz-1'</span>
+            <span class="p">],</span>
+        <span class="p">];</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">insert</span><span class="o">-&gt;</span><span class="nf">addRows</span><span class="p">(</span><span class="nv">$rows</span><span class="p">);</span>
+</code></pre></div></div>
+
+<h3 id="update">UPDATE</h3>
+<p>Use the following methods to construct an UPDATE query. You can also call the method multiple times in any order.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code>        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">update</span>
+            <span class="o">-&gt;</span><span class="nf">table</span><span class="p">(</span><span class="s1">'foo'</span><span class="p">)</span>                  <span class="c1">// update this table</span>
+            <span class="o">-&gt;</span><span class="nf">cols</span><span class="p">([</span>                        <span class="c1">// bind values as "SET bar = :bar"</span>
+                <span class="s1">'bar'</span><span class="p">,</span>
+                <span class="s1">'baz'</span><span class="p">,</span>
+            <span class="p">])</span>
+            <span class="o">-&gt;</span><span class="nf">set</span><span class="p">(</span><span class="s1">'ts'</span><span class="p">,</span> <span class="s1">'NOW()'</span><span class="p">)</span>            <span class="c1">// raw value as "(ts) VALUES (NOW())"</span>
+            <span class="o">-&gt;</span><span class="nf">where</span><span class="p">(</span><span class="s1">'zim = :zim'</span><span class="p">)</span>           <span class="c1">// AND WHERE these conditions</span>
+            <span class="o">-&gt;</span><span class="nf">where</span><span class="p">(</span><span class="s1">'gir = ?'</span><span class="p">,</span> <span class="s1">'doom'</span><span class="p">)</span>      <span class="c1">// bind this value to the condition</span>
+            <span class="o">-&gt;</span><span class="nf">orWhere</span><span class="p">(</span><span class="s1">'gir = :gir'</span><span class="p">)</span>         <span class="c1">// OR WHERE these conditions</span>
+            <span class="o">-&gt;</span><span class="nf">bindValue</span><span class="p">(</span><span class="s1">'bar'</span><span class="p">,</span> <span class="s1">'bar_val'</span><span class="p">)</span>   <span class="c1">// bind one value to a placeholder</span>
+            <span class="o">-&gt;</span><span class="nf">bindValues</span><span class="p">([</span>                  <span class="c1">// bind these values to the query</span>
+                <span class="s1">'baz'</span> <span class="o">=&gt;</span> <span class="mi">99</span><span class="p">,</span>
+                <span class="s1">'zim'</span> <span class="o">=&gt;</span> <span class="s1">'dib'</span><span class="p">,</span>
+                <span class="s1">'gir'</span> <span class="o">=&gt;</span> <span class="s1">'doom'</span><span class="p">,</span>
+            <span class="p">]);</span>
+        <span class="nv">$sth</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">pdo</span><span class="o">-&gt;</span><span class="nf">prepare</span><span class="p">(</span><span class="nv">$update</span><span class="o">-&gt;</span><span class="nf">getStatement</span><span class="p">())</span>
+        <span class="nv">$sth</span><span class="o">-&gt;</span><span class="nf">execute</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="n">update</span><span class="o">-&gt;</span><span class="nf">getBindValues</span><span class="p">());</span>
+        <span class="c1">// or</span>
+        <span class="c1">// $sth = $this-&gt;pdo-&gt;perform($this-&gt;update-&gt;getStatement(), $this-&gt;update-&gt;getBindValues());</span>
+</code></pre></div></div>
+
+<p>You can also pass an associative array to <code class="language-plaintext highlighter-rouge">cols()</code> with the key as the column name and the value as the bound value (not the RAW value).</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+        <span class="nv">$this</span><span class="o">-</span><span class="n">update</span><span class="o">-&gt;</span><span class="nf">table</span><span class="p">(</span><span class="s1">'foo'</span><span class="p">)</span>          <span class="c1">// update this table</span>
+            <span class="o">-&gt;</span><span class="nf">cols</span><span class="p">([</span>                        <span class="c1">// update these columns and bind these values</span>
+                <span class="s1">'foo'</span> <span class="o">=&gt;</span> <span class="s1">'foo_value'</span><span class="p">,</span>
+                <span class="s1">'bar'</span> <span class="o">=&gt;</span> <span class="s1">'bar_value'</span><span class="p">,</span>
+                <span class="s1">'baz'</span> <span class="o">=&gt;</span> <span class="s1">'baz_value'</span><span class="p">,</span>
+            <span class="p">]);</span>
+<span class="cp">?&gt;</span>
+</code></pre></div></div>
+
+<h3 id="delete">DELETE</h3>
+<p>Use the following methods to construct a DELETE query. You can also call the method multiple times in any order.</p>
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code>        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">delete</span>
+            <span class="o">-&gt;</span><span class="nf">from</span><span class="p">(</span><span class="s1">'foo'</span><span class="p">)</span>                   <span class="c1">// FROM this table</span>
+            <span class="o">-&gt;</span><span class="nf">where</span><span class="p">(</span><span class="s1">'zim = :zim'</span><span class="p">)</span>           <span class="c1">// AND WHERE these conditions</span>
+            <span class="o">-&gt;</span><span class="nf">where</span><span class="p">(</span><span class="s1">'gir = ?'</span><span class="p">,</span> <span class="s1">'doom'</span><span class="p">)</span>      <span class="c1">// bind this value to the condition</span>
+            <span class="o">-&gt;</span><span class="nf">orWhere</span><span class="p">(</span><span class="s1">'gir = :gir'</span><span class="p">)</span>         <span class="c1">// OR WHERE these conditions</span>
+            <span class="o">-&gt;</span><span class="nf">bindValue</span><span class="p">(</span><span class="s1">'bar'</span><span class="p">,</span> <span class="s1">'bar_val'</span><span class="p">)</span>   <span class="c1">// bind one value to a placeholder</span>
+            <span class="o">-&gt;</span><span class="nf">bindValues</span><span class="p">([</span>                  <span class="c1">// bind these values to the query</span>
+                <span class="s1">'baz'</span> <span class="o">=&gt;</span> <span class="mi">99</span><span class="p">,</span>
+                <span class="s1">'zim'</span> <span class="o">=&gt;</span> <span class="s1">'dib'</span><span class="p">,</span>
+                <span class="s1">'gir'</span> <span class="o">=&gt;</span> <span class="s1">'doom'</span><span class="p">,</span>
+            <span class="p">]);</span>
+        <span class="nv">$sth</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">pdo</span><span class="o">-&gt;</span><span class="nf">prepare</span><span class="p">(</span><span class="nv">$update</span><span class="o">-&gt;</span><span class="nf">getStatement</span><span class="p">())</span>
+        <span class="nv">$sth</span><span class="o">-&gt;</span><span class="nf">execute</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="n">delete</span><span class="o">-&gt;</span><span class="nf">getBindValues</span><span class="p">());</span>
+</code></pre></div></div>
+
+<h3 id="pagination">Pagination</h3>
+
+<p><a href="https://packagist.org/packages/ray/aura-sql-module">ray/aura-sql-module</a> supports pagination (page splitting) in both Ray.Sql raw SQL and Ray.AuraSqlQuery query builder.
+We create a pager using the <code class="language-plaintext highlighter-rouge">newInstance()</code> with a uri_template, binding values and the number of items per page. You can access the page by $page[$number].</p>
+
+<h3 id="aurasql-1">Aura.Sql</h3>
+<p>AuraSqlPagerFactoryInterface</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/* @var $factory \Ray\AuraSqlModule\Pagerfanta\AuraSqlPagerFactoryInterface */</span>
+<span class="nv">$pager</span> <span class="o">=</span> <span class="nv">$factory</span><span class="o">-&gt;</span><span class="nf">newInstance</span><span class="p">(</span><span class="nv">$pdo</span><span class="p">,</span> <span class="nv">$sql</span><span class="p">,</span> <span class="nv">$params</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="s1">'/?page={page}&amp;category=sports'</span><span class="p">);</span> <span class="c1">// 10 items per page</span>
+<span class="nv">$page</span> <span class="o">=</span> <span class="nv">$pager</span><span class="p">[</span><span class="mi">2</span><span class="p">];</span> <span class="c1">// page 2</span>
+<span class="cm">/* @var $page \Ray\AuraSqlModule\Pagerfanta\Page */</span>
+<span class="c1">// $page-&gt;data // sliced data (array|\Traversable)</span>
+<span class="c1">// $page-&gt;current; (int)</span>
+<span class="c1">// $page-&gt;total (int)</span>
+<span class="c1">// $page-&gt;hasNext (bool)</span>
+<span class="c1">// $page-&gt;hasPrevious (bool)</span>
+<span class="c1">// $page-&gt;maxPerPage; (int)</span>
+<span class="c1">// (string) $page // pager html (string)</span>
+</code></pre></div></div>
+
+<h2 id="aurasqlquery-1">Aura.SqlQuery</h2>
+<p>AuraSqlQueryPagerFactoryInterface</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// for Select</span>
+<span class="cm">/* @var $factory \Ray\AuraSqlModule\Pagerfanta\AuraSqlQueryPagerFactoryInterface */</span>
+<span class="nv">$pager</span> <span class="o">=</span> <span class="nv">$factory</span><span class="o">-&gt;</span><span class="nf">newInstance</span><span class="p">(</span><span class="nv">$pdo</span><span class="p">,</span> <span class="nv">$select</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="s1">'/?page={page}&amp;category=sports'</span><span class="p">);</span>
+<span class="nv">$page</span> <span class="o">=</span> <span class="nv">$pager</span><span class="p">[</span><span class="mi">2</span><span class="p">];</span> <span class="c1">// page 2</span>
+<span class="cm">/* @var $page \Ray\AuraSqlModule\Pagerfanta\Page */</span>
+</code></pre></div></div>
+<blockquote>
+  <p>Note: Although the Aura.Sql edits the raw SQL directly, it currently only supports the MySQL LIMIT clause format.</p>
+</blockquote>
+
+<p><code class="language-plaintext highlighter-rouge">$page</code> is iterable.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">foreach</span> <span class="p">(</span><span class="nv">$page</span> <span class="k">as</span> <span class="nv">$row</span><span class="p">)</span> <span class="p">{</span>
+ <span class="c1">// Process each row</span>
+<span class="p">}</span>
+</code></pre></div></div>
+<p>To change the pager HTML template, change the binding of <code class="language-plaintext highlighter-rouge">TemplateInterface</code>.
+For details about templates, please see <a href="https://github.com/whiteoctober/Pagerfanta#views">Pagerfanta</a>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">use</span> <span class="nc">Pagerfanta\View\Template\TemplateInterface</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">Pagerfanta\View\Template\TwitterBootstrap3Template</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">Ray\AuraSqlModule\Annotation\PagerViewOption</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">AppModule</span> <span class="kd">extends</span> <span class="nc">AbstractAppModule</span>
+<span class="p">{</span>
+    <span class="k">protected</span> <span class="k">function</span> <span class="n">configure</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="c1">// ...</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">bind</span><span class="p">(</span><span class="nc">TemplateInterface</span><span class="o">::</span><span class="n">class</span><span class="p">)</span><span class="o">-&gt;</span><span class="nf">to</span><span class="p">(</span><span class="nc">TwitterBootstrap3Template</span><span class="o">::</span><span class="n">class</span><span class="p">);</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">bind</span><span class="p">()</span><span class="o">-&gt;</span><span class="nf">annotatedWith</span><span class="p">(</span><span class="nc">PagerViewOption</span><span class="o">::</span><span class="n">class</span><span class="p">)</span><span class="o">-&gt;</span><span class="nf">toInstance</span><span class="p">(</span><span class="nv">$pagerViewOption</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="doctrine-dbal">Doctrine DBAL</h2>
+
+<p><a href="http://www.doctrine-project.org/projects/dbal.html">Doctrine DBAL</a> is also abstraction layer for database.</p>
+
+<p>Install <code class="language-plaintext highlighter-rouge">Ray.DbalModule</code> with composer.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>composer require ray/dbal-module
+</code></pre></div></div>
+
+<p>Install <code class="language-plaintext highlighter-rouge">DbalModule</code> in application module.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">use</span> <span class="nc">BEAR\Package\AbstractAppModule</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">Ray\DbalModule\DbalModule</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">AppModule</span> <span class="kd">extends</span> <span class="nc">AbstractAppModule</span>
+<span class="p">{</span>
+    <span class="k">protected</span> <span class="k">function</span> <span class="n">configure</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="c1">// ...</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">install</span><span class="p">(</span><span class="k">new</span> <span class="nc">DbalModule</span><span class="p">(</span><span class="s1">'driver=pdo_sqlite&amp;memory=true'</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>New DI bindings are now ready and <code class="language-plaintext highlighter-rouge">$this-&gt;db</code> can be injected with the <code class="language-plaintext highlighter-rouge">DbalInject</code> trait.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">use</span> <span class="nc">Ray\DbalModule\DbalInject</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">Index</span>
+<span class="p">{</span>
+    <span class="kn">use</span> <span class="nc">DbalInject</span><span class="p">;</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onGet</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">db</span><span class="p">;</span> <span class="c1">// \Doctrine\DBAL\Driver\Connection</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="connect-to-multiple-databases-1">Connect to multiple databases</h3>
+
+<p>To connect to multiple databases, specify the identifier as the second argument.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">install</span><span class="p">(</span><span class="k">new</span> <span class="nc">DbalModule</span><span class="p">(</span><span class="nv">$logDsn</span><span class="p">,</span> <span class="s1">'log_db'</span><span class="p">);</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">install</span><span class="p">(</span><span class="k">new</span> <span class="nc">DbalModule</span><span class="p">(</span><span class="nv">$jobDsn</span><span class="p">,</span> <span class="s1">'job_db'</span><span class="p">);</span>
+</code></pre></div></div>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cd">/**
+ * @Inject
+ * @Named("log_db")
+ */</span>
+<span class="k">public</span> <span class="k">function</span> <span class="n">setLogDb</span><span class="p">(</span><span class="kt">Connection</span> <span class="nv">$logDb</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p><a href="http://www.doctrine-project.org/api/dbal/2.0/class-Doctrine.DBAL.Connections.MasterSlaveConnection.html">MasterSlaveConnection</a> is provided for master/slave connections.</p>
+
+<h2 id="cakedb">CakeDb</h2>
+
+<p><strong>CakeDb</strong> is an ORM using the active record and data mapper pattern idea. It is the same as the one provided in CakePHP3.</p>
+
+<p>Install <code class="language-plaintext highlighter-rouge">Ray.CakeDbModule</code> with composer.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>composer require ray/cake-database-module ~1.0
+</code></pre></div></div>
+
+<p>Please refer to <a href="https://github.com/ray-di/Ray.CakeDbModule">Ray.CakeDbModule</a> for installation and refer to <a href="http://book.cakephp.org/3.0/en/orm.html">CakePHP3 Database Access &amp; ORM</a> for the ORM usage.</p>
+
+<p>Ray.CakeDbModule is provided by Jose (<a href="https://github.com/lorenzo">@lorenzo</a>) who developed the ORM of CakePHP3.</p>
+
+<h2 id="connection-settings">Connection settings</h2>
+
+<p>Use the <a href="https://github.com/vlucas/phpdotenv">phpdotenv</a> library etc. to set the connection according to the environment destination. Please see the <a href="https://github.com/BEARSunday/Ex.Package">Ex.Package</a> for implementation.</p>
+
+            </article>
+        </div>
+        <div id="ArticleToc" class="col-lg-2 d-none d-lg-block">
+            <nav class="nav side-bar-right"></nav>
+        </div>
+    </div>
+</main>
+<footer>
+    <div class="container d-md-flex">
+        <i class="bear-icon d-none d-lg-block"></i>
+        <small>
+            © 2011-2024 BEAR.Sunday
+        </small>
+        <ul class="navbar-nav flex-row ml-md-auto d-none d-md-flex">
+            <li>
+                <a href="https://gitter.im/bearsunday/BEAR.Sunday?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge">Gitter</a>
+            </li>
+            <li>
+                <a href="https://github.com/bearsunday/BEAR.Sunday">Github</a>
+            </li>
+            <li>
+                <a href="https://twitter.com/BEARSunday">Twitter</a>
+            </li>
+            <li>
+                <a href="https://www.facebook.com/pages/BEARSunday/110116939178462?ref=hl">Facebook</a>
+            </li>
+            <li>
+                <a href="http://koriym.github.io/">Blog (JA)</a>
+            </li>
+            <li>
+                <a href="https://github.com/bearsunday/bearsunday.github.io">PR ?</a>
+            </li>
+        </ul>
+    </div>
+</footer>
+<script src="//code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+<script>
+    window.ga = function () { ga.q.push(arguments) }; ga.q = []; ga.l = +new Date;
+    ga('create', 'UA-6074569-8', 'bearsunday.github.io'); ga('send', 'pageview');
+</script>
+<script src="https://www.google-analytics.com/analytics.js" async defer></script>
+
+<script src="/js/generate-table-of-contents/index.min.js"></script>
+<script>
+    var toc = generateTableOfContents(document.getElementById('article'));
+    var sideBarRight = $('.side-bar-right');
+    sideBarRight.append(toc);
+
+    var scrollOffset = $('body').attr('data-offset');
+    var articlePaddingTop = $('article').css('padding-top').replace('px', '');
+    sideBarRight.find('a').on('click', function (e) {
+        e.preventDefault();
+        var targetId = $(this).attr('href');
+        var targetPositionTop = $(targetId).offset().top - scrollOffset - articlePaddingTop;
+        window.scrollTo(0, targetPositionTop)
+    });
+</script>
+
+</body>
+</html>

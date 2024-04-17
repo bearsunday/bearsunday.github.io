@@ -1,0 +1,408 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Resource Parameter &#124; BEAR.Sunday</title>
+    <meta name="description" content="BEAR.Sunday is a resource orientated framework with a REST centered architecture, implementing Dependency Injection and Aspect Orientated Programming' at its core.">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/github-markdown-css/2.10.0/github-markdown.css">
+    <link rel="stylesheet" href="/css/syntax.css">
+    
+    <link rel="stylesheet" href="/css/bearsunday.css">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="apple-touch-icon" href="/icon.png">
+</head>
+<body data-page-category="Manual" data-spy="scroll" data-target="#ArticleToc" data-offset="65">
+<header>
+    <nav class="navbar navbar-expand flex-column flex-md-row bg-light">
+        <a class="navbar-brand mr-0 mr-md-2" href="/index.html"></a>
+        <div class="navbar-nav-scroll">
+            <ul class="navbar-nav flex-row">
+                <li class="nav-item">
+                    <a class="nav-link " href="/index.html">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="/manuals/1.0/en/index.html">Manual</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link " href="/contributors.html">Contributors</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/slide.html">Slide</a>
+                </li>
+            </ul>
+        </div>
+        
+        <ul class="navbar-nav ml-md-auto d-none d-md-flex language-list">
+            <li>
+                <a class="active" href="/manuals/1.0/en/resource_param.html">En</a>
+            </li>
+            <li>
+                <a class="" href="/manuals/1.0/ja/resource_param.html">Ja</a>
+            </li>
+        </ul>
+        
+    </nav>
+</header>
+
+<main class="container-fluid">
+    <div class="row flex-xl-nowrap">
+        <div class="col-md-3 col-lg-2">
+            <div class="side-bar">
+                <nav class="navbar navbar-expand-md navbar-light">
+    <div class="navigation-header">
+        <div class="ml-auto d-sm-block d-md-none">
+            <ul class="navbar-nav language-list">
+                <li>
+                    <a class="active" href="/manuals/1.0/en/resource_param.html">En</a>
+                </li>
+                <li>
+                    <a class="" href="/manuals/1.0/ja/resource_param.html">Ja</a>
+                </li>
+            </ul>
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#Navber" aria-controls="Navber" aria-expanded="false" aria-label="ナビゲーションの切替">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+    </div>
+    <div class="collapse navbar-collapse" id="Navber">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/">Introduction</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/version.html">Version</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/quick-start.html">Quick Start</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/tutorial.html">Tutorial</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/tutorial2.html">Tutorial 2</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/package.html">Package</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/application.html">Application</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/module.html">Module</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/di.html">DI</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/aop.html">AOP</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/resource.html">Resource</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" href="/manuals/1.0/en/resource_param.html">・Parameter</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/resource_link.html">・Link</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/resource_renderer.html">・Rendering and Transfer</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/router.html">Router</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/production.html">Production</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/import.html">Import</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/database.html">Database</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/validation.html">Validation</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/html.html">HTML</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/form.html">Form</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/content-negotiation.html">Content Negotiation</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/hypermedia-api.html">Hypermedia API</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/psr7.html">Request / PSR-7</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/js-ui.html">JavaScript UI</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/stream.html">Stream Response</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/cache.html">Cache</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/swoole.html">Swoole</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/coding-guide.html">Coding Guide</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/types.html">Type</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/test.html">Test</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/examples.html">Examples</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/attribute.html">Attribute</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/apidoc.html">API Doc</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/1page.html">1 Page</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+            </div>
+        </div>
+        <div class="col-md-9 col-lg-8">
+            <article id="article" class="markdown-body">
+                <h1 id="resource-parameters">Resource Parameters</h1>
+
+<h2 id="basics">Basics</h2>
+
+<p>Web runtime values such as HTTP requests and cookies that require ResourceObjects are passed directly to the method arguments.</p>
+
+<p>For requests from HTTP, the arguments of the <code class="language-plaintext highlighter-rouge">onGet</code> and <code class="language-plaintext highlighter-rouge">onPost</code> methods are passed <code class="language-plaintext highlighter-rouge">$_GET</code> and <code class="language-plaintext highlighter-rouge">$_POST</code>, respectively, depending on the variable name. For example, <code class="language-plaintext highlighter-rouge">$id</code> in the following is passed <code class="language-plaintext highlighter-rouge">$_GET['id']</code>. Arguments passed as strings when the input is HTTP will be casted to the specified type.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">Index</span> <span class="kd">extends</span> <span class="nc">ResourceObject</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onGet</span><span class="p">(</span><span class="kt">int</span> <span class="nv">$id</span><span class="p">):</span> <span class="kt">static</span>
+    <span class="p">{</span>
+        <span class="c1">// ....</span>
+</code></pre></div></div>
+
+<h2 id="parameter-type">Parameter type</h2>
+
+<h3 id="scalar-parameters">Scalar parameters</h3>
+
+<p>All parameters passed via HTTP are strings, but if you specify a non-string type such as <code class="language-plaintext highlighter-rouge">int</code>, it will be cast.</p>
+
+<h3 id="array-parameters">Array parameters</h3>
+
+<p>Parameters can be nested data <sup id="fnref:2" role="doc-noteref"><a href="#fn:2" class="footnote" rel="footnote">1</a></sup>; data sent as JSON or nested query strings can be received as arrays.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">Index</span> <span class="kd">extends</span> <span class="nc">ResourceObject</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onPost</span><span class="p">(</span><span class="kt">array</span> <span class="nv">$user</span><span class="p">):</span><span class="kt">static</span>
+    <span class="p">{</span>
+        <span class="nv">$name</span> <span class="o">=</span> <span class="nv">$user</span><span class="p">[</span><span class="s1">'name'</span><span class="p">];</span> <span class="c1">// bear</span>
+</code></pre></div></div>
+
+<h3 id="class-parameters">Class Parameters</h3>
+
+<p>Parameters can also be received in a dedicated Input class.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">Index</span> <span class="kd">extends</span> <span class="nc">ResourceObject</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onPost</span><span class="p">(</span><span class="kt">User</span> <span class="nv">$user</span><span class="p">):</span> <span class="kt">static</span>
+    <span class="p">{</span>
+        <span class="nv">$name</span> <span class="o">=</span> <span class="nv">$user</span><span class="o">-&gt;</span><span class="n">name</span><span class="p">;</span> <span class="c1">// bear</span>
+</code></pre></div></div>
+
+<p>The Input class is defined in advance with parameters as public properties.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&lt;?</span><span class="n">php</span>
+
+<span class="kn">namespace</span> <span class="nn">Vendor\App\Input</span><span class="p">;</span>
+
+<span class="k">final</span> <span class="kd">class</span> <span class="nc">User</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="kt">int</span> <span class="nv">$id</span><span class="p">;</span>
+    <span class="k">public</span> <span class="kt">string</span> <span class="nv">$name</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>At this time, if there is a constructor, it will be called. <sup id="fnref:php8" role="doc-noteref"><a href="#fn:php8" class="footnote" rel="footnote">2</a></sup></p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&lt;?</span><span class="n">php</span>
+
+<span class="kn">namespace</span> <span class="nn">Vendor\App\Input</span><span class="p">;</span>
+
+<span class="k">final</span> <span class="kd">class</span> <span class="nc">User</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">__constrcut</span><span class="p">(</span>
+        <span class="kt">public</span> <span class="n">readonly</span> <span class="n">int</span> <span class="nv">$id</span><span class="p">,</span>
+        <span class="kt">public</span> <span class="n">readonly</span> <span class="n">string</span> <span class="nv">$name</span>
+    <span class="p">}</span> <span class="p">{}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>The Input class can implement methods to summarize and validate input data.</p>
+
+<h3 id="enum-parameters">Enum parameters</h3>
+
+<p>You can specify an <a href="https://www.php.net/manual/en/language.types.enumerations.php">enumerated type</a> in PHP8.1 to limit the possible values.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">enum</span> <span class="nc">IceCreamId</span><span class="o">:</span> <span class="n">int</span>
+<span class="p">{</span>
+    <span class="k">case</span> <span class="no">VANILLA</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="k">case</span> <span class="no">PISTACHIO</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">Index</span> <span class="kd">extends</span> <span class="nc">ResourceObject</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onGet</span><span class="p">(</span><span class="kt">IceCreamId</span> <span class="nv">$iceCreamId</span><span class="p">):</span> <span class="kt">static</span>
+    <span class="p">{</span>
+        <span class="nv">$id</span> <span class="o">=</span> <span class="nv">$iceCreamId</span><span class="o">-&gt;</span><span class="n">value</span> <span class="c1">// 1 or 2</span>
+</code></pre></div></div>
+
+<p>In the above case, if anything other than 1 or 2 is passed, a <code class="language-plaintext highlighter-rouge">ParameterInvalidEnumException</code> will be raised.</p>
+
+<h2 id="web-context-binding">Web context binding</h2>
+
+<p>PHP superglobals such as <code class="language-plaintext highlighter-rouge">$_GET</code> and <code class="language-plaintext highlighter-rouge">$_COOKIE</code> can be bound to method arguments instead of being retrieved in the method.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">use</span> <span class="nc">Ray\WebContextParam\Annotation\QueryParam</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">News</span> <span class="kd">extends</span> <span class="nc">ResourceObject</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">foo</span><span class="p">(</span>
+    	  <span class="c1">#[QueryParam('id')] string $id</span>
+    <span class="p">):</span> <span class="kt">static</span> <span class="p">{</span>
+       <span class="c1">// $id = $_GET['id'];</span>
+</code></pre></div></div>
+
+<p>Others can be done by binding the values of <code class="language-plaintext highlighter-rouge">$_ENV</code>, <code class="language-plaintext highlighter-rouge">$_POST</code>, and <code class="language-plaintext highlighter-rouge">$_SERVER</code>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">use</span> <span class="nc">Ray\WebContextParam\Annotation\QueryParam</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">Ray\WebContextParam\Annotation\CookieParam</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">Ray\WebContextParam\Annotation\EnvParam</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">Ray\WebContextParam\Annotation\FormParam</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">Ray\WebContextParam\Annotation\ServerParam</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">News</span> <span class="kd">extends</span> <span class="nc">ResourceObject</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onGet</span><span class="p">(</span>
+        <span class="c1">#[QueryParam('id')] string $userId,            // $_GET['id'];</span>
+        <span class="c1">#[CookieParam('id')] string $tokenId = "0000", // $_COOKIE['id'] or "0000" when unset;</span>
+        <span class="c1">#[EnvParam('app_mode')] string $app_mode,      // $_ENV['app_mode'];</span>
+        <span class="c1">#[FormParam('token')] string $token,           // $_POST['token'];</span>
+        <span class="c1">#[ServerParam('SERVER_NAME') string $server    // $_SERVER['SERVER_NAME'];</span>
+    <span class="p">):</span> <span class="kt">static</span> <span class="p">{</span>
+</code></pre></div></div>
+
+<p>When the client specifies a value, the specified value takes precedence and the bound value is invalid. This is useful for testing.</p>
+
+<h2 id="resource-binding">Resource Binding</h2>
+
+<p>The <code class="language-plaintext highlighter-rouge">#[ResourceParam]</code> annotation can be used to bind the results of other resource requests to the method argument.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">use</span> <span class="nc">BEAR\Resource\Annotation\ResourceParam</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">News</span> <span class="kd">extends</span> <span class="nc">ResourceObject</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onGet</span><span class="p">(</span>
+        <span class="c1">#[ResourceParam('app://self//login#nickname') string $name</span>
+    <span class="p">):</span> <span class="kt">static</span> <span class="p">{</span>
+</code></pre></div></div>
+
+<p>In this example, when the method is called, it makes a <code class="language-plaintext highlighter-rouge">get</code> request to the <code class="language-plaintext highlighter-rouge">login</code> resource and receives <code class="language-plaintext highlighter-rouge">$body['nickname']</code> with <code class="language-plaintext highlighter-rouge">$name</code>.</p>
+
+<h2 id="content-negotiation">Content negotiation</h2>
+
+<p>The <code class="language-plaintext highlighter-rouge">content-type</code> header of HTTP requests is supported. The <code class="language-plaintext highlighter-rouge">application/json</code> and <code class="language-plaintext highlighter-rouge">x-www-form-urlencoded</code> media types are determined and values are passed to the parameters. <sup id="fnref:json" role="doc-noteref"><a href="#fn:json" class="footnote" rel="footnote">3</a></sup>.</p>
+
+<div class="footnotes" role="doc-endnotes">
+  <ol>
+    <li id="fn:2" role="doc-endnote">
+      <p><a href="https://www.php.net/manual/ja/function.parse-str.php">parse_str</a>参照 <a href="#fnref:2" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+    <li id="fn:php8" role="doc-endnote">
+      <p>This is called with named arguments in PHP8.x, but with ordinal arguments in PHP7.x. <a href="#fnref:php8" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+    <li id="fn:json" role="doc-endnote">
+      <p>Set the <code class="language-plaintext highlighter-rouge">content-type</code> header to <code class="language-plaintext highlighter-rouge">application/json</code> if you are sending API requests in JSON. <a href="#fnref:json" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+  </ol>
+</div>
+
+            </article>
+        </div>
+        <div id="ArticleToc" class="col-lg-2 d-none d-lg-block">
+            <nav class="nav side-bar-right"></nav>
+        </div>
+    </div>
+</main>
+<footer>
+    <div class="container d-md-flex">
+        <i class="bear-icon d-none d-lg-block"></i>
+        <small>
+            © 2011-2024 BEAR.Sunday
+        </small>
+        <ul class="navbar-nav flex-row ml-md-auto d-none d-md-flex">
+            <li>
+                <a href="https://gitter.im/bearsunday/BEAR.Sunday?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge">Gitter</a>
+            </li>
+            <li>
+                <a href="https://github.com/bearsunday/BEAR.Sunday">Github</a>
+            </li>
+            <li>
+                <a href="https://twitter.com/BEARSunday">Twitter</a>
+            </li>
+            <li>
+                <a href="https://www.facebook.com/pages/BEARSunday/110116939178462?ref=hl">Facebook</a>
+            </li>
+            <li>
+                <a href="http://koriym.github.io/">Blog (JA)</a>
+            </li>
+            <li>
+                <a href="https://github.com/bearsunday/bearsunday.github.io">PR ?</a>
+            </li>
+        </ul>
+    </div>
+</footer>
+<script src="//code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+<script>
+    window.ga = function () { ga.q.push(arguments) }; ga.q = []; ga.l = +new Date;
+    ga('create', 'UA-6074569-8', 'bearsunday.github.io'); ga('send', 'pageview');
+</script>
+<script src="https://www.google-analytics.com/analytics.js" async defer></script>
+
+<script src="/js/generate-table-of-contents/index.min.js"></script>
+<script>
+    var toc = generateTableOfContents(document.getElementById('article'));
+    var sideBarRight = $('.side-bar-right');
+    sideBarRight.append(toc);
+
+    var scrollOffset = $('body').attr('data-offset');
+    var articlePaddingTop = $('article').css('padding-top').replace('px', '');
+    sideBarRight.find('a').on('click', function (e) {
+        e.preventDefault();
+        var targetId = $(this).attr('href');
+        var targetPositionTop = $(targetId).offset().top - scrollOffset - articlePaddingTop;
+        window.scrollTo(0, targetPositionTop)
+    });
+</script>
+
+</body>
+</html>

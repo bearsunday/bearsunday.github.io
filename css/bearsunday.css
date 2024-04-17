@@ -1,0 +1,353 @@
+html,
+body {
+    min-height: 100vh;
+}
+
+body {
+    position: relative;
+    padding-bottom: 5rem;
+}
+
+a {
+    color: rgb(65, 131, 196);
+}
+
+.nav-link.active {
+    pointer-events: none;
+}
+
+img {
+    max-width: 100%;
+}
+
+.markdown-body h1,
+.markdown-body h2,
+.markdown-body h3,
+.markdown-body h4,
+.markdown-body h5,
+.markdown-body h6 {
+    margin-bottom: .5rem;
+    padding: 1.5rem 0 .5rem;
+}
+
+header + .container {
+    padding-top: 2rem;
+}
+
+header .navbar-brand {
+    display: block;
+    width: 32px;
+    height: 32px;
+    background-image: url(../icon.png);
+    background-size: 100%;
+    text-decoration: none;
+}
+
+header .nav-link {
+    color: rgba(0, 0, 0, .5);
+    font-weight: 600;
+}
+
+header .nav-link.active {
+    color: rgba(0, 0, 0, .9);
+
+    pointer-events: none;
+}
+
+header a:hover {
+    opacity: .7;
+}
+
+header .dropdown-toggle,
+.side-bar .dropdown-toggle {
+    color: rgba(0, 0, 0, .7);
+    font-weight: 600;
+}
+
+header .dropdown-menu,
+.side-bar .dropdown-menu {
+    font-size: .875rem;
+    color: rgba(0, 0, 0, .5);
+}
+
+header .dropdown-item.active,
+header .dropdown-item:active,
+.side-bar .dropdown-item.active,
+.side-bar .dropdown-item:active {
+    background-color: rgb(248, 249, 250);
+    color: rgba(0, 0, 0, .7);
+    font-weight: 600;
+}
+
+footer {
+    position: absolute;
+    bottom: 0;
+    padding: 0 1rem 1rem;
+    width: 100%;
+    height: 5rem;
+    color: rgb(102, 102, 102);
+    background-color: rgb(248, 249, 250);
+    font-size: 85%;
+    text-align: center;
+}
+
+footer small,
+footer ul {
+    line-height: 4rem;
+}
+
+footer small {
+    font-size: 100%;
+}
+
+footer ul {
+    display: none;
+    margin-bottom: 0;
+    padding-left: 0;
+}
+
+footer li {
+    display: inline-block;
+    margin-left: 1rem;
+}
+
+.jumbotron {
+    text-align: center;
+    background-color: rgb(238,238,238);
+}
+
+.jumbotron > img[src*="BEAR-logo.png"] {
+    margin-bottom: 2rem;
+    max-width: 90%;
+}
+
+.jumbotron > p {
+    padding: 0 2rem;
+    margin-bottom: 2rem;
+    color: rgb(90, 90, 90);
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 1.575rem;
+    line-height: 1.4;
+    font-weight: 200;
+}
+
+.jumbotron > p strong {
+    font-weight: 600;
+}
+
+.side-bar {
+    margin-right: -15px;
+    margin-left: -15px;
+}
+
+.side-bar .navbar-light .navbar-toggler {
+    margin: 0 0 0 auto;
+    border: 0;
+    color: rgba(0, 0, 0, .7);
+}
+
+.side-bar a.nav-link.active {
+    background-color: rgb(248, 249, 250);
+    font-weight: 600;
+}
+
+@media (min-width: 768px) {
+    header {
+        position: -webkit-sticky;
+        position: sticky;
+        top: 0;
+        z-index: 2;
+    }
+
+    header > .navbar {
+        min-height: 4rem;
+    }
+
+    footer .bear-icon {
+        display: block;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        margin-top: -.5rem;
+        width: 1.5rem;
+        height: 1.5rem;
+        background-image: url(../images/icon/favicon-48.png);
+        background-size: 100%;
+
+        transform: translateY(-50%) translateX(-50%);
+        opacity: .1;
+    }
+
+    .jumbotron > p {
+        padding: 0 6rem;
+    }
+
+
+    .jumbotron > img[src*="BEAR-logo.png"] {
+        width: 380px;
+    }
+
+    article {
+        padding-bottom: 4rem;
+    }
+
+    article h1:first-child {
+        padding-top: 2rem;
+    }
+
+    .side-bar {
+        position: -webkit-sticky;
+        position: sticky;
+        top: 4rem;
+        margin-left: -15px;
+        height: calc(100vh - 4rem);
+        max-height: calc(100vh - 4rem);
+        border-bottom: 0;
+        border-right: 1px solid rgb(234,236,239);
+        z-index: 1;
+
+        overflow-y: auto;
+    }
+
+    .side-bar .navbar {
+        padding: 0!important;
+    }
+
+    .side-bar ul {
+        display: block!important;
+        padding: 2rem 0;
+        width: 100%;
+        max-height: calc(100vh);
+
+        overflow-y: auto;
+    }
+
+    .side-bar .nav-link {
+        padding-left: 1.5rem!important;
+    }
+
+    .side-bar-right {
+        position: -webkit-sticky;
+        position: sticky;
+        top: 5rem;
+        margin: 1rem 0;
+        padding: 1rem;
+        max-height: calc(100vh - 4rem);
+        border-left: 1px solid rgb(234,236,239);
+        z-index: 1;
+
+        overflow-y: auto;
+    }
+
+    .side-bar-right ul {
+        padding: 0;
+    }
+
+    .side-bar-right ul > li {
+        list-style: none;
+    }
+
+    .side-bar-right li > ul {
+        padding-left: 1rem;
+    }
+
+    .side-bar-right li a {
+        display: block;
+        padding: .125rem 0;
+        color: rgba(0, 0, 0, .5);
+    }
+
+    .side-bar-right li a:hover {
+        color: rgba(0, 0, 0, .7);
+    }
+
+    .side-bar-right li a.active {
+        color: rgba(0, 0, 0, .7);
+        font-weight: 600;
+    }
+}
+
+[data-page-category="Contributors"] header + .container {
+    padding-top: 15px;
+}
+
+[data-page-category="Contributors"] main ul {
+    display: flex;
+    padding: 0;
+
+    flex-wrap: wrap;
+}
+
+[data-page-category="Contributors"] main ul li {
+    padding: 5px;
+    width: 10%;
+    list-style: none;
+}
+
+[data-page-category="Contributors"] main ul li a:hover {
+    opacity: .7;
+}
+
+@media (max-width: 768px) {
+    header .navbar-brand {
+        margin: .25rem 0;
+    }
+
+    article {
+        padding-bottom: 2rem;
+    }
+
+    .navigation-header {
+        margin: 0 -15px;
+        padding: 0 15px .5rem;
+        width: 100vw;
+        border-bottom: 1px solid rgb(234,236,239);
+        text-align: right;
+    }
+
+    .navigation-header + .navbar-collapse {
+        margin: 0 -15px;
+        padding: .5rem 15px;
+        width: 100vw;
+        border-bottom: 1px solid rgb(234,236,239);
+    }
+
+    [data-page-category="Contributors"] main ul li {
+        padding: 3px;
+        width: 33.3%;
+    }
+
+    [data-page-category="Contributors"] main ul li img {
+        width: 100%;
+    }
+}
+
+.language-list {
+    display: inline-flex;
+    flex-direction: row;
+}
+
+.language-list li {
+    color: rgba(0, 0, 0, .5);
+}
+
+.language-list li + li::before {
+    color: inherit;
+    content: "|";
+    display: inline-block;
+    margin: 0 .5rem 0 .75rem;
+}
+
+.language-list li > a {
+    color: inherit;
+}
+
+.language-list li > a:hover {
+    text-underline-offset: .1rem;
+}
+
+.language-list li > a.active {
+    color: rgba(0, 0, 0, .9);
+    text-decoration: underline;
+    text-underline-offset: .1rem;
+}

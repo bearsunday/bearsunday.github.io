@@ -1,0 +1,383 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Type &#124; BEAR.Sunday</title>
+    <meta name="description" content="BEAR.Sunday is a resource orientated framework with a REST centered architecture, implementing Dependency Injection and Aspect Orientated Programming' at its core.">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/github-markdown-css/2.10.0/github-markdown.css">
+    <link rel="stylesheet" href="/css/syntax.css">
+    
+    <link rel="stylesheet" href="/css/bearsunday.css">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="apple-touch-icon" href="/icon.png">
+</head>
+<body data-page-category="Manual" data-spy="scroll" data-target="#ArticleToc" data-offset="65">
+<header>
+    <nav class="navbar navbar-expand flex-column flex-md-row bg-light">
+        <a class="navbar-brand mr-0 mr-md-2" href="/index.html"></a>
+        <div class="navbar-nav-scroll">
+            <ul class="navbar-nav flex-row">
+                <li class="nav-item">
+                    <a class="nav-link " href="/index.html">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="/manuals/1.0/en/index.html">Manual</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link " href="/contributors.html">Contributors</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/slide.html">Slide</a>
+                </li>
+            </ul>
+        </div>
+        
+        <ul class="navbar-nav ml-md-auto d-none d-md-flex language-list">
+            <li>
+                <a class="active" href="/manuals/1.0/en/types.html">En</a>
+            </li>
+            <li>
+                <a class="" href="/manuals/1.0/ja/types.html">Ja</a>
+            </li>
+        </ul>
+        
+    </nav>
+</header>
+
+<main class="container-fluid">
+    <div class="row flex-xl-nowrap">
+        <div class="col-md-3 col-lg-2">
+            <div class="side-bar">
+                <nav class="navbar navbar-expand-md navbar-light">
+    <div class="navigation-header">
+        <div class="ml-auto d-sm-block d-md-none">
+            <ul class="navbar-nav language-list">
+                <li>
+                    <a class="active" href="/manuals/1.0/en/types.html">En</a>
+                </li>
+                <li>
+                    <a class="" href="/manuals/1.0/ja/types.html">Ja</a>
+                </li>
+            </ul>
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#Navber" aria-controls="Navber" aria-expanded="false" aria-label="ナビゲーションの切替">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+    </div>
+    <div class="collapse navbar-collapse" id="Navber">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/">Introduction</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/version.html">Version</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/quick-start.html">Quick Start</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/tutorial.html">Tutorial</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/tutorial2.html">Tutorial 2</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/package.html">Package</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/application.html">Application</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/module.html">Module</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/di.html">DI</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/aop.html">AOP</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/resource.html">Resource</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/resource_param.html">・Parameter</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/resource_link.html">・Link</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/resource_renderer.html">・Rendering and Transfer</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/router.html">Router</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/production.html">Production</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/import.html">Import</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/database.html">Database</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/validation.html">Validation</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/html.html">HTML</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/form.html">Form</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/content-negotiation.html">Content Negotiation</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/hypermedia-api.html">Hypermedia API</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/psr7.html">Request / PSR-7</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/js-ui.html">JavaScript UI</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/stream.html">Stream Response</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/cache.html">Cache</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/swoole.html">Swoole</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/coding-guide.html">Coding Guide</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" href="/manuals/1.0/en/types.html">Type</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/test.html">Test</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/examples.html">Examples</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/attribute.html">Attribute</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/apidoc.html">API Doc</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/1page.html">1 Page</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+            </div>
+        </div>
+        <div class="col-md-9 col-lg-8">
+            <article id="article" class="markdown-body">
+                <h1 id="type">Type</h1>
+
+<p>Use <strong>PHPDoc types</strong> for richer types that are not supported by native PHP.</p>
+
+<p>E.g.: Assign an associative array of the resource class <code class="language-plaintext highlighter-rouge">body</code> as an “object-like array”.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cd">/** @var array{greeting: string} */</span>
+<span class="k">public</span> <span class="nv">$body</span><span class="p">;</span>
+</code></pre></div></div>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cd">/** @var list&lt;array{name: string, age:int}&gt; */</span>
+<span class="k">public</span> <span class="nv">$body</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>The tool understands the object’s type retrieved by the resource client with <code class="language-plaintext highlighter-rouge">assert()</code>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$user</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">resource</span><span class="o">-&gt;</span><span class="nf">get</span><span class="p">(</span><span class="s1">'/user'</span><span class="p">,</span> <span class="p">[]);</span>
+<span class="nb">assert</span><span class="p">(</span><span class="nv">$user</span> <span class="k">instanceof</span> <span class="nc">User</span><span class="p">);</span>
+<span class="nv">$name</span> <span class="o">=</span> <span class="nv">$user</span><span class="o">-&gt;</span><span class="n">body</span><span class="p">[</span><span class="s1">'name'</span><span class="p">];</span> <span class="c1">// The name key will be interpolated</span>
+<span class="nv">$user</span><span class="o">-&gt;</span><span class="n">body</span><span class="p">[</span><span class="s1">'__invalid__'</span><span class="p">];</span> <span class="c1">// Accessing an undefined key is an error.</span>
+</code></pre></div></div>
+
+<h1 id="reference">Reference</h1>
+
+<h2 id="atomic-type">Atomic Type</h2>
+
+<p>If a type cannot be split any more, it is called an atomic type; all PHP7 types are of this type.
+Union and intersection types use a combination of atomic types.</p>
+
+<h3 id="scalar-type">Scalar Type</h3>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cd">/** @param int $i */</span>
+<span class="cd">/** @param float $f */</span>
+<span class="cd">/** @param string $str */</span>
+<span class="cd">/** @param class-string $class */</span>
+<span class="cd">/** @param class-string&lt;AbstractFoo&gt; $fooClass */</span>
+<span class="cd">/** @param callable-string $callable */</span>
+<span class="cd">/** @param numeric-string $num */</span>
+<span class="cd">/** @param bool $isSet */</span>
+<span class="cd">/** @param array-key $key */</span>
+<span class="cd">/** @param numeric $num */</span>
+<span class="cd">/** @param scalar $a */</span>
+</code></pre></div></div>
+
+<h3 id="object-type">Object Type</h3>
+
+<h4 id="generic-object">Generic Object</h4>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cd">/** @return ArrayObject&lt;int, string&gt; */</span>
+</code></pre></div></div>
+
+<h4 id="generator">Generator</h4>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cd">/** @return Generator&lt;int, string, mixed, void&gt; */</span>
+</code></pre></div></div>
+
+<h3 id="callable-type">Callable Type</h3>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cd">/** @return callable(Type1, OptionalType2=, SpreadType3...): ReturnType */</span>
+<span class="cd">/** @return Closure(bool):int */</span>
+</code></pre></div></div>
+
+<h3 id="value-type">Value Type</h3>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cd">/** @return null */</span>
+<span class="cd">/** @return true */</span>
+<span class="cd">/** @return 42 */</span>
+<span class="cd">/** Foo\Bar::MY_SCALAR_CONST $a */</span>
+<span class="cd">/** @param A::class|B::class $s */</span>
+</code></pre></div></div>
+
+<h3 id="array-type">Array Type</h3>
+
+<h4 id="generic-array">Generic Array</h4>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cd">/** @return array&lt;TKey, TValue&gt; */</span>
+<span class="cd">/** @return array&lt;int, Foo&gt; */</span>
+<span class="cd">/** @return array&lt;string, int|string&gt; */</span>
+
+</code></pre></div></div>
+
+<h4 id="object-like-arrays">Object-like Arrays</h4>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cd">/** @return array{0: string, 1: string, foo: stdClass, 28: false} */</span>
+<span class="cd">/** @return array{foo: string, bar: int} */</span>
+<span class="cd">/** @return array{optional?: string, bar: int} */</span>
+</code></pre></div></div>
+
+<h4 id="list">List</h4>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cd">/** @param list&lt;string&gt; $stringList */</span>
+</code></pre></div></div>
+
+<h4 id="phpdoc-array">PHPDoc Array</h4>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cd">/** @param string[] $strings */</span>
+</code></pre></div></div>
+
+<h3 id="other-atomic-type">Other Atomic Type</h3>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cd">/** @return iterable */</span>
+<span class="cd">/** @return void */</span>
+<span class="cd">/** @return empty */</span>
+<span class="cd">/** @return mixed */</span>
+</code></pre></div></div>
+
+<h2 id="intersection-type">Intersection Type</h2>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cd">/** @return A&amp;B */</span>
+</code></pre></div></div>
+
+<h2 id="union-type">Union Type</h2>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cd">/** @return int|false */</span>
+<span class="cd">/** @return 0|1 */</span>
+<span class="cd">/** @return 'a'|'b' */</span>
+</code></pre></div></div>
+
+<hr />
+
+<p>See more..</p>
+
+<ul>
+  <li>psalm - <a href="https://psalm.dev/docs/annotating_code/type_syntax/atomic_types/">atomic_types</a> | <a href="https://psalm.dev/docs/annotating_code/type_syntax/union_types/">union</a> | <a href="https://psalm.dev/docs/annotating_code/type_syntax/intersection_types/">intersection</a></li>
+  <li>phpstan - <a href="https://phpstan.org/writing-php-code/phpdoc-types">phpdoc type</a></li>
+</ul>
+
+<hr />
+
+<p>PHPStorm Plugin</p>
+
+<ul>
+  <li><a href="https://plugins.jetbrains.com/plugin/9927-deep-assoc-completion">deep-array-assoc</a></li>
+  <li><a href="https://plugins.jetbrains.com/plugin/12754-phpstan--psalm--generics">phpstan–psalm–generics</a></li>
+</ul>
+
+            </article>
+        </div>
+        <div id="ArticleToc" class="col-lg-2 d-none d-lg-block">
+            <nav class="nav side-bar-right"></nav>
+        </div>
+    </div>
+</main>
+<footer>
+    <div class="container d-md-flex">
+        <i class="bear-icon d-none d-lg-block"></i>
+        <small>
+            © 2011-2024 BEAR.Sunday
+        </small>
+        <ul class="navbar-nav flex-row ml-md-auto d-none d-md-flex">
+            <li>
+                <a href="https://gitter.im/bearsunday/BEAR.Sunday?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge">Gitter</a>
+            </li>
+            <li>
+                <a href="https://github.com/bearsunday/BEAR.Sunday">Github</a>
+            </li>
+            <li>
+                <a href="https://twitter.com/BEARSunday">Twitter</a>
+            </li>
+            <li>
+                <a href="https://www.facebook.com/pages/BEARSunday/110116939178462?ref=hl">Facebook</a>
+            </li>
+            <li>
+                <a href="http://koriym.github.io/">Blog (JA)</a>
+            </li>
+            <li>
+                <a href="https://github.com/bearsunday/bearsunday.github.io">PR ?</a>
+            </li>
+        </ul>
+    </div>
+</footer>
+<script src="//code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+<script>
+    window.ga = function () { ga.q.push(arguments) }; ga.q = []; ga.l = +new Date;
+    ga('create', 'UA-6074569-8', 'bearsunday.github.io'); ga('send', 'pageview');
+</script>
+<script src="https://www.google-analytics.com/analytics.js" async defer></script>
+
+<script src="/js/generate-table-of-contents/index.min.js"></script>
+<script>
+    var toc = generateTableOfContents(document.getElementById('article'));
+    var sideBarRight = $('.side-bar-right');
+    sideBarRight.append(toc);
+
+    var scrollOffset = $('body').attr('data-offset');
+    var articlePaddingTop = $('article').css('padding-top').replace('px', '');
+    sideBarRight.find('a').on('click', function (e) {
+        e.preventDefault();
+        var targetId = $(this).attr('href');
+        var targetPositionTop = $(targetId).offset().top - scrollOffset - articlePaddingTop;
+        window.scrollTo(0, targetPositionTop)
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,558 @@
+<!doctype html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>HTML (Twig v2) &#124; BEAR.Sunday</title>
+    <meta name="description" content="BEAR.Sunday is a resource orientated framework with a REST centered architecture, implementing Dependency Injection and Aspect Orientated Programming' at its core.">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/github-markdown-css/2.10.0/github-markdown.css">
+    <link rel="stylesheet" href="/css/syntax.css">
+    
+    <link rel="stylesheet" href="/css/bearsunday.css">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="apple-touch-icon" href="/icon.png">
+</head>
+<body data-page-category="Manual" data-spy="scroll" data-target="#ArticleToc" data-offset="65">
+<header>
+    <nav class="navbar navbar-expand flex-column flex-md-row bg-light">
+        <a class="navbar-brand mr-0 mr-md-2" href="/index.html"></a>
+        <div class="navbar-nav-scroll">
+            <ul class="navbar-nav flex-row">
+                <li class="nav-item">
+                    <a class="nav-link " href="/index.html">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="/manuals/1.0/en/index.html">Manual</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link " href="/contributors.html">Contributors</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/slide.html">Slide</a>
+                </li>
+            </ul>
+        </div>
+        
+        <ul class="navbar-nav ml-md-auto d-none d-md-flex language-list">
+            <li>
+                <a class="" href="/manuals/1.0/en/html-twig-v2.html">En</a>
+            </li>
+            <li>
+                <a class="active" href="/manuals/1.0/ja/html-twig-v2.html">Ja</a>
+            </li>
+        </ul>
+        
+    </nav>
+</header>
+
+<main class="container-fluid">
+    <div class="row flex-xl-nowrap">
+        <div class="col-md-3 col-lg-2">
+            <div class="side-bar">
+                <nav class="navbar navbar-expand-md navbar-light">
+    <div class="navigation-header">
+        <div class="ml-auto d-sm-block d-md-none">
+            <ul class="navbar-nav language-list">
+                <li>
+                    <a class="" href="/manuals/1.0/en/html-twig-v2.html">En</a>
+                </li>
+                <li>
+                    <a class="active" href="/manuals/1.0/ja/html-twig-v2.html">Ja</a>
+                </li>
+            </ul>
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#Navber" aria-controls="Navber" aria-expanded="false" aria-label="ナビゲーションの切替">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+    </div>
+    <div class="collapse navbar-collapse" id="Navber">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/index.html">イントロダクション</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/version.html">バージョン</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/quick-start.html">クイックスタート</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/tutorial.html">チュートリアル</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/tutorial2.html">チュートリアル 2</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/package.html">パッケージ</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/application.html">アプリケーション</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/module.html">モジュール</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/di.html">DI</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/aop.html">AOP</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/resource.html">リソース</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/resource_param.html">・パラメーター</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/resource_link.html">・リンク</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/resource_renderer.html">・レンダリングと転送</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/router.html">ルーター</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/production.html">プロダクション</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/ja/import.html">インポート</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/database.html">データベース</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/html.html">HTML</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/validation.html">バリデーション</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/form.html">フォーム</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/content-negotiation.html">コンテントネゴシエーション</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/hypermedia-api.html">ハイパーメディア API</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/psr7.html">リクエスト / PSR-7</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/js-ui.html">JavaScript UI</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/stream.html">ストリーム出力</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/cache.html">キャッシュ</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/swoole.html">Swoole</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/coding-guide.html">コーディングガイド</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/types.html">タイプ</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/test.html">テスト</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/examples.html">サンプル</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/upgrade/injector.html">アップグレード</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/attribute.html">アトリビュート</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/apidoc.html">API Doc</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/1page.html">1 Page</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+            </div>
+        </div>
+        <div class="col-md-9 col-lg-8">
+            <article id="article" class="markdown-body">
+                <h1 id="html-twig-v2">HTML (Twig v2)</h1>
+
+<h2 id="インストール">インストール</h2>
+
+<p>HTML表示のためにcomposerで<a href="https://twig.symfony.com/doc/2.x/">Twig v2</a>のモジュールをインストールします。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>composer require madapaja/twig-module ^2.0
+</code></pre></div></div>
+
+<p>次に<code class="language-plaintext highlighter-rouge">html</code>コンテキストファイル<code class="language-plaintext highlighter-rouge">src/Module/HtmlModule.php</code>を用意して<code class="language-plaintext highlighter-rouge">TwigModule</code>をインストールします。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">namespace</span> <span class="nn">MyVendor\MyPackage\Module</span><span class="p">;</span>
+
+<span class="kn">use</span> <span class="nc">Madapaja\TwigModule\TwigErrorPageModule</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">Madapaja\TwigModule\TwigModule</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">Ray\Di\AbstractModule</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">HtmlModule</span> <span class="kd">extends</span> <span class="nc">AbstractModule</span>
+<span class="p">{</span>
+    <span class="k">protected</span> <span class="k">function</span> <span class="n">configure</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">install</span><span class="p">(</span><span class="k">new</span> <span class="nc">TwigModule</span><span class="p">);</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">install</span><span class="p">(</span><span class="k">new</span> <span class="nc">TwigErrorPageModule</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">TwigErrorPageModule</code>はエラー表示をHTMLで行うオプションです。<code class="language-plaintext highlighter-rouge">HtmlModule</code>でインストールしないで<code class="language-plaintext highlighter-rouge">ProdModule</code>でインストールして開発時のエラー表示はJSONにすることも出来ます。</p>
+
+<p>次に<code class="language-plaintext highlighter-rouge">templates</code>フォルダをコピーします</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cp</span> <span class="nt">-r</span> vendor/madapaja/twig-module/var/templates var/templates
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">bin/page.php</code>や<code class="language-plaintext highlighter-rouge">public/index.php</code>のコンテキストを変更して<code class="language-plaintext highlighter-rouge">html</code>を有効にします。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$context</span> <span class="o">=</span> <span class="s1">'cli-html-app'</span><span class="p">;</span> // <span class="s1">'html-app'</span>
+</code></pre></div></div>
+<h2 id="テンプレート">テンプレート</h2>
+
+<p>1つのリソースクラスに１つのテンプレートファイルが<code class="language-plaintext highlighter-rouge">var/templates</code>フォルダに必要です。
+例えば<code class="language-plaintext highlighter-rouge">src/Page/Index.php</code>には<code class="language-plaintext highlighter-rouge">var/templates/Page/Index.html.twig</code> が必要です。</p>
+
+<p>テンプレートにリソースの <strong>body</strong>がアサインされます。</p>
+
+<p>例）</p>
+
+<p><code class="language-plaintext highlighter-rouge">src/Page/Index.php</code></p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">Index</span> <span class="kd">extends</span> <span class="nc">ResourceObject</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="nv">$body</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s1">'greeting'</span> <span class="o">=&gt;</span> <span class="s1">'Hello BEAR.Sunday'</span>
+    <span class="p">];</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">src/Page/Index.twig.php</code> または <code class="language-plaintext highlighter-rouge">var/templates/Page/Index.twig.php</code></p>
+
+<div class="language-twig highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;h1&gt;</span><span class="cp">{{</span> <span class="nv">greeting</span> <span class="cp">}}</span><span class="nt">&lt;/h1&gt;</span>
+</code></pre></div></div>
+
+<p>出力</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>php bin/page.php get /
+</code></pre></div></div>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>200 OK
+content-type: text/html<span class="p">;</span> <span class="nv">charset</span><span class="o">=</span>utf-8
+
+&lt;h1&gt;Hello BEAR.Sunday&lt;/h1&gt;
+</code></pre></div></div>
+
+<h2 id="テンプレートファイルの選択">テンプレートファイルの選択</h2>
+
+<p>どのテンプレートを使用するかはリソースでは選択しません。リソースの状態によって<code class="language-plaintext highlighter-rouge">include</code>します。</p>
+
+<div class="language-twig highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">{%</span> <span class="k">if</span> <span class="nv">user.is_login</span> <span class="cp">%}</span>
+    <span class="cp">{{</span> <span class="nv">include</span><span class="p">(</span><span class="s1">'member.html.twig'</span><span class="p">)</span> <span class="cp">}}</span>
+<span class="cp">{%</span> <span class="k">else</span> <span class="cp">%}</span>
+    <span class="cp">{{</span> <span class="nv">include</span><span class="p">(</span><span class="s1">'guest.html.twig'</span><span class="p">)</span> <span class="cp">}}</span>
+<span class="cp">{%</span> <span class="k">endif</span> <span class="cp">%}</span>
+</code></pre></div></div>
+
+<p>リソースクラスはリソース状態だけに関心を持ち、テンプレートだけがリソース表現に関心を持ちます。
+このような設計原則を<a href="https://ja.wikipedia.org/wiki/%E9%96%A2%E5%BF%83%E3%81%AE%E5%88%86%E9%9B%A2">関心の分離(SoC)</a>といいます。</p>
+
+<h2 id="エラーページ">エラーページ</h2>
+
+<p><code class="language-plaintext highlighter-rouge">var/templates/error.html.twig</code>を編集します。エラーページには以下の値がアサインされています。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>変数</th>
+      <th>意味</th>
+      <th>キー</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>status</td>
+      <td>HTTP ステータス</td>
+      <td>code, message</td>
+    </tr>
+    <tr>
+      <td>e</td>
+      <td>例外</td>
+      <td>code, message, class</td>
+    </tr>
+    <tr>
+      <td>logref</td>
+      <td>ログID</td>
+      <td>n/a</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>例</p>
+
+<div class="language-twig highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">{%</span> <span class="k">extends</span> <span class="s1">'layout/base.html.twig'</span> <span class="cp">%}</span>
+<span class="cp">{%</span> <span class="k">block</span> <span class="nv">title</span> <span class="cp">%}{{</span> <span class="nv">status.code</span> <span class="cp">}}</span> <span class="cp">{{</span> <span class="nv">status.message</span> <span class="cp">}}{%</span> <span class="k">endblock</span> <span class="cp">%}</span>
+<span class="cp">{%</span> <span class="k">block</span> <span class="nv">content</span> <span class="cp">%}</span>
+    <span class="nt">&lt;h1&gt;</span><span class="cp">{{</span> <span class="nv">status.code</span> <span class="cp">}}</span> <span class="cp">{{</span> <span class="nv">status.message</span> <span class="cp">}}</span><span class="nt">&lt;/h1&gt;</span>
+    <span class="cp">{%</span> <span class="k">if</span> <span class="nv">status.code</span> <span class="o">==</span> <span class="nv">404</span> <span class="cp">%}</span>
+        <span class="nt">&lt;p&gt;</span>The requested URL was not found on this server.<span class="nt">&lt;/p&gt;</span>
+    <span class="cp">{%</span> <span class="k">else</span> <span class="cp">%}</span>
+        <span class="nt">&lt;p&gt;</span>The server is temporarily unable to service your request.<span class="nt">&lt;/p&gt;</span>
+        <span class="nt">&lt;p&gt;</span>refference number: <span class="cp">{{</span> <span class="nv">logref</span> <span class="cp">}}</span><span class="nt">&lt;/p&gt;</span>
+    <span class="cp">{%</span> <span class="k">endif</span> <span class="cp">%}</span>
+<span class="cp">{%</span> <span class="k">endblock</span> <span class="cp">%}</span>
+</code></pre></div></div>
+
+<h2 id="リソースのアサイン">リソースのアサイン</h2>
+
+<p>リソースクラスのプロパティを参照するにはリソース全体がアサインされる<code class="language-plaintext highlighter-rouge">_ro</code>を参照します。</p>
+
+<p>例）</p>
+
+<p><code class="language-plaintext highlighter-rouge">Todos.php</code></p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">Todos</span> <span class="n">extend</span> <span class="nc">ResourceObject</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="nv">$code</span> <span class="o">=</span> <span class="mi">200</span><span class="p">;</span>
+
+    <span class="k">public</span> <span class="nv">$text</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s1">'name'</span> <span class="o">=&gt;</span> <span class="s1">'BEAR'</span>
+    <span class="p">];</span>
+
+    <span class="k">public</span> <span class="nv">$body</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">[</span><span class="s1">'title'</span> <span class="o">=&gt;</span> <span class="s1">'run'</span><span class="p">]</span>
+    <span class="p">];</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">Todos.html.twig</code></p>
+
+<div class="language-twig highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">{{</span> <span class="nv">_ro.code</span> <span class="cp">}}</span> // 200
+<span class="cp">{{</span> <span class="nv">_ro.text.name</span> <span class="cp">}}</span> // 'BEAR'
+<span class="cp">{%</span> <span class="k">for</span> <span class="nv">todo</span> <span class="ow">in</span> <span class="nv">_ro.body</span> <span class="cp">%}</span>
+  <span class="cp">{{</span> <span class="nv">todo.title</span> <span class="cp">}}</span> // 'run'
+<span class="cp">{%</span> <span class="k">endfor</span> <span class="cp">%}</span>
+</code></pre></div></div>
+
+<h2 id="ビューの階層構造">ビューの階層構造</h2>
+
+<p>リソースクラス単位でビューを持つ事ができます。構造を良く表し、キャッシュもリソース単位で行われるので効率的です。</p>
+
+<p>例）<code class="language-plaintext highlighter-rouge">app://self/todos</code>を読み込む<code class="language-plaintext highlighter-rouge">page://self/index</code></p>
+
+<h3 id="appselftodos">app://self/todos</h3>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">Todos</span> <span class="kd">extends</span> <span class="nc">ResourceObject</span>
+<span class="p">{</span>
+    <span class="kn">use</span> <span class="nc">AuraSqlInject</span><span class="p">;</span>
+    <span class="kn">use</span> <span class="nc">QueryLocatorInject</span><span class="p">;</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onGet</span><span class="p">():</span> <span class="kt">static</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">body</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">pdo</span><span class="o">-&gt;</span><span class="nf">fetchAll</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="n">query</span><span class="p">[</span><span class="s1">'todos_list'</span><span class="p">]);</span>
+        <span class="k">return</span> <span class="nv">$this</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<div class="language-twig highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">{%</span> <span class="k">for</span> <span class="nv">todo</span> <span class="ow">in</span> <span class="nv">_ro.body</span> <span class="cp">%}</span>
+  <span class="cp">{{</span> <span class="nv">todo.title</span> <span class="cp">}}</span><span class="nt">&lt;/td&gt;</span>
+<span class="cp">{%</span> <span class="k">endfor</span> <span class="cp">%}</span>
+</code></pre></div></div>
+
+<h3 id="pageselfindex">page://self/index</h3>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">Index</span> <span class="kd">extends</span> <span class="nc">ResourceObject</span>
+<span class="p">{</span>
+    <span class="cd">/**
+     * @Embed(rel="todos", src="app://self/todos")
+     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onGet</span><span class="p">():</span> <span class="kt">static</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="nv">$this</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<div class="language-twig highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">{%</span> <span class="k">extends</span> <span class="s1">'layout/base.html.twig'</span> <span class="cp">%}</span>
+<span class="cp">{%</span> <span class="k">block</span> <span class="nv">content</span> <span class="cp">%}</span>
+  <span class="cp">{{</span> <span class="nv">todos</span><span class="o">|</span><span class="nf">raw</span> <span class="cp">}}</span>
+<span class="cp">{%</span> <span class="k">endblock</span> <span class="cp">%}</span>
+</code></pre></div></div>
+<h2 id="拡張">拡張</h2>
+<p>Twigを<code class="language-plaintext highlighter-rouge">addExtension()</code>メソッドで拡張する場合には、拡張を行うTwigのProviderクラスを用意し<code class="language-plaintext highlighter-rouge">Twig_Environment</code>クラスに<code class="language-plaintext highlighter-rouge">Provider</code>束縛します。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">use</span> <span class="nc">Ray\Di\Di\Named</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">Ray\Di\ProviderInterface</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">MyTwigProvider</span> <span class="kd">implements</span> <span class="nc">ProviderInterface</span>
+<span class="p">{</span>
+    <span class="k">private</span> <span class="nv">$twig</span><span class="p">;</span>
+
+    <span class="cd">/**
+     * @Named("original")
+     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">__construct</span><span class="p">(</span><span class="err">\</span><span class="n">Twig_Environment</span> <span class="nv">$twig</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="c1">// $twig is an original \Twig_Environment instance</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">twig</span> <span class="o">=</span> <span class="nv">$twig</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="n">get</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="c1">// Extending Twig</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">twig</span><span class="o">-&gt;</span><span class="nf">addExtension</span><span class="p">(</span><span class="k">new</span> <span class="nc">MyTwigExtension</span><span class="p">());</span>
+
+        <span class="k">return</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">twig</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">HtmlModule</span> <span class="kd">extends</span> <span class="nc">AbstractModule</span>
+<span class="p">{</span>
+    <span class="k">protected</span> <span class="k">function</span> <span class="n">configure</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">install</span><span class="p">(</span><span class="k">new</span> <span class="nc">TwigModule</span><span class="p">);</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">bind</span><span class="p">(</span><span class="err">\</span><span class="n">Twig_Environment</span><span class="o">::</span><span class="n">class</span><span class="p">)</span><span class="o">-&gt;</span><span class="nf">toProvider</span><span class="p">(</span><span class="nc">MyTwigProvider</span><span class="o">::</span><span class="n">class</span><span class="p">)</span><span class="o">-&gt;</span><span class="nf">in</span><span class="p">(</span><span class="nc">Scope</span><span class="o">::</span><span class="no">SINGLETON</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="モバイル">モバイル</h2>
+
+<p>モバイルサイト専用のテンプレートを使用するためには<code class="language-plaintext highlighter-rouge">MobileTwigModule</code>を加えてインストールします。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">HtmlModule</span> <span class="kd">extends</span> <span class="nc">AbstractModule</span>
+<span class="p">{</span>
+    <span class="k">protected</span> <span class="k">function</span> <span class="n">configure</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">install</span><span class="p">(</span><span class="k">new</span> <span class="nc">TwigModule</span><span class="p">);</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">install</span><span class="p">(</span><span class="k">new</span> <span class="nc">MobileTwigModule</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">index.html.twig</code>の代わりに<code class="language-plaintext highlighter-rouge">Index.mobile.twig</code>が <strong>存在すれば</strong>優先して使用されます。変更の必要なテンプレートだけを用意する事ができます。</p>
+
+<h2 id="カスタム設定">カスタム設定</h2>
+
+<p>コンテンキストに応じてオプション等を設定したり、テンプレートのパスを追加する場合は<code class="language-plaintext highlighter-rouge">@TwigPaths</code>と<code class="language-plaintext highlighter-rouge">@TwigOptions</code>に設定値を束縛します。</p>
+
+<p>注）キャッシュを常に<code class="language-plaintext highlighter-rouge">var/tmp</code>フォルダに生成するので特にプロダクション用の設定などは特に必要ありません。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">namespace</span> <span class="nn">MyVendor\MyPackage\Module</span><span class="p">;</span>
+
+<span class="kn">use</span> <span class="nc">BEAR\Package\AbstractAppModule</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">Madapaja\TwigModule\Annotation\TwigDebug</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">Madapaja\TwigModule\Annotation\TwigOptions</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">Madapaja\TwigModule\Annotation\TwigPaths</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">Madapaja\TwigModule\TwigModule</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">Ray\Di\AbstractModule</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">AppModule</span> <span class="kd">extends</span> <span class="nc">AbstractAppModule</span>
+<span class="p">{</span>
+    <span class="k">protected</span> <span class="k">function</span> <span class="n">configure</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="c1">// ...</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">install</span><span class="p">(</span><span class="k">new</span> <span class="nc">TwigModule</span><span class="p">);</span>
+
+        <span class="c1">// テンプレートパスの指定</span>
+        <span class="nv">$appDir</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">appMeta</span><span class="o">-&gt;</span><span class="n">appDir</span><span class="p">;</span>
+        <span class="nv">$paths</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="nv">$appDir</span> <span class="mf">.</span> <span class="s1">'/src/Resource'</span><span class="p">,</span>
+            <span class="nv">$appDir</span> <span class="mf">.</span> <span class="s1">'/var/templates'</span>
+        <span class="p">];</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">bind</span><span class="p">()</span><span class="o">-&gt;</span><span class="nf">annotatedWith</span><span class="p">(</span><span class="nc">TwigPaths</span><span class="o">::</span><span class="n">class</span><span class="p">)</span><span class="o">-&gt;</span><span class="nf">toInstance</span><span class="p">(</span><span class="nv">$paths</span><span class="p">);</span>
+
+        <span class="c1">// オプション</span>
+        <span class="c1">// @see http://twig.sensiolabs.org/doc/api.html#environment-options</span>
+        <span class="nv">$options</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s1">'debug'</span> <span class="o">=&gt;</span> <span class="kc">false</span><span class="p">,</span>
+            <span class="s1">'cache'</span> <span class="o">=&gt;</span> <span class="nv">$appDir</span> <span class="mf">.</span> <span class="s1">'/tmp'</span>
+        <span class="p">];</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">bind</span><span class="p">()</span><span class="o">-&gt;</span><span class="nf">annotatedWith</span><span class="p">(</span><span class="nc">TwigOptions</span><span class="o">::</span><span class="n">class</span><span class="p">)</span><span class="o">-&gt;</span><span class="nf">toInstance</span><span class="p">(</span><span class="nv">$options</span><span class="p">);</span>
+        
+        <span class="c1">// debugオプションのみを指定する場合</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">bind</span><span class="p">()</span><span class="o">-&gt;</span><span class="nf">annotatedWith</span><span class="p">(</span><span class="nc">TwigDebug</span><span class="o">::</span><span class="n">class</span><span class="p">)</span><span class="o">-&gt;</span><span class="nf">toInstance</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+            </article>
+        </div>
+        <div id="ArticleToc" class="col-lg-2 d-none d-lg-block">
+            <nav class="nav side-bar-right"></nav>
+        </div>
+    </div>
+</main>
+<footer>
+    <div class="container d-md-flex">
+        <i class="bear-icon d-none d-lg-block"></i>
+        <small>
+            © 2011-2024 BEAR.Sunday
+        </small>
+        <ul class="navbar-nav flex-row ml-md-auto d-none d-md-flex">
+            <li>
+                <a href="https://gitter.im/bearsunday/BEAR.Sunday?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge">Gitter</a>
+            </li>
+            <li>
+                <a href="https://github.com/bearsunday/BEAR.Sunday">Github</a>
+            </li>
+            <li>
+                <a href="https://twitter.com/BEARSunday">Twitter</a>
+            </li>
+            <li>
+                <a href="https://www.facebook.com/pages/BEARSunday/110116939178462?ref=hl">Facebook</a>
+            </li>
+            <li>
+                <a href="http://koriym.github.io/">Blog (JA)</a>
+            </li>
+            <li>
+                <a href="https://github.com/bearsunday/bearsunday.github.io">PR ?</a>
+            </li>
+        </ul>
+    </div>
+</footer>
+<script src="//code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+<script>
+    window.ga = function () { ga.q.push(arguments) }; ga.q = []; ga.l = +new Date;
+    ga('create', 'UA-6074569-8', 'bearsunday.github.io'); ga('send', 'pageview');
+</script>
+<script src="https://www.google-analytics.com/analytics.js" async defer></script>
+
+<script src="/js/generate-table-of-contents/index.min.js"></script>
+<script>
+    var toc = generateTableOfContents(document.getElementById('article'));
+    var sideBarRight = $('.side-bar-right');
+    sideBarRight.append(toc);
+
+    var scrollOffset = $('body').attr('data-offset');
+    var articlePaddingTop = $('article').css('padding-top').replace('px', '');
+    sideBarRight.find('a').on('click', function (e) {
+        e.preventDefault();
+        var targetId = $(this).attr('href');
+        var targetPositionTop = $(targetId).offset().top - scrollOffset - articlePaddingTop;
+        window.scrollTo(0, targetPositionTop)
+    });
+</script>
+
+</body>
+</html>
+

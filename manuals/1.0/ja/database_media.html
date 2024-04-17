@@ -1,0 +1,589 @@
+<!doctype html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>MediaQuery &#124; BEAR.Sunday</title>
+    <meta name="description" content="BEAR.Sunday is a resource orientated framework with a REST centered architecture, implementing Dependency Injection and Aspect Orientated Programming' at its core.">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/github-markdown-css/2.10.0/github-markdown.css">
+    <link rel="stylesheet" href="/css/syntax.css">
+    
+    <link rel="stylesheet" href="/css/bearsunday.css">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="apple-touch-icon" href="/icon.png">
+</head>
+<body data-page-category="Manual" data-spy="scroll" data-target="#ArticleToc" data-offset="65">
+<header>
+    <nav class="navbar navbar-expand flex-column flex-md-row bg-light">
+        <a class="navbar-brand mr-0 mr-md-2" href="/index.html"></a>
+        <div class="navbar-nav-scroll">
+            <ul class="navbar-nav flex-row">
+                <li class="nav-item">
+                    <a class="nav-link " href="/index.html">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="/manuals/1.0/en/index.html">Manual</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link " href="/contributors.html">Contributors</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/slide.html">Slide</a>
+                </li>
+            </ul>
+        </div>
+        
+        <ul class="navbar-nav ml-md-auto d-none d-md-flex language-list">
+            <li>
+                <a class="" href="/manuals/1.0/en/database_media.html">En</a>
+            </li>
+            <li>
+                <a class="active" href="/manuals/1.0/ja/database_media.html">Ja</a>
+            </li>
+        </ul>
+        
+    </nav>
+</header>
+
+<main class="container-fluid">
+    <div class="row flex-xl-nowrap">
+        <div class="col-md-3 col-lg-2">
+            <div class="side-bar">
+                <nav class="navbar navbar-expand-md navbar-light">
+    <div class="navigation-header">
+        <div class="ml-auto d-sm-block d-md-none">
+            <ul class="navbar-nav language-list">
+                <li>
+                    <a class="" href="/manuals/1.0/en/database_media.html">En</a>
+                </li>
+                <li>
+                    <a class="active" href="/manuals/1.0/ja/database_media.html">Ja</a>
+                </li>
+            </ul>
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#Navber" aria-controls="Navber" aria-expanded="false" aria-label="ナビゲーションの切替">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+    </div>
+    <div class="collapse navbar-collapse" id="Navber">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/index.html">イントロダクション</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/version.html">バージョン</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/quick-start.html">クイックスタート</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/tutorial.html">チュートリアル</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/tutorial2.html">チュートリアル 2</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/package.html">パッケージ</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/application.html">アプリケーション</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/module.html">モジュール</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/di.html">DI</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/aop.html">AOP</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/resource.html">リソース</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/resource_param.html">・パラメーター</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/resource_link.html">・リンク</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/resource_renderer.html">・レンダリングと転送</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/router.html">ルーター</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/production.html">プロダクション</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/ja/import.html">インポート</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/database.html">データベース</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/html.html">HTML</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/validation.html">バリデーション</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/form.html">フォーム</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/content-negotiation.html">コンテントネゴシエーション</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/hypermedia-api.html">ハイパーメディア API</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/psr7.html">リクエスト / PSR-7</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/js-ui.html">JavaScript UI</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/stream.html">ストリーム出力</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/cache.html">キャッシュ</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/swoole.html">Swoole</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/coding-guide.html">コーディングガイド</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/types.html">タイプ</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/test.html">テスト</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/examples.html">サンプル</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/upgrade/injector.html">アップグレード</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/attribute.html">アトリビュート</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/apidoc.html">API Doc</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/1page.html">1 Page</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+            </div>
+        </div>
+        <div class="col-md-9 col-lg-8">
+            <article id="article" class="markdown-body">
+                <h1 id="raymediaquery">Ray.MediaQuery</h1>
+
+<p><code class="language-plaintext highlighter-rouge">Ray.MediaQuery</code>はDBやWeb APIなどの外部メディアのクエリーのインターフェイスから、クエリー実行オブジェクトを生成しインジェクトします。</p>
+
+<ul>
+  <li>ドメイン層とインフラ層の境界を明確にします。</li>
+  <li>ボイラープレートコードを削減します。</li>
+  <li>外部メディアの実体には無関係なので、後からストレージを変更することができます。並列開発やスタブ作成が容易です。</li>
+</ul>
+
+<h2 id="インストール">インストール</h2>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ composer require ray/media-query
+</code></pre></div></div>
+
+<h2 id="利用方法">利用方法</h2>
+
+<p>メディアアクセスするインターフェイスを定義します。</p>
+
+<h3 id="データベースの場合">データベースの場合</h3>
+
+<p><code class="language-plaintext highlighter-rouge">DbQuery</code>属性でSQLのIDを指定します。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">interface</span> <span class="nc">TodoAddInterface</span>
+<span class="p">{</span>
+    <span class="c1">#[DbQuery('user_add')]</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">add</span><span class="p">(</span><span class="kt">string</span> <span class="nv">$id</span><span class="p">,</span> <span class="kt">string</span> <span class="nv">$title</span><span class="p">):</span> <span class="kt">void</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="web-apiの場合">Web APIの場合</h3>
+
+<p><code class="language-plaintext highlighter-rouge">WebQuery</code>属性でWeb APIのIDを指定します。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">interface</span> <span class="nc">PostItemInterface</span>
+<span class="p">{</span>
+    <span class="c1">#[WebQuery('user_item')]</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">get</span><span class="p">(</span><span class="kt">string</span> <span class="nv">$id</span><span class="p">):</span> <span class="kt">array</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>APIパスリストのファイルを<code class="language-plaintext highlighter-rouge">media_query.json</code>として作成します。</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+    </span><span class="nl">"$schema"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://ray-di.github.io/Ray.MediaQuery/schema/web_query.json"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"webQuery"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="p">{</span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"user_item"</span><span class="p">,</span><span class="w"> </span><span class="nl">"method"</span><span class="p">:</span><span class="w"> </span><span class="s2">"GET"</span><span class="p">,</span><span class="w"> </span><span class="nl">"path"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://{domain}/users/{id}"</span><span class="p">}</span><span class="w">
+    </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>MediaQueryModuleは、<code class="language-plaintext highlighter-rouge">DbQueryConfig</code>や<code class="language-plaintext highlighter-rouge">WebQueryConfig</code>、またはその両方の設定でSQLやWeb APIリクエストの実行をインターフェイスに束縛します。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">use</span> <span class="nc">Ray\AuraSqlModule\AuraSqlModule</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">Ray\MediaQuery\ApiDomainModule</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">Ray\MediaQuery\DbQueryConfig</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">Ray\MediaQuery\MediaQueryModule</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">Ray\MediaQuery\Queries</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">Ray\MediaQuery\WebQueryConfig</span><span class="p">;</span>
+
+<span class="k">protected</span> <span class="k">function</span> <span class="n">configure</span><span class="p">():</span> <span class="kt">void</span>
+<span class="p">{</span>
+    <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">install</span><span class="p">(</span>
+        <span class="k">new</span> <span class="nc">MediaQueryModule</span><span class="p">(</span>
+            <span class="nc">Queries</span><span class="o">::</span><span class="nf">fromDir</span><span class="p">(</span><span class="s1">'/path/to/queryInterface'</span><span class="p">),[</span>
+                <span class="k">new</span> <span class="nc">DbQueryConfig</span><span class="p">(</span><span class="s1">'/path/to/sql'</span><span class="p">),</span>
+                <span class="k">new</span> <span class="nc">WebQueryConfig</span><span class="p">(</span><span class="s1">'/path/to/web_query.json'</span><span class="p">,</span> <span class="p">[</span><span class="s1">'domain'</span> <span class="o">=&gt;</span> <span class="s1">'api.exmaple.com'</span><span class="p">])</span>
+            <span class="p">],</span>
+        <span class="p">),</span>
+    <span class="p">);</span>
+    <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">install</span><span class="p">(</span><span class="k">new</span> <span class="nc">AuraSqlModule</span><span class="p">(</span><span class="s1">'mysql:host=localhost;dbname=test'</span><span class="p">,</span> <span class="s1">'username'</span><span class="p">,</span> <span class="s1">'password'</span><span class="p">));</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>MediaQueryModuleはAuraSqlModuleのインストールが必要です。</p>
+
+<h3 id="注入">注入</h3>
+
+<p>インターフェイスからオブジェクトが直接生成され、インジェクトされます。実装クラスのコーディングが不要です。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">Todo</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">__construct</span><span class="p">(</span>
+        <span class="kt">private</span> <span class="nc">TodoAddInterface</span> <span class="nv">$todoAdd</span>
+    <span class="p">)</span> <span class="p">{}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="n">add</span><span class="p">(</span><span class="kt">string</span> <span class="nv">$id</span><span class="p">,</span> <span class="kt">string</span> <span class="nv">$title</span><span class="p">):</span> <span class="kt">void</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">todoAdd</span><span class="o">-&gt;</span><span class="nf">add</span><span class="p">(</span><span class="nv">$id</span><span class="p">,</span> <span class="nv">$title</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="dbquery">DbQuery</h3>
+
+<p>SQL実行がメソッドにマップされ、IDで指定されたSQLをメソッドの引数でバインドして実行します。
+例えばIDが<code class="language-plaintext highlighter-rouge">todo_item</code>の指定では<code class="language-plaintext highlighter-rouge">todo_item.sql</code>SQL文に<code class="language-plaintext highlighter-rouge">['id =&gt; $id]</code>をバインドして実行します。</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">$sqlDir</code>ディレクトリにSQLファイルを用意します。</li>
+  <li>SQLファイルには複数のSQL文が記述できます。最後の行のSELECTが返り値になります。</li>
+</ul>
+
+<h4 id="entity">Entity</h4>
+
+<ul>
+  <li>SQL実行結果を用意したエンティティクラスを<code class="language-plaintext highlighter-rouge">entity</code>で指定して変換 (hydrate)することができます。</li>
+</ul>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">interface</span> <span class="nc">TodoItemInterface</span>
+<span class="p">{</span>
+    <span class="c1">#[DbQuery('todo_item', entity: Todo::class)]</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">getItem</span><span class="p">(</span><span class="kt">string</span> <span class="nv">$id</span><span class="p">):</span> <span class="kt">Todo</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">final</span> <span class="kd">class</span> <span class="nc">Todo</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="kt">string</span> <span class="nv">$id</span><span class="p">;</span>
+    <span class="k">public</span> <span class="kt">string</span> <span class="nv">$title</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>プロパティをキャメルケースに変換する場合には<code class="language-plaintext highlighter-rouge">CameCaseTrait</code>を使います。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">use</span> <span class="nc">Ray\MediaQuery\CamelCaseTrait</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">Invoice</span>
+<span class="p">{</span>
+    <span class="kn">use</span> <span class="nc">CamelCaseTrait</span><span class="p">;</span>
+
+    <span class="k">public</span> <span class="nv">$userName</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>コンストラクタがあると、フェッチしたデータでコールされます。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">final</span> <span class="kd">class</span> <span class="nc">Todo</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">__construct</span><span class="p">(</span>
+        <span class="kt">public</span> <span class="n">string</span> <span class="nv">$id</span><span class="p">,</span>
+        <span class="kt">public</span> <span class="n">string</span> <span class="nv">$title</span>
+    <span class="p">)</span> <span class="p">{}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+<h4 id="type-row">type: ‘row’</h4>
+
+<p>SQL実行の戻り値が単一行ならの<code class="language-plaintext highlighter-rouge">type: 'row'</code>のアトリビュートを指定します。しかしインターフェイスの戻り値がエンティティクラスなら省略することができます。<sup id="fnref:v0dot5" role="doc-noteref"><a href="#fn:v0dot5" class="footnote" rel="footnote">1</a></sup></p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cd">/** 返り値がEntityの場合 */</span>
+<span class="kd">interface</span> <span class="nc">TodoItemInterface</span>
+<span class="p">{</span>
+    <span class="c1">#[DbQuery('todo_item', entity: Todo::class)]</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">getItem</span><span class="p">(</span><span class="kt">string</span> <span class="nv">$id</span><span class="p">):</span> <span class="kt">Todo</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cd">/** 返り値がarrayの場合 */</span>
+<span class="kd">interface</span> <span class="nc">TodoItemInterface</span>
+<span class="p">{</span>
+    <span class="c1">#[DbQuery('todo_item', entity: Todo::class, type: 'row')]</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">getItem</span><span class="p">(</span><span class="kt">string</span> <span class="nv">$id</span><span class="p">):</span> <span class="kt">array</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="web-api">Web API</h3>
+
+<ul>
+  <li>メソッドの引数が <code class="language-plaintext highlighter-rouge">uri</code>で指定されたURI templateにバインドされ、Web APIリクエストオブジェクトが生成されます。</li>
+  <li>認証のためのヘッダーなどのカスタムはGuzzleの<code class="language-plaintext highlighter-rouge">ClinetInterface</code>をバインドして行います。</li>
+</ul>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">bind</span><span class="p">(</span><span class="nc">ClientInterface</span><span class="o">::</span><span class="n">class</span><span class="p">)</span><span class="o">-&gt;</span><span class="nf">toProvider</span><span class="p">(</span><span class="nc">YourGuzzleClientProvider</span><span class="o">::</span><span class="n">class</span><span class="p">);</span>
+</code></pre></div></div>
+
+<h2 id="パラメーター">パラメーター</h2>
+
+<h3 id="日付時刻">日付時刻</h3>
+
+<p>パラメーターにバリューオブジェクトを渡すことができます。
+例えば、<code class="language-plaintext highlighter-rouge">DateTimeInterface</code>オブジェクトをこのように指定できます。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">interface</span> <span class="nc">TaskAddInterface</span>
+<span class="p">{</span>
+    <span class="c1">#[DbQuery('task_add')]</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">__invoke</span><span class="p">(</span><span class="kt">string</span> <span class="nv">$title</span><span class="p">,</span> <span class="kt">DateTimeInterface</span> <span class="nv">$cratedAt</span> <span class="o">=</span> <span class="kc">null</span><span class="p">):</span> <span class="kt">void</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>値はSQL実行時やWeb APIリクエスト時に日付フォーマットされた文字列に変換されます。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">task</span> <span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="n">created_at</span><span class="p">)</span> <span class="k">VALUES</span> <span class="p">(:</span><span class="n">title</span><span class="p">,</span> <span class="p">:</span><span class="n">createdAt</span><span class="p">);</span> <span class="o">#</span> <span class="mi">2021</span><span class="o">-</span><span class="mi">2</span><span class="o">-</span><span class="mi">14</span> <span class="mi">00</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>
+</code></pre></div></div>
+
+<p>値を渡さないとバインドされている現在時刻がインジェクションされます。
+SQL内部で<code class="language-plaintext highlighter-rouge">NOW()</code>とハードコーディングする事や、毎回現在時刻を渡す手間を省きます。</p>
+
+<h3 id="テスト時刻">テスト時刻</h3>
+<p>テストの時には以下のように<code class="language-plaintext highlighter-rouge">DateTimeInterface</code>の束縛を１つの時刻にする事もできます。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">bind</span><span class="p">(</span><span class="nc">DateTimeInterface</span><span class="o">::</span><span class="n">class</span><span class="p">)</span><span class="o">-&gt;</span><span class="nf">to</span><span class="p">(</span><span class="nc">UnixEpochTime</span><span class="o">::</span><span class="n">class</span><span class="p">);</span>
+</code></pre></div></div>
+
+<h3 id="vo">VO</h3>
+
+<p><code class="language-plaintext highlighter-rouge">DateTime</code>以外のバリューオブジェクトが渡されると<code class="language-plaintext highlighter-rouge">toScalar</code>インターフェイスを実装した<code class="language-plaintext highlighter-rouge">toScalar()</code>メソッド、もしくは<code class="language-plaintext highlighter-rouge">__toString()</code>メソッドの返り値が引数になります。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">interface</span> <span class="nc">MemoAddInterface</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">__invoke</span><span class="p">(</span><span class="kt">string</span> <span class="nv">$memo</span><span class="p">,</span> <span class="kt">UserId</span> <span class="nv">$userId</span> <span class="o">=</span> <span class="kc">null</span><span class="p">):</span> <span class="kt">void</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">UserId</span> <span class="kd">implements</span> <span class="nc">ToScalarInterface</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">__construct</span><span class="p">(</span>
+        <span class="kt">private</span> <span class="nc">LoginUser</span> <span class="nv">$user</span><span class="p">;</span>
+    <span class="p">){}</span>
+    
+    <span class="k">public</span> <span class="k">function</span> <span class="n">toScalar</span><span class="p">():</span> <span class="kt">int</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">user</span><span class="o">-&gt;</span><span class="n">id</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">memo</span> <span class="p">(</span><span class="n">user_id</span><span class="p">,</span> <span class="n">memo</span><span class="p">)</span> <span class="k">VALUES</span> <span class="p">(:</span><span class="n">user_id</span><span class="p">,</span> <span class="p">:</span><span class="n">memo</span><span class="p">);</span>
+</code></pre></div></div>
+
+<h3 id="パラメーターインジェクション">パラメーターインジェクション</h3>
+
+<p>バリューオブジェクトの引数のデフォルトの値の<code class="language-plaintext highlighter-rouge">null</code>がSQLやWebリクエストで使われることは無い事に注意してください。値が渡されないと、nullの代わりにパラメーターの型でインジェクトされたバリューオブジェクトのスカラー値が使われます。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">public</span> <span class="k">function</span> <span class="n">__invoke</span><span class="p">(</span><span class="kt">Uuid</span> <span class="nv">$uuid</span> <span class="o">=</span> <span class="kc">null</span><span class="p">):</span> <span class="kt">void</span><span class="p">;</span> <span class="c1">// UUIDが生成され渡される</span>
+</code></pre></div></div>
+
+<h2 id="ページネーション">ページネーション</h2>
+
+<p>DBの場合、<code class="language-plaintext highlighter-rouge">#[Pager]</code>属性でSELECTクエリーをページングする事ができます。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">use</span> <span class="nc">Ray\MediaQuery\PagesInterface</span><span class="p">;</span>
+
+<span class="kd">interface</span> <span class="nc">TodoList</span>
+<span class="p">{</span>
+    <span class="c1">#[DbQuery, Pager(perPage: 10, template: '/{?page}')]</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">__invoke</span><span class="p">():</span> <span class="kt">PagesInterface</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">count()</code>で件数が取得でき、ページ番号で配列アクセスをするとページオブジェクトが取得できます。
+<code class="language-plaintext highlighter-rouge">Pages</code>はSQL遅延実行オブジェクトです。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$pages</span> <span class="o">=</span> <span class="p">(</span><span class="nv">$todoList</span><span class="p">)();</span>
+<span class="nv">$cnt</span> <span class="o">=</span> <span class="nb">count</span><span class="p">(</span><span class="nv">$pages</span><span class="p">);</span> <span class="c1">// count()をした時にカウントSQLが生成されクエリーが行われます。</span>
+<span class="nv">$page</span> <span class="o">=</span> <span class="nv">$pages</span><span class="p">[</span><span class="mi">2</span><span class="p">];</span> <span class="c1">// 配列アクセスをした時にそのページのDBクエリーが行われます。</span>
+
+<span class="c1">// $page-&gt;data // sliced data</span>
+<span class="c1">// $page-&gt;current;</span>
+<span class="c1">// $page-&gt;total</span>
+<span class="c1">// $page-&gt;hasNext</span>
+<span class="c1">// $page-&gt;hasPrevious</span>
+<span class="c1">// $page-&gt;maxPerPage;</span>
+<span class="c1">// (string) $page // pager html</span>
+</code></pre></div></div>
+
+<h2 id="sqlquery">SqlQuery</h2>
+
+<p><code class="language-plaintext highlighter-rouge">SqlQuery</code>はSQLファイルのIDを指定してSQLを実行します。
+実装クラスを用意して詳細な実装を行う時に使用します。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">TodoItem</span> <span class="kd">implements</span> <span class="nc">TodoItemInterface</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">__construct</span><span class="p">(</span>
+        <span class="kt">private</span> <span class="nc">SqlQueryInterface</span> <span class="nv">$sqlQuery</span>
+    <span class="p">){}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="n">__invoke</span><span class="p">(</span><span class="kt">string</span> <span class="nv">$id</span><span class="p">)</span> <span class="p">:</span> <span class="kt">array</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">sqlQuery</span><span class="o">-&gt;</span><span class="nf">getRow</span><span class="p">(</span><span class="s1">'todo_item'</span><span class="p">,</span> <span class="p">[</span><span class="s1">'id'</span> <span class="o">=&gt;</span> <span class="nv">$id</span><span class="p">]);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="get-メソッド">Get* メソッド</h2>
+
+<p>SELECT結果を取得するためには取得する結果に応じた<code class="language-plaintext highlighter-rouge">get*</code>を使います。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$sqlQuery</span><span class="o">-&gt;</span><span class="nf">getRow</span><span class="p">(</span><span class="nv">$queryId</span><span class="p">,</span> <span class="nv">$params</span><span class="p">);</span> <span class="c1">// 結果が単数行</span>
+<span class="nv">$sqlQuery</span><span class="o">-&gt;</span><span class="nf">getRowList</span><span class="p">(</span><span class="nv">$queryId</span><span class="p">,</span> <span class="nv">$params</span><span class="p">);</span> <span class="c1">// 結果が複数行</span>
+<span class="nv">$statement</span> <span class="o">=</span> <span class="nv">$sqlQuery</span><span class="o">-&gt;</span><span class="nf">getStatement</span><span class="p">();</span> <span class="c1">// PDO Statementを取得</span>
+<span class="nv">$pages</span> <span class="o">=</span> <span class="nv">$sqlQuery</span><span class="o">-&gt;</span><span class="nf">getPages</span><span class="p">();</span> <span class="c1">// ページャーを取得</span>
+</code></pre></div></div>
+
+<p>Ray.MediaQueryは<a href="https://github.com/ray-di/Ray.AuraSqlModule">Ray.AuraSqlModule</a> を含んでいます。
+さらに低レイヤーの操作が必要な時はAura.Sqlの<a href="https://github.com/ray-di/Ray.AuraSqlModule#query-builder">Query Builder</a> やPDOを拡張した<a href="https://github.com/auraphp/Aura.Sql">Aura.Sql</a> のExtended PDOをお使いください。
+<a href="https://github.com/ray-di/Ray.DbalModule">doctrine/dbal</a> も利用できます。</p>
+
+<p>Parameter Injectionと同様、<code class="language-plaintext highlighter-rouge">DateTimeIntetface</code>オブジェクトを渡すと日付フォーマットされた文字列に変換されます。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$sqlQuery</span><span class="o">-&gt;</span><span class="nb">exec</span><span class="p">(</span><span class="s1">'memo_add'</span><span class="p">,</span> <span class="p">[</span><span class="s1">'memo'</span> <span class="o">=&gt;</span> <span class="s1">'run'</span><span class="p">,</span> <span class="s1">'created_at'</span> <span class="o">=&gt;</span> <span class="k">new</span> <span class="nc">DateTime</span><span class="p">()]);</span>
+</code></pre></div></div>
+
+<p>他のオブジェクトが渡されると<code class="language-plaintext highlighter-rouge">toScalar()</code>または<code class="language-plaintext highlighter-rouge">__toString()</code>の値に変換されます。</p>
+
+<h2 id="プロファイラー">プロファイラー</h2>
+
+<p>メディアアクセスはロガーで記録されます。標準ではテストに使うメモリロガーがバインドされています。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">public</span> <span class="k">function</span> <span class="n">testAdd</span><span class="p">():</span> <span class="kt">void</span>
+<span class="p">{</span>
+    <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">sqlQuery</span><span class="o">-&gt;</span><span class="nb">exec</span><span class="p">(</span><span class="s1">'todo_add'</span><span class="p">,</span> <span class="nv">$todoRun</span><span class="p">);</span>
+    <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">assertStringContainsString</span><span class="p">(</span><span class="s1">'query: todo_add({"id":"1","title":"run"})'</span><span class="p">,</span> <span class="p">(</span><span class="n">string</span><span class="p">)</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">log</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>独自の<a href="src/MediaQueryLoggerInterface.php">MediaQueryLoggerInterface</a>を実装して、
+各メディアクエリーのベンチマークを行ったり、インジェクトしたPSRロガーでログをする事もできます。</p>
+
+<h2 id="アノテーション--アトリビュート">アノテーション / アトリビュート</h2>
+
+<p>属性を表すのに<a href="https://github.com/doctrine/annotations/">doctrineアノテーション</a> 、<a href="https://www.php.net/manual/ja/language.attributes.overview.php">アトリビュート</a> どちらも利用できます。 次の2つは同じものです。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">use</span> <span class="nc">Ray\MediaQuery\Annotation\DbQuery</span><span class="p">;</span>
+
+<span class="c1">#[DbQuery('user_add')]</span>
+<span class="k">public</span> <span class="k">function</span> <span class="n">add1</span><span class="p">(</span><span class="kt">string</span> <span class="nv">$id</span><span class="p">,</span> <span class="kt">string</span> <span class="nv">$title</span><span class="p">):</span> <span class="kt">void</span><span class="p">;</span>
+
+<span class="cd">/** @DbQuery("user_add") */</span>
+<span class="k">public</span> <span class="k">function</span> <span class="n">add2</span><span class="p">(</span><span class="kt">string</span> <span class="nv">$id</span><span class="p">,</span> <span class="kt">string</span> <span class="nv">$title</span><span class="p">):</span> <span class="kt">void</span><span class="p">;</span>
+</code></pre></div></div>
+<hr />
+<div class="footnotes" role="doc-endnotes">
+  <ol>
+    <li id="fn:v0dot5" role="doc-endnote">
+      <p>以前のバージョン<code class="language-plaintext highlighter-rouge">0.5</code>までは次のようにSQLファイル名で判別していました。”SQL実行の戻り値が単一行なら<code class="language-plaintext highlighter-rouge">item</code>、複数行なら<code class="language-plaintext highlighter-rouge">list</code>のpostfixを付けます。” <a href="#fnref:v0dot5" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+  </ol>
+</div>
+
+            </article>
+        </div>
+        <div id="ArticleToc" class="col-lg-2 d-none d-lg-block">
+            <nav class="nav side-bar-right"></nav>
+        </div>
+    </div>
+</main>
+<footer>
+    <div class="container d-md-flex">
+        <i class="bear-icon d-none d-lg-block"></i>
+        <small>
+            © 2011-2024 BEAR.Sunday
+        </small>
+        <ul class="navbar-nav flex-row ml-md-auto d-none d-md-flex">
+            <li>
+                <a href="https://gitter.im/bearsunday/BEAR.Sunday?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge">Gitter</a>
+            </li>
+            <li>
+                <a href="https://github.com/bearsunday/BEAR.Sunday">Github</a>
+            </li>
+            <li>
+                <a href="https://twitter.com/BEARSunday">Twitter</a>
+            </li>
+            <li>
+                <a href="https://www.facebook.com/pages/BEARSunday/110116939178462?ref=hl">Facebook</a>
+            </li>
+            <li>
+                <a href="http://koriym.github.io/">Blog (JA)</a>
+            </li>
+            <li>
+                <a href="https://github.com/bearsunday/bearsunday.github.io">PR ?</a>
+            </li>
+        </ul>
+    </div>
+</footer>
+<script src="//code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+<script>
+    window.ga = function () { ga.q.push(arguments) }; ga.q = []; ga.l = +new Date;
+    ga('create', 'UA-6074569-8', 'bearsunday.github.io'); ga('send', 'pageview');
+</script>
+<script src="https://www.google-analytics.com/analytics.js" async defer></script>
+
+<script src="/js/generate-table-of-contents/index.min.js"></script>
+<script>
+    var toc = generateTableOfContents(document.getElementById('article'));
+    var sideBarRight = $('.side-bar-right');
+    sideBarRight.append(toc);
+
+    var scrollOffset = $('body').attr('data-offset');
+    var articlePaddingTop = $('article').css('padding-top').replace('px', '');
+    sideBarRight.find('a').on('click', function (e) {
+        e.preventDefault();
+        var targetId = $(this).attr('href');
+        var targetPositionTop = $(targetId).offset().top - scrollOffset - articlePaddingTop;
+        window.scrollTo(0, targetPositionTop)
+    });
+</script>
+
+</body>
+</html>
+

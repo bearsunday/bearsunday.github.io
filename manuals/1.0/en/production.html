@@ -1,0 +1,401 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Production &#124; BEAR.Sunday</title>
+    <meta name="description" content="BEAR.Sunday is a resource orientated framework with a REST centered architecture, implementing Dependency Injection and Aspect Orientated Programming' at its core.">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/github-markdown-css/2.10.0/github-markdown.css">
+    <link rel="stylesheet" href="/css/syntax.css">
+    
+    <link rel="stylesheet" href="/css/bearsunday.css">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="apple-touch-icon" href="/icon.png">
+</head>
+<body data-page-category="Manual" data-spy="scroll" data-target="#ArticleToc" data-offset="65">
+<header>
+    <nav class="navbar navbar-expand flex-column flex-md-row bg-light">
+        <a class="navbar-brand mr-0 mr-md-2" href="/index.html"></a>
+        <div class="navbar-nav-scroll">
+            <ul class="navbar-nav flex-row">
+                <li class="nav-item">
+                    <a class="nav-link " href="/index.html">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="/manuals/1.0/en/index.html">Manual</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link " href="/contributors.html">Contributors</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/slide.html">Slide</a>
+                </li>
+            </ul>
+        </div>
+        
+        <ul class="navbar-nav ml-md-auto d-none d-md-flex language-list">
+            <li>
+                <a class="active" href="/manuals/1.0/en/production.html">En</a>
+            </li>
+            <li>
+                <a class="" href="/manuals/1.0/ja/production.html">Ja</a>
+            </li>
+        </ul>
+        
+    </nav>
+</header>
+
+<main class="container-fluid">
+    <div class="row flex-xl-nowrap">
+        <div class="col-md-3 col-lg-2">
+            <div class="side-bar">
+                <nav class="navbar navbar-expand-md navbar-light">
+    <div class="navigation-header">
+        <div class="ml-auto d-sm-block d-md-none">
+            <ul class="navbar-nav language-list">
+                <li>
+                    <a class="active" href="/manuals/1.0/en/production.html">En</a>
+                </li>
+                <li>
+                    <a class="" href="/manuals/1.0/ja/production.html">Ja</a>
+                </li>
+            </ul>
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#Navber" aria-controls="Navber" aria-expanded="false" aria-label="ナビゲーションの切替">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+    </div>
+    <div class="collapse navbar-collapse" id="Navber">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/">Introduction</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/version.html">Version</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/quick-start.html">Quick Start</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/tutorial.html">Tutorial</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/tutorial2.html">Tutorial 2</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/package.html">Package</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/application.html">Application</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/module.html">Module</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/di.html">DI</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/aop.html">AOP</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/resource.html">Resource</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/resource_param.html">・Parameter</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/resource_link.html">・Link</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/resource_renderer.html">・Rendering and Transfer</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/router.html">Router</a>
+            </li>
+            <li>
+                <a class="nav-link active" href="/manuals/1.0/en/production.html">Production</a>
+            </li>
+            <li>
+                <a class="nav-link active" href="/manuals/1.0/en/import.html">Import</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/database.html">Database</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/validation.html">Validation</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/html.html">HTML</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/form.html">Form</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/content-negotiation.html">Content Negotiation</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/hypermedia-api.html">Hypermedia API</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/psr7.html">Request / PSR-7</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/js-ui.html">JavaScript UI</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/stream.html">Stream Response</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/cache.html">Cache</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/swoole.html">Swoole</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/coding-guide.html">Coding Guide</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/types.html">Type</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/test.html">Test</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/examples.html">Examples</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/attribute.html">Attribute</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/apidoc.html">API Doc</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/1page.html">1 Page</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+            </div>
+        </div>
+        <div class="col-md-9 col-lg-8">
+            <article id="article" class="markdown-body">
+                <p>(This chapter is not yet updated for the BEAR.Package 1.10+)</p>
+
+<h1 id="production">Production</h1>
+
+<p>In this section, we will cover how to setup the cache and the system for the production environment.</p>
+
+<h2 id="context">Context</h2>
+
+<p><code class="language-plaintext highlighter-rouge">prod</code> is the context for production.
+Cache is used for root object <code class="language-plaintext highlighter-rouge">$app</code>, annotation reader, etc.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+<span class="k">require</span> <span class="nb">dirname</span><span class="p">(</span><span class="k">__DIR__</span><span class="p">)</span> <span class="mf">.</span> <span class="s1">'/autoload.php'</span><span class="p">;</span>
+<span class="k">exit</span><span class="p">((</span><span class="k">require</span> <span class="nb">dirname</span><span class="p">(</span><span class="k">__DIR__</span><span class="p">)</span> <span class="mf">.</span> <span class="s1">'/bootstrap.php'</span><span class="p">)(</span><span class="s1">'prod-api-app'</span><span class="p">));</span>
+</code></pre></div></div>
+
+<h2 id="refresh-app">Refresh $app</h2>
+
+<p><strong>IMPORTANT</strong></p>
+
+<p><strong>In production, You need to regenerate $app cache in each deploy.</strong></p>
+
+<p>To regenerate the <code class="language-plaintext highlighter-rouge">$app</code> cache, You <strong>change the timestamp of the <code class="language-plaintext highlighter-rouge">src/</code> directory</strong>. The BEAR.Sunday framework recognise it, then it re-generate <code class="language-plaintext highlighter-rouge">$app</code> and whole DI/AOP files under <code class="language-plaintext highlighter-rouge">tmp/</code> directory.</p>
+
+<h2 id="prodmodule">ProdModule</h2>
+
+<p>Set <code class="language-plaintext highlighter-rouge">ProdModule</code> for the application in <code class="language-plaintext highlighter-rouge">src/Module/ProdModule.php</code> to customize the bindings for production and to allow HTTP OPTIONS methods.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+<span class="kn">namespace</span> <span class="nn">Polidog\Todo\Module</span><span class="p">;</span>
+
+<span class="kn">use</span> <span class="nc">BEAR\Package\Context\ProdModule</span> <span class="k">as</span> <span class="nc">PackageProdModule</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">BEAR\QueryRepository\CacheVersionModule</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">BEAR\Resource\Module\OptionsMethodModule</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">BEAR\Package\AbstractAppModule</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">ProdModule</span> <span class="kd">extends</span> <span class="nc">AbstractModule</span>
+<span class="p">{</span>
+    <span class="cd">/**
+     * {@inheritdoc}
+     */</span>
+    <span class="k">protected</span> <span class="k">function</span> <span class="n">configure</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">install</span><span class="p">(</span><span class="k">new</span> <span class="nc">PackageProdModule</span><span class="p">);</span>       <span class="c1">// default setting (recommended)</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">override</span><span class="p">(</span><span class="k">new</span> <span class="nc">OptionsMethodModule</span><span class="p">);</span>    <span class="c1">// Enable HTTP OPTIONS method in production</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">install</span><span class="p">(</span><span class="k">new</span> <span class="nc">CacheVersionModule</span><span class="p">(</span><span class="s1">'1'</span><span class="p">));</span> <span class="c1">// Specify version number of resource cache</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+<h2 id="cache">Cache</h2>
+
+<p>There are two kinds of caches: a local cache that does not share between multiple Web servers and a shared cache that shares. The local cache is used for unchanged cachesafter deploy, such as annotations. The shared cache is used to store the resource state.</p>
+
+<p>Both caches are by default chain cache of [APCu + file cache]. APCu is used preferentially and the write is done to both storages.</p>
+
+<h3 id="resource-cache">Resource Cache</h3>
+
+<p>In order to configure multiple web servers, it is necessary to set shared cache storage. Install ([Memcached] (http://php.net/manual/en/book.memcached.php) or [Redis] (https://redis.io/)) module.</p>
+
+<h3 id="memcached">Memcached</h3>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+<span class="kn">namespace</span> <span class="nn">BEAR\HelloWorld\Module</span><span class="p">;</span>
+
+<span class="kn">use</span> <span class="nc">BEAR\QueryRepository\StorageMemcachedModule</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">BEAR\Package\Context\ProdModule</span> <span class="k">as</span> <span class="nc">PackageProdModule</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">BEAR\Package\AbstractAppModule</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">Ray\Di\Scope</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">ProdModule</span> <span class="kd">extends</span> <span class="nc">AbstractModule</span>
+<span class="p">{</span>
+    <span class="cd">/**
+     * {@inheritdoc}
+     */</span>
+    <span class="k">protected</span> <span class="k">function</span> <span class="n">configure</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="c1">// memcache</span>
+        <span class="c1">// {host}:{port}:{weight},...</span>
+        <span class="nv">$memcachedServers</span> <span class="o">=</span> <span class="s1">'mem1.domain.com:11211:33,mem2.domain.com:11211:67'</span><span class="p">;</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">install</span><span class="p">(</span><span class="k">new</span> <span class="nc">StorageMemcachedModule</span><span class="p">(</span><span class="n">memcachedServers</span><span class="p">);</span>
+
+        <span class="c1">// Install default ProdModule</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">install</span><span class="p">(</span><span class="k">new</span> <span class="nc">PackageProdModule</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="redis">Redis</h3>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// redis</span>
+<span class="nv">$redisServer</span> <span class="o">=</span> <span class="s1">'localhost:6379'</span><span class="p">;</span> <span class="c1">// {host}:{port}</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">install</span><span class="p">(</span><span class="k">new</span> <span class="nc">StorageRedisModule</span><span class="p">(</span><span class="nv">$redisServer</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>When using storage other than the above, create a new module with reference to each module.</p>
+
+<h3 id="set-cache-expiration-ttl">Set cache expiration (TTL)</h3>
+
+<p>To change the default TTL,Install <code class="language-plaintext highlighter-rouge">StorageExpiryModule</code>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Cache time</span>
+<span class="nv">$short</span> <span class="o">=</span> <span class="mi">60</span><span class="p">;</span>
+<span class="nv">$medium</span> <span class="o">=</span> <span class="mi">3600</span><span class="p">;</span>
+<span class="nv">$long</span> <span class="o">=</span> <span class="mi">24</span> <span class="o">*</span> <span class="mi">3600</span><span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">install</span><span class="p">(</span><span class="k">new</span> <span class="nc">StorageExpiryModule</span><span class="p">(</span><span class="nv">$short</span><span class="p">,</span> <span class="nv">$medium</span><span class="p">,</span> <span class="nv">$long</span><span class="p">);</span>
+</code></pre></div></div>
+<h3 id="specify-the-cache-version">Specify the cache version</h3>
+
+<p>Resource cache incompatibility is lost In the case of deploy, change the cache version.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$this-&gt;install(new CacheVersionModule($cacheVersion));
+</code></pre></div></div>
+
+<p>If you want to destroy the resource cache every time you deploy, assign time and random value to <code class="language-plaintext highlighter-rouge">$ cacheVersion</code>. (This statement is invoked only once after deploy.)</p>
+
+<h2 id="deploy">Deploy</h2>
+
+<h3 id="️-avoid-overwriting-updates">⚠️ Avoid overwriting updates</h3>
+
+<p>Overwriting a running project folder with <code class="language-plaintext highlighter-rouge">rsync</code> or the like has a risk of inconsistency between the resource cache and automatic generation class file created in　<code class="language-plaintext highlighter-rouge">tmp/</code> and the actual class. On heavily loaded sites, it is possible that multiple jobs such as cache creation and opcode creation are executed at the same time, exceeding the performance capacity of the site.</p>
+
+<p>Set up in a different directory and switch it (by symlink) if the setup is OK.</p>
+
+<h3 id="-compilation-recommended">👍🏻 Compilation recommended</h3>
+
+<p>When setting up, you can warm up the project using the <code class="language-plaintext highlighter-rouge">vendor/bin/bear.compile</code> script. The compilation script prepares all static cache files such as dynamically created files and annotations for DI / AOP in advance.</p>
+
+<p>Since injection is done in all classes, there is no problem of DI error at runtime. In addition, although <code class="language-plaintext highlighter-rouge">.env</code> generally contains credential information such as API key and password, all contents are imported into PHP file and can be deleted after compilation. Compilation makes the deployment faster and safer. The optimized autoload.php file and preload.php are also output.</p>
+
+<p><strong>Execution at the console</strong></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>vendor/bin/bear.compile 'Polidog\Todo' prod-html-app /path/to/prject
+</code></pre></div></div>
+
+<h3 id="autoloadphp">autoload.php</h3>
+
+<p>It will output an autoload.php file optimized for <code class="language-plaintext highlighter-rouge">{project_path}/autoload.php</code>, which is much faster than the <code class="language-plaintext highlighter-rouge">vendor/autoload.php</code> dumped by <code class="language-plaintext highlighter-rouge">composer dumpa-autoload --optimize</code>.</p>
+
+<h3 id="preloadphp">preload.php</h3>
+
+<p>You need to specify <code class="language-plaintext highlighter-rouge">opcache.preload</code> and <code class="language-plaintext highlighter-rouge">opcache.preload</code> in <code class="language-plaintext highlighter-rouge">php.ini</code> to enable preload, a feature supported in PHP 7.4 but not recommended for <code class="language-plaintext highlighter-rouge">7.4.0</code>-<code class="language-plaintext highlighter-rouge">7.4.2</code>.</p>
+
+<p>Example)</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>opcache.preload=/path/to/project/preload.php
+opcache.preload_user=www-data
+</code></pre></div></div>
+
+<p>Note: Please refer to bechmark for performance information.</p>
+
+<h2 id="deploy-1">Deploy</h2>
+
+<p>Deployer’s <a href="https://github.com/bearsunday/deploy">BEAR.Sunday recipe</a> is convenient and safe to use. Consider using the other server configuration tool as well as referring or running the Deployer script. Since Deployer generates a project directory each time, you do not have to worry about regenerating <code class="language-plaintext highlighter-rouge">$app</code>.</p>
+
+            </article>
+        </div>
+        <div id="ArticleToc" class="col-lg-2 d-none d-lg-block">
+            <nav class="nav side-bar-right"></nav>
+        </div>
+    </div>
+</main>
+<footer>
+    <div class="container d-md-flex">
+        <i class="bear-icon d-none d-lg-block"></i>
+        <small>
+            © 2011-2024 BEAR.Sunday
+        </small>
+        <ul class="navbar-nav flex-row ml-md-auto d-none d-md-flex">
+            <li>
+                <a href="https://gitter.im/bearsunday/BEAR.Sunday?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge">Gitter</a>
+            </li>
+            <li>
+                <a href="https://github.com/bearsunday/BEAR.Sunday">Github</a>
+            </li>
+            <li>
+                <a href="https://twitter.com/BEARSunday">Twitter</a>
+            </li>
+            <li>
+                <a href="https://www.facebook.com/pages/BEARSunday/110116939178462?ref=hl">Facebook</a>
+            </li>
+            <li>
+                <a href="http://koriym.github.io/">Blog (JA)</a>
+            </li>
+            <li>
+                <a href="https://github.com/bearsunday/bearsunday.github.io">PR ?</a>
+            </li>
+        </ul>
+    </div>
+</footer>
+<script src="//code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+<script>
+    window.ga = function () { ga.q.push(arguments) }; ga.q = []; ga.l = +new Date;
+    ga('create', 'UA-6074569-8', 'bearsunday.github.io'); ga('send', 'pageview');
+</script>
+<script src="https://www.google-analytics.com/analytics.js" async defer></script>
+
+<script src="/js/generate-table-of-contents/index.min.js"></script>
+<script>
+    var toc = generateTableOfContents(document.getElementById('article'));
+    var sideBarRight = $('.side-bar-right');
+    sideBarRight.append(toc);
+
+    var scrollOffset = $('body').attr('data-offset');
+    var articlePaddingTop = $('article').css('padding-top').replace('px', '');
+    sideBarRight.find('a').on('click', function (e) {
+        e.preventDefault();
+        var targetId = $(this).attr('href');
+        var targetPositionTop = $(targetId).offset().top - scrollOffset - articlePaddingTop;
+        window.scrollTo(0, targetPositionTop)
+    });
+</script>
+
+</body>
+</html>

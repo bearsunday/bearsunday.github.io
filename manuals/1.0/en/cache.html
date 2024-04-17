@@ -1,0 +1,663 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Cache &#124; BEAR.Sunday</title>
+    <meta name="description" content="BEAR.Sunday is a resource orientated framework with a REST centered architecture, implementing Dependency Injection and Aspect Orientated Programming' at its core.">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/github-markdown-css/2.10.0/github-markdown.css">
+    <link rel="stylesheet" href="/css/syntax.css">
+    
+    <link rel="stylesheet" href="/css/bearsunday.css">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="apple-touch-icon" href="/icon.png">
+</head>
+<body data-page-category="Manual" data-spy="scroll" data-target="#ArticleToc" data-offset="65">
+<header>
+    <nav class="navbar navbar-expand flex-column flex-md-row bg-light">
+        <a class="navbar-brand mr-0 mr-md-2" href="/index.html"></a>
+        <div class="navbar-nav-scroll">
+            <ul class="navbar-nav flex-row">
+                <li class="nav-item">
+                    <a class="nav-link " href="/index.html">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="/manuals/1.0/en/index.html">Manual</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link " href="/contributors.html">Contributors</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/slide.html">Slide</a>
+                </li>
+            </ul>
+        </div>
+        
+        <ul class="navbar-nav ml-md-auto d-none d-md-flex language-list">
+            <li>
+                <a class="active" href="/manuals/1.0/en/cache.html">En</a>
+            </li>
+            <li>
+                <a class="" href="/manuals/1.0/ja/cache.html">Ja</a>
+            </li>
+        </ul>
+        
+    </nav>
+</header>
+
+<main class="container-fluid">
+    <div class="row flex-xl-nowrap">
+        <div class="col-md-3 col-lg-2">
+            <div class="side-bar">
+                <nav class="navbar navbar-expand-md navbar-light">
+    <div class="navigation-header">
+        <div class="ml-auto d-sm-block d-md-none">
+            <ul class="navbar-nav language-list">
+                <li>
+                    <a class="active" href="/manuals/1.0/en/cache.html">En</a>
+                </li>
+                <li>
+                    <a class="" href="/manuals/1.0/ja/cache.html">Ja</a>
+                </li>
+            </ul>
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#Navber" aria-controls="Navber" aria-expanded="false" aria-label="ナビゲーションの切替">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+    </div>
+    <div class="collapse navbar-collapse" id="Navber">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/">Introduction</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/version.html">Version</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/quick-start.html">Quick Start</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/tutorial.html">Tutorial</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/tutorial2.html">Tutorial 2</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/package.html">Package</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/application.html">Application</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/module.html">Module</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/di.html">DI</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/aop.html">AOP</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/resource.html">Resource</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/resource_param.html">・Parameter</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/resource_link.html">・Link</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/resource_renderer.html">・Rendering and Transfer</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/router.html">Router</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/production.html">Production</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/import.html">Import</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/database.html">Database</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/validation.html">Validation</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/html.html">HTML</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/form.html">Form</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/content-negotiation.html">Content Negotiation</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/hypermedia-api.html">Hypermedia API</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/psr7.html">Request / PSR-7</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/js-ui.html">JavaScript UI</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/stream.html">Stream Response</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/cache.html">Cache</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/swoole.html">Swoole</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/coding-guide.html">Coding Guide</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/types.html">Type</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/test.html">Test</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/examples.html">Examples</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/attribute.html">Attribute</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/apidoc.html">API Doc</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/1page.html">1 Page</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+            </div>
+        </div>
+        <div class="col-md-9 col-lg-8">
+            <article id="article" class="markdown-body">
+                <h1 id="cache">Cache</h1>
+
+<blockquote>
+  <p>There are only two hard things in Computer Science: cache invalidation and naming things.</p>
+
+  <p>– Phil Karlton</p>
+</blockquote>
+
+<h2 id="overview">Overview</h2>
+
+<p>A good caching system improves the intrinsic quality of the user experience and reduces the cost of resource usage and environmental impact.
+Sunday supports the following caching features in addition to the traditional simple TTL-based caching</p>
+
+<ul>
+  <li>Event-driven cache invalidation</li>
+  <li>Cache dependency resolution</li>
+  <li>Donut cache and donut hole cache</li>
+  <li>CDN control</li>
+  <li>Conditional requests.</li>
+</ul>
+
+<h3 id="distributed-cache-framework">Distributed Cache Framework</h3>
+
+<p>A distributed caching system that obeys REST constraints saves not only computational resources but also network resources.</p>
+
+<p>PHP directly handles <strong>server-side caches</strong> such as Redis and APC, <strong>shared caches</strong> known as content delivery networks (CDNs), <strong>client-side caches</strong> cached by web browsers and API clients, BEAR.Sunday provides a caching framework that integrates these caches with modern CDNs.</p>
+
+<p><img src="https://user-images.githubusercontent.com/529021/137062427-c733c832-0631-4a43-a6ee-4204e6be007c.png" alt="distributed cache " /></p>
+
+<h2 id="tag-based-cache-invalidation">Tag-based cache invalidation</h2>
+
+<p><img width="369" alt="dependency graph 2021-10-19 21 38 02" src="https://user-images.githubusercontent.com/529021/137910748-b6e95839-eeb7-4ade-a564-3cdcd5fdc09e.png" /></p>
+
+<p>There is a dependency problem in the content cache. If content A depends on content B, and B depends on C, then when C is updated, not only C’s cache and ETag must be updated, but also B’s cache and ETag which depend on C, and A’s cache and ETag which depend on B.</p>
+
+<p>Sunday solves this problem by having each resource hold the URI of the dependent resource as a tag. When a resource embedded with <code class="language-plaintext highlighter-rouge">#[Embed]</code> is modified, the cache and ETag of all the resources involved will be invalidated and the cache will be regenerated for the next request.</p>
+
+<h2 id="donut-cache">Donut cache</h2>
+
+<p><img width="200" alt="donut caching" src="https://user-images.githubusercontent.com/529021/137097856-f9428918-5b76-4c0e-8cea-2472c15d82e9.png" /></p>
+
+<p>Donut caching is one of the partial caching techniques for cache optimization. It composes the content into cacheable and non-cacheable parts.</p>
+
+<p>For example, consider the content “<code class="language-plaintext highlighter-rouge">Welcome to $name</code>”, which contains a non-cacheable resource. The do-not-cache part will be combined with the other cacheable parts and output.</p>
+
+<p><img width="557" alt="image" src="https://user-images.githubusercontent.com/529021/139617102-1f7f436c-a1f4-4c6c-b90b-de24491e4c8c.png " /></p>
+
+<p>In this case, the entire content is dynamic, so the entire donut will not be cached. Therefore, no ETag will be output either.</p>
+
+<h2 id="donut-hole-cache">Donut hole cache</h2>
+
+<p><img width="544" alt="image" src="https://user-images.githubusercontent.com/529021/139617571-31aea99a-533f-4b95-b3f3-6c613407d377.png " /></p>
+
+<p>When the hole part of the doughnut is cacheable, it can be treated in the same way as the doughnut cache.</p>
+
+<p>In the example above, the resource for the weather forecast, which changes once an hour, is cached and included in the news resource. In this case, since the content of the donut as a whole (news) is static, the whole thing is also cached and given an ETag.</p>
+
+<p>This is where the cache dependency comes in. When the content of the hole part of the donut is updated, the entire cached donut needs to be regenerated.</p>
+
+<p>The nice thing is that this dependency resolution is done automatically. The computation of the donut part is then reused to minimize the computational resources. When the hole part (weather resource) is updated, the cache and ETag of the entire content is also automatically updated.
+Translated with www.DeepL.com/Translator (free version)</p>
+
+<h3 id="recursive-donut">recursive donut</h3>
+
+<p><img width="191" alt="recursive donut 2021-10-19 21 27 06" src="https://user-images.githubusercontent.com/529021/137909083-2c5176f7-edb7-422b-bccc-1db90460fc15.png" /></p>
+
+<p>The donut structure will be recursively applied.
+For example, if A contains B and B contains C and C is modified, A’s cache and B’s cache will be reused except for the modified C. A’s and B’s caches and ETags will be regenerated, but DB access to retrieve A’s and B’s content and rendering of views will not be done.
+For example, if A contains B and B contains C, and C is changed, A’s cache and B’s cache will be reused except for the part of C that is changed. The new partially-composed A and B caches and ETags will be regenerated.</p>
+
+<p>The optimized structure of the partial cache performs content regeneration with minimal cost. The client does not need to know about the content cache structure.</p>
+
+<h2 id="event-driven-content">Event-driven content</h2>
+
+<p>Traditionally, CDNs have believed that content that requires application logic is “dynamic” and therefore cannot be cached by a CDN. However, some CDNs, such as Fastly and Akamai, allow immediate or tag-based cache invalidation within seconds, <a href="https://www.fastly.com/blog/leveraging-your-cdn-cache- uncacheable-content">this idea is a thing of the past</a>.</p>
+
+<p>Sunday dependency resolution is done not only on the server side, but also on the shared cache; when AOP detects a change and makes a PURGE request to the shared cache, the related cache on the shared cache will be invalidated, just like on the server side.</p>
+
+<h2 id="conditional-request">Conditional request</h2>
+
+<p><img width="468" alt="conditional request" src="https://user-images.githubusercontent.com/529021/137151061-8d7a5605-3aa3-494c-91c5-c1 deddd987dd.png" /></p>
+
+<p>Content changes are managed by AOP, and the entity tag (ETag) of the content is automatically updated. conditional requests for HTTP using ETag not only minimize the use of computational resources, but responses that only return <code class="language-plaintext highlighter-rouge">304 Not Modified</code> also minimize the use of network resources. Conditional HTTP requests using ETag not only minimize the use of computational resources, but also minimize the use of network resources by simply returning <code class="language-plaintext highlighter-rouge">304 Not Modified</code>.</p>
+
+<h1 id="usage">Usage</h1>
+
+<p>Give the class to be cached the attribute <code class="language-plaintext highlighter-rouge">#[DonutCache]</code> if it is a donut cache (embedded content is not cacheable) and <code class="language-plaintext highlighter-rouge">#[CacheableResponse]</code> otherwise.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">use</span> <span class="nc">BEAR\RepositoryModule\Annotation\CacheableResponse</span><span class="p">;</span>
+
+<span class="c1">#[CacheableResponse]</span>
+<span class="kd">class</span> <span class="nc">BlogPosting</span> <span class="kd">extends</span> <span class="nc">ResourceObject</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="nv">$headers</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="nc">RequestHeader</span><span class="o">::</span><span class="no">CACHE_CONTROL</span> <span class="o">=&gt;</span> <span class="nc">CacheControl</span><span class="o">::</span><span class="no">NO_CACHE</span>
+    <span class="p">];</span>
+
+    <span class="c1">#[Embed(rel: "comment", src: "page://self/html/comment")]</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onGet</span><span class="p">(</span><span class="kt">int</span> <span class="nv">$id</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span> <span class="kt">static</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">body</span><span class="p">[</span><span class="s1">'article'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'hello world'</span><span class="p">;</span>
+
+        <span class="k">return</span> <span class="nv">$this</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onDelete</span><span class="p">(</span><span class="kt">int</span> <span class="nv">$id</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span> <span class="kt">static</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="nv">$this</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="recursive-donut-1">recursive donut</h3>
+
+<p><img width="191" alt="recursive donut 2021-10-19 21 27 06" src="https://user-images.githubusercontent.com/529021/137909083-2c5176f7-edb7- 422b-bccc-1db90460fc15.png" /></p>
+
+<p>The donut structure will be recursively applied.
+For example, if A contains B and B contains C and C is modified, A’s cache and B’s cache will be reused except for the modified C. A’s and B’s caches and ETags will be regenerated, but DB access to retrieve A’s and B’s content and rendering of views will not be done.
+For example, if A contains B and B contains C, and C is changed, A’s cache and B’s cache will be reused except for the part of C that is changed. The new partially-composed A and B caches and ETags will be regenerated.</p>
+
+<p>The optimized structure of the partial cache performs content regeneration with minimal cost. The client does not need to know about the content cache structure.</p>
+
+<h2 id="event-driven-content-1">Event-driven content</h2>
+
+<p>Traditionally, CDNs have believed that content that requires application logic is “dynamic” and therefore cannot be cached by a CDN. However, some CDNs, such as Fastly and Akamai, allow immediate or tag-based cache invalidation within seconds, <a href="https://www.fastly.com/blog/leveraging-your-cdn-cache- uncacheable-content">this idea is a thing of the past</a>.</p>
+
+<p>Sunday dependency resolution is done not only on the server side, but also on the shared cache; when AOP detects a change and makes a PURGE request to the shared cache, the related cache on the shared cache will be invalidated, just like on the server side.</p>
+
+<h2 id="conditional-request-1">Conditional request</h2>
+
+<p><img width="468" alt="conditional request" src="https://user-images.githubusercontent.com/529021/137151061-8d7a5605-3aa3-494c-91c5-c1 deddd987dd.png" /></p>
+
+<p>Content changes are managed by AOP, and the entity tag (ETag) of the content is automatically updated. conditional requests for HTTP using ETag not only minimize the use of computational resources, but responses that only return <code class="language-plaintext highlighter-rouge">304 Not Modified</code> also minimize the use of network resources. Conditional HTTP requests using ETag not only minimize the use of computational resources, but also minimize the use of network resources by simply returning <code class="language-plaintext highlighter-rouge">304 Not Modified</code>.</p>
+
+<h1 id="usage-1">Usage</h1>
+
+<p>Give the class to be cached the attribute <code class="language-plaintext highlighter-rouge">#[DonutCache]</code> if it is a donut cache (embedded content is not cacheable) and <code class="language-plaintext highlighter-rouge">#[CacheableResponse]</code> otherwise.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">Todo</span> <span class="kd">extends</span> <span class="nc">ResourceObject</span>
+<span class="p">{</span>
+    <span class="c1">#[CacheableResponse]</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onPut</span><span class="p">(</span><span class="kt">int</span> <span class="nv">$id</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="kt">string</span> <span class="nv">$todo</span><span class="p">):</span> <span class="kt">static</span>
+    <span class="p">{</span>
+    <span class="p">}</span>
+
+    <span class="c1">#[RefreshCache]</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onDelete</span><span class="p">(</span><span class="kt">int</span> <span class="nv">$id</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span> <span class="kt">static</span>
+    <span class="p">{</span>
+    <span class="p">}</span>	
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>If you give attributes in either way, all the features introduced in the overview will apply.
+Caching is not disabled by time (TTL) by default, assuming event-driven content</p>
+
+<p>Note that with <code class="language-plaintext highlighter-rouge">#[DonutCache]</code> the whole content will not be cached, but with <code class="language-plaintext highlighter-rouge">#[CacheableResponse]</code> it will be.</p>
+
+<h2 id="ttl">TTL</h2>
+
+<p>TTL is specified with <code class="language-plaintext highlighter-rouge">DonutRepositoryInterface::put()</code>.
+<code class="language-plaintext highlighter-rouge">ttl</code> is the cache time for non-donut holes, <code class="language-plaintext highlighter-rouge">sMaxAge</code> is the cache time for CDNs.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">use</span> <span class="nc">BEAR\RepositoryModule\Annotation\CacheableResponse</span><span class="p">;</span>
+
+<span class="c1">#[CacheableResponse]</span>
+<span class="kd">class</span> <span class="nc">BlogPosting</span> <span class="kd">extends</span> <span class="nc">ResourceObject</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">__construct</span><span class="p">(</span><span class="kt">private</span> <span class="nc">DonutRepositoryInterface</span> <span class="nv">$repository</span><span class="p">)</span>
+    <span class="p">{}</span>
+
+    <span class="c1">#[Embed(rel: "comment", src: "page://self/html/comment")]</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onGet</span><span class="p">():</span> <span class="kt">static</span>
+    <span class="p">{</span>
+        <span class="c1">// process ...</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">repository</span><span class="o">-&gt;</span><span class="nf">put</span><span class="p">(</span><span class="nv">$this</span><span class="p">,</span> <span class="n">ttl</span><span class="o">:</span><span class="mi">10</span><span class="p">,</span> <span class="n">sMaxAge</span><span class="o">:</span><span class="mi">100</span><span class="p">);</span><span class="err">　</span>
+
+        <span class="k">return</span> <span class="nv">$this</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+<h3 id="default-ttl-value">Default TTL value</h3>
+
+<p>For event-driven content, changes to the content must be reflected immediately in the cache, so the default TTL varies depending on the CDN module installed. Therefore, the default TTL will vary depending on the CDN module installed: indefinitely (1 year) if the CDN supports tag-based disabling of caching, or 10 seconds if it does not.</p>
+
+<p>The expected cache reflection time is immediate for Fastly, a few seconds for Akamai, and 10 seconds for others.</p>
+
+<p>To customize it, bind it by implementing <code class="language-plaintext highlighter-rouge">CdnCacheControlHeaderSetterInterface</code> with reference to <code class="language-plaintext highlighter-rouge">CdnCacheControlHeader</code>.</p>
+
+<h2 id="cache-invalidation">Cache invalidation</h2>
+
+<p>Use the methods of <code class="language-plaintext highlighter-rouge">DonutRepositoryInterface</code> to manually invalidate the cache.
+This will invalidate not only the specified cache, but also the cache of the ETag, any other resources it depends on, and the cache of the ETag on the server side and, if possible, on the CDN.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">interface</span> <span class="nc">DonutRepositoryInterface</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">purge</span><span class="p">(</span><span class="kt">AbstractUri</span> <span class="nv">$uri</span><span class="p">):</span> <span class="kt">void</span><span class="p">;</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">invalidateTags</span><span class="p">(</span><span class="kt">array</span> <span class="nv">$tags</span><span class="p">):</span> <span class="kt">void</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="invalidate-by-uri">Invalidate by URI</h3>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// example</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="n">repository</span><span class="o">-&gt;</span><span class="nf">purge</span><span class="p">(</span><span class="k">new</span> <span class="nc">Uri</span><span class="p">(</span><span class="s1">'app://self/blog/comment'</span><span class="p">));</span>
+</code></pre></div></div>
+
+<h3 id="disable-by-tag">Disable by tag</h3>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$this</span><span class="o">-&gt;</span><span class="n">repository</span><span class="o">-&gt;</span><span class="nf">invalidateTags</span><span class="p">([</span><span class="s1">'template_a'</span><span class="p">,</span> <span class="s1">'campaign_b'</span><span class="p">]);</span>
+</code></pre></div></div>
+<h3 id="tag-invalidation-in-cdn">Tag Invalidation in CDN</h3>
+
+<p>In order to enable tag-based cache invalidation in CDN, you need to implement and bind <code class="language-plaintext highlighter-rouge">PurgerInterface</code>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">use</span> <span class="nc">BEAR\QueryRepository\PurgerInterface</span><span class="p">;</span>
+
+<span class="kd">interface</span> <span class="nc">PurgerInterface</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">__invoke</span><span class="p">(</span><span class="kt">string</span> <span class="nv">$tag</span><span class="p">):</span> <span class="kt">void</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="specify-dependent-tags">Specify dependent tags.</h3>
+
+<p>Use the <code class="language-plaintext highlighter-rouge">SURROGATE_KEY</code> header to specify the key for PURGE. Use a space as a separator for multiple strings.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">use</span> <span class="nc">BEAR\QueryRepository\Header</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">Foo</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="nv">$headers</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="nc">Header</span><span class="o">::</span><span class="no">SURROGATE_KEY</span> <span class="o">=&gt;</span> <span class="s1">'template_a campaign_b'</span>
+    <span class="p">];</span>
+</code></pre></div></div>
+
+<p>If the cache is invalidated by <code class="language-plaintext highlighter-rouge">template_a</code> or <code class="language-plaintext highlighter-rouge">campaign_b</code> tags, Foo’s cache and Foo’s ETag will be invalidated both server-side and CDN.</p>
+
+<h3 id="resource-dependencies">Resource Dependencies.</h3>
+
+<p>Use <code class="language-plaintext highlighter-rouge">UriTagInterface</code> to convert a URI into a dependency tag string.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">public</span> <span class="k">function</span> <span class="n">__construct</span><span class="p">(</span><span class="kt">private</span> <span class="nc">UriTagInterface</span> <span class="nv">$uriTag</span><span class="p">)</span>
+<span class="p">{}</span>
+</code></pre></div></div>
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$this</span><span class="o">-&gt;</span><span class="n">headers</span><span class="p">[</span><span class="nc">Header</span><span class="o">::</span><span class="no">SURROGATE_KEY</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="n">uriTag</span><span class="p">)(</span><span class="k">new</span> <span class="nc">Uri</span><span class="p">(</span><span class="s1">'app://self/foo'</span><span class="p">));</span>
+</code></pre></div></div>
+
+<p>This cache will be invalidated both server-side and CDN when <code class="language-plaintext highlighter-rouge">app://self/foo</code> is modified.</p>
+
+<h3 id="make-associative-array-a-resource-dependency">Make associative array a resource dependency.</h3>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// bodyの内容</span>
+<span class="p">[</span>
+    <span class="p">[</span><span class="s1">'id'</span> <span class="o">=&gt;</span> <span class="s1">'1'</span><span class="p">,</span> <span class="s1">'name'</span> <span class="o">=&gt;</span> <span class="s1">'a'</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">'id'</span> <span class="o">=&gt;</span> <span class="s1">'2'</span><span class="p">,</span> <span class="s1">'name'</span> <span class="o">=&gt;</span> <span class="s1">'b'</span><span class="p">],</span>
+<span class="p">]</span>
+</code></pre></div></div>
+<p>If you want to generate a list of dependent URI tags from a <code class="language-plaintext highlighter-rouge">body</code> associative array like the above, you can specify the URI template with the <code class="language-plaintext highlighter-rouge">fromAssoc()</code> method.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$this</span><span class="o">-&gt;</span><span class="n">headers</span><span class="p">[</span><span class="nc">Header</span><span class="o">::</span><span class="no">SURROGATE_KEY</span><span class="p">]</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">uriTag</span><span class="o">-&gt;</span><span class="nf">fromAssoc</span><span class="p">(</span>
+    <span class="n">uriTemplate</span><span class="o">:</span> <span class="s1">'app://self/item{?id}'</span><span class="p">,</span>
+    <span class="n">assoc</span><span class="o">:</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">body</span>
+<span class="p">);</span>
+</code></pre></div></div>
+
+<p>In the above case, this cache will be invalidated for both server-side and CDN when <code class="language-plaintext highlighter-rouge">app://self/item?id=1</code> and <code class="language-plaintext highlighter-rouge">app://self/item?id=2</code> are changed.</p>
+
+<h2 id="cdn">CDN</h2>
+
+<p>If you install a module that supports a specific CDN, vendor-specific headers will be output.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">install</span><span class="p">(</span><span class="k">new</span> <span class="nc">FastlyModule</span><span class="p">())</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">install</span><span class="p">(</span><span class="k">new</span> <span class="nc">AkamaiModule</span><span class="p">())</span>
+</code></pre></div></div>
+
+<h2 id="multi-cdn">Multi-CDN</h2>
+
+<p>You can also configure a multi-tier CDN and set the TTL according to the role. For example, in this diagram, a multi-functional CDN is placed upstream, and a conventional CDN is placed downstream. Content invalidation is done for the upstream CDN, and the downstream CDN uses it.</p>
+
+<p><img width="344" alt="multi cdn diagram" src="https://user-images.githubusercontent.com/529021/137098809-ec949a15-8efb-4d03-9808-3be15523ade7.png" /></p>
+
+<h1 id="response-headers">Response headers</h1>
+
+<p>Sunday will automatically do the cache control for the CDN and output the header for the CDN. Client cache control is described in <code class="language-plaintext highlighter-rouge">$header</code> of ResourceObject depending on the content.</p>
+
+<p>This section is important for security and maintenance purposes.
+Make sure to specify the <code class="language-plaintext highlighter-rouge">Cache-Control</code> in all ResourceObjects.</p>
+
+<h3 id="cannot-cache">Cannot cache</h3>
+
+<p>Always specify content that cannot be cached.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">ResponseHeader</span><span class="o">::</span><span class="no">CACHE_CONTROL</span> <span class="o">=&gt;</span> <span class="nc">CacheControl</span><span class="o">::</span><span class="no">NO_STORE</span>
+</code></pre></div></div>
+
+<h3 id="conditional-requests">Conditional requests</h3>
+
+<p>Check the server for content changes before using the cache. Server-side content changes will be detected and reflected.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">ResponseHeader</span><span class="o">::</span><span class="no">CACHE_CONTROL</span> <span class="o">=&gt;</span> <span class="nc">CacheControl</span><span class="o">::</span><span class="no">NO_CACHE</span>
+</code></pre></div></div>
+
+<h3 id="specify-client-cache-time">Specify client cache time.</h3>
+
+<p>The client is cached on the client. This is the most efficient cache, but server-side content changes will not be reflected at the specified time.</p>
+
+<p>Also, this cache is not used when the browser reloads. The cache is used when a transition is made with the <code class="language-plaintext highlighter-rouge">&lt;a&gt;</code> tag or when a URL is entered.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">ResponseHeader</span><span class="o">::</span><span class="no">CACHE_CONTROL</span> <span class="o">=&gt;</span> <span class="s1">'max-age=60'</span>
+</code></pre></div></div>
+
+<p>If response time is important to you, consider specifying SWR.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">ResponseHeader</span><span class="o">::</span><span class="no">CACHE_CONTROL</span> <span class="o">=&gt;</span> <span class="s1">'max-age=30 stale-while-revalidate=10'</span>
+</code></pre></div></div>
+
+<p>In this case, when the max-age of 30 seconds is exceeded, the old cached (stale) response will be returned for up to 10 seconds, as specified in the SWR, until a fresh response is obtained from the origin server. This means that the cache will be updated sometime between 30 and 40 seconds after the last cache update, but every request will be a response from the cache and will be fast.</p>
+
+<h4 id="rfc7234-compliant-clients">RFC7234 compliant clients</h4>
+
+<p>To use the client cache with APIs, use an RFC7234 compliant API client.</p>
+
+<ul>
+  <li>iOS <a href="https://nshipster.com/nsurlcache/">NSURLCache</a></li>
+  <li>Android <a href="https://developer.android.com/reference/android/net/http/HttpResponseCache">HttpResponseCache</a></li>
+  <li>PHP <a href="https://github.com/Kevinrob/guzzle-cache-middleware">guzzle-cache-middleware</a></li>
+  <li>JavaScript(Node) <a href="https://www.npmjs.com/package/cacheable-request">cacheable-request</a></li>
+  <li>Go <a href="https://github.com/lox/httpcache">lox/httpcache</a></li>
+  <li>Ruby <a href="https://github.com/plataformatec/faraday-http-cache">faraday-http-cache</a></li>
+  <li>Python <a href="https://pypi.org/project/requests-cache/">requests-cache</a></li>
+</ul>
+
+<h3 id="private">private</h3>
+
+<p>Specify <code class="language-plaintext highlighter-rouge">private</code> if you do not want to share the cache with other clients. The cache will be saved only on the client side. In this case, do not specify the cache on the server side.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">ResponseHeader</span><span class="o">::</span><span class="no">CACHE_CONTROL</span> <span class="o">=&gt;</span> <span class="s1">'private, max-age=30'</span>
+</code></pre></div></div>
+
+<blockquote>
+  <p>Even if you use shared cache, you don’t need to specify <code class="language-plaintext highlighter-rouge">public</code> in most cases.</p>
+</blockquote>
+
+<h2 id="cache-design">Cache design</h2>
+
+<p>APIs (or content) can be divided into two categories: <strong>Information APIs</strong> (Information APIs) and <strong>Computation APIs</strong> (Computation APIs). The <strong>Computation API</strong> is content that is difficult to reproduce and is truly dynamic, making it unsuitable for caching. The Information API, on the other hand, is an API for content that is essentially static, even if it is read from a DB and processed by PHP.</p>
+
+<p>It analyzes the content in order to apply the appropriate cache.</p>
+
+<ul>
+  <li>Information API or Computation API?</li>
+  <li>Dependencies are</li>
+  <li>Are the comprehension relationships</li>
+  <li>Is the invalidation triggered by an event or TTL?</li>
+  <li>Is the event detectable by the application or does it need to be monitored?</li>
+  <li>Is the TTL predictable or unpredictable?</li>
+</ul>
+
+<p>Consider making cache design a part of the application design process and make it a specification. It should also contribute to the safety of your project throughout its lifecycle.</p>
+
+<h3 id="adaptive-ttl">Adaptive TTL</h3>
+
+<p>Adaptive TTL is the ability to predict the lifetime of content and correctly tell the client or CDN when it will not be updated by an event during that time. For example, when dealing with a stock API, if it is Friday night, we know that the information will not be updated until the start of trading on Monday. We calculate the number of seconds until that time, specify it as the TTL, and then specify the appropriate TTL when it is time to trade.</p>
+
+<p>The client does not need to request a resource that it knows will not be updated.</p>
+
+<h2 id="cacheable">#[Cacheable].</h2>
+
+<p>The traditional ##[Cacheable] TTL caching is also supported.</p>
+
+<p>Example: 30 seconds cache on the server side, 30 seconds cache on the client.</p>
+
+<p>The same number of seconds will be cached on the client side since it is specified on the server side.</p>
+
+<p>The same number of seconds will be cached on the client side.
+use BEAR\RepositoryModule\Annotation\Cacheable;</p>
+
+<p>#[Cacheable(expirySecond: 30)]]
+class CachedResource extends ResourceObject
+{
+````</p>
+
+<p>Example: Cache the resource on the server and client until the specified expiration date (the date in <code class="language-plaintext highlighter-rouge">$body['expiry_at']</code>)</p>
+
+<p>```php?start_inline
+use BEAR\RepositoryModule\Annotation\Cacheable;</p>
+
+<p>#[Cacheable(expiryAt: ‘expiry_at’)]]
+class CachedResource extends ResourceObject
+{
+```.</p>
+
+<p>See the <a href="https://bearsunday.github.io/manuals/1.0/ja/http-cache.html">HTTP Cache</a> page for more information.</p>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>Web content can be of the information (data) type or the computation (process) type. Although the former is essentially static, it is difficult to treat it as completely static content due to the problems of managing content changes and dependencies, so the cache was invalidated by TTL even though no content changes occurred. Sunday’s caching framework treats information type content as static as possible, maximizing the power of the cache.</p>
+
+<h2 id="terminology">Terminology</h2>
+
+<ul>
+  <li><a href="https://developer.mozilla.org/ja/docs/Web/HTTP/Conditional_requests">条件付きリクエスト</a></li>
+  <li><a href="https://developer.mozilla.org/ja/docs/Web/HTTP/Headers/ETag">ETag (バージョン識別子)</a></li>
+  <li><a href="https://www.fastly.com/blog/rise-event-driven-content-or-how-cache-more-edge">イベントドリブン型コンテンツ</a></li>
+  <li><a href="https://www.infoq.com/jp/news/2011/12/MvcDonutCaching/">ドーナッツキャッシュ / 部分キャッシュ</a></li>
+  <li><a href="https://docs.fastly.com/ja/guides/getting-started-with-surrogate-keys">サロゲートキー / タグベースの無効化</a></li>
+  <li>ヘッダー
+    <ul>
+      <li><a href="https://developer.mozilla.org/ja/docs/Web/HTTP/Headers/Cache-Control">Cache-Control</a></li>
+      <li><a href="https://blog.cloudflare.com/cdn-cache-control/">CDN-Cache-Control</a></li>
+      <li><a href="https://developer.mozilla.org/ja/docs/Web/HTTP/Headers/Vary">Vary</a></li>
+      <li><a href="https://www.infoq.com/jp/news/2020/12/ux-stale-while-revalidate/">Stale-While-Revalidate (SWR)</a></li>
+    </ul>
+  </li>
+</ul>
+
+            </article>
+        </div>
+        <div id="ArticleToc" class="col-lg-2 d-none d-lg-block">
+            <nav class="nav side-bar-right"></nav>
+        </div>
+    </div>
+</main>
+<footer>
+    <div class="container d-md-flex">
+        <i class="bear-icon d-none d-lg-block"></i>
+        <small>
+            © 2011-2024 BEAR.Sunday
+        </small>
+        <ul class="navbar-nav flex-row ml-md-auto d-none d-md-flex">
+            <li>
+                <a href="https://gitter.im/bearsunday/BEAR.Sunday?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge">Gitter</a>
+            </li>
+            <li>
+                <a href="https://github.com/bearsunday/BEAR.Sunday">Github</a>
+            </li>
+            <li>
+                <a href="https://twitter.com/BEARSunday">Twitter</a>
+            </li>
+            <li>
+                <a href="https://www.facebook.com/pages/BEARSunday/110116939178462?ref=hl">Facebook</a>
+            </li>
+            <li>
+                <a href="http://koriym.github.io/">Blog (JA)</a>
+            </li>
+            <li>
+                <a href="https://github.com/bearsunday/bearsunday.github.io">PR ?</a>
+            </li>
+        </ul>
+    </div>
+</footer>
+<script src="//code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+<script>
+    window.ga = function () { ga.q.push(arguments) }; ga.q = []; ga.l = +new Date;
+    ga('create', 'UA-6074569-8', 'bearsunday.github.io'); ga('send', 'pageview');
+</script>
+<script src="https://www.google-analytics.com/analytics.js" async defer></script>
+
+<script src="/js/generate-table-of-contents/index.min.js"></script>
+<script>
+    var toc = generateTableOfContents(document.getElementById('article'));
+    var sideBarRight = $('.side-bar-right');
+    sideBarRight.append(toc);
+
+    var scrollOffset = $('body').attr('data-offset');
+    var articlePaddingTop = $('article').css('padding-top').replace('px', '');
+    sideBarRight.find('a').on('click', function (e) {
+        e.preventDefault();
+        var targetId = $(this).attr('href');
+        var targetPositionTop = $(targetId).offset().top - scrollOffset - articlePaddingTop;
+        window.scrollTo(0, targetPositionTop)
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,510 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Resource &#124; BEAR.Sunday</title>
+    <meta name="description" content="BEAR.Sunday is a resource orientated framework with a REST centered architecture, implementing Dependency Injection and Aspect Orientated Programming' at its core.">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/github-markdown-css/2.10.0/github-markdown.css">
+    <link rel="stylesheet" href="/css/syntax.css">
+    
+    <link rel="stylesheet" href="/css/bearsunday.css">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="apple-touch-icon" href="/icon.png">
+</head>
+<body data-page-category="Manual" data-spy="scroll" data-target="#ArticleToc" data-offset="65">
+<header>
+    <nav class="navbar navbar-expand flex-column flex-md-row bg-light">
+        <a class="navbar-brand mr-0 mr-md-2" href="/index.html"></a>
+        <div class="navbar-nav-scroll">
+            <ul class="navbar-nav flex-row">
+                <li class="nav-item">
+                    <a class="nav-link " href="/index.html">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="/manuals/1.0/en/index.html">Manual</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link " href="/contributors.html">Contributors</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/slide.html">Slide</a>
+                </li>
+            </ul>
+        </div>
+        
+        <ul class="navbar-nav ml-md-auto d-none d-md-flex language-list">
+            <li>
+                <a class="active" href="/manuals/1.0/en/resource.html">En</a>
+            </li>
+            <li>
+                <a class="" href="/manuals/1.0/ja/resource.html">Ja</a>
+            </li>
+        </ul>
+        
+    </nav>
+</header>
+
+<main class="container-fluid">
+    <div class="row flex-xl-nowrap">
+        <div class="col-md-3 col-lg-2">
+            <div class="side-bar">
+                <nav class="navbar navbar-expand-md navbar-light">
+    <div class="navigation-header">
+        <div class="ml-auto d-sm-block d-md-none">
+            <ul class="navbar-nav language-list">
+                <li>
+                    <a class="active" href="/manuals/1.0/en/resource.html">En</a>
+                </li>
+                <li>
+                    <a class="" href="/manuals/1.0/ja/resource.html">Ja</a>
+                </li>
+            </ul>
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#Navber" aria-controls="Navber" aria-expanded="false" aria-label="ナビゲーションの切替">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+    </div>
+    <div class="collapse navbar-collapse" id="Navber">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/">Introduction</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/version.html">Version</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/quick-start.html">Quick Start</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/tutorial.html">Tutorial</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/tutorial2.html">Tutorial 2</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/package.html">Package</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/application.html">Application</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/module.html">Module</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/di.html">DI</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/aop.html">AOP</a>
+            </li>
+            <li>
+                <a class="nav-link active" href="/manuals/1.0/en/resource.html">Resource</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/resource_param.html">・Parameter</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/resource_link.html">・Link</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/resource_renderer.html">・Rendering and Transfer</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/router.html">Router</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/production.html">Production</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/import.html">Import</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/database.html">Database</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/validation.html">Validation</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/html.html">HTML</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/form.html">Form</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/content-negotiation.html">Content Negotiation</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/hypermedia-api.html">Hypermedia API</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/psr7.html">Request / PSR-7</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/js-ui.html">JavaScript UI</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/stream.html">Stream Response</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/cache.html">Cache</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/swoole.html">Swoole</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/coding-guide.html">Coding Guide</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/types.html">Type</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/test.html">Test</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/examples.html">Examples</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/attribute.html">Attribute</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/apidoc.html">API Doc</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/1page.html">1 Page</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+            </div>
+        </div>
+        <div class="col-md-9 col-lg-8">
+            <article id="article" class="markdown-body">
+                <h1 id="resource">Resource</h1>
+
+<p>A BEAR.Sunday application is <a href="http://en.wikipedia.org/wiki/Representational_state_transfer">RESTful</a> and is made up of a collection of resources connected by links.</p>
+
+<h2 id="object-as-a-service">Object as a service</h2>
+
+<p>An HTTP method is mapped to a PHP method in the <code class="language-plaintext highlighter-rouge">ResourceObject</code> class.
+It transfers its resource state as a resource representation from stateless request.
+(<a href="http://en.wikipedia.org/wiki/REST">Representational State Transfer)</a></p>
+
+<p>Here are some examples of a resource object:</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">Index</span> <span class="kd">extends</span> <span class="nc">ResourceObject</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="nv">$code</span> <span class="o">=</span> <span class="mi">200</span><span class="p">;</span>
+    <span class="k">public</span> <span class="nv">$headers</span> <span class="o">=</span> <span class="p">[];</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onGet</span><span class="p">(</span><span class="kt">int</span> <span class="nv">$a</span><span class="p">,</span> <span class="kt">int</span> <span class="nv">$b</span><span class="p">):</span> <span class="kt">static</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">body</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s1">'sum'</span> <span class="o">=&gt;</span> <span class="nv">$a</span> <span class="o">+</span> <span class="nv">$b</span> <span class="c1">// $_GET['a'] + $_GET['b']</span>
+        <span class="p">]</span> <span class="p">;</span>
+
+        <span class="k">return</span> <span class="nv">$this</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">Todo</span> <span class="kd">extends</span> <span class="nc">ResourceObject</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onPost</span><span class="p">(</span><span class="kt">string</span> <span class="nv">$id</span><span class="p">,</span> <span class="kt">string</span> <span class="nv">$todo</span><span class="p">):</span> <span class="kt">static</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">code</span> <span class="o">=</span> <span class="mi">201</span><span class="p">;</span> <span class="c1">// status code</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">headers</span> <span class="o">=</span> <span class="p">[</span> <span class="c1">// header</span>
+            <span class="s1">'Location'</span> <span class="o">=&gt;</span> <span class="s1">'/todo/new_id'</span>
+        <span class="p">];</span>
+
+        <span class="k">return</span> <span class="nv">$this</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>The PHP resource class has URIs such as  <code class="language-plaintext highlighter-rouge">page://self/index</code> similar to the URI of the web, and conforms to the HTTP method <code class="language-plaintext highlighter-rouge">onGet</code>,<code class="language-plaintext highlighter-rouge"> onPost</code>, <code class="language-plaintext highlighter-rouge">onPut</code>,<code class="language-plaintext highlighter-rouge"> onPatch</code>, <code class="language-plaintext highlighter-rouge">onDelete</code> interface.</p>
+
+<p>$_GET for <code class="language-plaintext highlighter-rouge">onGet</code> and $_POST for <code class="language-plaintext highlighter-rouge">onPost</code> are passed to the arguments of the method depending on the variable name, and the methods of <code class="language-plaintext highlighter-rouge">onPut</code>,<code class="language-plaintext highlighter-rouge"> onPatch</code>, <code class="language-plaintext highlighter-rouge">onDelete</code> are content. The value that can be handled according to <code class="language-plaintext highlighter-rouge">content-type</code>(<code class="language-plaintext highlighter-rouge">x-www-form-urlencoded</code> or <code class="language-plaintext highlighter-rouge">application/json</code>) is an argument.</p>
+
+<p>The resource state (<code class="language-plaintext highlighter-rouge">code</code>,<code class="language-plaintext highlighter-rouge">headers</code> or<code class="language-plaintext highlighter-rouge">body</code>) is handled by these method using the given parameters. Then the resource class returns itself(<code class="language-plaintext highlighter-rouge">$this</code>).</p>
+
+<h2 id="uri">URI</h2>
+
+<p>URIs are mapped to PHP classes. Applications use the URI instead of the class name to access resources.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>URI</th>
+      <th>Class</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>page://self/</td>
+      <td>Koriym\Todo\Resource\Page\Index</td>
+    </tr>
+    <tr>
+      <td>page://self/index</td>
+      <td>Koriym\Todo\Resource\Page\Index</td>
+    </tr>
+    <tr>
+      <td>app://self/blog/posts?id=3</td>
+      <td>Koriym\Todo\Resource\App\Blog\Posts</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="scheme">Scheme</h2>
+
+<p>The equivalent to a MVC model is an <code class="language-plaintext highlighter-rouge">app</code> resource. A resource functions as an internal API, but as it is designed using REST it also works as an external API transport.
+The <code class="language-plaintext highlighter-rouge">page</code> resource carries out a similar role as a page controller which is also a resource. Unlike <code class="language-plaintext highlighter-rouge">app</code> resources, it receives external requests and generates representations for output.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>URI</th>
+      <th>Class</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>page://self/index</td>
+      <td>Koriym\Todo\Resource\Page\Index</td>
+    </tr>
+    <tr>
+      <td>app://self/blog/posts</td>
+      <td>Koriym\Todo\Resource\App\Blog\Posts</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="method">Method</h2>
+
+<p>Resources have 6 interfaces conforming to HTTP methods.<sup id="fnref:method" role="doc-noteref"><a href="#fn:method" class="footnote" rel="footnote">1</a></sup></p>
+
+<h3 id="get">GET</h3>
+<p>Reads resources. This method does not provide any changing of the resource state. A safe method with no possible side affects.</p>
+
+<h3 id="post">POST</h3>
+<p>The POST method requests processing of the representation contained in the request. For example, adding a new resource to a target URI or adding a representation to an existing resource. Unlike PUT, requests do not have <a href="https://ja.wikipedia.org/wiki/%E5%86%AA%E7%AD%89">idempotence</a>, and multiple consecutive executions will not produce the same result.</p>
+
+<h3 id="put">PUT</h3>
+<p>Replaces the resource with the payload of the request at the requested URI. If the target resource does not exist, it is created. Unlike POST, there is not idempotent.</p>
+
+<h3 id="patch">PATCH</h3>
+
+<p>Performs resource updates, but unlike PUT, it applies a delta rather than replacing the entire resource.</p>
+
+<h3 id="delete">DELETE</h3>
+<p>Resource deletion. Has idempotence just like PUT.</p>
+
+<h3 id="options">OPTIONS</h3>
+<p>Get information on parameters and responses required for resource request. It is as secure as GET method.</p>
+
+<h4 id="list-of-method-properties">List of method properties</h4>
+
+<table>
+  <thead>
+    <tr>
+      <th>Methods</th>
+      <th><a href="https://developer.mozilla.org/en-US/docs/Glossary/Safe/HTTP">Safe</a></th>
+      <th><a href="https://developer.mozilla.org/en-US/docs/Glossary/Idempotent">Idempotent</a></th>
+      <th><a href="https://developer.mozilla.org/en-US/docs/Glossary/cacheable">Cacheable</a></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>GET</td>
+      <td>Yes</td>
+      <td>Yes</td>
+      <td>Yes</td>
+    </tr>
+    <tr>
+      <td>POST</td>
+      <td>No</td>
+      <td>No</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>PUT</td>
+      <td>No</td>
+      <td>Yes</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>PATCH</td>
+      <td>No</td>
+      <td>Yes</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>DELETE</td>
+      <td>No</td>
+      <td>Yes</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>OPTIONS</td>
+      <td>Yes</td>
+      <td>Yes</td>
+      <td>No</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="parameters">Parameters</h2>
+
+<p>The response method argument is passed the request value corresponding to the variable name.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">Index</span> <span class="kd">extends</span> <span class="nc">ResourceObject</span>
+<span class="p">{</span>
+    <span class="c1">// $_GET['id'] to $id</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onGet</span><span class="p">(</span><span class="kt">int</span> <span class="nv">$id</span><span class="p">):</span> <span class="kt">static</span>
+    <span class="p">{</span>
+    <span class="p">}</span>
+
+    <span class="c1">// $_POST['name'] to $name</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onPost</span><span class="p">(</span><span class="kt">string</span> <span class="nv">$name</span><span class="p">):</span> <span class="kt">static</span>
+    <span class="p">{</span>
+    <span class="p">}</span>
+</code></pre></div></div>
+
+<p>See <a href="resource_param.html">Resource Parameters</a> for other methods and how to pass external variables such as cookies as parameters.</p>
+
+<h2 id="rendering-and-transfer">Rendering and transfer</h2>
+
+<p>The request method of a ResourceObject is not concerned with the representation of the resource. The injected renderer generates the representation of the resource and the responder outputs it. See <a href="resource_renderer.html">Rendering and Transferring</a> for details.</p>
+
+<h2 id="client">Client</h2>
+
+<p>Use the resource client to request other resources. This request executes a request to the <code class="language-plaintext highlighter-rouge">app://self/blog/posts</code> resource with the query <code class="language-plaintext highlighter-rouge">?id=1</code>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">use</span> <span class="nc">BEAR\Sunday\Inject\ResourceInject</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">Index</span> <span class="kd">extends</span> <span class="nc">ResourceObject</span>
+<span class="p">{</span>
+    <span class="kn">use</span> <span class="nc">ResourceInject</span><span class="p">;</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onGet</span><span class="p">():</span> <span class="kt">static</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">body</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s1">'posts'</span> <span class="o">=&gt;</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">resource</span><span class="o">-&gt;</span><span class="nf">get</span><span class="p">(</span><span class="s1">'app://self/blog/posts'</span><span class="p">,</span> <span class="p">[</span><span class="s1">'id'</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">])</span>
+        <span class="p">];</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Other historical notations include the following</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// PHP 5.x and up</span>
+<span class="nv">$posts</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">resource</span><span class="o">-&gt;</span><span class="n">get</span><span class="o">-&gt;</span><span class="nf">uri</span><span class="p">(</span><span class="s1">'app://self/posts'</span><span class="p">)</span><span class="o">-&gt;</span><span class="nf">withQuery</span><span class="p">([</span><span class="s1">'id'</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">])</span><span class="o">-&gt;</span><span class="n">eager</span><span class="o">-&gt;</span><span class="nf">request</span><span class="p">();</span>
+<span class="c1">// PHP 7.x and up</span>
+<span class="nv">$posts</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">resource</span><span class="o">-&gt;</span><span class="n">get</span><span class="o">-&gt;</span><span class="nf">uri</span><span class="p">(</span><span class="s1">'app://self/posts'</span><span class="p">)([</span><span class="s1">'id'</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">]);</span>
+<span class="c1">// you can omit `get`</span>
+<span class="nv">$posts</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">resource</span><span class="o">-&gt;</span><span class="nf">uri</span><span class="p">(</span><span class="s1">'app://self/posts'</span><span class="p">)([</span><span class="s1">'id'</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">]);</span>
+<span class="c1">// bear/resource 1.11 and up</span>
+<span class="nv">$posts</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">resource</span><span class="o">-&gt;</span><span class="nf">get</span><span class="p">(</span><span class="s1">'app://self/posts'</span><span class="p">,</span> <span class="p">[</span><span class="s1">'id'</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">]);</span>
+</code></pre></div></div>
+
+<h2 id="lazy-evaluation">Lazy evaluation</h2>
+
+<p>The above is an <code class="language-plaintext highlighter-rouge">eager</code> request that makes the request immediately, but it is also possible to generate a request and delay execution instead of the request result.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$request</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">resource</span><span class="o">-&gt;</span><span class="nf">get</span><span class="p">(</span><span class="s1">'app://self/posts'</span><span class="p">);</span> <span class="c1">// callable</span>
+<span class="nv">$posts</span> <span class="o">=</span> <span class="nv">$request</span><span class="p">([</span><span class="s1">'id'</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">]);</span>
+</code></pre></div></div>
+
+<p>When this request is embedded in a template or resource, it is evaluated lazily. That is, when it is not evaluated, the request is not made and has no execution cost.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$this</span><span class="o">-&gt;</span><span class="n">body</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">'lazy'</span> <span class="o">=&gt;</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">resource</span><span class="o">-&gt;</span><span class="nf">get</span><span class="p">(</span><span class="s1">'app://self/posts'</span><span class="p">)</span><span class="o">-&gt;</span><span class="nf">withQuery</span><span class="p">([</span><span class="s1">'id'</span> <span class="o">=&gt;</span> <span class="mi">3</span><span class="p">])</span><span class="o">-&gt;</span><span class="nf">requrest</span><span class="p">();</span>
+<span class="p">];</span>
+</code></pre></div></div>
+
+<h2 id="cache">Cache</h2>
+
+<p>Along with regular TTL caching, we support REST client caching and advanced partial caching (doughnut caching), including CDN. See <a href="cache.html">cache</a> for details. Also see the previous <a href="resourcev1.html#Resource Cache">resource(v1)</a> document for the previous <code class="language-plaintext highlighter-rouge">@Cacheable</code> annotation.</p>
+
+<h2 id="link">Link</h2>
+
+<p>One important REST constraint is resource linking; ResourceObject supports both internal and external linking. See <a href="resource_link.html">Resource Linking</a> for details.</p>
+
+<h2 id="bearresource">BEAR.Resource</h2>
+
+<p>The functionality of the BEAR.Sunday resource object is also available in a stand-alone package for stand-alone use: BEAR.Resource <a href="https://github.com/bearsunday/BEAR.Resource/blob/1.x/README.ja.md">README</a>.</p>
+
+<hr />
+<div class="footnotes" role="doc-endnotes">
+  <ol>
+    <li id="fn:method" role="doc-endnote">
+      <p>REST methods are not a mapping to CRUD. They are divided into two categories: safe ones that do not change the resource state, or idempotent ones. <a href="#fnref:method" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+  </ol>
+</div>
+
+            </article>
+        </div>
+        <div id="ArticleToc" class="col-lg-2 d-none d-lg-block">
+            <nav class="nav side-bar-right"></nav>
+        </div>
+    </div>
+</main>
+<footer>
+    <div class="container d-md-flex">
+        <i class="bear-icon d-none d-lg-block"></i>
+        <small>
+            © 2011-2024 BEAR.Sunday
+        </small>
+        <ul class="navbar-nav flex-row ml-md-auto d-none d-md-flex">
+            <li>
+                <a href="https://gitter.im/bearsunday/BEAR.Sunday?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge">Gitter</a>
+            </li>
+            <li>
+                <a href="https://github.com/bearsunday/BEAR.Sunday">Github</a>
+            </li>
+            <li>
+                <a href="https://twitter.com/BEARSunday">Twitter</a>
+            </li>
+            <li>
+                <a href="https://www.facebook.com/pages/BEARSunday/110116939178462?ref=hl">Facebook</a>
+            </li>
+            <li>
+                <a href="http://koriym.github.io/">Blog (JA)</a>
+            </li>
+            <li>
+                <a href="https://github.com/bearsunday/bearsunday.github.io">PR ?</a>
+            </li>
+        </ul>
+    </div>
+</footer>
+<script src="//code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+<script>
+    window.ga = function () { ga.q.push(arguments) }; ga.q = []; ga.l = +new Date;
+    ga('create', 'UA-6074569-8', 'bearsunday.github.io'); ga('send', 'pageview');
+</script>
+<script src="https://www.google-analytics.com/analytics.js" async defer></script>
+
+<script src="/js/generate-table-of-contents/index.min.js"></script>
+<script>
+    var toc = generateTableOfContents(document.getElementById('article'));
+    var sideBarRight = $('.side-bar-right');
+    sideBarRight.append(toc);
+
+    var scrollOffset = $('body').attr('data-offset');
+    var articlePaddingTop = $('article').css('padding-top').replace('px', '');
+    sideBarRight.find('a').on('click', function (e) {
+        e.preventDefault();
+        var targetId = $(this).attr('href');
+        var targetPositionTop = $(targetId).offset().top - scrollOffset - articlePaddingTop;
+        window.scrollTo(0, targetPositionTop)
+    });
+</script>
+
+</body>
+</html>

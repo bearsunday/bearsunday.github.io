@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>アプリケーション &#124; BEAR.Sunday</title>
+    <meta name="description" content="BEAR.Sunday is a resource orientated framework with a REST centered architecture, implementing Dependency Injection and Aspect Orientated Programming' at its core.">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/github-markdown-css/2.10.0/github-markdown.css">
+    <link rel="stylesheet" href="/css/syntax.css">
+    
+    <link rel="stylesheet" href="/css/bearsunday.css">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="apple-touch-icon" href="/icon.png">
+</head>
+<body data-page-category="Manual" data-spy="scroll" data-target="#ArticleToc" data-offset="65">
+<header>
+    <nav class="navbar navbar-expand flex-column flex-md-row bg-light">
+        <a class="navbar-brand mr-0 mr-md-2" href="/index.html"></a>
+        <div class="navbar-nav-scroll">
+            <ul class="navbar-nav flex-row">
+                <li class="nav-item">
+                    <a class="nav-link " href="/index.html">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="/manuals/1.0/en/index.html">Manual</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link " href="/contributors.html">Contributors</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/slide.html">Slide</a>
+                </li>
+            </ul>
+        </div>
+        
+        <ul class="navbar-nav ml-md-auto d-none d-md-flex language-list">
+            <li>
+                <a class="" href="/manuals/1.0/en/application.html">En</a>
+            </li>
+            <li>
+                <a class="active" href="/manuals/1.0/ja/application.html">Ja</a>
+            </li>
+        </ul>
+        
+    </nav>
+</header>
+
+<main class="container-fluid">
+    <div class="row flex-xl-nowrap">
+        <div class="col-md-3 col-lg-2">
+            <div class="side-bar">
+                <nav class="navbar navbar-expand-md navbar-light">
+    <div class="navigation-header">
+        <div class="ml-auto d-sm-block d-md-none">
+            <ul class="navbar-nav language-list">
+                <li>
+                    <a class="" href="/manuals/1.0/en/application.html">En</a>
+                </li>
+                <li>
+                    <a class="active" href="/manuals/1.0/ja/application.html">Ja</a>
+                </li>
+            </ul>
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#Navber" aria-controls="Navber" aria-expanded="false" aria-label="ナビゲーションの切替">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+    </div>
+    <div class="collapse navbar-collapse" id="Navber">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/index.html">イントロダクション</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/version.html">バージョン</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/quick-start.html">クイックスタート</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/tutorial.html">チュートリアル</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/tutorial2.html">チュートリアル 2</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/package.html">パッケージ</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" href="/manuals/1.0/ja/application.html">アプリケーション</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/module.html">モジュール</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/di.html">DI</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/aop.html">AOP</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/resource.html">リソース</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/resource_param.html">・パラメーター</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/resource_link.html">・リンク</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/resource_renderer.html">・レンダリングと転送</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/router.html">ルーター</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/production.html">プロダクション</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/ja/import.html">インポート</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/database.html">データベース</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/html.html">HTML</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/validation.html">バリデーション</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/form.html">フォーム</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/content-negotiation.html">コンテントネゴシエーション</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/hypermedia-api.html">ハイパーメディア API</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/psr7.html">リクエスト / PSR-7</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/js-ui.html">JavaScript UI</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/stream.html">ストリーム出力</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/cache.html">キャッシュ</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/swoole.html">Swoole</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/coding-guide.html">コーディングガイド</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/types.html">タイプ</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/test.html">テスト</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/examples.html">サンプル</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/upgrade/injector.html">アップグレード</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/attribute.html">アトリビュート</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/apidoc.html">API Doc</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/1page.html">1 Page</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+            </div>
+        </div>
+        <div class="col-md-9 col-lg-8">
+            <article id="article" class="markdown-body">
+                <h1 id="アプリケーション">アプリケーション</h1>
+
+<h2 id="実行シーケンス">実行シーケンス</h2>
+<p>コンパイル、リクエスト、レスポンスの順でアプリケーションが実行されます。</p>
+
+<h3 id="0-コンパイル">0. コンパイル</h3>
+
+<p>コンテキストに応じたDIとAOPの設定で、アプリケーションの実行に必要なルートオブジェクト<code class="language-plaintext highlighter-rouge">$app</code>を生成します。$appは<code class="language-plaintext highlighter-rouge">router</code>や<code class="language-plaintext highlighter-rouge">transfer</code>などアプリケーションの実行に必要なサービスオブジェクトで構成されます。<sup id="fnref:graph" role="doc-noteref"><a href="#fn:graph" class="footnote" rel="footnote">1</a></sup> $appはシリアライズされ各リクエストで再利用されます。</p>
+
+<ul>
+  <li>router - 外部入力をリソースリクエストに変換</li>
+  <li>resource - リソースクライアント</li>
+  <li>transfer - 出力</li>
+</ul>
+
+<h3 id="1-リクエスト">1. リクエスト</h3>
+
+<p>リクエストに基づき、リソースオブジェクトが作成されます。</p>
+
+<p>リクエストに応じて <code class="language-plaintext highlighter-rouge">onGet</code> や <code class="language-plaintext highlighter-rouge">onPost</code> などに応答するメソッドを持つリソースオブジェクトは、自身の<strong>リソースの状態</strong>として <code class="language-plaintext highlighter-rouge">code</code> または <code class="language-plaintext highlighter-rouge">body</code> プロパティを設定します。</p>
+
+<p>リソースオブジェクトのメソッドは、リソースの状態を変更するためだけのものであり、表現そのもの（HTML、JSONなど）には関心がありません。</p>
+
+<p>メソッドの前後では、ログや認証などメソッドに束縛されたアプリケーションロジックがAOPで実行されます。</p>
+
+<h3 id="2-レスポンス">2. レスポンス</h3>
+
+<p>リソースに注入されたレンダラーがJSONやHTMLなどの<strong>リソースの状態表現</strong>を作りクライアントに<strong>転送</strong>します。
+(<strong>RE</strong>presentational <strong>S</strong>tate <strong>T</strong>ransfer=REST)</p>
+
+<p><img src="/images/screen/diagram.png" style="max-width: 100%;height: auto;" /></p>
+
+<h2 id="bootスクリプト">bootスクリプト</h2>
+
+<p><code class="language-plaintext highlighter-rouge">public/</code>や<code class="language-plaintext highlighter-rouge">bin/</code>等のエントリーポイントに設置され、アプリケーションを実行します。
+スクリプトではアプリケーション実行コンテキストを指定して実行します。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">require</span> <span class="nb">dirname</span><span class="p">(</span><span class="k">__DIR__</span><span class="p">)</span> <span class="mf">.</span> <span class="s1">'/autoload.php'</span><span class="p">;</span>
+<span class="k">exit</span><span class="p">((</span><span class="k">new</span> <span class="nc">Bootstrap</span><span class="p">())(</span><span class="s1">'app'</span><span class="p">,</span> <span class="nv">$GLOBALS</span><span class="p">,</span> <span class="nv">$_SERVER</span><span class="p">));</span>
+</code></pre></div></div>
+
+<p>デフォルトではWebサーバースクリプトです。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>php <span class="nt">-S</span> 127.0.0.1:8080 public/index.php
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">cli</code> コンテキストを付加するとコンソールアプリーケーションのスクリプトになります。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">exit</span><span class="p">((</span><span class="k">new</span> <span class="nc">Bootstrap</span><span class="p">())(</span><span class="s1">'cli-app'</span><span class="p">,</span> <span class="nv">$GLOBALS</span><span class="p">,</span> <span class="nv">$_SERVER</span><span class="p">));</span>
+</code></pre></div></div>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>php bin/app.php get /user/1
+</code></pre></div></div>
+
+<h2 id="コンテキスト">コンテキスト</h2>
+
+<p>コンテキストは特定の目的のためのDIとAOPの束縛のセットです。コードは同じでも束縛が変わることで、アプリケーションが違う振る舞いをします。
+コンテキストはフレームワークが用意しているbuilt-inコンテキストとアプリケーションが作成するカスタムコンテキストがあります。</p>
+
+<h3 id="built-inコンテキスト">built-inコンテキスト</h3>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">app</code> ベースアプリケーション</li>
+  <li><code class="language-plaintext highlighter-rouge">api</code> APIアプリケーション</li>
+  <li><code class="language-plaintext highlighter-rouge">cli</code> コンソールアプリケーション</li>
+  <li><code class="language-plaintext highlighter-rouge">hal</code> HALアプリケーション</li>
+  <li><code class="language-plaintext highlighter-rouge">prod</code> プロダクション</li>
+</ul>
+
+<p><code class="language-plaintext highlighter-rouge">app</code>の場合、リソースはJSONでレンダリングされます。
+<code class="language-plaintext highlighter-rouge">api</code>はデフォルトのリソースのスキーマをpageからappに変更します。webのルートアクセス(GET /)はpage://self/からapp://self/へのアクセスになります。
+<code class="language-plaintext highlighter-rouge">cli</code>にするとコンソールアプリケーションになります。
+<code class="language-plaintext highlighter-rouge">prod</code>はキャッシュの設定などをプロダクション用にします。</p>
+
+<p>コンテキスト名はそれぞれのモジュールに対応します。例えばappはAppModule, cliはCliModuleに対応します。
+コンテキストは組み合わせて使う事ができます。例えば<code class="language-plaintext highlighter-rouge">prod-hal-api-app</code>ならプロダクション用HALのAPIアプリケーションなどになります。</p>
+
+<h3 id="カスタムコンテキスト">カスタムコンテキスト</h3>
+
+<p>アプリケーションの<code class="language-plaintext highlighter-rouge">src/Module</code>/に設置します。built-inコンテキストと同名にするとカスタムコンテキストが優先されます。カスタムコンテキストからbuilt-inコンテキストを呼び出すことで一部の束縛を上書きする事ができます。</p>
+
+<h3 id="コンテキスト無知">コンテキスト無知</h3>
+
+<p>コンテキストの値はルートオブジェクトの作成のみに使われその後に消滅します。アプリケーションから参照可能なグローバルな”モード”は存在せず、アプリケーションは現在実行されているコンテキストを知ることはできません。外部の値を参照して振る舞いを変えるのではなく、<strong>インターフェイスのみに依存</strong><sup id="fnref:dip" role="doc-noteref"><a href="#fn:dip" class="footnote" rel="footnote">2</a></sup>し<strong>コンテキストによる束縛の変更</strong>で振る舞いを変更します。</p>
+
+<hr />
+
+<div class="footnotes" role="doc-endnotes">
+  <ol>
+    <li id="fn:graph" role="doc-endnote">
+      <p>オブジェクトは他のオブジェクトを保持しているか、保持されているかによって繋がっています。これを[Object Graph] (http://en.wikipedia.org/wiki/Object_graph)といいます。$appはそのルートオブジェクトです。 <a href="#fnref:graph" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+    <li id="fn:dip" role="doc-endnote">
+      <p><a href="https://ja.wikipedia.org/wiki/依存性逆転の原則">依存性逆転の法則</a> <a href="#fnref:dip" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+  </ol>
+</div>
+
+            </article>
+        </div>
+        <div id="ArticleToc" class="col-lg-2 d-none d-lg-block">
+            <nav class="nav side-bar-right"></nav>
+        </div>
+    </div>
+</main>
+<footer>
+    <div class="container d-md-flex">
+        <i class="bear-icon d-none d-lg-block"></i>
+        <small>
+            © 2011-2024 BEAR.Sunday
+        </small>
+        <ul class="navbar-nav flex-row ml-md-auto d-none d-md-flex">
+            <li>
+                <a href="https://gitter.im/bearsunday/BEAR.Sunday?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge">Gitter</a>
+            </li>
+            <li>
+                <a href="https://github.com/bearsunday/BEAR.Sunday">Github</a>
+            </li>
+            <li>
+                <a href="https://twitter.com/BEARSunday">Twitter</a>
+            </li>
+            <li>
+                <a href="https://www.facebook.com/pages/BEARSunday/110116939178462?ref=hl">Facebook</a>
+            </li>
+            <li>
+                <a href="http://koriym.github.io/">Blog (JA)</a>
+            </li>
+            <li>
+                <a href="https://github.com/bearsunday/bearsunday.github.io">PR ?</a>
+            </li>
+        </ul>
+    </div>
+</footer>
+<script src="//code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+<script>
+    window.ga = function () { ga.q.push(arguments) }; ga.q = []; ga.l = +new Date;
+    ga('create', 'UA-6074569-8', 'bearsunday.github.io'); ga('send', 'pageview');
+</script>
+<script src="https://www.google-analytics.com/analytics.js" async defer></script>
+
+<script src="/js/generate-table-of-contents/index.min.js"></script>
+<script>
+    var toc = generateTableOfContents(document.getElementById('article'));
+    var sideBarRight = $('.side-bar-right');
+    sideBarRight.append(toc);
+
+    var scrollOffset = $('body').attr('data-offset');
+    var articlePaddingTop = $('article').css('padding-top').replace('px', '');
+    sideBarRight.find('a').on('click', function (e) {
+        e.preventDefault();
+        var targetId = $(this).attr('href');
+        var targetPositionTop = $(targetId).offset().top - scrollOffset - articlePaddingTop;
+        window.scrollTo(0, targetPositionTop)
+    });
+</script>
+
+</body>
+</html>
+

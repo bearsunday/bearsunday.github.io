@@ -1,0 +1,539 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Validation &#124; BEAR.Sunday</title>
+    <meta name="description" content="BEAR.Sunday is a resource orientated framework with a REST centered architecture, implementing Dependency Injection and Aspect Orientated Programming' at its core.">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/github-markdown-css/2.10.0/github-markdown.css">
+    <link rel="stylesheet" href="/css/syntax.css">
+    
+    <link rel="stylesheet" href="/css/bearsunday.css">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="apple-touch-icon" href="/icon.png">
+</head>
+<body data-page-category="Manual" data-spy="scroll" data-target="#ArticleToc" data-offset="65">
+<header>
+    <nav class="navbar navbar-expand flex-column flex-md-row bg-light">
+        <a class="navbar-brand mr-0 mr-md-2" href="/index.html"></a>
+        <div class="navbar-nav-scroll">
+            <ul class="navbar-nav flex-row">
+                <li class="nav-item">
+                    <a class="nav-link " href="/index.html">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="/manuals/1.0/en/index.html">Manual</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link " href="/contributors.html">Contributors</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/slide.html">Slide</a>
+                </li>
+            </ul>
+        </div>
+        
+        <ul class="navbar-nav ml-md-auto d-none d-md-flex language-list">
+            <li>
+                <a class="active" href="/manuals/1.0/en/validation.html">En</a>
+            </li>
+            <li>
+                <a class="" href="/manuals/1.0/ja/validation.html">Ja</a>
+            </li>
+        </ul>
+        
+    </nav>
+</header>
+
+<main class="container-fluid">
+    <div class="row flex-xl-nowrap">
+        <div class="col-md-3 col-lg-2">
+            <div class="side-bar">
+                <nav class="navbar navbar-expand-md navbar-light">
+    <div class="navigation-header">
+        <div class="ml-auto d-sm-block d-md-none">
+            <ul class="navbar-nav language-list">
+                <li>
+                    <a class="active" href="/manuals/1.0/en/validation.html">En</a>
+                </li>
+                <li>
+                    <a class="" href="/manuals/1.0/ja/validation.html">Ja</a>
+                </li>
+            </ul>
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#Navber" aria-controls="Navber" aria-expanded="false" aria-label="ナビゲーションの切替">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+    </div>
+    <div class="collapse navbar-collapse" id="Navber">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/">Introduction</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/version.html">Version</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/quick-start.html">Quick Start</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/tutorial.html">Tutorial</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/tutorial2.html">Tutorial 2</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/package.html">Package</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/application.html">Application</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/module.html">Module</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/di.html">DI</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/aop.html">AOP</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/resource.html">Resource</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/resource_param.html">・Parameter</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/resource_link.html">・Link</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/resource_renderer.html">・Rendering and Transfer</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/router.html">Router</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/production.html">Production</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/import.html">Import</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/database.html">Database</a>
+            </li>
+            <li>
+                <a class="nav-link active" href="/manuals/1.0/en/validation.html">Validation</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/html.html">HTML</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/form.html">Form</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/content-negotiation.html">Content Negotiation</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/hypermedia-api.html">Hypermedia API</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/psr7.html">Request / PSR-7</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/js-ui.html">JavaScript UI</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/stream.html">Stream Response</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/cache.html">Cache</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/swoole.html">Swoole</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/coding-guide.html">Coding Guide</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/types.html">Type</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/test.html">Test</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/examples.html">Examples</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/attribute.html">Attribute</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/apidoc.html">API Doc</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/1page.html">1 Page</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+            </div>
+        </div>
+        <div class="col-md-9 col-lg-8">
+            <article id="article" class="markdown-body">
+                <h1 id="validation">Validation</h1>
+
+<ul>
+  <li>You can define resource APIs in the JSON schema.</li>
+  <li>You can separate the validation code with <code class="language-plaintext highlighter-rouge">@Valid</code>, <code class="language-plaintext highlighter-rouge">@OnValidate</code> annotation.</li>
+  <li>Please see the form for validation by web form.</li>
+</ul>
+
+<h1 id="json-schema">JSON Schema</h1>
+
+<p>The <a href="http://json-schema.org/">JSON Schema</a> is the standard for describing and validating JSON objects. <code class="language-plaintext highlighter-rouge">@JsonSchema</code> and the resource body returned by the method of annotated resource class are validated by JSON schema.</p>
+
+<h3 id="install">Install</h3>
+
+<p>If you want to validate in all contexts including production, create <code class="language-plaintext highlighter-rouge">AppModule</code>, if validation is done only during development, create <code class="language-plaintext highlighter-rouge">DevModule</code> and install within it</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">use</span> <span class="nc">BEAR\Resource\Module\JsonSchemaModule</span><span class="p">;</span> <span class="c1">// Add this line</span>
+<span class="kn">use</span> <span class="nc">BEAR\Package\AbstractAppModule</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">AppModule</span> <span class="kd">extends</span> <span class="nc">AbstractAppModule</span>
+<span class="p">{</span>
+    <span class="k">protected</span> <span class="k">function</span> <span class="n">configure</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="c1">// ...</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">install</span><span class="p">(</span>
+            <span class="k">new</span> <span class="nc">JsonSchemaModule</span><span class="p">(</span>
+                <span class="nv">$appDir</span> <span class="mf">.</span> <span class="s1">'/var/json_schema'</span><span class="p">,</span>
+                <span class="nv">$appDir</span> <span class="mf">.</span> <span class="s1">'/var/json_validate'</span>
+            <span class="p">)</span>
+        <span class="p">);</span>  <span class="c1">// Add this line</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+<p>Create directories for the JSON schema files</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">mkdir </span>var/json_schema
+<span class="nb">mkdir </span>var/json_validate
+</code></pre></div></div>
+
+<p>In the <code class="language-plaintext highlighter-rouge">var/json_schema/</code>, store the JSON schema file which is the specification of the body of the resource, and the <code class="language-plaintext highlighter-rouge">var/json_validate/</code> stores the JSON schema file for input validation.</p>
+
+<h3 id="jsonschema-annotation">@JsonSchema annotation</h3>
+
+<p>Annotate the method of the resource class by adding <code class="language-plaintext highlighter-rouge">@JsonSchema</code>, then add the <code class="language-plaintext highlighter-rouge">schema</code> property by specifying the JSON schema file name, which is <code class="language-plaintext highlighter-rouge">user.json</code> for this purpose.</p>
+
+<h3 id="schema">schema</h3>
+
+<p>src/Resource/App/User.php</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="kn">use</span> <span class="nc">BEAR\Resource\Annotation\JsonSchema</span><span class="p">;</span> <span class="c1">// Add this line</span>
+
+<span class="kd">class</span> <span class="nc">User</span> <span class="kd">extends</span> <span class="nc">ResourceObject</span>
+<span class="p">{</span>
+    <span class="c1">#[JsonSchema('user.json')]</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onGet</span><span class="p">():</span> <span class="kt">static</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">body</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s1">'firstName'</span> <span class="o">=&gt;</span> <span class="s1">'mucha'</span><span class="p">,</span>
+            <span class="s1">'lastName'</span> <span class="o">=&gt;</span> <span class="s1">'alfons'</span><span class="p">,</span>
+            <span class="s1">'age'</span> <span class="o">=&gt;</span> <span class="mi">12</span>
+        <span class="p">];</span>
+
+        <span class="k">return</span> <span class="nv">$this</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>We will create a JSON schema named <code class="language-plaintext highlighter-rouge">/var/json_schema/user.json</code></p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"object"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"properties"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"firstName"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"string"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"maxLength"</span><span class="p">:</span><span class="w"> </span><span class="mi">30</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"pattern"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[a-z</span><span class="se">\\</span><span class="s2">d~+-]+"</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="nl">"lastName"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"string"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"maxLength"</span><span class="p">:</span><span class="w"> </span><span class="mi">30</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"pattern"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[a-z</span><span class="se">\\</span><span class="s2">d~+-]+"</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="nl">"required"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"firstName"</span><span class="p">,</span><span class="w"> </span><span class="s2">"lastName"</span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<h3 id="key">key</h3>
+
+<p>If the body has an index key, specify it with the key property of the annotation</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="kn">use</span> <span class="nc">BEAR\Resource\Annotation\JsonSchema</span><span class="p">;</span> <span class="c1">// Add this line</span>
+
+<span class="kd">class</span> <span class="nc">User</span> <span class="kd">extends</span> <span class="nc">ResourceObject</span>
+<span class="p">{</span>
+    <span class="c1">#[JsonSchema(key:'user', schema:'user.json')]</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onGet</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">body</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s1">'user'</span> <span class="o">=&gt;</span> <span class="p">[</span>
+                <span class="s1">'firstName'</span> <span class="o">=&gt;</span> <span class="s1">'mucha'</span><span class="p">,</span>
+                <span class="s1">'lastName'</span> <span class="o">=&gt;</span> <span class="s1">'alfons'</span><span class="p">,</span>
+                <span class="s1">'age'</span> <span class="o">=&gt;</span> <span class="mi">12</span>
+            <span class="p">]</span>
+        <span class="p">];</span>        
+
+        <span class="k">return</span> <span class="nv">$this</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="params">params</h3>
+
+<p>The <code class="language-plaintext highlighter-rouge">params</code> property specifies the JSON schema file name for the argument validation</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="kn">use</span> <span class="nc">BEAR\Resource\Annotation\JsonSchema</span><span class="p">;</span> <span class="c1">// Add this line</span>
+
+<span class="kd">class</span> <span class="nc">Todo</span> <span class="kd">extends</span> <span class="nc">ResourceObject</span>
+<span class="p">{</span>
+    <span class="c1">#[JsonSchema(key:'user', schema:'user.json', params:'todo.post.json')]</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onPost</span><span class="p">(</span><span class="kt">string</span> <span class="nv">$title</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>We place the JSON schema file</p>
+
+<p><strong>/var/json_validate/todo.post.json</strong></p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"$schema"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://json-schema.org/draft-04/schema#"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/todo POST request validation"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"properties"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"title"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"string"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"minLength"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"maxLength"</span><span class="p">:</span><span class="w"> </span><span class="mi">40</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+
+</span></code></pre></div></div>
+
+<p>By constantly verifying in a standardized way instead of proprietary documentation, the specification is <strong>reliable and understandable</strong> to both humans and machines.</p>
+
+<h3 id="target">target</h3>
+
+<p>To apply schema validation to the representation of the resource object (the rendered result) rather than to the body of the ResourceObject, specify the option <code class="language-plaintext highlighter-rouge">target='view'</code>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">#[JsonSchema(schema: 'user.json', target: 'view')]</span>
+</code></pre></div></div>
+
+<h3 id="related-links">Related Links</h3>
+
+<ul>
+  <li><a href="http://json-schema.org/examples.html">Example</a></li>
+  <li><a href="https://spacetelescope.github.io/understanding-json-schema/">Understanding JSON Schema</a></li>
+  <li><a href="https://jsonschema.net/#/editor">JSON Schema Generator</a></li>
+</ul>
+
+<h2 id="valid-annotation">@Valid annotation</h2>
+
+<p>The <code class="language-plaintext highlighter-rouge">@Valid</code> annotation is a validation for input.
+You can set up validation as AOP for your method.
+By separating validation logic from the method, the code will be readable and testable.</p>
+
+<p>Validation libraries are available such as <a href="https://github.com/auraphp/Aura.Filter">Aura.Filter</a>, <a href="https://github.com/Respect/Validation">Respect\Validation</a>, and <a href="http://php.net/manual/en/book.filter.php">PHP Standard Filter</a></p>
+
+<h3 id="install-1">Install</h3>
+
+<p>Install <code class="language-plaintext highlighter-rouge">Ray.ValidateModule</code> via composer.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>composer require ray/validate-module
+</code></pre></div></div>
+
+<p>Installing <code class="language-plaintext highlighter-rouge">ValidateModule</code> in your application module <code class="language-plaintext highlighter-rouge">src/Module/AppModule.php</code>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">use</span> <span class="nc">Ray\Validation\ValidateModule</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">AppModule</span> <span class="kd">extends</span> <span class="nc">AbstractAppModule</span>
+<span class="p">{</span>
+    <span class="k">protected</span> <span class="k">function</span> <span class="n">configure</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="c1">// ...</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">install</span><span class="p">(</span><span class="k">new</span> <span class="nc">ValidateModule</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="annotation">Annotation</h3>
+
+<p>There are three annotations <code class="language-plaintext highlighter-rouge">@Valid</code>, <code class="language-plaintext highlighter-rouge">@OnValidate</code>, <code class="language-plaintext highlighter-rouge">@OnFailure</code> for validation.</p>
+
+<p>First of all, annotate the method that you want to validate with <code class="language-plaintext highlighter-rouge">@Valid</code></p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">use</span> <span class="nc">Ray\Validation\Annotation\Valid</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">News</span>
+<span class="p">{</span>
+    <span class="cd">/**
+     * @Valid
+     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">createUser</span><span class="p">(</span><span class="nv">$name</span><span class="p">)</span>
+    <span class="p">{</span>
+</code></pre></div></div>
+
+<p>Validation will be conducted in the method annotated with <code class="language-plaintext highlighter-rouge">@OnValidate</code>.</p>
+
+<p>The arguments of the method should be the same as the original method. The method name can be anything.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">use</span> <span class="nc">Ray\Validation\Annotation\OnValidate</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">News</span>
+<span class="p">{</span>
+    <span class="cd">/**
+     * @OnValidate
+     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onValidate</span><span class="p">(</span><span class="nv">$name</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nv">$validation</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Validation</span><span class="p">;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="o">!</span> <span class="nb">is_string</span><span class="p">(</span><span class="nv">$name</span><span class="p">))</span> <span class="p">{</span>
+            <span class="nv">$validation</span><span class="o">-&gt;</span><span class="nf">addError</span><span class="p">(</span><span class="s1">'name'</span><span class="p">,</span> <span class="s1">'name should be string'</span><span class="p">);</span>
+        <span class="p">}</span>
+
+        <span class="k">return</span> <span class="nv">$validation</span><span class="p">;</span>
+    <span class="p">}</span>
+</code></pre></div></div>
+
+<p>Add validations to your elements by <code class="language-plaintext highlighter-rouge">addError()</code> with the <code class="language-plaintext highlighter-rouge">element name</code> and<code class="language-plaintext highlighter-rouge"> error message</code> as parameters, then return the validation object.</p>
+
+<p>When validation fails, the exception <code class="language-plaintext highlighter-rouge">Ray\Validation\Exception\InvalidArgumentException</code> will be thrown,
+but if you have a method annotated with the <code class="language-plaintext highlighter-rouge">@OnFailure</code>, it will be called, instead of throwing an exception</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">use</span> <span class="nc">Ray\Validation\Annotation\OnFailure</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">News</span>
+<span class="p">{</span>
+    <span class="cd">/**
+     * @OnFailure
+     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onFailure</span><span class="p">(</span><span class="kt">FailureInterface</span> <span class="nv">$failure</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="c1">// original parameters</span>
+        <span class="k">list</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="n">defaultName</span><span class="p">)</span> <span class="o">=</span> <span class="nv">$failure</span><span class="o">-&gt;</span><span class="nf">getInvocation</span><span class="p">()</span><span class="o">-&gt;</span><span class="nf">getArguments</span><span class="p">();</span>
+
+        <span class="c1">// errors</span>
+        <span class="k">foreach</span> <span class="p">(</span><span class="nv">$failure</span><span class="o">-&gt;</span><span class="nf">getMessages</span><span class="p">()</span> <span class="k">as</span> <span class="nv">$name</span> <span class="o">=&gt;</span> <span class="nv">$messages</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">foreach</span> <span class="p">(</span><span class="nv">$messages</span> <span class="k">as</span> <span class="nv">$message</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">echo</span> <span class="s2">"Input '</span><span class="si">{</span><span class="nv">$name</span><span class="si">}</span><span class="s2">': </span><span class="si">{</span><span class="nv">$message</span><span class="si">}</span><span class="s2">"</span> <span class="mf">.</span> <span class="kc">PHP_EOL</span><span class="p">;</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+</code></pre></div></div>
+
+<p>In the method annotated with <code class="language-plaintext highlighter-rouge">@OnFailure</code>, you can access the validated messages with <code class="language-plaintext highlighter-rouge">$failure-&gt;getMessages()</code>
+and also you can get the object of the original method with <code class="language-plaintext highlighter-rouge">$failure-&gt;getInvocation()</code>.</p>
+
+<h3 id="various-validation">Various validation</h3>
+
+<p>If you want to have different validations for a class, you can specify the name of the validation like below</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">use</span> <span class="nc">Ray\Validation\Annotation\Valid</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">Ray\Validation\Annotation\OnValidate</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">Ray\Validation\Annotation\OnFailure</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">News</span>
+<span class="p">{</span>
+    <span class="cd">/**
+     * @Valid("foo")
+     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">fooAction</span><span class="p">(</span><span class="nv">$name</span><span class="p">,</span> <span class="nv">$address</span><span class="p">,</span> <span class="nv">$zip</span><span class="p">)</span>
+    <span class="p">{</span>
+
+    <span class="cd">/**
+     * @OnValidate("foo")
+     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onValidateFoo</span><span class="p">(</span><span class="nv">$name</span><span class="p">,</span> <span class="nv">$address</span><span class="p">,</span> <span class="nv">$zip</span><span class="p">)</span>
+    <span class="p">{</span>
+
+    <span class="cd">/**
+     * @OnFailure("foo")
+     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onFailureFoo</span><span class="p">(</span><span class="kt">FailureInterface</span> <span class="nv">$failure</span><span class="p">)</span>
+    <span class="p">{</span>
+</code></pre></div></div>
+
+<h3 id="other-validation">Other validation</h3>
+
+<p>If you need to implement complex validation, you can have another class for validation and inject it.
+And then call in the method annotated with the <code class="language-plaintext highlighter-rouge">onValidate</code>.
+You can also change your validation behavior by context with DI.</p>
+
+            </article>
+        </div>
+        <div id="ArticleToc" class="col-lg-2 d-none d-lg-block">
+            <nav class="nav side-bar-right"></nav>
+        </div>
+    </div>
+</main>
+<footer>
+    <div class="container d-md-flex">
+        <i class="bear-icon d-none d-lg-block"></i>
+        <small>
+            © 2011-2024 BEAR.Sunday
+        </small>
+        <ul class="navbar-nav flex-row ml-md-auto d-none d-md-flex">
+            <li>
+                <a href="https://gitter.im/bearsunday/BEAR.Sunday?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge">Gitter</a>
+            </li>
+            <li>
+                <a href="https://github.com/bearsunday/BEAR.Sunday">Github</a>
+            </li>
+            <li>
+                <a href="https://twitter.com/BEARSunday">Twitter</a>
+            </li>
+            <li>
+                <a href="https://www.facebook.com/pages/BEARSunday/110116939178462?ref=hl">Facebook</a>
+            </li>
+            <li>
+                <a href="http://koriym.github.io/">Blog (JA)</a>
+            </li>
+            <li>
+                <a href="https://github.com/bearsunday/bearsunday.github.io">PR ?</a>
+            </li>
+        </ul>
+    </div>
+</footer>
+<script src="//code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+<script>
+    window.ga = function () { ga.q.push(arguments) }; ga.q = []; ga.l = +new Date;
+    ga('create', 'UA-6074569-8', 'bearsunday.github.io'); ga('send', 'pageview');
+</script>
+<script src="https://www.google-analytics.com/analytics.js" async defer></script>
+
+<script src="/js/generate-table-of-contents/index.min.js"></script>
+<script>
+    var toc = generateTableOfContents(document.getElementById('article'));
+    var sideBarRight = $('.side-bar-right');
+    sideBarRight.append(toc);
+
+    var scrollOffset = $('body').attr('data-offset');
+    var articlePaddingTop = $('article').css('padding-top').replace('px', '');
+    sideBarRight.find('a').on('click', function (e) {
+        e.preventDefault();
+        var targetId = $(this).attr('href');
+        var targetPositionTop = $(targetId).offset().top - scrollOffset - articlePaddingTop;
+        window.scrollTo(0, targetPositionTop)
+    });
+</script>
+
+</body>
+</html>

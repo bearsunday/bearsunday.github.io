@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Application &#124; BEAR.Sunday</title>
+    <meta name="description" content="BEAR.Sunday is a resource orientated framework with a REST centered architecture, implementing Dependency Injection and Aspect Orientated Programming' at its core.">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/github-markdown-css/2.10.0/github-markdown.css">
+    <link rel="stylesheet" href="/css/syntax.css">
+    
+    <link rel="stylesheet" href="/css/bearsunday.css">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="apple-touch-icon" href="/icon.png">
+</head>
+<body data-page-category="Manual" data-spy="scroll" data-target="#ArticleToc" data-offset="65">
+<header>
+    <nav class="navbar navbar-expand flex-column flex-md-row bg-light">
+        <a class="navbar-brand mr-0 mr-md-2" href="/index.html"></a>
+        <div class="navbar-nav-scroll">
+            <ul class="navbar-nav flex-row">
+                <li class="nav-item">
+                    <a class="nav-link " href="/index.html">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="/manuals/1.0/en/index.html">Manual</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link " href="/contributors.html">Contributors</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/slide.html">Slide</a>
+                </li>
+            </ul>
+        </div>
+        
+        <ul class="navbar-nav ml-md-auto d-none d-md-flex language-list">
+            <li>
+                <a class="active" href="/manuals/1.0/en/application.html">En</a>
+            </li>
+            <li>
+                <a class="" href="/manuals/1.0/ja/application.html">Ja</a>
+            </li>
+        </ul>
+        
+    </nav>
+</header>
+
+<main class="container-fluid">
+    <div class="row flex-xl-nowrap">
+        <div class="col-md-3 col-lg-2">
+            <div class="side-bar">
+                <nav class="navbar navbar-expand-md navbar-light">
+    <div class="navigation-header">
+        <div class="ml-auto d-sm-block d-md-none">
+            <ul class="navbar-nav language-list">
+                <li>
+                    <a class="active" href="/manuals/1.0/en/application.html">En</a>
+                </li>
+                <li>
+                    <a class="" href="/manuals/1.0/ja/application.html">Ja</a>
+                </li>
+            </ul>
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#Navber" aria-controls="Navber" aria-expanded="false" aria-label="ナビゲーションの切替">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+    </div>
+    <div class="collapse navbar-collapse" id="Navber">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/">Introduction</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/version.html">Version</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/quick-start.html">Quick Start</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/tutorial.html">Tutorial</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/tutorial2.html">Tutorial 2</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/package.html">Package</a>
+            </li>
+            <li>
+                <a class="nav-link active" href="/manuals/1.0/en/application.html">Application</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/module.html">Module</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/di.html">DI</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/aop.html">AOP</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/resource.html">Resource</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/resource_param.html">・Parameter</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/resource_link.html">・Link</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/resource_renderer.html">・Rendering and Transfer</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/router.html">Router</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/production.html">Production</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/import.html">Import</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/database.html">Database</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/validation.html">Validation</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/html.html">HTML</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/form.html">Form</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/content-negotiation.html">Content Negotiation</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/hypermedia-api.html">Hypermedia API</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/psr7.html">Request / PSR-7</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/js-ui.html">JavaScript UI</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/stream.html">Stream Response</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/cache.html">Cache</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/swoole.html">Swoole</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/coding-guide.html">Coding Guide</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/types.html">Type</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/test.html">Test</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/examples.html">Examples</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/attribute.html">Attribute</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/apidoc.html">API Doc</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/1page.html">1 Page</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+            </div>
+        </div>
+        <div class="col-md-9 col-lg-8">
+            <article id="article" class="markdown-body">
+                <h1 id="application"><a name="app"></a>Application</h1>
+
+<h2 id="sequence">Sequence</h2>
+
+<p>A BEAR.Sunday app has a run order of <code class="language-plaintext highlighter-rouge">compile</code>, <code class="language-plaintext highlighter-rouge">request</code> and <code class="language-plaintext highlighter-rouge">response</code>.</p>
+
+<h3 id="0-compile">0. Compile</h3>
+
+<p>An <code class="language-plaintext highlighter-rouge">$app</code> application object is created through <code class="language-plaintext highlighter-rouge">DI</code> and <code class="language-plaintext highlighter-rouge">AOP</code> configuration depending on a specified context.
+An <code class="language-plaintext highlighter-rouge">$app</code> is made up of service objects as it’s properties that are needed to run the application such as a <code class="language-plaintext highlighter-rouge">router</code> or <code class="language-plaintext highlighter-rouge">transfer</code> etc.
+<code class="language-plaintext highlighter-rouge">$app</code> then connects these object together depending on whether it is owned by another or contains other objects.
+This is called an <a href="http://en.wikipedia.org/wiki/Object_graph">Object Graph</a>.
+<code class="language-plaintext highlighter-rouge">$app</code> is then serialized and reused in each request and response.</p>
+
+<ul>
+  <li>router - Converting external input to resource requests</li>
+  <li>resource - Resource client</li>
+  <li>transfer - Output</li>
+</ul>
+
+<h3 id="1-request">1. Request</h3>
+
+<p>An application resource request and resource object is created based on the HTTP request.</p>
+
+<p>A resource object which has methods that respond to <code class="language-plaintext highlighter-rouge">onGet</code>, <code class="language-plaintext highlighter-rouge">onPost</code> etc upon request sets the <code class="language-plaintext highlighter-rouge">code</code> or <code class="language-plaintext highlighter-rouge">body</code> property of it’s own resource state.</p>
+
+<p>The resource object can then <code class="language-plaintext highlighter-rouge">#[Embed]</code> or <code class="language-plaintext highlighter-rouge">#[Link]</code> other resource objects.</p>
+
+<p>Methods on the resource object are only for changing the resources state and have no interest in the representation itself (HTML, JSON etc).</p>
+
+<p>Before and after the method, application logic bound to the method, such as logging and authentication, is executed in AOP.</p>
+
+<h3 id="2-response">2. Response</h3>
+
+<p>A <code class="language-plaintext highlighter-rouge">Renderer</code> is injected into the resource object, then the state of resource is represented as HTML, JSON etc or however it has been configured, it is then transfered to the client.</p>
+
+<p><img src="/images/screen/diagram.png" style="max-width: 100%;height: auto;" /></p>
+
+<h2 id="boot-file">Boot File</h2>
+
+<p>To run an application, we need just two lines of code.
+An entry point for a web server or console application access is usually set to <code class="language-plaintext highlighter-rouge">public/index.php</code> or <code class="language-plaintext highlighter-rouge">bin/app.php</code>.
+As you can see below, we need to pass an application context to <code class="language-plaintext highlighter-rouge">bootstrap.php</code> the application script.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+<span class="k">require</span> <span class="nb">dirname</span><span class="p">(</span><span class="k">__DIR__</span><span class="p">)</span> <span class="mf">.</span> <span class="s1">'/autoload.php'</span><span class="p">;</span>
+<span class="k">exit</span><span class="p">((</span><span class="k">require</span> <span class="nb">dirname</span><span class="p">(</span><span class="k">__DIR__</span><span class="p">)</span> <span class="mf">.</span> <span class="s1">'/bootstrap.php'</span><span class="p">)(</span><span class="s1">'prod-html-app'</span><span class="p">));</span>
+</code></pre></div></div>
+
+<p>Depending on your context choose a boot file.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// fire php server
+php <span class="nt">-S</span> 127.0.0.1:8080 public/index.php
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// console access
+php bin/app.php get /user/1
+</code></pre></div></div>
+
+<h2 id="context">Context</h2>
+
+<p>The composition of the application object <code class="language-plaintext highlighter-rouge">$app</code> changes in response to the defined context, so that application behavior changes.</p>
+
+<p>Depending on the defined context the building of the application object <code class="language-plaintext highlighter-rouge">$app</code> changes, altering the overall behavior.</p>
+
+<p>For example, <code class="language-plaintext highlighter-rouge">WebRouter</code> is bound to <code class="language-plaintext highlighter-rouge">RouterInterface</code> by default.
+However, if <code class="language-plaintext highlighter-rouge">Cli</code> mode is set (instead of HTTP) the <code class="language-plaintext highlighter-rouge">CliRouter</code> is bound to the <code class="language-plaintext highlighter-rouge">RouterInterface</code> and it will then take console input.</p>
+
+<p>There are built-in and custom contexts that can be used in an application.</p>
+
+<h3 id="built-in-contexts">Built-in Contexts</h3>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">api</code>  API Application</li>
+  <li><code class="language-plaintext highlighter-rouge">cli</code>  Console Application</li>
+  <li><code class="language-plaintext highlighter-rouge">hal</code>  HAL Application</li>
+  <li><code class="language-plaintext highlighter-rouge">prod</code> Production</li>
+</ul>
+
+<p>For <code class="language-plaintext highlighter-rouge">app</code>, resources are rendered in JSON.
+<code class="language-plaintext highlighter-rouge">api</code> changes the default resource schema from page to app; web root access (GET /) is from page://self/ to app://self/.
+Set <code class="language-plaintext highlighter-rouge">cli</code> to be a console application.
+prod` makes it a production application with cache settings, etc.</p>
+
+<p>You can also use a combination of these built-in contexts and add your own custom contexts.
+If you set the context to <code class="language-plaintext highlighter-rouge">prod-hal-api-app</code> your application will run as an API application in production mode using the <a href="http://stateless.co/hal_specification.html">HAL</a> media type.</p>
+
+<h3 id="custom-context">Custom Context</h3>
+
+<p>Place it in <code class="language-plaintext highlighter-rouge">src/Module</code>/ of the application; if it has the same name as the builtin context, the custom context will take precedence. You can override some of the constraints by calling the built-in context from the custom context.</p>
+
+<p>Each application context (cli, app etc) represents a module.
+For example the <code class="language-plaintext highlighter-rouge">cli</code> context relates to a <code class="language-plaintext highlighter-rouge">CliModule</code>, then binds all of the DI and AOP bindings that is needed for a console application.</p>
+
+<h3 id="context-agnostic">Context Agnostic</h3>
+
+<p>The context value is used only to create the root object and then disappears. There is no global “mode” that can be referenced by the application, and the application can not know what context it is currently running in. The behavior should only change through <strong>code that is dependent on an interface</strong><sup id="fnref:dip" role="doc-noteref"><a href="#fn:dip" class="footnote" rel="footnote">1</a></sup> and changes of dependencies by context.</p>
+
+<hr />
+
+<div class="footnotes" role="doc-endnotes">
+  <ol>
+    <li id="fn:dip" role="doc-endnote">
+      <p><a href="https://en.wikipedia.org/wiki/Dependency_inversion_principle">Dependency inversion principle</a> <a href="#fnref:dip" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+  </ol>
+</div>
+
+            </article>
+        </div>
+        <div id="ArticleToc" class="col-lg-2 d-none d-lg-block">
+            <nav class="nav side-bar-right"></nav>
+        </div>
+    </div>
+</main>
+<footer>
+    <div class="container d-md-flex">
+        <i class="bear-icon d-none d-lg-block"></i>
+        <small>
+            © 2011-2024 BEAR.Sunday
+        </small>
+        <ul class="navbar-nav flex-row ml-md-auto d-none d-md-flex">
+            <li>
+                <a href="https://gitter.im/bearsunday/BEAR.Sunday?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge">Gitter</a>
+            </li>
+            <li>
+                <a href="https://github.com/bearsunday/BEAR.Sunday">Github</a>
+            </li>
+            <li>
+                <a href="https://twitter.com/BEARSunday">Twitter</a>
+            </li>
+            <li>
+                <a href="https://www.facebook.com/pages/BEARSunday/110116939178462?ref=hl">Facebook</a>
+            </li>
+            <li>
+                <a href="http://koriym.github.io/">Blog (JA)</a>
+            </li>
+            <li>
+                <a href="https://github.com/bearsunday/bearsunday.github.io">PR ?</a>
+            </li>
+        </ul>
+    </div>
+</footer>
+<script src="//code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+<script>
+    window.ga = function () { ga.q.push(arguments) }; ga.q = []; ga.l = +new Date;
+    ga('create', 'UA-6074569-8', 'bearsunday.github.io'); ga('send', 'pageview');
+</script>
+<script src="https://www.google-analytics.com/analytics.js" async defer></script>
+
+<script src="/js/generate-table-of-contents/index.min.js"></script>
+<script>
+    var toc = generateTableOfContents(document.getElementById('article'));
+    var sideBarRight = $('.side-bar-right');
+    sideBarRight.append(toc);
+
+    var scrollOffset = $('body').attr('data-offset');
+    var articlePaddingTop = $('article').css('padding-top').replace('px', '');
+    sideBarRight.find('a').on('click', function (e) {
+        e.preventDefault();
+        var targetId = $(this).attr('href');
+        var targetPositionTop = $(targetId).offset().top - scrollOffset - articlePaddingTop;
+        window.scrollTo(0, targetPositionTop)
+    });
+</script>
+
+</body>
+</html>

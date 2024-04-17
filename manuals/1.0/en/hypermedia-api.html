@@ -1,0 +1,388 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Hypermedia API &#124; BEAR.Sunday</title>
+    <meta name="description" content="BEAR.Sunday is a resource orientated framework with a REST centered architecture, implementing Dependency Injection and Aspect Orientated Programming' at its core.">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/github-markdown-css/2.10.0/github-markdown.css">
+    <link rel="stylesheet" href="/css/syntax.css">
+    
+    <link rel="stylesheet" href="/css/bearsunday.css">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="apple-touch-icon" href="/icon.png">
+</head>
+<body data-page-category="Manual" data-spy="scroll" data-target="#ArticleToc" data-offset="65">
+<header>
+    <nav class="navbar navbar-expand flex-column flex-md-row bg-light">
+        <a class="navbar-brand mr-0 mr-md-2" href="/index.html"></a>
+        <div class="navbar-nav-scroll">
+            <ul class="navbar-nav flex-row">
+                <li class="nav-item">
+                    <a class="nav-link " href="/index.html">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="/manuals/1.0/en/index.html">Manual</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link " href="/contributors.html">Contributors</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/slide.html">Slide</a>
+                </li>
+            </ul>
+        </div>
+        
+        <ul class="navbar-nav ml-md-auto d-none d-md-flex language-list">
+            <li>
+                <a class="active" href="/manuals/1.0/en/hypermedia-api.html">En</a>
+            </li>
+            <li>
+                <a class="" href="/manuals/1.0/ja/hypermedia-api.html">Ja</a>
+            </li>
+        </ul>
+        
+    </nav>
+</header>
+
+<main class="container-fluid">
+    <div class="row flex-xl-nowrap">
+        <div class="col-md-3 col-lg-2">
+            <div class="side-bar">
+                <nav class="navbar navbar-expand-md navbar-light">
+    <div class="navigation-header">
+        <div class="ml-auto d-sm-block d-md-none">
+            <ul class="navbar-nav language-list">
+                <li>
+                    <a class="active" href="/manuals/1.0/en/hypermedia-api.html">En</a>
+                </li>
+                <li>
+                    <a class="" href="/manuals/1.0/ja/hypermedia-api.html">Ja</a>
+                </li>
+            </ul>
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#Navber" aria-controls="Navber" aria-expanded="false" aria-label="ナビゲーションの切替">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+    </div>
+    <div class="collapse navbar-collapse" id="Navber">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/">Introduction</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/version.html">Version</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/quick-start.html">Quick Start</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/tutorial.html">Tutorial</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/tutorial2.html">Tutorial 2</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/package.html">Package</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/application.html">Application</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/module.html">Module</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/di.html">DI</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/aop.html">AOP</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/resource.html">Resource</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/resource_param.html">・Parameter</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/resource_link.html">・Link</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/resource_renderer.html">・Rendering and Transfer</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/router.html">Router</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/production.html">Production</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/import.html">Import</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/database.html">Database</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/validation.html">Validation</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/html.html">HTML</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/form.html">Form</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/content-negotiation.html">Content Negotiation</a>
+            </li>
+            <li>
+                <a class="nav-link active" href="/manuals/1.0/en/hypermedia-api.html">Hypermedia API</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/psr7.html">Request / PSR-7</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/js-ui.html">JavaScript UI</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/stream.html">Stream Response</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/cache.html">Cache</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/swoole.html">Swoole</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/coding-guide.html">Coding Guide</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/types.html">Type</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/test.html">Test</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/examples.html">Examples</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/attribute.html">Attribute</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/apidoc.html">API Doc</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/1page.html">1 Page</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+            </div>
+        </div>
+        <div class="col-md-9 col-lg-8">
+            <article id="article" class="markdown-body">
+                <h1 id="hypermedia-api">Hypermedia API</h1>
+
+<h2 id="hal">HAL</h2>
+
+<p>BEAR.Sunday supports the <a href="https://en.wikipedia.org/wiki/Hypertext_Application_Language">HAL</a> hypermedia (<code class="language-plaintext highlighter-rouge">application/hal+json</code>) API.</p>
+
+<p>The HAL resource model consists of the following elements:</p>
+
+<ul>
+  <li>Link</li>
+  <li>Embedded resources</li>
+  <li>State</li>
+</ul>
+
+<p>HAL is the JSON which represents only the state of the conventional resource plus the link <code class="language-plaintext highlighter-rouge">_links</code> plus <code class="language-plaintext highlighter-rouge">_embedded</code> to embed other resources. HAL makes API searchable and can find its API document from the API itself.</p>
+
+<h3 id="links">Links</h3>
+
+<p>Resources should have a <code class="language-plaintext highlighter-rouge">self</code> URI</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{
+    "_links": {
+        "self": { "href": "/user" }
+    }
+}
+</code></pre></div></div>
+
+<h3 id="link-relations">Link Relations</h3>
+
+<p>Link rels are the main way of distinguishing between a resource’s links.</p>
+
+<p>There is a <code class="language-plaintext highlighter-rouge">rel</code> (relation) on the link, and it shows how the relationship is linked. It is similar to the <code class="language-plaintext highlighter-rouge">rel</code> used in the HTML <code class="language-plaintext highlighter-rouge">&lt;link&gt;</code> and <code class="language-plaintext highlighter-rouge">&lt;a&gt;</code> tag.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{
+    "_links": {
+        "next": { "href": "/page=2" }
+    }
+}
+</code></pre></div></div>
+
+<p>For more information about HAL please visit <a href="http://stateless.co/hal_specification.html">http://stateless.co/hal_specification.html</a>.</p>
+
+<h2 id="resource-class">Resource Class</h2>
+
+<p>You can annotate links and embed other resources.</p>
+
+<h3 id="link">#[Link]</h3>
+
+<p>You can declaratively describe the <code class="language-plaintext highlighter-rouge">@Link</code> annotation, or dynamic ones are assigned to <code class="language-plaintext highlighter-rouge">body['_links']</code>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">#[Link(rel="user", href="/user")]</span>
+<span class="c1">#[Link(rel="latest-post", href="/latest-post", title="latest post entrty")]</span>
+<span class="k">public</span> <span class="k">function</span> <span class="n">onGet</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p>or</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">public</span> <span class="k">function</span> <span class="n">onGet</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nv">$hasCommentPrivilege</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">body</span> <span class="o">+=</span> <span class="p">[</span>
+            <span class="s1">'_links'</span> <span class="o">=&gt;</span> <span class="p">[</span>
+                <span class="s1">'comment'</span> <span class="o">=&gt;</span> <span class="p">[</span>
+                    <span class="s1">'href'</span> <span class="o">=&gt;</span> <span class="s1">'/comments/{post-id}'</span><span class="p">,</span>
+                    <span class="s1">'templated'</span> <span class="o">=&gt;</span> <span class="kc">true</span>
+                <span class="p">]</span>
+            <span class="p">]</span>
+        <span class="p">];</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+</code></pre></div></div>
+
+<h3 id="embed">#[Embed]</h3>
+
+<p>To embed other resources statically, use the <code class="language-plaintext highlighter-rouge">@Embed</code> annotation, and to embed it dynamically, assign the “request” to<code class="language-plaintext highlighter-rouge"> body</code>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">#[Embed(rel="todos", src="/todos{?status}")]</span>
+<span class="c1">#[Embed(rel="me", src="/me")]</span>
+<span class="k">public</span> <span class="k">function</span> <span class="n">onGet</span><span class="p">(</span><span class="kt">string</span> <span class="nv">$status</span><span class="p">):</span> <span class="kt">static</span>
+
+</code></pre></div></div>
+
+<p>or</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$this</span><span class="o">-&gt;</span><span class="n">body</span><span class="p">[</span><span class="s1">'_embedded'</span><span class="p">][</span><span class="s1">'todos'</span><span class="p">]</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">resource</span><span class="o">-&gt;</span><span class="nf">uri</span><span class="p">(</span><span class="s1">'app://self/todos'</span><span class="p">);</span>
+</code></pre></div></div>
+
+<h2 id="api-document-service">API document service</h2>
+
+<p>The API server can also be an API document server. It solves problems such as the time required to create the API document, deviation from actual API, verification, maintenance.</p>
+
+<p>In order for it to be on service, install <code class="language-plaintext highlighter-rouge">bear/api-doc</code> and install it by inheriting the <code class="language-plaintext highlighter-rouge">BEAR\ApiDoc\ApiDoc</code> page class</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>composer require bear/api-doc
+</code></pre></div></div>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+<span class="kn">namespace</span> <span class="nn">MyVendor\MyPorject\Resource\Page\Rels</span><span class="p">;</span>
+
+<span class="kn">use</span> <span class="nc">BEAR\ApiDoc\ApiDoc</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">Index</span> <span class="kd">extends</span> <span class="nc">ApiDoc</span>
+<span class="p">{</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Publish the folder of JSON Schema to the web</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ln -s var/json_schema public/schemas
+</code></pre></div></div>
+
+<p>API documents are automatically generated using Docblock comments and JSON Schema. The page class has its own renderer and is not affected by <code class="language-plaintext highlighter-rouge">$context</code>, it serves a document (<code class="language-plaintext highlighter-rouge">text/html</code>) for people. Since it is not affected by <code class="language-plaintext highlighter-rouge">$context</code>, you can install either<code class="language-plaintext highlighter-rouge"> App</code> or <code class="language-plaintext highlighter-rouge">Page</code>.</p>
+
+<p>If CURIEs is installed at the root, the API itself can be used even for raw JSON which is not hypermedia. Documents generated in real time always accurately reflect property information and validation constraints.</p>
+
+<h3 id="run-demo">Run demo</h3>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git clone https://github.com/koriym/Polidog.Todo.git
+cd Polidog.Todo/
+composer install
+composer setup
+composer doc
+</code></pre></div></div>
+
+<p>Open <a href="https://github.com/koriym/Polidog.Todo/blob/master/docs/index.md">docs/index.md</a> to see API doc page.</p>
+
+<h2 id="browsable">Browsable</h2>
+
+<p>The API set written in HAL functions as <strong>headless REST application</strong>.</p>
+
+<p>You can access all the resources by following the link from the root like the website with the Web-based HAL Browser or the CURL command of the console.</p>
+
+<ul>
+  <li><a href="https://github.com/mikekelly/hal-browser">HAL Browser</a> - <a href="http://haltalk.herokuapp.com/explorer/browser.html#/">example</a></li>
+  <li><a href="https://weluse.github.io/hyperagent/">hyperagent.js</a></li>
+</ul>
+
+<h2 id="siren">Siren</h2>
+
+<p><a href="https://github.com/kuma-guy/BEAR.SirenModule">Siren Module</a> is also available for <a href="https://github.com/kevinswiber/siren">Siren</a> hypermedia (<code class="language-plaintext highlighter-rouge">application/vnd.siren+json</code>) type.</p>
+
+            </article>
+        </div>
+        <div id="ArticleToc" class="col-lg-2 d-none d-lg-block">
+            <nav class="nav side-bar-right"></nav>
+        </div>
+    </div>
+</main>
+<footer>
+    <div class="container d-md-flex">
+        <i class="bear-icon d-none d-lg-block"></i>
+        <small>
+            © 2011-2024 BEAR.Sunday
+        </small>
+        <ul class="navbar-nav flex-row ml-md-auto d-none d-md-flex">
+            <li>
+                <a href="https://gitter.im/bearsunday/BEAR.Sunday?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge">Gitter</a>
+            </li>
+            <li>
+                <a href="https://github.com/bearsunday/BEAR.Sunday">Github</a>
+            </li>
+            <li>
+                <a href="https://twitter.com/BEARSunday">Twitter</a>
+            </li>
+            <li>
+                <a href="https://www.facebook.com/pages/BEARSunday/110116939178462?ref=hl">Facebook</a>
+            </li>
+            <li>
+                <a href="http://koriym.github.io/">Blog (JA)</a>
+            </li>
+            <li>
+                <a href="https://github.com/bearsunday/bearsunday.github.io">PR ?</a>
+            </li>
+        </ul>
+    </div>
+</footer>
+<script src="//code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+<script>
+    window.ga = function () { ga.q.push(arguments) }; ga.q = []; ga.l = +new Date;
+    ga('create', 'UA-6074569-8', 'bearsunday.github.io'); ga('send', 'pageview');
+</script>
+<script src="https://www.google-analytics.com/analytics.js" async defer></script>
+
+<script src="/js/generate-table-of-contents/index.min.js"></script>
+<script>
+    var toc = generateTableOfContents(document.getElementById('article'));
+    var sideBarRight = $('.side-bar-right');
+    sideBarRight.append(toc);
+
+    var scrollOffset = $('body').attr('data-offset');
+    var articlePaddingTop = $('article').css('padding-top').replace('px', '');
+    sideBarRight.find('a').on('click', function (e) {
+        e.preventDefault();
+        var targetId = $(this).attr('href');
+        var targetPositionTop = $(targetId).offset().top - scrollOffset - articlePaddingTop;
+        window.scrollTo(0, targetPositionTop)
+    });
+</script>
+
+</body>
+</html>

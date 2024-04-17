@@ -1,0 +1,357 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Content Negotiation &#124; BEAR.Sunday</title>
+    <meta name="description" content="BEAR.Sunday is a resource orientated framework with a REST centered architecture, implementing Dependency Injection and Aspect Orientated Programming' at its core.">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/github-markdown-css/2.10.0/github-markdown.css">
+    <link rel="stylesheet" href="/css/syntax.css">
+    
+    <link rel="stylesheet" href="/css/bearsunday.css">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="apple-touch-icon" href="/icon.png">
+</head>
+<body data-page-category="Manual" data-spy="scroll" data-target="#ArticleToc" data-offset="65">
+<header>
+    <nav class="navbar navbar-expand flex-column flex-md-row bg-light">
+        <a class="navbar-brand mr-0 mr-md-2" href="/index.html"></a>
+        <div class="navbar-nav-scroll">
+            <ul class="navbar-nav flex-row">
+                <li class="nav-item">
+                    <a class="nav-link " href="/index.html">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="/manuals/1.0/en/index.html">Manual</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link " href="/contributors.html">Contributors</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/slide.html">Slide</a>
+                </li>
+            </ul>
+        </div>
+        
+        <ul class="navbar-nav ml-md-auto d-none d-md-flex language-list">
+            <li>
+                <a class="active" href="/manuals/1.0/en/content-negotiation.html">En</a>
+            </li>
+            <li>
+                <a class="" href="/manuals/1.0/ja/content-negotiation.html">Ja</a>
+            </li>
+        </ul>
+        
+    </nav>
+</header>
+
+<main class="container-fluid">
+    <div class="row flex-xl-nowrap">
+        <div class="col-md-3 col-lg-2">
+            <div class="side-bar">
+                <nav class="navbar navbar-expand-md navbar-light">
+    <div class="navigation-header">
+        <div class="ml-auto d-sm-block d-md-none">
+            <ul class="navbar-nav language-list">
+                <li>
+                    <a class="active" href="/manuals/1.0/en/content-negotiation.html">En</a>
+                </li>
+                <li>
+                    <a class="" href="/manuals/1.0/ja/content-negotiation.html">Ja</a>
+                </li>
+            </ul>
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#Navber" aria-controls="Navber" aria-expanded="false" aria-label="ナビゲーションの切替">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+    </div>
+    <div class="collapse navbar-collapse" id="Navber">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/">Introduction</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/version.html">Version</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/quick-start.html">Quick Start</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/tutorial.html">Tutorial</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/tutorial2.html">Tutorial 2</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/package.html">Package</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/application.html">Application</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/module.html">Module</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/di.html">DI</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/aop.html">AOP</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/resource.html">Resource</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/resource_param.html">・Parameter</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/resource_link.html">・Link</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/resource_renderer.html">・Rendering and Transfer</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/router.html">Router</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/production.html">Production</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/import.html">Import</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/database.html">Database</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/validation.html">Validation</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/html.html">HTML</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/form.html">Form</a>
+            </li>
+            <li>
+                <a class="nav-link active" href="/manuals/1.0/en/content-negotiation.html">Content Negotiation</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/hypermedia-api.html">Hypermedia API</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/psr7.html">Request / PSR-7</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/js-ui.html">JavaScript UI</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/stream.html">Stream Response</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/cache.html">Cache</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/swoole.html">Swoole</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/coding-guide.html">Coding Guide</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/types.html">Type</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/test.html">Test</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/examples.html">Examples</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/attribute.html">Attribute</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/apidoc.html">API Doc</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/1page.html">1 Page</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+            </div>
+        </div>
+        <div class="col-md-9 col-lg-8">
+            <article id="article" class="markdown-body">
+                <h1 id="content-negotiation">Content Negotiation</h1>
+
+<p>In HTTP, <a href="https://en.wikipedia.org/wiki/Content_negotiation">Content Negotiation</a> is a mechanism used to provide various versions of resources for the same URL. BEAR.Sunday supports server-side content negotiation of media type ‘Accept’ and ‘Accept-Language’ of language. It can be specified on an application basis or resource basis.</p>
+
+<h2 id="install">Install</h2>
+
+<p>Install <a href="https://github.com/bearsunday/BEAR.Accept">BEAR.Accept</a> with composer</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>composer require bear/accept ^0.1
+</code></pre></div></div>
+
+<p>Next, save the context corresponding to the <code class="language-plaintext highlighter-rouge">Accept *</code> request header in <code class="language-plaintext highlighter-rouge">/var/locale/available.php</code></p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+<span class="k">return</span> <span class="p">[</span>
+    <span class="s1">'Accept'</span> <span class="o">=&gt;</span> <span class="p">[</span>
+        <span class="s1">'text/hal+json'</span> <span class="o">=&gt;</span> <span class="s1">'hal-app'</span><span class="p">,</span>
+        <span class="s1">'application/json'</span> <span class="o">=&gt;</span> <span class="s1">'app'</span><span class="p">,</span>
+        <span class="s1">'cli'</span> <span class="o">=&gt;</span> <span class="s1">'cli-hal-app'</span>
+    <span class="p">],</span>
+    <span class="s1">'Accept-Language'</span> <span class="o">=&gt;</span> <span class="p">[</span> <span class="c1">// lower case for key</span>
+        <span class="s1">'ja-jp'</span> <span class="o">=&gt;</span> <span class="s1">'ja'</span><span class="p">,</span>
+        <span class="s1">'ja'</span> <span class="o">=&gt;</span> <span class="s1">'ja'</span><span class="p">,</span>
+        <span class="s1">'en-us'</span> <span class="o">=&gt;</span> <span class="s1">'en'</span><span class="p">,</span>
+        <span class="s1">'en'</span> <span class="o">=&gt;</span> <span class="s1">'en'</span>
+    <span class="p">]</span>
+<span class="p">];</span>
+</code></pre></div></div>
+
+<p>The <code class="language-plaintext highlighter-rouge">Accept</code> key array specifies an array whose context is a value with the media type as a key. <code class="language-plaintext highlighter-rouge">cli</code> is not used in web access in the context of console access.</p>
+
+<p>The <code class="language-plaintext highlighter-rouge">Accept-Language</code> key array specifies an array with the context key as the key for the language.</p>
+
+<h2 id="enable-by-application">Enable by Application</h2>
+
+<p>Change <code class="language-plaintext highlighter-rouge">public/index.php</code> to enable content negotiation <strong>throughout the application</strong>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+<span class="kn">use</span> <span class="nc">BEAR\Accept\Accept</span><span class="p">;</span>
+
+<span class="k">require</span> <span class="nb">dirname</span><span class="p">(</span><span class="k">__DIR__</span><span class="p">)</span> <span class="mf">.</span> <span class="s1">'/vendor/autoload.php'</span><span class="p">;</span>
+
+<span class="nv">$accept</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Accept</span><span class="p">(</span><span class="k">require</span> <span class="nb">dirname</span><span class="p">(</span><span class="k">__DIR__</span><span class="p">)</span> <span class="mf">.</span> <span class="s1">'/var/locale/available.php'</span><span class="p">);</span>
+<span class="k">list</span><span class="p">(</span><span class="nv">$context</span><span class="p">,</span> <span class="nv">$vary</span><span class="p">)</span> <span class="o">=</span> <span class="nv">$accept</span><span class="p">(</span><span class="nv">$_SERVER</span><span class="p">);</span>
+
+<span class="k">require</span> <span class="nb">dirname</span><span class="p">(</span><span class="k">__DIR__</span><span class="p">)</span> <span class="mf">.</span> <span class="s1">'/bootstrap/bootstrap.php'</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>For example, in the above setting, the access context of the following <code class="language-plaintext highlighter-rouge">Accept*</code> header will be <code class="language-plaintext highlighter-rouge">prod-hal-ja-app</code>.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Accept: application/hal+json
+Accept-Language: ja-JP
+</code></pre></div></div>
+
+<p>At this time <code class="language-plaintext highlighter-rouge">JaModule</code> requires binding for Japanese text. For details, refer to the demo application <a href="https://github.com/koriym/MyVendor.Locale">MyVendor.Locale</a>.</p>
+
+<h2 id="enable-by-resource">Enable by Resource</h2>
+
+<p>To do content negotiation on a resource basis, install the <code class="language-plaintext highlighter-rouge">AcceptModule</code> module and use the <code class="language-plaintext highlighter-rouge">@Produces</code> annotation.</p>
+
+<h3 id="module-install">Module Install</h3>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">protected</span> <span class="k">function</span> <span class="n">configure</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="c1">// ...</span>
+    <span class="nv">$available</span> <span class="o">=</span> <span class="nv">$appDir</span> <span class="mf">.</span> <span class="s1">'/var/locale/available.php'</span><span class="p">;</span>
+    <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">install</span><span class="p">(</span><span class="k">new</span> <span class="nc">AcceptModule</span><span class="p">(</span><span class="n">available</span><span class="p">));</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="produces-annotation">@Produces annotation</h2>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">use</span> <span class="nc">BEAR\Accept\Annotation\Produces</span><span class="p">;</span>
+
+<span class="cd">/**
+ * @Produces({"application/hal+json", "text/csv"})
+ */</span>
+<span class="k">public</span> <span class="k">function</span> <span class="n">onGet</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p>Annotate available media type from left by priority. The representation (JSON or HTML) is changed by the contextual renderer. You do not need to add <code class="language-plaintext highlighter-rouge">Vary</code> header manually unlike application level content-negotiation.</p>
+
+<h2 id="access-using-curl">Access using curl</h2>
+
+<p>Specify the <code class="language-plaintext highlighter-rouge">Accept*</code> header with the <code class="language-plaintext highlighter-rouge">-H</code> option.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl -H 'Accept-Language: en' http://127.0.0.1:8080/
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl -i -H 'Accept-Language: en' -H 'Accept: application/hal+json' http://127.0.0.1:8080/
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>HTTP/1.1 200 OK
+Host: 127.0.0.1:8080
+Date: Fri, 11 Aug 2017 08:32:33 +0200
+Connection: close
+X-Powered-By: PHP/7.1.4
+Vary: Accept, Accept-Language
+content-type: application/hal+json
+
+{
+    "greeting": "Hello BEAR.Sunday",
+    "_links": {
+        "self": {
+            "href": "/index"
+        }
+    }
+}
+</code></pre></div></div>
+
+            </article>
+        </div>
+        <div id="ArticleToc" class="col-lg-2 d-none d-lg-block">
+            <nav class="nav side-bar-right"></nav>
+        </div>
+    </div>
+</main>
+<footer>
+    <div class="container d-md-flex">
+        <i class="bear-icon d-none d-lg-block"></i>
+        <small>
+            © 2011-2024 BEAR.Sunday
+        </small>
+        <ul class="navbar-nav flex-row ml-md-auto d-none d-md-flex">
+            <li>
+                <a href="https://gitter.im/bearsunday/BEAR.Sunday?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge">Gitter</a>
+            </li>
+            <li>
+                <a href="https://github.com/bearsunday/BEAR.Sunday">Github</a>
+            </li>
+            <li>
+                <a href="https://twitter.com/BEARSunday">Twitter</a>
+            </li>
+            <li>
+                <a href="https://www.facebook.com/pages/BEARSunday/110116939178462?ref=hl">Facebook</a>
+            </li>
+            <li>
+                <a href="http://koriym.github.io/">Blog (JA)</a>
+            </li>
+            <li>
+                <a href="https://github.com/bearsunday/bearsunday.github.io">PR ?</a>
+            </li>
+        </ul>
+    </div>
+</footer>
+<script src="//code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+<script>
+    window.ga = function () { ga.q.push(arguments) }; ga.q = []; ga.l = +new Date;
+    ga('create', 'UA-6074569-8', 'bearsunday.github.io'); ga('send', 'pageview');
+</script>
+<script src="https://www.google-analytics.com/analytics.js" async defer></script>
+
+<script src="/js/generate-table-of-contents/index.min.js"></script>
+<script>
+    var toc = generateTableOfContents(document.getElementById('article'));
+    var sideBarRight = $('.side-bar-right');
+    sideBarRight.append(toc);
+
+    var scrollOffset = $('body').attr('data-offset');
+    var articlePaddingTop = $('article').css('padding-top').replace('px', '');
+    sideBarRight.find('a').on('click', function (e) {
+        e.preventDefault();
+        var targetId = $(this).attr('href');
+        var targetPositionTop = $(targetId).offset().top - scrollOffset - articlePaddingTop;
+        window.scrollTo(0, targetPositionTop)
+    });
+</script>
+
+</body>
+</html>

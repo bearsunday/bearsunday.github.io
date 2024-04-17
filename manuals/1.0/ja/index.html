@@ -1,0 +1,347 @@
+<!doctype html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>イントロダクション &#124; BEAR.Sunday</title>
+    <meta name="description" content="BEAR.Sunday is a resource orientated framework with a REST centered architecture, implementing Dependency Injection and Aspect Orientated Programming' at its core.">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/github-markdown-css/2.10.0/github-markdown.css">
+    <link rel="stylesheet" href="/css/syntax.css">
+    
+    <link rel="stylesheet" href="/css/bearsunday.css">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="apple-touch-icon" href="/icon.png">
+</head>
+<body data-page-category="Manual" data-spy="scroll" data-target="#ArticleToc" data-offset="65">
+<header>
+    <nav class="navbar navbar-expand flex-column flex-md-row bg-light">
+        <a class="navbar-brand mr-0 mr-md-2" href="/index.html"></a>
+        <div class="navbar-nav-scroll">
+            <ul class="navbar-nav flex-row">
+                <li class="nav-item">
+                    <a class="nav-link " href="/index.html">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="/manuals/1.0/en/index.html">Manual</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link " href="/contributors.html">Contributors</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/slide.html">Slide</a>
+                </li>
+            </ul>
+        </div>
+        
+        <ul class="navbar-nav ml-md-auto d-none d-md-flex language-list">
+            <li>
+                <a class="" href="/manuals/1.0/en/">En</a>
+            </li>
+            <li>
+                <a class="active" href="/manuals/1.0/ja/">Ja</a>
+            </li>
+        </ul>
+        
+    </nav>
+</header>
+
+<main class="container-fluid">
+    <div class="row flex-xl-nowrap">
+        <div class="col-md-3 col-lg-2">
+            <div class="side-bar">
+                <nav class="navbar navbar-expand-md navbar-light">
+    <div class="navigation-header">
+        <div class="ml-auto d-sm-block d-md-none">
+            <ul class="navbar-nav language-list">
+                <li>
+                    <a class="" href="/manuals/1.0/en/">En</a>
+                </li>
+                <li>
+                    <a class="active" href="/manuals/1.0/ja/">Ja</a>
+                </li>
+            </ul>
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#Navber" aria-controls="Navber" aria-expanded="false" aria-label="ナビゲーションの切替">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+    </div>
+    <div class="collapse navbar-collapse" id="Navber">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link active" href="/manuals/1.0/ja/index.html">イントロダクション</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/version.html">バージョン</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/quick-start.html">クイックスタート</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/tutorial.html">チュートリアル</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/tutorial2.html">チュートリアル 2</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/package.html">パッケージ</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/application.html">アプリケーション</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/module.html">モジュール</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/di.html">DI</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/aop.html">AOP</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/resource.html">リソース</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/resource_param.html">・パラメーター</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/resource_link.html">・リンク</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/resource_renderer.html">・レンダリングと転送</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/router.html">ルーター</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/production.html">プロダクション</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/ja/import.html">インポート</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/database.html">データベース</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/html.html">HTML</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/validation.html">バリデーション</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/form.html">フォーム</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/content-negotiation.html">コンテントネゴシエーション</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/hypermedia-api.html">ハイパーメディア API</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/psr7.html">リクエスト / PSR-7</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/js-ui.html">JavaScript UI</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/stream.html">ストリーム出力</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/cache.html">キャッシュ</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/swoole.html">Swoole</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/coding-guide.html">コーディングガイド</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/types.html">タイプ</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/test.html">テスト</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/examples.html">サンプル</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/upgrade/injector.html">アップグレード</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/attribute.html">アトリビュート</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/apidoc.html">API Doc</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/1page.html">1 Page</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+            </div>
+        </div>
+        <div class="col-md-9 col-lg-8">
+            <article id="article" class="markdown-body">
+                <h1 id="bearsundayとは">BEAR.Sundayとは</h1>
+
+<p>BEAR.Sundayは、クリーンなオブジェクト指向設計と、Webの基本原則に沿ったリソース指向アーキテクチャを組み合わせたPHPのアプリケーションフレームワークです。
+このフレームワークは標準への準拠、長期的な視点、高効率、柔軟性、自己記述性に加え、シンプルさを重視します。</p>
+
+<h2 id="フレームワーク">フレームワーク</h2>
+
+<p>BEAR.Sundayは3つのフレームワークで構成されています。</p>
+
+<p><code class="language-plaintext highlighter-rouge">Ray.Di</code>は<a href="http://en.wikipedia.org/wiki/Dependency_inversion_principle">依存性逆転の原則</a>に基づいてオブジェクトの依存をインターフェイスで結びます。</p>
+
+<p><code class="language-plaintext highlighter-rouge">Ray.Aop</code>は<a href="http://en.wikipedia.org/wiki/Aspect-oriented_programming">アスペクト指向プログラミング</a>で本質的関心と横断的関心を結びます。</p>
+
+<p><code class="language-plaintext highlighter-rouge">BEAR.Resource</code>はアプリケーションのデータや機能をリソースにして<a href="https://en.wikipedia.org/wiki/Representational_state_transfer">REST制約</a>で結びます。</p>
+
+<p>フレームワークは、アプリケーション全体に適用される制約と設計原則です。一貫性のある設計と実装を促進し、高品質でクリーンなアプリケーションの構築の力になります。</p>
+
+<h2 id="ライブラリ">ライブラリ</h2>
+
+<p>BEAR.Sunday はフルスタック フレームワークとは異なり、認証やデータベースなどの特定のタスクのための独自のライブラリは提供しません。その代わりに、高品質なサードパーティ製のライブラリを使用することを好みます。</p>
+
+<p>このアプローチは2つの設計思想に基づいています。1つ目は「フレームワークは変わらないがライブラリは変わる」という考え方です。フレームワークがアプリケーションの基盤として安定した構造を提供し続ける一方で、ライブラリは時間の経過とともに進化し、アプリケーションの特定のニーズを満たします。</p>
+
+<p>2つ目は「ライブラリを選択する権利と責任はアプリケーションアーキテクトにある」というものです。アプリケーションアーキテクトは、アプリケーションの要件、制約、および目的に最も適したライブラリを選択する能力と責任を委ねられています。</p>
+
+<p>BEAR.Sundayは、フレームワークとライブラリの違いを”不易流行”（変わらぬ基本原則と時代と共に進化する要素）として明確に区別し、アプリケーション制約としてのフレームワークの役割を重視します。</p>
+
+<h2 id="アーキテクチャ">アーキテクチャ</h2>
+
+<p>BEAR.Sundayは、従来のMVC（Model-View-Controller）アーキテクチャとは異なり、リソース指向アーキテクチャ(ROA)を採用しています。このアーキテクチャでは、アプリケーションの設計において、データとビジネスロジックを統一してリソースとして扱い、それらに対するリンクと操作を中心に設計を行います。リソース指向アーキテクチャはREST APIの設計で広く使用されていますが、BEAR.SundayはそれをWebアプリケーション全体の設計にも適用しています。</p>
+
+<h2 id="長期的な視点">長期的な視点</h2>
+
+<p>BEAR.Sunday は、アプリケーションの長期的な維持を念頭に置いて設計されています。</p>
+
+<ul>
+  <li>
+    <p><strong>制約</strong>: DI、AOP、RESTの制約に従った一貫したアプリケーション制約は、時間の経過とともに変わることがありません。</p>
+  </li>
+  <li>
+    <p><strong>永遠の1.x</strong>: 2015年の最初のリリース以来、BEAR.Sundayは後方互換性のない変更を導入することなく、継続的に進化してきました。開発者にはフレームワークの定期的な互換性破壊への対応とそのテストが必要という将来の技術負債がありません。</p>
+  </li>
+  <li>
+    <p><strong>標準準拠</strong>：HTTP標準、JsonSchema などの標準に従い、DIはGoogle Guice、AOPはJavaのAop Allianceに基づいています。</p>
+  </li>
+</ul>
+
+<h2 id="接続性">接続性</h2>
+
+<p>BEAR.Sundayは、Webアプリケーションを超えて、さまざまなクライアントとのシームレスな統合を可能にします。</p>
+
+<ul>
+  <li>
+    <p><strong>HTTPクライアント</strong>:
+HTTPを使用して全てのリソースにアクセスすることが可能です。MVCのモデルやコントローラーと違い、BEAR.Sundayのリソースはクライアントから直接のアクセスが可能です。</p>
+  </li>
+  <li>
+    <p><strong>composerパッケージ</strong>:
+composerでvendor下にインストールしたアプリケーションのリソースを直接呼び出す事ができます。マイクロサービスを使わずに複数のアプリケーションを協調する事ができます。</p>
+  </li>
+  <li>
+    <p><strong>多言語フレームワーク</strong>:
+BEAR.Thriftを使用して、PHP以外の言語や異なるバージョンのPHPとの連携を可能にします。</p>
+  </li>
+</ul>
+
+<h2 id="webキャッシュ">Webキャッシュ</h2>
+
+<p>リソース指向アーキテクチャとモダンなCDNの技術を組み合わせることにより、従来のサーバーサイドのTTLキャッシュを超えるWeb本来の分散キャッシングを実現します。BEAR.Sundayの設計思想は、Webの基本原則に沿っており、CDNを中心に配置した分散キャッシュシステムを活用することで、高いパフォーマンスと可用性を実現します。</p>
+
+<ul>
+  <li>
+    <p><strong>分散キャッシュ</strong>: キャッシュをクライアント、CDN、サーバーサイドに保存することで、CPU コストとネットワークコストの両方を削減します。</p>
+  </li>
+  <li>
+    <p><strong>同一性確認</strong>:
+ETagを使用してキャッシュされたコンテンツの同一性を確認し、コンテンツの変更があった場合にのみ再取得することで、ネットワーク効率を向上させます。</p>
+  </li>
+  <li>
+    <p><strong>耐障害性</strong>:
+イベントドリブンコンテンツの採用により、キャッシュに有効期限を設けないCDNキャッシュを基本にしたシステムは、PHPやDBがダウンした場合でもコンテンツを提供し続けます。</p>
+  </li>
+</ul>
+
+<h2 id="パフォーマンス">パフォーマンス</h2>
+
+<p>BEAR.Sundayは、最大限の柔軟性を保ちながら、パフォーマンスと効率性に重点を置いて設計されています。
+極めて最適化されたブートストラップが実現され、ユーザー体験とシステムリソースの両方に好影響を与えています。
+パフォーマンスはいつもBEAR.Sundayの最大関心事の一つであり、設計と開発の決定において常に中心的な役割を果たしています。</p>
+
+<h2 id="because-everything-is-a-resource">Because Everything is a Resource</h2>
+
+<p>「全てがリソース」のBEAR.Sundayは、Webの本質であるリソースを中心に設計されたPHPのWebアプリケーションフレームワークです。その真の価値は、オブジェクト指向原則とREST原則に基づいた優れた制約をアプリケーション全体の制約として提供することにあります。</p>
+
+<p>この制約は、開発者に一貫性のある設計と実装を促し、長期的な視点に立ったアプリケーションの品質を高めます。同時に、この制約は開発者に自由をもたらし、アプリケーション構築の創造性を高めます。</p>
+
+            </article>
+        </div>
+        <div id="ArticleToc" class="col-lg-2 d-none d-lg-block">
+            <nav class="nav side-bar-right"></nav>
+        </div>
+    </div>
+</main>
+<footer>
+    <div class="container d-md-flex">
+        <i class="bear-icon d-none d-lg-block"></i>
+        <small>
+            © 2011-2024 BEAR.Sunday
+        </small>
+        <ul class="navbar-nav flex-row ml-md-auto d-none d-md-flex">
+            <li>
+                <a href="https://gitter.im/bearsunday/BEAR.Sunday?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge">Gitter</a>
+            </li>
+            <li>
+                <a href="https://github.com/bearsunday/BEAR.Sunday">Github</a>
+            </li>
+            <li>
+                <a href="https://twitter.com/BEARSunday">Twitter</a>
+            </li>
+            <li>
+                <a href="https://www.facebook.com/pages/BEARSunday/110116939178462?ref=hl">Facebook</a>
+            </li>
+            <li>
+                <a href="http://koriym.github.io/">Blog (JA)</a>
+            </li>
+            <li>
+                <a href="https://github.com/bearsunday/bearsunday.github.io">PR ?</a>
+            </li>
+        </ul>
+    </div>
+</footer>
+<script src="//code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+<script>
+    window.ga = function () { ga.q.push(arguments) }; ga.q = []; ga.l = +new Date;
+    ga('create', 'UA-6074569-8', 'bearsunday.github.io'); ga('send', 'pageview');
+</script>
+<script src="https://www.google-analytics.com/analytics.js" async defer></script>
+
+<script src="/js/generate-table-of-contents/index.min.js"></script>
+<script>
+    var toc = generateTableOfContents(document.getElementById('article'));
+    var sideBarRight = $('.side-bar-right');
+    sideBarRight.append(toc);
+
+    var scrollOffset = $('body').attr('data-offset');
+    var articlePaddingTop = $('article').css('padding-top').replace('px', '');
+    sideBarRight.find('a').on('click', function (e) {
+        e.preventDefault();
+        var targetId = $(this).attr('href');
+        var targetPositionTop = $(targetId).offset().top - scrollOffset - articlePaddingTop;
+        window.scrollTo(0, targetPositionTop)
+    });
+</script>
+
+</body>
+</html>
+

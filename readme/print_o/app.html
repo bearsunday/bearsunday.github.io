@@ -1,0 +1,123 @@
+<style>
+
+    .link {
+        fill: none;
+        stroke: #666;
+        stroke-width: 1.5px;
+    }
+
+    .link.object {
+        stroke: red;
+        stroke-width: 2.0px;
+    }
+
+    .link.array {
+        stroke: #fdff95;
+    }
+
+    .link.scalar {
+        stroke: gray;
+        stroke-dasharray: 0,2 1;
+    }
+
+    circle {
+        fill: #ccc;
+        stroke: #333;
+        stroke-width: 1.5px;
+    }
+
+    text {
+        font: 10px sans-serif;
+        pointer-events: none;
+        text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, 0 -1px 0 #fff, -1px 0 0 #fff;
+    }
+
+</style>
+<body></body>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script>
+    var list = {"nodes":[{"file":"\/private\/tmp\/BEAR.Sunday\/docs\/demo\/MyVendor\/HelloWorld\/src\/App.php","name":"MyVendor\\HelloWorld\\App"},{"prop":"router","modifier":256,"name":"BEAR\\Sunday\\Provide\\Router\\WebRouter"},{"prop":"responder","modifier":256,"name":"BEAR\\Sunday\\Provide\\Transfer\\HttpResponder"},{"prop":"resource","modifier":256,"name":"BEAR\\Resource\\Resource"},{"prop":"factory","modifier":1024,"name":"BEAR\\Resource\\Factory"},{"prop":"scheme","modifier":1024,"name":"BEAR\\Resource\\SchemeCollection"},{"prop":"scheme","modifier":1024,"name":"'app'"},{"prop":"app","modifier":1024,"name":"'self'"},{"prop":"collection","modifier":1024,"name":"array"},{"prop":"invoker","modifier":1024,"name":"BEAR\\Resource\\Invoker"},{"prop":"params","modifier":512,"name":"BEAR\\Resource\\NamedParameter"},{"prop":"optionProvider","modifier":1024,"name":"BEAR\\Resource\\OptionProvider"},{"prop":"anchor","modifier":1024,"name":"BEAR\\Resource\\Anchor"},{"prop":"reader","modifier":4096,"name":"Doctrine\\Common\\Annotations\\CachedReader"},{"prop":"CACHE_SALT","modifier":1025,"name":"'@[Annot]'"},{"prop":"delegate","modifier":1024,"name":"Doctrine\\Common\\Annotations\\AnnotationReader"},{"prop":"globalImports","modifier":1025,"name":"array"},{"prop":"globalIgnoredNames","modifier":1025,"name":"array"},{"prop":"parser","modifier":1024,"name":"Doctrine\\Common\\Annotations\\DocParser"},{"prop":"classIdentifiers","modifier":1025,"name":"array"},{"prop":"lexer","modifier":1024,"name":"Doctrine\\Common\\Annotations\\DocLexer"},{"prop":"noCase","modifier":512,"name":"array"},{"prop":"withCase","modifier":512,"name":"array"},{"prop":"lookahead","modifier":256,"name":"null"},{"prop":"token","modifier":256,"name":"null"},{"prop":"target","modifier":1024,"name":"null"},{"prop":"metadataParser","modifier":1025,"name":"Doctrine\\Common\\Annotations\\DocParser"},{"prop":"classIdentifiers","modifier":1025,"name":"array"},{"prop":"lexer","modifier":1024,"name":"Doctrine\\Common\\Annotations\\DocLexer"},{"prop":"noCase","modifier":512,"name":"array"},{"prop":"withCase","modifier":512,"name":"array"},{"prop":"lookahead","modifier":256,"name":"null"},{"prop":"token","modifier":256,"name":"array"},{"prop":"target","modifier":1024,"name":1},{"prop":"isNestedAnnotation","modifier":1024,"name":"true"},{"prop":"imports","modifier":1024,"name":"array"},{"prop":"classExists","modifier":1024,"name":"array"},{"prop":"ignoreNotImportedAnnotations","modifier":1024,"name":"true"},{"prop":"namespaces","modifier":1024,"name":"array"},{"prop":"ignoredAnnotationNames","modifier":1024,"name":"array"},{"prop":"context","modifier":1024,"name":"'class @Ray\\Di\\Di\\Named'"},{"prop":"annotationMetadata","modifier":1025,"name":"array"},{"prop":"typeMap","modifier":1025,"name":"array"},{"prop":"isNestedAnnotation","modifier":1024,"name":"false"},{"prop":"imports","modifier":1024,"name":"array"},{"prop":"classExists","modifier":1024,"name":"array"},{"prop":"ignoreNotImportedAnnotations","modifier":1024,"name":"false"},{"prop":"namespaces","modifier":1024,"name":"array"},{"prop":"ignoredAnnotationNames","modifier":1024,"name":"array"},{"prop":"context","modifier":1024,"name":"''"},{"prop":"annotationMetadata","modifier":1025,"name":"array"},{"prop":"typeMap","modifier":1025,"name":"array"},{"prop":"preParser","modifier":1024,"name":"Doctrine\\Common\\Annotations\\DocParser"},{"prop":"classIdentifiers","modifier":1025,"name":"array"},{"prop":"lexer","modifier":1024,"name":"Doctrine\\Common\\Annotations\\DocLexer"},{"prop":"noCase","modifier":512,"name":"array"},{"prop":"withCase","modifier":512,"name":"array"},{"prop":"lookahead","modifier":256,"name":"null"},{"prop":"token","modifier":256,"name":"null"},{"prop":"target","modifier":1024,"name":"null"},{"prop":"isNestedAnnotation","modifier":1024,"name":"false"},{"prop":"imports","modifier":1024,"name":"array"},{"prop":"classExists","modifier":1024,"name":"array"},{"prop":"ignoreNotImportedAnnotations","modifier":1024,"name":"true"},{"prop":"namespaces","modifier":1024,"name":"array"},{"prop":"ignoredAnnotationNames","modifier":1024,"name":"array"},{"prop":"context","modifier":1024,"name":"''"},{"prop":"annotationMetadata","modifier":1025,"name":"array"},{"prop":"typeMap","modifier":1025,"name":"array"},{"prop":"phpParser","modifier":1024,"name":"Doctrine\\Common\\Annotations\\PhpParser"},{"prop":"imports","modifier":1024,"name":"array"},{"prop":"ignoredAnnotationNames","modifier":1024,"name":"array"},{"prop":"cache","modifier":1024,"name":"Doctrine\\Common\\Cache\\ArrayCache"},{"prop":"data","modifier":1024,"name":"array"},{"prop":"debug","modifier":1024,"name":"false"},{"prop":"loadedAnnotations","modifier":1024,"name":"array"},{"prop":"request","modifier":1024,"name":"null"}],"links":[{"source":0,"target":1,"type":"object"},{"source":0,"target":2,"type":"object"},{"source":0,"target":3,"type":"object"},{"source":3,"target":4,"type":"object"},{"source":4,"target":5,"type":"object"},{"source":5,"target":6,"type":"scalar"},{"source":5,"target":7,"type":"scalar"},{"source":5,"target":8,"type":"array"},{"source":3,"target":9,"type":"object"},{"source":9,"target":10,"type":"object"},{"source":9,"target":11,"type":"object"},{"source":3,"target":12,"type":"object"},{"source":12,"target":13,"type":"object"},{"source":13,"target":14,"type":"scalar"},{"source":13,"target":15,"type":"object"},{"source":15,"target":16,"type":"array"},{"source":15,"target":17,"type":"array"},{"source":15,"target":18,"type":"object"},{"source":18,"target":19,"type":"array"},{"source":18,"target":20,"type":"object"},{"source":20,"target":21,"type":"array"},{"source":20,"target":22,"type":"array"},{"source":20,"target":23,"type":"scalar"},{"source":20,"target":24,"type":"scalar"},{"source":18,"target":25,"type":"scalar"},{"source":18,"target":26,"type":"object"},{"source":26,"target":27,"type":"array"},{"source":26,"target":28,"type":"object"},{"source":28,"target":29,"type":"array"},{"source":28,"target":30,"type":"array"},{"source":28,"target":31,"type":"scalar"},{"source":28,"target":32,"type":"array"},{"source":26,"target":33,"type":"scalar"},{"source":26,"target":26,"type":"object"},{"source":26,"target":34,"type":"scalar"},{"source":26,"target":35,"type":"array"},{"source":26,"target":36,"type":"array"},{"source":26,"target":37,"type":"scalar"},{"source":26,"target":38,"type":"array"},{"source":26,"target":39,"type":"array"},{"source":26,"target":40,"type":"scalar"},{"source":26,"target":41,"type":"array"},{"source":26,"target":42,"type":"array"},{"source":18,"target":43,"type":"scalar"},{"source":18,"target":44,"type":"array"},{"source":18,"target":45,"type":"array"},{"source":18,"target":46,"type":"scalar"},{"source":18,"target":47,"type":"array"},{"source":18,"target":48,"type":"array"},{"source":18,"target":49,"type":"scalar"},{"source":18,"target":50,"type":"array"},{"source":18,"target":51,"type":"array"},{"source":15,"target":52,"type":"object"},{"source":52,"target":53,"type":"array"},{"source":52,"target":54,"type":"object"},{"source":54,"target":55,"type":"array"},{"source":54,"target":56,"type":"array"},{"source":54,"target":57,"type":"scalar"},{"source":54,"target":58,"type":"scalar"},{"source":52,"target":59,"type":"scalar"},{"source":52,"target":26,"type":"object"},{"source":52,"target":60,"type":"scalar"},{"source":52,"target":61,"type":"array"},{"source":52,"target":62,"type":"array"},{"source":52,"target":63,"type":"scalar"},{"source":52,"target":64,"type":"array"},{"source":52,"target":65,"type":"array"},{"source":52,"target":66,"type":"scalar"},{"source":52,"target":67,"type":"array"},{"source":52,"target":68,"type":"array"},{"source":15,"target":69,"type":"object"},{"source":15,"target":70,"type":"array"},{"source":15,"target":71,"type":"array"},{"source":13,"target":72,"type":"object"},{"source":72,"target":73,"type":"array"},{"source":13,"target":74,"type":"scalar"},{"source":13,"target":75,"type":"array"},{"source":3,"target":76,"type":"scalar"}]};
+    var width = window.innerWidth, height = window.innerHeight;
+
+    var force = d3.layout.force()
+            .nodes(list.nodes)
+            .links(list.links)
+            .size([width, height])
+            .linkDistance(150)
+            .charge(-500)
+            .on("tick", tick)
+            .start();
+
+    var svg = d3.select("body").append("svg")
+            .attr("width", width)
+            .attr("height", height);
+
+    // Per-type markers, as they don't inherit styles.
+    svg.append("defs").selectAll("marker")
+            .data(["object", "scalar"])
+            .enter().append("marker")
+            .attr("id", function(d) { return d; })
+            .attr("viewBox", "0 -5 10 10")
+            .attr("refX", 15)
+            .attr("refY", -1.5)
+            .attr("markerWidth", 6)
+            .attr("markerHeight", 6)
+            .attr("orient", "auto")
+            .append("path")
+            .attr("d", "M0,-5L10,0L0,5");
+
+    var path = svg.append("g").selectAll("path")
+            .data(force.links())
+            .enter().append("path")
+            .attr("class", function(d) { return "link " + d.type; })
+            .attr("marker-end", function(d) { return "url(#" + d.type + ")"; });
+
+    var circle = svg.append("g").selectAll("circle")
+            .data(force.nodes())
+            .enter().append("circle")
+            .attr("r", 7)
+            .call(force.drag);
+
+    var text = svg.append("g").selectAll("text")
+            .data(force.nodes())
+            .enter().append("text")
+            .attr("x", 8)
+            .attr("y", ".31em")
+            .text(decorateName);
+
+    // Use elliptical arc path segments to doubly-encode directionality.
+    function tick() {
+        path.attr("d", linkArc);
+        circle.attr("transform", transform);
+        text.attr("transform", transform);
+
+    }
+
+    function linkArc(d) {
+        var dx = d.target.x - d.source.x,
+                dy = d.target.y - d.source.y,
+                dr = Math.sqrt(dx * dx + dy * dy);
+        return "M" + d.source.x + "," + d.source.y + "A" + dr + "," + dr + " 0 0,1 " + d.target.x + "," + d.target.y;
+    }
+
+    function transform(d) {
+        return "translate(" + d.x + "," + d.y + ")";
+    }
+
+    function decorateName(d) {
+        if (typeof d.key !== "undefined") {
+            return d.key + ' => ' + d.name;
+        }
+        if (typeof d.prop !== "undefined") {
+            return '$' + d.prop + ' ' + d.name;
+        }
+        return d.name;
+    }
+
+    window.onresize = function() {
+        width = window.innerWidth, height = window.innerHeight;
+        svg.attr('width', width).attr('height', height);
+        force.size([width, height]).resume();
+    };
+
+</script>{"greeting":"Hello koriym"}

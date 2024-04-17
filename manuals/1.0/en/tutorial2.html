@@ -1,0 +1,1129 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Tutorial 2 &#124; BEAR.Sunday</title>
+    <meta name="description" content="BEAR.Sunday is a resource orientated framework with a REST centered architecture, implementing Dependency Injection and Aspect Orientated Programming' at its core.">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/github-markdown-css/2.10.0/github-markdown.css">
+    <link rel="stylesheet" href="/css/syntax.css">
+    
+    <link rel="stylesheet" href="/css/bearsunday.css">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="apple-touch-icon" href="/icon.png">
+</head>
+<body data-page-category="Manual" data-spy="scroll" data-target="#ArticleToc" data-offset="65">
+<header>
+    <nav class="navbar navbar-expand flex-column flex-md-row bg-light">
+        <a class="navbar-brand mr-0 mr-md-2" href="/index.html"></a>
+        <div class="navbar-nav-scroll">
+            <ul class="navbar-nav flex-row">
+                <li class="nav-item">
+                    <a class="nav-link " href="/index.html">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="/manuals/1.0/en/index.html">Manual</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link " href="/contributors.html">Contributors</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/slide.html">Slide</a>
+                </li>
+            </ul>
+        </div>
+        
+        <ul class="navbar-nav ml-md-auto d-none d-md-flex language-list">
+            <li>
+                <a class="active" href="/manuals/1.0/en/tutorial2.html">En</a>
+            </li>
+            <li>
+                <a class="" href="/manuals/1.0/ja/tutorial2.html">Ja</a>
+            </li>
+        </ul>
+        
+    </nav>
+</header>
+
+<main class="container-fluid">
+    <div class="row flex-xl-nowrap">
+        <div class="col-md-3 col-lg-2">
+            <div class="side-bar">
+                <nav class="navbar navbar-expand-md navbar-light">
+    <div class="navigation-header">
+        <div class="ml-auto d-sm-block d-md-none">
+            <ul class="navbar-nav language-list">
+                <li>
+                    <a class="active" href="/manuals/1.0/en/tutorial2.html">En</a>
+                </li>
+                <li>
+                    <a class="" href="/manuals/1.0/ja/tutorial2.html">Ja</a>
+                </li>
+            </ul>
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#Navber" aria-controls="Navber" aria-expanded="false" aria-label="ナビゲーションの切替">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+    </div>
+    <div class="collapse navbar-collapse" id="Navber">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/">Introduction</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/version.html">Version</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/quick-start.html">Quick Start</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/tutorial.html">Tutorial</a>
+            </li>
+            <li>
+                <a class="nav-link active" href="/manuals/1.0/en/tutorial2.html">Tutorial 2</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/package.html">Package</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/application.html">Application</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/module.html">Module</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/di.html">DI</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/aop.html">AOP</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/resource.html">Resource</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/resource_param.html">・Parameter</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/resource_link.html">・Link</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/resource_renderer.html">・Rendering and Transfer</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/router.html">Router</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/production.html">Production</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/import.html">Import</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/database.html">Database</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/validation.html">Validation</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/html.html">HTML</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/form.html">Form</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/content-negotiation.html">Content Negotiation</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/hypermedia-api.html">Hypermedia API</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/psr7.html">Request / PSR-7</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/js-ui.html">JavaScript UI</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/stream.html">Stream Response</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/cache.html">Cache</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/swoole.html">Swoole</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/coding-guide.html">Coding Guide</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/types.html">Type</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/test.html">Test</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/examples.html">Examples</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/attribute.html">Attribute</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/apidoc.html">API Doc</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/1page.html">1 Page</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+            </div>
+        </div>
+        <div class="col-md-9 col-lg-8">
+            <article id="article" class="markdown-body">
+                <h1 id="tutorial-2">Tutorial 2</h1>
+
+<p>In this tutorial, you will learn how to develop high quality standards-based REST (Hypermedia) applications using the following tools.</p>
+
+<ul>
+  <li>Define a JSON schema and use it for validation and documentation <a href="https://json-schema.org/">Json Schema</a></li>
+  <li>Hypermedia types <a href="https://stateless.group/hal_specification.html">HAL (Hypertext Application Language)</a></li>
+  <li>A DB migration tool developed by CakePHP <a href="https://book.cakephp.org/3.0/ja/phinx.html">Phinx</a></li>
+  <li>Binding PHP interfaces to SQL statement execution <a href="https://github.com/ray-di/Ray.MediaQuery">Ray. MediaQuery</a></li>
+</ul>
+
+<p>Let’s proceed with the commits found in <a href="https://github.com/bearsunday/tutorial2/commits/v2-php8.2">tutorial2</a>.</p>
+
+<h2 id="create-the-project">Create the project</h2>
+
+<p>Create the project skeleton.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>composer create-project bear/skeleton MyVendor.Ticket
+</code></pre></div></div>
+
+<p>Enter the <strong>vendor</strong> name as <code class="language-plaintext highlighter-rouge">MyVendor</code> and the <strong>project</strong> name as <code class="language-plaintext highlighter-rouge">Ticket</code>.</p>
+
+<h2 id="migration">Migration</h2>
+
+<p>Install Phinx.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>composer require --dev robmorgan/phinx
+</code></pre></div></div>
+
+<p>Configure the DB connection information in the <code class="language-plaintext highlighter-rouge">.env.dist</code> file in the project root folder.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>TKT_DB_HOST=127.0.0.1:3306
+TKT_DB_NAME=ticket
+TKT_DB_USER=root
+TKT_DB_PASS=''
+TKT_DB_SLAVE=''
+TKT_DB_DSN=mysql:host=${TKT_DB_HOST}
+</code></pre></div></div>
+
+<p>The <code class="language-plaintext highlighter-rouge">.env.dist</code> file should look like this, and the actual connection information should be written in <code class="language-plaintext highlighter-rouge">.env</code>. ^1]</p>
+
+<p>Next, create a folder to be used by Phinx.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">mkdir</span> <span class="nt">-p</span> var/phinx/migrations
+<span class="nb">mkdir </span>var/phinx/seeds
+</code></pre></div></div>
+
+<p>Set up <code class="language-plaintext highlighter-rouge">var/phinx/phinx.php</code> to use the <code class="language-plaintext highlighter-rouge">.env</code> connection information we have set up earlier.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+<span class="kn">use</span> <span class="nc">BEAR\Dotenv\Dotenv</span><span class="p">;</span>
+
+<span class="k">require_once</span> <span class="nb">dirname</span><span class="p">(</span><span class="k">__DIR__</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="mf">.</span> <span class="s1">'/vendor/autoload.php'</span><span class="p">;</span>
+
+<span class="p">(</span><span class="k">new</span> <span class="nc">Dotenv</span><span class="p">())</span><span class="o">-&gt;</span><span class="nf">load</span><span class="p">(</span><span class="nb">dirname</span><span class="p">(</span><span class="k">__DIR__</span><span class="p">,</span> <span class="mi">2</span><span class="p">));</span>
+
+<span class="nv">$development</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">PDO</span><span class="p">(</span><span class="nb">getenv</span><span class="p">(</span><span class="s1">'TKT_DB_DSN'</span><span class="p">),</span> <span class="nb">getenv</span><span class="p">(</span><span class="s1">'TKT_DB_USER'</span><span class="p">),</span> <span class="nb">getenv</span><span class="p">(</span><span class="s1">'TKT_DB_PASS'</span><span class="p">));</span>
+<span class="nv">$test</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">PDO</span><span class="p">(</span><span class="nb">getenv</span><span class="p">(</span><span class="s1">'TKT_DB_DSN'</span><span class="p">)</span> <span class="mf">.</span> <span class="s1">'_test'</span><span class="p">,</span> <span class="nb">getenv</span><span class="p">(</span><span class="s1">'TKT_DB_USER'</span><span class="p">),</span> <span class="nb">getenv</span><span class="p">(</span><span class="s1">'TKT_DB_PASS'</span><span class="p">));</span>
+<span class="k">return</span> <span class="p">[</span>
+    <span class="s1">'paths'</span> <span class="o">=&gt;</span> <span class="p">[</span>
+        <span class="s1">'migrations'</span> <span class="o">=&gt;</span> <span class="k">__DIR__</span> <span class="mf">.</span> <span class="s1">'/migrations'</span><span class="p">,</span>
+    <span class="p">],</span>
+    <span class="s1">'environments'</span> <span class="o">=&gt;</span> <span class="p">[</span>
+        <span class="s1">'development'</span> <span class="o">=&gt;</span> <span class="p">[</span>
+            <span class="s1">'name'</span> <span class="o">=&gt;</span> <span class="nv">$development</span><span class="o">-&gt;</span><span class="nf">query</span><span class="p">(</span><span class="s2">"SELECT DATABASE()"</span><span class="p">)</span><span class="o">-&gt;</span><span class="nf">fetchColumn</span><span class="p">(),</span>
+            <span class="s1">'connection'</span> <span class="o">=&gt;</span> <span class="nv">$development</span>
+        <span class="p">],</span>
+        <span class="s1">'test'</span> <span class="o">=&gt;</span> <span class="p">[</span>
+            <span class="s1">'name'</span> <span class="o">=&gt;</span> <span class="nv">$test</span><span class="o">-&gt;</span><span class="nf">query</span><span class="p">(</span><span class="s2">"SELECT DATABASE()"</span><span class="p">)</span><span class="o">-&gt;</span><span class="nf">fetchColumn</span><span class="p">(),</span>
+            <span class="s1">'connection'</span> <span class="o">=&gt;</span> <span class="nv">$test</span>
+        <span class="p">]</span>
+    <span class="p">]</span>
+<span class="p">];</span>
+</code></pre></div></div>
+
+<h3 id="setup-script">setup script</h3>
+
+<p>Edit <code class="language-plaintext highlighter-rouge">bin/setup.php</code> for easy database creation and migration.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+<span class="kn">use</span> <span class="nc">BEAR\Dotenv\Dotenv</span><span class="p">;</span>
+
+<span class="k">require_once</span> <span class="nb">dirname</span><span class="p">(</span><span class="k">__DIR__</span><span class="p">)</span> <span class="mf">.</span> <span class="s1">'/vendor/autoload.php'</span><span class="p">;</span>
+
+<span class="p">(</span><span class="k">new</span> <span class="nc">Dotenv</span><span class="p">())</span><span class="o">-&gt;</span><span class="nf">load</span><span class="p">(</span><span class="nb">dirname</span><span class="p">(</span><span class="k">__DIR__</span><span class="p">));</span>
+
+<span class="nb">chdir</span><span class="p">(</span><span class="nb">dirname</span><span class="p">(</span><span class="k">__DIR__</span><span class="p">));</span>
+<span class="nb">passthru</span><span class="p">(</span><span class="s1">'rm -rf var/tmp/*'</span><span class="p">);</span>
+<span class="nb">passthru</span><span class="p">(</span><span class="s1">'chmod 775 var/tmp'</span><span class="p">);</span>
+<span class="nb">passthru</span><span class="p">(</span><span class="s1">'chmod 775 var/log'</span><span class="p">);</span>
+<span class="c1">// db</span>
+<span class="nv">$pdo</span> <span class="o">=</span> <span class="k">new</span> <span class="err">\</span><span class="nf">PDO</span><span class="p">(</span><span class="s1">'mysql:host='</span> <span class="mf">.</span> <span class="nb">getenv</span><span class="p">(</span><span class="s1">'TKT_DB_HOST'</span><span class="p">),</span> <span class="nb">getenv</span><span class="p">(</span><span class="s1">'TKT_DB_USER'</span><span class="p">),</span> <span class="nb">getenv</span><span class="p">(</span><span class="s1">'TKT_DB_PASS'</span><span class="p">));</span>
+<span class="nv">$pdo</span><span class="o">-&gt;</span><span class="nb">exec</span><span class="p">(</span><span class="s1">'CREATE DATABASE IF NOT EXISTS '</span> <span class="mf">.</span> <span class="nb">getenv</span><span class="p">(</span><span class="s1">'TKT_DB_NAME'</span><span class="p">));</span>
+<span class="nv">$pdo</span><span class="o">-&gt;</span><span class="nb">exec</span><span class="p">(</span><span class="s1">'DROP DATABASE IF EXISTS '</span> <span class="mf">.</span> <span class="nb">getenv</span><span class="p">(</span><span class="s1">'TKT_DB_NAME'</span><span class="p">)</span> <span class="mf">.</span> <span class="s1">'_test'</span><span class="p">);</span>
+<span class="nv">$pdo</span><span class="o">-&gt;</span><span class="nb">exec</span><span class="p">(</span><span class="s1">'CREATE DATABASE '</span> <span class="mf">.</span> <span class="nb">getenv</span><span class="p">(</span><span class="s1">'TKT_DB_NAME'</span><span class="p">)</span> <span class="mf">.</span> <span class="s1">'_test'</span><span class="p">);</span>
+<span class="nb">passthru</span><span class="p">(</span><span class="s1">'./vendor/bin/phinx migrate -c var/phinx/phinx.php -e development'</span><span class="p">);</span>
+<span class="nb">passthru</span><span class="p">(</span><span class="s1">'./vendor/bin/phinx migrate -c var/phinx/phinx.php -e test'</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>Next, we will create a migration class to create the <code class="language-plaintext highlighter-rouge">ticket</code> table.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./vendor/bin/phinx create Ticket -c var/phinx/phinx.php
+</code></pre></div></div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Phinx by CakePHP - https://phinx.org.
+
+...
+created var/phinx/migrations/20210520124501_ticket.php
+</code></pre></div></div>
+
+<p>Edit <code class="language-plaintext highlighter-rouge">var/phinx/migrations/{current_date}_ticket.php</code> to implement the <code class="language-plaintext highlighter-rouge">change()</code> method.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+<span class="kn">use</span> <span class="nc">Phinx\Migration\AbstractMigration</span><span class="p">;</span>
+
+<span class="k">final</span> <span class="kd">class</span> <span class="nc">Ticket</span> <span class="kd">extends</span> <span class="nc">AbstractMigration</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">change</span><span class="p">():</span> <span class="kt">void</span>
+    <span class="p">{</span>
+        <span class="nv">$table</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">table</span><span class="p">(</span><span class="s1">'ticket'</span><span class="p">,</span> <span class="p">[</span><span class="s1">'id'</span> <span class="o">=&gt;</span> <span class="kc">false</span><span class="p">,</span> <span class="s1">'primary_key'</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="s1">'id'</span><span class="p">]]);</span>
+        <span class="nv">$table</span><span class="o">-&gt;</span><span class="nf">addColumn</span><span class="p">(</span><span class="s1">'id'</span><span class="p">,</span> <span class="s1">'uuid'</span><span class="p">,</span> <span class="p">[</span><span class="s1">'null'</span> <span class="o">=&gt;</span> <span class="kc">false</span><span class="p">])</span>
+            <span class="o">-&gt;</span><span class="nf">addColumn</span><span class="p">(</span><span class="s1">'title'</span><span class="p">,</span> <span class="s1">'string'</span><span class="p">)</span>
+            <span class="o">-&gt;</span><span class="nf">addColumn</span><span class="p">(</span><span class="s1">'date_created'</span><span class="p">,</span> <span class="s1">'datetime'</span><span class="p">)</span>
+            <span class="o">-&gt;</span><span class="nf">create</span><span class="p">();</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>In addition, edit <code class="language-plaintext highlighter-rouge">.env.dist</code> like the following.</p>
+
+<div class="language-diff highlighter-rouge"><div class="highlight"><pre class="highlight"><code> TKT_DB_USER=root
+ TKT_DB_PASS=
+ TKT_DB_SLAVE=
+<span class="gd">-TKT_DB_DSN=mysql:host=${TKT_DB_HOST}
+</span><span class="gi">+TKT_DB_DSN=mysql:host=${TKT_DB_HOST};dbname=${TKT_DB_NAME}
+</span></code></pre></div></div>
+
+<p>Now that we are done with the setup, run the setup command to create the table.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>composer setup
+</code></pre></div></div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt; php bin/setup.php
+...
+All Done. Took 0.0248s
+</code></pre></div></div>
+
+<p>The table has been created. The next time you want to set up a database environment for this project, just run <code class="language-plaintext highlighter-rouge">composer setup</code>.</p>
+
+<p>For more information about writing migration classes, see <a href="https://book.cakephp.org/3.0/ja/phinx/migrations.html">Phinx Manual: Writing Migrations</a>.</p>
+
+<h2 id="module">Module</h2>
+
+<p>Install the module as a composer.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>composer require ray/identity-value-module ray/media-query -w
+</code></pre></div></div>
+
+<p>Install the package with AppModule.</p>
+
+<p><code class="language-plaintext highlighter-rouge">src/Module/AppModule.php</code></p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+<span class="kn">namespace</span> <span class="nn">MyVendor\Ticket\Module</span><span class="p">;</span>
+
+<span class="kn">use</span> <span class="nc">BEAR\Dotenv\Dotenv</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">BEAR\Package\AbstractAppModule</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">BEAR\Package\PackageModule</span><span class="p">;</span>
+
+<span class="kn">use</span> <span class="nc">BEAR\Resource\Module\JsonSchemaModule</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">Ray\AuraSqlModule\AuraSqlModule</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">Ray\IdentityValueModule\IdentityValueModule</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">Ray\MediaQuery\DbQueryConfig</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">Ray\MediaQuery\MediaQueryModule</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">Ray\MediaQuery\Queries</span><span class="p">;</span>
+<span class="kn">use</span> <span class="k">function</span> <span class="n">dirname</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">AppModule</span> <span class="kd">extends</span> <span class="nc">AbstractAppModule</span>
+<span class="p">{</span>
+    <span class="k">protected</span> <span class="k">function</span> <span class="n">configure</span><span class="p">():</span> <span class="kt">void</span>
+    <span class="p">{</span>
+        <span class="p">(</span><span class="k">new</span> <span class="nc">Dotenv</span><span class="p">())</span><span class="o">-&gt;</span><span class="nf">load</span><span class="p">(</span><span class="nb">dirname</span><span class="p">(</span><span class="k">__DIR__</span><span class="p">,</span> <span class="mi">2</span><span class="p">));</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">install</span><span class="p">(</span>
+            <span class="k">new</span> <span class="nc">AuraSqlModule</span><span class="p">(</span>
+                <span class="p">(</span><span class="n">string</span><span class="p">)</span> <span class="nb">getenv</span><span class="p">(</span><span class="s1">'TKT_DB_DSN'</span><span class="p">),</span>
+                <span class="p">(</span><span class="n">string</span><span class="p">)</span> <span class="nb">getenv</span><span class="p">(</span><span class="s1">'TKT_DB_USER'</span><span class="p">),</span>
+                <span class="p">(</span><span class="n">string</span><span class="p">)</span> <span class="nb">getenv</span><span class="p">(</span><span class="s1">'TKT_DB_PASS'</span><span class="p">),</span>
+                <span class="p">(</span><span class="n">string</span><span class="p">)</span> <span class="nb">getenv</span><span class="p">(</span><span class="s1">'TKT_DB_SLAVE'</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="p">);</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">install</span><span class="p">(</span>
+            <span class="k">new</span> <span class="nc">MediaQueryModule</span><span class="p">(</span>
+                <span class="nc">Queries</span><span class="o">::</span><span class="nf">fromDir</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="n">appMeta</span><span class="o">-&gt;</span><span class="n">appDir</span> <span class="mf">.</span> <span class="s1">'/src/Query'</span><span class="p">),</span> <span class="p">[</span>
+                   <span class="k">new</span> <span class="nc">DbQueryConfig</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="n">appMeta</span><span class="o">-&gt;</span><span class="n">appDir</span> <span class="mf">.</span> <span class="s1">'/var/sql'</span><span class="p">),</span>
+                <span class="p">]</span>
+            <span class="p">)</span>
+        <span class="p">);</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">install</span><span class="p">(</span><span class="k">new</span> <span class="nc">IdentityValueModule</span><span class="p">());</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">install</span><span class="p">(</span>
+            <span class="k">new</span> <span class="nc">JsonSchemaModule</span><span class="p">(</span>
+                <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">appMeta</span><span class="o">-&gt;</span><span class="n">appDir</span> <span class="mf">.</span> <span class="s1">'/var/schema/response'</span><span class="p">,</span>
+                <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">appMeta</span><span class="o">-&gt;</span><span class="n">appDir</span> <span class="mf">.</span> <span class="s1">'/var/schema/request'</span>
+            <span class="p">)</span>
+        <span class="p">);</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">install</span><span class="p">(</span><span class="k">new</span> <span class="nc">PackageModule</span><span class="p">());</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="sql">SQL</h2>
+
+<p>Save the three SQLs for the ticket in <code class="language-plaintext highlighter-rouge">var/sql</code>.<sup id="fnref:13" role="doc-noteref"><a href="#fn:13" class="footnote" rel="footnote">1</a></sup></p>
+
+<p><code class="language-plaintext highlighter-rouge">var/sql/ticket_add.sql</code></p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/* ticket add */</span>
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">ticket</span> <span class="p">(</span><span class="n">id</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">date_created</span><span class="p">)</span>
+<span class="k">VALUES</span> <span class="p">(:</span><span class="n">id</span><span class="p">,</span> <span class="p">:</span><span class="n">title</span><span class="p">,</span> <span class="p">:</span><span class="n">dateCreated</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">var/sql/ticket_list.sql</code></p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/* ticket list */</span>
+<span class="k">SELECT</span> <span class="n">id</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">date_created</span>
+  <span class="k">FROM</span> <span class="n">ticket</span>
+ <span class="k">LIMIT</span> <span class="mi">3</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">var/sql/ticket_item.sql</code></p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/* ticket item */</span>
+<span class="k">SELECT</span> <span class="n">id</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">date_created</span>
+  <span class="k">FROM</span> <span class="n">ticket</span>
+ <span class="k">WHERE</span> <span class="n">id</span> <span class="o">=</span> <span class="p">:</span><span class="n">id</span>
+</code></pre></div></div>
+
+<p>Make sure that the SQL will work on its own when you create it.</p>
+
+<blockquote>
+  <p>PHPStorm includes a database tool, <a href="https://www.jetbrains.com/datagrip/">DataGrip</a>, which has all the necessary features for SQL development such as code completion and SQL refactoring.
+Once the DB connection and other setups are made, SQL files can be executed directly in the IDE. <sup id="fnref:3" role="doc-noteref"><a href="#fn:3" class="footnote" rel="footnote">2</a></sup><sup id="fnref:4" role="doc-noteref"><a href="#fn:4" class="footnote" rel="footnote">3</a></sup></p>
+</blockquote>
+
+<h2 id="jsonschema">JsonSchema.</h2>
+
+<p>Create new files that will represent the resource <code class="language-plaintext highlighter-rouge">Ticket</code> (ticket item) and <code class="language-plaintext highlighter-rouge">Tickets</code> (ticket item list) with <a href="http://json-schema.org/">JsonSchema</a>:</p>
+
+<p><code class="language-plaintext highlighter-rouge">var/schema/response/ticket.json</code></p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"$id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ticket.json"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"$schema"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://json-schema.org/draft-07/schema#"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Ticket"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"object"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"required"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"id"</span><span class="p">,</span><span class="w"> </span><span class="s2">"title"</span><span class="p">,</span><span class="w"> </span><span class="s2">"date_created"</span><span class="p">],</span><span class="w">
+  </span><span class="nl">"properties"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"The unique identifier for a ticket."</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"string"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"maxLength"</span><span class="p">:</span><span class="w"> </span><span class="mi">64</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="nl">"title"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"The unique identifier for a ticket."</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"string"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"maxLength"</span><span class="p">:</span><span class="w"> </span><span class="mi">255</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="nl">"date_created"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"The date and time that the ticket was created"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"string"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"format"</span><span class="p">:</span><span class="w"> </span><span class="s2">"datetime"</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">var/schema/response/tickets.json</code></p>
+
+<p>Tickets is a <code class="language-plaintext highlighter-rouge">Ticket</code> array.</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"$id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"tickets.json"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"$schema"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://json-schema.org/draft-07/schema#"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Tickets"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"object"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"required"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"tickets"</span><span class="p">],</span><span class="w">
+  </span><span class="nl">"properties"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"tickets"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"array"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"items"</span><span class="p">:{</span><span class="nl">"$ref"</span><span class="p">:</span><span class="w"> </span><span class="s2">"./ticket.json"</span><span class="p">}</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+
+</span></code></pre></div></div>
+
+<ul>
+  <li><strong>$id</strong> - specifies the file name, but if it is to be published, it should be a URL.</li>
+  <li><strong>title</strong> - This will be treated in the API documentation as an object name.</li>
+  <li><strong>examples</strong> - specify examples as appropriate. You can also specify the entire object.</li>
+</ul>
+
+<p>In PHPStorm, you will see a green check in the upper right corner of the editor to indicate that everything is OK. You should also validate the schema itself when you create it.</p>
+
+<h2 id="query-interface">Query Interface</h2>
+
+<p>We will create a PHP interface that abstracts access to the infrastructure.</p>
+
+<ul>
+  <li>Read Ticket resources <strong>TicketQueryInterface</strong>.</li>
+  <li>Create a Ticket resource <strong>TicketCommandInterface</strong>.</li>
+</ul>
+
+<p><code class="language-plaintext highlighter-rouge">src/Query/TicketQueryInterface.php</code></p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+
+<span class="kn">namespace</span> <span class="nn">MyVendor\Ticket\Query</span><span class="p">;</span>
+
+<span class="kn">use</span> <span class="nc">Ray\MediaQuery\Annotation\DbQuery</span><span class="p">;</span>
+
+<span class="kd">interface</span> <span class="nc">TicketQueryInterface</span>
+<span class="p">{</span>
+    <span class="c1">#[DbQuery('ticket_item']</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">item</span><span class="p">(</span><span class="kt">string</span> <span class="nv">$id</span><span class="p">):</span> <span class="kt">Ticket</span><span class="o">|</span><span class="kc">null</span><span class="p">;</span>
+
+    <span class="cd">/** @return array&lt;Ticket&gt; */</span>
+    <span class="c1">#[DbQuery('ticket_list']</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">list</span><span class="p">():</span> <span class="kt">array</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">src/Query/TicketCommandInterface.php</code></p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+
+<span class="kn">namespace</span> <span class="nn">MyVendor\Ticket\Query</span><span class="p">;</span>
+
+<span class="kn">use</span> <span class="nc">DateTimeInterface</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">Ray\MediaQuery\Annotation\DbQuery</span><span class="p">;</span>
+
+<span class="kd">interface</span> <span class="nc">TicketCommandInterface</span>
+<span class="p">{</span>
+    <span class="c1">#[DbQuery('ticket_add')]</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">add</span><span class="p">(</span><span class="kt">string</span> <span class="nv">$id</span><span class="p">,</span> <span class="kt">string</span> <span class="nv">$title</span><span class="p">,</span> <span class="kt">DateTimeInterface</span> <span class="nv">$dateCreated</span> <span class="o">=</span> <span class="kc">null</span><span class="p">):</span> <span class="kt">void</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Specify an SQL statement with the <code class="language-plaintext highlighter-rouge">#[DbQuery]</code> attribute. You do not need to write any implementation for this interface. An object that performs the specified SQL query will be created automatically.</p>
+
+<p>The interface is divided into two concerns: <strong>command</strong> which has side effects, and <strong>query</strong> which returns a value.
+It can be one interface and one method as in <a href="https://github.com/pmjones/adr">ADR pattern</a>. The application designer decides the policy.</p>
+
+<h2 id="entity">Entity</h2>
+
+<p>If you specify <code class="language-plaintext highlighter-rouge">array</code> for the return value of a method, you will get the database result as it is, an associative array, but if you specify an entity type for the return value of the method, it will be hydrated to that type.</p>
+
+<p>``php
+#[DbQuery(‘ticket_item’)
+public function item(string $id): array // you get an array.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+```php
+#[DbQuery('ticket_item')].
+public function item(string $id): ticket|null; // yields a Ticket entity.
+</code></pre></div></div>
+
+<p>For multiple rows (row_list), use <code class="language-plaintext highlighter-rouge">/** @return array&lt;Ticket&gt;*/</code> and phpdoc to specify that <code class="language-plaintext highlighter-rouge">Ticket</code> is returned as an array.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/** @return array&lt;Ticket&gt; */
+#[DbQuery('ticket_list')].
+public function list(): array; // yields an array of Ticket entities.
+</code></pre></div></div>
+<p>The value of each row is passed to the constructor by name argument. <sup id="fnref:named" role="doc-noteref"><a href="#fn:named" class="footnote" rel="footnote">4</a></sup></p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+
+<span class="k">declare</span><span class="p">(</span><span class="n">strict_types</span><span class="o">=</span><span class="mi">1</span><span class="p">);</span>
+
+<span class="kn">namespace</span> <span class="nn">MyVendor\Ticket\Entity</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">Ticket</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">__construct</span><span class="p">(</span>
+        <span class="kt">public</span> <span class="n">readonly</span> <span class="n">string</span> <span class="nv">$id</span><span class="p">,</span>
+        <span class="kt">public</span> <span class="n">readonly</span> <span class="n">string</span> <span class="nv">$title</span><span class="p">,</span>
+        <span class="kt">public</span> <span class="n">readonly</span> <span class="n">string</span> <span class="nv">$dateCreated</span>
+    <span class="p">)</span> <span class="p">{}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="resources">Resources</h2>
+
+<p>The resource class depends on the query interface.</p>
+
+<h2 id="ticket-resource">Ticket resource</h2>
+
+<p>Create a <code class="language-plaintext highlighter-rouge">ticket</code> resource in <code class="language-plaintext highlighter-rouge">src/Resource/App/Ticket.php</code>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+
+<span class="k">declare</span><span class="p">(</span><span class="n">strict_types</span><span class="o">=</span><span class="mi">1</span><span class="p">);</span>
+
+<span class="kn">namespace</span> <span class="nn">MyVendor\Ticket\Resource\App</span><span class="p">;</span>
+
+<span class="kn">use</span> <span class="nc">BEAR\Resource\Annotation\JsonSchema</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">BEAR\Resource\ResourceObject</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">MyVendor\Ticket\Query\TicketQueryInterface</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">Ticket</span> <span class="kd">extends</span> <span class="nc">ResourceObject</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">__construct</span><span class="p">(</span>
+        <span class="kt">private</span> <span class="nc">TicketQueryInterface</span> <span class="nv">$query</span>
+    <span class="p">){}</span>
+    
+   <span class="c1">#[JsonSchema("ticket.json")]</span>
+   <span class="k">public</span> <span class="k">function</span> <span class="n">onGet</span><span class="p">(</span><span class="kt">string</span> <span class="nv">$id</span> <span class="o">=</span> <span class="s1">''</span><span class="p">):</span> <span class="kt">static</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">body</span> <span class="o">=</span> <span class="p">(</span><span class="k">array</span><span class="p">)</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">query</span><span class="o">-&gt;</span><span class="nf">item</span><span class="p">(</span><span class="nv">$id</span><span class="p">);</span>
+
+        <span class="k">return</span> <span class="nv">$this</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>The attribute <code class="language-plaintext highlighter-rouge">#[JsonSchema]</code> indicates that the value output by <code class="language-plaintext highlighter-rouge">onGet()</code> is defined in the <code class="language-plaintext highlighter-rouge">ticket.json</code> schema.
+It is validated for each request by AOP.</p>
+
+<p>Let’s try to request a resource by entering a seed. <sup id="fnref:8" role="doc-noteref"><a href="#fn:8" class="footnote" rel="footnote">5</a></sup></p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% mysql <span class="nt">-u</span> root <span class="nt">-e</span> <span class="s2">"INSERT INTO ticket (id, title, date_created) VALUES ('1', 'foo', '1970-01-01 00:00:00')"</span> ticket
+</code></pre></div></div>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% php bin/app.php get <span class="s1">'/ticket?id=1'</span>
+</code></pre></div></div>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>200 OK
+Content-Type: application/hal+json
+
+<span class="o">{</span>
+    <span class="s2">"id"</span>: <span class="s2">"1"</span>,
+    <span class="s2">"title"</span>: <span class="s2">"foo"</span>,
+    <span class="s2">"date_created"</span>: <span class="s2">"1970-01-01 00:00:01"</span>,
+    <span class="s2">"_links"</span>: <span class="o">{</span>
+        <span class="s2">"self"</span>: <span class="o">{</span>
+            <span class="s2">"href"</span>: <span class="s2">"/ticket?id=1"</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h3 id="mediaquery">MediaQuery</h3>
+
+<p>With Ray.MediaQuery, an auto-generated SQL execution object is injected from the interface without the need to code boilerplate implementation classes. <sup id="fnref:5" role="doc-noteref"><a href="#fn:5" class="footnote" rel="footnote">6</a></sup></p>
+
+<p>A SQL statement can contain multiple SQLs separated by <code class="language-plaintext highlighter-rouge">;</code>, and multiple SQLs are bound to the same parameter by name, and transactions are executed for queries other than SELECT.</p>
+
+<p>If you want to generate SQL dynamically, you can use an SQL execution class that injects the query builder instead of Ray.
+For more details, please see <a href="database.html">Database</a> in the manual.</p>
+
+<h2 id="embedded-links">Embedded links</h2>
+
+<p>Usually, a website page contains multiple resources. For example, a blog post page might contain recommendations, advertisements, category links, etc. in addition to the post.
+Instead of the client getting them separately, they can be bundled into one resource with embedded links as independent resources.</p>
+
+<p>Think of HTML and the <code class="language-plaintext highlighter-rouge">&lt;img&gt;</code> tag that is written in it. Both have independent URLs, but the image resource is embedded in the HTML resource, and when the HTML is retrieved, the image is displayed in the HTML.
+These are called hypermedia types <a href="http://amundsen.com/hypermedia/hfactor/#le">Embedding links(LE)</a>, and the resource to be embedded is linked.</p>
+
+<p>Let’s embed the project resource into the ticket resource, and prepare the Project class.</p>
+
+<p><code class="language-plaintext highlighter-rouge">src/Resource/App/Project.php</code></p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+
+<span class="kn">namespace</span> <span class="nn">MyVendor\Ticket\Resource\App</span><span class="p">;</span>
+
+<span class="kn">use</span> <span class="nc">BEAR\Resource\ResourceObject</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">Project</span> <span class="kd">extends</span> <span class="nc">ResourceObject</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onGet</span><span class="p">():</span> <span class="kt">static</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">body</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'title'</span> <span class="o">=&gt;</span> <span class="s1">'Project A'</span><span class="p">];</span>
+
+        <span class="k">return</span> <span class="nv">$this</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Add the attribute <code class="language-plaintext highlighter-rouge">#[Embed]</code> to the Ticket resource.</p>
+
+<div class="language-diff highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gi">+use BEAR\Resource\Annotation\Embed;
++use BEAR\Resource\Request;
++
++   #[Embed(src: '/project', rel: 'project')]
+</span>    #[JsonSchema("ticket.json")]
+    public function onGet(string $id = ''): static
+    {
+<span class="gi">+        assert($this-&gt;body['project'] instanceof Request);
+</span><span class="gd">-        $this-&gt;body = (array) $this-&gt;query-&gt;item($id);
+</span><span class="gi">+        $this-&gt;body += (array) $this-&gt;query-&gt;item($id);
+</span></code></pre></div></div>
+
+<p>The request for the resource specified by the <code class="language-plaintext highlighter-rouge">#[Embed]</code> attribute <code class="language-plaintext highlighter-rouge">src</code> will be injected into the <code class="language-plaintext highlighter-rouge">rel</code> key of the body property, and will be lazily evaluated into a string representation when rendered.</p>
+
+<p>For the sake of simplicity, no parameters are passed in this example, but you can pass the values received by the method arguments using the URI template, or you can modify or add parameters to the injected request.
+See <a href="resource.html">resource</a> for details.</p>
+
+<p>If you make the request again, you will see that the status of the project resource has been added to the property <code class="language-plaintext highlighter-rouge">_embedded</code>.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% php bin/app.php get '/ticket?id=1'
+</code></pre></div></div>
+<div class="language-diff highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+{
+    "id": "1",
+    "title": "2",
+    "date_created": "1970-01-01 00:00:01",
+<span class="gi">+    "_embedded": {
++        "project": {
++            "title": "Project A",
++        }
+</span>    },
+</code></pre></div></div>
+
+<p>Embedded resources are an important feature of the REST API. It gives a tree structure to the content and reduces the HTTP request cost. Instead of letting the client fetching it as a separate resource each time, the relationship can be represented in server-side. <sup id="fnref:6" role="doc-noteref"><a href="#fn:6" class="footnote" rel="footnote">7</a></sup></p>
+
+<h2 id="tickets-resource">tickets resource</h2>
+
+<p>Create a <code class="language-plaintext highlighter-rouge">tickets</code> resource in <code class="language-plaintext highlighter-rouge">src/resource/App/Tickets.php</code> that can be created with <code class="language-plaintext highlighter-rouge">POST</code> and retrieved with <code class="language-plaintext highlighter-rouge">GET</code> for a list of tickets.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+
+<span class="k">declare</span><span class="p">(</span><span class="n">strict_types</span><span class="o">=</span><span class="mi">1</span><span class="p">);</span>
+
+<span class="kn">namespace</span> <span class="nn">MyVendor\Ticket\Resource\App</span><span class="p">;</span>
+
+<span class="kn">use</span> <span class="nc">BEAR\Resource\Annotation\JsonSchema</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">BEAR\Resource\Annotation\Link</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">BEAR\Resource\ResourceObject</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">Koriym\HttpConstants\ResponseHeader</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">Koriym\HttpConstants\StatusCode</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">MyVendor\Ticket\Query\TicketCommandInterface</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">MyVendor\Ticket\Query\TicketQueryInterface</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">Ray\IdentityValueModule\UuidInterface</span><span class="p">;</span>
+<span class="kn">use</span> <span class="k">function</span> <span class="nf">uri_template</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">Tickets</span> <span class="kd">extends</span> <span class="nc">ResourceObject</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">__construct</span><span class="p">(</span>
+        <span class="kt">private</span> <span class="nc">TicketQueryInterface</span> <span class="nv">$query</span><span class="p">,</span>
+        <span class="kt">private</span> <span class="nc">TicketCommandInterface</span> <span class="nv">$command</span><span class="p">,</span>
+        <span class="kt">private</span> <span class="nc">UuidInterface</span> <span class="nv">$uuid</span>
+    <span class="p">){}</span>
+
+    <span class="c1">#[Link(rel: "doPost", href: '/tickets')]</span>
+    <span class="c1">#[Link(rel: "goTicket", href: '/ticket{?id}')]</span>
+    <span class="c1">#[JsonSchema("tickets.json")]</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onGet</span><span class="p">():</span> <span class="kt">static</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">body</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s1">'tickets'</span> <span class="o">=&gt;</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">query</span><span class="o">-&gt;</span><span class="k">list</span><span class="p">()</span>
+        <span class="p">];</span>
+        
+        <span class="k">return</span> <span class="nv">$this</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="c1">#[Link(rel: "goTickets", href: '/tickets')]</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onPost</span><span class="p">(</span><span class="kt">string</span> <span class="nv">$title</span><span class="p">):</span> <span class="kt">static</span>
+    <span class="p">{</span>
+        <span class="nv">$id</span> <span class="o">=</span> <span class="p">(</span><span class="n">string</span><span class="p">)</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">uuid</span><span class="p">;</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">command</span><span class="o">-&gt;</span><span class="nf">add</span><span class="p">(</span><span class="nv">$id</span><span class="p">,</span> <span class="nv">$title</span><span class="p">);</span>
+
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">code</span> <span class="o">=</span> <span class="nc">StatusCode</span><span class="o">::</span><span class="no">CREATED</span><span class="p">;</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">headers</span><span class="p">[</span><span class="nc">ResponseHeader</span><span class="o">::</span><span class="no">LOCATION</span><span class="p">]</span> <span class="o">=</span> <span class="nf">uri_template</span><span class="p">(</span><span class="s1">'/ticket{?id}'</span><span class="p">,</span> <span class="p">[</span><span class="s1">'id'</span> <span class="o">=&gt;</span> <span class="nv">$id</span><span class="p">]);</span>
+
+        <span class="k">return</span> <span class="nv">$this</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>The injected <code class="language-plaintext highlighter-rouge">$uuid</code> can be cast to a string to get the UUID. Also, <code class="language-plaintext highlighter-rouge">#Link[]</code> represents a link to another resource (application state).</p>
+
+<p>Notice that we don’t pass the current time in the <code class="language-plaintext highlighter-rouge">add()</code> method.
+If no value is passed, it will not be null, but the MySQL current time string will be bound to the SQL.
+This is because the string representation of the current time DateTime object bound to the <code class="language-plaintext highlighter-rouge">DateTimeInterface</code> (current time string) is bound to SQL.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">public</span> <span class="k">function</span> <span class="n">add</span><span class="p">(</span><span class="kt">string</span> <span class="nv">$id</span><span class="p">,</span> <span class="kt">string</span> <span class="nv">$title</span><span class="p">,</span> <span class="kt">DateTimeInterface</span> <span class="nv">$dateCreated</span> <span class="o">=</span> <span class="kc">null</span><span class="p">):</span> <span class="kt">void</span><span class="p">;</span>
+</code></pre></div></div>
+<p>It saves you the trouble of hard-coding NOW() inside SQL and passing the current time to the method every time.
+You can pass a <code class="language-plaintext highlighter-rouge">DateTime object</code>, or in the context of a test, you can bind a fixed test time.</p>
+
+<p>In this way, if you specify an interface as an argument to a query, you get that object using DI, and its string representation is bound to SQL.
+For example, login user IDs can be bound and used across applications. <sup id="fnref:7" role="doc-noteref"><a href="#fn:7" class="footnote" rel="footnote">8</a></sup></p>
+
+<h2 id="hypermedia-api-test">Hypermedia API test</h2>
+
+<blockquote>
+  <p>The term REST (representational state transfer) was introduced and defined by Roy Fielding in his doctoral dissertation in 2000, and is intended to give an idea of “the behavior of a properly designed web application”.
+It is a network of web resources (a virtual state machine) where the user selects a resource identifier (URL) and a resource operation (application state transition) such as GET or POST to proceed with the application, resulting in the next representation of the resource (the next application state) being forwarded to the end user. application state) is transferred to the end user for use.</p>
+
+  <p>– <a href="https://en.wikipedia.org/wiki/Representational_state_transfer">Wikipedia (REST)</a></p>
+</blockquote>
+
+<p>In a REST application, the following actions are provided by the service as URLs, and the client selects them.</p>
+
+<p>HTML web applications are completely RESTful. The only operations are “<strong>Go to the provided URL</strong> (with a tag, etc.)” or “<strong>Fill the provided form and submit</strong>”.</p>
+
+<p>The REST API tests are written in the same way.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+
+<span class="k">declare</span><span class="p">(</span><span class="n">strict_types</span><span class="o">=</span><span class="mi">1</span><span class="p">);</span>
+
+<span class="kn">namespace</span> <span class="nn">MyVendor\Ticket\Hypermedia</span><span class="p">;</span>
+
+<span class="kn">use</span> <span class="nc">BEAR\Resource\ResourceInterface</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">BEAR\Resource\ResourceObject</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">Koriym\HttpConstants\ResponseHeader</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">MyVendor\Ticket\Injector</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">MyVendor\Ticket\Query\TicketQueryInterface</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">PHPUnit\Framework\TestCase</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">Ray\Di\InjectorInterface</span><span class="p">;</span>
+<span class="kn">use</span> <span class="k">function</span> <span class="nf">json_decode</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">WorkflowTest</span> <span class="kd">extends</span> <span class="nc">TestCase</span>
+<span class="p">{</span>
+    <span class="k">protected</span> <span class="kt">ResourceInterface</span> <span class="nv">$resource</span><span class="p">;</span>
+    <span class="k">protected</span> <span class="kt">InjectorInterface</span> <span class="nv">$injector</span><span class="p">;</span>
+
+    <span class="k">protected</span> <span class="k">function</span> <span class="n">setUp</span><span class="p">():</span> <span class="kt">void</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">injector</span> <span class="o">=</span> <span class="nc">Injector</span><span class="o">::</span><span class="nf">getInstance</span><span class="p">(</span><span class="s1">'hal-api-app'</span><span class="p">);</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">resource</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">injector</span><span class="o">-&gt;</span><span class="nf">getInstance</span><span class="p">(</span><span class="nc">ResourceInterface</span><span class="o">::</span><span class="n">class</span><span class="p">);</span>
+        <span class="nv">$a</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">injector</span><span class="o">-&gt;</span><span class="nf">getInstance</span><span class="p">(</span><span class="nc">TicketQueryInterface</span><span class="o">::</span><span class="n">class</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="n">testIndex</span><span class="p">():</span> <span class="kt">static</span>
+    <span class="p">{</span>
+        <span class="nv">$index</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">resource</span><span class="o">-&gt;</span><span class="nf">get</span><span class="p">(</span><span class="s1">'/'</span><span class="p">);</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">assertSame</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="nv">$index</span><span class="o">-&gt;</span><span class="n">code</span><span class="p">);</span>
+
+        <span class="k">return</span> <span class="nv">$index</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="cd">/**
+     * @depends testIndex
+     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">testGoTickets</span><span class="p">(</span><span class="kt">ResourceObject</span> <span class="nv">$response</span><span class="p">):</span> <span class="kt">static</span>
+    <span class="p">{</span>
+
+        <span class="nv">$json</span> <span class="o">=</span> <span class="p">(</span><span class="n">string</span><span class="p">)</span> <span class="nv">$response</span><span class="p">;</span>
+        <span class="nv">$href</span> <span class="o">=</span> <span class="nb">json_decode</span><span class="p">(</span><span class="nv">$json</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">_links</span><span class="o">-&gt;</span><span class="p">{</span><span class="s1">'goTickets'</span><span class="p">}</span><span class="o">-&gt;</span><span class="n">href</span><span class="p">;</span>
+        <span class="nv">$ro</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">resource</span><span class="o">-&gt;</span><span class="nf">get</span><span class="p">(</span><span class="nv">$href</span><span class="p">);</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">assertSame</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="nv">$ro</span><span class="o">-&gt;</span><span class="n">code</span><span class="p">);</span>
+
+        <span class="k">return</span> <span class="nv">$ro</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="cd">/**
+     * @depends testGoTickets
+     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">testDoPost</span><span class="p">(</span><span class="kt">ResourceObject</span> <span class="nv">$response</span><span class="p">):</span> <span class="kt">static</span>
+    <span class="p">{</span>
+        <span class="nv">$json</span> <span class="o">=</span> <span class="p">(</span><span class="n">string</span><span class="p">)</span> <span class="nv">$response</span><span class="p">;</span>
+        <span class="nv">$href</span> <span class="o">=</span> <span class="nb">json_decode</span><span class="p">(</span><span class="nv">$json</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">_links</span><span class="o">-&gt;</span><span class="p">{</span><span class="s1">'doPost'</span><span class="p">}</span><span class="o">-&gt;</span><span class="n">href</span><span class="p">;</span>
+        <span class="nv">$ro</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">resource</span><span class="o">-&gt;</span><span class="nf">post</span><span class="p">(</span><span class="nv">$href</span><span class="p">,</span> <span class="p">[</span><span class="s1">'title'</span> <span class="o">=&gt;</span> <span class="s1">'title1'</span><span class="p">]);</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">assertSame</span><span class="p">(</span><span class="mi">201</span><span class="p">,</span> <span class="nv">$ro</span><span class="o">-&gt;</span><span class="n">code</span><span class="p">);</span>
+
+        <span class="k">return</span> <span class="nv">$ro</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="cd">/**
+     * @depends testDoPost
+     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">testGoTicket</span><span class="p">(</span><span class="kt">ResourceObject</span> <span class="nv">$response</span><span class="p">):</span> <span class="kt">static</span>
+    <span class="p">{</span>
+        <span class="nv">$href</span> <span class="o">=</span> <span class="nv">$response</span><span class="o">-&gt;</span><span class="n">headers</span><span class="p">[</span><span class="nc">ResponseHeader</span><span class="o">::</span><span class="no">LOCATION</span><span class="p">];</span>
+        <span class="nv">$ro</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">resource</span><span class="o">-&gt;</span><span class="nf">get</span><span class="p">(</span><span class="nv">$href</span><span class="p">);</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">assertSame</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="nv">$ro</span><span class="o">-&gt;</span><span class="n">code</span><span class="p">);</span>
+
+        <span class="k">return</span> <span class="nv">$ro</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>You will also need a route page as a starting point.</p>
+
+<p><code class="language-plaintext highlighter-rouge">src/Resource/App/Index.php</code></p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+
+<span class="k">declare</span><span class="p">(</span><span class="n">strict_types</span><span class="o">=</span><span class="mi">1</span><span class="p">);</span>
+
+<span class="kn">namespace</span> <span class="nn">MyVendor\Ticket\Resource\App</span><span class="p">;</span>
+
+<span class="kn">use</span> <span class="nc">BEAR\Resource\Annotation\Link</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">BEAR\Resource\ResourceObject</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">Index</span> <span class="kd">extends</span> <span class="nc">ResourceObject</span>
+<span class="p">{</span>
+    <span class="c1">#[Link(rel: 'goTickets', href: '/tickets')]</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onGet</span><span class="p">():</span> <span class="kt">static</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="nv">$this</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">setUp</code> creates a resource client, and <code class="language-plaintext highlighter-rouge">testIndex()</code> accesses the root page.</li>
+  <li>The <code class="language-plaintext highlighter-rouge">testGoTickets()</code> method, which receives the response, makes a JSON representation of the response object and gets the link <code class="language-plaintext highlighter-rouge">goTickets</code> to get the next list of tickets.</li>
+  <li>There is no need to write a test for the resource body. * No need to write tests for the resource body, just check the status code, since it is guaranteed that the JsonSchema validation of the response has passed.</li>
+  <li>Following the uniform interface of REST, the next request URL to be accessed is always included in the response. Inspect them one after another.</li>
+</ul>
+
+<blockquote>
+  <p><strong>Uniform Interface</strong></p>
+
+  <p>REST is defined by four interface constraints: identification of resources; manipulation of resources through representations; self-descriptive messages; and, hypermedia as the engine of application state.<sup id="fnref:11" role="doc-noteref"><a href="#fn:11" class="footnote" rel="footnote">9</a></sup></p>
+</blockquote>
+
+<p>Let’s run it.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./vendor/bin/phpunit <span class="nt">--testsuite</span> hypermedia
+</code></pre></div></div>
+
+<p>Hypermedia API tests (REST application tests) are a good representation of the fact that REST applications are state machines, and workflows can be described as use cases.
+Ideally, REST API tests should cover how the application will be used.</p>
+
+<h3 id="http-testing">HTTP Testing</h3>
+
+<p>To test the REST API over HTTP, inherit the whole test and set the client to the HTTP test client with <code class="language-plaintext highlighter-rouge">setUp</code>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">WorkflowTest</span> <span class="kd">extends</span> <span class="nc">Workflow</span>
+<span class="p">{</span>
+    <span class="k">protected</span> <span class="k">function</span> <span class="n">setUp</span><span class="p">():</span> <span class="kt">void</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">resource</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">HttpResource</span><span class="p">(</span><span class="s1">'127.0.0.1:8080'</span><span class="p">,</span> <span class="k">__DIR__</span> <span class="mf">.</span> <span class="s1">'/index.php'</span><span class="p">,</span> <span class="k">__DIR__</span> <span class="mf">.</span> <span class="s1">'/log/workflow.log'</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>This client has the same interface as the resource client, but the actual request is made as an HTTP request to the built-in server and receives the response from the server.
+The first argument is the URL of the built-in server. When <code class="language-plaintext highlighter-rouge">new</code> is executed, the built-in server will be started with the bootstrap script specified in the second argument.</p>
+
+<p>The bootstrap script for the test server will also be changed to the API context.</p>
+
+<p><code class="language-plaintext highlighter-rouge">tests/Http/index.php</code></p>
+
+<div class="language-diff highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gd">-exit((new Bootstrap())('hal-app', $GLOBALS, $_SERVER));
+</span><span class="gi">+exit((new Bootstrap())('hal-api-app', $GLOBALS, $_SERVER));
+</span></code></pre></div></div>
+
+<p>Let’s run it.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./vendor/bin/phpunit --testsuite http
+</code></pre></div></div>
+
+<h4 id="http-access-log">HTTP Access Log</h4>
+
+<p>The actual HTTP request/response log made by curl will be recorded in the resource log of the third argument.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl -s -i 'http://127.0.0.1:8080/'
+
+HTTP/1.1 200 OK
+Host: 127.0.0.1:8080
+Date: Fri, 21 May 2021 22:41:02 GMT
+Connection: close
+X-Powered-By: PHP/8.0.6
+Content-Type: application/hal+json
+
+{
+    "_links": {
+        "self": {
+            "href": "/index"
+        },
+        "goTickets": {
+            "href": "/tickets"
+        }
+    }
+}
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl -s -i -H 'Content-Type:application/json' -X POST -d '{"title":"title1"}' http://127.0.0.1:8080/tickets
+
+HTTP/1.1 201 Created
+Host: 127.0.0.1:8080
+Date: Fri, 21 May 2021 22:41:02 GMT
+Connection: close
+X-Powered-By: PHP/8.0.6
+Location: /ticket?id=421d997c-9a0e-4018-a6c2-9b8758cac6d6
+</code></pre></div></div>
+
+<p>The actual recorded JSON is useful for checking, especially if it has a complex structure, and is also good to check along with the API documentation.
+The HTTP client can also be used for E2E testing.</p>
+
+<h2 id="api-documentation">API documentation</h2>
+
+<p>In ResourceObjects, method signatures are the input parameters to the API, and responses are schema-defined.
+Because of its self-descriptiveness, API documentation can be generated automatically.</p>
+
+<p>Let’s create it. The documentation will be output to the <a href="https://bearsunday.github.io/tutorial2/">docs</a> folder.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>composer doc
+</code></pre></div></div>
+
+<p>It reduces the effort of writing IDL (Interface Definition Language), but more valuable is that the documentation follows the latest PHP code and is always accurate.
+It is a good idea to include it in your CI so that your code and API documentation are always in sync.</p>
+
+<p>You can also link to related documentation. See <a href="apidoc.html">ApiDoc</a> for more details on configuration.</p>
+
+<h2 id="code-examples">Code examples</h2>
+
+<p>The following code example is also available.</p>
+
+<ul>
+  <li>TestModulethat adds a <code class="language-plaintext highlighter-rouge">Test</code> context and clears the DB for each test.  <a href="https://github.com/bearsunday/tutorial2/commit/4e9704d3bc65b9c7e7a8c13164dfe7cc3d6929b2">4e9704d</a></li>
+  <li><code class="language-plaintext highlighter-rouge">entity</code> option for <code class="language-plaintext highlighter-rouge">#[DbQuery]</code> that returns a hydrated entity class instead of an associative array in DB queries <a href="https://github.com/bearsunday/tutorial2/commit/29f0a1f4d4bf51e6c0a722fd6b2f44cb78de999e">29f0a1f</a></li>
+  <li>Query builder synthesizing static and dynamic SQL <a href="https://github.com/bearsunday/tutorial2/commit/9d095acfed6150fb99f36d502ae13f03bdf2916d">9d095ac</a></li>
+</ul>
+
+<h2 id="rest-framework">REST framework</h2>
+
+<p>There are three styles of Web APIs.</p>
+
+<ul>
+  <li>Tunnels (SOAP, GraphQL)</li>
+  <li>URI (Object, CRUD)</li>
+  <li>Hypermedia (REST)</li>
+</ul>
+
+<p>In contrast to the URI style, where resources are treated as just RPCs <sup id="fnref:9" role="doc-noteref"><a href="#fn:9" class="footnote" rel="footnote">10</a></sup>, what we learned in this tutorial is REST, where resources are linked. <sup id="fnref:10" role="doc-noteref"><a href="#fn:10" class="footnote" rel="footnote">11</a></sup>
+Resources are connected by LOs (outbound links) in <code class="language-plaintext highlighter-rouge">#Link</code> to represent workflows, and LEs (embedded links) in <code class="language-plaintext highlighter-rouge">#[Embed]</code> to represent tree structures.</p>
+
+<p>BEAR.Sunday emphasizes clean, standards-based code.</p>
+
+<p>JsonSchema over framework-specific validators, standard SQL over proprietary ORM, IANA registered standard<sup id="fnref:12" role="doc-noteref"><a href="#fn:12" class="footnote" rel="footnote">12</a></sup> media type JSON over proprietary structure JSON.</p>
+
+<p>Application design is not about “free implementation”, but about “free choice of constraints”.
+Applications should aim for evolvability without breaking development efficiency, performance, and backward compatibility based on the constraints.</p>
+
+<p>(This manual has been prepared through deepL automated translation.)</p>
+
+<hr />
+
+<p>The comment is not only descriptive, but also makes it easier to identify the SQL in the slow query log, etc.</p>
+<div class="footnotes" role="doc-endnotes">
+  <ol>
+    <li id="fn:13" role="doc-endnote">
+      <p>This SQL conforms to the <a href="https://www.sqlstyle.guide/">SQL Style Guide</a>. It can be configured from PhpStorm as <a href="https://twitter.com/koriym/status/1410996122412150786">Joe Celko</a>. <a href="#fnref:13" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+    <li id="fn:3" role="doc-endnote">
+      <p><a href="https://pleiades.io/help/phpstorm/relational-databases.html">PHPStorm Database Tools and SQL</a> <a href="#fnref:3" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+    <li id="fn:4" role="doc-endnote">
+      <p><a href="https://pleiades.io/help/phpstorm/creating-diagrams.html">Database Diagrams</a>, etc. to check the query plan and execution plan to improve the quality of the SQL you create. <a href="#fnref:4" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+    <li id="fn:named" role="doc-endnote">
+      <p><a href="https://www.php.net/manual/en/functions.arguments.php#functions.named-arguments">PHP 8.0+ named arguments ¶</a>, column order for PHP 7.x. <a href="#fnref:named" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+    <li id="fn:8" role="doc-endnote">
+      <p>MediaQuery <a href="">README</a> Here we run it directly from mysql as an example, but you should also learn how to enter seed in the migration tool and use the IDE’s DB tools. <a href="#fnref:8" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+    <li id="fn:5" role="doc-endnote">
+      <p>Ray.MediaQuery also supports HTTP API requests. <a href="#fnref:5" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+    <li id="fn:6" role="doc-endnote">
+      <p>MediaQuery also supports HTTP API requests. This hierarchical structure of content is called <strong>Taxonomy</strong> in IA (Information Architecture). See <a href="https://understandinggroup.com/ia-theory/understanding-information-architecture">Understanding Information Architecture</a>. <a href="#fnref:6" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+    <li id="fn:7" role="doc-endnote">
+      <p>Ray.MediaQuery <a href="https://github.com/ray-di/Ray.MediaQuery/blob/1.x/README.ja.md#%E6%97%A5%E4%BB%98%E6%99%82%E5%88%BB">README</a> <a href="#fnref:7" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+    <li id="fn:11" role="doc-endnote">
+      <p>It is a widespread misconception that the Uniform Interface is not an HTTP method. See <a href="https://www.ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm">Uniform Interface</a>. <a href="#fnref:11" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+    <li id="fn:9" role="doc-endnote">
+      <p>The so-called “Restish API”; many APIs introduced as REST APIs have this URI/object style, and REST is misused. <a href="#fnref:9" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+    <li id="fn:10" role="doc-endnote">
+      <p>If you remove the links from the tutorial, you get the URI style. <a href="#fnref:10" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+    <li id="fn:12" role="doc-endnote">
+      <p><a href="https://www.iana.org/assignments/media-types/media-types.xhtml">https://www.iana.org/assignments/media-types/media-types.xhtml</a> <a href="#fnref:12" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+  </ol>
+</div>
+
+            </article>
+        </div>
+        <div id="ArticleToc" class="col-lg-2 d-none d-lg-block">
+            <nav class="nav side-bar-right"></nav>
+        </div>
+    </div>
+</main>
+<footer>
+    <div class="container d-md-flex">
+        <i class="bear-icon d-none d-lg-block"></i>
+        <small>
+            © 2011-2024 BEAR.Sunday
+        </small>
+        <ul class="navbar-nav flex-row ml-md-auto d-none d-md-flex">
+            <li>
+                <a href="https://gitter.im/bearsunday/BEAR.Sunday?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge">Gitter</a>
+            </li>
+            <li>
+                <a href="https://github.com/bearsunday/BEAR.Sunday">Github</a>
+            </li>
+            <li>
+                <a href="https://twitter.com/BEARSunday">Twitter</a>
+            </li>
+            <li>
+                <a href="https://www.facebook.com/pages/BEARSunday/110116939178462?ref=hl">Facebook</a>
+            </li>
+            <li>
+                <a href="http://koriym.github.io/">Blog (JA)</a>
+            </li>
+            <li>
+                <a href="https://github.com/bearsunday/bearsunday.github.io">PR ?</a>
+            </li>
+        </ul>
+    </div>
+</footer>
+<script src="//code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+<script>
+    window.ga = function () { ga.q.push(arguments) }; ga.q = []; ga.l = +new Date;
+    ga('create', 'UA-6074569-8', 'bearsunday.github.io'); ga('send', 'pageview');
+</script>
+<script src="https://www.google-analytics.com/analytics.js" async defer></script>
+
+<script src="/js/generate-table-of-contents/index.min.js"></script>
+<script>
+    var toc = generateTableOfContents(document.getElementById('article'));
+    var sideBarRight = $('.side-bar-right');
+    sideBarRight.append(toc);
+
+    var scrollOffset = $('body').attr('data-offset');
+    var articlePaddingTop = $('article').css('padding-top').replace('px', '');
+    sideBarRight.find('a').on('click', function (e) {
+        e.preventDefault();
+        var targetId = $(this).attr('href');
+        var targetPositionTop = $(targetId).offset().top - scrollOffset - articlePaddingTop;
+        window.scrollTo(0, targetPositionTop)
+    });
+</script>
+
+</body>
+</html>

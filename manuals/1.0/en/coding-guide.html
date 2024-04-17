@@ -1,0 +1,463 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Coding Guide &#124; BEAR.Sunday</title>
+    <meta name="description" content="BEAR.Sunday is a resource orientated framework with a REST centered architecture, implementing Dependency Injection and Aspect Orientated Programming' at its core.">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/github-markdown-css/2.10.0/github-markdown.css">
+    <link rel="stylesheet" href="/css/syntax.css">
+    
+    <link rel="stylesheet" href="/css/bearsunday.css">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="apple-touch-icon" href="/icon.png">
+</head>
+<body data-page-category="Manual" data-spy="scroll" data-target="#ArticleToc" data-offset="65">
+<header>
+    <nav class="navbar navbar-expand flex-column flex-md-row bg-light">
+        <a class="navbar-brand mr-0 mr-md-2" href="/index.html"></a>
+        <div class="navbar-nav-scroll">
+            <ul class="navbar-nav flex-row">
+                <li class="nav-item">
+                    <a class="nav-link " href="/index.html">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="/manuals/1.0/en/index.html">Manual</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link " href="/contributors.html">Contributors</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/slide.html">Slide</a>
+                </li>
+            </ul>
+        </div>
+        
+        <ul class="navbar-nav ml-md-auto d-none d-md-flex language-list">
+            <li>
+                <a class="active" href="/manuals/1.0/en/coding-guide.html">En</a>
+            </li>
+            <li>
+                <a class="" href="/manuals/1.0/ja/coding-guide.html">Ja</a>
+            </li>
+        </ul>
+        
+    </nav>
+</header>
+
+<main class="container-fluid">
+    <div class="row flex-xl-nowrap">
+        <div class="col-md-3 col-lg-2">
+            <div class="side-bar">
+                <nav class="navbar navbar-expand-md navbar-light">
+    <div class="navigation-header">
+        <div class="ml-auto d-sm-block d-md-none">
+            <ul class="navbar-nav language-list">
+                <li>
+                    <a class="active" href="/manuals/1.0/en/coding-guide.html">En</a>
+                </li>
+                <li>
+                    <a class="" href="/manuals/1.0/ja/coding-guide.html">Ja</a>
+                </li>
+            </ul>
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#Navber" aria-controls="Navber" aria-expanded="false" aria-label="ナビゲーションの切替">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+    </div>
+    <div class="collapse navbar-collapse" id="Navber">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/">Introduction</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/version.html">Version</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/quick-start.html">Quick Start</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/tutorial.html">Tutorial</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/tutorial2.html">Tutorial 2</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/package.html">Package</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/application.html">Application</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/module.html">Module</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/di.html">DI</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/aop.html">AOP</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/resource.html">Resource</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/resource_param.html">・Parameter</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/resource_link.html">・Link</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/resource_renderer.html">・Rendering and Transfer</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/router.html">Router</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/production.html">Production</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/import.html">Import</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/database.html">Database</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/validation.html">Validation</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/html.html">HTML</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/form.html">Form</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/content-negotiation.html">Content Negotiation</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/hypermedia-api.html">Hypermedia API</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/psr7.html">Request / PSR-7</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/js-ui.html">JavaScript UI</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/stream.html">Stream Response</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/cache.html">Cache</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/swoole.html">Swoole</a>
+            </li>
+            <li>
+                <a class="nav-link active" href="/manuals/1.0/en/coding-guide.html">Coding Guide</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/types.html">Type</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/test.html">Test</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/examples.html">Examples</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/attribute.html">Attribute</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/apidoc.html">API Doc</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/1page.html">1 Page</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+            </div>
+        </div>
+        <div class="col-md-9 col-lg-8">
+            <article id="article" class="markdown-body">
+                <h1 id="coding-guide">Coding Guide</h1>
+
+<h2 id="project">Project</h2>
+
+<p><code class="language-plaintext highlighter-rouge">Vendor</code> should be the company name, team name or the owner (<code class="language-plaintext highlighter-rouge">excite</code>, <code class="language-plaintext highlighter-rouge">koriym</code> etc.).
+<code class="language-plaintext highlighter-rouge">Package</code> is the name of the application or service (<code class="language-plaintext highlighter-rouge">blog</code>, <code class="language-plaintext highlighter-rouge">news</code> etc.).
+Projects must be created on a per application basis. Even when you create a Web API and an HTML from different hosts, they are considered one project.</p>
+
+<h2 id="style">Style</h2>
+
+<p>BEAR.Sunday follows the PSR style.</p>
+
+<ul>
+  <li><a href="https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-1-basic-coding-standard.md">PSR1</a></li>
+  <li><a href="https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-2-coding-style-guide.md">PSR2</a></li>
+  <li><a href="https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-4-autoloader.md">PSR4</a></li>
+</ul>
+
+<p>Here is ResourceObject code example.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+<span class="kn">namespace</span> <span class="nn">Koriym\Blog\Resource\App</span><span class="p">;</span>
+
+<span class="kn">use</span> <span class="nc">BEAR\RepositoryModule\Annotation\Cacheable</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">BEAR\Resource\Annotation\Embed</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">BEAR\Resource\Annotation\Link</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">BEAR\Resource\Code</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">BEAR\Resource\ResourceObject</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">BEAR\Sunday\Inject\ResourceInject</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">Ray\AuraSqlModule\AuraSqlInject</span><span class="p">;</span>
+
+<span class="cd">/**
+ * @Cacheable
+ */</span>
+<span class="kd">class</span> <span class="nc">Entry</span> <span class="kd">extends</span> <span class="nc">ResourceObject</span>
+<span class="p">{</span>
+    <span class="kn">use</span> <span class="nc">AuraSqlInject</span><span class="p">;</span>
+    <span class="kn">use</span> <span class="nc">ResourceInject</span><span class="p">;</span>
+
+    <span class="cd">/**
+     * @Embed(rel="author", src="/author{?author_id}")
+     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onGet</span><span class="p">(</span><span class="kt">string</span> <span class="nv">$author_id</span><span class="p">,</span> <span class="kt">string</span> <span class="nv">$slug</span><span class="p">):</span> <span class="kt">static</span>
+    <span class="p">{</span>
+        <span class="c1">// ...</span>
+
+        <span class="k">return</span> <span class="nv">$this</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="cd">/**
+     * @Link(rel="next_act", href="/act1")
+     * @Link(rel="next_act2", href="/act2")
+     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onPost</span> <span class="p">(</span>
+        <span class="kt">string</span> <span class="nv">$tile</span><span class="p">,</span>
+        <span class="kt">string</span> <span class="nv">$body</span><span class="p">,</span>
+        <span class="kt">string</span> <span class="nv">$uid</span><span class="p">,</span>
+        <span class="kt">string</span> <span class="nv">$slug</span>
+    <span class="p">):</span> <span class="kt">static</span> <span class="p">{</span>
+        <span class="c1">// ...</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">code</span> <span class="o">=</span> <span class="nc">Code</span><span class="o">::</span><span class="no">CREATED</span><span class="p">;</span>
+
+        <span class="k">return</span> <span class="nv">$this</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>A <a href="[https://phpdoc.org/docs/latest/getting-started/your-first-set-of-documentation.html]">DocBlock comment</a> is optional. A DocBlock contains the method summary in one line.
+Then followed by the description, which can be a multiple lines.
+We should also put @params and @Link after description if possible.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cd">/**
+ * A summary informing the user what the associated element does.
+ *
+ * A *description*, that can span multiple lines, to go _in-depth_ into the details of this element
+ * and to provide some background information or textual references.
+ *
+ * @param string $arg1 *description*
+ * @param string $arg2 *description*
+ * @param string $arg3 *description*
+ *
+ * @Link(rel="next_act", href="/next_act_uri")
+ * @Link(rel="next_act2", href="/next_act_uri2")
+*/</span>
+</code></pre></div></div>
+
+<h2 id="resources">Resources</h2>
+
+<p>See <a href="resource_bp.html">Resource Best Practices</a> for best practices for resources.</p>
+
+<h2 id="globals">Globals</h2>
+
+<p>We do not recommend referencing global values in resources or application classes. It is only used with Modules.</p>
+
+<ul>
+  <li>Do not refer to the value of <a href="http://php.net/manual/ja/language.variables.superglobals.php">Superglobal</a></li>
+  <li>Do not use <a href="http://php.net/manual/en/function.define.php">define</a></li>
+  <li>Do not create <code class="language-plaintext highlighter-rouge">Config</code> class to hold set values.</li>
+  <li>Do not use global object container (service locator) <a href="http://koriym.github.io/adv10/">[1]</a>, <a href="http://blog.ploeh.dk/2010/02/03/ServiceLocatorisanAnti-Pattern/">[2]</a></li>
+  <li>Use <a href="http://php.net/manual/en/function.date.php">Date</a> function and <a href="http://php.net/manual/en/class.datetime.php">DateTime</a> class. It is not recommended to get the time directly. Inject the time from outside using <a href="https://github.com/koriym/Koriym.Now">koriym/now</a>.</li>
+</ul>
+
+<p>Global method calls such as static methods are also not recommended.</p>
+
+<p>The values required by the application code are all injected. The setting files are used for injecting. When you need an external value such as Web API, make a special gateway class for all requests. Then you can mock that special class with DI or AOP.</p>
+
+<h2 id="classes-and-object">Classes and object</h2>
+
+<ul>
+  <li>
+    <ul>
+      <li><a href="http://php.net/manual/en/language.oop5.traits.php">Traits</a> are not recommended. Traits for injection such as <code class="language-plaintext highlighter-rouge">ResourceInject</code> that reduce boilerplate code for injection were added in PHP8 <a href="https://www.php.net/manual/en/language.oop5.decon.php#language.oop5.decon.constructor.promotion">constructor property promotion (declaring properties in the constructor signature)</a>. Use constructor injection.</li>
+    </ul>
+  </li>
+  <li>It is not recommended for the child classes to use the parent class methods. Common functions are not shared by inheritance and trait, they are dedicated classes and they are injected and used. <a href="https://en.wikipedia.org/wiki/Composition_over_inheritance">Composite from inheritance</a>.</li>
+  <li>A class with only one method should reflect the function to the class name and should set the name of the method to <code class="language-plaintext highlighter-rouge">__invoke ()</code> so that function access can be made.</li>
+</ul>
+
+<h2 id="script-command">Script command</h2>
+
+<ul>
+  <li>It is recommended to end the setup by using the <code class="language-plaintext highlighter-rouge">composer setup</code> command. This script includes the necessary database initialization and library checking. If manual operation such as <code class="language-plaintext highlighter-rouge">.env</code> setting is required, it is recommended that the procedure be displayed on the screen.</li>
+  <li>It is recommended that all application caches and logs are cleared with <code class="language-plaintext highlighter-rouge">composer cleanup</code> command.</li>
+  <li>It is recommended that all executable test (phpinit/phpcs/phpmd ..) are invoked with <code class="language-plaintext highlighter-rouge">composer test</code> command.</li>
+  <li>It is recommended an application is deployed with <code class="language-plaintext highlighter-rouge">composer deploy</code> command.</li>
+</ul>
+
+<h2 id="code-check">Code check</h2>
+
+<p>It is recommended to check the codes for each commit with the following commands. These commands can be installed with <a href="https://github.com/bearsunday/BEAR.QATools">bear/qatools</a>.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>phpcs src tests
+phpmd src text ./phpmd.xml
+php-cs-fixer fix --config-file=./.php_cs
+phpcbf src
+</code></pre></div></div>
+
+<h2 id="resources-1">Resources</h2>
+
+<p>Please also refer to <a href="/manuals/1.0/en/resource.html#best-practice">Resouce best practice</a>.</p>
+
+<h3 id="code">Code</h3>
+
+<p>Returns the appropriate status code. Testing is easier, and the correct information can be conveyed to bots and crawlers.</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">100</code> Continue Continuation of multiple requests</li>
+  <li><code class="language-plaintext highlighter-rouge">200</code> OK</li>
+  <li><code class="language-plaintext highlighter-rouge">201</code> Created Resource Creation</li>
+  <li><code class="language-plaintext highlighter-rouge">202</code> Accepted queue / batch acceptance</li>
+  <li><code class="language-plaintext highlighter-rouge">204</code> If there is no content body</li>
+  <li><code class="language-plaintext highlighter-rouge">304</code> Not Modified Not Updated</li>
+  <li><code class="language-plaintext highlighter-rouge">400</code> Bad request</li>
+  <li><code class="language-plaintext highlighter-rouge">401</code> Unauthorized Authentication required</li>
+  <li><code class="language-plaintext highlighter-rouge">403</code> Forbidden ban</li>
+  <li><code class="language-plaintext highlighter-rouge">404</code> Not Found</li>
+  <li><code class="language-plaintext highlighter-rouge">405</code> Method Not Allowed</li>
+  <li><code class="language-plaintext highlighter-rouge">503</code> Service Unavailable Temporary error on server side</li>
+</ul>
+
+<p>In <code class="language-plaintext highlighter-rouge">OnPut</code> method, you deal with the resource state with idempotence. For example, resource creation with UUID or update resource state.</p>
+
+<p><code class="language-plaintext highlighter-rouge">OnPatch</code> is implemented when changing the state of a part of a resource.</p>
+
+<h3 id="html-form-method">HTML Form Method</h3>
+
+<p>BEAR.Sunday can overwrite methods using the <code class="language-plaintext highlighter-rouge">X-HTTP-Method-Override</code> header or<code class="language-plaintext highlighter-rouge"> _method</code> query at the <code class="language-plaintext highlighter-rouge">POST</code> request in the HTML web form, but it is not necessarily recommended . For the Page resource, it is OK to implement policies other than <code class="language-plaintext highlighter-rouge">onGet</code> and<code class="language-plaintext highlighter-rouge"> onPost</code>. <a href="http://programmers.stacxchange.com/questions/114156/why-are-there-are-no-put-and-delete-methods-on-html-forms">[1]</a>, <a href="Http://roy.gbiv.com/untangled/2009/it-is-okay-to-use-post">[2]</a></p>
+
+<h3 id="hyperlink">Hyperlink</h3>
+
+<ul>
+  <li>It is recommended that resources with links be indicated by <code class="language-plaintext highlighter-rouge">#[Link]</code>.</li>
+  <li>It is recommended that resources be embedded as a graph of semantic coherence with <code class="language-plaintext highlighter-rouge">#[Embed]</code>.</li>
+</ul>
+
+<h2 id="di">DI</h2>
+
+<ul>
+  <li>Do not inject the value itself of the execution context (prod, dev etc). Instead, we inject instances according to the context. The application does not know in which context it is running.</li>
+  <li>Setter injection is not recommended for library code.</li>
+  <li>It is recommended that you override the <code class="language-plaintext highlighter-rouge">toConstructor</code> bindings instead and avoid the <code class="language-plaintext highlighter-rouge">Provider</code> bindings as much as possible.</li>
+  <li>Avoid binding by <code class="language-plaintext highlighter-rouge">Module</code> according to conditions. <a href="https://github.com/google/guice/wiki/AvoidConditionalLogicInModules">AvoidConditionalLogicInModules</a></li>
+  <li>It is not recommended to reference environmental variables since there is no module. Pass it in the constructor.</li>
+</ul>
+
+<h2 id="aop">AOP</h2>
+
+<ul>
+  <li>Do not make interceptor mandatory. We will make the program work even without an interceptor. (For example, if you remove <code class="language-plaintext highlighter-rouge">@Transactional</code> interceptor, the function of transaction will be lost, but “core concers” will work without issue.)</li>
+  <li>Prevent the interceptor from injecting dependencies in methods. Values that can only be determined at implementation time are injected into arguments via <code class="language-plaintext highlighter-rouge">@Assisted</code> injection.</li>
+  <li>If there are multiple interceptors, do not depend on the execution order.</li>
+  <li>If it is an interceptor unconditionally applied to all methods, consider the description in <code class="language-plaintext highlighter-rouge">bootstrap.php</code>.</li>
+</ul>
+
+<h2 id="environment">Environment</h2>
+
+<p>To make applications testable, it should also work on the console, and not only on the Web.</p>
+
+<p>It is recommended not to include the <code class="language-plaintext highlighter-rouge">.env</code> file in the project repository.</p>
+
+<h2 id="testing">Testing</h2>
+
+<ul>
+  <li>Focus on resource testing using resource clients, adding resource representation testing (e.g. HTML) if needed.</li>
+  <li>Hypermedia tests can leave use cases as tests.</li>
+  <li><code class="language-plaintext highlighter-rouge">prod</code> is the context for production. Use of the <code class="language-plaintext highlighter-rouge">prod</code> context in tests should be minimal, preferably none.</li>
+</ul>
+
+<h2 id="html-templates">HTML templates</h2>
+
+<ul>
+  <li>Avoid large loop statements. Consider replacing if statements in loops with <a href="https://www.php.net/manual/en/language.generators.overview.php">Generator</a>.</li>
+</ul>
+
+<hr />
+
+            </article>
+        </div>
+        <div id="ArticleToc" class="col-lg-2 d-none d-lg-block">
+            <nav class="nav side-bar-right"></nav>
+        </div>
+    </div>
+</main>
+<footer>
+    <div class="container d-md-flex">
+        <i class="bear-icon d-none d-lg-block"></i>
+        <small>
+            © 2011-2024 BEAR.Sunday
+        </small>
+        <ul class="navbar-nav flex-row ml-md-auto d-none d-md-flex">
+            <li>
+                <a href="https://gitter.im/bearsunday/BEAR.Sunday?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge">Gitter</a>
+            </li>
+            <li>
+                <a href="https://github.com/bearsunday/BEAR.Sunday">Github</a>
+            </li>
+            <li>
+                <a href="https://twitter.com/BEARSunday">Twitter</a>
+            </li>
+            <li>
+                <a href="https://www.facebook.com/pages/BEARSunday/110116939178462?ref=hl">Facebook</a>
+            </li>
+            <li>
+                <a href="http://koriym.github.io/">Blog (JA)</a>
+            </li>
+            <li>
+                <a href="https://github.com/bearsunday/bearsunday.github.io">PR ?</a>
+            </li>
+        </ul>
+    </div>
+</footer>
+<script src="//code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+<script>
+    window.ga = function () { ga.q.push(arguments) }; ga.q = []; ga.l = +new Date;
+    ga('create', 'UA-6074569-8', 'bearsunday.github.io'); ga('send', 'pageview');
+</script>
+<script src="https://www.google-analytics.com/analytics.js" async defer></script>
+
+<script src="/js/generate-table-of-contents/index.min.js"></script>
+<script>
+    var toc = generateTableOfContents(document.getElementById('article'));
+    var sideBarRight = $('.side-bar-right');
+    sideBarRight.append(toc);
+
+    var scrollOffset = $('body').attr('data-offset');
+    var articlePaddingTop = $('article').css('padding-top').replace('px', '');
+    sideBarRight.find('a').on('click', function (e) {
+        e.preventDefault();
+        var targetId = $(this).attr('href');
+        var targetPositionTop = $(targetId).offset().top - scrollOffset - articlePaddingTop;
+        window.scrollTo(0, targetPositionTop)
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,405 @@
+<!doctype html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>プロダクション &#124; BEAR.Sunday</title>
+    <meta name="description" content="BEAR.Sunday is a resource orientated framework with a REST centered architecture, implementing Dependency Injection and Aspect Orientated Programming' at its core.">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/github-markdown-css/2.10.0/github-markdown.css">
+    <link rel="stylesheet" href="/css/syntax.css">
+    
+    <link rel="stylesheet" href="/css/bearsunday.css">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="apple-touch-icon" href="/icon.png">
+</head>
+<body data-page-category="Manual" data-spy="scroll" data-target="#ArticleToc" data-offset="65">
+<header>
+    <nav class="navbar navbar-expand flex-column flex-md-row bg-light">
+        <a class="navbar-brand mr-0 mr-md-2" href="/index.html"></a>
+        <div class="navbar-nav-scroll">
+            <ul class="navbar-nav flex-row">
+                <li class="nav-item">
+                    <a class="nav-link " href="/index.html">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="/manuals/1.0/en/index.html">Manual</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link " href="/contributors.html">Contributors</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/slide.html">Slide</a>
+                </li>
+            </ul>
+        </div>
+        
+        <ul class="navbar-nav ml-md-auto d-none d-md-flex language-list">
+            <li>
+                <a class="" href="/manuals/1.0/en/archive/production1.html">En</a>
+            </li>
+            <li>
+                <a class="active" href="/manuals/1.0/ja/archive/production1.html">Ja</a>
+            </li>
+        </ul>
+        
+    </nav>
+</header>
+
+<main class="container-fluid">
+    <div class="row flex-xl-nowrap">
+        <div class="col-md-3 col-lg-2">
+            <div class="side-bar">
+                <nav class="navbar navbar-expand-md navbar-light">
+    <div class="navigation-header">
+        <div class="ml-auto d-sm-block d-md-none">
+            <ul class="navbar-nav language-list">
+                <li>
+                    <a class="" href="/manuals/1.0/en/archive/production1.html">En</a>
+                </li>
+                <li>
+                    <a class="active" href="/manuals/1.0/ja/archive/production1.html">Ja</a>
+                </li>
+            </ul>
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#Navber" aria-controls="Navber" aria-expanded="false" aria-label="ナビゲーションの切替">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+    </div>
+    <div class="collapse navbar-collapse" id="Navber">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/index.html">イントロダクション</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/version.html">バージョン</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/quick-start.html">クイックスタート</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/tutorial.html">チュートリアル</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/tutorial2.html">チュートリアル 2</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/package.html">パッケージ</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/application.html">アプリケーション</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/module.html">モジュール</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/di.html">DI</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/aop.html">AOP</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/resource.html">リソース</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/resource_param.html">・パラメーター</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/resource_link.html">・リンク</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/resource_renderer.html">・レンダリングと転送</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/router.html">ルーター</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/production.html">プロダクション</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/ja/import.html">インポート</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/database.html">データベース</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/html.html">HTML</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/validation.html">バリデーション</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/form.html">フォーム</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/content-negotiation.html">コンテントネゴシエーション</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/hypermedia-api.html">ハイパーメディア API</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/psr7.html">リクエスト / PSR-7</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/js-ui.html">JavaScript UI</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/stream.html">ストリーム出力</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/cache.html">キャッシュ</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/swoole.html">Swoole</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/coding-guide.html">コーディングガイド</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/types.html">タイプ</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/test.html">テスト</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/examples.html">サンプル</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/upgrade/injector.html">アップグレード</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/attribute.html">アトリビュート</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/apidoc.html">API Doc</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/1page.html">1 Page</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+            </div>
+        </div>
+        <div class="col-md-9 col-lg-8">
+            <article id="article" class="markdown-body">
+                <ul>
+  <li>このプロダクションマニュアルは2020/7/4まで掲載されていたBEAR.Package 0.9のマニュアルです。</li>
+</ul>
+
+<h1 id="プロダクション">プロダクション</h1>
+
+<p>アプリケーションの<a href="https://en.wikipedia.org/wiki/Deployment_environment">ディプロイ環境</a>に応じてキャッシュの設定や束縛の変更を行います。</p>
+
+<h2 id="コンテキスト">コンテキスト</h2>
+
+<p><code class="language-plaintext highlighter-rouge">prod</code>はプロダクションのためのコンテキストです。
+ルートオブジェクト<code class="language-plaintext highlighter-rouge">$app</code>やアノテーションリーダーなどでキャッシュが使われます。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+<span class="k">require</span> <span class="nb">dirname</span><span class="p">(</span><span class="k">__DIR__</span><span class="p">)</span> <span class="mf">.</span> <span class="s1">'/autoload.php'</span><span class="p">;</span>
+<span class="k">exit</span><span class="p">((</span><span class="k">require</span> <span class="nb">dirname</span><span class="p">(</span><span class="k">__DIR__</span><span class="p">)</span> <span class="mf">.</span> <span class="s1">'/bootstrap.php'</span><span class="p">)(</span><span class="s1">'prod-api-app'</span><span class="p">));</span>
+</code></pre></div></div>
+<p><strong>重要:</strong></p>
+
+<p><strong>プロダクションではディプロイ毎に<code class="language-plaintext highlighter-rouge">$app</code>を再生成する必要があります。</strong></p>
+
+<p><code class="language-plaintext highlighter-rouge">$app</code>を再生成するには<code class="language-plaintext highlighter-rouge">src/</code>ディレクトリのタイムスタンプを変更します。
+BEAR.Sundayはそれを検知して<code class="language-plaintext highlighter-rouge">$app</code>と<code class="language-plaintext highlighter-rouge">tmp/{context}/di</code>のDI/AOPファイルの再生成を行います。</p>
+
+<h2 id="prodmodule">ProdModule</h2>
+
+<p>アプリケーション用の<code class="language-plaintext highlighter-rouge">ProdModule</code>を<code class="language-plaintext highlighter-rouge">src/Module/ProdModule.php</code>に設置して、プロダクション用の束縛をカスタマイズやHTTP OPTIONSメソッドの許可を行う事ができます。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+<span class="kn">namespace</span> <span class="nn">Polidog\Todo\Module</span><span class="p">;</span>
+
+<span class="kn">use</span> <span class="nc">BEAR\Package\Context\ProdModule</span> <span class="k">as</span> <span class="nc">PackageProdModule</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">BEAR\QueryRepository\CacheVersionModule</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">BEAR\Resource\Module\OptionsMethodModule</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">BEAR\Package\AbstractAppModule</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">ProdModule</span> <span class="kd">extends</span> <span class="nc">AbstractModule</span>
+<span class="p">{</span>
+    <span class="cd">/**
+     * {@inheritdoc}
+     */</span>
+    <span class="k">protected</span> <span class="k">function</span> <span class="n">configure</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">install</span><span class="p">(</span><span class="k">new</span> <span class="nc">PackageProdModule</span><span class="p">);</span>       <span class="c1">// デフォルトのprod設定</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">install</span><span class="p">(</span><span class="k">new</span> <span class="nc">OptionsMethodModule</span><span class="p">);</span>     <span class="c1">// OPTIONSメソッドをプロダクションでも有効に</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">install</span><span class="p">(</span><span class="k">new</span> <span class="nc">CacheVersionModule</span><span class="p">(</span><span class="s1">'1'</span><span class="p">));</span> <span class="c1">// リソースキャッシュのバージョン指定</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="キャッシュ">キャッシュ</h2>
+
+<p>キャッシュは複数のWebサーバー間でシェアをしないローカルキャッシュと、シェアをする共有キャッシュの２種類あります。ローカルキャッシュはdeploy後に変更のないキャシュ例えばアノテーション等に使われ、共有キャッシュはリソース状態の保存に使われます。</p>
+
+<p>どちらのキャッシュもデフォルトでは「APCuキャッシュ+ファイルキャッシュ」のチェーンキャッシュです。リードはAPCuが優先して使用されライトは両方のストレージに行われます。</p>
+
+<h3 id="リソースキャッシュ">リソースキャッシュ</h3>
+
+<p>複数のWebサーバーを構成するためには共有のキャッシュストレージを設定する必要があり、（<a href="http://php.net/manual/ja/book.memcached.php">memcached</a>または<a href="https://redis.io">Redis</a>）のモジュールをインストールします。</p>
+
+<h3 id="memcached">Memcached</h3>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+<span class="kn">namespace</span> <span class="nn">BEAR\HelloWorld\Module</span><span class="p">;</span>
+
+<span class="kn">use</span> <span class="nc">BEAR\QueryRepository\StorageMemcachedModule</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">BEAR\Package\Context\ProdModule</span> <span class="k">as</span> <span class="nc">PackageProdModule</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">BEAR\Package\AbstractAppModule</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">Ray\Di\Scope</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">ProdModule</span> <span class="kd">extends</span> <span class="nc">AbstractModule</span>
+<span class="p">{</span>
+    <span class="cd">/**
+     * {@inheritdoc}
+     */</span>
+    <span class="k">protected</span> <span class="k">function</span> <span class="n">configure</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="c1">// memcache</span>
+        <span class="c1">// {host}:{port}:{weight},...</span>
+        <span class="nv">$memcachedServers</span> <span class="o">=</span> <span class="s1">'mem1.domain.com:11211:33,mem2.domain.com:11211:67'</span><span class="p">;</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">install</span><span class="p">(</span><span class="k">new</span> <span class="nc">StorageMemcachedModule</span><span class="p">(</span><span class="n">memcachedServers</span><span class="p">);</span>
+
+        <span class="c1">// デフォルトのProdModuleのインストール</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">install</span><span class="p">(</span><span class="k">new</span> <span class="nc">PackageProdModule</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="redis">Redis</h3>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// redis</span>
+<span class="nv">$redisServer</span> <span class="o">=</span> <span class="s1">'localhost:6379'</span><span class="p">;</span> <span class="c1">// {host}:{port}</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">install</span><span class="p">(</span><span class="k">new</span> <span class="nc">StorageRedisModule</span><span class="p">(</span><span class="nv">$redisServer</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>上記以外のストレージを利用する場合には、それぞれのモジュールを参考に新たにモジュールを作成します。</p>
+
+<h3 id="キャッシュ時間の指定">キャッシュ時間の指定</h3>
+
+<p>デフォルトのTTLを変更する場合<code class="language-plaintext highlighter-rouge">StorageExpiryModule</code>をインストールします。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Cache time</span>
+<span class="nv">$short</span> <span class="o">=</span> <span class="mi">60</span><span class="p">;</span>
+<span class="nv">$medium</span> <span class="o">=</span> <span class="mi">3600</span><span class="p">;</span>
+<span class="nv">$long</span> <span class="o">=</span> <span class="mi">24</span> <span class="o">*</span> <span class="mi">3600</span><span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">install</span><span class="p">(</span><span class="k">new</span> <span class="nc">StorageExpiryModule</span><span class="p">(</span><span class="nv">$short</span><span class="p">,</span> <span class="nv">$medium</span><span class="p">,</span> <span class="nv">$long</span><span class="p">);</span>
+</code></pre></div></div>
+<h3 id="キャッシュバージョンの指定">キャッシュバージョンの指定</h3>
+
+<p>リソースキャッシュの互換性が失われるdeployの時にはキャッシュバージョンを変更します。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$this-&gt;install(new CacheVersionModule($cacheVersion));
+</code></pre></div></div>
+
+<p>deployの度にリソースキャッシュを破棄したい場合は<code class="language-plaintext highlighter-rouge">$cacheVersion</code>に時刻や乱数の値を割り当てます。</p>
+
+<h2 id="デプロイ">デプロイ</h2>
+
+<h3 id="️-上書き更新を避ける">⚠️ 上書き更新を避ける</h3>
+
+<p>駆動中のプロジェクトフォルダを<code class="language-plaintext highlighter-rouge">rsync</code>などで上書きするのはリソースキャッシュの不一致や<code class="language-plaintext highlighter-rouge">tmp/</code>に作成される自動生成のクラスファイルと実際のクラスとの不一致になるリスクがあります。高負荷のサイトではキャッシュ作成やopcode作成などの大量のジョブが同時に複数実行されサイトのパフォーマンスのキャパシティを超える可能性もあります。</p>
+
+<p>別のディレクトリでセットアップを行いそのセットアップが問題なければ切り替えるようにします。</p>
+
+<h3 id="コンパイル推奨">コンパイル推奨</h3>
+
+<p>セットアップを行う際に<code class="language-plaintext highlighter-rouge">vendor/bin/bear.compile</code>スクリプトを使ってプロジェクトを<strong>ウオームアップ</strong>することができます。コンパイルスクリプトはDI/AOP用の動的に作成されるファイルやアノテーションなどの静的なキャッシュファイルを全て事前に作成し、最適化されたautoload.phpファイルとpreload.phpが出力されます。</p>
+
+<p>全てのクラスでインジェクションを行うのでランタイムでDIのエラーが出ることもありません。また<code class="language-plaintext highlighter-rouge">.env</code>には一般にAPIキーやパスワードなどのクレデンシャル情報が含まれますが、内容は全てPHPファイルに取り込まれるのでコンパイル後に消去可能です。コンパイルはdeployをより高速で安全にします。</p>
+
+<p>例）コンソールで実行</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>vendor/bin/bear.compile 'Polidog\Todo' prod-html-app /path/to/prject
+</code></pre></div></div>
+
+<h3 id="autoloadphp">autoload.php</h3>
+
+<p><code class="language-plaintext highlighter-rouge">{project_path}/autoload.php</code>に最適化されたautoload.phpファイルが出力されます。<code class="language-plaintext highlighter-rouge">composer dumpa-autoload --optimize</code>でダンプされる<code class="language-plaintext highlighter-rouge">vendor/autoload.php</code>よりずっと高速です。</p>
+
+<h3 id="preloadphp">preload.php</h3>
+
+<p><code class="language-plaintext highlighter-rouge">{project_path}/preload.php</code>に最適化されたpreload.phpファイルが出力されます。preloadを有効にするためにはphp.iniで<a href="https://www.php.net/manual/ja/opcache.configuration.php#ini.opcache.preload">opcache.preload</a>、<a href="https://www.php.net/manual/ja/opcache.configuration.php#ini.opcache.preload-user">opcache.preload</a>を指定する必要があります。PHP 7.4でサポートされた機能ですが、<code class="language-plaintext highlighter-rouge">7.4.0</code>-<code class="language-plaintext highlighter-rouge">7.4.2</code>では不安定で推奨できません。<code class="language-plaintext highlighter-rouge">7.4.4</code>以上の最新版を使いましょう。</p>
+
+<p>例）</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>opcache.preload=/path/to/project/preload.php
+opcache.preload_user=www-data
+</code></pre></div></div>
+
+<p>Note: パフォーマンスについては<a href="https://github.com/bearsunday/BEAR.HelloworldBenchmark/wiki/Intel-Core-i5-3.8-GHz-iMac-(Retina-5K,-27-inch,-2017)---PHP-7.4.4">bechmark</a>を参考にしてください。</p>
+
+<h3 id="deployerサポート">Deployerサポート</h3>
+
+<p><a href="http://deployer.org/">Deployer</a>の<a href="https://github.com/bearsunday/deploy">BEAR.Sundayレシピ</a>を利用が便利で安全です。他のサーバー構成ツールを利用する場合でも参考にしたりDeployerスクリプトを実行することを検討してください。またDeployerをプロジェクトのディレクトリを毎回生成するので<code class="language-plaintext highlighter-rouge">$app</code>の再生成を気にする必要がありません。</p>
+
+            </article>
+        </div>
+        <div id="ArticleToc" class="col-lg-2 d-none d-lg-block">
+            <nav class="nav side-bar-right"></nav>
+        </div>
+    </div>
+</main>
+<footer>
+    <div class="container d-md-flex">
+        <i class="bear-icon d-none d-lg-block"></i>
+        <small>
+            © 2011-2024 BEAR.Sunday
+        </small>
+        <ul class="navbar-nav flex-row ml-md-auto d-none d-md-flex">
+            <li>
+                <a href="https://gitter.im/bearsunday/BEAR.Sunday?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge">Gitter</a>
+            </li>
+            <li>
+                <a href="https://github.com/bearsunday/BEAR.Sunday">Github</a>
+            </li>
+            <li>
+                <a href="https://twitter.com/BEARSunday">Twitter</a>
+            </li>
+            <li>
+                <a href="https://www.facebook.com/pages/BEARSunday/110116939178462?ref=hl">Facebook</a>
+            </li>
+            <li>
+                <a href="http://koriym.github.io/">Blog (JA)</a>
+            </li>
+            <li>
+                <a href="https://github.com/bearsunday/bearsunday.github.io">PR ?</a>
+            </li>
+        </ul>
+    </div>
+</footer>
+<script src="//code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+<script>
+    window.ga = function () { ga.q.push(arguments) }; ga.q = []; ga.l = +new Date;
+    ga('create', 'UA-6074569-8', 'bearsunday.github.io'); ga('send', 'pageview');
+</script>
+<script src="https://www.google-analytics.com/analytics.js" async defer></script>
+
+<script src="/js/generate-table-of-contents/index.min.js"></script>
+<script>
+    var toc = generateTableOfContents(document.getElementById('article'));
+    var sideBarRight = $('.side-bar-right');
+    sideBarRight.append(toc);
+
+    var scrollOffset = $('body').attr('data-offset');
+    var articlePaddingTop = $('article').css('padding-top').replace('px', '');
+    sideBarRight.find('a').on('click', function (e) {
+        e.preventDefault();
+        var targetId = $(this).attr('href');
+        var targetPositionTop = $(targetId).offset().top - scrollOffset - articlePaddingTop;
+        window.scrollTo(0, targetPositionTop)
+    });
+</script>
+
+</body>
+</html>
+

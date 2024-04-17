@@ -1,0 +1,425 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Resource Link &#124; BEAR.Sunday</title>
+    <meta name="description" content="BEAR.Sunday is a resource orientated framework with a REST centered architecture, implementing Dependency Injection and Aspect Orientated Programming' at its core.">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/github-markdown-css/2.10.0/github-markdown.css">
+    <link rel="stylesheet" href="/css/syntax.css">
+    
+    <link rel="stylesheet" href="/css/bearsunday.css">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="apple-touch-icon" href="/icon.png">
+</head>
+<body data-page-category="Manual" data-spy="scroll" data-target="#ArticleToc" data-offset="65">
+<header>
+    <nav class="navbar navbar-expand flex-column flex-md-row bg-light">
+        <a class="navbar-brand mr-0 mr-md-2" href="/index.html"></a>
+        <div class="navbar-nav-scroll">
+            <ul class="navbar-nav flex-row">
+                <li class="nav-item">
+                    <a class="nav-link " href="/index.html">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="/manuals/1.0/en/index.html">Manual</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link " href="/contributors.html">Contributors</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/slide.html">Slide</a>
+                </li>
+            </ul>
+        </div>
+        
+        <ul class="navbar-nav ml-md-auto d-none d-md-flex language-list">
+            <li>
+                <a class="active" href="/manuals/1.0/en/resource_link.html">En</a>
+            </li>
+            <li>
+                <a class="" href="/manuals/1.0/ja/resource_link.html">Ja</a>
+            </li>
+        </ul>
+        
+    </nav>
+</header>
+
+<main class="container-fluid">
+    <div class="row flex-xl-nowrap">
+        <div class="col-md-3 col-lg-2">
+            <div class="side-bar">
+                <nav class="navbar navbar-expand-md navbar-light">
+    <div class="navigation-header">
+        <div class="ml-auto d-sm-block d-md-none">
+            <ul class="navbar-nav language-list">
+                <li>
+                    <a class="active" href="/manuals/1.0/en/resource_link.html">En</a>
+                </li>
+                <li>
+                    <a class="" href="/manuals/1.0/ja/resource_link.html">Ja</a>
+                </li>
+            </ul>
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#Navber" aria-controls="Navber" aria-expanded="false" aria-label="ナビゲーションの切替">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+    </div>
+    <div class="collapse navbar-collapse" id="Navber">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/">Introduction</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/version.html">Version</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/quick-start.html">Quick Start</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/tutorial.html">Tutorial</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/tutorial2.html">Tutorial 2</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/package.html">Package</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/application.html">Application</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/module.html">Module</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/di.html">DI</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/aop.html">AOP</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/resource.html">Resource</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/resource_param.html">・Parameter</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" href="/manuals/1.0/en/resource_link.html">・Link</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/resource_renderer.html">・Rendering and Transfer</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/router.html">Router</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/production.html">Production</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/import.html">Import</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/database.html">Database</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/validation.html">Validation</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/html.html">HTML</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/form.html">Form</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/content-negotiation.html">Content Negotiation</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/hypermedia-api.html">Hypermedia API</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/psr7.html">Request / PSR-7</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/js-ui.html">JavaScript UI</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/stream.html">Stream Response</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/cache.html">Cache</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/swoole.html">Swoole</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/coding-guide.html">Coding Guide</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/types.html">Type</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/test.html">Test</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/examples.html">Examples</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/attribute.html">Attribute</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/apidoc.html">API Doc</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/1page.html">1 Page</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+            </div>
+        </div>
+        <div class="col-md-9 col-lg-8">
+            <article id="article" class="markdown-body">
+                <h1 id="reousrce-link">Reousrce link</h1>
+
+<p>Resources can be linked to other resources. There are two types of links: external links <sup id="fnref:LO" role="doc-noteref"><a href="#fn:LO" class="footnote" rel="footnote">1</a></sup>, which link external resources, and internal links <sup id="fnref:LE" role="doc-noteref"><a href="#fn:LE" class="footnote" rel="footnote">2</a></sup>, which embed other resources in the resource itself.</p>
+
+<h2 id="out-bound-links">Out-bound links</h2>
+
+<p>Specify links by <code class="language-plaintext highlighter-rouge">rel</code> (relation) and <code class="language-plaintext highlighter-rouge">href</code> of the link name. The <code class="language-plaintext highlighter-rouge">href</code> can be a regular URI or <a href="https://github.com/ioseb/uri-template">RFC6570 URI template</a>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="c1">#[Link rel: 'profile', href: '/profile{?id}']</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onGet</span><span class="p">(</span><span class="nv">$id</span><span class="p">):</span> <span class="kt">static</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">body</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s1">'id'</span> <span class="o">=&gt;</span> <span class="mi">10</span>
+        <span class="p">];</span>
+
+        <span class="k">return</span> <span class="nv">$this</span><span class="p">;</span>
+    <span class="p">}</span>
+</code></pre></div></div>
+
+<p>In the above example, <code class="language-plaintext highlighter-rouge">href</code> is represented by and <code class="language-plaintext highlighter-rouge">$body['id']</code> is assigned to <code class="language-plaintext highlighter-rouge">{?id}</code>. The output in <a href="https://stateless.group/hal_specification.html">HAL</a> format is as follows</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+    </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"_links"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"self"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+            </span><span class="nl">"href"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/test"</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="nl">"profile"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+            </span><span class="nl">"href"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/profile?id=10"</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<h2 id="internal-links">Internal links</h2>
+
+<p>A resource can embed another resource. Specify the resource in the <code class="language-plaintext highlighter-rouge">src</code> of <code class="language-plaintext highlighter-rouge">#[Embed]</code>.</p>
+
+<p>Internally linked resources may also internally link other resources. In that case, another internally linked resource is needed, and the process is repeated recursively to obtain a <strong>resource graph</strong>. The client can retrieve the desired set of resources at once without having to fetch the resources multiple times. <sup id="fnref:di" role="doc-noteref"><a href="#fn:di" class="footnote" rel="footnote">3</a></sup> For example, instead of calling a customer resource and a product resource respectively, embed them both in an order resource.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">use</span> <span class="nc">BEAR\Resource\Annotation\Embed</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">News</span> <span class="kd">extends</span> <span class="nc">ResourceObject</span>
+<span class="p">{</span>
+    <span class="c1">#[Embed(rel: 'sports', src: '/news/sports')]</span>
+    <span class="c1">#[Embed(rel: 'weather', src: '/news/weather')]</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onGet</span><span class="p">():</span> <span class="kt">static</span>
+</code></pre></div></div>
+
+<p>It is the resource <strong>request</strong> that is embedded. It is executed at rendering time, but before that you can add arguments with the <code class="language-plaintext highlighter-rouge">addQuery()</code> method or replace them with <code class="language-plaintext highlighter-rouge">withQuery()</code>.</p>
+
+<p>A URI template can be used for the <code class="language-plaintext highlighter-rouge">src</code>, and <strong>request method arguments</strong> will be bound to it. (Unlike external links, it is not <code class="language-plaintext highlighter-rouge">$body</code>)</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">use</span> <span class="nc">BEAR\Resource\Annotation\Embed</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">News</span> <span class="kd">extends</span> <span class="nc">ResourceObject</span>
+<span class="p">{</span>
+    <span class="c1">#[Embed(rel: 'website', src: '/website{?id}']</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onGet</span><span class="p">(</span><span class="kt">string</span> <span class="nv">$id</span><span class="p">):</span> <span class="kt">static</span>
+    <span class="p">{</span>
+        <span class="c1">// ...</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">body</span><span class="p">[</span><span class="s1">'website'</span><span class="p">]</span><span class="o">-&gt;</span><span class="nf">addQuery</span><span class="p">([</span><span class="s1">'title'</span> <span class="o">=&gt;</span> <span class="nv">$title</span><span class="p">]);</span> <span class="c1">// 引数追加</span>
+</code></pre></div></div>
+
+<p>Handled as <code class="language-plaintext highlighter-rouge">_embedded </code> in the <a href="https://github.com/blongden/hal">HAL</a> renderer.</p>
+
+<h2 id="link-request">Link request</h2>
+
+<p>Clients can link resources connected by hyperlinks.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$blog</span> <span class="o">=</span> <span class="nv">$this</span>
+    <span class="o">-&gt;</span><span class="n">resource</span>
+    <span class="o">-&gt;</span><span class="n">get</span>
+    <span class="o">-&gt;</span><span class="nf">uri</span><span class="p">(</span><span class="s1">'app://self/user'</span><span class="p">)</span>
+    <span class="o">-&gt;</span><span class="nf">withQuery</span><span class="p">([</span><span class="s1">'id'</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">])</span>
+    <span class="o">-&gt;</span><span class="nf">linkSelf</span><span class="p">(</span><span class="s2">"blog"</span><span class="p">)</span>
+    <span class="o">-&gt;</span><span class="n">eager</span>
+    <span class="o">-&gt;</span><span class="nf">request</span><span class="p">()</span>
+    <span class="o">-&gt;</span><span class="n">body</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>There are three types of links. The <code class="language-plaintext highlighter-rouge">body</code> linked resource of the original resource is embedded using <code class="language-plaintext highlighter-rouge">$rel</code> as the key.</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">linkSelf($rel)</code> which will be replaced with the link destination.</li>
+  <li><code class="language-plaintext highlighter-rouge">linkNew($rel)</code> the linked resource is added to the original resource</li>
+  <li><code class="language-plaintext highlighter-rouge">linkCrawl($rel)</code> crawl the link and create a resource graph.</li>
+</ul>
+
+<h2 id="crawl">crawl</h2>
+
+<p>Crawls are lists (arrays) of resources, and links can be traversed in sequence to compose complex resource graphs.
+Just as a crawler crawls a web page, the resource client crawls hyperlinks and generates a source graph.</p>
+
+<h4 id="crawl-example">Crawl Example</h4>
+
+<p>Consider a resource graph with author, post, meta, tag, and tag/name associated with each.
+Name this resource graph <strong>post-tree</strong> and specify a hyperreference <strong>href</strong> in the `#[Link]’ attribute of each resource.</p>
+
+<p>The first starting point, the author resource, has a hyperlink to the post resource. 1:n relationship.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">#[Link(crawl: "post-tree", rel: "post", href: "app://self/post?author_id={id}")]</span>
+<span class="k">public</span> <span class="k">function</span> <span class="n">onGet</span><span class="p">(</span><span class="nv">$id</span> <span class="o">=</span> <span class="kc">null</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>The post resource has hyperlinks to the meta and tag resources. 1:n relationship.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">#[Link(crawl: "post-tree", rel: "meta", href: "app://self/meta?post_id={id}")]</span>
+<span class="c1">#[Link(crawl: "post-tree", rel: "tag", href: "app://self/tag?post_id={id}")]</span>
+<span class="k">public</span> <span class="k">function</span> <span class="n">onGet</span><span class="p">(</span><span class="nv">$author_id</span><span class="p">)</span>
+<span class="p">{</span>
+</code></pre></div></div>
+
+<p>A tag resource is just an ID with a hyperlink to the corresponding tag/name resource. 1:1 relationship.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">#[Link(crawl:"post-tree", rel:"tag_name", href:"app://self/tag/name?tag_id={tag_id}")]</span>
+<span class="k">public</span> <span class="k">function</span> <span class="n">onGet</span><span class="p">(</span><span class="nv">$post_id</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>Each is now connected. Request with a crawl name.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$graph</span> <span class="o">=</span> <span class="nv">$resource</span>
+  <span class="o">-&gt;</span><span class="n">get</span>
+  <span class="o">-&gt;</span><span class="nf">uri</span><span class="p">(</span><span class="s1">'app://self/marshal/author'</span><span class="p">)</span>
+  <span class="o">-&gt;</span><span class="nf">linkCrawl</span><span class="p">(</span><span class="s1">'post-tree'</span><span class="p">)</span>
+  <span class="o">-&gt;</span><span class="n">eager</span>
+  <span class="o">-&gt;</span><span class="nf">request</span><span class="p">();</span>
+</code></pre></div></div>
+
+<p>When a resource client finds a crawl name specified in the #[Link] attribute, it creates a resource graph by connecting resources by their <strong>rel</strong> names.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>var_export($graph-&gt;body);
+
+array (
+    0 =&gt;
+    array (
+        'name' =&gt; 'Athos',
+        'post' =&gt;
+        array (
+            0 =&gt;
+            array (
+                'author_id' =&gt; '1',
+                'body' =&gt; 'Anna post #1',
+                'meta' =&gt;
+                array (
+                    0 =&gt;
+                    array (
+                        'data' =&gt; 'meta 1',
+                    ),
+                ),
+                'tag' =&gt;
+                array (
+                    0 =&gt;
+                    array (
+                        'tag_name' =&gt;
+                        array (
+                            0 =&gt;
+                            array (
+                                'name' =&gt; 'zim',
+                            ),
+                        ),
+                    ),
+ ...
+</code></pre></div></div>
+<div class="footnotes" role="doc-endnotes">
+  <ol>
+    <li id="fn:LO" role="doc-endnote">
+      <p><a href="http://amundsen.com/hypermedia/hfactor/#le">out-bound links</a> e.g.) html can link to other related html. <a href="#fnref:LO" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+    <li id="fn:LE" role="doc-endnote">
+      <p><a href="http://amundsen.com/hypermedia/hfactor/#le">embedded links</a> Example: html can embed independent image resources. <a href="#fnref:LE" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+    <li id="fn:di" role="doc-endnote">
+      <p>This is similar to an object graph where the dependency tree is a graph in DI. <a href="#fnref:di" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+  </ol>
+</div>
+
+            </article>
+        </div>
+        <div id="ArticleToc" class="col-lg-2 d-none d-lg-block">
+            <nav class="nav side-bar-right"></nav>
+        </div>
+    </div>
+</main>
+<footer>
+    <div class="container d-md-flex">
+        <i class="bear-icon d-none d-lg-block"></i>
+        <small>
+            © 2011-2024 BEAR.Sunday
+        </small>
+        <ul class="navbar-nav flex-row ml-md-auto d-none d-md-flex">
+            <li>
+                <a href="https://gitter.im/bearsunday/BEAR.Sunday?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge">Gitter</a>
+            </li>
+            <li>
+                <a href="https://github.com/bearsunday/BEAR.Sunday">Github</a>
+            </li>
+            <li>
+                <a href="https://twitter.com/BEARSunday">Twitter</a>
+            </li>
+            <li>
+                <a href="https://www.facebook.com/pages/BEARSunday/110116939178462?ref=hl">Facebook</a>
+            </li>
+            <li>
+                <a href="http://koriym.github.io/">Blog (JA)</a>
+            </li>
+            <li>
+                <a href="https://github.com/bearsunday/bearsunday.github.io">PR ?</a>
+            </li>
+        </ul>
+    </div>
+</footer>
+<script src="//code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+<script>
+    window.ga = function () { ga.q.push(arguments) }; ga.q = []; ga.l = +new Date;
+    ga('create', 'UA-6074569-8', 'bearsunday.github.io'); ga('send', 'pageview');
+</script>
+<script src="https://www.google-analytics.com/analytics.js" async defer></script>
+
+<script src="/js/generate-table-of-contents/index.min.js"></script>
+<script>
+    var toc = generateTableOfContents(document.getElementById('article'));
+    var sideBarRight = $('.side-bar-right');
+    sideBarRight.append(toc);
+
+    var scrollOffset = $('body').attr('data-offset');
+    var articlePaddingTop = $('article').css('padding-top').replace('px', '');
+    sideBarRight.find('a').on('click', function (e) {
+        e.preventDefault();
+        var targetId = $(this).attr('href');
+        var targetPositionTop = $(targetId).offset().top - scrollOffset - articlePaddingTop;
+        window.scrollTo(0, targetPositionTop)
+    });
+</script>
+
+</body>
+</html>

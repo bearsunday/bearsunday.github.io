@@ -1,0 +1,387 @@
+<!doctype html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>AOP &#124; BEAR.Sunday</title>
+    <meta name="description" content="BEAR.Sunday is a resource orientated framework with a REST centered architecture, implementing Dependency Injection and Aspect Orientated Programming' at its core.">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/github-markdown-css/2.10.0/github-markdown.css">
+    <link rel="stylesheet" href="/css/syntax.css">
+    
+    <link rel="stylesheet" href="/css/bearsunday.css">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="apple-touch-icon" href="/icon.png">
+</head>
+<body data-page-category="Manual" data-spy="scroll" data-target="#ArticleToc" data-offset="65">
+<header>
+    <nav class="navbar navbar-expand flex-column flex-md-row bg-light">
+        <a class="navbar-brand mr-0 mr-md-2" href="/index.html"></a>
+        <div class="navbar-nav-scroll">
+            <ul class="navbar-nav flex-row">
+                <li class="nav-item">
+                    <a class="nav-link " href="/index.html">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="/manuals/1.0/en/index.html">Manual</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link " href="/contributors.html">Contributors</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/slide.html">Slide</a>
+                </li>
+            </ul>
+        </div>
+        
+        <ul class="navbar-nav ml-md-auto d-none d-md-flex language-list">
+            <li>
+                <a class="" href="/manuals/1.0/en/aop.html">En</a>
+            </li>
+            <li>
+                <a class="active" href="/manuals/1.0/ja/aop.html">Ja</a>
+            </li>
+        </ul>
+        
+    </nav>
+</header>
+
+<main class="container-fluid">
+    <div class="row flex-xl-nowrap">
+        <div class="col-md-3 col-lg-2">
+            <div class="side-bar">
+                <nav class="navbar navbar-expand-md navbar-light">
+    <div class="navigation-header">
+        <div class="ml-auto d-sm-block d-md-none">
+            <ul class="navbar-nav language-list">
+                <li>
+                    <a class="" href="/manuals/1.0/en/aop.html">En</a>
+                </li>
+                <li>
+                    <a class="active" href="/manuals/1.0/ja/aop.html">Ja</a>
+                </li>
+            </ul>
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#Navber" aria-controls="Navber" aria-expanded="false" aria-label="ナビゲーションの切替">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+    </div>
+    <div class="collapse navbar-collapse" id="Navber">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/index.html">イントロダクション</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/version.html">バージョン</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/quick-start.html">クイックスタート</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/tutorial.html">チュートリアル</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/tutorial2.html">チュートリアル 2</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/package.html">パッケージ</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/application.html">アプリケーション</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/module.html">モジュール</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/di.html">DI</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" href="/manuals/1.0/ja/aop.html">AOP</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/resource.html">リソース</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/resource_param.html">・パラメーター</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/resource_link.html">・リンク</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/resource_renderer.html">・レンダリングと転送</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/router.html">ルーター</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/production.html">プロダクション</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/ja/import.html">インポート</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/database.html">データベース</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/html.html">HTML</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/validation.html">バリデーション</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/form.html">フォーム</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/content-negotiation.html">コンテントネゴシエーション</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/hypermedia-api.html">ハイパーメディア API</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/psr7.html">リクエスト / PSR-7</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/js-ui.html">JavaScript UI</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/stream.html">ストリーム出力</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/cache.html">キャッシュ</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/swoole.html">Swoole</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/coding-guide.html">コーディングガイド</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/types.html">タイプ</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/test.html">テスト</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/examples.html">サンプル</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/upgrade/injector.html">アップグレード</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/attribute.html">アトリビュート</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/apidoc.html">API Doc</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/1page.html">1 Page</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+            </div>
+        </div>
+        <div class="col-md-9 col-lg-8">
+            <article id="article" class="markdown-body">
+                <h1 id="aop">AOP</h1>
+
+<p>アスペクト指向プログラミングは、<strong>横断的関心事</strong>の問題を解決します。対象メソッドの前後に任意の処理をインターセプターで織り込むことができます。
+対象となるメソッドはビジネスロジックなど本質的関心事のみに関心を払い、インターセプターはログや検証などの横断的関心事に関心を払います。</p>
+
+<p>BEAR.Sundayは<a href="http://aopalliance.sourceforge.net/">AOP Alliance</a>に準拠したアスペクト指向プログラミングをサポートします。</p>
+
+<h2 id="インターセプター">インターセプター</h2>
+
+<p>インターセプターの<code class="language-plaintext highlighter-rouge">invoke</code>メソッドで<code class="language-plaintext highlighter-rouge">$invocation</code>メソッド実行変数を受け取り、メソッドの前後に処理を加えます。
+この変数は、インターセプター元メソッドを実行するためだけの変数です。前後にログやトランザクションなどの横断的処理を記述します。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">use</span> <span class="nc">Ray\Aop\MethodInterceptor</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">Ray\Aop\MethodInvocation</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">MyInterceptor</span> <span class="kd">implements</span> <span class="nc">MethodInterceptor</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">invoke</span><span class="p">(</span><span class="kt">MethodInvocation</span> <span class="nv">$invocation</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="c1">// メソッド実行前の処理</span>
+        <span class="c1">// ...</span>
+
+        <span class="c1">// メソッド実行</span>
+        <span class="nv">$result</span> <span class="o">=</span> <span class="nv">$invocation</span><span class="o">-&gt;</span><span class="nf">proceed</span><span class="p">();</span>
+
+        <span class="c1">// メソッド実行後の処理</span>
+        <span class="c1">// ...</span>
+
+        <span class="k">return</span> <span class="nv">$result</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="束縛">束縛</h2>
+
+<p><a href="module.html">モジュール</a>で対象となるクラスとメソッドを<code class="language-plaintext highlighter-rouge">Matcher</code>で”検索”して、マッチするメソッドにインターセプターを束縛します。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">bindInterceptor</span><span class="p">(</span>
+    <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">matcher</span><span class="o">-&gt;</span><span class="nf">any</span><span class="p">(),</span>                   <span class="c1">// どのクラスでも</span>
+    <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">matcher</span><span class="o">-&gt;</span><span class="nf">startsWith</span><span class="p">(</span><span class="s1">'delete'</span><span class="p">),</span>    <span class="c1">// "delete"で始まるメソッド名のメソッドには</span>
+    <span class="p">[</span><span class="nc">Logger</span><span class="o">::</span><span class="n">class</span><span class="p">]</span>                          <span class="c1">// Loggerインターセプターを束縛</span>
+<span class="p">);</span>
+
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">bindInterceptor</span><span class="p">(</span>
+    <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">matcher</span><span class="o">-&gt;</span><span class="nf">subclassesOf</span><span class="p">(</span><span class="nc">AdminPage</span><span class="o">::</span><span class="n">class</span><span class="p">),</span>  <span class="c1">// AdminPageの継承または実装クラスの</span>
+    <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">matcher</span><span class="o">-&gt;</span><span class="nf">annotatedWith</span><span class="p">(</span><span class="nc">Auth</span><span class="o">::</span><span class="n">class</span><span class="p">),</span>      <span class="c1">// @Authアノテーションがアノテートされているメソッドには</span>
+    <span class="p">[</span><span class="nc">AdminAuthentication</span><span class="o">::</span><span class="n">class</span><span class="p">]</span>                     <span class="c1">// AdminAuthenticationインターセプターを束縛</span>
+<span class="p">);</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">Matcher</code>は他にこのような指定もできます。</p>
+
+<ul>
+  <li><a href="https://github.com/ray-di/Ray.Aop/blob/develop-2/src/MatcherInterface.php#L16">Matcher::any</a> - 無制限</li>
+  <li><a href="https://github.com/ray-di/Ray.Aop/blob/develop-2/src/MatcherInterface.php#L23">Matcher::annotatedWith</a> - アノテーション</li>
+  <li><a href="https://github.com/ray-di/Ray.Aop/blob/develop-2/src/MatcherInterface.php#L30">Matcher::subclassesOf</a> - 継承または実装されたクラス</li>
+  <li><a href="https://github.com/ray-di/Ray.Aop/blob/develop-2/src/MatcherInterface.php#L37">Matcher::startsWith</a> - 名前の始めの文字列</li>
+  <li><a href="https://github.com/ray-di/Ray.Aop/blob/develop-2/src/MatcherInterface.php#L44">Matcher::logicalOr</a> - OR条件</li>
+  <li><a href="https://github.com/ray-di/Ray.Aop/blob/develop-2/src/MatcherInterface.php#L51">Matcher::logicalAnd</a> - AND条件</li>
+  <li><a href="https://github.com/ray-di/Ray.Aop/blob/develop-2/src/MatcherInterface.php#L58">Matcher::logicalNot</a> - NOT条件
+```</li>
+</ul>
+
+<p>インターセプターに渡される<code class="language-plaintext highlighter-rouge">MethodInvocation</code>で対象のメソッド実行に関連するオブジェクトやメソッド、引数にアクセスすることができます。</p>
+
+<ul>
+  <li><a href="https://github.com/ray-di/Ray.Aop/blob/2.x/src/Joinpoint.php">MethodInvocation::proceed</a> - 対象メソッド実行</li>
+  <li><a href="https://github.com/ray-di/Ray.Aop/blob/2.x/src/MethodInvocation.php">MethodInvocation::getMethod</a> -  対象メソッドリフレクションの取得</li>
+  <li><a href="https://github.com/ray-di/Ray.Aop/blob/2.x/src/Joinpoint.php">MethodInvocation::getThis</a> - 対象オブジェクトの取得</li>
+  <li><a href="https://github.com/ray-di/Ray.Aop/blob/2.x/src/Invocation.php">MethodInvocation::getArguments</a> - 呼び出し引数配列の取得</li>
+</ul>
+
+<p>リフレクションのメソッドでアノテーションを取得することができます。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$method</span> <span class="o">=</span> <span class="nv">$invocation</span><span class="o">-&gt;</span><span class="nf">getMethod</span><span class="p">();</span>
+<span class="nv">$class</span> <span class="o">=</span> <span class="nv">$invocation</span><span class="o">-&gt;</span><span class="nf">getMethod</span><span class="p">()</span><span class="o">-&gt;</span><span class="nf">getDeclaringClass</span><span class="p">();</span>
+</code></pre></div></div>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">$method-&gt;getAnnotations()</code>     - メソッドアノテーションの取得</li>
+  <li><code class="language-plaintext highlighter-rouge">$method-&gt;getAnnotation($name)</code></li>
+  <li><code class="language-plaintext highlighter-rouge">$class-&gt;getAnnotations()</code>    - クラスアノテーションの取得</li>
+  <li><code class="language-plaintext highlighter-rouge">$class-&gt;getAnnotation($name)</code></li>
+</ul>
+
+<h2 id="カスタムマッチャー">カスタムマッチャー</h2>
+
+<p>独自のカスタムマッチャーを作成するためには<code class="language-plaintext highlighter-rouge">AbstractMatcher</code>の<code class="language-plaintext highlighter-rouge">matchesClass</code>と<code class="language-plaintext highlighter-rouge">matchesMethod</code>を実装したクラスを作成します。</p>
+
+<p><code class="language-plaintext highlighter-rouge">contains</code> マッチャーを作成するためには、２つのメソッドを持つクラスを提供する必要があります。
+１つはクラスのマッチを行う<code class="language-plaintext highlighter-rouge">matchesClass</code>メソッド、もう１つはメソッドのマッチを行う<code class="language-plaintext highlighter-rouge">matchesMethod</code>メソッドです。いずれもマッチしたかどうかをboolで返します。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">use</span> <span class="nc">Ray\Aop\AbstractMatcher</span><span class="p">;</span>
+
+<span class="cd">/**
+ * 特定の文字列が含まれているか
+ */</span>
+<span class="kd">class</span> <span class="nc">ContainsMatcher</span> <span class="kd">extends</span> <span class="nc">AbstractMatcher</span>
+<span class="p">{</span>
+    <span class="cd">/**
+     * {@inheritdoc}
+     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">matchesClass</span><span class="p">(</span><span class="err">\</span><span class="nc">ReflectionClass</span> <span class="nv">$class</span><span class="p">,</span> <span class="k">array</span> <span class="nv">$arguments</span><span class="p">)</span> <span class="o">:</span> <span class="n">bool</span>
+    <span class="p">{</span>
+        <span class="k">list</span><span class="p">(</span><span class="nv">$contains</span><span class="p">)</span> <span class="o">=</span> <span class="nv">$arguments</span><span class="p">;</span>
+
+        <span class="k">return</span> <span class="p">(</span><span class="nb">strpos</span><span class="p">(</span><span class="nv">$class</span><span class="o">-&gt;</span><span class="n">name</span><span class="p">,</span> <span class="nv">$contains</span><span class="p">)</span> <span class="o">!==</span> <span class="kc">false</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="cd">/**
+     * {@inheritdoc}
+     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">matchesMethod</span><span class="p">(</span><span class="err">\</span><span class="nc">ReflectionMethod</span> <span class="nv">$method</span><span class="p">,</span> <span class="k">array</span> <span class="nv">$arguments</span><span class="p">)</span> <span class="o">:</span> <span class="n">bool</span>
+    <span class="p">{</span>
+        <span class="k">list</span><span class="p">(</span><span class="nv">$contains</span><span class="p">)</span> <span class="o">=</span> <span class="nv">$arguments</span><span class="p">;</span>
+
+        <span class="k">return</span> <span class="p">(</span><span class="nb">strpos</span><span class="p">(</span><span class="nv">$method</span><span class="o">-&gt;</span><span class="n">name</span><span class="p">,</span> <span class="nv">$contains</span><span class="p">)</span> <span class="o">!==</span> <span class="kc">false</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>モジュール</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">AppModule</span> <span class="kd">extends</span> <span class="nc">AbstractAppModule</span>
+<span class="p">{</span>
+    <span class="k">protected</span> <span class="k">function</span> <span class="n">configure</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">bindInterceptor</span><span class="p">(</span>
+            <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">matcher</span><span class="o">-&gt;</span><span class="nf">any</span><span class="p">(),</span>
+            <span class="k">new</span> <span class="nc">ContainsMatcher</span><span class="p">(</span><span class="s1">'user'</span><span class="p">),</span> <span class="c1">// 'user'がメソッド名に含まれてるか</span>
+            <span class="p">[</span><span class="nc">UserLogger</span><span class="o">::</span><span class="n">class</span><span class="p">]</span>
+        <span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
+            </article>
+        </div>
+        <div id="ArticleToc" class="col-lg-2 d-none d-lg-block">
+            <nav class="nav side-bar-right"></nav>
+        </div>
+    </div>
+</main>
+<footer>
+    <div class="container d-md-flex">
+        <i class="bear-icon d-none d-lg-block"></i>
+        <small>
+            © 2011-2024 BEAR.Sunday
+        </small>
+        <ul class="navbar-nav flex-row ml-md-auto d-none d-md-flex">
+            <li>
+                <a href="https://gitter.im/bearsunday/BEAR.Sunday?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge">Gitter</a>
+            </li>
+            <li>
+                <a href="https://github.com/bearsunday/BEAR.Sunday">Github</a>
+            </li>
+            <li>
+                <a href="https://twitter.com/BEARSunday">Twitter</a>
+            </li>
+            <li>
+                <a href="https://www.facebook.com/pages/BEARSunday/110116939178462?ref=hl">Facebook</a>
+            </li>
+            <li>
+                <a href="http://koriym.github.io/">Blog (JA)</a>
+            </li>
+            <li>
+                <a href="https://github.com/bearsunday/bearsunday.github.io">PR ?</a>
+            </li>
+        </ul>
+    </div>
+</footer>
+<script src="//code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+<script>
+    window.ga = function () { ga.q.push(arguments) }; ga.q = []; ga.l = +new Date;
+    ga('create', 'UA-6074569-8', 'bearsunday.github.io'); ga('send', 'pageview');
+</script>
+<script src="https://www.google-analytics.com/analytics.js" async defer></script>
+
+<script src="/js/generate-table-of-contents/index.min.js"></script>
+<script>
+    var toc = generateTableOfContents(document.getElementById('article'));
+    var sideBarRight = $('.side-bar-right');
+    sideBarRight.append(toc);
+
+    var scrollOffset = $('body').attr('data-offset');
+    var articlePaddingTop = $('article').css('padding-top').replace('px', '');
+    sideBarRight.find('a').on('click', function (e) {
+        e.preventDefault();
+        var targetId = $(this).attr('href');
+        var targetPositionTop = $(targetId).offset().top - scrollOffset - articlePaddingTop;
+        window.scrollTo(0, targetPositionTop)
+    });
+</script>
+
+</body>
+</html>
+

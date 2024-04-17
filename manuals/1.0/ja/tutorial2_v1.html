@@ -1,0 +1,1038 @@
+<!doctype html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>チュートリアル2(v1) &#124; BEAR.Sunday</title>
+    <meta name="description" content="BEAR.Sunday is a resource orientated framework with a REST centered architecture, implementing Dependency Injection and Aspect Orientated Programming' at its core.">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/github-markdown-css/2.10.0/github-markdown.css">
+    <link rel="stylesheet" href="/css/syntax.css">
+    
+    <link rel="stylesheet" href="/css/bearsunday.css">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="apple-touch-icon" href="/icon.png">
+</head>
+<body data-page-category="Manual" data-spy="scroll" data-target="#ArticleToc" data-offset="65">
+<header>
+    <nav class="navbar navbar-expand flex-column flex-md-row bg-light">
+        <a class="navbar-brand mr-0 mr-md-2" href="/index.html"></a>
+        <div class="navbar-nav-scroll">
+            <ul class="navbar-nav flex-row">
+                <li class="nav-item">
+                    <a class="nav-link " href="/index.html">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="/manuals/1.0/en/index.html">Manual</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link " href="/contributors.html">Contributors</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/slide.html">Slide</a>
+                </li>
+            </ul>
+        </div>
+        
+        <ul class="navbar-nav ml-md-auto d-none d-md-flex language-list">
+            <li>
+                <a class="" href="/manuals/1.0/en/tutorial2_v1.html">En</a>
+            </li>
+            <li>
+                <a class="active" href="/manuals/1.0/ja/tutorial2_v1.html">Ja</a>
+            </li>
+        </ul>
+        
+    </nav>
+</header>
+
+<main class="container-fluid">
+    <div class="row flex-xl-nowrap">
+        <div class="col-md-3 col-lg-2">
+            <div class="side-bar">
+                <nav class="navbar navbar-expand-md navbar-light">
+    <div class="navigation-header">
+        <div class="ml-auto d-sm-block d-md-none">
+            <ul class="navbar-nav language-list">
+                <li>
+                    <a class="" href="/manuals/1.0/en/tutorial2_v1.html">En</a>
+                </li>
+                <li>
+                    <a class="active" href="/manuals/1.0/ja/tutorial2_v1.html">Ja</a>
+                </li>
+            </ul>
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#Navber" aria-controls="Navber" aria-expanded="false" aria-label="ナビゲーションの切替">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+    </div>
+    <div class="collapse navbar-collapse" id="Navber">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/index.html">イントロダクション</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/version.html">バージョン</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/quick-start.html">クイックスタート</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/tutorial.html">チュートリアル</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/tutorial2.html">チュートリアル 2</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/package.html">パッケージ</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/application.html">アプリケーション</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/module.html">モジュール</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/di.html">DI</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/aop.html">AOP</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/resource.html">リソース</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/resource_param.html">・パラメーター</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/resource_link.html">・リンク</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/resource_renderer.html">・レンダリングと転送</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/router.html">ルーター</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/production.html">プロダクション</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/ja/import.html">インポート</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/database.html">データベース</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/html.html">HTML</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/validation.html">バリデーション</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/form.html">フォーム</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/content-negotiation.html">コンテントネゴシエーション</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/hypermedia-api.html">ハイパーメディア API</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/psr7.html">リクエスト / PSR-7</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/js-ui.html">JavaScript UI</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/stream.html">ストリーム出力</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/cache.html">キャッシュ</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/swoole.html">Swoole</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/coding-guide.html">コーディングガイド</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/types.html">タイプ</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/test.html">テスト</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/examples.html">サンプル</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/upgrade/injector.html">アップグレード</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/attribute.html">アトリビュート</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/apidoc.html">API Doc</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/1page.html">1 Page</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+            </div>
+        </div>
+        <div class="col-md-9 col-lg-8">
+            <article id="article" class="markdown-body">
+                <h1 id="チュートリアル2">チュートリアル2</h1>
+
+<p>このチュートリアルでは以下のツールを用いてタスク管理のチケット作成・取得用REST APIを作成し、疎結合で高品質なREST APIアプリケーションの開発をテスト駆動で学びます。<sup id="fnref:1" role="doc-noteref"><a href="#fn:1" class="footnote" rel="footnote">1</a></sup></p>
+
+<ul>
+  <li>CakePHPが開発してるフレームワーク非依存の<a href="https://book.cakephp.org/3.0/ja/phinx.html">Phinx</a> DBマイグレーションツール</li>
+  <li>JSONのデータ構造を定義しバリデーションやドキュメンテーションに利用する <a href="https://qiita.com/kyoh86/items/e7de290e9a0e989fcc14">Json Schema</a></li>
+  <li>SQL文をSQL実行オブジェクトに変換しアプリケーションレイヤーとデータアクセスレイヤーを疎にする <a href="https://github.com/ray-di/Ray.QueryModule">ray/query-module</a></li>
+  <li>UUIDや現在時刻をインジェクトする <a href="https://github.com/ray-di/Ray.IdentityValueModule">IdentityValueModule</a></li>
+</ul>
+
+<p>作成するAPIはスキーマ定義され、自己記述（self-descriptive)性に優れた高品質なものです。</p>
+
+<p><a href="/manuals/1.0/ja/tutorial.html">チュートリアル</a>と被る箇所もありますがおさらいのつもりでトライしてみましょう。
+レポジトリは <a href="https://github.com/bearsunday/tutorial2">bearsunday/tutorial2</a> にあります。うまくいかないときは見比べてみましょう。</p>
+
+<h2 id="プロジェクト作成">プロジェクト作成</h2>
+
+<p>プロジェクトスケルトンを作成します。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>composer create-project bear/skeleton MyVendor.Ticket
+</code></pre></div></div>
+<p><strong>vendor</strong>名を<code class="language-plaintext highlighter-rouge">MyVendor</code>に<strong>project</strong>名を<code class="language-plaintext highlighter-rouge">Ticket</code>として入力します。<sup id="fnref:2" role="doc-noteref"><a href="#fn:2" class="footnote" rel="footnote">2</a></sup></p>
+
+<h2 id="composerインストール">composerインストール</h2>
+
+<p>次に依存するパッケージを一度にインストールします。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>composer require bear/aura-router-module ray/identity-value-module ray/query-module
+composer require --dev robmorgan/phinx bear/api-doc 1.x-dev
+</code></pre></div></div>
+
+<h2 id="モジュールインストール">モジュールインストール</h2>
+
+<p><code class="language-plaintext highlighter-rouge">src/Module/AppModule.php</code>を編集してcomposerでインストールしたパッケージをモジュールインストールします。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+<span class="kn">namespace</span> <span class="nn">MyVendor\Ticket\Module</span><span class="p">;</span>
+
+<span class="kn">use</span> <span class="nc">BEAR\Package\AbstractAppModule</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">BEAR\Package\PackageModule</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">BEAR\Package\Provide\Router\AuraRouterModule</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">BEAR\Resource\Module\JsonSchemaLinkHeaderModule</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">BEAR\Resource\Module\JsonSchemaModule</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">Ray\AuraSqlModule\AuraSqlModule</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">Ray\IdentityValueModule\IdentityValueModule</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">Ray\Query\SqlQueryModule</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">AppModule</span> <span class="kd">extends</span> <span class="nc">AbstractAppModule</span>
+<span class="p">{</span>
+    <span class="cd">/**
+     * {@inheritdoc}
+     */</span>
+    <span class="k">protected</span> <span class="k">function</span> <span class="n">configure</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="nv">$appDir</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">appMeta</span><span class="o">-&gt;</span><span class="n">appDir</span><span class="p">;</span>
+        <span class="k">require_once</span> <span class="nv">$appDir</span> <span class="mf">.</span> <span class="s1">'/env.php'</span><span class="p">;</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">install</span><span class="p">(</span>
+            <span class="k">new</span> <span class="nc">AuraSqlModule</span><span class="p">(</span>
+                <span class="nb">getenv</span><span class="p">(</span><span class="s1">'TKT_DB_DSN'</span><span class="p">),</span>
+                <span class="nb">getenv</span><span class="p">(</span><span class="s1">'TKT_DB_USER'</span><span class="p">),</span>
+                <span class="nb">getenv</span><span class="p">(</span><span class="s1">'TKT_DB_PASS'</span><span class="p">),</span>
+                <span class="nb">getenv</span><span class="p">(</span><span class="s1">'TKT_DB_SLAVE'</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="p">);</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">install</span><span class="p">(</span><span class="k">new</span> <span class="nc">SqlQueryModule</span><span class="p">(</span><span class="nv">$appDir</span> <span class="mf">.</span> <span class="s1">'/var/sql'</span><span class="p">));</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">install</span><span class="p">(</span><span class="k">new</span> <span class="nc">IdentityValueModule</span><span class="p">);</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">install</span><span class="p">(</span>
+            <span class="k">new</span> <span class="nc">JsonSchemaModule</span><span class="p">(</span>
+                <span class="nv">$appDir</span> <span class="mf">.</span> <span class="s1">'/var/json_schema'</span><span class="p">,</span>
+                <span class="nv">$appDir</span> <span class="mf">.</span> <span class="s1">'/var/json_validate'</span>
+            <span class="p">)</span>
+        <span class="p">);</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">install</span><span class="p">(</span><span class="k">new</span> <span class="nc">JsonSchemaLinkHeaderModule</span><span class="p">(</span><span class="s1">'http://www.example.com/'</span><span class="p">));</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">install</span><span class="p">(</span><span class="k">new</span> <span class="nc">AuraRouterModule</span><span class="p">(</span><span class="nv">$appDir</span> <span class="mf">.</span> <span class="s1">'/var/conf/aura.route.php'</span><span class="p">));</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">install</span><span class="p">(</span><span class="k">new</span> <span class="nc">PackageModule</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>テスト用のデータベースのために<code class="language-plaintext highlighter-rouge">src/Module/TestModule.php</code>も作成します。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+<span class="kn">namespace</span> <span class="nn">MyVendor\Ticket\Module</span><span class="p">;</span>
+
+<span class="kn">use</span> <span class="nc">BEAR\Package\AbstractAppModule</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">Ray\AuraSqlModule\AuraSqlModule</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">TestModule</span> <span class="kd">extends</span> <span class="nc">AbstractAppModule</span>
+<span class="p">{</span>
+    <span class="cd">/**
+     * {@inheritdoc}
+     */</span>
+    <span class="k">protected</span> <span class="k">function</span> <span class="n">configure</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">install</span><span class="p">(</span>
+            <span class="k">new</span> <span class="nc">AuraSqlModule</span><span class="p">(</span>
+                <span class="nb">getenv</span><span class="p">(</span><span class="s1">'TKT_DB_DSN'</span><span class="p">)</span> <span class="mf">.</span> <span class="s1">'_test'</span><span class="p">,</span>
+                <span class="nb">getenv</span><span class="p">(</span><span class="s1">'TKT_DB_USER'</span><span class="p">),</span>
+                <span class="nb">getenv</span><span class="p">(</span><span class="s1">'TKT_DB_PASS'</span><span class="p">),</span>
+                <span class="nb">getenv</span><span class="p">(</span><span class="s1">'TKT_DB_SLAVE'</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>モジュールが必要とするフォルダを作成します。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">mkdir </span>var/sql
+<span class="nb">mkdir </span>var/json_schema
+<span class="nb">mkdir </span>var/json_validate
+</code></pre></div></div>
+
+<h2 id="ルーターファイル">ルーターファイル</h2>
+
+<p><code class="language-plaintext highlighter-rouge">tickets/{id}</code>のアクセスを<code class="language-plaintext highlighter-rouge">Ticket</code>クラスにルートするためにルーターファイルを<code class="language-plaintext highlighter-rouge">var/conf/aura.route.php</code>に設置します。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+<span class="cm">/* @var \Aura\Router\Map $map */</span>
+<span class="nv">$map</span><span class="o">-&gt;</span><span class="nf">route</span><span class="p">(</span><span class="s1">'/ticket'</span><span class="p">,</span> <span class="s1">'/tickets/{id}'</span><span class="p">);</span>
+</code></pre></div></div>
+
+<h2 id="データベース">データベース</h2>
+
+<p>プロジェクトルートフォルダの<code class="language-plaintext highlighter-rouge">.env</code>ファイルに接続情報を記述します。<sup id="fnref:6" role="doc-noteref"><a href="#fn:6" class="footnote" rel="footnote">3</a></sup></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>TKT_DB_HOST=127.0.0.1
+TKT_DB_NAME=ticket
+TKT_DB_USER=root
+TKT_DB_PASS=''
+TKT_DB_SLAVE=''
+TKT_DB_DSN=mysql:host=${TKT_DB_HOST};dbname=${TKT_DB_NAME}
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">.env</code>はリポジトリにはコミットされません。<code class="language-plaintext highlighter-rouge">.env.dist</code>に記述例を残して置きましょう。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cp .env .env.dist
+// remove password, etc..
+git add .env.dist
+</code></pre></div></div>
+
+<h2 id="マイグレーション">マイグレーション</h2>
+
+<p>phinxの実行環境を整えます。</p>
+
+<p>まずはphinxが利用するフォルダを作成します。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">mkdir</span> <span class="nt">-p</span> var/phinx/migrations
+<span class="nb">mkdir </span>var/phinx/seeds
+</code></pre></div></div>
+
+<p>次に<code class="language-plaintext highlighter-rouge">.env</code>の接続情報をphinxで利用するために<code class="language-plaintext highlighter-rouge">var/phinx/phinx.php</code>を設置します。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+<span class="k">require_once</span> <span class="nb">dirname</span><span class="p">(</span><span class="k">__DIR__</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="mf">.</span> <span class="s1">'/env.php'</span><span class="p">;</span>
+<span class="nv">$development</span> <span class="o">=</span> <span class="k">new</span> <span class="err">\</span><span class="nf">PDO</span><span class="p">(</span><span class="nb">getenv</span><span class="p">(</span><span class="s1">'TKT_DB_DSN'</span><span class="p">),</span> <span class="nb">getenv</span><span class="p">(</span><span class="s1">'TKT_DB_USER'</span><span class="p">),</span> <span class="nb">getenv</span><span class="p">(</span><span class="s1">'TKT_DB_PASS'</span><span class="p">));</span>
+<span class="nv">$test</span> <span class="o">=</span> <span class="k">new</span> <span class="err">\</span><span class="nf">PDO</span><span class="p">(</span><span class="nb">getenv</span><span class="p">(</span><span class="s1">'TKT_DB_DSN'</span><span class="p">)</span> <span class="mf">.</span> <span class="s1">'_test'</span><span class="p">,</span> <span class="nb">getenv</span><span class="p">(</span><span class="s1">'TKT_DB_USER'</span><span class="p">),</span> <span class="nb">getenv</span><span class="p">(</span><span class="s1">'TKT_DB_PASS'</span><span class="p">));</span>
+<span class="k">return</span> <span class="p">[</span>
+    <span class="s1">'paths'</span> <span class="o">=&gt;</span> <span class="p">[</span>
+        <span class="s1">'migrations'</span> <span class="o">=&gt;</span> <span class="k">__DIR__</span> <span class="mf">.</span> <span class="s1">'/migrations'</span><span class="p">,</span>
+    <span class="p">],</span>
+    <span class="s1">'environments'</span> <span class="o">=&gt;</span> <span class="p">[</span>
+        <span class="s1">'development'</span> <span class="o">=&gt;</span> <span class="p">[</span>
+            <span class="s1">'name'</span> <span class="o">=&gt;</span> <span class="nv">$development</span><span class="o">-&gt;</span><span class="nf">query</span><span class="p">(</span><span class="s2">"SELECT DATABASE()"</span><span class="p">)</span><span class="o">-&gt;</span><span class="nf">fetchColumn</span><span class="p">(),</span>
+            <span class="s1">'connection'</span> <span class="o">=&gt;</span> <span class="nv">$development</span>
+        <span class="p">],</span>
+        <span class="s1">'test'</span> <span class="o">=&gt;</span> <span class="p">[</span>
+            <span class="s1">'name'</span> <span class="o">=&gt;</span> <span class="nv">$test</span><span class="o">-&gt;</span><span class="nf">query</span><span class="p">(</span><span class="s2">"SELECT DATABASE()"</span><span class="p">)</span><span class="o">-&gt;</span><span class="nf">fetchColumn</span><span class="p">(),</span>
+            <span class="s1">'connection'</span> <span class="o">=&gt;</span> <span class="nv">$test</span>
+        <span class="p">]</span>
+    <span class="p">]</span>
+<span class="p">];</span>
+</code></pre></div></div>
+<h2 id="setupスクリプト">setupスクリプト</h2>
+
+<p>データベース作成やマイグレーションを簡単に実行できるように<code class="language-plaintext highlighter-rouge">bin/setup.php</code>を編集します。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+<span class="k">require</span> <span class="nb">dirname</span><span class="p">(</span><span class="k">__DIR__</span><span class="p">)</span> <span class="mf">.</span> <span class="s1">'/autoload.php'</span><span class="p">;</span>
+<span class="k">require_once</span> <span class="nb">dirname</span><span class="p">(</span><span class="k">__DIR__</span><span class="p">)</span> <span class="mf">.</span> <span class="s1">'/env.php'</span><span class="p">;</span>
+<span class="c1">// dir</span>
+<span class="nb">chdir</span><span class="p">(</span><span class="nb">dirname</span><span class="p">(</span><span class="k">__DIR__</span><span class="p">));</span>
+<span class="nb">passthru</span><span class="p">(</span><span class="s1">'rm -rf var/tmp/*'</span><span class="p">);</span>
+<span class="nb">passthru</span><span class="p">(</span><span class="s1">'chmod 775 var/tmp'</span><span class="p">);</span>
+<span class="nb">passthru</span><span class="p">(</span><span class="s1">'chmod 775 var/log'</span><span class="p">);</span>
+<span class="c1">// db</span>
+<span class="nv">$pdo</span> <span class="o">=</span> <span class="k">new</span> <span class="err">\</span><span class="nf">PDO</span><span class="p">(</span><span class="s1">'mysql:host='</span> <span class="mf">.</span> <span class="nb">getenv</span><span class="p">(</span><span class="s1">'TKT_DB_HOST'</span><span class="p">),</span> <span class="nb">getenv</span><span class="p">(</span><span class="s1">'TKT_DB_USER'</span><span class="p">),</span> <span class="nb">getenv</span><span class="p">(</span><span class="s1">'TKT_DB_PASS'</span><span class="p">));</span>
+<span class="nv">$pdo</span><span class="o">-&gt;</span><span class="nb">exec</span><span class="p">(</span><span class="s1">'CREATE DATABASE IF NOT EXISTS '</span> <span class="mf">.</span> <span class="nb">getenv</span><span class="p">(</span><span class="s1">'TKT_DB_NAME'</span><span class="p">));</span>
+<span class="nv">$pdo</span><span class="o">-&gt;</span><span class="nb">exec</span><span class="p">(</span><span class="s1">'CREATE DATABASE IF NOT EXISTS '</span> <span class="mf">.</span> <span class="nb">getenv</span><span class="p">(</span><span class="s1">'TKT_DB_NAME'</span><span class="p">)</span> <span class="mf">.</span> <span class="s1">'_test'</span><span class="p">);</span>
+<span class="nb">passthru</span><span class="p">(</span><span class="s1">'./vendor/bin/phinx migrate -c var/phinx/phinx.php -e development'</span><span class="p">);</span>
+<span class="nb">passthru</span><span class="p">(</span><span class="s1">'./vendor/bin/phinx migrate -c var/phinx/phinx.php -e test'</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>実行してデータベースを作成します。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>composer setup
+</code></pre></div></div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Phinx by CakePHP - https://phinx.org. 0.10.6
+
+...
+using database ticket_test
+</code></pre></div></div>
+
+<p>次に<code class="language-plaintext highlighter-rouge">ticket</code>テーブルを作成するためにマイグレーションクラスを作成します。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./vendor/bin/phinx create Ticket -c var/phinx/phinx.php
+</code></pre></div></div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Phinx by CakePHP - https://phinx.org. 0.10.6
+
+...
+created var/phinx/migrations/20180920054037_ticket.php
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">var/phinx/migrations/{current_date}_ticket.php</code>を編集して<code class="language-plaintext highlighter-rouge">change()</code>メソッドを実装します。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+<span class="kn">use</span> <span class="nc">Phinx\Migration\AbstractMigration</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">Ticket</span> <span class="kd">extends</span> <span class="nc">AbstractMigration</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">change</span><span class="p">()</span>
+    <span class="p">{</span>
+         <span class="nv">$table</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">table</span><span class="p">(</span><span class="s1">'ticket'</span><span class="p">,</span> <span class="p">[</span><span class="s1">'id'</span> <span class="o">=&gt;</span> <span class="kc">false</span><span class="p">,</span> <span class="s1">'primary_key'</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="s1">'id'</span><span class="p">]]);</span>
+         <span class="nv">$table</span><span class="o">-&gt;</span><span class="nf">addColumn</span><span class="p">(</span><span class="s1">'id'</span><span class="p">,</span> <span class="s1">'uuid'</span><span class="p">)</span>
+            <span class="o">-&gt;</span><span class="nf">addColumn</span><span class="p">(</span><span class="s1">'title'</span><span class="p">,</span> <span class="s1">'string'</span><span class="p">)</span>
+            <span class="o">-&gt;</span><span class="nf">addColumn</span><span class="p">(</span><span class="s1">'description'</span><span class="p">,</span> <span class="s1">'string'</span><span class="p">)</span>
+            <span class="o">-&gt;</span><span class="nf">addColumn</span><span class="p">(</span><span class="s1">'status'</span><span class="p">,</span> <span class="s1">'string'</span><span class="p">)</span>
+            <span class="o">-&gt;</span><span class="nf">addColumn</span><span class="p">(</span><span class="s1">'assignee'</span><span class="p">,</span> <span class="s1">'string'</span><span class="p">)</span>
+            <span class="o">-&gt;</span><span class="nf">addColumn</span><span class="p">(</span><span class="s1">'created_at'</span><span class="p">,</span> <span class="s1">'datetime'</span><span class="p">)</span>
+            <span class="o">-&gt;</span><span class="nf">addColumn</span><span class="p">(</span><span class="s1">'updated_at'</span><span class="p">,</span> <span class="s1">'datetime'</span><span class="p">)</span>
+            <span class="o">-&gt;</span><span class="nf">create</span><span class="p">();</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>もう一度セットアップコマンドを実行してテーブルを作成します。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>composer setup
+</code></pre></div></div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt; php bin/setup.php
+Phinx by CakePHP - https://phinx.org. 0.10.6
+
+...
+All Done. Took 0.0248s
+</code></pre></div></div>
+
+<p>これでテーブルが作成されました。次回からこのプロジェクトのデータベース環境を整えるには<code class="language-plaintext highlighter-rouge">composer setup</code>を実行するだけで行えます。<sup id="fnref:7" role="doc-noteref"><a href="#fn:7" class="footnote" rel="footnote">4</a></sup>
+マイグレーションクラスの記述について詳しくは<a href="https://book.cakephp.org/3.0/ja/phinx/migrations.html">Phixのマニュアル：マイグレーションを書く</a>をご覧ください。</p>
+
+<h2 id="sql">SQL</h2>
+
+<p>チケットをデータベースに保存、読み込むために次の３つのSQLを<code class="language-plaintext highlighter-rouge">var/sql</code>に保存します。</p>
+
+<p><code class="language-plaintext highlighter-rouge">var/sql/ticket_insert.sql</code></p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/* create ticket */</span>
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">ticket</span> <span class="p">(</span><span class="n">id</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">description</span><span class="p">,</span> <span class="n">status</span><span class="p">,</span> <span class="n">assignee</span><span class="p">,</span> <span class="n">created_at</span><span class="p">,</span> <span class="n">updated_at</span><span class="p">)</span>
+<span class="k">VALUES</span> <span class="p">(:</span><span class="n">id</span><span class="p">,</span> <span class="p">:</span><span class="n">title</span><span class="p">,</span> <span class="p">:</span><span class="n">description</span><span class="p">,</span> <span class="p">:</span><span class="n">status</span><span class="p">,</span> <span class="p">:</span><span class="n">assignee</span><span class="p">,</span> <span class="p">:</span><span class="n">created_at</span><span class="p">,</span> <span class="p">:</span><span class="n">updated_at</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">var/sql/ticket_list.sql</code></p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span> <span class="n">id</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">description</span><span class="p">,</span> <span class="n">status</span><span class="p">,</span> <span class="n">assignee</span><span class="p">,</span> <span class="n">created_at</span><span class="p">,</span> <span class="n">updated_at</span>
+  <span class="k">FROM</span> <span class="n">ticket</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">var/sql/ticket_item_by_id.sql</code></p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span> <span class="n">id</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">description</span><span class="p">,</span> <span class="n">status</span><span class="p">,</span> <span class="n">assignee</span><span class="p">,</span> <span class="n">created_at</span><span class="p">,</span> <span class="n">updated_at</span>
+  <span class="k">FROM</span> <span class="n">ticket</span>
+ <span class="k">WHERE</span> <span class="n">id</span> <span class="o">=</span> <span class="p">:</span><span class="n">id</span>
+</code></pre></div></div>
+
+<p>上記のSQLの記述は<a href="https://www.sqlstyle.guide/ja/">SQLスタイルガイド</a>に従ったものです。以下の事柄が推奨されています。</p>
+
+<ul>
+  <li>スペースとインデントを慎重に使用しコードを読みやすくする。</li>
+  <li>ISO-8601に準拠した日付時間フォーマット（YYYY-MM-DD HH:MM:SS.SSSSS）で格納する。</li>
+  <li>移植性のためベンダー固有の関数の代わりに標準のSQL関数のみを使用する。</li>
+  <li>必要に応じてSQLコードにコメントを挿入する。可能なら /* で始まり */ で終わるC言語スタイルのコメントを使用し、その他の場合、– で始まり改行で終わる行コメントを使用する。</li>
+  <li>スペースを活用し、基底のキーワードがすべて同じ位置で終わるようにコードを整列させる。これは途中で「リバー」を形作り、コードの見通しを良くし、実装の詳細からキーワードを分離することを容易にする。</li>
+</ul>
+
+<p>PHPStormで<a href="https://confluence.jetbrains.com/display/CONTEST/Database+Navigator">Database Navigator</a>を使うと、SQLのコード補完や実行が行えます。<a href="https://www.youtube.com/watch?v=P3C0iO1yqhk"></a>
+PHPでSQLを実行する前に、データベースツールでSQLを単体で実行して正しく記述できているかを確かめると開発も容易で確実です。</p>
+
+<p><a href="https://www.jetbrains.com/datagrip/">JetBrain DataGrip</a>、<a href="https://www.sequelpro.com/">Sequel Pro</a>、<a href="https://www.mysql.com/jp/products/workbench/">MySQL Workbench</a>などの単体のデータベースツールがあります。</p>
+
+<h2 id="jsonschema">JsonSchema</h2>
+
+<p><code class="language-plaintext highlighter-rouge">Ticket</code>（<code class="language-plaintext highlighter-rouge">チケットアイテム</code>）、<code class="language-plaintext highlighter-rouge">Tickets</code>（<code class="language-plaintext highlighter-rouge">チケットアイテムの集合</code>）の２つのリソースを作成するために、まずこれらのリソースの定義を<a href="http://json-schema.org/">JsonSchema</a>で定義します。JsonSchemaについて<a href="https://qiita.com/kyoh86/items/e7de290e9a0e989fcc14">日本語での解説</a>もご覧ください。</p>
+
+<p>それぞれのスキーマファイルを<code class="language-plaintext highlighter-rouge">var/json_schema</code>フォルダに保存します。</p>
+
+<p><code class="language-plaintext highlighter-rouge">var/json_schema/ticket.json</code></p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="w">
+</span><span class="p">{</span><span class="w">
+  </span><span class="nl">"$id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ticket.json"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"$schema"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://json-schema.org/draft-07/schema#"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Ticket"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"object"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"properties"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"string"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"The unique identifier for a ticket."</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="nl">"title"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"string"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"The title of the ticket"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"minLength"</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"maxLength"</span><span class="p">:</span><span class="w"> </span><span class="mi">255</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"string"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"The description of the ticket"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"maxLength"</span><span class="p">:</span><span class="w"> </span><span class="mi">255</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="nl">"assignee"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"string"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"The assignee of the ticket"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"maxLength"</span><span class="p">:</span><span class="w"> </span><span class="mi">255</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="nl">"status"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"The name of the status"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"string"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"maxLength"</span><span class="p">:</span><span class="w"> </span><span class="mi">255</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="nl">"created_at"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"The date and time that the ticket was created"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"string"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"format"</span><span class="p">:</span><span class="w"> </span><span class="s2">"datetime"</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="nl">"updated_at"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"The date and time that the ticket was last modified"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"string"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"format"</span><span class="p">:</span><span class="w"> </span><span class="s2">"datetime"</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="nl">"required"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"title"</span><span class="p">,</span><span class="w"> </span><span class="s2">"description"</span><span class="p">,</span><span class="w"> </span><span class="s2">"status"</span><span class="p">,</span><span class="w"> </span><span class="s2">"created_at"</span><span class="p">,</span><span class="w"> </span><span class="s2">"updated_at"</span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+<p><code class="language-plaintext highlighter-rouge">var/json_schema/tickets.json</code></p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"$id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"tickets.json"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"$schema"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://json-schema.org/draft-07/schema#"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Collection of Tickets"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"array"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"items"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"$ref"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ticket.json"</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>作成したJSONを<code class="language-plaintext highlighter-rouge">validate-json</code>を使ってバリデートすることができます。<sup id="fnref:13" role="doc-noteref"><a href="#fn:13" class="footnote" rel="footnote">5</a></sup></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./vendor/bin/validate-json var/json_schema/ticket.json
+./vendor/bin/validate-json var/json_schema/tickets.json
+</code></pre></div></div>
+
+<p>これでリソースを定義をすることが出来ました。このスキーマは実際にバリデーションで使うことが出来ます。また独立したJSONファイルはフロントエンドのバリデーションでも使うことができるでしょう。</p>
+
+<h1 id="テスト">テスト</h1>
+
+<p>次に今から作ろうとする<code class="language-plaintext highlighter-rouge">/ticket</code>リソースのテストを<code class="language-plaintext highlighter-rouge">tests/Resource/App/TicketsTest.php</code>に用意します。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+<span class="kn">namespace</span> <span class="nn">MyVendor\Ticket\Resource\App</span><span class="p">;</span>
+
+<span class="kn">use</span> <span class="nc">BEAR\Package\AppInjector</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">BEAR\Resource\ResourceInterface</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">BEAR\Resource\ResourceObject</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">Koriym\HttpConstants\ResponseHeader</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">Koriym\HttpConstants\StatusCode</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">PHPUnit\Framework\TestCase</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">TicketsTest</span> <span class="kd">extends</span> <span class="nc">TestCase</span>
+<span class="p">{</span>
+    <span class="cd">/**
+     * @var ResourceInterface
+     */</span>
+    <span class="k">private</span> <span class="nv">$resource</span><span class="p">;</span>
+
+    <span class="k">protected</span> <span class="k">function</span> <span class="n">setUp</span><span class="p">()</span> <span class="p">:</span> <span class="kt">void</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">resource</span> <span class="o">=</span> <span class="p">(</span><span class="k">new</span> <span class="nc">AppInjector</span><span class="p">(</span><span class="s1">'MyVendor\Ticket'</span><span class="p">,</span> <span class="s1">'test-app'</span><span class="p">))</span><span class="o">-&gt;</span><span class="nf">getInstance</span><span class="p">(</span><span class="nc">ResourceInterface</span><span class="o">::</span><span class="n">class</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="n">testOnPost</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="nv">$ro</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">resource</span><span class="o">-&gt;</span><span class="nf">post</span><span class="p">(</span><span class="s1">'app://self/tickets'</span><span class="p">,</span> <span class="p">[</span>
+            <span class="s1">'title'</span> <span class="o">=&gt;</span> <span class="s1">'title1'</span><span class="p">,</span>
+            <span class="s1">'status'</span> <span class="o">=&gt;</span> <span class="s1">'status1'</span><span class="p">,</span>
+            <span class="s1">'description'</span> <span class="o">=&gt;</span> <span class="s1">'description1'</span><span class="p">,</span>
+            <span class="s1">'assignee'</span> <span class="o">=&gt;</span> <span class="s1">'assignee1'</span>
+        <span class="p">]);</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">assertSame</span><span class="p">(</span><span class="nc">StatusCode</span><span class="o">::</span><span class="no">CREATED</span><span class="p">,</span> <span class="nv">$ro</span><span class="o">-&gt;</span><span class="n">code</span><span class="p">);</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">assertStringContainsString</span><span class="p">(</span><span class="s1">'/ticket?id='</span><span class="p">,</span> <span class="nv">$ro</span><span class="o">-&gt;</span><span class="n">headers</span><span class="p">[</span><span class="nc">ResponseHeader</span><span class="o">::</span><span class="no">LOCATION</span><span class="p">]);</span>
+
+        <span class="k">return</span> <span class="nv">$ro</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="cd">/**
+     * @depends testOnPost
+     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">testOnGet</span><span class="p">(</span><span class="kt">ResourceObject</span> <span class="nv">$ro</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nv">$location</span> <span class="o">=</span> <span class="nv">$ro</span><span class="o">-&gt;</span><span class="n">headers</span><span class="p">[</span><span class="nc">ResponseHeader</span><span class="o">::</span><span class="no">LOCATION</span><span class="p">];</span>
+        <span class="nv">$ro</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">resource</span><span class="o">-&gt;</span><span class="nf">get</span><span class="p">(</span><span class="s1">'app://self'</span> <span class="mf">.</span> <span class="nv">$location</span><span class="p">);</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">assertSame</span><span class="p">(</span><span class="s1">'title1'</span><span class="p">,</span> <span class="nv">$ro</span><span class="o">-&gt;</span><span class="n">body</span><span class="p">[</span><span class="s1">'title'</span><span class="p">]);</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">assertSame</span><span class="p">(</span><span class="s1">'description1'</span><span class="p">,</span> <span class="nv">$ro</span><span class="o">-&gt;</span><span class="n">body</span><span class="p">[</span><span class="s1">'description'</span><span class="p">]);</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">assertSame</span><span class="p">(</span><span class="s1">'assignee1'</span><span class="p">,</span> <span class="nv">$ro</span><span class="o">-&gt;</span><span class="n">body</span><span class="p">[</span><span class="s1">'assignee'</span><span class="p">]);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">$this-&gt;resource</code>は<code class="language-plaintext highlighter-rouge">MyVendor\Ticket</code>アプリケーションを<code class="language-plaintext highlighter-rouge">test-app</code>コンテキストで動作させた時のリソースクライアントです。
+<code class="language-plaintext highlighter-rouge">AppModule</code>、<code class="language-plaintext highlighter-rouge">TestModule</code>の順のモジュールで上書きされるのでデータベースはテスト用の<code class="language-plaintext highlighter-rouge">ticket_test</code>データベースが使われます。</p>
+
+<p><code class="language-plaintext highlighter-rouge">testOnPost</code>でリソースをPOSTリクエストで作成して、<code class="language-plaintext highlighter-rouge">testOnGet</code>ではそのレスポンスのLocationヘッダーに表されているリソースのURIをGETリクエストして、作成したリソースが正しいものかをテストしています。</p>
+
+<p>まだ実装してないのでエラーが出ますが、テスト実行を試してみましょう。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>composer test
+</code></pre></div></div>
+
+<p>当面の目標はこのテストがパスするようになる事です。テストを先に用意する事で、作ったリソースの実行やデバックトレースが簡単になり、着手した作業のゴールが明確になります。</p>
+
+<h1 id="リソース">リソース</h1>
+
+<p>リソースのロジックはSQLとして、そのバリデーションはJSONファイルで表すことが出来ています。リソースクラスではそれらのファイルを利用します。</p>
+
+<h2 id="tikcetリソース">tikcetリソース</h2>
+
+<p><code class="language-plaintext highlighter-rouge">ticket</code>リソースを<code class="language-plaintext highlighter-rouge">src/Resource/App/Ticket.php</code>に作成します。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+<span class="kn">namespace</span> <span class="nn">MyVendor\Ticket\Resource\App</span><span class="p">;</span>
+
+<span class="kn">use</span> <span class="nc">BEAR\RepositoryModule\Annotation\Cacheable</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">BEAR\Resource\Annotation\JsonSchema</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">BEAR\Resource\ResourceObject</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">Ray\Query\Annotation\Query</span><span class="p">;</span>
+
+<span class="cd">/**
+ * @Cacheable
+ */</span>
+<span class="kd">class</span> <span class="nc">Ticket</span> <span class="kd">extends</span> <span class="nc">ResourceObject</span>
+<span class="p">{</span>
+    <span class="cd">/**
+     * @JsonSchema(schema="ticket.json")
+     * @Query("ticket_item_by_id", type="row")
+     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onGet</span><span class="p">(</span><span class="kt">string</span> <span class="nv">$id</span><span class="p">):</span> <span class="kt">static</span>
+    <span class="p">{</span>
+        <span class="nb">unset</span><span class="p">(</span><span class="nv">$id</span><span class="p">);</span>
+
+        <span class="k">return</span> <span class="nv">$this</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="ticket---getリクエスト">ticket - GETリクエスト</h2>
+
+<p><code class="language-plaintext highlighter-rouge">GET</code>のための<code class="language-plaintext highlighter-rouge">onGet</code>メソッドを見てみましょう。メソッドシグネチャーを見れば、リクエストに必要な入力は<code class="language-plaintext highlighter-rouge">$_GET['id']</code>のみで、それは省略ができないという事が分かります。</p>
+
+<p><code class="language-plaintext highlighter-rouge">@JsonSchema</code>アノテーションはこのクラスの<code class="language-plaintext highlighter-rouge">body</code>プロパティの<code class="language-plaintext highlighter-rouge">ticket</code>キー配列が<code class="language-plaintext highlighter-rouge">ticket.json</code>で定義されたスキーマであるということを宣言しつつリアルタイムのバリデーションをAOPで毎回行う事で保証しています。</p>
+
+<p><code class="language-plaintext highlighter-rouge">@Query("ticket_item_by_id", type="row")</code>と指定されているので、このメソッドはSQL実行と置き換わります。<code class="language-plaintext highlighter-rouge">var/sql/ticket_item_by_id.sql</code>ファイルのSQLが実行され、その結果が単一行（type=”row”）で返ります。このようにロジックが単純にSQLで置換えられる場合は<code class="language-plaintext highlighter-rouge">@Query</code>を使ってPHPの記述を省略することができます。</p>
+
+<h2 id="tikcetsリソース">tikcetsリソース</h2>
+
+<p>次は<code class="language-plaintext highlighter-rouge">tikcet</code>リソースの集合の<code class="language-plaintext highlighter-rouge">tikcets</code>リソースを<code class="language-plaintext highlighter-rouge">src/resource/App/Tickets.php</code>に作成します。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+<span class="kn">namespace</span> <span class="nn">MyVendor\Ticket\Resource\App</span><span class="p">;</span>
+
+<span class="kn">use</span> <span class="nc">BEAR\Package\Annotation\ReturnCreatedResource</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">BEAR\RepositoryModule\Annotation\Cacheable</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">BEAR\RepositoryModule\Annotation\Purge</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">BEAR\Resource\Annotation\JsonSchema</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">BEAR\Resource\ResourceObject</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">Koriym\HttpConstants\ResponseHeader</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">Koriym\HttpConstants\StatusCode</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">Ray\AuraSqlModule\Annotation\Transactional</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">Ray\Di\Di\Named</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">Ray\IdentityValueModule\NowInterface</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">Ray\IdentityValueModule\UuidInterface</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">Ray\Query\Annotation\Query</span><span class="p">;</span>
+
+<span class="cd">/**
+ * @Cacheable
+ */</span>
+<span class="kd">class</span> <span class="nc">Tickets</span> <span class="kd">extends</span> <span class="nc">ResourceObject</span>
+<span class="p">{</span>
+    <span class="cd">/**
+     * @var callable
+     */</span>
+    <span class="k">private</span> <span class="nv">$createTicket</span><span class="p">;</span>
+
+    <span class="cd">/**
+     * @var NowInterface
+     */</span>
+    <span class="k">private</span> <span class="nv">$now</span><span class="p">;</span>
+
+    <span class="cd">/**
+     * @var UuidInterface
+     */</span>
+    <span class="k">private</span> <span class="nv">$uuid</span><span class="p">;</span>
+
+    <span class="cd">/**
+     * @Named("createTicket=ticket_insert")
+     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">__construct</span><span class="p">(</span><span class="kt">callable</span> <span class="nv">$createTicket</span><span class="p">,</span> <span class="kt">NowInterface</span> <span class="nv">$now</span><span class="p">,</span> <span class="kt">UuidInterface</span> <span class="nv">$uuid</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">createTicket</span> <span class="o">=</span> <span class="nv">$createTicket</span><span class="p">;</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">now</span> <span class="o">=</span> <span class="nv">$now</span><span class="p">;</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">uuid</span> <span class="o">=</span> <span class="nv">$uuid</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="cd">/**
+     * @JsonSchema(schema="tickets.json")
+     * @Query("ticket_list")
+     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onGet</span><span class="p">():</span> <span class="kt">static</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="nv">$this</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="cd">/**
+     * @ReturnCreatedResource
+     * @Transactional
+     * @Purge(uri="app://self/tickets")
+     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onPost</span><span class="p">(</span>
+        <span class="kt">string</span> <span class="nv">$title</span><span class="p">,</span>
+        <span class="kt">string</span> <span class="nv">$description</span> <span class="o">=</span> <span class="s1">''</span><span class="p">,</span>
+        <span class="kt">string</span> <span class="nv">$assignee</span> <span class="o">=</span> <span class="s1">''</span>
+    <span class="p">):</span> <span class="kt">static</span> <span class="p">{</span>
+        <span class="nv">$id</span> <span class="o">=</span> <span class="p">(</span><span class="n">string</span><span class="p">)</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">uuid</span><span class="p">;</span>
+        <span class="nv">$time</span> <span class="o">=</span> <span class="p">(</span><span class="n">string</span><span class="p">)</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">now</span><span class="p">;</span>
+        <span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="n">createTicket</span><span class="p">)([</span>
+            <span class="s1">'id'</span> <span class="o">=&gt;</span> <span class="nv">$id</span><span class="p">,</span>
+            <span class="s1">'title'</span> <span class="o">=&gt;</span> <span class="nv">$title</span><span class="p">,</span>
+            <span class="s1">'description'</span> <span class="o">=&gt;</span> <span class="nv">$description</span><span class="p">,</span>
+            <span class="s1">'assignee'</span> <span class="o">=&gt;</span> <span class="nv">$assignee</span><span class="p">,</span>
+            <span class="s1">'status'</span> <span class="o">=&gt;</span> <span class="s1">''</span><span class="p">,</span>
+            <span class="s1">'created_at'</span> <span class="o">=&gt;</span> <span class="nv">$time</span><span class="p">,</span>
+            <span class="s1">'updated_at'</span> <span class="o">=&gt;</span> <span class="nv">$time</span><span class="p">,</span>
+        <span class="p">]);</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">code</span> <span class="o">=</span> <span class="nc">StatusCode</span><span class="o">::</span><span class="no">CREATED</span><span class="p">;</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">headers</span><span class="p">[</span><span class="nc">ResponseHeader</span><span class="o">::</span><span class="no">LOCATION</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"/ticket?id=</span><span class="si">{</span><span class="nv">$id</span><span class="si">}</span><span class="s2">"</span><span class="p">;</span>
+
+        <span class="k">return</span> <span class="nv">$this</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="tickets---getリクエスト">tickets - GETリクエスト</h2>
+
+<p><code class="language-plaintext highlighter-rouge">var/json_schema/tickets.json</code>JSONスキーマをご覧になってください。<code class="language-plaintext highlighter-rouge">ticket.json</code>スキーマの集合(array)と定義されています。
+このようにJSONスキーマはスキーマの構造を表すことができます。メソッドは<code class="language-plaintext highlighter-rouge">/ticket</code>リソース同様に<code class="language-plaintext highlighter-rouge">ticket_list.sql</code>のSQL実行を結果として返します。</p>
+
+<h2 id="tickets---postリクエスト">tickets - POSTリクエスト</h2>
+
+<p>コンストラクタでインジェクトされた<code class="language-plaintext highlighter-rouge">$this-&gt;createTicket</code>は<code class="language-plaintext highlighter-rouge">ticket_insert.sql</code>の実行オブジェクトです。受け取った連想配列をバインドしてSQL実行します。
+リソースを作成する時は必ず<code class="language-plaintext highlighter-rouge">Location</code>ヘッダーでリソースのURLを保存するようにします。作成した内容をボディに含みたい時は<code class="language-plaintext highlighter-rouge">@ReturnCreatedResource</code>とアノテートします。</p>
+
+<p>まだ作成していないので見る事は今はできませんが、<code class="language-plaintext highlighter-rouge">OPTIONS</code>コマンドで調べることができます。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>php bin/app.php options /tickets
+</code></pre></div></div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>200 OK
+Content-Type: application/json
+Allow: GET, POST
+
+{
+    "GET": {
+        "schema": {
+            "$id": "tickets.json",
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "title": "Collection of Tickets",
+            "type": "array",
+            "items": {
+                "$ref": "ticket.json"
+            }
+        }
+    },
+    "POST": {
+        "request": {
+            "parameters": {
+                "title": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string",
+                    "default": ""
+                },
+                "assignee": {
+                    "type": "string",
+                    "default": ""
+                }
+            },
+            "required": [
+                "title"
+            ]
+        }
+    }
+}
+</code></pre></div></div>
+
+<p>では実際に<code class="language-plaintext highlighter-rouge">/tickets</code>にアクセスしてみましょう。
+POSTリクエストでチケット作成します。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>php bin/app.php post '/tickets?title=run'
+</code></pre></div></div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>201 Created
+Location: /tickets/b0f9c395-3a3d-48ee-921b-ce45a06eee11
+content-type: application/hal+json
+
+{
+    "id": "b0f9c395-3a3d-48ee-921b-ce45a06eee11",
+    "title": "run",
+    "description": "",
+    "status": "",
+    "assignee": "",
+    "created": "2018-09-11 13:15:33",
+    "updated": "2018-09-11 13:15:33",
+    "_links": {
+        "self": {
+            "href": "/tickets/b0f9c395-3a3d-48ee-921b-ce45a06eee11"
+        }
+    }
+}
+</code></pre></div></div>
+
+<p>レスポンスにあるLocationヘッダーのURIをGETリクエストします。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>php bin/app.php get '/tickets/b0f9c395-3a3d-48ee-921b-ce45a06eee11'
+</code></pre></div></div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>200 OK
+Link: &lt;http://www.example.com/ticket.json&gt;; rel="describedby"
+content-type: application/hal+json
+ETag: 3794765489
+Last-Modified: Tue, 11 Sep 2018 11:16:05 GMT
+
+{
+    "id": "b0f9c395-3a3d-48ee-921b-ce45a06eee11",
+    "title": "run",
+    "description": "",
+    "status": "",
+    "assignee": "",
+    "created": "2018-09-11 13:15:33",
+    "updated": "2018-09-11 13:15:33",
+    "_links": {
+        "self": {
+            "href": "/tickets/b0f9c395-3a3d-48ee-921b-ce45a06eee11"
+        }
+    }
+}
+</code></pre></div></div>
+
+<p>レスポンスは200 OKで帰ってきましたか？
+このレスポンスの定義は<code class="language-plaintext highlighter-rouge">ticket.json</code>で定義されたものであることが<code class="language-plaintext highlighter-rouge">Link</code>ヘッダーの<code class="language-plaintext highlighter-rouge">describedby</code>で分かります。<sup id="fnref:9" role="doc-noteref"><a href="#fn:9" class="footnote" rel="footnote">6</a></sup>
+<code class="language-plaintext highlighter-rouge">@Cacheable</code>と宣言されたリソースは<code class="language-plaintext highlighter-rouge">ETag</code>と<code class="language-plaintext highlighter-rouge">Last-Modified</code>ヘッダーが付加されより効率の良いHTTPレベルのキャッシュが有効になります。
+<code class="language-plaintext highlighter-rouge">@Purge</code>はキャッシュの破壊です。<sup id="fnref:10" role="doc-noteref"><a href="#fn:10" class="footnote" rel="footnote">7</a></sup></p>
+
+<p>最初に作ったテストも今はうまくパスするはずです。試してみましょう。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>composer test
+</code></pre></div></div>
+
+<p>コーディング規約通りに書けているか、または<code class="language-plaintext highlighter-rouge">phpdoc</code>がコードと同じように正しく書けているかはツールで調べることができます。
+エラーが出れば<code class="language-plaintext highlighter-rouge">cs-fix</code>で直すことができます。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>composer cs-fix
+</code></pre></div></div>
+
+<p>ユニットテストとコーディング規約、静的解析ツールを同時に行うこともできます。コミットする前に実行しましょう。<sup id="fnref:3" role="doc-noteref"><a href="#fn:3" class="footnote" rel="footnote">8</a></sup></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>composer tests
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">compile</code>コマンドで最適化された<code class="language-plaintext highlighter-rouge">autoload.php</code>を生成してDI/AOPスクリプトを生成することができます。ディプロイ前は実行しましょう。<sup id="fnref:4" role="doc-noteref"><a href="#fn:4" class="footnote" rel="footnote">9</a></sup><sup id="fnref:5" role="doc-noteref"><a href="#fn:5" class="footnote" rel="footnote">10</a></sup>
+全てをDIするBEAR.Sundayアプリケーションはアプリケーション実行前に依存の問題を見つけることができます。ログでDIの束縛の情報を見る事もできるので開発時でも役に立ちます。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>composer compile
+</code></pre></div></div>
+
+<p>テストはパスしてコンパイルもうまくできましたか？ REST APIの完成です！</p>
+
+<h2 id="apiドキュメント">APIドキュメント</h2>
+
+<p>APIドキュメントを出力するために<code class="language-plaintext highlighter-rouge">php/bin.php</code>スクリプトを追加します。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;?php
+
+require dirname(__DIR__) . '/vendor/autoload.php';
+
+use BEAR\ApiDoc\DocApp;
+
+$docApp = new DocApp('MyVendor\Ticket');
+$docApp-&gt;dumpHtml(dirname(__DIR__) . '/docs', 'app');```
+</code></pre></div></div>
+
+<p>ドキュメントのためのディレクトリを作成します。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mkdir docs
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">composer doc</code>コマンドでAPIサイトのHTMLとJSONが出力されます。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>php bin/doc.php
+</code></pre></div></div>
+<p>このサイトをGitHub Pages<sup id="fnref:11" role="doc-noteref"><a href="#fn:11" class="footnote" rel="footnote">11</a></sup>などで公開して、APIドキュメントにします。</p>
+
+<p>このようなAPIドキュメントサイトができるはずです。</p>
+
+<p><a href="https://bearsunday.github.io/tutorial2/">https://bearsunday.github.io/tutorial2/</a></p>
+
+<p>もし<code class="language-plaintext highlighter-rouge">github.com</code>を使っていて、APIドキュメントをプライベートにしたい場合にはmarkdownで出力することもできます。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$docApp</span><span class="o">-&gt;</span><span class="nf">dumpMd</span><span class="p">(</span><span class="nb">dirname</span><span class="p">(</span><span class="k">__DIR__</span><span class="p">)</span> <span class="mf">.</span> <span class="s1">'/docs'</span><span class="p">,</span> <span class="s1">'app'</span><span class="p">);</span><span class="sb">``</span><span class="err">`</span>
+</code></pre></div></div>
+
+<h2 id="終わりに">終わりに</h2>
+
+<ul>
+  <li>
+    <p>phinxマイグレーションツールを使ってアプリケーションのバージョンに従ったデータベースの環境構築ができるようになりました。</p>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">composer setup</code>コマンドで環境構築ができれば、データベースコマンドを操作する必要がなくディプロイやCIでも便利です。</p>
+  </li>
+  <li>
+    <p>SQLファイルを<code class="language-plaintext highlighter-rouge">var/sql</code>フォルダに置くことでGUIやCLIのSQLツールで単体実行することができ、開発や運用にも便利でテストも容易になります。スタティックなSQLはPhpStormで補完も効くし、GUIでモデリングできるツールもあります。</p>
+  </li>
+  <li>
+    <p>リソースの引数と出力はメソッドやスキーマで宣言されていて明瞭です。AOPでバリデーションが行わることでドキュメントの正当性が保証され、ドキュメントメンテナンスのの労力を最小化できます。</p>
+  </li>
+</ul>
+
+<p>チュートリアルはうまく行ったでしょうか？ もしうまく行ったならチュートリアル<a href="https://github.com/bearsunday/tutorial2">bearsunday/tutorial2</a>にスターをして記念に残しましょう。
+うまくいかない時は<a href="https://gitter.im/bearsunday/BEAR.Sunday">gitter</a>で相談すると解決できるかもしれません。提案や間違いがあれば<a href="https://github.com/bearsunday/bearsunday.github.io/blob/master/manuals/1.0/ja/tutorial2.md">PR</a>をお願いします！</p>
+
+<hr />
+
+<div class="footnotes" role="doc-endnotes">
+  <ol>
+    <li id="fn:1" role="doc-endnote">
+      <p><a href="/manuals/1.0/ja/tutorial.html">チュートリアル</a>を終えた方を対象としています。被る箇所もありますがおさらいのつもりでトライしてみましょう。レポジトリは<a href="https://github.com/bearsunday/Tutorial2">bearsaunday/Tutorial2</a>にあります。うまくいかないときは見比べてみましょう。 <a href="#fnref:1" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+    <li id="fn:2" role="doc-endnote">
+      <p>通常は<strong>vendor</strong>名は個人またはチーム（組織）の名前を入力します。githubのアカウント名やチーム名が適当でしょう。<strong>project</strong>にはアプリケーション名を入力します。 <a href="#fnref:2" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+    <li id="fn:6" role="doc-endnote">
+      <p>BEAR.Sundayフレームワークが依存する環境変数は１つもありません。 <a href="#fnref:6" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+    <li id="fn:7" role="doc-endnote">
+      <p>mysqlコマンドの操作などをREADMEで説明する必要もないので便利です。 <a href="#fnref:7" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+    <li id="fn:13" role="doc-endnote">
+      <p>2018年9月現在php7.3だと実行できますが<code class="language-plaintext highlighter-rouge">PHP Deprecated</code>が表示されます。 <a href="#fnref:13" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+    <li id="fn:9" role="doc-endnote">
+      <p>http://json-schema.org/latest/json-schema-core.html#rfc.section.10.1 <a href="#fnref:9" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+    <li id="fn:10" role="doc-endnote">
+      <p><code class="language-plaintext highlighter-rouge">/ticket</code>でPOSTされると<code class="language-plaintext highlighter-rouge">/tickets</code>リソースのキャッシュを破壊しています。<code class="language-plaintext highlighter-rouge">@Refresh</code>とすると破壊のタイミングでキャッシュを再生成します。 <a href="#fnref:10" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+    <li id="fn:3" role="doc-endnote">
+      <p>コミットフックを設定するのも良い方法です。 <a href="#fnref:3" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+    <li id="fn:4" role="doc-endnote">
+      <p>キャッシュを”温める”ために２度行うと確実です。 <a href="#fnref:4" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+    <li id="fn:5" role="doc-endnote">
+      <p>コンテキストの変更は<code class="language-plaintext highlighter-rouge">composer.json</code>の<code class="language-plaintext highlighter-rouge">compile</code>スクリプトコマンドを編集します。 <a href="#fnref:5" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+    <li id="fn:11" role="doc-endnote">
+      <p><a href="https://help.github.com/articles/configuring-a-publishing-source-for-github-pages/#publishing-your-github-pages-site-from-a-docs-folder-on-your-master-branch">Publishing your GitHub Pages site from a /docs folder on your master branch</a> <a href="#fnref:11" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+  </ol>
+</div>
+
+            </article>
+        </div>
+        <div id="ArticleToc" class="col-lg-2 d-none d-lg-block">
+            <nav class="nav side-bar-right"></nav>
+        </div>
+    </div>
+</main>
+<footer>
+    <div class="container d-md-flex">
+        <i class="bear-icon d-none d-lg-block"></i>
+        <small>
+            © 2011-2024 BEAR.Sunday
+        </small>
+        <ul class="navbar-nav flex-row ml-md-auto d-none d-md-flex">
+            <li>
+                <a href="https://gitter.im/bearsunday/BEAR.Sunday?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge">Gitter</a>
+            </li>
+            <li>
+                <a href="https://github.com/bearsunday/BEAR.Sunday">Github</a>
+            </li>
+            <li>
+                <a href="https://twitter.com/BEARSunday">Twitter</a>
+            </li>
+            <li>
+                <a href="https://www.facebook.com/pages/BEARSunday/110116939178462?ref=hl">Facebook</a>
+            </li>
+            <li>
+                <a href="http://koriym.github.io/">Blog (JA)</a>
+            </li>
+            <li>
+                <a href="https://github.com/bearsunday/bearsunday.github.io">PR ?</a>
+            </li>
+        </ul>
+    </div>
+</footer>
+<script src="//code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+<script>
+    window.ga = function () { ga.q.push(arguments) }; ga.q = []; ga.l = +new Date;
+    ga('create', 'UA-6074569-8', 'bearsunday.github.io'); ga('send', 'pageview');
+</script>
+<script src="https://www.google-analytics.com/analytics.js" async defer></script>
+
+<script src="/js/generate-table-of-contents/index.min.js"></script>
+<script>
+    var toc = generateTableOfContents(document.getElementById('article'));
+    var sideBarRight = $('.side-bar-right');
+    sideBarRight.append(toc);
+
+    var scrollOffset = $('body').attr('data-offset');
+    var articlePaddingTop = $('article').css('padding-top').replace('px', '');
+    sideBarRight.find('a').on('click', function (e) {
+        e.preventDefault();
+        var targetId = $(this).attr('href');
+        var targetPositionTop = $(targetId).offset().top - scrollOffset - articlePaddingTop;
+        window.scrollTo(0, targetPositionTop)
+    });
+</script>
+
+</body>
+</html>
+

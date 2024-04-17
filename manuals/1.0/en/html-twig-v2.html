@@ -1,0 +1,549 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>HTML (Twig v2) &#124; BEAR.Sunday</title>
+    <meta name="description" content="BEAR.Sunday is a resource orientated framework with a REST centered architecture, implementing Dependency Injection and Aspect Orientated Programming' at its core.">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/github-markdown-css/2.10.0/github-markdown.css">
+    <link rel="stylesheet" href="/css/syntax.css">
+    
+    <link rel="stylesheet" href="/css/bearsunday.css">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="apple-touch-icon" href="/icon.png">
+</head>
+<body data-page-category="Manual" data-spy="scroll" data-target="#ArticleToc" data-offset="65">
+<header>
+    <nav class="navbar navbar-expand flex-column flex-md-row bg-light">
+        <a class="navbar-brand mr-0 mr-md-2" href="/index.html"></a>
+        <div class="navbar-nav-scroll">
+            <ul class="navbar-nav flex-row">
+                <li class="nav-item">
+                    <a class="nav-link " href="/index.html">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="/manuals/1.0/en/index.html">Manual</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link " href="/contributors.html">Contributors</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/slide.html">Slide</a>
+                </li>
+            </ul>
+        </div>
+        
+        <ul class="navbar-nav ml-md-auto d-none d-md-flex language-list">
+            <li>
+                <a class="active" href="/manuals/1.0/en/html-twig-v2.html">En</a>
+            </li>
+            <li>
+                <a class="" href="/manuals/1.0/ja/html-twig-v2.html">Ja</a>
+            </li>
+        </ul>
+        
+    </nav>
+</header>
+
+<main class="container-fluid">
+    <div class="row flex-xl-nowrap">
+        <div class="col-md-3 col-lg-2">
+            <div class="side-bar">
+                <nav class="navbar navbar-expand-md navbar-light">
+    <div class="navigation-header">
+        <div class="ml-auto d-sm-block d-md-none">
+            <ul class="navbar-nav language-list">
+                <li>
+                    <a class="active" href="/manuals/1.0/en/html-twig-v2.html">En</a>
+                </li>
+                <li>
+                    <a class="" href="/manuals/1.0/ja/html-twig-v2.html">Ja</a>
+                </li>
+            </ul>
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#Navber" aria-controls="Navber" aria-expanded="false" aria-label="ナビゲーションの切替">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+    </div>
+    <div class="collapse navbar-collapse" id="Navber">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/">Introduction</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/version.html">Version</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/quick-start.html">Quick Start</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/tutorial.html">Tutorial</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/tutorial2.html">Tutorial 2</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/package.html">Package</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/application.html">Application</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/module.html">Module</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/di.html">DI</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/aop.html">AOP</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/resource.html">Resource</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/resource_param.html">・Parameter</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/resource_link.html">・Link</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/resource_renderer.html">・Rendering and Transfer</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/router.html">Router</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/production.html">Production</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/import.html">Import</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/database.html">Database</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/validation.html">Validation</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/html.html">HTML</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/form.html">Form</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/content-negotiation.html">Content Negotiation</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/hypermedia-api.html">Hypermedia API</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/psr7.html">Request / PSR-7</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/js-ui.html">JavaScript UI</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/stream.html">Stream Response</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/cache.html">Cache</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/swoole.html">Swoole</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/coding-guide.html">Coding Guide</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/types.html">Type</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/test.html">Test</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/en/examples.html">Examples</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/attribute.html">Attribute</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/en/apidoc.html">API Doc</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/1page.html">1 Page</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+            </div>
+        </div>
+        <div class="col-md-9 col-lg-8">
+            <article id="article" class="markdown-body">
+                <h1 id="html-twig-v2">HTML (Twig v2)</h1>
+
+<h2 id="install">Install</h2>
+
+<p>In order to have an HTML reprensentation, Let’s install <a href="https://twig.symfony.com/doc/2.x/">Twig v2</a> module with composer.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>composer require madapaja/twig-module ^2.0
+</code></pre></div></div>
+
+<p>Next create the context file <code class="language-plaintext highlighter-rouge">src/Module/HtmlModule.php</code> and install the <code class="language-plaintext highlighter-rouge">TwigModule</code>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">namespace</span> <span class="nn">MyVendor\MyPackage\Module</span><span class="p">;</span>
+
+<span class="kn">use</span> <span class="nc">BEAR\AppMeta\AppMeta</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">Madapaja\TwigModule\TwigErrorPageModule</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">Madapaja\TwigModule\TwigModule</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">Ray\Di\AbstractModule</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">HtmlModule</span> <span class="kd">extends</span> <span class="nc">AbstractModule</span>
+<span class="p">{</span>
+    <span class="k">protected</span> <span class="k">function</span> <span class="n">configure</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">install</span><span class="p">(</span><span class="k">new</span> <span class="nc">TwigModule</span><span class="p">);</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">install</span><span class="p">(</span><span class="k">new</span> <span class="nc">TwigErrorPageModule</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Update the context in <code class="language-plaintext highlighter-rouge">bin/page.php</code> or <code class="language-plaintext highlighter-rouge">public/index.php</code> and enable <code class="language-plaintext highlighter-rouge">html</code>.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$context</span> <span class="o">=</span> <span class="s1">'cli-html-app'</span><span class="p">;</span> // or <span class="s1">'html-app'</span>
+</code></pre></div></div>
+<h2 id="template">Template</h2>
+
+<p>One template file is required for one resource object class in <code class="language-plaintext highlighter-rouge">var/templates</code> directory to represent in HTML.
+For example, for <code class="language-plaintext highlighter-rouge">src/Page/Index.php</code> resource class, a template file is required in <code class="language-plaintext highlighter-rouge">var/templates/Page/Index.html.twig</code>.</p>
+
+<p>The body of the resource is assigned to the template.</p>
+
+<p>example）</p>
+
+<p><code class="language-plaintext highlighter-rouge">src/Page/Index.php</code></p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">Index</span> <span class="kd">extends</span> <span class="nc">ResourceObject</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="nv">$body</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s1">'greeting'</span> <span class="o">=&gt;</span> <span class="s1">'Hello BEAR.Sunday'</span>
+    <span class="p">];</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">var/templates/Page/Index.twig.php</code></p>
+
+<div class="language-twig highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;h1&gt;</span><span class="cp">{{</span> <span class="nv">greeting</span> <span class="cp">}}</span><span class="nt">&lt;/h1&gt;</span>
+</code></pre></div></div>
+
+<p>Output:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>php bin/page.php get /
+</code></pre></div></div>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>200 OK
+content-type: text/html<span class="p">;</span> <span class="nv">charset</span><span class="o">=</span>utf-8
+
+&lt;h1&gt;Hello BEAR.Sunday&lt;/h1&gt;
+</code></pre></div></div>
+<h2 id="select-template-file">Select template file</h2>
+
+<p>Resource does not select the template file. It <code class="language-plaintext highlighter-rouge">includes</code> depending on the state of the resource.</p>
+
+<div class="language-twig highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">{%</span> <span class="k">if</span> <span class="nv">user.is_login</span> <span class="cp">%}</span>
+    <span class="cp">{{</span> <span class="nv">include</span><span class="p">(</span><span class="s1">'member.html.twig'</span><span class="p">)</span> <span class="cp">}}</span>
+<span class="cp">{%</span> <span class="k">else</span> <span class="cp">%}</span>
+    <span class="cp">{{</span> <span class="nv">include</span><span class="p">(</span><span class="s1">'guest.html.twig'</span><span class="p">)</span> <span class="cp">}}</span>
+<span class="cp">{%</span> <span class="k">endif</span> <span class="cp">%}</span>
+</code></pre></div></div>
+
+<p>In the resource class, you should only concern resource state. Then template should concern the resource representation.
+See <a href="https://en.wikipedia.org/wiki/Separation_of_concerns">Separation of concerns (SoC)</a>.</p>
+
+<h2 id="error-page">Error Page</h2>
+
+<p>Edit <code class="language-plaintext highlighter-rouge">var/templates/error.html.twig</code>. Following values are assigned to the error page.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Variable</th>
+      <th>Title</th>
+      <th>Key</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>status</td>
+      <td>HTTP status</td>
+      <td>code, message</td>
+    </tr>
+    <tr>
+      <td>e</td>
+      <td>Exception</td>
+      <td>code, message, class</td>
+    </tr>
+    <tr>
+      <td>logref</td>
+      <td>Log ID</td>
+      <td>n/a</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>例</p>
+
+<div class="language-twig highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">{%</span> <span class="k">extends</span> <span class="s1">'layout/base.html.twig'</span> <span class="cp">%}</span>
+<span class="cp">{%</span> <span class="k">block</span> <span class="nv">title</span> <span class="cp">%}{{</span> <span class="nv">status.code</span> <span class="cp">}}</span> <span class="cp">{{</span> <span class="nv">status.message</span> <span class="cp">}}{%</span> <span class="k">endblock</span> <span class="cp">%}</span>
+<span class="cp">{%</span> <span class="k">block</span> <span class="nv">content</span> <span class="cp">%}</span>
+    <span class="nt">&lt;h1&gt;</span><span class="cp">{{</span> <span class="nv">status.code</span> <span class="cp">}}</span> <span class="cp">{{</span> <span class="nv">status.message</span> <span class="cp">}}</span><span class="nt">&lt;/h1&gt;</span>
+    <span class="cp">{%</span> <span class="k">if</span> <span class="nv">status.code</span> <span class="o">==</span> <span class="nv">404</span> <span class="cp">%}</span>
+        <span class="nt">&lt;p&gt;</span>The requested URL was not found on this server.<span class="nt">&lt;/p&gt;</span>
+    <span class="cp">{%</span> <span class="k">else</span> <span class="cp">%}</span>
+        <span class="nt">&lt;p&gt;</span>The server is temporarily unable to service your request.<span class="nt">&lt;/p&gt;</span>
+        <span class="nt">&lt;p&gt;</span>refference number: <span class="cp">{{</span> <span class="nv">logref</span> <span class="cp">}}</span><span class="nt">&lt;/p&gt;</span>
+    <span class="cp">{%</span> <span class="k">endif</span> <span class="cp">%}</span>
+<span class="cp">{%</span> <span class="k">endblock</span> <span class="cp">%}</span>
+</code></pre></div></div>
+
+<h2 id="assign-resource">Assign resource</h2>
+
+<p>To refer to the properties of the resource object class, Use <code class="language-plaintext highlighter-rouge">_ro</code> (resource object) to which the entire resource object is assigned</p>
+
+<p>exmaple）</p>
+
+<p><code class="language-plaintext highlighter-rouge">Todos.php</code></p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">Todos</span> <span class="n">extend</span> <span class="nc">ResourceObject</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="nv">$code</span> <span class="o">=</span> <span class="mi">200</span><span class="p">;</span>
+
+    <span class="k">public</span> <span class="nv">$text</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s1">'name'</span> <span class="o">=&gt;</span> <span class="s1">'BEAR'</span>
+    <span class="p">];</span>
+
+    <span class="k">public</span> <span class="nv">$body</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">[</span><span class="s1">'title'</span> <span class="o">=&gt;</span> <span class="s1">'run'</span><span class="p">]</span>
+    <span class="p">];</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">Todos.html.twig</code></p>
+
+<div class="language-twig highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">{{</span> <span class="nv">_ro.code</span> <span class="cp">}}</span> // 200
+<span class="cp">{{</span> <span class="nv">_ro.text.name</span> <span class="cp">}}</span> // 'BEAR'
+<span class="cp">{%</span> <span class="k">for</span> <span class="nv">todo</span> <span class="ow">in</span> <span class="nv">_ro.body</span> <span class="cp">%}</span>
+  <span class="cp">{{</span> <span class="nv">todo.title</span> <span class="cp">}}</span> // 'run'
+<span class="cp">{%</span> <span class="k">endfor</span> <span class="cp">%}</span>
+</code></pre></div></div>
+
+<h2 id="hierarchical-view-structure">Hierarchical view structure</h2>
+
+<p>You can have a view on a resource class basis. It represents the structure well. Also, the cache is also hierarchically done on a resource basis, so it is efficient.</p>
+
+<p>example) <code class="language-plaintext highlighter-rouge">page://self/index</code> which embeds <code class="language-plaintext highlighter-rouge">app://self/todos</code></p>
+
+<h3 id="appselftodos">app://self/todos</h3>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">Todos</span> <span class="kd">extends</span> <span class="nc">ResourceObject</span>
+<span class="p">{</span>
+    <span class="kn">use</span> <span class="nc">AuraSqlInject</span><span class="p">;</span>
+    <span class="kn">use</span> <span class="nc">QueryLocatorInject</span><span class="p">;</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onGet</span><span class="p">():</span> <span class="kt">static</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">body</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">pdo</span><span class="o">-&gt;</span><span class="nf">fetchAll</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="n">query</span><span class="p">[</span><span class="s1">'todos_list'</span><span class="p">]);</span>
+        <span class="k">return</span> <span class="nv">$this</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<div class="language-twig highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">{%</span> <span class="k">for</span> <span class="nv">todo</span> <span class="ow">in</span> <span class="nv">_ro.body</span> <span class="cp">%}</span>
+  <span class="cp">{{</span> <span class="nv">todo.title</span> <span class="cp">}}</span><span class="nt">&lt;/td&gt;</span>
+<span class="cp">{%</span> <span class="k">endfor</span> <span class="cp">%}</span>
+</code></pre></div></div>
+
+<h3 id="pageselfindex">page://self/index</h3>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">Index</span> <span class="kd">extends</span> <span class="nc">ResourceObject</span>
+<span class="p">{</span>
+    <span class="cd">/**
+     * @Embed(rel="todos", src="app://self/todos")
+     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onGet</span><span class="p">():</span> <span class="kt">static</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="nv">$this</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<div class="language-twig highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">{%</span> <span class="k">extends</span> <span class="s1">'layout/base.html.twig'</span> <span class="cp">%}</span>
+<span class="cp">{%</span> <span class="k">block</span> <span class="nv">content</span> <span class="cp">%}</span>
+  <span class="cp">{{</span> <span class="nv">todos</span><span class="o">|</span><span class="nf">raw</span> <span class="cp">}}</span>
+<span class="cp">{%</span> <span class="k">endblock</span> <span class="cp">%}</span>
+</code></pre></div></div>
+
+<h2 id="extending-twig">Extending Twig</h2>
+
+<p>When you extend Twig with the <code class="language-plaintext highlighter-rouge">addExtension()</code> method, prepare Twig’s Provider class which performs extension and bind <code class="language-plaintext highlighter-rouge">Provider</code> to <code class="language-plaintext highlighter-rouge">Twig_Environment</code> class.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">use</span> <span class="nc">Ray\Di\Di\Named</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">Ray\Di\ProviderInterface</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">MyTwigProvider</span> <span class="kd">implements</span> <span class="nc">ProviderInterface</span>
+<span class="p">{</span>
+    <span class="k">private</span> <span class="nv">$twig</span><span class="p">;</span>
+
+    <span class="cd">/**
+     * @Named("original")
+     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">__construct</span><span class="p">(</span><span class="err">\</span><span class="n">Twig_Environment</span> <span class="nv">$twig</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="c1">// $twig is an original \Twig_Environment instance</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">twig</span> <span class="o">=</span> <span class="nv">$twig</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="n">get</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="c1">// Extending Twig</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">twig</span><span class="o">-&gt;</span><span class="nf">addExtension</span><span class="p">(</span><span class="k">new</span> <span class="nc">MyTwigExtension</span><span class="p">());</span>
+
+        <span class="k">return</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">twig</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">HtmlModule</span> <span class="kd">extends</span> <span class="nc">AbstractModule</span>
+<span class="p">{</span>
+    <span class="k">protected</span> <span class="k">function</span> <span class="n">configure</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">install</span><span class="p">(</span><span class="k">new</span> <span class="nc">TwigModule</span><span class="p">);</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">bind</span><span class="p">(</span><span class="err">\</span><span class="n">Twig_Environment</span><span class="o">::</span><span class="n">class</span><span class="p">)</span><span class="o">-&gt;</span><span class="nf">toProvider</span><span class="p">(</span><span class="nc">MyTwigProvider</span><span class="o">::</span><span class="n">class</span><span class="p">)</span><span class="o">-&gt;</span><span class="nf">in</span><span class="p">(</span><span class="nc">Scope</span><span class="o">::</span><span class="no">SINGLETON</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="template-for-mobile-device">Template for mobile device</h2>
+
+<p>To use the template for mobile devices, install <code class="language-plaintext highlighter-rouge">MobileTwigModule</code>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">HtmlModule</span> <span class="kd">extends</span> <span class="nc">AbstractModule</span>
+<span class="p">{</span>
+    <span class="k">protected</span> <span class="k">function</span> <span class="n">configure</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">install</span><span class="p">(</span><span class="k">new</span> <span class="nc">TwigModule</span><span class="p">);</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">install</span><span class="p">(</span><span class="k">new</span> <span class="nc">MobileTwigModule</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>If <strong>there is</strong> a mobile site template <code class="language-plaintext highlighter-rouge">Index.mobile.twig</code> that will replace <code class="language-plaintext highlighter-rouge">Index.html.twig</code>, it will be used in preference.</p>
+
+<h2 id="custom-settings">Custom Settings</h2>
+
+<p>If you would like to change options depending on the context or add a template path, configuration values are bound to <code class="language-plaintext highlighter-rouge">@TwigPaths</code>and <code class="language-plaintext highlighter-rouge">@TwigOptions</code> annotations.</p>
+
+<p>Note: Since caches are always created in the <code class="language-plaintext highlighter-rouge">var/tmp</code> folder, there is no particular need for special settings for production.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">namespace</span> <span class="nn">MyVendor\MyPackage\Module</span><span class="p">;</span>
+
+<span class="kn">use</span> <span class="nc">Madapaja\TwigModule\Annotation\TwigDebug</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">Madapaja\TwigModule\Annotation\TwigOptions</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">Madapaja\TwigModule\Annotation\TwigPaths</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">Madapaja\TwigModule\TwigModule</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">BEAR\Package\AbstractAppModule</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">AppModule</span> <span class="kd">extends</span> <span class="nc">AbstractAppModule</span>
+<span class="p">{</span>
+    <span class="k">protected</span> <span class="k">function</span> <span class="n">configure</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="c1">// ...</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">install</span><span class="p">(</span><span class="k">new</span> <span class="nc">TwigModule</span><span class="p">);</span>
+
+        <span class="c1">// You can add twig template paths by the following</span>
+        <span class="nv">$appDir</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">appMeta</span><span class="o">-&gt;</span><span class="n">appDir</span><span class="p">;</span>
+        <span class="nv">$paths</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="nv">$appDir</span> <span class="mf">.</span> <span class="s1">'/src/Resource'</span><span class="p">,</span>
+            <span class="nv">$appDir</span> <span class="mf">.</span> <span class="s1">'/var/templates'</span>
+        <span class="p">];</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">bind</span><span class="p">()</span><span class="o">-&gt;</span><span class="nf">annotatedWith</span><span class="p">(</span><span class="nc">TwigPaths</span><span class="o">::</span><span class="n">class</span><span class="p">)</span><span class="o">-&gt;</span><span class="nf">toInstance</span><span class="p">(</span><span class="nv">$paths</span><span class="p">);</span>
+
+        <span class="c1">// Also you can set environment options</span>
+        <span class="c1">// @see http://twig.sensiolabs.org/doc/api.html#environment-options</span>
+        <span class="nv">$options</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s1">'debug'</span> <span class="o">=&gt;</span> <span class="kc">false</span><span class="p">,</span>
+            <span class="s1">'cache'</span> <span class="o">=&gt;</span> <span class="nv">$appDir</span> <span class="mf">.</span> <span class="s1">'/tmp'</span>
+        <span class="p">];</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">bind</span><span class="p">()</span><span class="o">-&gt;</span><span class="nf">annotatedWith</span><span class="p">(</span><span class="nc">TwigOptions</span><span class="o">::</span><span class="n">class</span><span class="p">)</span><span class="o">-&gt;</span><span class="nf">toInstance</span><span class="p">(</span><span class="nv">$options</span><span class="p">);</span>
+        
+        <span class="c1">// Only for debug option</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">bind</span><span class="p">()</span><span class="o">-&gt;</span><span class="nf">annotatedWith</span><span class="p">(</span><span class="nc">TwigDebug</span><span class="o">::</span><span class="n">class</span><span class="p">)</span><span class="o">-&gt;</span><span class="nf">toInstance</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+            </article>
+        </div>
+        <div id="ArticleToc" class="col-lg-2 d-none d-lg-block">
+            <nav class="nav side-bar-right"></nav>
+        </div>
+    </div>
+</main>
+<footer>
+    <div class="container d-md-flex">
+        <i class="bear-icon d-none d-lg-block"></i>
+        <small>
+            © 2011-2024 BEAR.Sunday
+        </small>
+        <ul class="navbar-nav flex-row ml-md-auto d-none d-md-flex">
+            <li>
+                <a href="https://gitter.im/bearsunday/BEAR.Sunday?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge">Gitter</a>
+            </li>
+            <li>
+                <a href="https://github.com/bearsunday/BEAR.Sunday">Github</a>
+            </li>
+            <li>
+                <a href="https://twitter.com/BEARSunday">Twitter</a>
+            </li>
+            <li>
+                <a href="https://www.facebook.com/pages/BEARSunday/110116939178462?ref=hl">Facebook</a>
+            </li>
+            <li>
+                <a href="http://koriym.github.io/">Blog (JA)</a>
+            </li>
+            <li>
+                <a href="https://github.com/bearsunday/bearsunday.github.io">PR ?</a>
+            </li>
+        </ul>
+    </div>
+</footer>
+<script src="//code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+<script>
+    window.ga = function () { ga.q.push(arguments) }; ga.q = []; ga.l = +new Date;
+    ga('create', 'UA-6074569-8', 'bearsunday.github.io'); ga('send', 'pageview');
+</script>
+<script src="https://www.google-analytics.com/analytics.js" async defer></script>
+
+<script src="/js/generate-table-of-contents/index.min.js"></script>
+<script>
+    var toc = generateTableOfContents(document.getElementById('article'));
+    var sideBarRight = $('.side-bar-right');
+    sideBarRight.append(toc);
+
+    var scrollOffset = $('body').attr('data-offset');
+    var articlePaddingTop = $('article').css('padding-top').replace('px', '');
+    sideBarRight.find('a').on('click', function (e) {
+        e.preventDefault();
+        var targetId = $(this).attr('href');
+        var targetPositionTop = $(targetId).offset().top - scrollOffset - articlePaddingTop;
+        window.scrollTo(0, targetPositionTop)
+    });
+</script>
+
+</body>
+</html>

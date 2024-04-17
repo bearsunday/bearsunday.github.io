@@ -1,0 +1,531 @@
+<!doctype html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Javascript UI &#124; BEAR.Sunday</title>
+    <meta name="description" content="BEAR.Sunday is a resource orientated framework with a REST centered architecture, implementing Dependency Injection and Aspect Orientated Programming' at its core.">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/github-markdown-css/2.10.0/github-markdown.css">
+    <link rel="stylesheet" href="/css/syntax.css">
+    
+    <link rel="stylesheet" href="/css/bearsunday.css">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="apple-touch-icon" href="/icon.png">
+</head>
+<body data-page-category="Manual" data-spy="scroll" data-target="#ArticleToc" data-offset="65">
+<header>
+    <nav class="navbar navbar-expand flex-column flex-md-row bg-light">
+        <a class="navbar-brand mr-0 mr-md-2" href="/index.html"></a>
+        <div class="navbar-nav-scroll">
+            <ul class="navbar-nav flex-row">
+                <li class="nav-item">
+                    <a class="nav-link " href="/index.html">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="/manuals/1.0/en/index.html">Manual</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link " href="/contributors.html">Contributors</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/slide.html">Slide</a>
+                </li>
+            </ul>
+        </div>
+        
+        <ul class="navbar-nav ml-md-auto d-none d-md-flex language-list">
+            <li>
+                <a class="" href="/manuals/1.0/en/js-ui.html">En</a>
+            </li>
+            <li>
+                <a class="active" href="/manuals/1.0/ja/js-ui.html">Ja</a>
+            </li>
+        </ul>
+        
+    </nav>
+</header>
+
+<main class="container-fluid">
+    <div class="row flex-xl-nowrap">
+        <div class="col-md-3 col-lg-2">
+            <div class="side-bar">
+                <nav class="navbar navbar-expand-md navbar-light">
+    <div class="navigation-header">
+        <div class="ml-auto d-sm-block d-md-none">
+            <ul class="navbar-nav language-list">
+                <li>
+                    <a class="" href="/manuals/1.0/en/js-ui.html">En</a>
+                </li>
+                <li>
+                    <a class="active" href="/manuals/1.0/ja/js-ui.html">Ja</a>
+                </li>
+            </ul>
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#Navber" aria-controls="Navber" aria-expanded="false" aria-label="ナビゲーションの切替">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+    </div>
+    <div class="collapse navbar-collapse" id="Navber">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/index.html">イントロダクション</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/version.html">バージョン</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/quick-start.html">クイックスタート</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/tutorial.html">チュートリアル</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/tutorial2.html">チュートリアル 2</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/package.html">パッケージ</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/application.html">アプリケーション</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/module.html">モジュール</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/di.html">DI</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/aop.html">AOP</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/resource.html">リソース</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/resource_param.html">・パラメーター</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/resource_link.html">・リンク</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/resource_renderer.html">・レンダリングと転送</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/router.html">ルーター</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/production.html">プロダクション</a>
+            </li>
+            <li>
+                <a class="nav-link " href="/manuals/1.0/ja/import.html">インポート</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/database.html">データベース</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/html.html">HTML</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/validation.html">バリデーション</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/form.html">フォーム</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/content-negotiation.html">コンテントネゴシエーション</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/hypermedia-api.html">ハイパーメディア API</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/psr7.html">リクエスト / PSR-7</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" href="/manuals/1.0/ja/js-ui.html">JavaScript UI</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/stream.html">ストリーム出力</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/cache.html">キャッシュ</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/swoole.html">Swoole</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/coding-guide.html">コーディングガイド</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/types.html">タイプ</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/test.html">テスト</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/examples.html">サンプル</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/upgrade/injector.html">アップグレード</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/attribute.html">アトリビュート</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/apidoc.html">API Doc</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/manuals/1.0/ja/1page.html">1 Page</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+            </div>
+        </div>
+        <div class="col-md-9 col-lg-8">
+            <article id="article" class="markdown-body">
+                <h1 id="javascript-ui">Javascript UI</h1>
+
+<p>ビューのレンダリングをTwigなどのPHPのテンプレートエンジン等が行う代わりに、サーバーサイドのJavaScriptが行います。
+PHP側は認証/認可/初期状態/APIの提供を行い、JSがUIをレンダリングします。</p>
+
+<p>既存のプロジェクトの構造で、アノテートされたリソースのみに適用されるので導入が容易です。</p>
+
+<h2 id="前提条件">前提条件</h2>
+
+<ul>
+  <li>PHP 7.1</li>
+  <li><a href="https://nodejs.org/ja/">Node.js</a></li>
+  <li><a href="https://yarnpkg.com/">yarn</a></li>
+  <li><a href="http://php.net/manual/ja/book.v8js.php">V8Js</a> (開発ではオプション)</li>
+</ul>
+
+<p>Note: V8JsがインストールされていないとNode.jsでJSが実行されます。</p>
+
+<h2 id="用語">用語</h2>
+
+<ul>
+  <li><strong>CSR</strong> クライアントサイドレンダリング (Webブラウザで描画)</li>
+  <li><strong>SSR</strong> サーバーサイドレンダリング (サーバーサイドのV8またはNode.jsが描画)</li>
+</ul>
+
+<h2 id="javascript">JavaScript</h2>
+
+<h3 id="インストール">インストール</h3>
+
+<p>プロジェクトに<code class="language-plaintext highlighter-rouge">koriym/ssr-module</code>をインストールします。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// composer create-project bear/skeleton MyVendor.MyProject<span class="p">;</span> <span class="nb">cd </span>MyVendor.MyProject // 新規の場合
+composer require bear/ssr-module
+</code></pre></div></div>
+
+<p>UIスケルトンアプリ<code class="language-plaintext highlighter-rouge">koriym/js-ui-skeleton</code>をインストールします。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>composer require koriym/js-ui-skeleton 1.x-dev
+<span class="nb">cp</span> <span class="nt">-r</span> vendor/koriym/js-ui-skeleton/ui <span class="nb">.</span>
+<span class="nb">cp</span> <span class="nt">-r</span> vendor/koriym/js-ui-skeleton/package.json <span class="nb">.</span>
+yarn <span class="nb">install</span>
+</code></pre></div></div>
+
+<h3 id="uiアプリケーションの実行">UIアプリケーションの実行</h3>
+
+<p>まずはデモアプリケーションを動かして見ましょう。
+現れたWebページからレンダリング方法を選択してJSアプリケーションを実行します。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>yarn run ui
+</code></pre></div></div>
+<p>このアプリケーションの入力は<code class="language-plaintext highlighter-rouge">ui/dev/config/</code>の設定ファイルで設定します。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+<span class="nv">$app</span> <span class="o">=</span> <span class="s1">'index'</span><span class="p">;</span>                   <span class="c1">// =index.bundle.js</span>
+<span class="nv">$state</span> <span class="o">=</span> <span class="p">[</span>                        <span class="c1">// アプリケーションステート</span>
+    <span class="s1">'hello'</span> <span class="o">=&gt;</span><span class="p">[</span><span class="s1">'name'</span> <span class="o">=&gt;</span> <span class="s1">'World'</span><span class="p">]</span>
+<span class="p">];</span>
+<span class="nv">$metas</span> <span class="o">=</span> <span class="p">[</span>                        <span class="c1">// SSRでのみ必要な値</span>
+    <span class="s1">'title'</span> <span class="o">=&gt;</span><span class="s1">'page-title'</span>
+<span class="p">];</span>
+
+<span class="k">return</span> <span class="p">[</span><span class="nv">$app</span><span class="p">,</span> <span class="nv">$state</span><span class="p">,</span> <span class="nv">$metas</span><span class="p">];</span>
+</code></pre></div></div>
+
+<p>設定ファイルをコピーして、入力値を変えてみましょう。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cp ui/dev/config/index.php ui/dev/config/myapp.php
+</code></pre></div></div>
+
+<p>ブラウザをリロードして新しい設定を試します。
+このようにJavascriptや本体のPHPアプリケーションを変更しないでUIのデータを変更して動作を確認することができます。</p>
+
+<p>このセクションで編集したPHPの設定ファイルはあくまで<code class="language-plaintext highlighter-rouge">yarn run ui</code>で実行する時のみに使用されます。
+PHP側が必要とするのはバンドルされて出力されたJSのみです。</p>
+
+<h3 id="uiアプリケーションの作成">UIアプリケーションの作成</h3>
+
+<p>PHPから渡された引数を使ってレンダリングした文字列を返す<strong>render</strong>関数を作成します。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>const render = (state, metas) =&gt; (
+  __AWESOME_UI__ // SSR対応のライブラリやJSのテンプレートエンジンを使って文字列を返す
+)
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">state</code>はドキュメントルートに必要な値、<code class="language-plaintext highlighter-rouge">metas</code>はそれ以外の値、例えば&lt;head&gt;で使う値などです。<code class="language-plaintext highlighter-rouge">render</code>という関数名は固定です。</p>
+
+<p>ここでは名前を受け取って挨拶を返す関数を作成します。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>const render = state =&gt; (
+  `Hello ${state.name}`
+)
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">ui/src/page/index/hello/server.js</code>として保存して、webpackのエントリーポイントを<code class="language-plaintext highlighter-rouge">ui/entry.js</code>に登録します。</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="na">hello</span><span class="p">:</span> <span class="dl">'</span><span class="s1">src/page/hello/server</span><span class="dl">'</span><span class="p">,</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
+<p>これで<code class="language-plaintext highlighter-rouge">hello.bundle.js</code>というバンドルされたファイルが出力されるようになりました。</p>
+
+<p>このhelloアプリケーションをテスト実行するためのファイルを<code class="language-plaintext highlighter-rouge">ui/dev/config/myapp.php</code>に作成します。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+<span class="nv">$app</span> <span class="o">=</span> <span class="s1">'hello'</span><span class="p">;</span>
+<span class="nv">$state</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">[</span><span class="s1">'name'</span> <span class="o">=&gt;</span> <span class="s1">'World'</span><span class="p">]</span>
+<span class="p">];</span>
+<span class="nv">$metas</span> <span class="o">=</span> <span class="p">[];</span>
+
+<span class="k">return</span> <span class="p">[</span><span class="nv">$app</span><span class="p">,</span> <span class="nv">$state</span><span class="p">,</span> <span class="nv">$metas</span><span class="p">];</span>
+</code></pre></div></div>
+
+<p>以上です！ヴラウザをリロードして試してください。</p>
+
+<p>render関数の中の処理をReactやVue.jsなどのUIフレームワークを使ってリッチなUIを作成できます。
+通常のアプリケーションでは依存を最小限にするために<code class="language-plaintext highlighter-rouge">server.js</code>エントリーファイルは以下のようにrenderモジュールを読み込むようにします。</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="nx">render</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">./render</span><span class="dl">'</span><span class="p">;</span>
+<span class="nb">global</span><span class="p">.</span><span class="nx">render</span> <span class="o">=</span> <span class="nx">render</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>ここまでPHP側の作業はありません。SSRのアプリケーション開発はPHP開発と独立して行うことができます。</p>
+
+<h2 id="php">PHP</h2>
+
+<h3 id="モジュールインストール">モジュールインストール</h3>
+
+<p>AppModuleに<code class="language-plaintext highlighter-rouge">SsrModule</code>モジュールをインストールします。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+<span class="kn">use</span> <span class="nc">BEAR\SsrModule\SsrModule</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">AppModule</span> <span class="kd">extends</span> <span class="nc">AbstractAppModule</span>
+<span class="p">{</span>
+    <span class="k">protected</span> <span class="k">function</span> <span class="n">configure</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="c1">// ...</span>
+        <span class="nv">$build</span> <span class="o">=</span> <span class="nb">dirname</span><span class="p">(</span><span class="k">__DIR__</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="mf">.</span> <span class="s1">'/var/www/build'</span><span class="p">;</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">install</span><span class="p">(</span><span class="k">new</span> <span class="nc">SsrModule</span><span class="p">(</span><span class="nv">$build</span><span class="p">));</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">$build</code>フォルダはJSのファイルがあるディレクトリです。(<code class="language-plaintext highlighter-rouge">ui/ui.config.js</code>で指定するwebpackの出力先)</p>
+
+<h3 id="ssrアノテーション">@Ssrアノテーション</h3>
+
+<p>リソースをSSRするメソッドに<code class="language-plaintext highlighter-rouge">@Ssr</code>とアノテートします。<code class="language-plaintext highlighter-rouge">app</code>にJSアプリケーション名が必要です。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&lt;?</span><span class="n">php</span>
+
+<span class="kn">namespace</span> <span class="nn">MyVendor\MyRedux\Resource\Page</span><span class="p">;</span>
+
+<span class="kn">use</span> <span class="nc">BEAR\Resource\ResourceObject</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">BEAR\SsrModule\Annotation\Ssr</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">Index</span> <span class="kd">extends</span> <span class="nc">ResourceObject</span>
+<span class="p">{</span>
+    <span class="cd">/**
+     * @Ssr(app="index_ssr")
+     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">onGet</span><span class="p">(</span><span class="nv">$name</span> <span class="o">=</span> <span class="s1">'BEAR.Sunday'</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">body</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s1">'hello'</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="s1">'name'</span> <span class="o">=&gt;</span> <span class="nv">$name</span><span class="p">]</span>
+        <span class="p">];</span>
+
+        <span class="k">return</span> <span class="nv">$this</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">$this-&gt;body</code>が<code class="language-plaintext highlighter-rouge">render</code>関数に1つ目の引数として渡されます。
+CSRとSSRの値を区別して渡したい場合は<code class="language-plaintext highlighter-rouge">state</code>と<code class="language-plaintext highlighter-rouge">metas</code>でbodyのキーを指定します。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cd">/**
+ * @Ssr(
+ *   app="index_ssr",
+ *   state={"name", "age"},
+ *   metas={"title"}
+ * )
+ */</span>
+<span class="k">public</span> <span class="k">function</span> <span class="n">onGet</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">body</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s1">'name'</span> <span class="o">=&gt;</span> <span class="s1">'World'</span><span class="p">,</span>
+        <span class="s1">'age'</span> <span class="o">=&gt;</span> <span class="mf">4.6E8</span><span class="p">;</span>
+        <span class="s1">'title'</span> <span class="o">=&gt;</span> <span class="s1">'Age of the World'</span>
+    <span class="p">];</span>
+
+    <span class="k">return</span> <span class="nv">$this</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>実際<code class="language-plaintext highlighter-rouge">state</code>と<code class="language-plaintext highlighter-rouge">metas</code>をどのようにして渡してSSRを実現するかは<code class="language-plaintext highlighter-rouge">ui/src/page/index/server</code>のサンプルアプリケーションをご覧ください。影響を受けるのはアノテートしたメソッドだけで、APIやHTMLのレンダリングの設定はそのままです。</p>
+
+<h3 id="phpアプリケーションの実行設定">PHPアプリケーションの実行設定</h3>
+
+<p><code class="language-plaintext highlighter-rouge">ui/ui.config.js</code>を編集して、<code class="language-plaintext highlighter-rouge">public</code>にweb公開ディレクトリを<code class="language-plaintext highlighter-rouge">build</code>にwebpackのbuild先を指定します。
+<code class="language-plaintext highlighter-rouge">build</code>はSsrModuleのインストールで指定したディレクトリと同じです。</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">path</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">path</span><span class="dl">'</span><span class="p">);</span>
+
+<span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="na">public</span><span class="p">:</span> <span class="nx">path</span><span class="p">.</span><span class="nx">join</span><span class="p">(</span><span class="nx">__dirname</span><span class="p">,</span> <span class="dl">'</span><span class="s1">../var/www</span><span class="dl">'</span><span class="p">),</span>
+  <span class="na">build</span><span class="p">:</span> <span class="nx">path</span><span class="p">.</span><span class="nx">join</span><span class="p">(</span><span class="nx">__dirname</span><span class="p">,</span> <span class="dl">'</span><span class="s1">../var/www/build</span><span class="dl">'</span><span class="p">)</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
+<h3 id="phpアプリケーションの実行">PHPアプリケーションの実行</h3>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>yarn run dev
+</code></pre></div></div>
+
+<p>ライブアップデートで実行します。
+PHPファイルの変更があれば自動でリロードされ、Reactのコンポーネントに変更があればリロードなしでコンポーネントをアップデートします。ライブアップデートなしで実行する場合には<code class="language-plaintext highlighter-rouge">yarn run start</code>を実行します。</p>
+
+<p><code class="language-plaintext highlighter-rouge">lint</code>や<code class="language-plaintext highlighter-rouge">test</code>などの他のコマンドは<a href="https://github.com/koriym/Koriym.JsUiSkeleton/blob/1.x/README.ja.md#コマンド">コマンド</a>をご覧ください。</p>
+
+<h2 id="パフォーマンス">パフォーマンス</h2>
+
+<p>V8のスナップショットをApc保存する機能を使ってパフォーマンスの大幅な向上が可能です。
+<code class="language-plaintext highlighter-rouge">ProdModule</code>で<code class="language-plaintext highlighter-rouge">ApcSsrModule</code>をインストールしてください。
+ReactJsやアプリケーションのスナップショットが<code class="language-plaintext highlighter-rouge">APCu</code>に保存され再利用されます。V8jsが必要です。</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">install</span><span class="p">(</span><span class="k">new</span> <span class="nc">ApcSsrModule</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>Apc以外のキャッシュを利用するには<code class="language-plaintext highlighter-rouge">ApcSsrModule</code>のコードを参考にモジュールを作成してください。
+PSR16対応のキャッシュが利用可能です。</p>
+
+<p>さらなる高速化のためにはV8をコンパイルする時点でJSコード(ReactJsなど）のスナップショットを取り込みます。
+詳しくは以下をご覧ください。</p>
+
+<ul>
+  <li><a href="http://stesie.github.io/2016/02/snapshot-performance">20x performance boost with V8Js snapshots</a></li>
+  <li><a href="https://github.com/phpv8/v8js/issues/205">v8js - Possibility to Improve Performance with Precompiled Templates/Classes ?</a></li>
+</ul>
+
+<h2 id="デバック">デバック</h2>
+
+<ul>
+  <li>Chromeプラグイン <a href="https://chrome.google.com/webstore/detail/react-developer-tools/fmkadmapgofadopljbjfkapdkoienihi">React developer tools</a>、<a href="https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd">Redux devTools</a>が利用できます。</li>
+  <li>500エラーが帰ってくる場合は<code class="language-plaintext highlighter-rouge">var/log</code>や<code class="language-plaintext highlighter-rouge">curl</code> でアクセスしてレスポンス詳細を見てみましょう</li>
+</ul>
+
+<h2 id="リファレンス">リファレンス</h2>
+
+<ul>
+  <li><a href="http://postd.cc/es6-cheatsheet/">ECMAScript 6</a></li>
+  <li><a href="http://mitsuruog.github.io/javascript-style-guide/">Airbnb JavaScript スタイルガイド</a></li>
+  <li><a href="https://facebook.github.io/react/">React</a></li>
+  <li><a href="http://redux.js.org/">Redux</a></li>
+  <li><a href="https://github.com/reactjs/redux">Redux github</a></li>
+  <li><a href="https://github.com/gaearon/redux-devtools">Redux devtools</a></li>
+  <li><a href="http://karma-runner.github.io/1.0/index.html">Karma test runner</a></li>
+  <li><a href="https://mochajs.org/">Mocha test framework</a></li>
+  <li><a href="http://chaijs.com/">Chai assertion library</a></li>
+  <li><a href="https://yarnpkg.com/">Yarn package manager</a></li>
+  <li><a href="https://webpack.js.org/">Webpack module bundler</a></li>
+</ul>
+
+<h2 id="その他ビューライブラリ">その他ビューライブラリ</h2>
+
+<ul>
+  <li><a href="https://jp.vuejs.org/">Vue.js</a></li>
+  <li><a href="http://handlebarsjs.com/">Handlesbar.js</a></li>
+  <li><a href="http://olado.github.io/doT/index.html">doT.js</a></li>
+  <li><a href="https://pugjs.org/api/getting-started.html">pug</a></li>
+  <li><a href="http://twitter.github.io/hogan.js/">Hogan</a> (Twitter)</li>
+  <li><a href="https://mozilla.github.io/nunjucks/">Nunjucks</a>(Mozilla)</li>
+  <li><a href="http://www.dustjs.com/">dust.js</a> (LinkedIn)</li>
+  <li>
+    <p><a href="http://markojs.com/">marko</a> (Ebay)</p>
+  </li>
+  <li>以前のReact JSページは<a href="reactjs.html">ReactJs</a>へ*</li>
+</ul>
+
+            </article>
+        </div>
+        <div id="ArticleToc" class="col-lg-2 d-none d-lg-block">
+            <nav class="nav side-bar-right"></nav>
+        </div>
+    </div>
+</main>
+<footer>
+    <div class="container d-md-flex">
+        <i class="bear-icon d-none d-lg-block"></i>
+        <small>
+            © 2011-2024 BEAR.Sunday
+        </small>
+        <ul class="navbar-nav flex-row ml-md-auto d-none d-md-flex">
+            <li>
+                <a href="https://gitter.im/bearsunday/BEAR.Sunday?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge">Gitter</a>
+            </li>
+            <li>
+                <a href="https://github.com/bearsunday/BEAR.Sunday">Github</a>
+            </li>
+            <li>
+                <a href="https://twitter.com/BEARSunday">Twitter</a>
+            </li>
+            <li>
+                <a href="https://www.facebook.com/pages/BEARSunday/110116939178462?ref=hl">Facebook</a>
+            </li>
+            <li>
+                <a href="http://koriym.github.io/">Blog (JA)</a>
+            </li>
+            <li>
+                <a href="https://github.com/bearsunday/bearsunday.github.io">PR ?</a>
+            </li>
+        </ul>
+    </div>
+</footer>
+<script src="//code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+<script>
+    window.ga = function () { ga.q.push(arguments) }; ga.q = []; ga.l = +new Date;
+    ga('create', 'UA-6074569-8', 'bearsunday.github.io'); ga('send', 'pageview');
+</script>
+<script src="https://www.google-analytics.com/analytics.js" async defer></script>
+
+<script src="/js/generate-table-of-contents/index.min.js"></script>
+<script>
+    var toc = generateTableOfContents(document.getElementById('article'));
+    var sideBarRight = $('.side-bar-right');
+    sideBarRight.append(toc);
+
+    var scrollOffset = $('body').attr('data-offset');
+    var articlePaddingTop = $('article').css('padding-top').replace('px', '');
+    sideBarRight.find('a').on('click', function (e) {
+        e.preventDefault();
+        var targetId = $(this).attr('href');
+        var targetPositionTop = $(targetId).offset().top - scrollOffset - articlePaddingTop;
+        window.scrollTo(0, targetPositionTop)
+    });
+</script>
+
+</body>
+</html>
+
