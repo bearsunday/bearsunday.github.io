@@ -9,7 +9,7 @@ permalink: /slide.html
 
 <iframe width="1120" height="630" src="https://www.youtube.com/embed/QdEnKpDoQeY?si=5K-QaOSt3Ax5-uGX?t=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-This BEAR.Sunday (2024): This talk was given at [Leeds PHP Meetup](https://www.meetup.com/leedsphp/events/299957228/) on Wednesday, April 17, 2024  at 19:40 BST by [Richard McIntyre](https://www.linkedin.com/in/mackstar/)
+This BEAR.Sunday (2024): This talk was given at [Leeds PHP Meetup](https://www.meetup.com/leedsphp/events/299957228/) on Wednesday, April 17, 2024  at 19:40 BST by [Richard McIntyre](https://www.linkedin.com/in/mackstar/).
 
 <div style="height: 70px;"></div>
 
