@@ -18,7 +18,7 @@
                 <a href="https://www.facebook.com/pages/BEARSunday/110116939178462?ref=hl">Facebook</a>
             </li>
             <li>
-                <a href="http://koriym.github.io/">Blog (JA)</a>
+                <a href="https://koriym.github.io/">Blog (JA)</a>
             </li>
             <li>
                 <a href="https://github.com/bearsunday/bearsunday.github.io">PR ?</a>
@@ -37,20 +37,8 @@
 <script src="https://www.google-analytics.com/analytics.js" async defer></script>
 {% if page.category == 'Manual' %}
 <script src="/js/generate-table-of-contents/index.min.js"></script>
-<script>
-    var toc = generateTableOfContents(document.getElementById('article'));
-    var sideBarRight = $('.side-bar-right');
-    sideBarRight.append(toc);
 
-    var scrollOffset = $('body').attr('data-offset');
-    var articlePaddingTop = $('article').css('padding-top').replace('px', '');
-    sideBarRight.find('a').on('click', function (e) {
-        e.preventDefault();
-        var targetId = $(this).attr('href');
-        var targetPositionTop = $(targetId).offset().top - scrollOffset - articlePaddingTop;
-        window.scrollTo(0, targetPositionTop)
-    });
-</script>
+<script src="/js/copy_link.js"></script>
 {% endif %}
 </body>
 </html>
