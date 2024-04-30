@@ -8,16 +8,17 @@ category: Index
     <p>
         BEAR.Sunday is a resource orientated framework with a <strong>REST</strong> centered architecture, implementing <strong>Dependency Injection</strong> and <strong>Aspect Orientated</strong> Programming' at its core.
     </p>
-    <a class="btn btn-primary" id="learn" href="/manuals/1.0/en/index.html">
+    <a class="intl btn btn-primary" id="learn" href="/manuals/1.0/en/index.html">
         Learn more &raquo;
     </a>
     <script>
         window.addEventListener('DOMContentLoaded', (event) => {
-            const link = document.getElementById('learn');
+            const links = document.getElementsByClassName('intl');
             const locale = window.navigator.language;
             if (locale.startsWith('ja')) {
-                link.setAttribute('href', link.getAttribute('href').replace('en', 'ja'));
+                for(let i = 0; i < links.length; i++) {
+                    links[i].setAttribute('href', links[i].getAttribute('href').replace('/en/', '/ja/'));
+                }
             }
-        });
-    </script>
+        });    </script>
 </div>
