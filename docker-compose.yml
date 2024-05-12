@@ -1,9 +1,11 @@
 version: "3"
 services:
-  jekyll:
-    build: .
-    ports:
-      - "4000:4000"
+  app:
+    container_name: jekyll-bearsunday
+    build:
+      context: .
+      dockerfile: Dockerfile
     volumes:
       - .:/app
-      - /app/vendor/bundle
+    ports:
+      - 4000:4000
