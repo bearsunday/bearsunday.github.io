@@ -9,7 +9,7 @@ The documentations are rendered with  [Jekyll](http://jekyllrb.com) and hosted a
 ### Start Server with Docker
 
 ```
-./bin/served.sh
+./bin/serve_docker.sh
 ```
 
 ### Start Server in local Ruby environment
@@ -24,5 +24,5 @@ bundle install
 
 #### Run
 ```
-./bin/servel.sh
+./bin/servel_local.sh
 ```
