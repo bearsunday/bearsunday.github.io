@@ -67,3 +67,4 @@ permalink: /contributors.html
 - [<img alt="Pon57" src="https://avatars.githubusercontent.com/u/15137243?v=4" width="117">](https://github.com/Pon57)
 - [<img alt="KazuyaUchida" src="https://avatars.githubusercontent.com/u/86758002?v=4" width="117">](https://github.com/KazuyaUchida)
 - [<img alt="mstysk" src="https://avatars.githubusercontent.com/u/2937579?v=4" width="117">](https://github.com/mstysk)
+- [<img alt="denise-kao" src="https://avatars.githubusercontent.com/u/37529141?v=4" width="117">](https://github.com/denise-kao)
