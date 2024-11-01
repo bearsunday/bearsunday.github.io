@@ -463,7 +463,7 @@ composer test
 
 リソースのロジックはSQLとして、そのバリデーションはJSONファイルで表すことが出来ています。リソースクラスではそれらのファイルを利用します。
 
-## tikcetリソース
+## ticketリソース
 
 `ticket`リソースを`src/Resource/App/Ticket.php`に作成します。
 
@@ -503,9 +503,9 @@ class Ticket extends ResourceObject
 `@Query("ticket_item_by_id", type="row")`と指定されているので、このメソッドはSQL実行と置き換わります。`var/sql/ticket_item_by_id.sql`ファイルのSQLが実行され、その結果が単一行（type="row"）で返ります。このようにロジックが単純にSQLで置換えられる場合は`@Query`を使ってPHPの記述を省略することができます。
 
 
-## tikcetsリソース
+## ticketsリソース
 
-次は`tikcet`リソースの集合の`tikcets`リソースを`src/resource/App/Tickets.php`に作成します。
+次は`ticket`リソースの集合の`tickets`リソースを`src/resource/App/Tickets.php`に作成します。
 
 ```php
 <?php
