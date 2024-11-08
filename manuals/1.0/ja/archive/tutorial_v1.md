@@ -619,7 +619,7 @@ class AppModule extends AbstractAppModule
         $this->bind(MyLoggerInterface::class)->to(MyLogger::class);
 +        $this->bindInterceptor(
 +            $this->matcher->any(),                           // どのクラスでも
-+            $this->matcher->annotatedWith(BenchMark::class), // #[Attribute]と属性の付けられたメソッドに
++            $this->matcher->annotatedWith(BenchMark::class), // #[Attribute]とアトリビュートの付けられたメソッドに
 +            [BenchMarker::class]                             // BenchMarkerインターセプターを適用
 +        );
         $this->install(new PackageModule());
