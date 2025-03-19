@@ -25,6 +25,8 @@
  *  3. Adjust `$baseUrl` and `$baseDir` in the script to match your site structure.
  *  4. Run the script from the command line: `php expand_md_links.php`
  *  5. The expanded content will be saved in `llms-full.txt`.
+ *
+ * @see https://llmstxt.org/
  */
 
 class MdLinkExpander {
