@@ -9,16 +9,18 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
-      - name: Install Ruby
+
+      - name: Install Ruby and dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y build-essential libssl-dev libreadline-dev zlib1g-dev
-          sudo apt-get install -y rbenv
-          export PATH="$HOME/.rbenv/bin:$PATH"
-          eval "$(rbenv init -)"
-          rbenv install 3.2.2
+          sudo apt-get install -y rbenv ruby-build build-essential libssl-dev libreadline-dev zlib1g-dev
+
+      - name: Setup Ruby
+        run: |
+          eval "$(rbenv init - bash)"
+          rbenv install 3.2.2 -s
           rbenv global 3.2.2
-          ruby -v  # 確認用
+          ruby -v
         shell: bash
 
       - name: Configure Pages
@@ -26,3 +28,5 @@ jobs:
 
       - name: Upload Artifact
         uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
