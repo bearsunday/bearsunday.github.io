@@ -228,10 +228,19 @@ tests/Null/RedisAdapter.php
 ```php
 namespace Ray\PsrCacheModule;
 
+use Ray\Di\ProviderInterface;
+use Serializable;
 use Symfony\Component\Cache\Adapter\RedisAdapter as OriginAdapter;
+use Symfony\Component\Cache\Marshaller\MarshallerInterface;
 
 class RedisAdapter extends OriginAdapter implements Serializable
 {
+    use SerializableTrait;
+    
+    public function __construct(ProviderInterface $redisProvider, string $namespace = '', int $defaultLifetime = 0, ?MarshallerInterface $marshaller = null)
+    {
+    　　// do nothing
+    }
 }
 ```
 ### module.dot
