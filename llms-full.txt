@@ -1,0 +1,3899 @@
+# BEAR.Sunday PHP Framework
+> BEAR.Sunday is a resource-oriented PHP framework that combines clean object-oriented design with web principles, emphasizing standards compliance, longevity, high efficiency, and flexibility. It consists of Ray.Di (Dependency Injection), Ray.Aop (Aspect-Oriented Programming), and BEAR.Resource (REST Resources). It uses well-known third party libraries to build web applications with high performance and testability.
+BEAR.Sunday provides a structured approach to building web applications centered around REST principles.
+This file provides information on key components, coding practices, and deployment strategies. For more details on framework usage and implementation, see the links below.
+## Manuals
+
+
+# What is BEAR.Sunday?
+
+BEAR.Sunday is a PHP application framework that combines clean object-oriented design with a resource-oriented architecture aligned with the fundamental principles of the web. This framework emphasizes compliance with standards, a long-term perspective, high efficiency, flexibility, self-description, and importantly, simplicity.
+
+## Framework
+
+BEAR.Sunday consists of three frameworks.
+
+`Ray.Di` interfaces object dependencies based on the [Principle of Dependency Inversion](http://en.wikipedia.org/wiki/Dependency_inversion_principle).
+
+`Ray.Aop` connects core concerns and cross-cutting concerns with [aspect-oriented programming](http://en.wikipedia.org/wiki/Aspect-oriented_programming).
+
+`BEAR.Resource` connects application data and functionality with resources with [REST constraints](https://en.wikipedia.org/wiki/Representational_state_transfer).
+
+The framework provides constraints and design principles that guide the entire application, promoting consistent design and implementation, and resulting in high-quality, clean code.
+
+## Libraries
+
+Unlike full-stack frameworks, BEAR.Sunday does not include its own libraries for specific tasks like authentication or database management. Instead, it favors the use of high-quality third-party libraries.
+
+This approach is based on two key design philosophies: firstly, the belief that "frameworks remain, libraries change," acknowledging that while the framework provides a stable foundation, libraries evolve to meet changing needs over time. Secondly, it empowers "application architects with the right and responsibility to choose libraries" that best fit their application's requirements, constraints, and goals.
+
+BEAR.Sunday draws a clear distinction between frameworks and libraries, emphasizing the role of the framework as an application constraint.
+
+## Architecture
+
+BEAR.Sunday departs from the traditional MVC (Model-View-Controller) architecture, embracing a resource-oriented architecture (ROA). In this paradigm, data and business logic are unified as resources, and the design revolves around links and operations on those resources. While ROA is commonly used for REST API design, BEAR.Sunday extends it to the entire web application.
+
+## Long-term perspective
+
+BEAR.Sunday is designed with a long-term view, focusing on application maintainability:
+
+- **Constraints**: The consistent application constraints imposed by DI, AOP, and REST remain unchanged over time.
+
+- **Eternal 1.x**:The System That Never Breaks Backward Compatibility. Since its initial release in 2015, BEAR.Sunday has continuously evolved without introducing any backward-incompatible changes. This steadfast approach eliminates the need for compatibility fixes and their associated testing, thereby preventing future technical debt. The system remains cutting-edge, ensuring easy upgrades and access to the latest features without compatibility concerns.
+
+- **Standards Compliance**: BEAR.Sunday adheres to various standards, including HTTP, JsonSchema, and others. For DI, it follows Google Guice, and for AOP, it aligns with the Java Aop Alliance.
+
+## Connectivity
+
+BEAR.Sunday transcends traditional web applications, offering seamless integration with a diverse range of clients:
+
+- **HTTP Client**: All resources are directly accessible via HTTP, unlike models or controllers in MVC.
+
+- **Console Access**:
+  Resources can be accessed directly from the console without changing the source code, allowing the same resources to be used from both web and command-line interfaces. Additionally, BEAR.CLI enables resources to be distributed as standalone UNIX commands through Homebrew.
+
+- **composer package**: Resources from applications installed under the vendor directory via Composer can be invoked directly, enabling coordination between multiple applications without resorting to microservices.
+
+- **Multilingual framework**: BEAR.Thrift facilitates seamless and efficient interoperability with other languages and PHP versions.
+
+## Web Cache
+
+By integrating resource-oriented architecture with modern CDN technology, we achieve distributed caching that surpasses traditional server-side TTL caching. BEAR.Sunday's design philosophy adheres to the fundamental principles of the Web, utilizing a CDN-centered distributed caching system to ensure high performance and availability.
+
+- **Distributed Caching**: By caching on the client, CDN, and server-side, both CPU and network costs are minimized.
+
+- **Identification**: ETag-based verification ensures that only modified content is retrieved, enhancing network efficiency.
+
+- **Fault tolerance**: Event-based cache invalidation allows all content to be stored in CDN caches without TTL limitations. This improves fault tolerance to the point where the system remains available even if the PHP or database servers go down.
+
+
+## Performance
+
+BEAR.Sunday is designed with a focus on performance and efficiency while maintaining maximum flexibility. This approach enables a highly optimized bootstrap, positively impacting both user experience and system resources. Performance is always one of the primary concerns for BEAR.Sunday, playing a central role in our design and development decisions.
+
+## Because Everything is a Resource
+
+BEAR.Sunday embraces the essence of the Web, where "Everything is a Resource." As a PHP web application framework, it excels by providing superior constraints based on object-oriented and REST principles, applicable to the entire application.
+
+These constraints encourage developers to design and implement consistently and improve the quality of the application in the long run. At the same time, the constraints provide developers with freedom and enhance creativity in building the application.
+
+
+# AOP
+
+BEAR.Sunday **AOP** enables you to write code that is executed each time a matching method is invoked. It's suited for cross cutting concerns ("aspects"), such as transactions, security and logging. Because interceptors divide a problem into aspects rather than objects, their use is called Aspect Oriented Programming (AOP).
+
+The method interceptor API implemented is a part of a public specification called [AOP Alliance](http://aopalliance.sourceforge.net/).
+
+## Interceptor
+
+[MethodInterceptors](https://github.com/ray-di/Ray.Aop/blob/2.x/src/MethodInterceptor.php) are executed whenever a matching method is invoked.
+They have the opportunity to inspect the call: the method, its arguments, and the receiving instance.
+They can perform their cross-cutting logic and then delegate to the underlying method.
+Finally, they may inspect the return value or the exception and return. Since interceptors may be applied to many methods and will receive many calls, their implementation should be efficient and unintrusive.
+
+
+```php?start_inline
+use Ray\Aop\MethodInterceptor;
+use Ray\Aop\MethodInvocation;
+
+class MyInterceptor implements MethodInterceptor
+{
+    public function invoke(MethodInvocation $invocation)
+    {
+        // Process before method invocation
+        // ...
+
+        // Original method invocation
+        $result = $invocation->proceed();
+
+        // Process after method invocation
+        // ...
+
+        return $result;
+    }
+}
+```
+
+## Bindings
+
+"Find" the target class and method with `Matcher` and bind the interceptor to the matching method in [Module](module.html).
+
+```php?start_inline
+$this->bindInterceptor(
+    $this->matcher->any(),                   // In any class,
+    $this->matcher->startsWith('delete'),    // Method(s) names that start with "delete",
+    [Logger::class]                          // Bind a Logger interceptor
+);
+
+$this->bindInterceptor(
+    $this->matcher->subclassesOf(AdminPage::class),  // Of the AdminPage class or a class inherited from it
+    $this->matcher->annotatedWith(Auth::class),      // Annotated method with the @Auth annotation
+    [AdminAuthentication::class]                     //Bind the AdminAuthenticationInterceptor
+);
+```
+
+There are various matchers.
+
+ * [Matcher::any](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/MatcherInterface.php#L16) 
+ * [Matcher::annotatedWith](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/MatcherInterface.php#L23) 
+ * [Matcher::subclassesOf](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/MatcherInterface.php#L30)
+ * [Matcher::startsWith](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/MatcherInterface.php#L37)
+ * [Matcher::logicalOr](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/MatcherInterface.php#L44)
+ * [Matcher::logicalAnd](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/MatcherInterface.php#L51)
+ * [Matcher::logicalNot](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/MatcherInterface.php#L58) 
+```
+
+With the `MethodInvocation` object, you can access the target method's invocation object, method's and parameters.
+
+ * [MethodInvocation::proceed](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/Joinpoint.php#L39) - Invoke method
+ * [MethodInvocation::getMethod](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/MethodInvocation.php) -  Get method reflection
+ * [MethodInvocation::getThis](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/Joinpoint.php#L48) - Get object
+ * [MethodInvocation::getArguments](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/Invocation.php) - Pet parameters
+
+Annotations can be obtained using the reflection API.
+
+```php?start_inline
+$method = $invocation->getMethod();
+$class = $invocation->getMethod()->getDeclaringClass();
+```
+
+ * `$method->getAnnotations()`    // get method annotations
+ * `$method->getAnnotation($name)`
+ * `$class->getAnnotations()`     // get class annotations
+ * `$class->getAnnotation($name)`
+
+## Own matcher
+   
+You can have your own matcher.
+To create `contains` matcher, You need to provide a class which has two methods. One is `matchesClass` for a class match.
+The other one is `matchesMethod` method match. Both return the boolean result of match.
+
+```php?start_inline
+use Ray\Aop\AbstractMatcher;
+
+class ContainsMatcher extends AbstractMatcher
+{
+    /**
+     * {@inheritdoc}
+     */
+    public function matchesClass(\ReflectionClass $class, array $arguments) : bool
+    {
+        list($contains) = $arguments;
+
+        return (strpos($class->name, $contains) !== false);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function matchesMethod(\ReflectionMethod $method, array $arguments) : bool
+    {
+        list($contains) = $arguments;
+
+        return (strpos($method->name, $contains) !== false);
+    }
+}
+```
+
+Module
+
+```php?start_inline
+class AppModule extends AbstractAppModule
+{
+    protected function configure()
+    {
+        // ...
+        $this->bindInterceptor(
+            $this->matcher->any(),       // In any class,
+            new ContainsMatcher('user'), // When 'user' contained in method name
+            [UserLogger::class]          // Bind UserLogger class
+        );
+    }
+};
+```
+
+
+
+# Resource
+
+A BEAR.Sunday application is [RESTful](http://en.wikipedia.org/wiki/Representational_state_transfer) and is made up of a collection of resources connected by links.
+
+## Object as a service
+
+An HTTP method is mapped to a PHP method in the `ResourceObject` class.
+It transfers its resource state as a resource representation from stateless request.
+([Representational State Transfer)](http://en.wikipedia.org/wiki/REST)
+
+Here are some examples of a resource object:
+
+```php?start_inline
+class Index extends ResourceObject
+{
+    public $code = 200;
+    public $headers = [];
+
+    public function onGet(int $a, int $b): static
+    {
+        $this->body = [
+            'sum' => $a + $b // $_GET['a'] + $_GET['b']
+        ] ;
+
+        return $this;
+    }
+}
+```
+
+```php?start_inline
+class Todo extends ResourceObject
+{
+    public function onPost(string $id, string $todo): static
+    {
+        $this->code = 201; // status code
+        $this->headers = [ // header
+            'Location' => '/todo/new_id'
+        ];
+
+        return $this;
+    }
+}
+```
+
+The PHP resource class has URIs such as  `page://self/index` similar to the URI of the web, and conforms to the HTTP method `onGet`,` onPost`, `onPut`,` onPatch`, `onDelete` interface.
+
+$_GET for `onGet` and $_POST for `onPost` are passed to the arguments of the method depending on the variable name, and the methods of `onPut`,` onPatch`, `onDelete` are content. The value that can be handled according to `content-type`(`x-www-form-urlencoded` or `application/json`) is an argument.
+
+The resource state (`code`,`headers` or`body`) is handled by these method using the given parameters. Then the resource class returns itself(`$this`).
+
+## URI
+
+URIs are mapped to PHP classes. Applications use the URI instead of the class name to access resources.
+
+| URI | Class |
+|-----+-------|
+| page://self/ | Koriym\Todo\Resource\Page\Index |
+| page://self/index | Koriym\Todo\Resource\Page\Index |
+| app://self/blog/posts?id=3 | Koriym\Todo\Resource\App\Blog\Posts |
+
+## Scheme
+
+The equivalent to a MVC model is an `app` resource. A resource functions as an internal API, but as it is designed using REST it also works as an external API transport.
+The `page` resource carries out a similar role as a page controller which is also a resource. Unlike `app` resources, it receives external requests and generates representations for output.
+
+| URI | Class |
+|-----+-------|
+| page://self/index | Koriym\Todo\Resource\Page\Index |
+| app://self/blog/posts | Koriym\Todo\Resource\App\Blog\Posts |
+
+## Method
+
+Resources have 6 interfaces conforming to HTTP methods.[^method]
+
+[^method]: REST methods are not a mapping to CRUD. They are divided into two categories: safe ones that do not change the resource state, or idempotent ones.
+
+### GET
+Reads resources. This method does not provide any changing of the resource state. A safe method with no possible side affects.
+
+### POST
+The POST method requests processing of the representation contained in the request. For example, adding a new resource to a target URI or adding a representation to an existing resource. Unlike PUT, requests do not have [idempotence](https://ja.wikipedia.org/wiki/%E5%86%AA%E7%AD%89), and multiple consecutive executions will not produce the same result.
+
+### PUT
+Replaces the resource with the payload of the request at the requested URI. If the target resource does not exist, it is created. Unlike POST, there is not idempotent.
+
+### PATCH
+
+Performs resource updates, but unlike PUT, it applies a delta rather than replacing the entire resource.
+
+
+### DELETE
+Resource deletion. Has idempotence just like PUT.
+
+### OPTIONS
+Get information on parameters and responses required for resource request. It is as secure as GET method.
+
+#### List of method properties
+
+| Methods | [Safe](https://developer.mozilla.org/en-US/docs/Glossary/Safe/HTTP) | [Idempotent](https://developer.mozilla.org/en-US/docs/Glossary/Idempotent) | [Cacheable](https://developer.mozilla.org/en-US/docs/Glossary/cacheable) 
+|-|-|-|-|-
+| GET | Yes | Yes | Yes
+| POST | No | No | No
+| PUT | No | Yes | No
+| PATCH | No | Yes | No
+| DELETE | No | Yes | No
+| OPTIONS | Yes | Yes | No
+
+## Parameters
+
+The response method argument is passed the request value corresponding to the variable name.
+
+```php?start_inline
+class Index extends ResourceObject
+{
+    // $_GET['id'] to $id
+    public function onGet(int $id): static
+    {
+    }
+
+    // $_POST['name'] to $name
+    public function onPost(string $name): static
+    {
+    }
+```
+
+See [Resource Parameters](resource_param.html) for other methods and how to pass external variables such as cookies as parameters.
+
+## Rendering and transfer
+
+The request method of a ResourceObject is not concerned with the representation of the resource. The injected renderer generates the representation of the resource and the responder outputs it. See [Rendering and Transferring](resource_renderer.html) for details.
+
+## Client
+
+Use the resource client to request other resources. This request executes a request to the `app://self/blog/posts` resource with the query `?id=1`.
+
+```php?start_inline
+use BEAR\Sunday\Inject\ResourceInject;
+
+class Index extends ResourceObject
+{
+    use ResourceInject;
+
+    public function onGet(): static
+    {
+        $this->body = [
+            'posts' => $this->resource->get('app://self/blog/posts', ['id' => 1])
+        ];
+    }
+}
+```
+
+Other historical notations include the following
+
+```php?start_inline
+// PHP 5.x and up
+$posts = $this->resource->get->uri('app://self/posts')->withQuery(['id' => 1])->eager->request();
+// PHP 7.x and up
+$posts = $this->resource->get->uri('app://self/posts')(['id' => 1]);
+// you can omit `get`
+$posts = $this->resource->uri('app://self/posts')(['id' => 1]);
+// bear/resource 1.11 and up
+$posts = $this->resource->get('app://self/posts', ['id' => 1]);
+```
+
+## Lazy evaluation
+
+The above is an `eager` request that makes the request immediately, but it is also possible to generate a request and delay execution instead of the request result.
+
+```php
+$request = $this->resource->get('app://self/posts'); // callable
+$posts = $request(['id' => 1]);
+```
+
+When this request is embedded in a template or resource, it is evaluated lazily. That is, when it is not evaluated, the request is not made and has no execution cost.
+
+```php
+$this->body = [
+    'lazy' => $this->resource->get('app://self/posts')->withQuery(['id' => 3])->requrest();
+];
+```
+
+## Cache
+
+Along with regular TTL caching, we support REST client caching and advanced partial caching (doughnut caching), including CDN. See [cache](cache.html) for details. Also see the previous [resource(v1)](resourcev1.html#Resource Cache) document for the previous `@Cacheable` annotation.
+
+## Link
+
+One important REST constraint is resource linking; ResourceObject supports both internal and external linking. See [Resource Linking](resource_link.html) for details.
+
+## BEAR.Resource
+
+The functionality of the BEAR.Sunday resource object is also available in a stand-alone package for stand-alone use: BEAR.Resource [README](https://github.com/bearsunday/BEAR.Resource/blob/1.x/README.ja.md).
+
+---
+
+
+
+# Resource Parameters
+
+## Basics
+
+Web runtime values such as HTTP requests and cookies that require ResourceObjects are passed directly to the method arguments.
+
+For requests from HTTP, the arguments of the `onGet` and `onPost` methods are passed `$_GET` and `$_POST`, respectively, depending on the variable name. For example, `$id` in the following is passed `$_GET['id']`. Arguments passed as strings when the input is HTTP will be casted to the specified type.
+
+
+```php?start_inline
+class Index extends ResourceObject
+{
+    public function onGet(int $id): static
+    {
+        // ....
+```
+
+## Parameter type
+
+### Scalar parameters
+
+All parameters passed via HTTP are strings, but if you specify a non-string type such as `int`, it will be cast.
+
+### Array parameters
+
+Parameters can be nested data [^2]; data sent as JSON or nested query strings can be received as arrays.
+
+[^2]:[parse_str](https://www.php.net/manual/ja/function.parse-str.php)参照
+
+```php?start_inline
+class Index extends ResourceObject
+{
+    public function onPost(array $user):static
+    {
+        $name = $user['name']; // bear
+```
+
+### Class Parameters
+
+Parameters can also be received in a dedicated Input class.
+
+```php?start_inline
+class Index extends ResourceObject
+{
+    public function onPost(User $user): static
+    {
+        $name = $user->name; // bear
+```
+
+The Input class is defined in advance with parameters as public properties.
+
+```php?start_inline
+<?php
+
+namespace Vendor\App\Input;
+
+final class User
+{
+    public int $id;
+    public string $name;
+}
+```
+
+At this time, if there is a constructor, it will be called. [^php8]
+
+[^php8]: This is called with named arguments in PHP8.x, but with ordinal arguments in PHP7.x.
+
+```php?start_inline
+<?php
+
+namespace Vendor\App\Input;
+
+final class User
+{
+    public function __constrcut(
+        public readonly int $id,
+        public readonly string $name
+    } {}
+}
+```
+
+The Input class can implement methods to summarize and validate input data.
+
+### Enum parameters
+
+You can specify an [enumerated type](https://www.php.net/manual/en/language.types.enumerations.php) in PHP8.1 to limit the possible values.
+
+```php
+enum IceCreamId: int
+{
+    case VANILLA = 1;
+    case PISTACHIO = 2;
+}
+```
+
+```php
+class Index extends ResourceObject
+{
+    public function onGet(IceCreamId $iceCreamId): static
+    {
+        $id = $iceCreamId->value // 1 or 2
+```
+
+In the above case, if anything other than 1 or 2 is passed, a `ParameterInvalidEnumException` will be raised.
+
+## Web context binding
+
+PHP superglobals such as `$_GET` and `$_COOKIE` can be bound to method arguments instead of being retrieved in the method.
+
+```php?start_inline
+use Ray\WebContextParam\Annotation\QueryParam;
+
+class News extends ResourceObject
+{
+    public function foo(
+    	  #[QueryParam('id')] string $id
+    ): static {
+       // $id = $_GET['id'];
+```
+
+Others can be done by binding the values of `$_ENV`, `$_POST`, and `$_SERVER`.
+
+```php?start_inline
+use Ray\WebContextParam\Annotation\QueryParam;
+use Ray\WebContextParam\Annotation\CookieParam;
+use Ray\WebContextParam\Annotation\EnvParam;
+use Ray\WebContextParam\Annotation\FormParam;
+use Ray\WebContextParam\Annotation\ServerParam;
+
+class News extends ResourceObject
+{
+    public function onGet(
+        #[QueryParam('id')] string $userId,            // $_GET['id'];
+        #[CookieParam('id')] string $tokenId = "0000", // $_COOKIE['id'] or "0000" when unset;
+        #[EnvParam('app_mode')] string $app_mode,      // $_ENV['app_mode'];
+        #[FormParam('token')] string $token,           // $_POST['token'];
+        #[ServerParam('SERVER_NAME') string $server    // $_SERVER['SERVER_NAME'];
+    ): static {
+```
+
+When the client specifies a value, the specified value takes precedence and the bound value is invalid. This is useful for testing.
+
+## Resource Binding
+
+The `#[ResourceParam]` annotation can be used to bind the results of other resource requests to the method argument.
+
+```php?start_inline
+use BEAR\Resource\Annotation\ResourceParam;
+
+class News extends ResourceObject
+{
+    public function onGet(
+        #[ResourceParam('app://self//login#nickname') string $name
+    ): static {
+```
+
+In this example, when the method is called, it makes a `get` request to the `login` resource and receives `$body['nickname']` with `$name`.
+
+## Content negotiation
+
+The `content-type` header of HTTP requests is supported. The `application/json` and `x-www-form-urlencoded` media types are determined and values are passed to the parameters. [^json].
+
+[^json]:Set the `content-type` header to `application/json` if you are sending API requests in JSON.
+
+
+
+
+# Reousrce link
+
+Resources can be linked to other resources. There are two types of links: external links [^LO], which link external resources, and internal links [^LE], which embed other resources in the resource itself.
+
+[^LE]: [embedded links](http://amundsen.com/hypermedia/hfactor/#le) Example: html can embed independent image resources.
+[^LO]: [out-bound links](http://amundsen.com/hypermedia/hfactor/#le) e.g.) html can link to other related html.
+
+## Out-bound links
+
+Specify links by `rel` (relation) and `href` of the link name. The `href` can be a regular URI or [RFC6570 URI template](https://github.com/ioseb/uri-template).
+
+```php?start_inline
+    #[Link rel: 'profile', href: '/profile{?id}']
+    public function onGet($id): static
+    {
+        $this->body = [
+            'id' => 10
+        ];
+
+        return $this;
+    }
+```
+
+In the above example, `href` is represented by and `$body['id']` is assigned to `{?id}`. The output in [HAL](https://stateless.group/hal_specification.html) format is as follows
+
+```json
+{
+    "id": 10,
+    "_links": {
+        "self": {
+            "href": "/test"
+        },
+        "profile": {
+            "href": "/profile?id=10"
+        }
+    }
+}
+```
+
+
+## Internal links
+
+A resource can embed another resource. Specify the resource in the `src` of `#[Embed]`.
+
+Internally linked resources may also internally link other resources. In that case, another internally linked resource is needed, and the process is repeated recursively to obtain a **resource graph**. The client can retrieve the desired set of resources at once without having to fetch the resources multiple times. [^di] For example, instead of calling a customer resource and a product resource respectively, embed them both in an order resource.
+
+[^di]:This is similar to an object graph where the dependency tree is a graph in DI.
+
+```php?start_inline
+use BEAR\Resource\Annotation\Embed;
+
+class News extends ResourceObject
+{
+    #[Embed(rel: 'sports', src: '/news/sports')]
+    #[Embed(rel: 'weather', src: '/news/weather')]
+    public function onGet(): static
+```
+
+It is the resource **request** that is embedded. It is executed at rendering time, but before that you can add arguments with the `addQuery()` method or replace them with `withQuery()`.
+
+A URI template can be used for the `src`, and **request method arguments** will be bound to it. (Unlike external links, it is not `$body`)
+
+```php?start_inline
+use BEAR\Resource\Annotation\Embed;
+
+class News extends ResourceObject
+{
+    #[Embed(rel: 'website', src: '/website{?id}']
+    public function onGet(string $id): static
+    {
+        // ...
+        $this->body['website']->addQuery(['title' => $title]); // 引数追加
+```
+
+### Self linking
+
+Linking a relation as `_self` in ``#[Embed]`` copies the linked resource state to its own resource state.
+
+```php
+namespace MyVendor\Weekday\ResourcePage;.
+
+class Weekday extends ResourceObject
+{
+#[Embed(rel: '_self', src: 'app://self/weekday{?year,month,day}'])
+public function onGet(string $id): static
+{
+```
+
+In this example, the Page resource copies the state of the `weekday` resource of the App resource to itself.
+
+### Internal links in HAL
+
+Handled as `_embedded ` in the [HAL](https://github.com/blongden/hal) renderer.
+
+## Link request
+
+Clients can link resources connected by hyperlinks.
+
+```php?start_inline
+$blog = $this
+    ->resource
+    ->get
+    ->uri('app://self/user')
+    ->withQuery(['id' => 1])
+    ->linkSelf("blog")
+    ->eager
+    ->request()
+    ->body;
+```
+
+There are three types of links. The `body` linked resource of the original resource is embedded using `$rel` as the key.
+
+* `linkSelf($rel)` which will be replaced with the link destination.
+* `linkNew($rel)` the linked resource is added to the original resource
+* `linkCrawl($rel)` crawl the link and create a resource graph.
+
+## crawl
+
+Crawls are lists (arrays) of resources, and links can be traversed in sequence to compose complex resource graphs.
+Just as a crawler crawls a web page, the resource client crawls hyperlinks and generates a source graph.
+
+#### Crawl Example
+
+Consider a resource graph with author, post, meta, tag, and tag/name associated with each.
+Name this resource graph **post-tree** and specify a hyperreference **href** in the `#[Link]' attribute of each resource.
+
+
+
+The first starting point, the author resource, has a hyperlink to the post resource. 1:n relationship.
+
+```php
+#[Link(crawl: "post-tree", rel: "post", href: "app://self/post?author_id={id}")]
+public function onGet($id = null)
+```
+
+The post resource has hyperlinks to the meta and tag resources. 1:n relationship.
+
+```php
+#[Link(crawl: "post-tree", rel: "meta", href: "app://self/meta?post_id={id}")]
+#[Link(crawl: "post-tree", rel: "tag", href: "app://self/tag?post_id={id}")]
+public function onGet($author_id)
+{
+```
+
+A tag resource is just an ID with a hyperlink to the corresponding tag/name resource. 1:1 relationship.
+
+```php
+#[Link(crawl:"post-tree", rel:"tag_name", href:"app://self/tag/name?tag_id={tag_id}")]
+public function onGet($post_id)
+```
+
+Each is now connected. Request with a crawl name.
+
+```php
+$graph = $resource
+  ->get
+  ->uri('app://self/marshal/author')
+  ->linkCrawl('post-tree')
+  ->eager
+  ->request();
+```
+
+When a resource client finds a crawl name specified in the #[Link] attribute, it creates a resource graph by connecting resources by their **rel** names.
+
+```
+var_export($graph->body);
+
+array (
+    0 =>
+    array (
+        'name' => 'Athos',
+        'post' =>
+        array (
+            0 =>
+            array (
+                'author_id' => '1',
+                'body' => 'Anna post #1',
+                'meta' =>
+                array (
+                    0 =>
+                    array (
+                        'data' => 'meta 1',
+                    ),
+                ),
+                'tag' =>
+                array (
+                    0 =>
+                    array (
+                        'tag_name' =>
+                        array (
+                            0 =>
+                            array (
+                                'name' => 'zim',
+                            ),
+                        ),
+                    ),
+ ...
+```
+
+
+
+# Rendering and transfer
+
+The request method of a ResourceObject is not concerned with the representation of the resource. The context-sensitive injected renderer generates the representation of the resource. The same application can be output in HTML or JSON and benefit by simply changing the context.
+
+## Lazy evaluation
+
+Rendering occurs when the resource is string-evaluated.
+
+```php?start_inline
+
+$weekday = $api->resource->get('app://self/weekday', ['year' => 2000, 'month'=> 1, 'day'=> 1]);
+var_dump($weekday->body);
+//array(1) {
+//    ["weekday"]=>
+//  string(3) "Sat"
+//}
+
+echo $weekday;
+//{
+//    "weekday": "Sat",
+//    "_links": {
+//    "self": {
+//        "href": "/weekday/2000/1/1"
+//        }
+//    }
+//}
+```
+
+## Renderer
+
+Each ResourceObject is injected with a renderer for its representation as specified by its context. When performing resource-specific rendering, inject or set the `renderer` property.
+
+Example: If you write a renderer for the default JSON representation from scratch
+
+```php?start_inline
+class Index extends ResourceObject
+{
+    #[Inject]
+    public function setRenderer(RenderInterface $renderer)
+    {
+        $this->renderer = new class implements RenderInterface {
+            public function render(ResourceObject $ro)
+            {
+                $ro->headers['content-type'] = 'application/json;';
+                $ro->view = json_encode($ro->body);
+
+                return $ro->view;
+            }
+        };
+    }
+}
+```
+
+## Transfer
+
+Transfers the resource representation injected into the root object `$app` to the client (console or web client). Normally, output is done with the `header` function or `echo`, but for large data, etc., [stream transfer](stream.html) is useful.
+
+Override the `transfer` method to perform resource-specific transfers.
+
+```php
+public function transfer(TransferInterface $responder, array $server)
+{
+    $responder($this, $server);
+}
+```
+
+## Resource autonomy
+
+Each resource class has the ability to change its own resource state upon request and transfer it as an expression.
+
+
+
+# Router
+
+The router converts resource requests for external contexts such as Web and console into resource requests inside BEAR.Sunday.
+
+```php?start_inline
+$request = $app->router->match($GLOBALS, $_SERVER);
+echo (string) $request;
+// get page://self/user?name=bear
+```
+
+## Web Router
+
+The default web router accesses the resource class corresponding to the HTTP request path (`$_SERVER['REQUEST_URI']`).
+For example, a request of `/index` is accessed by a PHP method corresponding to the HTTP method of the `{Vendor name}\{Project name}\Resource\Page\Index` class.
+
+The Web Router is a convention-based router. No configuration or scripting is required.
+
+```php?start_inline
+namespace MyVendor\MyProject\Resource\Page;
+
+// page://self/index
+class Index extends ResourceObject
+{
+    public function onGet(): static // GET request
+    {
+    }
+}
+```
+
+## CLI Router
+
+In the `cli` context, the argument from the console is "input of external context".
+
+```bash
+php bin/page.php get /
+```
+
+The BEAR.Sunday application works on both the Web and the CLI.
+
+## Multiple words URI
+
+The path of the URI using hyphens and using multiple words uses the class name of Camel Case.
+For example `/wild-animal` requests are accessed to the `WildAnimal` class.
+
+## Parameters
+
+The name of the PHP method executed corresponding to the HTTP method and the value passed are as follows.
+
+| HTTP method | PHP method | Parameters |
+|---|---|---|
+| GET | onGet | $_GET |
+| POST | onPost | $_POST or ※ standard input |
+| PUT | onPut | ※ standard input |
+| PATCH | onPatch | ※ standard input |
+| DELETE | onDelete | ※ standard input　|
+
+There are two media types available for request:
+
+ * `application/x-www-form-urlencoded` // param1=one&param2=two
+ * `application/json` // {"param1": "one", "param2": "one"}
+
+Please also see the [PUT method support](http://php.net/manual/en/features.file-upload.put-method.php) of the PHP manual.
+
+## Method Override
+
+There are firewalls that do not allow HTTP PUT traffic or HTTP DELETE traffic.
+To deal with this constraint, you can send these requests in the following two ways.
+
+ * `X-HTTP-Method-Override` Send a PUT request or DELETE request using the header field of the POST request.
+ * `_method` Use the URI parameter. ex) POST /users?...&_method=PUT
+
+## Aura Router
+
+To receive the request path as a parameter, use Aura Router.
+
+```bash
+composer require bear/aura-router-module ^2.0
+```
+
+Install `AuraRouterModule` with the path of the router script.
+
+```php?start_inline
+use BEAR\Package\AbstractAppModule;
+use BEAR\Package\Provide\Router\AuraRouterModule;
+
+class AppModule extends AbstractAppModule
+{
+    protected function configure()
+    {
+        // ...
+        $this->install(new AuraRouterModule($appDir . '/var/conf/aura.route.php'));
+    }
+}
+```
+
+Delete cached DI files to activate new router.
+
+```
+rm -rf var/tmp/*
+```
+
+### Router Script
+
+Router scripts set routes for `Map` objects passed globally.
+You do not need to specify a method for routing.
+The first argument specifies the path as the root name and the second argument specifies the path containing the place folder of the named token.
+
+`var/conf/aura.route.php`
+
+```php
+<?php
+/* @var \Aura\Router\Map $map */
+$map->route('/blog', '/blog/{id}');
+$map->route('/user', '/user/{name}')->tokens(['name' => '[a-z]+']);
+$map->route('/blog/comment', '/blog/{id}/comment');
+```
+
+ * In the first line, accessing `/blog/bear` will be accessed as `page://self/blog?id=bear`.
+(= `Blog` class's` onGet($id)` method with the value `$id`=`bear`.)
+ * `token` is used to restrict parameters with regular expressions.
+ * `/blog/{id}/comment` to route `Blog\Comment` class.
+  
+### Preferred router
+
+If it is not routed by the Aura router, a web router will be used.
+In other words, it is OK to prepare the router script only for the URI that passes the parameters in the path.
+
+### Parameter
+
+`Aura router` have various methods to obtain parameters from the path.
+
+### Custom Placeholder Token Matching
+
+The script below routes only when `{date}` is in the proper format.
+
+```php?start_inline
+$map->route('/calendar/from', '/calendar/from/{date}')
+    ->tokens([
+        'date' => function ($date, $route, $request) {
+            try {
+                new \DateTime($date);
+                return true;
+            } catch(\Exception $e) {
+                return false;
+            }
+        }
+    ]);
+```
+
+### Optional Placeholder Tokens
+
+Sometimes it is useful to have a route with optional placeholder tokens for attributes. None, some, or all of the optional values may be present, and the route will still match.
+
+To specify optional attributes, use the notation {/attribute1,attribute2,attribute3} in the path. For example:
+
+ex）
+```php?start_inline
+$map->route('archive', '/archive{/year,month,day}')
+    ->tokens([
+        'year' => '\d{4}',
+        'month' => '\d{2}',
+        'day' => '\d{2}',
+    ]);
+```
+
+Please note that there is the first slash **inside** of the place holder.
+Then all the paths below are routed to 'archive' and the value of the parameter is appended.
+
+
+- `/archive            : ['year' => null,   'month' => null, 'day' = null]`
+- `/archive/1979       : ['year' => '1979', 'month' => null, 'day' = null]`
+- `/archive/1979/11    : ['year' => '1979', 'month' => '11', 'day' = null]`
+- `/archive/1979/11/07 : ['year' => '1979', 'month' => '11', 'day' = '07']`
+
+Optional parameters are **options in the order of**. In other words, you can not specify "day" without "month".
+
+### Wildcard Attributes
+
+Sometimes it is useful to allow the trailing part of the path be anything at all. To allow arbitrary trailing path segments on a route, call the wildcard() method. This will let you specify the attribute name under which the arbitrary trailing values will be stored.
+
+```php?start_inline
+$map->route('wild', '/wild')
+    ->wildcard('card');
+```
+
+All slash-separated path segments after the {id} will be captured as an array in the in wildcard attribute. For example:
+
+- `/wild             : ['card' => []]`
+- `/wild/foo         : ['card' => ['foo']]`
+- `/wild/foo/bar     : ['card' => ['foo', 'bar']]`
+- `/wild/foo/bar/baz : ['card' => ['foo', 'bar', 'baz']]`
+
+For other advanced routes, please refer to Aura Router's [defining-routes](https://github.com/auraphp/Aura.Router/blob/3.x/docs/defining-routes.md).
+
+## Generating Paths From Routes
+
+You can generate a URI from the name of the route and the value of the parameter.
+
+```php?start_inline
+use BEAR\Sunday\Extension\Router\RouterInterface;
+
+class Index extends ResourceObject
+{
+    /**
+     * @var RouterInterface
+     */
+    private $router;
+
+    public function __construct(RouterInterface $router)
+    {
+        $this->router = $router;
+    }
+
+    public function onGet(): static
+    {
+        $userLink = $this->router->generate('/user', ['name' => 'bear']);
+        // '/user/bear'
+```
+
+### Request Method
+
+It is not necessary to specify a request method.
+
+### Request Header
+
+Normally request headers are not passed to Aura.Router, but installing `RequestHeaderModule` allows Aura.Router to match using headers.
+
+```php
+$this->install(new RequestHeaderModule());
+```
+
+## Custom Router Component
+
+Implement [RouterInterface](https://github.com/bearsunday/BEAR.Sunday/blob/1.x/src/Extension/Router/RouterInterface.php) with by referring to [BEAR.AuraRouterModule](https://github.com/bearsunday/BEAR.AuraRouterModule).
+
+---
+*[This document](https://github.com/bearsunday/bearsunday.github.io/blob/master/manuals/1.0/en/router.md) needs to be proofread by native speaker. *
+
+
+# Production
+
+For BEAR.Sunday's default `prod` binding, the application customizes the module according to each [deployment environment](https://en.wikipedia.org/wiki/Deployment_environment) and performs the binding.
+
+## Default ProdModule
+
+The default `prod` binding binds the following interfaces:
+
+* Error page generation factory
+* PSR logger interface
+* Local cache
+* Distributed cache
+
+See [ProdModule.php](https://github.com/bearsunday/BEAR.Package/blob/1.x/src/Context/ProdModule.php) in BEAR.Package for details.
+
+## Application's ProdModule
+
+Customize the application's `ProdModule` in `src/Module/ProdModule.php` against the default ProdModule. Error pages and distributed caches are particularly important.
+
+```php
+<?php
+namespace MyVendor\Todo\Module;
+
+use BEAR\Package\Context\ProdModule as PackageProdModule;
+use BEAR\QueryRepository\CacheVersionModule;
+use BEAR\Resource\Module\OptionsMethodModule;
+use BEAR\Package\AbstractAppModule;
+
+class ProdModule extends AbstractModule
+{
+    /**
+     * {@inheritdoc}
+     */
+    protected function configure()
+    {
+        $this->install(new PackageProdModule);       // Default prod settings
+        $this->override(new OptionsMethodModule);    // Enable OPTIONS method in production as well
+        $this->install(new CacheVersionModule('1')); // Specify resource cache version
+
+        // Custom error page
+        $this->bind(ErrorPageFactoryInterface::class)->to(MyErrorPageFactory::class);
+    }
+}
+```
+
+## Cache
+
+There are two types of caches: a local cache and a distributed cache that is shared between multiple web servers.
+Both caches default to [PhpFileCache](https://www.doctrine-project.org/projects/doctrine-cache/en/1.10/index.html#phpfilecache).
+
+### Local Cache
+
+The local cache is used for caches that do not change after deployment, such as annotations, while the distributed cache is used to store resource states.
+
+### Distributed Cache
+
+To provide services with two or more web servers, a distributed cache configuration is required.
+Modules for each of the popular [memcached](http://php.net/manual/en/book.memcached.php) and [Redis](https://redis.io) cache engines are provided.
+
+
+### Memcached
+
+```php
+<?php
+namespace BEAR\HelloWorld\Module;
+
+use BEAR\QueryRepository\StorageMemcachedModule;
+use BEAR\Resource\Module\ProdLoggerModule;
+use BEAR\Package\Context\ProdModule as PackageProdModule;
+use BEAR\Package\AbstractAppModule;
+use Ray\Di\Scope;
+
+class ProdModule extends AbstractModule
+{
+    protected function configure()
+    {
+        // memcache
+        // {host}:{port}:{weight},...
+        $memcachedServers = 'mem1.domain.com:11211:33,mem2.domain.com:11211:67';
+        $this->install(new StorageMemcachedModule($memcachedServers));
+
+        // Install Prod logger
+        $this->install(new ProdLoggerModule);
+        // Install default ProdModule
+        $this->install(new PackageProdModule);
+    }
+}
+```
+
+### Redis
+
+
+```php?start_inline
+// redis
+$redisServer = 'localhost:6379'; // {host}:{port}
+$this->install(new StorageRedisModule($redisServer));
+```
+
+In addition to simply updating the cache by TTL for storing resource states, it is also possible to operate (CQRS) as a persistent storage that does not disappear after the TTL time.
+In that case, you need to perform persistent processing with `Redis` or prepare your own storage adapter for other KVS such as Cassandra.
+
+### Specifying Cache Time
+
+To change the default TTL, install `StorageExpiryModule`.
+
+```php?start_inline
+// Cache time
+$short = 60;
+$medium = 3600;
+$long = 24 * 3600;
+$this->install(new StorageExpiryModule($short, $medium, $long));
+```
+### Specifying Cache Version
+
+Change the cache version when the resource schema changes and compatibility is lost. This is especially important for CQRS operation that does not disappear over TTL time.
+
+```
+$this->install(new CacheVersionModule($cacheVersion));
+```
+
+To discard the resource cache every time you deploy, it is convenient to assign a time or random value to `$cacheVersion` so that no change is required.
+
+## Logging
+
+`ProdLoggerModule` is a resource execution log module for production. When installed, it logs requests other than GET to the logger bound to `Psr\Log\LoggerInterface`.
+If you want to log on a specific resource or specific state, bind a custom log to [BEAR\Resource\LoggerInterface](https://github.com/bearsunday/BEAR.Resource/blob/1.x/src/LoggerInterface.php).
+
+```php
+use BEAR\Resource\LoggerInterface;
+use Ray\Di\AbstractModule;
+
+final class MyProdLoggerModule extends AbstractModule
+{
+    protected function configure(): void
+    {
+        $this->bind(LoggerInterface::class)->to(MyProdLogger::class);
+    }
+}
+```
+
+The `__invoke` method of [LoggerInterface](https://github.com/bearsunday/BEAR.Resource/blob/1.x/src/LoggerInterface.php) passes the resource URI and resource state as a `ResourceObject` object, so log the necessary parts based on its contents.
+Refer to the [existing implementation ProdLogger](https://github.com/bearsunday/BEAR.Resource/blob/1.x/src/ProdLogger.php) for creation.
+
+## Deployment
+
+### ⚠️ Avoid Overwriting Updates
+
+#### When deploying to a server
+
+* Overwriting a running project folder with `rsync` or similar poses a risk of inconsistency with caches and on-demand generated files, and can exceed capacity on high-load sites.
+  Set up in a separate directory for safety and switch if the setup is successful.
+* You can use the [BEAR.Sunday recipe](https://github.com/bearsunday/deploy) of [Deployer](http://deployer.org/).
+
+#### When deploying to the cloud
+
+* It is recommended to incorporate compilation into CI as the compiler outputs exit code 1 when it finds dependency issues and 0 when compilation succeeds.
+
+### Compilation Recommended
+
+When setting up, you can **warm up** the project using the `vendor/bin/bear.compile` script.
+The compile script creates all static cache files such as dynamically created files for DI/AOP and annotations in advance, and outputs an optimized autoload.php file and preload.php.
+
+* If you compile, the possibility of DI errors at runtime is extremely low because injection is performed in all classes.
+* The contents included in `.env` are incorporated into the PHP file, so `.env` can be deleted after compilation.
+
+When compiling multiple contexts (ex. api-app, html-app) in one application, such as when performing content negotiation, it is necessary to evacuate the files.
+
+```
+mv autoload.php api.autoload.php  
+```
+
+Edit `composer.json` to change the content of `composer compile`.
+
+### autoload.php
+
+An optimized autoload.php file is output to `{project_path}/autoload.php`.
+It is much faster than `vendor/autoload.php` output by `composer dumpa-autoload --optimize`.
+
+Note: If you use `preload.php`, most of the classes used are loaded at startup, so the compiled `autoload.php` is not necessary. Please use `vendor/autload.php` generated by Composer.
+
+### preload.php
+
+An optimized preload.php file is output to `{project_path}/preload.php`.
+To enable preloading, you need to specify [opcache.preload](https://www.php.net/manual/en/opcache.configuration.php#ini.opcache.preload) and [opcache.preload](https://www.php.net/manual/en/opcache.configuration.php#ini.opcache.preload-user) in php.ini. It is a feature supported in PHP 7.4, but it is unstable in the initial versions of `7.4`. Let's use the latest version of `7.4.4` or higher.
+
+Example)
+
+```
+opcache.preload=/path/to/project/preload.php
+opcache.preload_user=www-data
+```
+
+Note: Please refer to the [benchmark](https://github.com/bearsunday/BEAR.HelloworldBenchmark/wiki/Intel-Core-i5-3.8-GHz-iMac-(Retina-5K,-27-inch,-2017)---PHP-7.4.4) for performance benchmarks.
+
+
+### .compile.php
+
+If there are classes that cannot be generated in non-production environments (for example, ResourceObjects that cannot be injected unless authentication succeeds), you can compile them by describing dummy class loading that is loaded only at compile time in the root `.compile.php`.
+
+.compile.php
+
+```php
+<?php
+
+require __DIR__ . '/tests/Null/AuthProvider.php'; // Always generatable null object
+$_SERVER[__REQUIRED_KEY__] = 'fake';
+```
+
+### module.dot
+
+When you compile, a "dot file" is output, so you can convert it to an image file with [graphviz](https://graphviz.org/) or use [GraphvizOnline](https://dreampuf.github.io/GraphvizOnline/) to display the object graph.
+Also, please see the [object graph](/images/screen/skeleton.svg) of the skeleton.
+
+```php
+dot -T svn module.dot > module.svg
+```
+
+## Bootstrap Performance Tuning
+
+[immutable_cache](https://pecl.php.net/package/immutable_cache) is a PECL package for caching immutable values in shared memory. It is based on APCu but is faster than APCu because it stores immutable values such as PHP objects and arrays in shared memory. Additionally, installing PECL's [Igbinary](https://www.php.net/manual/en/book.igbinary.php) with either APCu or immutable_cache can reduce memory usage and further improve performance.
+
+Currently, there are no dedicated cache adapters available. Please refer to [ImmutableBootstrap](https://github.com/koriym/BEAR.Hello/commit/507d1ee3ed514686be2d786cdaae1ba8bed63cc4) to create and call a dedicated Bootstrap. This allows you to minimize initialization costs and achieve maximum performance.
+
+### php.ini
+
+```
+// Extensions
+extension="apcu.so"
+extension="immutable_cache.so" 
+extension="igbinary.so"
+
+// Specifying serializer
+apc.serializer=igbinary
+immutable_cache.serializer=igbinary
+```
+`````
+
+----
+
+
+
+# Import
+
+BEAR applications can cooperate with multiple BEAR applications into a single system without having to be microservices. It is also easy to use BEAR resources from other applications.
+
+## Composer Install
+
+Install the BEAR application you want to use as a composer package.
+
+composer.json
+```json
+{
+  "require": {
+    "bear/package": "^1.13",
+    "my-vendor/weekday": "dev-master"
+  },
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/bearsunday/tutorial1.git"
+    }
+  ]
+}
+```
+
+Requires `bear/package ^1.13`.
+
+## Module Install
+
+Install other applications with `ImportAppModule`, specifying the hostname, application name (namespace) and context to import.
+
+```diff
++use BEAR\Package\Module\ImportAppModule;
++use BEAR\Package\Module\Import\ImportApp;
+
+class AppModule extends AbstractAppModule
+{
+    protected function configure(): void
+    {
+        // ...
++        $this->install(new ImportAppModule([
++            new ImportApp('foo', 'MyVendor\Weekday', 'prod-app')
++        ]));
+        $this->install(new PackageModule());
+    }
+}
+```
+
+## Request
+
+The imported resource will be used with the specified host name.
+
+```php
+class Index extends ResourceObject
+{
+    use ResourceInject;
+
+    public function onGet(string $name = 'BEAR.Sunday'): static
+    {
+        $weekday = $this->resource->get('app://foo/weekday?year=2022&month=1&day=1');
+        $this->body = [
+            'greeting' => 'Hello ' . $name,
+            'weekday' => $weekday
+        ];
+
+        return $this;
+    }
+}
+````
+
+You can also use `#[Embed]` and `#[Link]` in the same way.
+
+## Requests from other systems
+
+It is easy to use BEAR resources from other frameworks or CMS.
+
+Install it as a package in the same way, and use `Injector::getInstance` to get the resource client of the application you require and request it.
+
+```php
+
+use BEAR\Package\Injector;
+use BEAR\Resource\ResourceInterface;
+
+$resource = Injector::getInstance(
+    'MyVendor\Weekday',
+    'prod-api-app',
+    dirname(__DIR__) . '/vendor/my-vendor/weekday'
+)->getInstance(ResourceInterface::class);
+$weekdday = $resource->get('/weekday', ['year' => '2022', 'month' => '1', 'day' => 1]);
+
+echo $weekdday->body['weekday'] . PHP_EOL;
+```
+## Environment variables
+
+Environment variables are global. Care should be taken to prefix them to avoid conflicts between applications. Instead of using `.env` files, the application to be imported will get the shell environment variables just like in production.
+
+## System Boundary
+
+It is similar to microservices in that a large application can be built as a collection of multiple smaller applications, but without the disadvantages of microservices such as increased infrastructure overhead. It also has clearer component independence and boundaries than modular monoliths.
+
+The code for this page can be found at [bearsunday/example-app-import](https://github.com/bearsunday/example-import-app/commits/master).
+
+## Multilingual Framework
+
+Using [BEAR.Thrift](https://github.com/bearsunday/BEAR.Thrift), you can access resources from other languages, different versions of PHP, or BEAR applications using Apache Thrift. [Apache Thrift](https://thrift.apache.org/) is a framework that enables efficient communication between different languages.
+
+
+
+# Test
+
+Proper testing makes software better with continuity. A clean application of BEAR.Sunday is test friendly, with all dependencies injected and crosscutting interests provided in the AOP.
+
+## Run test
+
+Run `vendor/bin/phpunit` or `composer test`.　Other commands are as follows.
+
+```
+composer test    // phpunit test
+composer tests   // test + sa + cs
+composer coverge // test coverage
+composer pcov    // test coverage (pcov)
+composer sa      // static analysis
+composer cs      // coding standards check
+composer cs-fix  // coding standards fix
+```
+
+## Resource test
+
+**Everything is a resource** - BEAR.Sunday application can be tested with resoure access.
+
+This is a test that tests that `201 (Created)` will be returned by POSTing `['title' => 'test']` to URI `page://self/todo` of `Myvendor\MyProject` application in `html-app` context.
+
+```php
+<?php
+
+use BEAR\Resource\ResourceInterface;
+
+class TodoTest extends TestCase
+{
+    private ResourceInterface $resource;
+    
+    protected function setUp(): void
+    {
+        $injector = Injector::getInstance('test-html-app');
+        $this->resource = $injector->getInstance(ResourceInterface::class);
+    }
+
+    public function testOnPost(): void
+    {
+        $page = $this->resource->post('page://self/todo', ['title' => 'test']);
+        $this->assertSame(StatusCode::CREATED, $page->code);
+    }
+}
+```
+
+## Test Double
+
+A Test Double is a substitute that replaces a component on which the software test object depends. Test doubles can have the following patterns
+
+* Stub (provides "indirect input" to the test target)
+* Mock ( validate "indirect output" from the test target inside a test double)
+* Spy (records "indirect output" from the target to be tested)
+* Fake (simpler implementation that works closer to the actual object)
+* _Dummy_ (necessary to generate the test target but no call is made)
+
+### Test Double Binding
+
+There are two ways to change the bundling for a test. One is to change the bundling across all tests in the context module, and the other is to temporarily change the bundling only for a specific purpose within one test only.
+
+#### Context Module
+
+Create a ``TestModule`` to make the `test` context available in bootstrap.
+
+```php
+class TestModule extends AbstractModule
+{
+    public function configure(): void
+    {
+        $this->bind(DateTimeInterface::class)->toInstance(new DateTimeImmutable('1970-01-01 00:00:00'));
+        $this->bind(Auth::class)->to(FakeAuth::class);    
+    }
+}
+```
+
+Injector with test context.
+
+```php
+$injector = Injector::getInstance('test-hal-app', $module);
+```
+
+#### Temporary binding change
+
+Temporary bundle changes for a single test specify the bundle to override with `Injector::getOverrideInstance`.
+
+```php
+public function testBindFake(): void
+{
+    $module = new class extends AbstractModule {
+        protected function configure(): void
+        {
+            $this->bind(FooInterface::class)->to(FakeFoo::class);
+        }
+    }
+    $injector = Injector::getOverrideInstance('hal-app', $module);
+}
+```
+
+### Mock
+
+```php
+public function testBindMock(): void
+{ 
+    $mock = $this->createMock(FooInterface::class);
+    // expect that update() will be called once and the parameter will be the string 'something'.
+    mock->expects($this->once())
+             ->method('update')
+             ->with($this->equalTo('something'));
+    $module = new class($mock) extends AbstractModule {
+        public function __constcuct(
+            private FooInterface $foo
+        ){}
+        protected function configure(): void
+        {
+            $this->bind(FooInterface::class)->toInstance($this->foo);
+        }
+    };
+    $injector = Injector::getOverrideInstance('hal-app', $module);
+}
+```
+### spy
+
+Installs a `SpyModule` by specifying the interface or class name of the spy target. [^spy-module] After running the SUT containing the spy target, verify the number of calls and the value of the calls in the spy log.
+
+[^spy-module]: [ray/test-double](https://github.com/ray-di/Ray.TestDouble) must be installed to use SpyModule.
+
+```php
+public function testBindSpy(): void
+{
+    $module = new class extends AbstractModule {
+        protected function configure(): void
+        {
+            $this->install(new SpyModule([FooInterface::class]));
+        }
+    };
+    $injector = Injector::getOverrideInstance('hal-app', $module);
+    $resource = $injector->getInstance(ResourceInterface::class);
+    // Spy logs of FooInterface objects are logged, whether directly or indirectly.
+    $resource->get('/');
+    // Spyログの取り出し
+    $spyLog = $injector->getInstance(\Ray\TestDouble\LoggerInterface::class);
+    // @var array<int, Log> $addLog
+    $addLog = $spyLog->getLogs(FooInterface, 'add');   
+    $this->assertSame(1, count($addLog), 'Should have received once');
+    // Argument validation from SUT
+    $this->assertSame([1, 2], $addLog[0]->arguments);
+    $this->assertSame(1, $addLog[0]->namedArguments['a']);
+}
+```
+
+### Dummy
+
+Use [Null Binding](https://ray-di.github.io/manuals/1.0/ja/null_object_binding.html) to bind a null object to an interface.
+
+## Hypermedia Test
+
+Resource testing is an input/output test for each endpoint. Hypermedia tests, on the other hand, test the workflow behavior of how the endpoints are connected.
+
+Workflow tests are inherited from HTTP tests and are tested at both the PHP and HTTP levels in a single code. HTTP testing is done with `curl` and the request/response is logged in a log file.
+
+## Best Practice
+
+ * Test the interface, not the implementation.
+ * Create a actual fake class rather than using a mock library.
+ * Testing is a specification. Ease of reading rather than ease of coding.
+
+Reference
+
+* [Stop mocking, start testing](https://nedbatchelder.com/blog/201206/tldw_stop_mocking_start_testing.html)
+* [Mockists Are Dead](https://www.thoughtworks.com/insights/blog/mockists-are-dead-long-live-classicists)
+
+
+
+# Examples
+
+This example application is built on the principles described in the [Coding Guide](http://bearsunday.github.io/manuals/1.0/en/coding-guide.html).
+
+## Polidog.Todo
+
+[https://github.com/koriym/Polidog.Todo](https://github.com/koriym/Polidog.Todo)
+
+
+`Todos` is a basic CRUD application. The DB is accessed using the static　SQL file in the `var/sql` directory. Includes REST API using hyperlinks and testing, as well as form validation tests.
+
+  * [ray/aura-sql-module](https://github.com/ray-di/Ray.AuraSqlModule) - Extended PDO ([Aura.Sql](https://github.com/auraphp/Aura.Sql))
+  * [ray/web-form-module](https://github.com/ray-di/Ray.WebFormModule) - Web form ([Aura.Input](https://github.com/auraphp/Aura.Input))
+  * [madapaja/twig-module](https://github.com/madapaja/Madapaja.TwigModule) - Twig template engine
+  * [koriym/now](https://github.com/koriym/Koriym.Now) - Current datetime
+  * [koriym/query-locator](https://github.com/koriym/Koriym.QueryLocator) - SQL locator
+  * [koriym/http-constants](https://github.com/koriym/Koriym.HttpConstants) - Contains the values HTTP
+
+## MyVendor.ContactForm
+
+[https://github.com/bearsunday/MyVendor.ContactForm](https://github.com/bearsunday/MyVendor.ContactForm)
+
+
+It is a sample of various form pages.
+
+  * Minimal form page
+  * Multiple forms page
+  * Looped input form page
+  * Preview form page including checkbox and radio button
+
+# Database
+
+The following modules are available for database use, with different problem solving methods. They are all independent libraries for SQL based on [PDO](https://www.php.net/manual/ja/intro.pdo.php).
+
+* ExtendedPdo with PDO extended ([Aura.sql](https://github.com/auraphp/Aura.Sql))
+* Query Builder ([Aura.SqlQuery](https://github.com/auraphp/Aura.SqlQuery))
+* Binding PHP interface and SQL execution ([Ray.MediaQuery](database_media.html))
+
+Having static SQL in a file[^locator] makes it easier to use and tune with other SQL tools. SqlQuery can dynamically assemble queries, but the rest of the library is for basic static SQL execution. Ray.MediaQuery can also replace parts of the SQL with those assembled by the builder.
+
+[^locator]: [query-locater](https://github.com/koriym/Koriym.QueryLocator) is a library for handling SQL as files, which is useful with Aura.Sql.
+
+## Module
+
+Modules are provided for using the database. They are all independent libraries for SQL.
+
+* [Ray.AuraSqlModule](database_aura.html)
+* [Ray.MediaQuery](database_media.html)
+
+`Ray.AuraSqlModule` is a PDO extension [Aura.Sql](https://github.com/auraphp/Aura.Sql) and a query builder [Aura.SqlQuery](https://github.com/auraphp/) SqlQuery, plus a low-level module that provides pagination functionality.
+`Ray.MediaQuery` is a high-performance DB access framework that generates and injects SQL execution objects from user-provided interfaces and SQL [^doma] .
+
+[^doma]: The mechanism is similar to Java's DB access framework [Doma](https://doma.readthedocs.io/en/latest/basic/#examples).
+
+## Other
+
+* [DBAL](database_dbal.html)
+* [CakeDb](database_cake.html)
+* [Ray.QueryModule](https://github.com/ray-di/Ray.QueryModule/blob/1.x/README.md)
+
+`DBAL` is Doctrine and `CakeDB` is CakePHP's DB library. `Ray.QueryModule` is an earlier library of Ray.MediaQuery that converts SQL to anonymous functions.
+
+----
+
+
+
+# Coding Guide
+
+## Project
+
+`Vendor` should be the company name, team name or the owner (`excite`, `koriym` etc.).
+`Package` is the name of the application or service (`blog`, `news` etc.).
+Projects must be created on a per application basis. Even when you create a Web API and an HTML from different hosts, they are considered one project.
+
+
+## Style
+
+BEAR.Sunday follows the PSR style.
+
+  * [PSR1](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-1-basic-coding-standard.md)
+  * [PSR2](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-2-coding-style-guide.md)
+  * [PSR4](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-4-autoloader.md)
+
+
+Here is ResourceObject code example.
+
+```php
+<?php
+namespace Koriym\Blog\Resource\App;
+
+use BEAR\RepositoryModule\Annotation\Cacheable;
+use BEAR\Resource\Annotation\Embed;
+use BEAR\Resource\Annotation\Link;
+use BEAR\Resource\Code;
+use BEAR\Resource\ResourceObject;
+use BEAR\Sunday\Inject\ResourceInject;
+use Ray\AuraSqlModule\AuraSqlInject;
+
+/**
+ * @Cacheable
+ */
+class Entry extends ResourceObject
+{
+    use AuraSqlInject;
+    use ResourceInject;
+
+    /**
+     * @Embed(rel="author", src="/author{?author_id}")
+     */
+    public function onGet(string $author_id, string $slug): static
+    {
+        // ...
+
+        return $this;
+    }
+
+    /**
+     * @Link(rel="next_act", href="/act1")
+     * @Link(rel="next_act2", href="/act2")
+     */
+    public function onPost (
+        string $tile,
+        string $body,
+        string $uid,
+        string $slug
+    ): static {
+        // ...
+        $this->code = Code::CREATED;
+
+        return $this;
+    }
+}
+```
+
+A [DocBlock comment]([https://phpdoc.org/docs/latest/getting-started/your-first-set-of-documentation.html]) is optional. A DocBlock contains the method summary in one line.
+Then followed by the description, which can be a multiple lines.
+We should also put @params and @Link after description if possible.
+
+
+
+```php?start_inline
+/**
+ * A summary informing the user what the associated element does.
+ *
+ * A *description*, that can span multiple lines, to go _in-depth_ into the details of this element
+ * and to provide some background information or textual references.
+ *
+ * @param string $arg1 *description*
+ * @param string $arg2 *description*
+ * @param string $arg3 *description*
+ *
+ * @Link(rel="next_act", href="/next_act_uri")
+ * @Link(rel="next_act2", href="/next_act_uri2")
+*/
+```
+
+## Resources
+
+See [Resource Best Practices](resource_bp.html) for best practices for resources.
+
+## Globals
+
+We do not recommend referencing global values in resources or application classes. It is only used with Modules.
+
+* Do not refer to the value of [Superglobal](http://php.net/manual/ja/language.variables.superglobals.php)
+* Do not use [define](http://php.net/manual/en/function.define.php)
+* Do not create `Config` class to hold set values.
+* Do not use global object container (service locator) [[1]](http://koriym.github.io/adv10/), [[2]](http://blog.ploeh.dk/2010/02/03/ServiceLocatorisanAnti-Pattern/)
+* Use [Date](http://php.net/manual/en/function.date.php) function and [DateTime](http://php.net/manual/en/class.datetime.php) class. It is not recommended to get the time directly. Inject the time from outside using [koriym/now](https://github.com/koriym/Koriym.Now).
+
+
+Global method calls such as static methods are also not recommended.
+
+The values required by the application code are all injected. The setting files are used for injecting. When you need an external value such as Web API, make a special gateway class for all requests. Then you can mock that special class with DI or AOP.
+
+## Classes and object
+
+* * [Traits](http://php.net/manual/en/language.oop5.traits.php) are not recommended. Traits for injection such as `ResourceInject` that reduce boilerplate code for injection were added in PHP8 [constructor property promotion (declaring properties in the constructor signature)](https://www.php.net/manual/en/language.oop5.decon.php#language.oop5.decon.constructor.promotion). Use constructor injection.
+* It is not recommended for the child classes to use the parent class methods. Common functions are not shared by inheritance and trait, they are dedicated classes and they are injected and used. [Composite from inheritance](https://en.wikipedia.org/wiki/Composition_over_inheritance).
+* A class with only one method should reflect the function to the class name and should set the name of the method to `__invoke ()` so that function access can be made.
+
+## Script command
+
+* It is recommended to end the setup by using the `composer setup` command. This script includes the necessary database initialization and library checking. If manual operation such as `.env` setting is required, it is recommended that the procedure be displayed on the screen.
+* It is recommended that all application caches and logs are cleared with `composer cleanup` command.
+* It is recommended that all executable test (phpinit/phpcs/phpmd ..) are invoked with `composer test` command.
+* It is recommended an application is deployed with `composer deploy` command.
+
+## Code check
+
+It is recommended to check the codes for each commit with the following commands. These commands can be installed with [bear/qatools](https://github.com/bearsunday/BEAR.QATools).
+
+```
+phpcs src tests
+phpmd src text ./phpmd.xml
+php-cs-fixer fix --config-file=./.php_cs
+phpcbf src
+```
+
+## Resources
+
+Please also refer to [Resouce best practice](/manuals/1.0/en/resource.html#best-practice).
+
+### Code
+
+Returns the appropriate status code. Testing is easier, and the correct information can be conveyed to bots and crawlers.
+
+* `100` Continue Continuation of multiple requests
+* `200` OK
+* `201` Created Resource Creation
+* `202` Accepted queue / batch acceptance
+* `204` If there is no content body
+* `304` Not Modified Not Updated
+* `400` Bad request
+* `401` Unauthorized Authentication required
+* `403` Forbidden ban
+* `404` Not Found
+* `405` Method Not Allowed
+* `503` Service Unavailable Temporary error on server side
+
+In `OnPut` method, you deal with the resource state with idempotence. For example, resource creation with UUID or update resource state.
+
+`OnPatch` is implemented when changing the state of a part of a resource.
+
+### HTML Form Method
+
+BEAR.Sunday can overwrite methods using the `X-HTTP-Method-Override` header or` _method` query at the `POST` request in the HTML web form, but it is not necessarily recommended . For the Page resource, it is OK to implement policies other than `onGet` and` onPost`. [[1]](http://programmers.stacxchange.com/questions/114156/why-are-there-are-no-put-and-delete-methods-on-html-forms), [[2]](Http://roy.gbiv.com/untangled/2009/it-is-okay-to-use-post)
+
+### Hyperlink
+
+* It is recommended that resources with links be indicated by `#[Link]`.
+* It is recommended that resources be embedded as a graph of semantic coherence with `#[Embed]`.
+
+## DI
+
+ * Do not inject the value itself of the execution context (prod, dev etc). Instead, we inject instances according to the context. The application does not know in which context it is running.
+ * Setter injection is not recommended for library code.
+ * It is recommended that you override the `toConstructor` bindings instead and avoid the `Provider` bindings as much as possible.
+ * Avoid binding by `Module` according to conditions. [AvoidConditionalLogicInModules](https://github.com/google/guice/wiki/AvoidConditionalLogicInModules)
+ * It is not recommended to reference environmental variables since there is no module. Pass it in the constructor.
+
+## AOP
+
+ * Do not make interceptor mandatory. We will make the program work even without an interceptor. (For example, if you remove `@Transactional` interceptor, the function of transaction will be lost, but "core concers" will work without issue.)
+ * Prevent the interceptor from injecting dependencies in methods. Values that can only be determined at implementation time are injected into arguments via `@Assisted` injection.
+ * If there are multiple interceptors, do not depend on the execution order.
+ * If it is an interceptor unconditionally applied to all methods, consider the description in `bootstrap.php`.
+
+## Environment
+
+To make applications testable, it should also work on the console, and not only on the Web.
+
+It is recommended not to include the `.env` file in the project repository.
+
+## Testing
+
+* Focus on resource testing using resource clients, adding resource representation testing (e.g. HTML) if needed.
+* Hypermedia tests can leave use cases as tests.
+* `prod` is the context for production. Use of the `prod` context in tests should be minimal, preferably none.
+
+## HTML templates
+
+* Avoid large loop statements. Consider replacing if statements in loops with [Generator](https://www.php.net/manual/en/language.generators.overview.php).
+
+---
+
+
+
+# PHPDoc Types
+
+PHP is a dynamically typed language, but by using static analysis tools like psalm or phpstan along with PHPDoc, we can express advanced type concepts and benefit from type checking during static analysis. This reference explains the types available in PHPDoc and other related concepts.
+
+## Table of Contents
+
+1. [Atomic Types](#atomic-types)
+    - [Scalar Types](#scalar-types)
+    - [Object Types](#object-types)
+    - [Array Types](#array-types)
+    - [Callable Types](#callable-types)
+    - [Value Types](#value-types)
+    - [Special Types](#special-types)
+2. [Compound Types](#compound-types)
+    - [Union Types](#union-types)
+    - [Intersection Types](#intersection-types)
+3. [Advanced Type System](#advanced-type-system)
+    - [Generic Types](#generic-types)
+    - [Template Types](#template-types)
+    - [Conditional Types](#conditional-types)
+    - [Type Aliases](#type-aliases)
+    - [Type Constraints](#type-constraints)
+    - [Covariance and Contravariance](#covariance-and-contravariance)
+4. [Type Operators (Utility Types)](#type-operators)
+    - [Key-of and Value-of Types](#key-of-and-value-of-types)
+    - [Properties-of Type](#properties-of-type)
+    - [Class Name Mapping Type](#class-name-mapping-type)
+    - [Index Access Type](#index-access-type)
+5. [Functional Programming Concepts](#functional-programming-concepts)
+    - [Pure Functions](#pure-functions)
+    - [Immutable Objects](#immutable-objects)
+    - [Side Effect Annotations](#side-effect-annotations)
+    - [Higher-Order Functions](#higher-order-functions)
+6. [Assert Annotations](#assert-annotations)
+7. [Security Annotations](#security-annotations)
+8. [Example: Using Types in Design Patterns](#example-using-types-in-design-patterns)
+
+---
+
+## Atomic Types
+
+These are the basic types that cannot be further divided.
+
+### Scalar Types
+
+```php
+/** @param int $i */
+/** @param float $f */
+/** @param string $str */
+/** @param lowercase-string $lowercaseStr */
+/** @param non-empty-string $nonEmptyStr */
+/** @param non-empty-lowercase-string $nonEmptyLowercaseStr */
+/** @param class-string $class */
+/** @param class-string<AbstractFoo> $fooClass */
+/** @param callable-string $callable */
+/** @param numeric-string $num */ 
+/** @param bool $isSet */
+/** @param array-key $key */
+/** @param numeric $num */
+/** @param scalar $a */
+/** @param positive-int $positiveInt */
+/** @param negative-int $negativeInt */
+/** @param int-range<0, 100> $percentage */
+/** @param int-mask<1, 2, 4> $flags */
+/** @param int-mask-of<MyClass::CLASS_CONSTANT_*> $classFlags */
+/** @param trait-string $trait */
+/** @param enum-string $enum */
+/** @param literal-string $literalStr */
+/** @param literal-int $literalInt */
+```
+
+These types can be combined using [Compound Types](#compound-types) and [Advanced Type System](#advanced-type-system).
+
+### Object Types
+
+```php
+/** @param object $obj */
+/** @param stdClass $std */
+/** @param Foo\Bar $fooBar */
+/** @param object{foo: string, bar?: int} $objWithProperties */
+/** @return ArrayObject<int, string> */
+/** @param Collection<User> $users */
+/** @return Generator<int, string, mixed, void> */
+```
+
+Object types can be combined with [Generic Types](#generic-types).
+
+### Array Types
+
+#### Generic Arrays
+
+```php
+/** @return array<TKey, TValue> */
+/** @return array<int, Foo> */
+/** @return array<string, int|string> */
+/** @return non-empty-array<string, int> */
+```
+
+Generic arrays use the concept of [Generic Types](#generic-types).
+
+#### Object-like Arrays
+
+```php
+/** @return array{0: string, 1: string, foo: stdClass, 28: false} */
+/** @return array{foo: string, bar: int} */
+/** @return array{optional?: string, bar: int} */
+```
+
+#### Lists
+
+```php
+/** @param list<string> $stringList */
+/** @param non-empty-list<int> $nonEmptyIntList */
+```
+
+#### PHPDoc Arrays (Legacy Notation)
+
+```php
+/** @param string[] $strings */
+/** @param int[][] $nestedInts */
+```
+
+### Callable Types
+
+```php
+/** @return callable(Type1, OptionalType2=, SpreadType3...): ReturnType */
+/** @return Closure(bool):int */
+/** @param callable(int): string $callback */
+```
+
+Callable types are especially important in [Higher-Order Functions](#higher-order-functions).
+
+### Value Types
+
+```php
+/** @return null */
+/** @return true */
+/** @return false */
+/** @return 42 */
+/** @return 3.14 */
+/** @return "specific string" */
+/** @param Foo\Bar::MY_SCALAR_CONST $const */
+/** @param A::class|B::class $classNames */
+```
+
+### Special Types
+
+```php
+/** @return void */
+/** @return never */
+/** @return empty */
+/** @return mixed */
+/** @return resource */
+/** @return closed-resource */
+/** @return iterable<TKey, TValue> */
+```
+
+## Compound Types
+
+These are types created by combining multiple [Atomic Types](#atomic-types).
+
+### Union Types
+
+```php
+/** @param int|string $id */
+/** @return string|null */
+/** @var array<string|int> $mixedArray */
+/** @return 'success'|'error'|'pending' */
+```
+
+### Intersection Types
+
+```php
+/** @param Countable&Traversable $collection */
+/** @param Renderable&Serializable $object */
+```
+
+Intersection types can be useful in implementing [Design Patterns](#example-using-types-in-design-patterns).
+
+## Advanced Type System
+
+These are advanced features that allow for more complex and flexible type expressions.
+
+### Generic Types
+
+```php
+/**
+ * @template T
+ * @param array<T> $items
+ * @param callable(T): bool $predicate
+ * @return array<T>
+ */
+function filter(array $items, callable $predicate): array {
+    return array_filter($items, $predicate);
+}
+```
+
+Generic types are often used in combination with [Higher-Order Functions](#higher-order-functions).
+
+### Template Types
+
+```php
+/**
+ * @template T of object
+ * @param class-string<T> $className
+ * @return T
+ */
+function create(string $className)
+{
+    return new $className();
+}
+```
+
+Template types can be used in combination with [Type Constraints](#type-constraints).
+
+### Conditional Types
+
+```php
+/**
+ * @template T
+ * @param T $value
+ * @return (T is string ? int : string)
+ */
+function processValue($value) {
+    return is_string($value) ? strlen($value) : strval($value);
+}
+```
+
+Conditional types may be used in combination with [Union Types](#union-types).
+
+### Type Aliases
+
+```php
+/**
+ * @psalm-type UserId = positive-int
+ * @psalm-type UserData = array{id: UserId, name: string, email: string}
+ */
+
+/**
+ * @param UserData $userData
+ * @return UserId
+ */
+function createUser(array $userData): int {
+    // User creation logic
+    return $userData['id'];
+}
+```
+
+Type aliases are helpful for simplifying complex type definitions.
+
+### Type Constraints
+
+Type constraints allow you to specify more concrete type requirements for type parameters.
+
+```php
+/**
+ * @template T of \DateTimeInterface
+ * @param T $date
+ * @return T
+ */
+function cloneDate($date) {
+    return clone $date;
+}
+
+// Usage example
+$dateTime = new DateTime();
+$clonedDateTime = cloneDate($dateTime);
+```
+
+In this example, `T` is constrained to classes that implement `\DateTimeInterface`.
+
+### Covariance and Contravariance
+
+When dealing with generic types, the concepts of [covariance and contravariance](https://www.php.net/manual/en/language.oop5.variance.php) become important.
+
+```php
+/**
+ * @template-covariant T
+ */
+interface Producer {
+    /** @return T */
+    public function produce();
+}
+
+/**
+ * @template-contravariant T
+ */
+interface Consumer {
+    /** @param T $item */
+    public function consume($item);
+}
+
+// Usage example
+/** @var Producer<Dog> $dogProducer */
+/** @var Consumer<Animal> $animalConsumer */
+```
+
+Covariance allows you to use a more specific type (subtype), while contravariance means you can use a more basic type (supertype).
+
+## Type Operators
+
+Type operators allow you to generate new types from existing ones. Psalm refers to these as utility types.
+
+### Key-of and Value-of Types
+
+- `key-of` retrieves the type of all keys in a specified array or object, while `value-of` retrieves the type of its values.
+
+```php
+/**
+ * @param key-of<UserData> $key
+ * @return value-of<UserData>
+ */
+function getUserData(string $key) {
+    $userData = ['id' => 1, 'name' => 'John', 'email' => 'john@example.com'];
+    return $userData[$key] ?? null;
+}
+
+/**
+ * @return ArrayIterator<key-of<UserData>, value-of<UserData>>
+ */
+function getUserDataIterator() {
+    $userData = ['id' => 1, 'name' => 'John', 'email' => 'john@example.com'];
+    return new ArrayIterator($userData);
+}
+```
+
+### Properties-of Type
+
+`properties-of` represents the type of all properties of a class. This is useful when dealing with class properties dynamically.
+
+```php
+class User {
+    public int $id;
+    public string $name;
+    public ?string $email;
+}
+
+/**
+ * @param User $user
+ * @param key-of<properties-of<User>> $property
+ * @return value-of<properties-of<User>>
+ */
+function getUserProperty(User $user, string $property) {
+    return $user->$property;
+}
+
+// Usage example
+$user = new User();
+$propertyValue = getUserProperty($user, 'name'); // $propertyValue is of type string
+```
+
+`properties-of` has the following variants:
+
+- `public-properties-of<T>`: Targets only public properties.
+- `protected-properties-of<T>`: Targets only protected properties.
+- `private-properties-of<T>`: Targets only private properties.
+
+Using these variants allows you to deal with properties of specific access modifiers.
+
+### Class Name Mapping Type
+
+`class-string-map` represents an array with class names as keys and their instances as values. This is useful for implementing dependency injection containers or factory patterns.
+
+```php
+/**
+ * @template T of object
+ * @param class-string-map<T, T> $map
+ * @param class-string<T> $className
+ * @return T
+ */
+function getInstance(array $map, string $className) {
+    return $map[$className] ?? new $className();
+}
+
+// Usage example
+$container = [
+    UserRepository::class => new UserRepository(),
+    ProductRepository::class => new ProductRepository(),
+];
+
+$userRepo = getInstance($container, UserRepository::class);
+```
+
+### Index Access Type
+
+The index access type (`T[K]`) represents the element of type `T` at index `K`. This is useful for accurately representing types when accessing array or object properties.
+
+```php
+/**
+ * @template T of array
+ * @template K of key-of<T>
+ * @param T $data
+ * @param K $key
+ * @return T[K]
+ */
+function getArrayValue(array $data, $key) {
+    return $data[$key];
+}
+
+// Usage example
+$config = ['debug' => true, 'version' => '1.0.0'];
+$debugMode = getArrayValue($config, 'debug'); // $debugMode is of type bool
+```
+
+These utility types are specific to psalm. They can be considered part of the [Advanced Type System](#advanced-type-system).
+
+## Functional Programming Concepts
+
+PHPDoc supports important concepts influenced by functional programming. Using these concepts can improve the predictability and reliability of your code.
+
+### Pure Functions
+
+Pure functions are functions without side effects that always return the same output for the same input.
+
+```php
+/**
+ * @pure
+ */
+function add(int $a, int $b): int 
+{
+    return $a + $b;
+}
+```
+
+This annotation indicates that the function has no side effects and always produces the same output for the same input.
+
+### Immutable Objects
+
+Immutable objects are objects whose state cannot be altered once they are created.
+
+```php
+/**
+ * @immutable
+ *
+ * - All properties are considered readonly.
+ * - All methods are implicitly treated as `@psalm-mutation-free`.
+ */
+class Point {
+    public function __construct(
+        private float $x, 
+        private float $y
+    ) {}
+
+    public function withX(float $x): static 
+    {
+        return new self($x, $this->y);
+    }
+
+    public function withY(float $y): static
+    {
+        return new self($this->x, $y);
+    }
+}
+```
+
+#### @psalm-mutation-free
+
+This annotation indicates that a method does not change the internal state of the class or any external state. Methods of `@immutable` classes implicitly have this property, but it can also be used for specific methods of non-immutable classes.
+
+```php
+class Calculator {
+    private float $lastResult = 0;
+
+    /**
+     * @psalm-mutation-free
+     */
+    public function add(float $a, float $b): float {
+        return $a + $b;
+    }
+
+    public function addAndStore(float $a, float $b): float {
+        $this->lastResult = $a + $b; // This is not allowed with @psalm-mutation-free
+        return $this->lastResult;
+    }
+}
+```
+
+#### @psalm-external-mutation-free
+
+This annotation indicates that a method does not change any external state. Changes to the internal state of the class are allowed.
+
+```php
+class Logger {
+    private array $logs = [];
+
+    /**
+     * @psalm-external-mutation-free
+     */
+    public function log(string $message): void {
+        $this->logs[] = $message; // Internal state change is allowed
+    }
+
+    public function writeToFile(string $filename): void {
+        file_put_contents($filename, implode("\n", $this->logs)); // This changes external state, so it can't be @psalm-external-mutation-free
+    }
+}
+```
+
+#### Guidelines for Using Immutability Annotations
+
+1. Use `@immutable` when the entire class is immutable.
+2. Use `@psalm-mutation-free` for specific methods that don't change any state.
+3. Use `@psalm-external-mutation-free` for methods that don't change external state but may change internal state.
+
+Properly expressing immutability can lead to many benefits, including improved safety in concurrent processing, reduced side effects, and easier-to-understand code.
+
+### Side Effect Annotations
+
+When a function has side effects, it can be explicitly annotated to caution its usage.
+
+```php
+/**
+ * @side-effect This function writes to the database
+ */
+function logMessage(string $message): void {
+    // Logic to write message to database
+}
+```
+
+### Higher-Order Functions
+
+Higher-order functions are functions that take functions as arguments or return functions. PHPDoc can be used to accurately express the types of higher-order functions.
+
+```php
+/**
+ * @param callable(int): bool $predicate
+ * @param list<int>           $numbers
+ * @return list<int>
+ */
+function filter(callable $predicate, array $numbers): array {
+    return array_filter($numbers, $predicate);
+}
+```
+
+Higher-order functions are closely related to [Callable Types](#callable-types).
+
+## Assert Annotations
+
+Assert annotations are used to inform static analysis tools that certain conditions are met.
+
+```php
+/**
+ * @psalm-assert string $value
+ * @psalm-assert-if-true string $value
+ * @psalm-assert-if-false null $value
+ */
+function isString($value): bool {
+    return is_string($value);
+}
+
+/**
+ * @psalm-assert !null $value
+ */
+function assertNotNull($value): void {
+    if ($value === null) {
+        throw new \InvalidArgumentException('Value must not be null');
+    }
+}
+
+/**
+ * @psalm-assert-if-true positive-int $number
+ */
+function isPositiveInteger($number): bool {
+    return is_int($number) && $number > 0;
+}
+```
+
+These assert annotations are used as follows:
+
+- `@psalm-assert`: Indicates that the assertion is true if the function terminates normally (without throwing an exception).
+- `@psalm-assert-if-true`: Indicates that the assertion is true if the function returns `true`.
+- `@psalm-assert-if-false`: Indicates that the assertion is true if the function returns `false`.
+
+Assert annotations may be used in combination with [Type Constraints](#type-constraints).
+
+## Security Annotations
+
+Security annotations are used to highlight security-critical parts of the code and track potential vulnerabilities. There are mainly three annotations:
+
+1. `@psalm-taint-source`: Indicates an untrusted input source.
+2. `@psalm-taint-sink`: Indicates where security-critical operations are performed.
+3. `@psalm-taint-escape`: Indicates where data has been safely escaped or sanitized.
+
+Here's an example of using these annotations:
+
+```php
+/**
+ * @psalm-taint-source input
+ */
+function getUserInput(): string {
+    return $_GET['user_input'] ?? '';
+}
+
+/**
+ * @psalm-taint-sink sql
+ */
+function executeQuery(string $query): void {
+    // Execute SQL query
+}
+
+/**
+ * @psalm-taint-escape sql
+ */
+function escapeForSql(string $input): string {
+    return addslashes($input);
+}
+
+// Usage example
+$userInput = getUserInput();
+$safeSqlInput = escapeForSql($userInput);
+executeQuery("SELECT * FROM users WHERE name = '$safeSqlInput'");
+```
+
+By using these annotations, static analysis tools can track the flow of untrusted input and detect potential security issues (such as SQL injection).
+
+## Example: Using Types in Design Patterns
+
+You can use the type system to implement common design patterns in a more type-safe manner.
+
+#### Builder Pattern
+
+```php
+/**
+ * @template T
+ */
+interface BuilderInterface {
+    /**
+     * @return T
+     */
+    public function build();
+}
+
+/**
+ * @template T
+ * @template-implements BuilderInterface<T>
+ */
+abstract class AbstractBuilder implements BuilderInterface {
+    /** @var array<string, mixed> */
+    protected $data = [];
+
+    /** @param mixed $value */
+    public function set(string $name, $value): static {
+        $this->data[$name] = $value;
+        return $this;
+    }
+}
+
+/**
+ * @extends AbstractBuilder<User>
+ */
+class UserBuilder extends AbstractBuilder {
+    public function build(): User {
+        return new User($this->data);
+    }
+}
+
+// Usage example
+$user = (new UserBuilder())
+    ->set('name', 'John Doe')
+    ->set('email', 'john@example.com')
+    ->build();
+```
+
+#### Repository Pattern
+
+```php
+/**
+ * @template T
+ */
+interface RepositoryInterface {
+    /**
+     * @param int $id
+     * @return T|null
+     */
+    public function find(int $id);
+
+    /**
+     * @param T $entity
+     */
+    public function save($entity): void;
+}
+
+/**
+ * @implements RepositoryInterface<User>
+ */
+class UserRepository implements RepositoryInterface {
+    public function find(int $id): ?User {
+        // Logic to retrieve user from database
+    }
+
+    public function save(User $user): void {
+        // Logic to save user to database
+    }
+}
+```
+
+#### Type Collection Demo
+
+A comprehensive demonstration showcasing PHP's rich type system capabilities through practical code examples.
+
+```php
+<?php
+
+namespace App\Final\Types;
+
+/**
+ * @psalm-type SqlQuery = string
+ * @psalm-type HtmlContent = string
+ * @psalm-type RegexPattern = regex-string
+ * @psalm-type ClassConstant = class-constant-string
+ * @psalm-type InterfaceClass = interface-string
+ */
+class SecurityContext {
+    /**
+     * @param non-empty-string $userInput
+     * @return html-escaped-string
+     * 
+     * @psalm-taint-source input $userInput
+     * @psalm-taint-escape html
+     */
+    public function escapeHtml(string $userInput): string {
+        return htmlspecialchars($userInput, ENT_QUOTES, 'UTF-8');
+    }
+
+    /**
+     * @param array<string, mixed> $params
+     * @return SqlQuery
+     * 
+     * @psalm-taint-sink sql $query
+     * @psalm-taint-escape sql
+     */
+    public function prepareSqlQuery(array $params): string {
+        $query = "SELECT * FROM users WHERE id = :id";
+        // prepared statements here
+        return $query;
+    }
+
+    /**
+     * @param RegexPattern $pattern
+     * @param non-empty-string $subject
+     * @return array<array-key, string>
+     *
+     * @psalm-taint-specialize
+     */
+    public function secureMatch(string $pattern, string $subject): array {
+        if (@preg_match($pattern, '') === false) {
+            throw new \InvalidArgumentException('Invalid regex pattern');
+        }
+        preg_match_all($pattern, $subject, $matches);
+        return $matches[0];
+    }
+}
+
+/**
+ * @template T
+ * @psalm-require-extends \Exception
+ */
+class TypedException extends \Exception {
+    /** @var T */
+    private mixed $context;
+
+    /**
+     * @param T $context
+     */
+    public function __construct(mixed $context) {
+        $this->context = $context;
+        parent::__construct();
+    }
+
+    /**
+     * @return T
+     * @psalm-mutation-free
+     */
+    public function getContext(): mixed {
+        return $this->context;
+    }
+}
+
+/**
+ * @template T
+ * @psalm-require-implements \Stringable
+ */
+class StringWrapper {
+    /**
+     * @param T $value
+     */
+    public function __construct(
+        private readonly mixed $value
+    ) {}
+
+    /**
+     * @return non-empty-string
+     * @psalm-trace
+     */
+    public function toString(): string {
+        return (string) $this->value;
+    }
+}
+
+/**
+ * @psalm-type MemoryTrace = array{
+ *   allocation: positive-int,
+ *   deallocated: bool,
+ *   stack_trace: list<non-empty-string>
+ * }
+ */
+class MemoryManager {
+    /** @var array<string, MemoryTrace> */
+    private array $traces = [];
+
+    /**
+     * @param object $object
+     * @return positive-int
+     * @psalm-flows-into $this->traces
+     */
+    public function track(object $object): int {
+        $id = spl_object_id($object);
+        $this->traces[spl_object_hash($object)] = [
+            'allocation' => memory_get_usage(true),
+            'deallocated' => false,
+            'stack_trace' => debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS)
+        ];
+        return $id;
+    }
+}
+
+/**
+ * @template T of object
+ * @psalm-type Middleware = callable(T, callable(T): void): void
+ */
+class MiddlewareChain {
+    /** @var list<Middleware<T>> */
+    private array $middlewares = [];
+
+    /**
+     * @param Middleware<T> $middleware
+     */
+    public function append(callable $middleware): void {
+        $this->middlewares[] = $middleware;
+    }
+
+    /**
+     * @param T $context
+     * @psalm-taint-specialize $context
+     */
+    public function execute(object $context): void {
+        $next = function($ctx) use (&$next): void {};
+        
+        foreach (array_reverse($this->middlewares) as $middleware) {
+            $next = function($ctx) use ($middleware, $next): void {
+                $middleware($ctx, $next);
+            };
+        }
+
+        $next($context);
+    }
+}
+
+/**
+ * @template T
+ */
+interface Cache {
+    /**
+     * @param non-empty-string $key
+     * @param T $value
+     * @param positive-int|null $ttl
+     * @psalm-taint-sink system $key
+     */
+    public function set(string $key, mixed $value, ?int $ttl = null): void;
+
+    /**
+     * @param non-empty-string $key
+     * @return T|null
+     * @psalm-taint-sink system $key
+     */
+    public function get(string $key): mixed;
+}
+
+/**
+ * @template T
+ * @implements Cache<T>
+ */
+class FileCache implements Cache {
+    /**
+     * @param non-empty-string $directory
+     * @throws \RuntimeException
+     */
+    public function __construct(
+        private readonly string $directory
+    ) {
+        if (!is_dir($directory) && !mkdir($directory, 0777, true)) {
+            throw new \RuntimeException("Cannot create directory: {$directory}");
+        }
+    }
+
+    /**
+     * @param non-empty-string $key
+     * @param T $value
+     * @param positive-int|null $ttl
+     * @psalm-taint-sink system $key
+     * @psalm-taint-sink file $value
+     */
+    public function set(string $key, mixed $value, ?int $ttl = null): void {
+        $path = $this->getPath($key);
+        file_put_contents($path, serialize([
+            'value' => $value,
+            'expires_at' => $ttl ? time() + $ttl : null
+        ]));
+    }
+
+    /**
+     * @param non-empty-string $key
+     * @return T|null
+     * @psalm-taint-sink system $key
+     * @psalm-taint-source file
+     */
+    public function get(string $key): mixed {
+        $path = $this->getPath($key);
+        if (!file_exists($path)) {
+            return null;
+        }
+
+        $data = unserialize(file_get_contents($path));
+        if ($data['expires_at'] !== null && $data['expires_at'] < time()) {
+            unlink($path);
+            return null;
+        }
+
+        return $data['value'];
+    }
+
+    /**
+     * @param non-empty-string $key
+     * @return non-empty-string
+     * @psalm-taint-escape file
+     */
+    private function getPath(string $key): string {
+        return $this->directory . '/' . hash('sha256', $key);
+    }
+}
+```
+
+## Summary
+
+By deeply understanding and appropriately using the PHPDoc type system, you can benefit from self-documenting code, early bug detection through static analysis, powerful code completion and assistance from IDEs, clarification of code intentions and structure, and mitigation of security risks. This allows you to write more robust and maintainable PHP code.
+
+The following is an example that covers all available types.
+
+```php
+<?php
+
+namespace App\Comprehensive\Types;
+
+/**
+ * Example class covering atomic, scalar, union, intersection, and generic types
+ *
+ * @psalm-type UserId = int
+ * @psalm-type HtmlContent = string
+ * @psalm-type PositiveFloat = float&positive
+ * @psalm-type Numeric = int|float
+ * @psalm-type QueryResult = array<string, mixed>
+ */
+class TypeExamples {
+    /**
+     * Retrieves user content based on ID
+     *
+     * @param UserId|non-empty-string $id
+     * @return HtmlContent
+     */
+    public function getUserContent(int|string $id): string {
+        return "<p>User ID: {$id}</p>";
+    }
+
+    /**
+     * Processes a positive float amount
+     *
+     * @param PositiveFloat $amount
+     * @return bool
+     */
+    public function processPositiveAmount(float $amount): bool {
+        return $amount > 0;
+    }
+}
+
+/**
+ * Immutable class, functional programming, pure function example
+ *
+ * @immutable
+ */
+class ImmutableUser {
+    /** @var non-empty-string */
+    private string $name;
+
+    /** @var positive-int */
+    private int $age;
+
+    /**
+     * Constructor for an immutable user
+     *
+     * @param non-empty-string $name
+     * @param positive-int $age
+     */
+    public function __construct(string $name, int $age) {
+        $this->name = $name;
+        $this->age = $age;
+    }
+
+    /**
+     * Returns a new user with additional years added
+     *
+     * @psalm-pure
+     * @return ImmutableUser
+     */
+    public function withAdditionalYears(int $additionalYears): self {
+        return new self($this->name, $this->age + $additionalYears);
+    }
+}
+
+/**
+ * Template type, generic type, conditional type, covariance and contravariance example
+ *
+ * @template T
+ * @template-covariant U
+ */
+class StorageContainer {
+    /** @var array<T, U> */
+    private array $items = [];
+
+    /**
+     * Adds a new item to the container
+     *
+     * @param T $key
+     * @param U $value
+     */
+    public function add(mixed $key, mixed $value): void {
+        $this->items[$key] = $value;
+    }
+
+    /**
+     * Retrieves an item by its key
+     *
+     * @param T $key
+     * @return U|null
+     * @psalm-assert-if-true string $key
+     */
+    public function get(mixed $key): mixed {
+        return $this->items[$key] ?? null;
+    }
+
+    /**
+     * @template V
+     * @param T $key
+     * @return (T is string ? string : U|null)
+     */
+    public function conditinalGet(mixed $key): mixed {
+        return is_string($key) ? "default_string_value" : ($this->items[$key] ?? null);
+    }
+}
+
+/**
+ * Example of type constraints, utility types, functional programming, and assertion annotations
+ *
+ * @template T of array-key
+ */
+class UtilityExamples {
+    /**
+     * Returns the keys of an associative array
+     *
+     * @template T of array-key
+     * @psalm-param array<T, mixed> $array
+     * @psalm-return list<T>
+     * @psalm-assert array<string, mixed> $array
+     */
+    public function getKeys(array $array): array {
+        return array_keys($array);
+    }
+
+    /**
+     * Maps classes to their instances
+     *
+     * @template T of object
+     * @psalm-param class-string-map<T, array-key> $classes
+     * @psalm-return list<T>
+     */
+    public function mapClasses(array $classes): array {
+        return array_map(fn(string $className): object => new $className(), array_keys($classes));
+    }
+}
+
+/**
+ * High-order function, type alias, index access type example
+ *
+ * @template T
+ * @psalm-type Predicate = callable(T): bool
+ */
+class FunctionalExamples {
+    /**
+     * Filters items based on a predicate
+     *
+     * @param list<T> $items
+     * @param Predicate<T> $predicate
+     * @return list<T>
+     */
+    public function filter(array $items, callable $predicate): array {
+        return array_filter($items, $predicate);
+    }
+
+    /**
+     * Retrieves a value from a map by key
+     *
+     * @param array<string, T> $map
+     * @param key-of $map $key
+     * @return T|null
+     */
+    public function getValue(array $map, string $key): mixed {
+        return $map[$key] ?? null;
+    }
+}
+
+/**
+ * Security annotation, type constraint, index access type, property access type, key and value access type example
+ *
+ * @template T
+ */
+class SecureAccess {
+    /**
+     * Retrieves a property from a user profile
+     *
+     * @psalm-type UserProfile = array{
+     *   id: int,
+     *   name: non-empty-string,
+     *   email: non-empty-string,
+     *   roles: list<non-empty-string>
+     * }
+     * @psalm-param UserProfile $profile
+     * @psalm-param key-of<UserProfile> $property
+     * @return value-of<UserProfile>
+     * @psalm-taint-escape system
+     */
+    public function getUserProperty(array $profile, string $property): mixed {
+        return $profile[$property];
+    }
+}
+
+/**
+ * Complex structure type, security annotations, pure function example
+ *
+ * @template T of object
+ * @template-covariant U of array-key
+ * @psalm-type ErrorResponse = array{error: non-empty-string, code: positive-int}
+ */
+class ComplexExample {
+    /** @var array<U, T> */
+    private array $registry = [];
+
+    /**
+     * Registers an object by key
+     *
+     * @param U $key
+     * @param T $value
+     */
+    public function register(mixed $key, object $value): void {
+        $this->registry[$key] = $value;
+    }
+
+    /**
+     * Retrieves a registered object by key
+     *
+     * @param U $key
+     * @return T|null
+     * @psalm-pure
+     * @psalm-assert-if-true ErrorResponse $this->registry[$key]
+     */
+    public function getRegistered(mixed $key): ?object {
+        return $this->registry[$key] ?? null;
+    }
+}
+
+```
+
+
+## References
+
+To make the most of PHPDoc types, static analysis tools like Psalm or PHPStan are necessary. For more details, refer to the following resources:
+
+- [Psalm - Typing in Psalm](https://psalm.dev/docs/annotating_code/typing_in_psalm/)
+   - [Atomic Types](https://psalm.dev/docs/annotating_code/type_syntax/atomic_types/)
+   - [Templating](https://psalm.dev/docs/annotating_code/templated_annotations/)
+   - [Assertions](https://psalm.dev/docs/annotating_code/adding_assertions/)
+   - [Security Analysis](https://psalm.dev/docs/security_analysis/)
+- [PHPStan - PHPDoc Types](https://phpstan.org/writing-php-code/phpdoc-types)
+
+
+
+# Stream Response
+
+Normally, resources are rendered by renderers into one string and finally `echo`ed out, but then you cannot output content whose size exceeds the memory limit of PHP. With `StreamRenderer` you can stream HTTP output and you can output large size content while keeping memory consumption low. Stream output can also be used in coexistence with existing renderers.
+
+## Change Transferer and Renderer
+
+Use the [StreamTransferInject](https://github.com/bearsunday/BEAR.Streamer/blob/1.x/src/StreamTransferInject.php) trait on the page to render and respond to the stream output. In the example of this download page, since `$body` is made to be a resource variable of the stream, the injected renderer is ignored and the resource is streamed.
+
+```php?start_inline
+use BEAR\Streamer\StreamTransferInject;
+
+class Download extends ResourceObject
+{
+    use StreamTransferInject;
+
+    public $headers = [
+        'Content-Type' => 'image/jpeg',
+        'Content-Disposition' => 'attachment; filename="image.jpg"'
+    ];
+
+    public function onGet(): static
+    {
+        $fp = fopen(__DIR__ . '/BEAR.jpg', 'r');
+        $this->body = $fp;
+
+        return $this;
+    }
+}
+```
+
+## With Renderers
+
+Stream output can coexist with conventional renderers. Normally, Twig renderers and JSON renderers generate character strings, but when a stream is assigned to a part of it, the whole is output as a stream.
+
+This is an example of assigning a `string` and a `resource` variable to the Twig template and generating a page of inline image.
+
+Template
+
+```twig
+<!DOCTYPE html>
+<html lang="en">
+<body>
+<p>Hello, {% raw  %}{{ name }}{% endraw %}</p>
+<img src="data:image/jpg;base64,{% raw  %}{{ image }}{% endraw %}">
+</body>
+</html>
+```
+
+`name` assigns the string as usual, but assigns the resource variable of the image file's pointer resource to` image` with the `base64-encode` filter.
+
+```php?start_inline
+class Image extends ResourceObject
+{
+    use StreamTransferInject;
+
+    public function onGet(string $name = 'inline image'): static
+    {
+        $fp = fopen(__DIR__ . '/image.jpg', 'r');
+        stream_filter_append($fp, 'convert.base64-encode'); // image base64 format
+        $this->body = [
+            'name' => $name,
+            'image' => $fp
+        ];
+
+        return $this;
+    }
+}
+```
+
+If you want to further control streaming such as streaming bandwidth and timing control, uploading to the cloud, etc use [StreamResponder](https://github.com/bearsunday/BEAR.Streamer/blob/1.x/src /StreamResponder.php ) which is build for it.
+
+The demo is available at [MyVendor.Stream](https://github.com/bearsunday/MyVendor.Stream).
+
+
+---
+*[This document](https://github.com/bearsunday/bearsunday.github.io/blob/master/manuals/1.0/en/stream.md) needs to be proofread by native speaker.*
+
+
+# Command Line Interface (CLI)
+
+BEAR.Sunday's Resource Oriented Architecture (ROA) represents all application functionality as URI-addressable resources. This approach allows resources to be accessed through various means, not just through the web.
+
+```bash
+$ php bin/page.php '/greeting?name=World&lang=fr'
+{
+    "greeting": "Bonjour, World",
+    "lang": "fr"
+}
+```
+
+BEAR.Cli is a tool that converts these resources into native CLI commands and makes them distributable via Homebrew, which uses formula scripts to define installation procedures.
+
+```bash
+$ greet -n "World" -l fr
+Bonjour, World
+```
+
+You can reuse existing application resources as standard CLI tools without writing additional code. Through Homebrew distribution, users can utilize these tools like any other command-line tool, without needing to know they're powered by PHP or BEAR.Sunday.
+
+## Installation
+
+Install using Composer:
+
+```bash
+composer require bear/cli
+```
+
+## Basic Usage
+
+### Adding CLI Attributes to Resources
+
+Add CLI attributes to your resource class to define the command-line interface:
+
+```php
+use BEAR\Cli\Attribute\Cli;
+use BEAR\Cli\Attribute\Option;
+
+class Greeting extends ResourceObject
+{
+    #[Cli(
+        name: 'greet',
+        description: 'Say hello in multiple languages',
+        output: 'greeting'
+    )]
+    public function onGet(
+        #[Option(shortName: 'n', description: 'Name to greet')]
+        string $name,
+        #[Option(shortName: 'l', description: 'Language (en, ja, fr, es)')]
+        string $lang = 'en'
+    ): static {
+        $greeting = match ($lang) {
+            'ja' => 'こんにちは',
+            'fr' => 'Bonjour',
+            'es' => '¡Hola',
+            default => 'Hello',
+        };
+        $this->body = [
+            'greeting' => "{$greeting}, {$name}",
+            'lang' => $lang
+        ];
+
+        return $this;
+    }
+}
+```
+
+### Generating CLI Commands and Formula
+
+To convert a resource into a command, run the following command with your application name (vendor name and project name):
+
+```bash
+$ vendor/bin/bear-cli-gen 'MyVendor\MyProject'
+# Generated files:
+#   bin/cli/greet         # CLI command
+#   var/homebrew/greet.rb # Homebrew formula
+```
+
+Note: Homebrew formula is generated only when a GitHub repository is configured.
+
+## Command Usage
+
+The generated command provides standard CLI features such as:
+
+### Displaying Help
+
+```bash
+$ greet --help
+Say hello in multiple languages
+
+Usage: greet [options]
+
+Options:
+  --name, -n     Name to greet (required)
+  --lang, -l     Language (en, ja, fr, es) (default: en)
+  --help, -h     Show this help message
+  --version, -v  Show version information
+  --format       Output format (text|json) (default: text)
+```
+
+### Showing Version Information
+
+```bash
+$ greet --version
+greet version 0.1.0
+```
+
+### Basic Usage Examples
+
+```bash
+# Basic greeting
+$ greet -n "World"
+Hello, World
+
+# Specify language
+$ greet -n "World" -l ja
+こんにちは, World
+
+# Short options
+$ greet -n "World" -l fr
+Bonjour, World
+
+# Long options
+$ greet --name "World" --lang es
+¡Hola, World
+```
+
+### JSON Output
+
+```bash
+$ greet -n "World" -l ja --format json
+{
+    "greeting": "こんにちは, World",
+    "lang": "ja"
+}
+```
+
+### Output Behavior
+
+CLI command output follows these specifications:
+
+- **Default output**: Displays only the specified field value
+- **`--format=json` option**: Displays full JSON response similar to API endpoint
+- **Error messages**: Output to standard error (stderr)
+- **HTTP status code mapping**: Maps to exit codes (0: success, 1: client error, 2: server error)
+
+## Distribution
+
+Commands created with BEAR.Cli can be distributed via Homebrew.
+Formula generation requires the application to be published on GitHub:
+
+### 1. Local Formula Distribution
+
+For testing development versions:
+
+```bash
+$ brew install --formula ./var/homebrew/greet.rb
+```
+
+### 2. Homebrew Tap Distribution
+
+Method for wide distribution using a public repository:
+
+Note: The file name of the formula and the class name inside it are based on the name of the repository. For example, if the GH repository is `koriym/greet`, then `var/homebrew/greet.rb` will be generated, which contains the `Greet` class. In this case, `greet` will be the name of the tap that is published, but if you want to change it, please change the class name and file name of fomula script.
+
+```bash
+$ brew tap your-vendor/greet
+$ brew install your-vendor/greet
+```
+
+This method is particularly suitable for:
+
+- Open source projects
+- Continuous updates provision
+
+#### Testing Development Version
+
+```bash
+$ brew install --HEAD ./var/homebrew/greet.rb
+```
+```bash
+$ greet --version
+greet version 0.1.0
+```
+
+#### Stable Release
+
+1. Create a tag:
+```bash
+$ git tag -a v0.1.0 -m "Initial stable release"
+$ git push origin v0.1.0
+```
+
+2. Update formula:
+```diff
+ class Greet < Formula
++  desc "Your CLI tool description"
++  homepage "https://github.com/your-vendor/greet"
++  url "https://github.com/your-vendor/greet/archive/refs/tags/v0.1.0.tar.gz"
++  sha256 "..." # Add hash value obtained from the command below
++  version "0.1.0"
+   head "https://github.com/your-vendor/greet.git", branch: "main"
+   
+   depends_on "php@8.1"
+   depends_on "composer"
+ end
+```
+
+You can add dependencies like databases to the formula as needed. However, it's recommended to handle database setup and other environment configuration in the `bin/setup` script.
+
+3. Get SHA256 hash:
+```bash
+# Download tarball from GitHub and calculate hash
+$ curl -sL https://github.com/your-vendor/greet/archive/refs/tags/v0.1.0.tar.gz | shasum -a 256
+```
+
+4. Create Homebrew tap:
+   Create a repository using [GitHub CLI(gh)](https://cli.github.com/) or [github.com/new](https://github.com/new). The public repository name must start with `homebrew-`, for example `homebrew-greet`:
+```bash
+$ gh auth login
+$ gh repo create your-vendor/homebrew-greet --public --clone
+# Or create and clone repository using the web interface
+$ cd homebrew-greet
+```
+
+5. Place and publish formula:
+```bash
+$ cp /path/to/project/var/homebrew/greet.rb .
+$ git add greet.rb
+$ git commit -m "Add formula for greet command"
+$ git push
+```
+
+6. Installation and distribution:
+   End users can start using the tool with just these commands. PHP environment and dependency package installation are handled automatically, so users don't need to worry about environment setup:
+```bash
+$ brew tap your-vendor/greet    # homebrew- prefix can be omitted
+$ brew install your-vendor/greet
+# Ready to use immediately
+$ greet --version
+greet version 0.1.0
+```
+
+## Formula Customization
+
+You can edit the formula using the `brew edit` command as needed:
+
+```bash
+$ brew edit your-vendor/greet
+```
+
+```ruby
+class Greet < Formula
+  desc "Your CLI tool description"
+  homepage "https://github.com/your-vendor/greet"
+  url "https://github.com/your-vendor/greet/archive/refs/tags/v0.1.0.tar.gz"
+  sha256 "..." # tgz SHA256
+  version "0.1.0"
+  
+  depends_on "php@8.4"  # Specify PHP version
+  depends_on "composer"
+
+  # Add if required by the application
+  # depends_on "mysql"
+  # depends_on "redis"
+end
+```
+
+## Clean Architecture
+
+BEAR.Cli demonstrates the strengths of both Resource Oriented Architecture (ROA) and Clean Architecture. Following Clean Architecture's principle that "UI is a detail," you can add CLI as a new adapter alongside the web interface for the same resource.
+
+Furthermore, BEAR.Cli supports not only command creation but also distribution and updates through Homebrew. This allows end users to start using tools with a single command, treating them as native UNIX commands without awareness of PHP or BEAR.Sunday.
+
+Additionally, CLI tools can be version-controlled and updated independently from the application repository. This means they can maintain stability and continuous updates as command-line tools without being affected by API evolution. This represents a new form of API delivery, realized through the combination of Resource Oriented Architecture and Clean Architecture.
+
+
+# Attributes
+
+BEAR.Sunday supports PHP8's [attributes](https://www.php.net/manual/en/language.attributes.overview.php) in addition to the annotations.
+
+**Annotation**
+```php?start_inline
+/**
+ * @Inject
+ * @Named('admin')
+ */
+public function setLogger(LoggerInterface $logger)
+```
+**Attribute**
+```php?start_inline
+#[Inject, Named('admin')]
+public function setLogger(LoggerInterface $logger)
+```
+
+```php?start_inline
+#[Embed(rel: 'weather', src: 'app://self/weather{?date}')]
+#[Link(rel: 'event', href: 'app://self/event{?news_date}')]
+public function onGet(string $date): self
+```
+
+## Apply to parameters
+
+While some annotations can only be applied to methods and require the argument names to be specified by name, the
+Attributes can be used to decorate arguments directly.
+
+```php?start_inline
+public __construct(#[Named('payment')] LoggerInterface $paymentLogger, #[Named('debug')] LoggerInterface $debugLogger)
+```
+
+```php?start_inline
+public function onGet($id, #[Assisted] DbInterface $db = null)
+```
+
+```php?start_inline
+public function onGet(#[CookieParam('id')]string $tokenId): void
+```
+
+```php?start_inline
+public function onGet(#[ResourceParam(uri: 'app://self/login#nickname')] string $nickname = null): static
+```
+## Compatibility
+
+Attributes and annotations can be mixed in a single project. [^1]
+All annotations described in this manual will work when converted to attributes.
+
+## Performance
+
+Although the cost of loading annotations/attributes for production is minimal due to optimization, you can speed up development by declaring that you will only use attribute readers, as follows
+
+```php?start_inline
+// tests/bootstap.php 
+
+use Ray\ServiceLocator\ServiceLocator;
+
+ServiceLocator::setReader(new AttributeReader());
+```
+
+```php?start_inline
+// DevModule
+ 
+$this->install(new AttributeModule());
+```
+
+---
+
+[^1]:Attributes take precedence when mixed in a single method.
+
+# API Doc
+
+ApiDoc generates API documentation from your application.
+
+The auto-generated documentation from your code and JSON schema will reduce your effort and keep your API documentation accurate.
+
+## Usage
+
+Install BEAR.ApiDoc.
+
+    composer require bear/api-doc --dev
+
+Copy the configuration file.
+
+    cp ./vendor/bear/api-doc/apidoc.xml.dist ./apidoc.xml
+
+## Source
+
+ApiDoc generates documentation by retrieving information from phpdoc, method signatures, and JSON schema.
+
+#### PHPDOC
+
+In phpdoc, the following parts are retrieved.
+For information that applies across resources, such as authentication, prepare a separate documentation page and link it with `@link`.
+
+```php
+/**
+ * {title}
+ *
+ * {description}
+ *
+ * {@link htttp;//example.com/docs/auth 認証}
+ */
+ class Foo extends ResourceObject
+ {
+ }
+```
+
+```php
+/**
+ * {title}
+ *
+ * {description}
+ *
+ * @param string $id ユーザーID
+ */
+ public function onGet(string $id ='kuma'): static
+ {
+ }
+```
+
+* If there is no `@param` description in the phpdoc of the method, get the information of the argument from the method signature.
+* The order of priority for information acquisition is phpdoc, JSON schema, and profile.
+
+## Configuration
+
+The configuration is written in XML.
+The minimum specification is as follows.
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<apidoc
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="https://bearsunday.github.io/BEAR.ApiDoc/apidoc.xsd">
+    <appName>MyVendor\MyProject</appName>
+    <scheme>app</scheme>
+    <docDir>docs</docDir>
+    <format>html</format>
+</apidoc>
+```
+
+### Required Attributes
+
+#### appName
+
+Application namespaces
+
+#### scheme
+
+The name of the schema to use for API documentation. `page` or `app`.
+
+#### docDir
+
+Output directory name.
+
+#### format
+
+The output format, HTML or MD (Mark down).
+
+### Optional attributes
+
+#### title
+
+API title
+
+```xml
+<title>MyBlog API</title>
+```
+
+#### description
+
+API description
+
+```xml
+<description>MyBlog API description</description
+```
+
+#### links
+
+Links. The `href` is the URL of the link, and the `rel` is its content.
+
+```xml
+<links>
+    <link href="https://www.example.com/issue" rel="issue" />
+    <link href="https://www.example.com/help" rel="help" />
+</links>
+```
+
+#### alps
+
+Specifies an "ALPS profile" that defines the terms used by the API.
+
+```xml
+<alps>alps/profile.json</alps>.
+```
+
+## Profile
+
+ApiDoc supports the [ALPS](http://alps.io/) format of the [RFC 6906 Profile](https://tools.ietf.org/html/rfc6906) which gives additional information to the application.
+
+Words used in API request and response keys are called semantic descriptors, and if you create a dictionary of profiles, you don't need to describe the words for each request.
+Centralized definitions of words and phrases prevent notational errors and aid in shared understanding.
+
+The words used in API request and response keys are called semantic descriptors, and creating a dictionary of profiles eliminates the need to explain the words for each request.
+Centralized definitions of words and phrases prevent shaky notation and aid in shared understanding.
+
+The following is an example of defining descriptors `firstName` and `familyName` with `title` and `def` respectively.
+While `title` describes a word and clarifies its meaning, `def` links standard words defined in vocabulary sites such as [Schema.org](https://schema.org/).
+
+ALPS profiles can be written in XML or JSON.
+
+profile.xml
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<alps
+     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:noNamespaceSchemaLocation="https://alps-io.github.io/schemas/alps.xsd">
+    <!-- Ontology -->
+    <descriptor id="firstName" title="The person's first name."/>
+    <descriptor id="familyName" def="https://schema.org/familyName"/>
+</alps>
+```
+
+profile.json
+
+```json
+{
+  "$schema": "https://alps-io.github.io/schemas/alps.json",
+  "alps": {
+    "descriptor": [
+      {"id": "firstName", "title": "The person's first name."}
+      {"id": "familyName", "def": "https://schema.org/familyName"},
+    ]
+  }
+}
+```
+
+Descriptions of words appearing in ApiDoc take precedence over phpdoc > JsonSchema > ALPS in that order.
+
+## Reference
+
+* [Demo](https://bearsunday.github.io/BEAR.ApiDoc/)
+* [ALPS](http://alps.io/)
+* [ALPS-ASD](https://github.com/koriym/app-state-diagram)
+
+
+
+## Application Import
+
+Resources created with BEAR.Sunday have unrivaled re-usability.
+You can run multiple applications at the same time and use resources of other applications. You do not need to set up separate web servers.
+
+Let's try using a resource in another application.
+
+Normally you would set up the new application as a package, For this tutorial let's create a new `my-vendor` and manually add it to the auto loader. .
+
+```bash
+mkdir my-vendor
+cd my-vendor
+composer create-project bear/skeleton Acme.Blog
+```
+
+In the `composer.json` in the `autoload` section add `Acme\\Blog`.
+
+```json
+"autoload": {
+    "psr-4": {
+        "MyVendor\\Weekday\\": "src/",
+        "Acme\\Blog\\": "my-vendor/Acme.Blog/src/"
+    }
+},
+```
+
+Dump the `autoload`.
+
+```bash
+composer dump-autoload
+```
+
+With this the configuration for the `Acme\Blog` application is complete.
+
+Next in order to import the application in `src/Module/AppModule.php` we use the `ImportAppModule` in `src/Module/AppModule.php` to install as an override.
+
+```php
+<?php
+// ...
+use BEAR\Resource\Module\ImportAppModule; // add this line
+use BEAR\Resource\ImportApp; // add this line
+use BEAR\Package\Context; // add this line
+
+class AppModule extends AbstractAppModule
+{
+    protected function configure()
+    {
+        // ...
+        $importConfig = [
+            new ImportApp('blog', 'Acme\Blog', 'prod-hal-app') // host, name, context
+        ];
+        $this->override(new ImportAppModule($importConfig , Context::class));
+    }
+}
+```
+
+With this a `Acme\Blog` application using a `prod-hal-app` context can create resources that will be available to the `blog` host.
+
+Let's check it works by creating an Import resource in `src/Resource/App/Import.php`.
+
+```php
+<?php
+namespace MyVendor\Weekday\Resource\App;
+
+use BEAR\Resource\ResourceObject;
+use BEAR\Sunday\Inject\ResourceInject;
+
+class Import extends ResourceObject
+{
+    use ResourceInject;
+
+    public function onGet()
+    {
+        $this->body =[
+            'blog' => $this->resource->uri('page://blog/index')['greeting']
+        ];
+
+        return $this;
+    }
+}
+```
+
+The `page://blog/index` resource should now be assigned to `blog`. `@Embed` can be used in the same way.
+
+```bash
+php bin/app.php get /import
+```
+
+```bash
+200 OK
+content-type: application/hal+json
+
+{
+    "blog": "Hello BEAR.Sunday",
+    "_links": {
+        "self": {
+            "href": "/import"
+        }
+    }
+}
+```
+
+Great, we could now use another application's resource. We do not even need to use HTTP to fetch this data.
+
+The combined application is now seen as 1 layer of a single application. A
+[Layered System](http://en.wikipedia.org/wiki/Representational_state_transfer#Layered_system) is another feature of REST.
+
+Next lets look at how we use a resource in a system that is not BEAR.Sunday based. We create an app.php. You can place this anywhere but be careful that it picks up `autoload.php` path correctly.
+
+```php?start_inline
+use BEAR\Package\Bootstrap;
+
+require __DIR__ . '/autoload.php';
+
+$api = (new Bootstrap)->getApp('MyVendor\Weekday', 'prod-hal-app');
+
+$blog = $api->resource->uri('app://self/import')['blog'];
+var_dump($blog);
+```
+
+Let's try it..
+
+```bash
+php bin/import.php
+```
+
+```
+string(17) "Hello BEAR.Sunday"
+```
+
+Other examples..
+
+```php?start_inline
+$weekday = $api->resource->uri('app://self/weekday')(['year' => 2000, 'month'=>1, 'day'=>1]);
+var_dump($weekday->body); // as array
+//array(1) {
+//    ["weekday"]=>
+//  string(3) "Sat"
+//}
+
+echo $weekday; // as string
+//{
+//    "weekday": "Sat",
+//    "_links": {
+//    "self": {
+//        "href": "/weekday/2000/1/1"
+//        }
+//    }
+//}
+```
+
+```php?start_inline
+$html = (new Bootstrap)->getApp('MyVendor\Weekday', 'prod-html-app');
+$index = $html->resource->uri('page://self/index')(['year' => 2000, 'month'=>1, 'day'=>1]);
+var_dump($index->code);
+//int(200)
+
+echo $index;
+//<!DOCTYPE html>
+//<html>
+//<body>
+//The weekday of 2000/1/1 is Sat.
+//</body>
+//</html>
+```
+
+Response is returned with a stateless request REST's resource is like a PHP function. You can get the value in `body` or you can express it like JSON or HTML with `(string)`. You can operate on any resource of the application with two lines except autoload, one line script if you concatenate it.
+
+In this way, resources created with BEAR.Sunday can be easily used from other CMS and framework. You can handle the values of multiple applications at once.
+
+## Version
+
+
+# Version
+
+## Supported PHP
+
+[![Continuous Integration](https://github.com/bearsunday/BEAR.SupportedVersions/actions/workflows/continuous-integration.yml/badge.svg)](https://github.com/bearsunday/BEAR.SupportedVersions/actions/workflows/continuous-integration.yml)
+
+BEAR.Sunday supports the following supported PHP versions
+
+* `8.1` (Old stable 25 Nov 2021 - 25 Nov 2024)
+* `8.2` (Old stable 8 Dec 2022 - 8 Dec 2025)
+* `8.3` (Current stable 23 Nov 2022 - 26 Nov 2026)
+
+* End of life ([EOL](http://php.net/eol.php))
+
+* `5.5` (21 Jul 2016)
+* `5.6` (31 Dec 2018)
+* `7.0` (3 Dec 2018)
+* `7.1` (1 Dec 2019)
+* `7.2` (30 Nov 2020)
+* `7.3` (6 Dec 2021)
+* `7.4` (28 Nov 2022)
+* `8.0` (26 Nov 2023)
+
+The new optional package will be developed based on the current stable PHP. We encourage you to use the current stable PHP for quality, performance and security.
+
+[BEAR.SupportedVersions](https://github.com/bearsunday/BEAR.SupportedVersions/), you can check the tests for each version in CI.
+
+## Semver
+
+BEAR.Sunday follows [Semantic Versioning](http://
+semper.org/lang/en/). It is not necessary to modify the application code on minor version upgrades.
+
+`composer update` can be done at any time for packages.
+
+## Version Policy
+
+ * The core package of the framework does not make a breaking change which requires change of user code.
+ * Since it does not do destructive change, it handles unnecessary old ones as `deprecetad` but does not delete and new functions are always "added".
+ * When PHP comes to an EOL and upgraded to a major version (ex. `5.6` →` 7.0`), BEAR.Sunday will not break the BC of the application code. Even though the version number of PHP that is necessary to use the new module becomes higher, changes to the application codes are not needed.
+
+BEAR.Sunday emphasizes clean code and **longevity**.
+
+## Package version
+
+The version of the framework does not lock the version of the library. The library can be updated regardless of the version of the framework.
+
