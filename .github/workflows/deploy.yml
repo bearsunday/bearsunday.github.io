@@ -1,32 +1,58 @@
-name: Deploy to GitHub Pages
+name: Deploy Jekyll site to Pages
 
 on:
   push:
-    branches: [main]
+    branches: ["master"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
 
 jobs:
   build:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - name: Install Ruby and dependencies
+      - name: Install Ruby
         run: |
           sudo apt-get update
-          sudo apt-get install -y rbenv ruby-build build-essential libssl-dev libreadline-dev zlib1g-dev
-
-      - name: Setup Ruby
-        run: |
-          eval "$(rbenv init - bash)"
-          rbenv install 3.2.2 -s
+          sudo apt-get install -y rbenv
+          echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> ~/.bashrc
+          echo 'eval "$(rbenv init -)"' >> ~/.bashrc
+          source ~/.bashrc
+          rbenv install 3.2.2
           rbenv global 3.2.2
-          ruby -v
-        shell: bash
 
-      - name: Configure Pages
+      - name: Setup Pages
+        id: pages
         uses: actions/configure-pages@v5
 
-      - name: Upload Artifact
+      - name: Run custom scripts
+        run: ruby bin/merge_md_files.rb
+
+      - name: Build with Jekyll
+        run: bundle exec jekyll build --baseurl "${{ steps.pages.outputs.base_path }}"
+        env:
+          JEKYLL_ENV: production
+
+      - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
-        with:
-          path: _site
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
