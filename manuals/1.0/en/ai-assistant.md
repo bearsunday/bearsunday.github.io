@@ -11,15 +11,19 @@ Discover resources to support BEAR.Sunday development with the power of AI.
 
 ## OpenAI GPTs - BEAR.Sunday Assistant
 
-[BEAR.Sunday Assistant](https://chat.openai.com/g/g-xxxxxxxx) is a custom GPT trained to specifically answer questions about the BEAR.Sunday framework.
+[BEAR.Sunday Assistant](https://chatgpt.com/g/g-67da572ba12c8191a4f85a88942d50f0-bear-sunday-assistant) is a custom GPT trained to specifically answer questions about the BEAR.Sunday framework.
 
 <div class="info-box">
-  <p><strong>Note:</strong> An OpenAI account is required to use GPTs.</p>
+  <p><strong>Note:</strong> An OpenAI Plus account is required to use GPTs.</p>
 </div>
 
 ## AI Support with llms-full.txt
 
-To provide BEAR.Sunday knowledge to other AI assistants (Claude, Copilot, etc.), copy the llms-full.txt content using the button below and paste it at the beginning of your AI conversation.
+To provide other AI assistants (such as Claude, Gemini, etc.) with knowledge of BEAR.Sunday, copy the contents of llms-full.txt using the button below, or retrieve it from [/llms-full.txt](/llms-full.txt) , and paste it at the beginning of your conversation with the AI.
+
+### What is llms.txt?
+
+The `llms-full.txt` file is based on the `llms.txt` standard, a simple way to share key information with AI models in a clean, Markdown format. It helps AI assistants quickly understand important details—like BEAR.Sunday’s framework—without clutter. Learn more at [llmstxt.org](https://llmstxt.org/).
 
 <button id="copyLlmsText" class="copy-button">Copy llms-full.txt</button>
 <span id="copyStatus" class="copy-status"></span>
