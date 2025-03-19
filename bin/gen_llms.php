@@ -5,7 +5,7 @@
  *
  * This script reads the contents of 'llms.txt', interprets each line as a link to a
  * local Markdown file, reads the content of each Markdown file, and recursively
- * expands internal links within those files.  The expanded content is saved to a
+ * expands internal links within those files. The expanded content is saved to a
  * new file called 'llms-full.txt'.
  *
  * **Important:**
@@ -25,8 +25,6 @@
  *  3. Adjust `$baseUrl` and `$baseDir` in the script to match your site structure.
  *  4. Run the script from the command line: `php expand_md_links.php`
  *  5. The expanded content will be saved in `llms-full.txt`.
- *
- * @see https://llmstxt.org/
  */
 
 class MdLinkExpander {
@@ -43,67 +41,64 @@ class MdLinkExpander {
         $this->llmsFullTxt = $llmsFullTxt;
     }
 
-    public function expand() : bool {
+ public function expand(): bool
+    {
         try {
             // Verify the source file exists.
             if (!file_exists($this->llmsTxt)) {
                 throw new Exception("Source file {$this->llmsTxt} not found.");
             }
 
-            // Read the URLs from llms.txt, ignoring empty lines and comments
-            $urls = array_filter(array_map('trim', file($this->llmsTxt, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES)), function ($line) {
-                return strpos($line, '#') !== 0; // Exclude comment lines
-            });
+            // Read the lines from llms.txt
+            $lines = file($this->llmsTxt, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
 
             $output = fopen($this->llmsFullTxt, 'w');
             if (!$output) {
                 throw new Exception("Unable to open output file {$this->llmsFullTxt} for writing.");
             }
 
-            echo "Processing " . count($urls) . " URLs...\n";
-
-            foreach ($urls as $url) {
-                $this->processUrl($url, $output);
+            foreach ($lines as $line) {
+                $processedLine = $this->processLinks($line);
+                fwrite($output, $processedLine . "\n");
             }
 
             fclose($output);
             echo "Successfully generated {$this->llmsFullTxt}\n";
             return true;
-
         } catch (Exception $e) {
             echo "Error: " . $e->getMessage() . "\n";
             return false;
         }
     }
 
-private function processUrl(string $line, $output) : void {
-    $line = trim($line);
+    private function processUrl(string $line, $output) : void {
+        $line = trim($line);
 
-    // Extract URL from Markdown link syntax: [text](URL)
-    if (preg_match('/\[([^\]]+)\]\(([^)]+)\)/', $line, $matches)) {
-        $url = trim($matches[2]);
+        // Extract URL from Markdown link syntax: [text](URL)
+        if (preg_match('/\[([^\]]+)\]\(([^)]+)\)/', $line, $matches)) {
+            $url = trim($matches[2]);
 
-        // Further clean up potential leading characters (>, [, etc.) in extracted URL
-        $url = ltrim($url, ">[](){}`*+- ");
+            // Further clean up potential leading characters (>, [, etc.) in extracted URL
+            $url = ltrim($url, ">[](){}`*+- ");
 
-        echo "Processing: $url\n";
+            echo "Processing: $url\n";
 
-        try {
-            $localPath = $this->urlToLocalPath($url);
-            $content = $this->readLocalFile($localPath);
-            $processedContent = $this->processLinks($content);
+            try {
+                $localPath = $this->urlToLocalPath($url);
+                $content = $this->readLocalFile($localPath);
+                $processedContent = $this->processLinks($content);
 
-            fwrite($output, "# Source: $url\n\n");
-            fwrite($output, $processedContent . "\n\n");
-            fwrite($output, "--------------------\n\n");
+                fwrite($output, "# Source: $url\n\n");
+                fwrite($output, $processedContent . "\n\n");
+                fwrite($output, "--------------------\n\n");
 
-        } catch (Exception $e) {
-            echo "  Error processing $url: " . $e->getMessage() . "\n";
+            } catch (Exception $e) {
+                echo "  Error processing $url: " . $e->getMessage() . "\n";
+            }
+        } else {
+            echo "  Skipping line: $line (Not a valid Markdown link)\n";
         }
-    } else {
-        echo "  Skipping line: $line (Not a valid Markdown link)\n";
     }
-}
 
     private function urlToLocalPath(string $url) : string {
         $url = trim($url);
@@ -115,25 +110,25 @@ private function processUrl(string $line, $output) : void {
 
         $relativePath = (strpos($url, '/') === 0) ? ltrim($url, '/') : str_replace($this->baseUrl, '', $url);
 
-    $relativePath = trim($relativePath, '/'); // Trim multiple slashes
+        $relativePath = trim($relativePath, '/'); // Trim multiple slashes
 
-    // Remove URL fragment
-    $parsedUrl = parse_url($relativePath);
-    if (isset($parsedUrl['path'])) {
-        $relativePath = $parsedUrl['path'];
-    }
+        // Remove URL fragment
+        $parsedUrl = parse_url($relativePath);
+        if (isset($parsedUrl['path'])) {
+            $relativePath = $parsedUrl['path'];
+        }
 
-    //Append filename if necessary
-    if (empty(pathinfo($relativePath, PATHINFO_EXTENSION))) {
-        $relativePath .= '/index.md';
-    }
+        //Append filename if necessary
+        if (empty(pathinfo($relativePath, PATHINFO_EXTENSION))) {
+            $relativePath .= '/index.md';
+        }
 
-    //Convert extension
-    if (strtolower(pathinfo($relativePath, PATHINFO_EXTENSION)) === 'html') {
-        $relativePath = substr($relativePath, 0, -5) . '.md';
-    }
+        //Convert extension
+        if (strtolower(pathinfo($relativePath, PATHINFO_EXTENSION)) === 'html') {
+            $relativePath = substr($relativePath, 0, -5) . '.md';
+        }
 
-    return $this->baseDir . '/' . $relativePath;
+        return $this->baseDir . '/' . $relativePath;
 
     }
 
@@ -147,41 +142,41 @@ private function processUrl(string $line, $output) : void {
         return file_get_contents($path);
     }
 
-    private function processLinks(string $content) : string {
-
+   private function processLinks(string $line): string
+    {
         $pattern = '/\[([^\]]+)\]\(([^)]+)\)/';
-        preg_match_all($pattern, $content, $matches, PREG_SET_ORDER);
 
-        foreach ($matches as $match) {
-            $linkText = $match[1];
-            $linkUrl = trim($match[2]);
+        // Check if the line is a Markdown link
+        if (preg_match($pattern, $line, $matches)) {
+            $linkText = $matches[1];
+            $linkUrl = trim($matches[2]);
 
+            // Process only internal URLs
             if (strpos($linkUrl, $this->baseUrl) === 0 || strpos($linkUrl, '/') === 0) {
-                if (strpos($linkUrl, '/') === 0) {
-                    $linkUrl = $this->baseUrl . ltrim($linkUrl, '/');
-                }
-
                 try {
                     $localPath = $this->urlToLocalPath($linkUrl);
-                    $linkedContent = $this->readLocalFile($localPath);
-                    $replacement = "$linkText\n\n$linkedContent";
-                    $content = str_replace($match[0], $replacement, $content);
+                    $content = $this->readLocalFile($localPath);
+
+                    // Remove front matter
+                    $content = preg_replace('/^---.*?---/s', '', $content, 1);
+                    return $content;
+
                 } catch (Exception $e) {
                     echo "  Error processing linked URL " . $linkUrl . ": " . $e->getMessage() . "\n";
-                    continue; // Important: continue processing even if one link fails
+                    return $line; // Return original line on error
                 }
             }
         }
 
-        return $content;
+        return $line; // Return original line if not a matching link
     }
 }
 
 // **Configuration - EDIT THESE TO MATCH YOUR SITE**
 $baseUrl = 'https://bearsunday.github.io/manuals/1.0/en/';
-$baseDir = dirname(__DIR__); // The directory where the Markdown files are stored.
-$llmsTxt = $baseDir . '/llms.txt';
-$llmsFullTxt = $baseDir . '/llms-full.txt';
+$baseDir = __DIR__ . '/../'; // The directory where the Markdown files are stored.
+$llmsTxt = __DIR__ . '/../llms.txt';
+$llmsFullTxt = __DIR__ . '/../llms-full.txt';
 
 //Run
 $expander = new MdLinkExpander($baseUrl, $baseDir, $llmsTxt, $llmsFullTxt);
