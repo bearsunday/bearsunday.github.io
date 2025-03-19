@@ -201,17 +201,39 @@ Note: Please refer to the [benchmark](https://github.com/bearsunday/BEAR.Hellowo
 
 ### .compile.php
 
-If there are classes that cannot be generated in non-production environments (for example, ResourceObjects that cannot be injected unless authentication succeeds), you can compile them by describing dummy class loading that is loaded only at compile time in the root `.compile.php`.
+When there are classes that cannot be generated in a non-production environment (for example, a ResourceObject that requires successful authentication to complete injection), you can compile them by describing dummy class loading in the root `.compile.php` file, which is only loaded during compilation.
 
 .compile.php
 
+Example) If there is an AuthProvider that throws an exception when authentication cannot be obtained in the constructor, you can create an empty class as follows and load it in .compile.php:
+
+/tests/Null/AuthProvider.php
 ```php
 <?php
-
-require __DIR__ . '/tests/Null/AuthProvider.php'; // Always generatable null object
-$_SERVER[__REQUIRED_KEY__] = 'fake';
+class AuthProvider 
+{  // Only for instantiation, so implementation is not required
+}
 ```
 
+.compile.php
+```php
+<?php
+require __DIR__ . '/tests/Null/AuthProvider.php'; // Always-generatable Null object
+$_SERVER[__REQUIRED_KEY__] = 'fake'; // For cases where errors occur without specific environment variables
+```
+
+This allows you to avoid exceptions and perform compilation. Additionally, since Symfony's cache component connects to the cache engine in the constructor, it's good to load a dummy adapter during compilation like this:
+
+tests/Null/RedisAdapter.php
+```php
+namespace Ray\PsrCacheModule;
+
+use Symfony\Component\Cache\Adapter\RedisAdapter as OriginAdapter;
+
+class RedisAdapter extends OriginAdapter implements Serializable
+{
+}
+```
 ### module.dot
 
 When you compile, a "dot file" is output, so you can convert it to an image file with [graphviz](https://graphviz.org/) or use [GraphvizOnline](https://dreampuf.github.io/GraphvizOnline/) to display the object graph.
