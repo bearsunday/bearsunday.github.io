@@ -1,0 +1,32 @@
+# BEAR.Sunday PHP Framework
+
+> BEAR.Sunday is a resource-oriented PHP framework that combines clean object-oriented design with web principles, emphasizing standards compliance, longevity, high efficiency, and flexibility. It consists of Ray.Di (Dependency Injection), Ray.Aop (Aspect-Oriented Programming), and BEAR.Resource (REST Resources). It uses well-known third party libraries to build web applications with high performance and testability.
+
+BEAR.Sunday provides a structured approach to building web applications centered around REST principles.
+This file provides information on key components, coding practices, and deployment strategies. For more details on framework usage and implementation, see the links below.
+
+## Manuals
+
+- [Introduction](/manuals/1.0/en/index.html): Overview of BEAR.Sunday's philosophy and core concepts.
+- [AOP](/manuals/1.0/en/aop.html): Understand how Aspect-Oriented Programming enables modular, maintainable code.
+- [Resource](/manuals/1.0/en/resource.html): Learn about resources and their methods.
+- [Resource Parameters](/manuals/1.0/en/resource_param.html): How data from web requests binds to resources.
+- [Resource Link](/manuals/1.0/en/resource_link.html): How resources link to each other.
+- [Rendering and Transfer](/manuals/1.0/en/resource_renderer.html): Understand how representations (HTML, JSON) are produced and transferred.
+- [Router](/manuals/1.0/en/router.html): How external requests are mapped to internal resources.
+- [Production](/manuals/1.0/en/production.html): Setting up the application for a live environment.
+- [Import](/manuals/1.0/en/import.html): Learn to use features from other BEAR applications.
+- [Tests](/manuals/1.0/en/test.html): Understand how to test resources.
+- [Examples](/manuals/1.0/en/examples.html): Explore practical examples of BEAR.Sunday applications.
+- [Database](/manuals/1.0/en/database.html): Using various databases modules.
+- [Coding Guide](/manuals/1.0/en/coding-guide.html): Learn about BEAR.Sunday coding-guide.
+- [PHPDoc Types](/manuals/1.0/en/types.html): Using phpdoc to create statically analysed code.
+- [Stream](/manuals/1.0/en/stream.html): Creating Streaming output for large file.
+- [CLI](/manuals/1.0/en/cli.html): Create command line tools for your app.
+- [Attributes](/manuals/1.0/en/attribute.html): PHP8 attribute usage.
+- [API Doc](/manuals/1.0/en/apidoc.html): Automatic API document generation with ApiDoc.
+- [AaaS](/manuals/1.0/en/aaas.html): Create an application that can run in other frameworks.
+
+## Version
+- [Version Policy](/manuals/1.0/en/version.html): Versions of BEAR.Sunday and the long term support.
+
