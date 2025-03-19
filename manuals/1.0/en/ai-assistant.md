@@ -2,7 +2,7 @@
 layout: docs-en
 title: BEAR.Sunday AI Assistant
 category: Manual
-permalink: /manuals/1.0/en/ai-assistant/
+permalink: /manuals/1.0/en/ai-assistant.html
 ---
 
 # BEAR.Sunday AI Assistant
