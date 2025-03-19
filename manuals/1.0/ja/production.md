@@ -194,10 +194,35 @@ Note: パフォーマンスベンチマークは[benchmark](https://github.com/b
 実環境ではないと生成ができないクラス（例えば認証が成功しないとインジェクトが完了しないResourceObject）がある場合には、コンパイル時にのみ読み込まれるダミークラス読み込みをルートの`.compile.php`に記述することによってコンパイルをすることができます。
 
 .compile.php
+
+例) 例えばコンストラクタで認証が得られない場合に例外を出してしまうAuthProviderがあったとしたら以下のように空のクラスを作っておいて、.compile.phpに読み込ませます。
+
+/tests/Null/AuthProvider.php
+```php
+<?php
+class AuthProvider 
+{  // newをするだけのdummyなので実装は不要
+}
+```
+
+.compile.php
 ```php
 <?php
 require __DIR__ . '/tests/Null/AuthProvider.php'; // 常に生成可能なNullオブジェクト
-$_SERVER[__REQUIRED_KEY__] = 'fake';
+$_SERVER[__REQUIRED_KEY__] = 'fake'; // 特定の環境変数がないとエラーになる場合
+```
+
+こうする事で例外を避けてコンパイルを行うことができます。他にもSymfonyのキャッシュコンポーネントはコンストラクタでキャッシュエンジンに接続を行うので、コンパイル時にはこのようにダミーのアダプターを読み込むようにしておくと良いでしょう。
+
+tests/Null/RedisAdapter.php
+```php
+namespace Ray\PsrCacheModule;
+
+use Symfony\Component\Cache\Adapter\RedisAdapter as OriginAdapter;
+
+class RedisAdapter extends OriginAdapter implements Serializable
+{
+}
 ```
 
 ### module.dot
