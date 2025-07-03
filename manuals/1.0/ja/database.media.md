@@ -332,6 +332,40 @@ $sqlQuery->exec('memo_add', [
 
 他のオブジェクトが渡されると`toScalar()`または`__toString()`の値に変換されます。
 
+### Ray.InputQueryとの連携
+
+BEAR.ResourceでRay.InputQueryを利用している場合、InputクラスをMediaQueryのパラメーターとして直接渡すことができます。
+
+```php
+use Ray\InputQuery\Attribute\Input;
+
+final class UserCreateInput
+{
+    public function __construct(
+        #[Input] public readonly string $name,
+        #[Input] public readonly string $email,
+        #[Input] public readonly int $age
+    ) {}
+}
+```
+
+```php
+interface UserCreateInterface
+{
+    #[DbQuery('user_create')]
+    public function add(UserCreateInput $input): void;
+}
+```
+
+InputオブジェクトのプロパティがSQLパラメータに自動展開されます。
+
+```sql
+-- user_create.sql
+INSERT INTO users (name, email, age) VALUES (:name, :email, :age);
+```
+
+この連携により、ResourceObjectからMediaQueryまで一貫して型安全なデータフローを実現できます。
+
 ## プロファイラー
 
 メディアアクセスはロガーで記録されます。標準ではテストに使うメモリロガーがバインドされています。
