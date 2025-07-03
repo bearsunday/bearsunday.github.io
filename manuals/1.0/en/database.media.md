@@ -113,7 +113,7 @@ class Todo
 
 ### DbQuery
 
-SQL execution is mapped to methods, binding the SQL specified by ID with method arguments for execution. For example, with ID `todo_item`, it executes `todo_item.sql` bound with `['id => $id]`.
+SQL execution is mapped to methods, binding the SQL specified by ID with method arguments for execution. For example, with ID `todo_item`, it executes `todo_item.sql` bound with `['id' => $id]`.
 
 * Prepare SQL files in the `$sqlDir` directory.
 * SQL files can contain multiple SQL statements. The last SELECT statement becomes the return value.
