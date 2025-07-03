@@ -86,6 +86,118 @@ final class User
 
 ネームスペースは任意です。Inputクラスでは入力データをまとめたり検証したりするメソッドを実装することができます。
 
+### Ray.InputQueryとの統合
+
+`#[Input]`属性を使って、`Ray.InputQuery`ライブラリによる型安全な入力オブジェクトの生成を利用できます。
+
+```php
+use Ray\InputQuery\Attribute\Input;
+
+class Index extends ResourceObject
+{
+    public function onPost(#[Input] ArticleInput $article): static
+    {
+        $this->body = [
+            'title' => $article->title,
+            'author' => $article->author->name
+        ];
+        return $this;
+    }
+}
+```
+
+`#[Input]`属性付きのパラメーターには、フラットなクエリデータから自動的に構造化されたオブジェクトが生成されて渡されます。
+
+```php
+use Ray\InputQuery\Attribute\Input;
+
+final class ArticleInput
+{
+    public function __construct(
+        #[Input] public readonly string $title,
+        #[Input] public readonly AuthorInput $author
+    ) {}
+}
+
+final class AuthorInput  
+{
+    public function __construct(
+        #[Input] public readonly string $name,
+        #[Input] public readonly string $email
+    ) {}
+}
+```
+
+この場合、`title=Hello&authorName=John&authorEmail=john@example.com`のようなフラットなデータからネストしたオブジェクト構造が自動生成されます。
+
+配列データも扱うことができます。
+
+#### シンプルな配列
+
+```php
+final class TagsInput
+{
+    public function __construct(
+        #[Input] public readonly string $title,
+        #[Input] public readonly array $tags
+    ) {}
+}
+```
+
+```php
+class Index extends ResourceObject
+{
+    public function onPost(#[Input] TagsInput $input): static
+    {
+        // tags[]=php&tags[]=web&title=Hello の場合
+        // $input->tags = ['php', 'web']
+        // $input->title = 'Hello'
+```
+
+#### オブジェクト配列
+
+`item`パラメーターを使用して、配列の各要素を指定したInputクラスのオブジェクトとして生成できます。
+
+```php
+use Ray\InputQuery\Attribute\Input;
+
+final class UserInput
+{
+    public function __construct(
+        #[Input] public readonly string $id,
+        #[Input] public readonly string $name
+    ) {}
+}
+
+class Index extends ResourceObject
+{
+    public function onPost(
+        #[Input(item: UserInput::class)] array $users
+    ): static {
+        foreach ($users as $user) {
+            echo $user->name; // 各要素はUserInputインスタンス
+        }
+    }
+}
+```
+
+この場合、以下のような形式のデータから配列を生成します：
+
+```php
+// users[0][id]=1&users[0][name]=John&users[1][id]=2&users[1][name]=Jane
+$data = [
+    'users' => [
+        ['id' => '1', 'name' => 'John'],
+        ['id' => '2', 'name' => 'Jane']
+    ]
+];
+```
+
+* パラメーターに`#[Input]`属性がある場合：Ray.InputQueryでオブジェクト生成
+* パラメーターに`#[Input]`属性がない場合：従来通りの依存性注入
+
+詳細は[Ray.InputQuery](https://github.com/ray-di/Ray.InputQuery)のドキュメントを参照してください。
+
 ### 列挙型パラメーター
 
 PHP8.1の[列挙型](https://www.php.net/manual/ja/language.types.enumerations.php)を指定して取り得る値を制限することができます。
