@@ -7,14 +7,14 @@ permalink: /manuals/1.0/ja/production.html
 
 # プロダクション
 
-BEAR.Sunday既定の`prod`束縛に対して、アプリケーションがそれぞれの[ディプロイ環境](https://en.wikipedia.org/wiki/Deployment_environment)に応じたモジュールをカスタマイズして束縛を行います。
+BEAR.Sunday既定の`prod`束縛に対して、アプリケーションがそれぞれの[デプロイ環境](https://en.wikipedia.org/wiki/Deployment_environment)に応じたモジュールをカスタマイズして束縛を行います。
 
 ## 既定のProdModule
 
 既定の`prod`束縛では以下のインターフェイスの束縛がされています。
 
 * エラーページ生成ファクトリー
-* PSRロガーインターフェイス
+* PSRロガーインターフェース
 * ローカルキャッシュ
 * 分散キャッシュ
 
@@ -187,7 +187,7 @@ opcache.preload=/path/to/project/preload.php
 opcache.preload_user=www-data
 ```
 
-Note: パフォーマンスベンチマークは[benchmark](https://github.com/bearsunday/BEAR.HelloworldBenchmark/wiki/Intel-Core-i5-3.8-GHz-iMac-(Retina-5K,-27-inch,-2017)---PHP-7.4.4)を参考にしてください。
+Note: パフォーマンスベンチマークは[benchmark](https://github.com/bearsunday/BEAR.HelloWorldBenchmark/wiki/Intel-Core-i5-3.8-GHz-iMac-(Retina-5K,-27-inch,-2017)---PHP-7.4.4)を参考にしてください。(2020年）
 
 ### .compile.php
 

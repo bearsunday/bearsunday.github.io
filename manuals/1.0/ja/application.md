@@ -11,9 +11,9 @@ permalink: /manuals/1.0/ja/application.html
 
 ### 0. コンパイル
 
-コンテキストに応じたDIとAOPの設定により、アプリケーションの実行に必要なルートオブジェクト`$app`が生成されます。$appは`router`や`transfer`などの、アプリケーション実行に必要なサービスオブジェクトで構成されます[^graph]。$appはシリアライズされ、各リクエストで再利用されます。
+コンテキストに応じたDIとAOPの設定により、アプリケーションの実行に必要なルートオブジェクト`$app`が生成されます。`$app`は`router`や`transfer`などの、アプリケーション実行に必要なサービスオブジェクトで構成されます[^graph]。`$app`はシリアライズされ、各リクエストで再利用されます。
 
-[^graph]: オブジェクトは、他のオブジェクトを保持しているか、保持されているかによって繋がっています。これを[Object Graph](http://en.wikipedia.org/wiki/Object_graph)といい、$appはそのルートオブジェクトとなります。
+[^graph]: オブジェクトは、他のオブジェクトを保持しているか、保持されているかによってつながっています。これを[Object Graph](http://en.wikipedia.org/wiki/Object_graph)といい、`$app`はそのルートオブジェクトとなります。
 
 * router - 外部入力をリソースリクエストに変換
 * resource - リソースクライアント
