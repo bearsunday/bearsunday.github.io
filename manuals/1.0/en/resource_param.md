@@ -152,6 +152,8 @@ class Index extends ResourceObject
         // For tags[]=php&tags[]=web&title=Hello
         // $input->tags = ['php', 'web']
         // $input->title = 'Hello'
+    }
+}
 ```
 
 #### Object Arrays
