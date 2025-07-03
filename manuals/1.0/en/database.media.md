@@ -79,7 +79,7 @@ protected function configure(): void
             Queries::fromDir('/path/to/queryInterface'),
             [
                 new DbQueryConfig('/path/to/sql'),
-                new WebQueryConfig('/path/to/web_query.json', ['domain' => 'api.exmaple.com'])
+                new WebQueryConfig('/path/to/web_query.json', ['domain' => 'api.example.com'])
             ],
         ),
     );
