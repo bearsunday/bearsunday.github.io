@@ -327,6 +327,92 @@ public function testAdd(): void
 Implement your own [MediaQueryLoggerInterface](src/MediaQueryLoggerInterface.php) and run
 You can also implement your own [MediaQueryLoggerInterface](src/MediaQueryLoggerInterface.php) to benchmark each media query and log it with the injected PSR logger.
 
+## PerformSqlInterface
+
+By implementing `PerformSqlInterface`, you can completely customize the SQL execution layer. Replace the default execution process with your own implementation to achieve advanced logging, performance monitoring, security controls, and more.
+
+```php
+use Ray\MediaQuery\PerformSqlInterface;
+
+final class CustomPerformSql implements PerformSqlInterface
+{
+    public function __construct(
+        private LoggerInterface $logger
+    ) {}
+
+    #[Override]
+    public function perform(ExtendedPdoInterface $pdo, string $sqlId, string $sql, array $values): PDOStatement
+    {
+        $startTime = microtime(true);
+        
+        // Custom logging
+        $this->logger->info("Executing SQL: {$sqlId}", [
+            'sql' => $sql,
+            'params' => $values
+        ]);
+        
+        try {
+            /** @var array<string, mixed> $values */
+            $statement = $pdo->perform($sql, $values);
+            
+            // Execution time logging
+            $executionTime = microtime(true) - $startTime;
+            $this->logger->info("SQL executed successfully", [
+                'sqlId' => $sqlId,
+                'execution_time' => $executionTime
+            ]);
+            
+            return $statement;
+        } catch (Exception $e) {
+            $this->logger->error("SQL execution failed: {$sqlId}", [
+                'error' => $e->getMessage(),
+                'sql' => $sql
+            ]);
+            throw $e;
+        }
+    }
+}
+```
+
+To use your custom implementation, bind it in the DI container:
+
+```php
+use Ray\MediaQuery\PerformSqlInterface;
+
+protected function configure(): void
+{
+    $this->bind(PerformSqlInterface::class)->to(CustomPerformSql::class);
+}
+```
+
+## SQL Template
+
+You can customize SQL log formatting to include query IDs in the executed SQL, making it easier to identify which queries are running when analyzing slow logs.
+
+Use `MediaQuerySqlTemplateModule` to customize the SQL log format.
+
+```php
+use Ray\MediaQuery\MediaQuerySqlTemplateModule;
+
+protected function configure(): void
+{
+    $this->install(new MediaQuerySqlTemplateModule("-- App: {{ id }}.sql\n{{ sql }}"));
+}
+```
+
+Available template variables:
+- `{{ id }}`: Query ID
+- `{{ sql }}`: The actual SQL statement
+
+Default template: `"-- {{ id }}.sql\n{{ sql }}"`
+
+This feature includes the query ID as a comment in the executed SQL, making it easy to identify which application query was executed when analyzing database slow logs.
+
+```sql
+-- App: todo_item.sql
+SELECT * FROM todo WHERE id = :id
+```
+
 ## Annotations / Attributes
 
 You can use either [doctrine annotations](https://github.com/doctrine/annotations/) or [PHP8 attributes](https://www.php.net/manual/en/language.attributes.overview.php) can both be used.

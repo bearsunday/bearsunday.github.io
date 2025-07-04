@@ -349,6 +349,64 @@ public function testAdd(): void
 
 独自の[MediaQueryLoggerInterface](src/MediaQueryLoggerInterface.php)を実装して、各メディアクエリーのベンチマークを行ったり、インジェクトしたPSRロガーでログをすることもできます。
 
+## PerformSqlInterface
+
+`PerformSqlInterface`を実装することで、SQL実行部分を完全にカスタマイズできます。デフォルトの実行処理を独自の実装に入れ替えることで、より高度なログ機能、パフォーマンス監視、セキュリティ制御などを実現できます。
+
+```php
+use Ray\MediaQuery\PerformSqlInterface;
+
+final class CustomPerformSql implements PerformSqlInterface
+{
+    public function __construct(
+        private LoggerInterface $logger
+    ) {}
+
+    #[Override]
+    public function perform(ExtendedPdoInterface $pdo, string $sqlId, string $sql, array $values): PDOStatement
+    {
+        $startTime = microtime(true);
+        
+        // カスタムログ出力
+        $this->logger->info("Executing SQL: {$sqlId}", [
+            'sql' => $sql,
+            'params' => $values
+        ]);
+        
+        try {
+            /** @var array<string, mixed> $values */
+            $statement = $pdo->perform($sql, $values);
+            
+            // 実行時間のログ
+            $executionTime = microtime(true) - $startTime;
+            $this->logger->info("SQL executed successfully", [
+                'sqlId' => $sqlId,
+                'execution_time' => $executionTime
+            ]);
+            
+            return $statement;
+        } catch (Exception $e) {
+            $this->logger->error("SQL execution failed: {$sqlId}", [
+                'error' => $e->getMessage(),
+                'sql' => $sql
+            ]);
+            throw $e;
+        }
+    }
+}
+```
+
+カスタム実装を使用するには、DIコンテナで束縛します：
+
+```php
+use Ray\MediaQuery\PerformSqlInterface;
+
+protected function configure(): void
+{
+    $this->bind(PerformSqlInterface::class)->to(CustomPerformSql::class);
+}
+```
+
 ## アノテーション / アトリビュート
 
 属性を表すのに[doctrineアノテーション](https://github.com/doctrine/annotations/)、[アトリビュート](https://www.php.net/manual/ja/language.attributes.overview.php)どちらも利用できます。次の2つは同じものです。
