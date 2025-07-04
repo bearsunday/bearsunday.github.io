@@ -89,7 +89,7 @@ class Greeting extends ResourceObject
 }
 ```
 
-## ステップ4: Webリソースとしての動作���認
+## ステップ4: Webリソースとしての動作確認
 
 ブラウザで以下のURLにアクセスして動作確認します：
 
@@ -187,7 +187,7 @@ brew uninstall greet
 
 実際にCLIツールを他の人に配布したい場合は、以下の流れでHomebrewパッケージとして公開できます：
 
-1. ア���リケーションをGitHubにプッシュ
+1. アプリケーションをGitHubにプッシュ
 2. 生成されたフォーミュラ（`var/homebrew/greet.rb`）を`homebrew-`プレフィックス付きのGitHubリポジトリで公開
 3. ユーザーは`brew tap your-vendor/greet && brew install greet`でインストール可能
 
