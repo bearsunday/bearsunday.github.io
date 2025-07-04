@@ -13,85 +13,73 @@ permalink: /manuals/1.0/en/cache.html
 
 ## Overview
 
-A good caching system improves the intrinsic quality of the user experience and reduces the cost of resource usage and environmental impact.
-Sunday supports the following caching features in addition to the traditional simple TTL-based caching
+A good caching system fundamentally improves the quality of user experience and reduces resource utilization costs and environmental impact. BEAR.Sunday supports the following caching features in addition to traditional simple TTL-based caching:
 
 * Event-driven cache invalidation
 * Cache dependency resolution
 * Donut cache and donut hole cache
 * CDN control
-* Conditional requests.
-
+* Conditional requests
 
 ### Distributed Cache Framework
 
+A distributed caching system that follows REST constraints saves not only computational resources but also network resources. BEAR.Sunday provides a caching framework that integrates **server-side caches** (such as Redis and APC handled directly by PHP), **shared caches** (known as content delivery networks - CDNs), and **client-side caches** (cached by web browsers and API clients) with modern CDNs.
 
-A distributed caching system that obeys REST constraints saves not only computational resources but also network resources.
+<img src="https://user-images.githubusercontent.com/529021/137062427-c733c832-0631-4a43-a6ee-4204e6be007c.png" alt="distributed cache">
 
-PHP directly handles **server-side caches** such as Redis and APC, **shared caches** known as content delivery networks (CDNs), **client-side caches** cached by web browsers and API clients, BEAR.Sunday provides a caching framework that integrates these caches with modern CDNs.
-
-<img src="https://user-images.githubusercontent.com/529021/137062427-c733c832-0631-4a43-a6ee-4204e6be007c.png" alt="distributed cache ">
-
-## Tag-based cache invalidation
+## Tag-based Cache Invalidation
 
 <img width="369" alt="dependency graph 2021-10-19 21 38 02" src="https://user-images.githubusercontent.com/529021/137910748-b6e95839-eeb7-4ade-a564-3cdcd5fdc09e.png">
 
-There is a dependency problem in the content cache. If content A depends on content B, and B depends on C, then when C is updated, not only C's cache and ETag must be updated, but also B's cache and ETag which depend on C, and A's cache and ETag which depend on B.
+Content caching has dependency issues. If content A depends on content B, and B depends on C, then when C is updated, not only must C's cache and ETag be updated, but also B's cache and ETag (which depends on C), and A's cache and ETag (which depends on B).
 
-Sunday solves this problem by having each resource hold the URI of the dependent resource as a tag. When a resource embedded with `#[Embed]` is modified, the cache and ETag of all the resources involved will be invalidated and the cache will be regenerated for the next request.
+BEAR.Sunday solves this problem by having each resource hold the URI of dependent resources as tags. When a resource embedded with `#[Embed]` is modified, the cache and ETag of all related resources are invalidated, and cache regeneration occurs for the next request.
 
-## Donut cache
+## Donut Cache
 
 <img width="200" alt="donut caching" src="https://user-images.githubusercontent.com/529021/137097856-f9428918-5b76-4c0e-8cea-2472c15d82e9.png">
 
-Donut caching is one of the partial caching techniques for cache optimization. It composes the content into cacheable and non-cacheable parts.
+Donut caching is a partial caching technique for cache optimization. It separates content into cacheable and non-cacheable parts and combines them for output.
 
-For example, consider the content "`Welcome to $name`", which contains a non-cacheable resource. The do-not-cache part will be combined with the other cacheable parts and output.
+For example, consider content containing a non-cacheable resource like "`Welcome to $name`". The non-cacheable (do-not-cache) part is combined with other cacheable parts for output.
 
-<img width="557" alt="image" src="https://user-images.githubusercontent.com/529021/139617102-1f7f436c-a1f4-4c6c-b90b-de24491e4c8c.png ">
+<img width="557" alt="image" src="https://user-images.githubusercontent.com/529021/139617102-1f7f436c-a1f4-4c6c-b90b-de24491e4c8c.png">
 
+In this case, since the entire content is dynamic, the whole donut is not cached. Therefore, no ETag is output either.
 
+## Donut Hole Cache
 
-In this case, the entire content is dynamic, so the entire donut will not be cached. Therefore, no ETag will be output either.
+<img width="544" alt="image" src="https://user-images.githubusercontent.com/529021/139617571-31aea99a-533f-4b95-b3f3-6c613407d377.png">
 
-## Donut hole cache
+When the donut hole part is cacheable, it can be handled the same way as donut cache. In the example above, a weather forecast resource that changes once per hour is cached and included in the news resource.
 
-<img width="544" alt="image" src="https://user-images.githubusercontent.com/529021/139617571-31aea99a-533f-4b95-b3f3-6c613407d377.png ">
+In this case, since the donut content as a whole (news) is static, the entire content is also cached and given an ETag. This creates cache dependency. When the donut hole content is updated, the entire cached donut needs to be regenerated.
 
-When the hole part of the doughnut is cacheable, it can be treated in the same way as the doughnut cache.
+This dependency resolution happens automatically. To minimize computational resources, the donut part computation is reused. When the hole part (weather resource) is updated, the cache and ETag of the entire content are also automatically updated.
 
-In the example above, the resource for the weather forecast, which changes once an hour, is cached and included in the news resource. In this case, since the content of the donut as a whole (news) is static, the whole thing is also cached and given an ETag.
-
-This is where the cache dependency comes in. When the content of the hole part of the donut is updated, the entire cached donut needs to be regenerated.
-
-The nice thing is that this dependency resolution is done automatically. The computation of the donut part is then reused to minimize the computational resources. When the hole part (weather resource) is updated, the cache and ETag of the entire content is also automatically updated.
-Translated with www.DeepL.com/Translator (free version)
-
-### recursive donut
+### Recursive Donut
 
 <img width="191" alt="recursive donut 2021-10-19 21 27 06" src="https://user-images.githubusercontent.com/529021/137909083-2c5176f7-edb7-422b-bccc-1db90460fc15.png">
 
-The donut structure will be recursively applied.
-For example, if A contains B and B contains C and C is modified, A's cache and B's cache will be reused except for the modified C. A's and B's caches and ETags will be regenerated, but DB access to retrieve A's and B's content and rendering of views will not be done.
-For example, if A contains B and B contains C, and C is changed, A's cache and B's cache will be reused except for the part of C that is changed. The new partially-composed A and B caches and ETags will be regenerated.
+The donut structure is applied recursively. For example, if A contains B and B contains C, when C is modified, A's cache and B's cache are reused except for the modified C part. A's and B's caches and ETags are regenerated, but database access for A and B content retrieval and view rendering are not performed.
 
-The optimized structure of the partial cache performs content regeneration with minimal cost. The client does not need to know about the content cache structure.
+The optimized partial cache structure performs content regeneration with minimal cost. Clients don't need to know about the content cache structure.
 
-## Event-driven content
+## Event-Driven Content
 
-Traditionally, CDNs have believed that content that requires application logic is "dynamic" and therefore cannot be cached by a CDN. However, some CDNs, such as Fastly and Akamai, allow immediate or tag-based cache invalidation within seconds, [this idea is a thing of the past](https://www.fastly.com/blog/leveraging-your-cdn-cache- uncacheable-content).
+Traditionally, CDNs considered content requiring application logic as "dynamic" and therefore not cacheable by CDNs. However, some CDNs like Fastly and Akamai now support immediate or tag-based cache invalidation within seconds, making [this thinking obsolete](https://www.fastly.com/blog/leveraging-your-cdn-cache-uncacheable-content).
 
-Sunday dependency resolution is done not only on the server side, but also on the shared cache; when AOP detects a change and makes a PURGE request to the shared cache, the related cache on the shared cache will be invalidated, just like on the server side.
+BEAR.Sunday dependency resolution works not only server-side but also on shared caches. When AOP detects changes and makes PURGE requests to shared caches, related cache invalidation occurs on shared caches just like server-side.
 
-## Conditional request
+## Conditional Requests
 
 <img width="468" alt="conditional request" src="https://user-images.githubusercontent.com/529021/137151061-8d7a5605-3aa3-494c-91c5-c1deddd987dd.png">
 
-Content changes are managed by AOP, and the entity tag (ETag) of the content is automatically updated. conditional requests for HTTP using ETag not only minimize the use of computational resources, but responses that only return `304 Not Modified` also minimize the use of network resources. Conditional HTTP requests using ETag not only minimize the use of computational resources, but also minimize the use of network resources by simply returning `304 Not Modified`.
+Content changes are managed by AOP, and content entity tags (ETags) are automatically updated. HTTP conditional requests using ETags not only minimize computational resource usage, but responses returning only `304 Not Modified` also minimize network resource usage.
 
 # Usage
 
-Give the class to be cached the attribute `#[DonutCache]` if it is a donut cache (embedded content is not cacheable) and `#[CacheableResponse]` otherwise.
+For classes to be cached, use the `#[DonutCache]` attribute for donut cache (when embedded content is not cacheable), and `#[CacheableResponse]` for other cases:
 
 ```php
 use BEAR\RepositoryModule\Annotation\CacheableResponse;
