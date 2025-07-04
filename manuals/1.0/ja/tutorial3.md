@@ -29,7 +29,7 @@ php -S 127.0.0.1:8080 -t public
 
 ブラウザで [http://127.0.0.1:8080](http://127.0.0.1:8080) にアクセスし、"Hello BEAR.Sunday" が表示されることを確認します。
 
-```php
+```json
 {
     "greeting": "Hello BEAR.Sunday",
     "_links": {
@@ -52,11 +52,12 @@ composer require bear/cli
 
 ```php
 <?php
-namespace MyVendor\MyProject\Resource\Page;
 
-use BEAR\Resource\ResourceObject;
+namespace MyVendor\Greet\Resource\Page;
+
 use BEAR\Cli\Attribute\Cli;
 use BEAR\Cli\Attribute\Option;
+use BEAR\Resource\ResourceObject;
 
 class Greeting extends ResourceObject
 {
@@ -88,7 +89,7 @@ class Greeting extends ResourceObject
 }
 ```
 
-## ステップ4: Webリソースとしての動作確認
+## ステップ4: Webリソースとしての動作���認
 
 ブラウザで以下のURLにアクセスして動作確認します：
 
@@ -143,47 +144,20 @@ chmod +x bin/cli/greet
 # 出力: {"greeting": "こんにちは, World", "lang": "ja"}
 ```
 
-## ステップ7: Homebrewフォーミュラの作成と配布
+## ステップ7: ローカルでのHomebrewフォーミュラのテスト
 
-Homebrewフォーミュラの公開には2つのGitHubリポジトリが必要です：
+### 7.1 フォーミュラの生成
 
-1. アプリケーション本体のリポジトリ（例: your-vendor/greet）
-2. Homebrewフォーミュラ用のリポジトリ（例: your-vendor/homebrew-greet）
+フォーミュラを生成するには、Gitリポジトリが初期化されている必要があります：
 
-### 7.1 アプリケーションのリポジトリ作成
-
-まず、アプリケーション本体のリポジトリをGitHubで作成します：
-
-#### 方法1: GitHubのWebインターフェースを使用
-
-1. [https://github.com/new](https://github.com/new) にアクセス
-   - Repository name: greet
-   - Visibility: Public
-   - "Create repository" をクリック
-
-2. ローカルプロジェクトをプッシュ
 ```bash
-cd /path/to/project
+# Gitリポジトリの初期化（まだの場合）
 git init
 git add .
 git commit -m "Initial commit"
-git remote add origin https://github.com/your-vendor/greet.git
-git push -u origin main
 ```
 
-#### 方法2: GitHub CLI (ghコマンド) を使用
-
-ghコマンドがインストール済みで認証設定が完了している場合：
-
-```bash
-cd /path/to/project
-gh repo create your-vendor/greet --public --source=. --remote=origin
-git push -u origin main
-```
-
-### 7.2 CLIパッケージとフォーミュラの生成
-
-アプリケーションがGitHubにプッシュされた後、フォーミュラを生成します：
+フォーミュラを生成します：
 
 ```bash
 vendor/bin/bear-cli-gen MyVendor.Greet
@@ -191,66 +165,93 @@ vendor/bin/bear-cli-gen MyVendor.Greet
 
 これにより以下のファイルが生成されます：
 - `bin/cli/greet`：実行可能なCLIコマンド
-- `var/homebrew/greet.rb`：Homebrewフォーミュラ
+- `var/homebrew/greet.rb`：Homebrewフォーミュラ（Gitリポジトリが設定されている場合）
 
-### 7.3 フォーミュラ用リポジトリの作成
+### 7.2 ローカルでのHomebrewインストールテスト
 
-次に、生成されたフォーミュラを公開するためのリポジトリを作成します：
-
-#### 方法1: GitHubのWebインターフェースを使用
-
-1. [https://github.com/new](https://github.com/new) にアクセス
-   - Repository name: homebrew-greet （必ずhomebrew-プレフィックスをつける）
-   - Visibility: Public
-   - "Create repository" をクリック
-
-2. フォーミュラを配置
-```bash
-git clone https://github.com/your-vendor/homebrew-greet.git
-cd homebrew-greet
-cp /path/to/project/var/homebrew/greet.rb .
-git add greet.rb
-git commit -m "Add greet formula"
-git push
-```
-
-#### 方法2: GitHub CLI (ghコマンド) を使用
+生成されたフォーミュラをローカルでテストできます：
 
 ```bash
-gh repo create your-vendor/homebrew-greet --public --clone
-cd homebrew-greet
-cp /path/to/project/var/homebrew/greet.rb .
-git add greet.rb
-git commit -m "Add greet formula"
-git push
-```
-
-### 7.4 インストールのテスト
-
-ローカルテスト:
-```bash
+# フォーミュラを使ってローカルインストール
 brew install --formula ./var/homebrew/greet.rb
+
+# インストールされたコマンドのテスト
+greet -n "Homebrew" -l ja
+# 出力: こんにちは, Homebrew
+
+# アンインストール
+brew uninstall greet
 ```
 
-公開後のインストール:
-```bash
-brew tap your-vendor/greet
-brew install greet
-```
+## オプション: 公開配布について
 
-注意: フォーミュラの生成には以下の条件が必要です:
+実際にCLIツールを他の人に配布したい場合は、以下の流れでHomebrewパッケージとして公開できます：
+
+1. ア���リケーションをGitHubにプッシュ
+2. 生成されたフォーミュラ（`var/homebrew/greet.rb`）を`homebrew-`プレフィックス付きのGitHubリポジトリで公開
+3. ユーザーは`brew tap your-vendor/greet && brew install greet`でインストール可能
+
+詳細な公開手順については、[Homebrew公式ドキュメント](https://docs.brew.sh/How-to-Create-and-Maintain-a-Tap)を参照してください。
+
+**注意**: フォーミュラの生成には以下の条件が必要です：
 - アプリケーションのGitリポジトリが初期化されている
-- GitHubリモートリポジトリが設定されている
-- メインブランチ（main/master）が設定されている
+- ローカルテストの場合はGitHubリモートリポジトリは不要
 
-これらの条件が満たされていない場合、フォーミュラ生成はスキップされ、その理由が表示されます。
+これらの条件が満たされていない場合、フォーミュラ生成はスキップさ���、その理由が表示されます。
 
 ## まとめ
 
-このチュートリアルでは以下のことを学びました：
+このチュートリアルでは、単なるCLIツール作成を超えた、BEAR.Sundayの本質的な価値を体験しました：
 
-1. WebリソースをCLIコマンドとして利用可能にする方法
-2. BEAR.Cliの属性を使用したコマンドラインインターフェースの設計
-3. Homebrewを通じたCLIツールの配布方法
+### リソース指向アーキテクチャの真価
 
-BEAR.Cliを使用することで、既存のBEAR.SundayアプリケーションをCLIツールとして簡単に提供でき、Homebrewを通じて広く配布することができます。フォーミュラの生成と公開には適切なGitHub環境が必要ですが、一度設定すれば自動的にHomebrewパッケージとして配布できる利点があります。
+**同じリソース、複数の境界**
+- `Greeting`リソースは一度書くだけで、Web API��CLI、Homebrewパッケージとして機能
+- ビジネスロジックの重複なし、保守も一箇所で完結
+
+### 境界横断フレームワーク
+
+BEAR.Sundayは**境界のフレームワーク**として機能し、以下の境界を透過的に扱います：
+
+- **プロトコル境界**: HTTP ↔ コマンドライン
+- **インターフェース境界**: Web ↔ CLI ↔ パッケージ配布  
+- **環境境界**: 開発環境 ↔ 本番環境 ↔ ユーザー環境
+
+### 設計思想の実現
+
+```php
+// 1つのリソース
+class Greeting extends ResourceObject {
+    public function onGet(string $name, string $lang = 'en'): static
+    {
+        // ビジネスロジックは一箇所に
+    }
+}
+```
+
+↓
+
+```bash
+# Web API として
+curl "http://localhost/greeting?name=World&lang=ja"
+
+# CLI として  
+./bin/cli/greet -n "World" -l ja
+
+# Homebrewパッケージとして
+brew install your-vendor/greet && greet -n "World" -l ja
+```
+
+### 長期的な保守性と生産性
+
+- **DRY原則の徹底**: ドメインロジックがインターフェイスと結合していません
+- **統一されたテスト**: 1つのリソースをテストすれば全境界をカバーします
+- **一貫したAPI設計**: Web APIとCLIで同じパラメーター構造
+- **将来の拡張性**: 新しい境界（gRPC、GraphQLなど）も同じリソースで対応可能
+- **PHPバージョンの独立**: 使い続ける自由があります
+
+### 現代的な配布システムとの統合
+
+BEAR.Sundayのリソースは、現代的なパッケージシステムとも自然に統合できます。HomebrewのようなパッケージマネージャーやComposerのエコシステムを活用することで、ユーザーは実行環境を意識することなく、統一されたインターフェースでツールを利用できます。
+
+BEAR.Sundayの「Because Everything is a Resource」は、単なるスローガンではなく、境界を越えた一貫性と保守性を実現する設計哲学です。このチュートリアルで体験したように、リソース指向アーキテクチャは境界のないソフトウェアを実現し、開発体験だけでなく利用体験にも新しい地平をもたらします
