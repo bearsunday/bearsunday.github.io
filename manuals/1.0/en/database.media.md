@@ -401,10 +401,10 @@ protected function configure(): void
 ```
 
 Available template variables:
-- `{{ id }}`: Query ID
-- `{{ sql }}`: The actual SQL statement
+- `{% raw %}{{ id }}{% endraw %}`: Query ID
+- `{% raw %}{{ sql }}{% endraw %}`: The actual SQL statement
 
-Default template: `"-- {{ id }}.sql\n{{ sql }}"`
+Default template: `-- {% raw %}{{{ id }}.sql\n{{ sql }}{% endraw %}`
 
 This feature includes the query ID as a comment in the executed SQL, making it easy to identify which application query was executed when analyzing database slow logs.
 
