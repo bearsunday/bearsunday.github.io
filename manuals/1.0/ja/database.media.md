@@ -407,6 +407,34 @@ protected function configure(): void
 }
 ```
 
+## SQLテンプレート
+
+SQLの実行時にクエリーIDを含むカスタムログを出力して、スローログ分析時にどのクエリーが実行されたかを特定しやすくすることができます。
+
+`MediaQuerySqlTemplateModule`を使用して、SQLログのフォーマットをカスタマイズできます。
+
+```php
+use Ray\MediaQuery\MediaQuerySqlTemplateModule;
+
+protected function configure(): void
+{
+    $this->install(new MediaQuerySqlTemplateModule("-- App: {{ id }}.sql\n{{ sql }}"));
+}
+```
+
+利用可能なテンプレート変数：
+- `{{ id }}`: クエリーID
+- `{{ sql }}`: 実際のSQL文
+
+デフォルトテンプレート：`"-- {{ id }}.sql\n{{ sql }}"`
+
+この機能により、実行されるSQLにクエリーIDがコメントとして含まれ、データベースのスローログを分析する際に、どのアプリケーションのどのクエリーが実行されたかを容易に特定できます。
+
+```sql
+-- App: todo_item.sql
+SELECT * FROM todo WHERE id = :id
+```
+
 ## アノテーション / アトリビュート
 
 属性を表すのに[doctrineアノテーション](https://github.com/doctrine/annotations/)、[アトリビュート](https://www.php.net/manual/ja/language.attributes.overview.php)どちらも利用できます。次の2つは同じものです。
