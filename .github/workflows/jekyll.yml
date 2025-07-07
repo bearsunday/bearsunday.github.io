@@ -34,7 +34,7 @@ jobs:
           ruby-version: '3.2.2'
           bundler-cache: false # Disable automatic bundler cache to control gem versions
           cache-version: 2 # Increment this number if you need to re-download cached gems
-      
+
       - name: Install dependencies with specific Rouge version
         run: |
           bundle install

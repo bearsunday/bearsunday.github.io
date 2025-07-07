@@ -4,27 +4,28 @@ title: MediaQuery
 category: Manual
 permalink: /manuals/1.0/en/database_media.html
 ---
+
 # Ray.MediaQuery
 
-`Ray.QueryModule` makes a query to an external media such as a database or Web API with a function object to be injected.
+`Ray.MediaQuery` generates and injects query execution objects from interfaces for querying external media such as databases and Web APIs.
 
-## Motivation
+* Clarifies the boundary between domain layer and infrastructure layer.
+* Reduces boilerplate code.
+* Since it's independent of the actual external media, storage can be changed later. Enables easy parallel development and stub creation.
 
-* You can have a clear boundary between domain layer (usage code) and infrastructure layer (injected function) in code.
-* Execution objects are generated automatically so you do not need to write procedural code for execution.
-* Since usage codes are indifferent to the actual state of external media, storage can be changed later. Easy parallel development and stabbing.
+## Installation
 
-## Composer install
+```bash
+$ composer require ray/media-query
+```
 
-    $ composer require ray/media-query
+## Usage
 
-## Getting Started
+Define an interface for media access.
 
-Define the interface for media access.
+### Database
 
-### DB
-
-Specify the SQL ID with the attribute `DbQuery`.
+Specify the SQL ID with the `DbQuery` attribute.
 
 ```php
 interface TodoAddInterface
@@ -36,7 +37,7 @@ interface TodoAddInterface
 
 ### Web API
 
-Specify the Web request ID with the attribute `WebQuery`.
+Specify the Web API ID with the `WebQuery` attribute.
 
 ```php
 interface PostItemInterface
@@ -46,20 +47,22 @@ interface PostItemInterface
 }
 ```
 
-Create the web api path list file as `web_query.json`.
+Create an API path list file as `media_query.json`.
 
 ```json
 {
     "$schema": "https://ray-di.github.io/Ray.MediaQuery/schema/web_query.json",
     "webQuery": [
-        {"id": "user_item", "method": "GET", "path": "https://{domain}/users/{id}"}
+        {
+            "id": "user_item",
+            "method": "GET",
+            "path": "https://{domain}/users/{id}"
+        }
     ]
 }
 ```
 
-### Module
-
-MediaQueryModule binds the execution of SQL and Web API requests to an interface by setting `DbQueryConfig` or `WebQueryConfig` or both.
+MediaQueryModule binds SQL and Web API request execution to interfaces with `DbQueryConfig` and/or `WebQueryConfig` settings.
 
 ```php
 use Ray\AuraSqlModule\AuraSqlModule;
@@ -73,21 +76,26 @@ protected function configure(): void
 {
     $this->install(
         new MediaQueryModule(
-            Queries::fromDir('/path/to/queryInterface'),[
+            Queries::fromDir('/path/to/queryInterface'),
+            [
                 new DbQueryConfig('/path/to/sql'),
-                new WebQueryConfig('/path/to/web_query.json', ['domain' => 'api.exmaple.com'])
+                new WebQueryConfig('/path/to/web_query.json', ['domain' => 'api.example.com'])
             ],
         ),
     );
-    $this->install(new AuraSqlModule('mysql:host=localhost;dbname=test', 'username', 'password'));
+    $this->install(new AuraSqlModule(
+        'mysql:host=localhost;dbname=test',
+        'username',
+        'password'
+    ));
 }
 ```
 
 MediaQueryModule requires AuraSqlModule to be installed.
 
-### Request object injection
+### Injection
 
-You don't need to provide any implementation classes. It will be generated and injected.
+Objects are generated directly from interfaces and injected. No implementation class coding is required.
 
 ```php
 class Todo
@@ -103,26 +111,25 @@ class Todo
 }
 ```
 
-### Notes
+### DbQuery
 
-#### DbQuery
+SQL execution is mapped to methods, binding the SQL specified by ID with method arguments for execution. For example, with ID `todo_item`, it executes `todo_item.sql` bound with `['id' => $id]`.
 
-SQL execution is mapped to a method, and the SQL specified by ID is bound and executed by the method argument.
-For example, if the ID is `todo_item`, `todo_item.sql` SQL statement will be executed with `['id => $id]` bound.
-
-* Prepare the SQL file in the `$sqlDir` directory.
+* Prepare SQL files in the `$sqlDir` directory.
+* SQL files can contain multiple SQL statements. The last SELECT statement becomes the return value.
 
 #### Entity
 
-* The SQL execution result can be hydrated to the entity class with `entity` parameter
+SQL execution results can be converted (hydrated) to prepared entity classes by specifying `entity`.
 
 ```php
 interface TodoItemInterface
 {
-    #[DbQuery('todo_item', entity: Todo::class, type:'row')]
+    #[DbQuery('todo_item', entity: Todo::class)]
     public function getItem(string $id): Todo;
 }
 ```
+
 ```php
 final class Todo
 {
@@ -131,7 +138,7 @@ final class Todo
 }
 ```
 
-Use `CameCaseTrait` to convert a property to camelCase.
+Use `CamelCaseTrait` to convert properties to camelCase.
 
 ```php
 use Ray\MediaQuery\CamelCaseTrait;
@@ -139,12 +146,11 @@ use Ray\MediaQuery\CamelCaseTrait;
 class Invoice
 {
     use CamelCaseTrait;
-
     public $userName;
 }
 ```
 
-If the entity has a constructor, the constructor will be called with the fetched data.
+If a constructor exists, it will be called with the fetched data.
 
 ```php
 final class Todo
@@ -158,12 +164,10 @@ final class Todo
 
 #### type: 'row'
 
-If the return value of SQL execution is a single row, specify the attribute `type: 'row'`. However, if the return value of the interface is an entity class, it can be omitted. [^v0dot5].
-
-[^v0dot5]: Until the previous version `0.5`, the SQL file was identified by its name as follows:" If the return value of the SQL execution is a single row, add a postfix of `item`; if it is multiple rows, add a postfix of `list`."
+If SQL execution returns a single row, specify the `type: 'row'` attribute. However, this can be omitted if the interface return value is an entity class.
 
 ```php
-/** If the return value is Entity */
+/** When return value is Entity */
 interface TodoItemInterface
 {
     #[DbQuery('todo_item', entity: Todo::class)]
@@ -172,7 +176,7 @@ interface TodoItemInterface
 ```
 
 ```php
-/** If the return value is array */
+/** When return value is array */
 interface TodoItemInterface
 {
     #[DbQuery('todo_item', entity: Todo::class, type: 'row')]
@@ -180,48 +184,48 @@ interface TodoItemInterface
 }
 ```
 
-#### Web API
+### Web API
 
-* Customization such as header for authentication is done by binding Guzzle's `ClinetInterface`.
+* Method arguments are bound to the URI template specified in `uri` to generate Web API request objects.
+* Customization for authentication headers, etc. is done by binding Guzzle's `ClientInterface`.
 
 ```php
-$this->bind(ClientInterface::class)->toProvider(YourGuzzleClientProvicer::class);
+$this->bind(ClientInterface::class)->toProvider(YourGuzzleClientProvider::class);
 ```
 
 ## Parameters
 
 ### DateTime
 
-You can pass a value object as a parameter.
-For example, you can specify a `DateTimeInterface` object like this.
+You can pass value objects as parameters. For example, `DateTimeInterface` objects can be specified like this:
 
 ```php
 interface TaskAddInterface
 {
-    public function __invoke(string $title, DateTimeInterface $cratedAt = null): void;
+    #[DbQuery('task_add')]
+    public function __invoke(string $title, DateTimeInterface $createdAt = null): void;
 }
 ```
 
-The value will be converted to a date formatted string at SQL execution time or Web API request time.
+Values are converted to date-formatted strings during SQL execution or Web API requests.
 
 ```sql
 INSERT INTO task (title, created_at) VALUES (:title, :createdAt); # 2021-2-14 00:00:00
 ```
 
-If no value is passed, the bound current time will be injected.
-This eliminates the need to hard-code `NOW()` inside SQL and pass the current time every time.
+If no value is passed, the bound current time is injected. This eliminates the need to hard-code `NOW()` in SQL or pass current time every time.
 
-### Test clock
+### Test Time
 
-When testing, you can also use a single time binding for the `DateTimeInterface`, as shown below.
+For testing, you can bind `DateTimeInterface` to a single time like this:
 
 ```php
 $this->bind(DateTimeInterface::class)->to(UnixEpochTime::class);
 ```
 
-## VO
+### Value Objects (VO)
 
-If a value object other than `DateTime` is passed, the return value of the `ToScalar()` method that implements the `toScalar` interface or the `__toString()` method will be the argument.
+When value objects other than `DateTime` are passed, the return value of the `toScalar()` method implementing `ToScalarInterface`, or the `__toString()` method becomes the argument.
 
 ```php
 interface MemoAddInterface
@@ -234,8 +238,8 @@ interface MemoAddInterface
 class UserId implements ToScalarInterface
 {
     public function __construct(
-        private readonly LoginUser $user;
-    ){}
+        private readonly LoginUser $user
+    ) {}
     
     public function toScalar(): int
     {
@@ -250,15 +254,15 @@ INSERT INTO memo (user_id, memo) VALUES (:user_id, :memo);
 
 ### Parameter Injection
 
-Note that the default value of `null` for the value object argument is never used in SQL. If no value is passed, the scalar value of the value object injected with the parameter type will be used instead of null.
+Note that the default value `null` for value object arguments is never used in SQL or Web requests. When no value is passed, the scalar value of the value object injected by parameter type is used instead of null.
 
 ```php
-public function __invoke(Uuid $uuid = null): void; // UUID is generated and passed.
-````
+public function __invoke(Uuid $uuid = null): void; // UUID is generated and passed
+```
 
 ## Pagination
 
-The `#[Pager]` annotation allows paging of SELECT queries.
+For databases, you can paginate SELECT queries with the `#[Pager]` attribute.
 
 ```php
 use Ray\MediaQuery\PagesInterface;
@@ -270,62 +274,114 @@ interface TodoList
 }
 ```
 
-You can get the number of pages with `count()`, and you can get the page object with array access by page number.
-`Pages` is a SQL lazy execution object.
+You can get the count with `count()`, and get page objects with array access by page number. `Pages` is a SQL lazy execution object.
 
 ```php
 $pages = ($todoList)();
-$cnt = count($pages); // When count() is called, the count SQL is generated and queried.
-$page = $pages[2]; // A page query is executed when an array access is made.
+$cnt = count($pages);    // Count SQL is generated and queried when count() is called
+$page = $pages[2];       // DB query for that page is executed when array access is made
 
-// $page->data // sliced data
-// $page->current;
-// $page->total
-// $page->hasNext
-// $page->hasPrevious
-// $page->maxPerPage;
-// (string) $page // pager html
+// $page->data           // sliced data
+// $page->current;       // current page number
+// $page->total          // total count
+// $page->hasNext        // whether next page exists
+// $page->hasPrevious    // whether previous page exists
+// $page->maxPerPage;    // maximum items per page
+// (string) $page        // pager HTML
 ```
 
-# SqlQuery
+## SqlQuery
 
-If you pass a `DateTimeIntetface` object, it will be converted to a date formatted string and queried.
+`SqlQuery` executes SQL by specifying the SQL file ID. Used when preparing implementation classes for detailed implementation.
 
 ```php
-$sqlQuery->exec('memo_add', ['memo' => 'run', 'created_at' => new DateTime()]);
+class TodoItem implements TodoItemInterface
+{
+    public function __construct(
+        private SqlQueryInterface $sqlQuery
+    ) {}
+
+    public function __invoke(string $id): array
+    {
+        return $this->sqlQuery->getRow('todo_item', ['id' => $id]);
+    }
+}
 ```
 
-When an object is passed, it is converted to a value of `toScalar()` or `__toString()` as in Parameter Injection.
+## get* Methods
 
-## Get* Method
-
-To get the SELECT result, use `get*` method depending on the result you want to get.
+Use appropriate `get*` methods to retrieve SELECT results based on the expected result type.
 
 ```php
-$sqlQuery->getRow($queryId, $params); // Result is a single row
-$sqlQuery->getRowList($queryId, $params); // result is multiple rows
-$statement = $sqlQuery->getStatement(); // Retrieve the PDO Statement
-$pages = $sqlQuery->getPages(); // Get the pager
+$sqlQuery->getRow($queryId, $params);        // Result is single row
+$sqlQuery->getRowList($queryId, $params);    // Result is multiple rows
+$statement = $sqlQuery->getStatement();       // Get PDO Statement
+$pages = $sqlQuery->getPages();              // Get pager
 ```
 
-Ray.MediaQuery contains the [Ray.AuraSqlModule](https://github.com/ray-di/Ray.AuraSqlModule).
-If you need more lower layer operations, you can use Aura.Sql's [Query Builder](https://github.com/ray-di/Ray.AuraSqlModule#query-builder) or [Aura.Sql](https://github.com/auraphp/Aura.Sql) which extends PDO.
-[doctrine/dbal](https://github.com/ray-di/Ray.DbalModule) is also available.
+Ray.MediaQuery includes [Ray.AuraSqlModule](https://github.com/ray-di/Ray.AuraSqlModule). For lower-level operations, use Aura.Sql's [Query Builder](https://github.com/ray-di/Ray.AuraSqlModule#query-builder) or PDO-extended [Aura.Sql](https://github.com/auraphp/Aura.Sql). [doctrine/dbal](https://github.com/ray-di/Ray.DbalModule) is also available.
+
+Like parameter injection, passing `DateTimeInterface` objects converts them to date-formatted strings.
+
+```php
+$sqlQuery->exec('memo_add', [
+    'memo' => 'run',
+    'created_at' => new DateTime()
+]);
+```
+
+Other objects are converted to `toScalar()` or `__toString()` values.
+
+### Integration with Ray.InputQuery
+
+When using Ray.InputQuery with BEAR.Resource, Input classes can be passed directly as MediaQuery parameters.
+
+```php
+use Ray\InputQuery\Attribute\Input;
+
+final class UserCreateInput
+{
+    public function __construct(
+        #[Input] public readonly string $name,
+        #[Input] public readonly string $email,
+        #[Input] public readonly int $age
+    ) {}
+}
+```
+
+```php
+interface UserCreateInterface
+{
+    #[DbQuery('user_create')]
+    public function add(UserCreateInput $input): void;
+}
+```
+
+Input object properties are automatically expanded to SQL parameters.
+
+```sql
+-- user_create.sql
+INSERT INTO users (name, email, age) VALUES (:name, :email, :age);
+```
+
+This integration enables consistent type-safe data flow from ResourceObject to MediaQuery.
 
 ## Profiler
 
-Media accesses are logged by a logger. By default, a memory logger is bound to be used for testing.
+Media access is logged by loggers. By default, a memory logger for testing is bound.
 
 ```php
 public function testAdd(): void
 {
     $this->sqlQuery->exec('todo_add', $todoRun);
-    $this->assertStringContainsString('query: todo_add({"id": "1", "title": "run"})', (string) $this->log);
+    $this->assertStringContainsString(
+        'query: todo_add({"id":"1","title":"run"})',
+        (string) $this->log
+    );
 }
 ```
 
-Implement your own [MediaQueryLoggerInterface](src/MediaQueryLoggerInterface.php) and run
-You can also implement your own [MediaQueryLoggerInterface](src/MediaQueryLoggerInterface.php) to benchmark each media query and log it with the injected PSR logger.
+You can implement your own [MediaQueryLoggerInterface](src/MediaQueryLoggerInterface.php) to benchmark each media query or log with injected PSR loggers.
 
 ## PerformSqlInterface
 
@@ -404,7 +460,7 @@ Available template variables:
 - `{% raw %}{{ id }}{% endraw %}`: Query ID
 - `{% raw %}{{ sql }}{% endraw %}`: The actual SQL statement
 
-Default template: `-- {% raw %}{{{ id }}.sql\n{{ sql }}{% endraw %}`
+Default template: `-- {% raw %}{{ id }}.sql\n{{ sql }}{% endraw %}`
 
 This feature includes the query ID as a comment in the executed SQL, making it easy to identify which application query was executed when analyzing database slow logs.
 
@@ -415,8 +471,7 @@ SELECT * FROM todo WHERE id = :id
 
 ## Annotations / Attributes
 
-You can use either [doctrine annotations](https://github.com/doctrine/annotations/) or [PHP8 attributes](https://www.php.net/manual/en/language.attributes.overview.php) can both be used.
-The next two are the same.
+Both [doctrine annotations](https://github.com/doctrine/annotations/) and [attributes](https://www.php.net/manual/en/language.attributes.overview.php) can be used to represent properties. The following two are equivalent:
 
 ```php
 use Ray\MediaQuery\Annotation\DbQuery;
