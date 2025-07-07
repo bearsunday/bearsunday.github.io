@@ -1,6 +1,6 @@
 ---
 layout: docs-en
-title: Resource Parameter
+title: Resource Parameters
 category: Manual
 permalink: /manuals/1.0/en/resource_param.html
 ---
@@ -9,9 +9,9 @@ permalink: /manuals/1.0/en/resource_param.html
 
 ## Basics
 
-Web runtime values such as HTTP requests and cookies that require ResourceObjects are passed directly to the method arguments.
+Web runtime values such as HTTP requests and cookies that ResourceObjects require are passed directly to method arguments. For HTTP requests, the `onGet` and `onPost` method arguments receive `$_GET` and `$_POST` respectively, according to variable names.
 
-For requests from HTTP, the arguments of the `onGet` and `onPost` methods are passed `$_GET` and `$_POST`, respectively, depending on the variable name. For example, `$id` in the following is passed `$_GET['id']`. Arguments passed as strings when the input is HTTP will be casted to the specified type.
+For example, the following `$id` receives `$_GET['id']`. When input is from HTTP, string arguments are cast to the specified type.
 
 
 ```php?start_inline
@@ -22,17 +22,17 @@ class Index extends ResourceObject
         // ....
 ```
 
-## Parameter type
+## Parameter Types
 
-### Scalar parameters
+### Scalar Parameters
 
 All parameters passed via HTTP are strings, but if you specify a non-string type such as `int`, it will be cast.
 
-### Array parameters
+### Array Parameters
 
 Parameters can be nested data [^2]; data sent as JSON or nested query strings can be received as arrays.
 
-[^2]:[parse_str](https://www.php.net/manual/ja/function.parse-str.php)参照
+[^2]: See [parse_str](https://www.php.net/manual/en/function.parse-str.php)
 
 ```php?start_inline
 class Index extends ResourceObject
@@ -79,10 +79,10 @@ namespace Vendor\App\Input;
 
 final class User
 {
-    public function __constrcut(
+    public function __construct(
         public readonly int $id,
         public readonly string $name
-    } {}
+    ) {}
 }
 ```
 
@@ -154,6 +154,8 @@ class Index extends ResourceObject
         // For tags[]=php&tags[]=web&title=Hello
         // $input->tags = ['php', 'web']
         // $input->title = 'Hello'
+    }
+}
 ```
 
 #### Object Arrays
@@ -402,7 +404,7 @@ The `#[InputFile]` attribute enables direct correspondence between HTML form `in
 
 For more details, see the [Ray.InputQuery](https://github.com/ray-di/Ray.InputQuery) documentation.
 
-### Enum parameters
+### Enum Parameters
 
 You can specify an [enumerated type](https://www.php.net/manual/en/language.types.enumerations.php) in PHP8.1 to limit the possible values.
 
@@ -419,12 +421,14 @@ class Index extends ResourceObject
 {
     public function onGet(IceCreamId $iceCreamId): static
     {
-        $id = $iceCreamId->value // 1 or 2
+        $id = $iceCreamId->value; // 1 or 2
+    }
+}
 ```
 
 In the above case, if anything other than 1 or 2 is passed, a `ParameterInvalidEnumException` will be raised.
 
-## Web context binding
+## Web Context Binding
 
 PHP superglobals such as `$_GET` and `$_COOKIE` can be bound to method arguments instead of being retrieved in the method.
 
@@ -455,11 +459,11 @@ class News extends ResourceObject
         #[CookieParam('id')] string $tokenId = "0000", // $_COOKIE['id'] or "0000" when unset;
         #[EnvParam('app_mode')] string $app_mode,      // $_ENV['app_mode'];
         #[FormParam('token')] string $token,           // $_POST['token'];
-        #[ServerParam('SERVER_NAME') string $server    // $_SERVER['SERVER_NAME'];
+        #[ServerParam('SERVER_NAME')] string $server   // $_SERVER['SERVER_NAME'];
     ): static {
 ```
 
-When the client specifies a value, the specified value takes precedence and the bound value is invalid. This is useful for testing.
+When clients specify values, those values take precedence and bound values become invalid. This is useful for testing.
 
 ## Resource Binding
 
@@ -475,11 +479,11 @@ class News extends ResourceObject
     ): static {
 ```
 
-In this example, when the method is called, it makes a `get` request to the `login` resource and receives `$body['nickname']` with `$name`.
+In this example, when the method is called, it makes a `get` request to the `login` resource and receives `$body['nickname']` as `$name`.
 
-## Content negotiation
+## Content Negotiation
 
-The `content-type` header of HTTP requests is supported. The `application/json` and `x-www-form-urlencoded` media types are determined and values are passed to the parameters. [^json].
+HTTP request `content-type` headers are supported. `application/json` and `x-www-form-urlencoded` media types are distinguished and values are passed to parameters. [^json]
 
-[^json]:Set the `content-type` header to `application/json` if you are sending API requests in JSON.
+[^json]: When sending API requests as JSON, set the `content-type` header to `application/json`.
 
