@@ -248,7 +248,10 @@ class ImageUpload extends ResourceObject
 
         // Handle successful file upload - move file to destination directory
         $uploadDir = '/var/www/uploads/';
-        $filename = uniqid() . '_' . $image->name;
+        $originalName = basename($image->name);
+        $extension = pathinfo($originalName, PATHINFO_EXTENSION);
+        $safeName = preg_replace('/[^a-zA-Z0-9._-]/', '', pathinfo($originalName, PATHINFO_FILENAME));
+        $filename = bin2hex(random_bytes(8)) . '_' . uniqid() . '_' . $safeName . '.' . $extension;
         $image->move($uploadDir . $filename);
 
         $this->body = [
@@ -306,7 +309,10 @@ class GalleryUpload extends ResourceObject
             }
 
             // Save file
-            $filename = uniqid() . '_' . $image->name;
+            $originalName = basename($image->name);
+            $extension = pathinfo($originalName, PATHINFO_EXTENSION);
+            $safeName = preg_replace('/[^a-zA-Z0-9._-]/', '', pathinfo($originalName, PATHINFO_FILENAME));
+            $filename = bin2hex(random_bytes(8)) . '_' . uniqid() . '_' . $safeName . '.' . $extension;
             $image->move($uploadDir . $filename);
 
             $results[] = [
