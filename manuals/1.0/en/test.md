@@ -16,7 +16,7 @@ Run `vendor/bin/phpunit` or `composer test`.　Other commands are as follows.
 ```
 composer test    // phpunit test
 composer tests   // test + sa + cs
-composer coverge // test coverage
+composer coverage // test coverage
 composer pcov    // test coverage (pcov)
 composer sa      // static analysis
 composer cs      // coding standards check
@@ -115,7 +115,7 @@ public function testBindMock(): void
              ->method('update')
              ->with($this->equalTo('something'));
     $module = new class($mock) extends AbstractModule {
-        public function __constcuct(
+        public function __construct(
             private FooInterface $foo
         ){}
         protected function configure(): void

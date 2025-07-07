@@ -1,5 +1,10 @@
-Redis Cache Adapter
-===================
+---
+layout: docs-en
+title: Redis Cache Adapter
+category: Manual
+permalink: /manuals/1.0/en/redis-dns.html
+---
+# Redis Cache Adapter
 
     This article explains how to configure the Redis adapter when using the
     Cache as an independent component in any PHP application. Read the

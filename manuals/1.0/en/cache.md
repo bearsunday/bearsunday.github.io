@@ -112,7 +112,6 @@ class BlogPosting extends ResourceObject
 
 The donut structure will be recursively applied.
 For example, if A contains B and B contains C and C is modified, A's cache and B's cache will be reused except for the modified C. A's and B's caches and ETags will be regenerated, but DB access to retrieve A's and B's content and rendering of views will not be done.
-For example, if A contains B and B contains C, and C is changed, A's cache and B's cache will be reused except for the part of C that is changed. The new partially-composed A and B caches and ETags will be regenerated.
 
 The optimized structure of the partial cache performs content regeneration with minimal cost. The client does not need to know about the content cache structure.
 

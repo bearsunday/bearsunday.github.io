@@ -182,7 +182,7 @@ When this request is embedded in a template or resource, it is evaluated lazily.
 
 ```php
 $this->body = [
-    'lazy' => $this->resource->get('app://self/posts')->withQuery(['id' => 3])->requrest();
+    'lazy' => $this->resource->get('app://self/posts')->withQuery(['id' => 3])->request();
 ];
 ```
 
