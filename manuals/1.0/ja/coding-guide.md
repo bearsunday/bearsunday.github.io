@@ -43,7 +43,7 @@ class Entry extends ResourceObject
 
     #[Link(rel: "next_action1", href: "/next_action1")]
     public function onPost(
-        string $tile,
+        string $title,
         string $body,
         string $uid,
         string $slug

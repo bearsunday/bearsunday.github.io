@@ -129,7 +129,7 @@ $class = $invocation->getMethod()->getDeclaringClass();
 
  * `$method->getAnnotations()`
  * `$method->getAnnotation($name)`
- * `$class->->getAnnotations()`
+ * `$class->getAnnotations()`
  * `$class->->getAnnotation($name)`
 
 ## Environment Settings

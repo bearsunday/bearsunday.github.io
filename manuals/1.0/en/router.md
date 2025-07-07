@@ -174,10 +174,10 @@ Please note that there is the first slash **inside** of the place holder.
 Then all the paths below are routed to 'archive' and the value of the parameter is appended.
 
 
-- `/archive            : ['year' => null,   'month' => null, 'day' = null]`
-- `/archive/1979       : ['year' => '1979', 'month' => null, 'day' = null]`
-- `/archive/1979/11    : ['year' => '1979', 'month' => '11', 'day' = null]`
-- `/archive/1979/11/07 : ['year' => '1979', 'month' => '11', 'day' = '07']`
+- `/archive            : ['year' => null,   'month' => null, 'day' => null]`
+- `/archive/1979       : ['year' => '1979', 'month' => null, 'day' => null]`
+- `/archive/1979/11    : ['year' => '1979', 'month' => '11', 'day' => null]`
+- `/archive/1979/11/07 : ['year' => '1979', 'month' => '11', 'day' => '07']`
 
 Optional parameters are **options in the order of**. In other words, you can not specify "day" without "month".
 

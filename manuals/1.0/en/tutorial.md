@@ -336,7 +336,7 @@ class Weekday extends ResourceObject
 Add a test as well.
 
 ```diff
-+    public function tesInvalidDateTime(): void
++    public function testInvalidDateTime(): void
 +    {
 +        $this->expectException(InvalidDateTimeException::class);
 +        $this->resource->get('app://self/weekday', ['year' => '-1', 'month' => '1', 'day' => '1']);
@@ -678,7 +678,6 @@ namespace MyVendor\Weekday\Resource\Page;
 
 use BEAR\Resource\ResourceObject;
 use BEAR\Resource\Annotation\Embed;
-use BEAR\Resource\ResourceObject;
 
 class Index extends ResourceObject
 {
