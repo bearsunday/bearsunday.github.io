@@ -402,7 +402,8 @@ protected function configure(): void
 
 Available template variables:
 - `{% raw %}{{ id }}{% endraw %}`: Query ID
-- `{% raw %}{{ sql }}{% endraw %}`: The actual SQL statement
+- `{% raw %}{{ sql }}{% endraw %}`: The ac
+- tual SQL statement
 
 Default template: `-- {% raw %}{{{ id }}.sql\n{{ sql }}{% endraw %}`
 
