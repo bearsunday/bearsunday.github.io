@@ -397,7 +397,6 @@ class FileUploadTest extends TestCase
 ```
 
 `#[InputFile]`属性により、HTMLフォームの`input`要素とPHPメソッドの引数が直接対応し、型安全で直感的なファイルアップロード処理が実現できます。配列対応により複数ファイルアップロードも簡単に実装でき、テストも容易に行えます。
-
 詳細は[Ray.InputQuery](https://github.com/ray-di/Ray.InputQuery)のドキュメントを参照してください。
 
 ### 列挙型パラメーター
@@ -417,7 +416,7 @@ class Index extends ResourceObject
 {
     public function onGet(IceCreamId $iceCreamId): static
     {
-        $id = $iceCreamId->value // 1 or 2
+        $id = $iceCreamId->value; // 1 or 2
 ```
 
 上記の場合、1か2以外が渡されると`ParameterInvalidEnumException`が発生します。
@@ -479,6 +478,4 @@ class News extends ResourceObject
 
 HTTPリクエストの`content-type`ヘッダーがサポートされています。`application/json`と`x-www-form-urlencoded`メディアタイプを判別してパラメーターに値が渡されます。[^json]
 
-[^json]: APIリクエストをJSONで送信する場合には`content-type`ヘッダーに`application/json`をセットしてください。
-
-
+[^json]: APIリクエストをJSONで送信する場合には`content-type`ヘッダーに`application/json`をセットしてくだ
