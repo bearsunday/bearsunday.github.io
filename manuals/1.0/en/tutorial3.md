@@ -1,4 +1,3 @@
----
 layout: docs-en
 title: CLI Tutorial
 category: Manual
