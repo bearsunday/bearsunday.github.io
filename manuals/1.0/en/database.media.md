@@ -460,7 +460,7 @@ Available template variables:
 - `{% raw %}{{ id }}{% endraw %}`: Query ID
 - `{% raw %}{{ sql }}{% endraw %}`: The actual SQL statement
 
-Default template: `-- {% raw %}{{{ id }}.sql\n{{ sql }}{% endraw %}`
+Default template: `-- {% raw %}{{ id }}.sql\n{{ sql }}{% endraw %}`
 
 This feature includes the query ID as a comment in the executed SQL, making it easy to identify which application query was executed when analyzing database slow logs.
 

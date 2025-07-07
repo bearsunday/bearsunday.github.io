@@ -2,7 +2,7 @@
 layout: docs-ja
 title: PHPDoc ユーティリティ型
 category: Manual
-permalink: /manuals/1.0/ja/types-utilities.html
+permalink: /manuals/1.0/ja/types-utility.html
 ---
 # PHPDoc ユーティリティ型
 
