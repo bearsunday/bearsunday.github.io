@@ -480,3 +480,5 @@ class News extends ResourceObject
 HTTPリクエストの`content-type`ヘッダーがサポートされています。`application/json`と`x-www-form-urlencoded`メディアタイプを判別してパラメーターに値が渡されます。[^json]
 
 [^json]: APIリクエストをJSONで送信する場合には`content-type`ヘッダーに`application/json`をセットしてください。
+
+
