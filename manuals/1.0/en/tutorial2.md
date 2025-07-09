@@ -46,7 +46,7 @@ TKT_DB_SLAVE=''
 TKT_DB_DSN=mysql:host=${TKT_DB_HOST}
 ```
 
-The `.env.dist` file should look like this, and the actual connection information should be written in `.env`. ^1]
+The `.env.dist` file should look like this, and the actual connection information should be written in `.env`. [^1]
 
 Next, create a folder to be used by Phinx.
 
@@ -373,21 +373,21 @@ It can be one interface and one method as in [ADR pattern](https://github.com/pm
 
 If you specify `array` for the return value of a method, you will get the database result as it is, an associative array, but if you specify an entity type for the return value of the method, it will be hydrated to that type.
 
-``php
-#[DbQuery('ticket_item')
+```php
+#[DbQuery('ticket_item')]
 public function item(string $id): array // you get an array.
 ```
 
 ```php
-#[DbQuery('ticket_item')].
-public function item(string $id): ticket|null; // yields a Ticket entity.
+#[DbQuery('ticket_item')]
+public function item(string $id): Ticket|null; // yields a Ticket entity.
 ```
 
 For multiple rows (row_list), use `/** @return array<Ticket>*/` and phpdoc to specify that ``Ticket`` is returned as an array.
 
-```
+```php
 /** @return array<Ticket> */
-#[DbQuery('ticket_list')].
+#[DbQuery('ticket_list')]
 public function list(): array; // yields an array of Ticket entities.
 ```
 The value of each row is passed to the constructor by name argument. [^named]

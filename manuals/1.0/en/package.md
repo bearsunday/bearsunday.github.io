@@ -16,10 +16,10 @@ The file layout of the BEAR.Sunday application conforms to [php-pds/skeleton](ht
 
 ### Invoke sequence
 
- 1. Console input(`bin/app.php`, `bin/page.php`) or web entry file (`public/index.php`) excute `bootstrap.php` function.
- 3. `$app` application object is created by `$context` in `boostrap.php`.
- 4. A router in `$app` convert external resource request to internal resource request.
- 4. A resource request is invoked. The representation of the result transfered to a client.
+ 1. Console input(`bin/app.php`, `bin/page.php`) or web entry file (`public/index.php`) execute `bootstrap.php` function.
+ 3. `$app` application object is created by `$context` in `bootstrap.php`.
+ 4. A router in `$app` converts external resource request to internal resource request.
+ 4. A resource request is invoked. The representation of the result is transferred to a client.
 
 
 ### bootstrap/
@@ -42,13 +42,13 @@ You can create your own boot file for different context.
 
 ### bin/
 
-Plavce command-line executable files.
+Place command-line executable files.
 
 ### src/
 
 Place application class file.
 
-### publc/
+### public/
 
 Web public folder.
 
