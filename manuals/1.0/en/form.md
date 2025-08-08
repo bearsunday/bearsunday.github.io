@@ -20,7 +20,7 @@ composer require ray/web-form-module
 
 Install `AuraInputModule` in our application module `src/Module/AppModule.php`
 
-```php?start_inline
+```php
 use BEAR\Package\AbstractAppModule;
 use Ray\WebFormModule\WebFormModule;
 
@@ -39,7 +39,7 @@ class AppModule extends AbstractAppModule
 Create **a form class** that defines the registration and the rules of form elements, then bind it to a method using `@FormValidation` annotation.
 The method runs only when the sent data is validated.
 
-```php?start_inline
+```php
 use Ray\WebFormModule\AbstractForm;
 use Ray\WebFormModule\SetAntiCsrfTrait;
 
@@ -73,7 +73,7 @@ If we want to change the input, we can set the values by implementing `submit()`
 Annotate the method that we want to validate with the `@FormValidation`, so that the validation is done in the form object specified by the `form` property before execution.
 When validation fails, the method with the `ValidationFailed` suffix is called.
 
-```php?start_inline
+```php
 use Ray\Di\Di\Inject;
 use Ray\Di\Di\Named;
 use Ray\WebFormModule\Annotation\FormValidation;
@@ -120,14 +120,14 @@ The submit parameters will be passed to the `onPostValidationFailed` method.
 
 Specify the element name to get the `input` elements and error messages
 
-```php?start_inline
+```php
   $form->input('name'); // <input id="name" type="text" name="name" size="20" maxlength="20" />
   $form->error('name'); // "Please enter a double-byte characters or letters in the name." or blank
 ```
 
 The same applies to Twig template
 
-```php?start_inline
+```php
 {% raw %}{{ form.input('name') }}
 {{ form.error('name') }}{% endraw %}
 ```
@@ -136,10 +136,10 @@ The same applies to Twig template
 
 We can add a CSRF(Cross site request forgeries) object to the form to apply CSRF protections.
 
-```php?start_inline
+```php
 use Ray\WebFormModule\SetAntiCsrfTrait;
 
-class MyForm extends AbstractAuraForm
+class MyForm extends AbstractForm
 {
     use SetAntiCsrfTrait;
 ```
@@ -154,7 +154,7 @@ For convenience, HTML representation is not used in this case.
 
 When we `echo` the `error` property of the caught exception, we can see the representation of the media type [application/vnd.error+json](https://github.com/blongden/vnd.error).
 
-```php?start_inline
+```php
 http_response_code(400);
 echo $e->error;
 
@@ -171,7 +171,7 @@ echo $e->error;
 
 We can add the necessary information to `vnd.error+json` using `@VndError` annotation.
 
-```php?start_inline
+```php
 /**
  * @FormValidation(form="contactForm")
  * @VndError(
@@ -189,7 +189,7 @@ If we install `Ray\WebFormModule\FormVndErrorModule`, the method annotated with 
 will throw an exception in the same way as the method annotated with `@InputValidation`.
 We can use the page resources as API.
 
-```php?start_inline
+```php
 class FooModule extends AbstractModule
 {
     protected function configure()

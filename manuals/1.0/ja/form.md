@@ -28,7 +28,7 @@ class AppModule extends AbstractAppModule
     protected function configure()
     {
         // ...
-        $this->install(new AuraInputModule);
+        $this->install(new WebFormModule);
     }
 }
 ```
@@ -137,7 +137,7 @@ CSRF(クロスサイトリクエストフォージェリ)対策を行うため�
 ```php
 use Ray\WebFormModule\SetAntiCsrfTrait;
 
-class MyForm extends AbstractAuraForm
+class MyForm extends AbstractForm
 {
     use SetAntiCsrfTrait;
 }
@@ -194,7 +194,7 @@ class FooModule extends AbstractModule
 {
     protected function configure()
     {
-        $this->install(new AuraInputModule);
+        $this->install(new WebFormModule);
         $this->override(new FormVndErrorModule);
     }
 }

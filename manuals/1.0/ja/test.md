@@ -187,4 +187,3 @@ Workflowテストは HTTPテストに継承され、1つのコードでPHPとHTT
 参考URL:
 * [Stop mocking, start testing](https://nedbatchelder.com/blog/201206/tldw_stop_mocking_start_testing.html)
 * [Mockists Are Dead](https://www.thoughtworks.com/insights/blog/mockists-are-dead-long-live-classicists)
-* 

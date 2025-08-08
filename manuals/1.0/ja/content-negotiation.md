@@ -28,7 +28,7 @@ return [
         'application/json' => 'app',
         'cli' => 'cli-hal-app'
     ],
-    'Accept-Language' => [ // キーを小文字で
+    'Accept-Language' => [ // Accept-Languageキーを小文字で指定
         'ja-jp' => 'ja',
         'ja' => 'ja',
         'en-us' => 'en',

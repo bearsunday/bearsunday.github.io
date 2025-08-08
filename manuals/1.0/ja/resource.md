@@ -32,7 +32,7 @@ class Index extends ResourceObject
 }
 ```
 
-```php?start_inline
+```php
 class Todo extends ResourceObject
 {
     public function onPost(string $id, string $todo): static
@@ -104,20 +104,20 @@ POSTと違って冪等性があります。
 
 #### メソッドの特性一覧
 
-| メソッド　| [安全性](https://developer.mozilla.org/ja/docs/Glossary/safe) | [冪等性](https://developer.mozilla.org/ja/docs/Glossary/Idempotent)　| [キャッシュ](https://developer.mozilla.org/ja/docs/Glossary/cacheable) | 
+| メソッド | [安全性](https://developer.mozilla.org/ja/docs/Glossary/safe) | [冪等性](https://developer.mozilla.org/ja/docs/Glossary/Idempotent) | [キャッシュ](https://developer.mozilla.org/ja/docs/Glossary/cacheable) |
 |-|-|-|-|
-| GET | あり | あり | 可能
-| POST | なし | なし | 不可
-| PUT | なし | あり | 不可
-| PATCH | なし | あり | 不可
-| DELETE | なし | あり | 不可
-| OPTIONS | あり | あり | 不可
+| GET | あり | あり | 可能 |
+| POST | なし | なし | 不可 |
+| PUT | なし | あり | 不可 |
+| PATCH | なし | なし | 不可 |
+| DELETE | なし | あり | 不可 |
+| OPTIONS | あり | あり | 不可 |
 
 ## パラメーター
 
 レスポンスメソッドの引数には、変数名に対応したリクエストの値が渡されます。
 
-```php?start_inline
+```php
 class Index extends ResourceObject
 {
     // $_GET['id']が$idに
@@ -141,13 +141,13 @@ ResourceObjectのリクエストメソッドではリソースの表現につい
 
 リソースクライアントを使用して他のリソースをリクエストします。以下のリクエストは`app://self/blog/posts`リソースに`?id=1`というクエリーでリクエストを実行します。
 
-```php?start_inline
+```php
 use BEAR\Sunday\Inject\ResourceInject;
 
 class Index extends ResourceObject
 {
     public function __construct(
-    	private readonly ResourceInterface $resource
+        private readonly ResourceInterface $resource
     ){}
 
     public function onGet(): static
@@ -183,7 +183,7 @@ $posts = $request(['id' => 1]);
 
 ```php
 $this->body = [
-    'lazy' => $this->resource->get('app://self/posts')->withQuery(['id' => 3])->request();
+    'lazy' => $this->resource->get('app://self/posts')->withQuery(['id' => 3])->request()
 ];
 ```
 

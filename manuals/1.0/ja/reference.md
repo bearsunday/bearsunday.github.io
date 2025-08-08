@@ -28,7 +28,7 @@ permalink: /manuals/1.0/ja/reference.html
 | `#[Produces(array $mediaTypes)]` | リソースの出力メディアタイプを指定するアトリビュート。`$mediaTypes`は出力可能なメディアタイプの配列。 |
 | `#[QueryParam(string $name)]` | クエリパラメータを受け取るためのアトリビュート。`$name`はクエリパラメータの名前。 |
 | `#[RefreshCache]` | キャッシュのリフレッシュを指定するアトリビュート。 |
-| `#[ResourceParam(uri: string $uri, param: string $param)]` | 他のリソースの結果をパラメータとして受け取るためのアトリビュート。`$uri`はリソースのURI、`$param`はパラメータ名。 |
+| `#[ResourceParam(uri: string $uri, param: string $param = null)]` | 他のリソースの結果をパラメータとして受け取るためのアトリビュート。`$uri`はリソースのURI、`$param`はパラメータ名。 |
 | `#[ReturnCreatedResource]` | 作成されたリソースを返すことを指定するアトリビュート。 |
 | `#[ServerParam(string $name)]` | サーバー変数からパラメータを受け取るためのアトリビュート。`$name`はサーバー変数の名前。 |
 | `#[Ssr(app: string $appName, state: array $state = [], metas: array $metas = [])]` | サーバーサイドレンダリングを指定するアトリビュート。`$appName`はJSアプリケーション名、`$state`はアプリケーションの状態、`$metas`はメタ情報の配列。 |

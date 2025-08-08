@@ -35,7 +35,7 @@ public function onGet(string $date): self
 アノテーションはメソッドにしか適用できず引数名を名前で指定する必要があるものがありましたが、PHP8では直接、引数のアトリビュートで指定することができます。
 
 ```php
-public __construct(
+public function __construct(
     #[Named('payment')] LoggerInterface $paymentLogger,
     #[Named('debug')] LoggerInterface $debugLogger
 )

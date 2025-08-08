@@ -18,7 +18,7 @@ They can perform their cross-cutting logic and then delegate to the underlying m
 Finally, they may inspect the return value or the exception and return. Since interceptors may be applied to many methods and will receive many calls, their implementation should be efficient and unintrusive.
 
 
-```php?start_inline
+```php
 use Ray\Aop\MethodInterceptor;
 use Ray\Aop\MethodInvocation;
 
@@ -44,7 +44,7 @@ class MyInterceptor implements MethodInterceptor
 
 "Find" the target class and method with `Matcher` and bind the interceptor to the matching method in [Module](module.html).
 
-```php?start_inline
+```php
 $this->bindInterceptor(
     $this->matcher->any(),                   // In any class,
     $this->matcher->startsWith('delete'),    // Method(s) names that start with "delete",
@@ -78,7 +78,7 @@ With the `MethodInvocation` object, you can access the target method's invocatio
 
 Annotations can be obtained using the reflection API.
 
-```php?start_inline
+```php
 $method = $invocation->getMethod();
 $class = $invocation->getMethod()->getDeclaringClass();
 ```
@@ -94,7 +94,7 @@ You can have your own matcher.
 To create `contains` matcher, You need to provide a class which has two methods. One is `matchesClass` for a class match.
 The other one is `matchesMethod` method match. Both return the boolean result of match.
 
-```php?start_inline
+```php
 use Ray\Aop\AbstractMatcher;
 
 class ContainsMatcher extends AbstractMatcher
@@ -123,7 +123,7 @@ class ContainsMatcher extends AbstractMatcher
 
 Module
 
-```php?start_inline
+```php
 class AppModule extends AbstractAppModule
 {
     protected function configure()

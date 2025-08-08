@@ -60,7 +60,7 @@ class Index extends ResourceObject
 }
 ```
 
-`var/templates/Page/Index.twig.php`
+`var/templates/Page/Index.html.twig`
 
 ```twig
 {% raw %}<h1>{{ greeting }}</h1>{% endraw %}
@@ -124,7 +124,7 @@ Edit `var/templates/error.html.twig`. Following values are assigned to the error
 
 To refer to the properties of the resource object class, Use `_ro` (resource object) to which the entire resource object is assigned
 
-exmaple）
+example）
 
 `Todos.php`
 

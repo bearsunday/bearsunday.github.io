@@ -255,10 +255,10 @@ BEAR.Sundayは、Webの原則と精神に基づいて設計されたフレーム
 
 BEAR.SundayはPHPの公式サポート期間([Supported Versions](http://php.net/supported-versions.php))に準じてPHPバージョンをサポートしています。
 
-* `8.1` (古い安定板 25 Nov 2021 - 31 Dec 2025)
-* `8.2` (古い安定板 8 Dec 2022 - 31 Dec 2026)
-* `8.3` (古い安定板 23 Nov 2023 - 31 Dec 2027)
-* `8.4` (現在の安定板 21 Nov 2024 - 31 Dec 2028)
+* `8.1` (古い安定版 25 Nov 2021 - 31 Dec 2025)
+* `8.2` (古い安定版 8 Dec 2022 - 31 Dec 2026)
+* `8.3` (古い安定版 23 Nov 2023 - 31 Dec 2027)
+* `8.4` (現在の安定版 21 Nov 2024 - 31 Dec 2028)
 
 End of life ([EOL](http://php.net/eol.php))
 
@@ -330,7 +330,7 @@ class Weekday extends ResourceObject
 {
     public function onGet(int $year, int $month, int $day): static
     {
-        $dateTime = (new DateTimeImmutable)->createFromFormat('Y-m-d', "$year-$month-$day");
+        $dateTime = DateTimeImmutable::createFromFormat('Y-m-d', "$year-$month-$day");
         $weekday = $dateTime->format('D');
         $this->body = ['weekday' => $weekday];
 
@@ -553,7 +553,7 @@ composer cs-fix
 composer sa
 ```
 
-これまでのコードを解析すると、以下のエラーがphpstanで検出されます。
+これまでのコードを解析すると、以下のエラーがPHPStanで検出されます。
 
 ```
  ------ --------------------------------------------------------- 
@@ -615,7 +615,7 @@ class Weekday extends ResourceObject
 {
     public function onGet(int $year, int $month, int $day): static
     {
-        $dateTime = (new DateTimeImmutable)->createFromFormat('Y-m-d', "$year-$month-$day");
+        $dateTime = DateTimeImmutable::createFromFormat('Y-m-d', "$year-$month-$day");
 +        if (! $dateTime instanceof DateTimeImmutable) {
 +            throw new InvalidDateTimeException("$year-$month-$day");
 +        }
@@ -761,7 +761,8 @@ class Weekday extends ResourceObject
 
     public function onGet(int $year, int $month, int $day): static
     {
-        $weekday = (new DateTimeImmutable)->createFromFormat('Y-m-d', "$year-$month-$day")->format('D');
+        $dateTime = DateTimeImmutable::createFromFormat('Y-m-d', "$year-$month-$day");
+        $weekday = $dateTime->format('D');
         $this->body = [
             'weekday' => $weekday
         ];
@@ -994,7 +995,7 @@ class Index extends ResourceObject
 }
 ```
 
-`page`リソースクラスは`app`リソースと同じクラスですが、HTML表示に特化した役割を持せたい時などに公開リソースとして`page`リソースを使い、内部のリソースとして`app`リソースをつかったりと役割を変えて使うことができます。
+`page`リソースクラスは`app`リソースと同じクラスですが、HTML表示に特化した役割を持たせたい時などに公開リソースとして`page`リソースを使い、内部のリソースとして`app`リソースを使ったりと役割を変えて使うことができます。
 
 動作を確認してみましょう。
 
@@ -2487,7 +2488,7 @@ brew uninstall greet
 - アプリケーションのGitリポジトリが初期化されている
 - ローカルテストの場合はGitHubリモートリポジトリは不要
 
-これらの条件が満たされていない場合、フォーミュラ生成はスキップさ���、その理由が表示されます。
+これらの条件が満たされていない場合、フォーミュラ生成はスキップされ、その理由が表示されます。
 
 ## まとめ
 
@@ -2496,7 +2497,7 @@ brew uninstall greet
 ### リソース指向アーキテクチャの真価
 
 **同じリソース、複数の境界**
-- `Greeting`リソースは一度書くだけで、Web API��CLI、Homebrewパッケージとして機能
+- `Greeting`リソースは一度書くだけで、Web API、CLI、Homebrewパッケージとして機能
 - ビジネスロジックの重複なし、保守も一箇所で完結
 
 ### 境界横断フレームワーク
@@ -2612,7 +2613,7 @@ Web公開フォルダです。
 [![Type Coverage](https://shepherd.dev/github/ray-di/Ray.Aop/coverage.svg)](https://shepherd.dev/github/ray-di/Ray.Aop)
 [![Continuous Integration](https://github.com/ray-di/Ray.Aop/actions/workflows/continuous-integration.yml/badge.svg)](https://github.com/ray-di/Ray.Aop/actions/workflows/continuous-integration.yml)
 
-Javeの [AOPアライアンス](http://aopalliance.sourceforge.net/) に準拠したAOPフレームワークです。
+Javaの [AOPアライアンス](http://aopalliance.sourceforge.net/) に準拠したAOPフレームワークです。
 
 ### ray/di
 [![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/ray-di/Ray.Di/badges/quality-score.png?b=2.x)](https://scrutinizer-ci.com/g/ray-di/Ray.Di/)
@@ -2925,9 +2926,9 @@ BEAR.Sundayは[AOP Alliance](http://aopalliance.sourceforge.net/)に準拠した
 
 ## インターセプター
 
-インターセプターの`invoke`メソッドでは`$invocation`メソッド実行変数を受け取り、メソッドの前後に処理を加えます。これはインターセプター元メソッドを実行するためだけの変数です。前後にログやトランザクションなどの横断的処理を記述します。
+インターセプターの`invoke`メソッドでは`$invocation`メソッド実行オブジェクトを受け取り、メソッドの前後に処理を加えます。これはインターセプト元メソッドを実行するためのオブジェクトです。前後にログやトランザクションなどの横断的処理を記述します。
 
-```php?start_inline
+```php
 use Ray\Aop\MethodInterceptor;
 use Ray\Aop\MethodInvocation;
 
@@ -2953,7 +2954,7 @@ class MyInterceptor implements MethodInterceptor
 
 [モジュール](module.html)で対象となるクラスとメソッドを`Matcher`で"検索"して、マッチするメソッドにインターセプターを束縛します。
 
-```php?start_inline
+```php
 $this->bindInterceptor(
     $this->matcher->any(),                   // どのクラスでも
     $this->matcher->startsWith('delete'),    // "delete"で始まるメソッド名のメソッドには
@@ -2986,7 +2987,7 @@ $this->bindInterceptor(
 
 リフレクションのメソッドでアノテーションを取得することができます。
 
-```php?start_inline
+```php
 $method = $invocation->getMethod();
 $class = $invocation->getMethod()->getDeclaringClass();
 ```
@@ -3003,7 +3004,7 @@ $class = $invocation->getMethod()->getDeclaringClass();
 `contains`マッチャーを作成するには、2つのメソッドを持つクラスを提供する必要があります。
 1つはクラスのマッチを行う`matchesClass`メソッド、もう1つはメソッドのマッチを行う`matchesMethod`メソッドです。いずれもマッチしたかどうかをboolで返します。
 
-```php?start_inline
+```php
 use Ray\Aop\AbstractMatcher;
 
 /**
@@ -3035,7 +3036,7 @@ class ContainsMatcher extends AbstractMatcher
 
 モジュール
 
-```php?start_inline
+```php
 class AppModule extends AbstractAppModule
 {
     protected function configure()
@@ -3078,7 +3079,7 @@ class Index extends ResourceObject
 }
 ```
 
-```php?start_inline
+```php
 class Todo extends ResourceObject
 {
     public function onPost(string $id, string $todo): static
@@ -3150,12 +3151,12 @@ POSTと違って冪等性があります。
 
 #### メソッドの特性一覧
 
-| メソッド　| [安全性](https://developer.mozilla.org/ja/docs/Glossary/safe) | [冪等性](https://developer.mozilla.org/ja/docs/Glossary/Idempotent)　| [キャッシュ](https://developer.mozilla.org/ja/docs/Glossary/cacheable) | 
+| メソッド | [安全性](https://developer.mozilla.org/ja/docs/Glossary/safe) | [冪等性](https://developer.mozilla.org/ja/docs/Glossary/Idempotent) | [キャッシュ](https://developer.mozilla.org/ja/docs/Glossary/cacheable) | 
 |-|-|-|-|
 | GET | あり | あり | 可能
 | POST | なし | なし | 不可
 | PUT | なし | あり | 不可
-| PATCH | なし | あり | 不可
+| PATCH | なし | なし | 不可
 | DELETE | なし | あり | 不可
 | OPTIONS | あり | あり | 不可
 
@@ -3163,7 +3164,7 @@ POSTと違って冪等性があります。
 
 レスポンスメソッドの引数には、変数名に対応したリクエストの値が渡されます。
 
-```php?start_inline
+```php
 class Index extends ResourceObject
 {
     // $_GET['id']が$idに
@@ -3187,13 +3188,13 @@ ResourceObjectのリクエストメソッドではリソースの表現につい
 
 リソースクライアントを使用して他のリソースをリクエストします。以下のリクエストは`app://self/blog/posts`リソースに`?id=1`というクエリーでリクエストを実行します。
 
-```php?start_inline
+```php
 use BEAR\Sunday\Inject\ResourceInject;
 
 class Index extends ResourceObject
 {
     public function __construct(
-    	private readonly ResourceInterface $resource
+        private readonly ResourceInterface $resource
     ){}
 
     public function onGet(): static
@@ -3229,7 +3230,7 @@ $posts = $request(['id' => 1]);
 
 ```php
 $this->body = [
-    'lazy' => $this->resource->get('app://self/posts')->withQuery(['id' => 3])->request();
+    'lazy' => $this->resource->get('app://self/posts')->withQuery(['id' => 3])->request()
 ];
 ```
 
@@ -3405,10 +3406,10 @@ $map->route('archive', '/archive{/year,month,day}')
 
 プレイスホルダーの**内側に**最初のスラッシュがあるのに注意してください。そうすると下のパスは全て'archive'にルートされパラメーターの値が付加されます。
 
-- `/archive            : ['year' => null,   'month' => null, 'day' = null]`
-- `/archive/1979       : ['year' => '1979', 'month' => null, 'day' = null]`
-- `/archive/1979/11    : ['year' => '1979', 'month' => '11', 'day' = null]`
-- `/archive/1979/11/07 : ['year' => '1979', 'month' => '11', 'day' = '07']`
+- `/archive            : ['year' => null,   'month' => null, 'day' => null]`
+- `/archive/1979       : ['year' => '1979', 'month' => null, 'day' => null]`
+- `/archive/1979/11    : ['year' => '1979', 'month' => '11', 'day' => null]`
+- `/archive/1979/11/07 : ['year' => '1979', 'month' => '11', 'day' => '07']`
 
 オプションパラメーターは**並ぶ順に**オプションです。つまり"month"なしで"day"を指定することはできません。
 
@@ -3549,7 +3550,7 @@ class ProdModule extends AbstractModule
         // memcache
         // {host}:{port}:{weight},...
         $memcachedServers = 'mem1.domain.com:11211:33,mem2.domain.com:11211:67';
-        $this->install(new StorageMemcachedModule(memcachedServers));
+        $this->install(new StorageMemcachedModule($memcachedServers));
         
         // Prodロガーのインストール
         $this->install(new ProdLoggerModule);
@@ -3640,9 +3641,9 @@ mv autoload.php api.autoload.php
 
 ### autoload.php
 
-`{project_path}/autoload.php`に最適化されたautoload.phpファイルが出力されます。`composer dumpa-autoload --optimize`で出力される`vendor/autoload.php`よりずっと高速です。
+`{project_path}/autoload.php`に最適化されたautoload.phpファイルが出力されます。`composer dump-autoload --optimize`で出力される`vendor/autoload.php`よりずっと高速です。
 
-注意：`preload.php`を利用する場合、ほとんどの利用クラスが読み込まれた状態で起動するのでコンパイルされた`autoload.php`は不要です。composerが生成する`vendor/autload.php`をご利用ください。
+注意：`preload.php`を利用する場合、ほとんどの利用クラスが読み込まれた状態で起動するのでコンパイルされた`autoload.php`は不要です。composerが生成する`vendor/autoload.php`をご利用ください。
 
 ### preload.php
 
@@ -3698,7 +3699,7 @@ class RedisAdapter extends OriginAdapter implements Serializable
 
     public function __construct(ProviderInterface $redisProvider, string $namespace = '', int $defaultLifetime = 0, ?MarshallerInterface $marshaller = null)
     {
-    　　// do nothing
+        // do nothing
     }
 }
 ```
@@ -3831,7 +3832,7 @@ echo $weekday->body['weekday'] . PHP_EOL;
 
 大きなアプリケーションを小さな複数のアプリケーションの集合体として構築できる点はマイクロサービスと同じですが、インフラストラクチャのオーバーヘッドの増加などのマイクロサービスのデメリットがありません。またモジュラーモノリスよりもコンポーネントの独立性や境界が明確です。
 
-このページのコードは [bearsunday/example-app-import](https://github.com/bearsunday/example-import-app/commits/master) にあります。
+このページのコードは [bearsunday/example-import-app](https://github.com/bearsunday/example-import-app/commits/master) にあります。
 
 ## 多言語フレームワーク
 
@@ -4484,7 +4485,7 @@ class AppModule extends AbstractAppModule
     protected function configure()
     {
         // ...
-        $this->install(new AuraInputModule);
+        $this->install(new WebFormModule);
     }
 }
 ```
@@ -4593,7 +4594,7 @@ CSRF(クロスサイトリクエストフォージェリ)対策を行うため�
 ```php
 use Ray\WebFormModule\SetAntiCsrfTrait;
 
-class MyForm extends AbstractAuraForm
+class MyForm extends AbstractForm
 {
     use SetAntiCsrfTrait;
 }
@@ -4650,7 +4651,7 @@ class FooModule extends AbstractModule
 {
     protected function configure()
     {
-        $this->install(new AuraInputModule);
+        $this->install(new WebFormModule);
         $this->override(new FormVndErrorModule);
     }
 }
@@ -4899,7 +4900,7 @@ BEAR.Sundayはそれぞれのリソースが依存リソースのURIをタグと
 
 ## イベントドリブン型コンテンツ
 
-従来、CDNはアプリケーションロジックを必要とするコンテンツは「動的」であり、したがってCDNではキャッシュできないと考えられてきました。しかし、FastlyやAkamaiなどの一部のCDNは、即時または数秒以内でのタグベースでのキャッシュ無効化が可能になり、[この考えは過去のもの](https://www.fastly.com/blog/leveraging-your-cdn-cache-uncacheable-content)になろうとしています。
+従来、CDNはアプリケーションロジックを必要とするコンテンツは「動的」であり、したがってCDNではキャッシュできないと考えられてきました。しかし、FastlyやAkamaiなどの一部のCDNは、即時または数秒以内でのタグベースでのキャッシュ無効化が可能になり、[この考え方は過去のものとなりつつあります](https://www.fastly.com/blog/leveraging-your-cdn-cache-uncacheable-content)。
 
 BEAR.Sundayの依存解決は、サーバーサイドだけでなく共有キャッシュでも行われます。AOPが変更を検知し、共有キャッシュにPURGEリクエストを行うことで、サーバーサイドと同じように共有キャッシュ上の関連キャッシュの無効化が行われます。
 
@@ -4974,7 +4975,7 @@ class BlogPosting extends ResourceObject
     public function onGet(): static
     {
         // process ...
-        $this->repository->put($this, ttl: 10, sMaxAge: 100);　
+        $this->repository->put($this, ttl: 10, sMaxAge: 100);
         return $this;
     }
 }
@@ -5223,7 +5224,7 @@ BEAR.Sundayのキャッシングフレームワークは、情報型のコンテ
 
 # Swoole
 
-SwooleとはC/C++で書かれたPHP拡張の1つで、イベント駆動の非同期＆コルーチンベースの並行処理ネットワーキング通信エンジンです。
+SwooleとはC/C++で書かれたPHP拡張の1つで、イベント駆動の非同期＆コルーチンベースの並行ネットワーキング通信エンジンです。
 Swooleを使ってコマンドラインから直接BEAR.Sundayウェブアプリケーションを実行することができます。パフォーマンスが大幅に向上します。
 
 ## インストール
@@ -5364,7 +5365,7 @@ PHPは動的型付け言語ですが、psalmやphpstanといった静的解析�
 /** @param literal-int $literalInt */
 ```
 
-[複合型](#複合型)や[高度な型システム](#高度な型システムと使用パターン)でこれらの型を組み合わせて使用できます。
+[複合型](#複合型)や[高度な型システム](#高度な型システム)でこれらの型を組み合わせて使用できます。
 
 ### オブジェクト型
 
@@ -5472,7 +5473,7 @@ Callable型は[高階関数](#高階関数)で特に重要です。
 
 交差型は[デザインパターン](#デザインパターンでの型の使用)の実装で役立つことがあります。
 
-## 高度な型システムと使用パターン
+## 高度な型システム
 
 より複雑で柔軟な型表現を可能にする高度な機能です。
 
@@ -5566,7 +5567,7 @@ $clonedDateTime = cloneDate($dateTime);
 
 ### 共変性と反変性
 
-ジェネリック型を扱う際に、[共変性（covariance）と反変性（contravariance](https://www.php.net/manual/ja/language.oop5.variance.php)）の概念が重要になります。
+ジェネリック型を扱う際には、[共変性（covariance）と反変性（contravariance)](https://www.php.net/manual/ja/language.oop5.variance.php)の概念が重要になります。
 
 ```php
 /**
@@ -5698,7 +5699,7 @@ $config = ['debug' => true, 'version' => '1.0.0'];
 $debugMode = getArrayValue($config, 'debug'); // $debugMode は bool 型
 ```
 
-これらのユーティリティ型はpsalm固有のもので[高度な型システム](#高度な型システムと使用パターン)の一部として考えることができます。
+これらのユーティリティ型はpsalm固有のもので[高度な型システム](#高度な型システム)の一部として考えることができます。
 
 ## 関数型プログラミングの概念
 
@@ -6134,7 +6135,7 @@ class FunctionalExamples {
 
     /**
      * @param array<string, T> $map
-     * @param key-of $map $key
+     * @param key-of<$map> $key
      * @return T|null
      */
     public function getValue(array $map, string $key): mixed {
@@ -6578,13 +6579,12 @@ Workflowテストは HTTPテストに継承され、1つのコードでPHPとHTT
 参考URL:
 * [Stop mocking, start testing](https://nedbatchelder.com/blog/201206/tldw_stop_mocking_start_testing.html)
 * [Mockists Are Dead](https://www.thoughtworks.com/insights/blog/mockists-are-dead-long-live-classicists)
-*
 
 ***
 
 # Examples
 
-[Coding Guide](http://bearsunday.github.io/manuals/1.0/en/coding-guide.html)に従って作られたアプリケーションの例です。
+[Coding Guide](http://bearsunday.github.io/manuals/1.0/ja/coding-guide.html)に従って作られたアプリケーションの例です。
 
 ## Polidog.Todo
 
@@ -6632,7 +6632,7 @@ Workflowテストは HTTPテストに継承され、1つのコードでPHPとHTT
 
 ```php
 $injector = Injector::getInstance($context);
-$instance = $injector->getInsntance($interface, name);
+$instance = $injector->getInstance($interface, name);
 ```
 
 ## 利点
@@ -6645,7 +6645,7 @@ $instance = $injector->getInsntance($interface, name);
 
  * テストが高速になります。
 
-従来の`AppInjector`ではインジェクターインスタンスの取得を毎回行っていましたが、新しい`Injector`ではシングルトンにテスト間で共用されます。
+従来の`AppInjector`ではインジェクターインスタンスの取得を毎回行っていましたが、新しい`Injector`ではシングルトンでテスト間で共用されます。
 速度が劇的に改善され、テスト毎のDB接続で接続数が枯渇するような事がありません。
 
 アプリケーションやコンテキストを超えたアクセスが同一メモリ空間で可能になるほど、実装がクリーンに改善されました。
@@ -6747,7 +6747,7 @@ public function onGet(string $date): self
 アノテーションはメソッドにしか適用できず引数名を名前で指定する必要があるものがありましたが、PHP8では直接、引数のアトリビュートで指定することができます。
 
 ```php
-public __construct(
+public function __construct(
     #[Named('payment')] LoggerInterface $paymentLogger,
     #[Named('debug')] LoggerInterface $debugLogger
 )
@@ -6823,7 +6823,7 @@ phpdocでは以下の部分が取得されます。認証などリソースに�
  *
  * {description}
  *
- * {@link htttp;//example.com/docs/auth 認証}
+ * {@link https://example.com/docs/auth 認証}
  */
 class Foo extends ResourceObject { }
 ```
@@ -6970,7 +6970,7 @@ ApiDocに登場する語句の説明はphpdoc > JsonSchema > ALPSの順で優先
 | `#[Produces(array $mediaTypes)]` | リソースの出力メディアタイプを指定するアトリビュート。`$mediaTypes`は出力可能なメディアタイプの配列。 |
 | `#[QueryParam(string $name)]` | クエリパラメータを受け取るためのアトリビュート。`$name`はクエリパラメータの名前。 |
 | `#[RefreshCache]` | キャッシュのリフレッシュを指定するアトリビュート。 |
-| `#[ResourceParam(uri: string $uri, param: string $param)]` | 他のリソースの結果をパラメータとして受け取るためのアトリビュート。`$uri`はリソースのURI、`$param`はパラメータ名。 |
+| `#[ResourceParam(uri: string $uri, param: string $param = null)]` | 他のリソースの結果をパラメータとして受け取るためのアトリビュート。`$uri`はリソースのURI、`$param`はパラメータ名。 |
 | `#[ReturnCreatedResource]` | 作成されたリソースを返すことを指定するアトリビュート。 |
 | `#[ServerParam(string $name)]` | サーバー変数からパラメータを受け取るためのアトリビュート。`$name`はサーバー変数の名前。 |
 | `#[Ssr(app: string $appName, state: array $state = [], metas: array $metas = [])]` | サーバーサイドレンダリングを指定するアトリビュート。`$appName`はJSアプリケーション名、`$state`はアプリケーションの状態、`$metas`はメタ情報の配列。 |

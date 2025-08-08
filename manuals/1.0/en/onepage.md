@@ -2451,7 +2451,7 @@ protected function configure(): void
         new MediaQueryModule(
             Queries::fromDir('/path/to/queryInterface'),[
                 new DbQueryConfig('/path/to/sql'),
-                new WebQueryConfig('/path/to/web_query.json', ['domain' => 'api.exmaple.com'])
+                new WebQueryConfig('/path/to/web_query.json', ['domain' => 'api.example.com'])
             ],
         ),
     );
@@ -4924,7 +4924,7 @@ protected function configure(): void
         new MediaQueryModule(
             Queries::fromDir('/path/to/queryInterface'),[
                 new DbQueryConfig('/path/to/sql'),
-                new WebQueryConfig('/path/to/web_query.json', ['domain' => 'api.exmaple.com'])
+                new WebQueryConfig('/path/to/web_query.json', ['domain' => 'api.example.com'])
             ],
         ),
     );
@@ -6552,7 +6552,7 @@ class ProdModule extends AbstractModule
     protected function configure()
     {
         $this->install(new QiqErrorModule);
-        $this->install(new QiqProdModule($this->appDir . '/var/tmp');
+        $this->install(new QiqProdModule($this->appMeta->appDir . '/var/tmp'));
     }
 }
 ```
@@ -6708,7 +6708,7 @@ class Index extends ResourceObject
 }
 ```
 
-`var/templates/Page/Index.twig.php`
+`var/templates/Page/Index.html.twig`
 
 ```twig
 {% raw %}<h1>{{ greeting }}</h1>{% endraw %}
@@ -6772,7 +6772,7 @@ Edit `var/templates/error.html.twig`. Following values are assigned to the error
 
 To refer to the properties of the resource object class, Use `_ro` (resource object) to which the entire resource object is assigned
 
-exmaple）
+example）
 
 `Todos.php`
 
@@ -7090,7 +7090,7 @@ We can add a CSRF(Cross site request forgeries) object to the form to apply CSRF
 ```php?start_inline
 use Ray\WebFormModule\SetAntiCsrfTrait;
 
-class MyForm extends AbstractAuraForm
+class MyForm extends AbstractForm
 {
     use SetAntiCsrfTrait;
 ```

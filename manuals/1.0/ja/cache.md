@@ -67,7 +67,7 @@ BEAR.Sundayはそれぞれのリソースが依存リソースのURIをタグと
 
 ## イベントドリブン型コンテンツ
 
-従来、CDNはアプリケーションロジックを必要とするコンテンツは「動的」であり、したがってCDNではキャッシュできないと考えられてきました。しかし、FastlyやAkamaiなどの一部のCDNは、即時または数秒以内でのタグベースでのキャッシュ無効化が可能になり、[この考えは過去のもの](https://www.fastly.com/blog/leveraging-your-cdn-cache-uncacheable-content)になろうとしています。
+従来、CDNはアプリケーションロジックを必要とするコンテンツは「動的」であり、したがってCDNではキャッシュできないと考えられてきました。しかし、FastlyやAkamaiなどの一部のCDNは、即時または数秒以内でのタグベースでのキャッシュ無効化が可能になり、[この考え方は過去のものとなりつつあります](https://www.fastly.com/blog/leveraging-your-cdn-cache-uncacheable-content)。
 
 BEAR.Sundayの依存解決は、サーバーサイドだけでなく共有キャッシュでも行われます。AOPが変更を検知し、共有キャッシュにPURGEリクエストを行うことで、サーバーサイドと同じように共有キャッシュ上の関連キャッシュの無効化が行われます。
 
@@ -142,7 +142,7 @@ class BlogPosting extends ResourceObject
     public function onGet(): static
     {
         // process ...
-        $this->repository->put($this, ttl: 10, sMaxAge: 100);　
+        $this->repository->put($this, ttl: 10, sMaxAge: 100);
         return $this;
     }
 }

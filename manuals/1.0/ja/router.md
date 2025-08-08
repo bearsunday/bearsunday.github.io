@@ -161,10 +161,10 @@ $map->route('archive', '/archive{/year,month,day}')
 
 プレイスホルダーの**内側に**最初のスラッシュがあるのに注意してください。そうすると下のパスは全て'archive'にルートされパラメーターの値が付加されます。
 
-- `/archive            : ['year' => null,   'month' => null, 'day' = null]`
-- `/archive/1979       : ['year' => '1979', 'month' => null, 'day' = null]`
-- `/archive/1979/11    : ['year' => '1979', 'month' => '11', 'day' = null]`
-- `/archive/1979/11/07 : ['year' => '1979', 'month' => '11', 'day' = '07']`
+- `/archive            : ['year' => null,   'month' => null, 'day' => null]`
+- `/archive/1979       : ['year' => '1979', 'month' => null, 'day' => null]`
+- `/archive/1979/11    : ['year' => '1979', 'month' => '11', 'day' => null]`
+- `/archive/1979/11/07 : ['year' => '1979', 'month' => '11', 'day' => '07']`
 
 オプションパラメーターは**並ぶ順に**オプションです。つまり"month"なしで"day"を指定することはできません。
 

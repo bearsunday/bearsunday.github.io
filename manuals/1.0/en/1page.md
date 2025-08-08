@@ -257,15 +257,14 @@ The new optional package will be developed based on the current stable PHP. We e
 
 ## Semver
 
-BEAR.Sunday follows [Semantic Versioning](http://
-semper.org/lang/en/). It is not necessary to modify the application code on minor version upgrades.
+BEAR.Sunday follows [Semantic Versioning](http://semver.org/lang/en/). It is not necessary to modify the application code on minor version upgrades.
 
 `composer update` can be done at any time for packages.
 
 ## Version Policy
 
  * The core package of the framework does not make a breaking change which requires change of user code.
- * Since it does not do destructive change, it handles unnecessary old ones as `deprecetad` but does not delete and new functions are always "added".
+ * Since it does not do destructive change, it handles unnecessary old ones as `deprecated` but does not delete and new functions are always "added".
  * When PHP comes to an EOL and upgraded to a major version (ex. `5.6` →` 7.0`), BEAR.Sunday will not break the BC of the application code. Even though the version number of PHP that is necessary to use the new module becomes higher, changes to the application codes are not needed.
 
 BEAR.Sunday emphasizes clean code and **longevity**.
@@ -308,7 +307,7 @@ class Weekday extends ResourceObject
 {
     public function onGet(int $year, int $month, int $day): static
     {
-        $dateTime = (new DateTimeImmutable)->createFromFormat('Y-m-d', "$year-$month-$day");
+        $dateTime = DateTimeImmutable::createFromFormat('Y-m-d', "$year-$month-$day");
         $weekday = $dateTime->format('D');
         $this->body = ['weekday' => $weekday];
 
@@ -592,7 +591,7 @@ class Weekday extends ResourceObject
 {
     public function onGet(int $year, int $month, int $day): static
     {
-        $dateTime = (new DateTimeImmutable)->createFromFormat('Y-m-d', "$year-$month-$day");
+        $dateTime = DateTimeImmutable::createFromFormat('Y-m-d', "$year-$month-$day");
 +        if (! $dateTime instanceof DateTimeImmutable) {
 +            throw new InvalidDateTimeException("$year-$month-$day");
 +        }
@@ -740,7 +739,8 @@ class Weekday extends ResourceObject
 
     public function onGet(int $year, int $month, int $day): static
     {
-        $weekday = (new DateTimeImmutable)->createFromFormat('Y-m-d', "$year-$month-$day")->format('D');
+        $dateTime = DateTimeImmutable::createFromFormat('Y-m-d', "$year-$month-$day");
+        $weekday = $dateTime->format('D');
         $this->body = [
             'weekday' => $weekday
         ];
@@ -1411,7 +1411,7 @@ TKT_DB_SLAVE=''
 TKT_DB_DSN=mysql:host=${TKT_DB_HOST}
 ```
 
-The `.env.dist` file should look like this, and the actual connection information should be written in `.env`. ^1]
+The `.env.dist` file should look like this, and the actual connection information should be written in `.env`. [^1]
 
 Next, create a folder to be used by Phinx.
 
@@ -1738,21 +1738,21 @@ It can be one interface and one method as in [ADR pattern](https://github.com/pm
 
 If you specify `array` for the return value of a method, you will get the database result as it is, an associative array, but if you specify an entity type for the return value of the method, it will be hydrated to that type.
 
-``php
-#[DbQuery('ticket_item')
+```php
+#[DbQuery('ticket_item')]
 public function item(string $id): array // you get an array.
 ```
 
 ```php
-#[DbQuery('ticket_item')].
-public function item(string $id): ticket|null; // yields a Ticket entity.
+#[DbQuery('ticket_item')]
+public function item(string $id): Ticket|null; // yields a Ticket entity.
 ```
 
 For multiple rows (row_list), use `/** @return array<Ticket>*/` and phpdoc to specify that ``Ticket`` is returned as an array.
 
-```
+```php
 /** @return array<Ticket> */
-#[DbQuery('ticket_list')].
+#[DbQuery('ticket_list')]
 public function list(): array; // yields an array of Ticket entities.
 ```
 The value of each row is passed to the constructor by name argument. [^named]
@@ -2655,10 +2655,10 @@ The file layout of the BEAR.Sunday application conforms to [php-pds/skeleton](ht
 
 ### Invoke sequence
 
- 1. Console input(`bin/app.php`, `bin/page.php`) or web entry file (`public/index.php`) excute `bootstrap.php` function.
- 3. `$app` application object is created by `$context` in `boostrap.php`.
- 4. A router in `$app` convert external resource request to internal resource request.
- 4. A resource request is invoked. The representation of the result transfered to a client.
+ 1. Console input(`bin/app.php`, `bin/page.php`) or web entry file (`public/index.php`) execute `bootstrap.php` function.
+ 3. `$app` application object is created by `$context` in `bootstrap.php`.
+ 4. A router in `$app` converts external resource request to internal resource request.
+ 4. A resource request is invoked. The representation of the result is transferred to a client.
 
 
 ### bootstrap/
@@ -2681,13 +2681,13 @@ You can create your own boot file for different context.
 
 ### bin/
 
-Plavce command-line executable files.
+Place command-line executable files.
 
 ### src/
 
 Place application class file.
 
-### publc/
+### public/
 
 Web public folder.
 
@@ -3007,7 +3007,7 @@ With the `MethodInvocation` object, you can access the target method's invocatio
  * [MethodInvocation::proceed](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/Joinpoint.php#L39) - Invoke method
  * [MethodInvocation::getMethod](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/MethodInvocation.php) -  Get method reflection
  * [MethodInvocation::getThis](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/Joinpoint.php#L48) - Get object
- * [MethodInvocation::getArguments](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/Invocation.php) - Pet parameters
+ * [MethodInvocation::getArguments](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/Invocation.php) - Get parameters
 
 Annotations can be obtained using the reflection API.
 
@@ -3059,7 +3059,7 @@ They can perform their cross-cutting logic and then delegate to the underlying m
 Finally, they may inspect the return value or the exception and return. Since interceptors may be applied to many methods and will receive many calls, their implementation should be efficient and unintrusive.
 
 
-```php?start_inline
+```php
 use Ray\Aop\MethodInterceptor;
 use Ray\Aop\MethodInvocation;
 
@@ -3085,7 +3085,7 @@ class MyInterceptor implements MethodInterceptor
 
 "Find" the target class and method with `Matcher` and bind the interceptor to the matching method in [Module](module.html).
 
-```php?start_inline
+```php
 $this->bindInterceptor(
     $this->matcher->any(),                   // In any class,
     $this->matcher->startsWith('delete'),    // Method(s) names that start with "delete",
@@ -3119,7 +3119,7 @@ With the `MethodInvocation` object, you can access the target method's invocatio
 
 Annotations can be obtained using the reflection API.
 
-```php?start_inline
+```php
 $method = $invocation->getMethod();
 $class = $invocation->getMethod()->getDeclaringClass();
 ```
@@ -3135,7 +3135,7 @@ You can have your own matcher.
 To create `contains` matcher, You need to provide a class which has two methods. One is `matchesClass` for a class match.
 The other one is `matchesMethod` method match. Both return the boolean result of match.
 
-```php?start_inline
+```php
 use Ray\Aop\AbstractMatcher;
 
 class ContainsMatcher extends AbstractMatcher
@@ -3164,7 +3164,7 @@ class ContainsMatcher extends AbstractMatcher
 
 Module
 
-```php?start_inline
+```php
 class AppModule extends AbstractAppModule
 {
     protected function configure()
@@ -3193,7 +3193,7 @@ It transfers its resource state as a resource representation from stateless requ
 
 Here are some examples of a resource object:
 
-```php?start_inline
+```php
 class Index extends ResourceObject
 {
     public $code = 200;
@@ -3210,7 +3210,7 @@ class Index extends ResourceObject
 }
 ```
 
-```php?start_inline
+```php
 class Todo extends ResourceObject
 {
     public function onPost(string $id, string $todo): static
@@ -3264,7 +3264,7 @@ Reads resources. This method does not provide any changing of the resource state
 The POST method requests processing of the representation contained in the request. For example, adding a new resource to a target URI or adding a representation to an existing resource. Unlike PUT, requests do not have [idempotence](https://ja.wikipedia.org/wiki/%E5%86%AA%E7%AD%89), and multiple consecutive executions will not produce the same result.
 
 ### PUT
-Replaces the resource with the payload of the request at the requested URI. If the target resource does not exist, it is created. Unlike POST, there is not idempotent.
+Replaces the resource with the payload of the request at the requested URI. If the target resource does not exist, it is created. Unlike POST, there is idempotent.
 
 ### PATCH
 
@@ -3284,7 +3284,7 @@ Get information on parameters and responses required for resource request. It is
 | GET | Yes | Yes | Yes
 | POST | No | No | No
 | PUT | No | Yes | No
-| PATCH | No | Yes | No
+| PATCH | No | No | No
 | DELETE | No | Yes | No
 | OPTIONS | Yes | Yes | No
 
@@ -3292,7 +3292,7 @@ Get information on parameters and responses required for resource request. It is
 
 The response method argument is passed the request value corresponding to the variable name.
 
-```php?start_inline
+```php
 class Index extends ResourceObject
 {
     // $_GET['id'] to $id
@@ -3316,7 +3316,7 @@ The request method of a ResourceObject is not concerned with the representation 
 
 Use the resource client to request other resources. This request executes a request to the `app://self/blog/posts` resource with the query `?id=1`.
 
-```php?start_inline
+```php
 use BEAR\Sunday\Inject\ResourceInject;
 
 class Index extends ResourceObject
@@ -3334,7 +3334,7 @@ class Index extends ResourceObject
 
 Other historical notations include the following
 
-```php?start_inline
+```php
 // PHP 5.x and up
 $posts = $this->resource->get->uri('app://self/posts')->withQuery(['id' => 1])->eager->request();
 // PHP 7.x and up
@@ -4755,7 +4755,7 @@ composer require ray/web-form-module
 
 Install `AuraInputModule` in our application module `src/Module/AppModule.php`
 
-```php?start_inline
+```php
 use BEAR\Package\AbstractAppModule;
 use Ray\WebFormModule\WebFormModule;
 
@@ -4774,7 +4774,7 @@ class AppModule extends AbstractAppModule
 Create **a form class** that defines the registration and the rules of form elements, then bind it to a method using `@FormValidation` annotation.
 The method runs only when the sent data is validated.
 
-```php?start_inline
+```php
 use Ray\WebFormModule\AbstractForm;
 use Ray\WebFormModule\SetAntiCsrfTrait;
 
@@ -4808,7 +4808,7 @@ If we want to change the input, we can set the values by implementing `submit()`
 Annotate the method that we want to validate with the `@FormValidation`, so that the validation is done in the form object specified by the `form` property before execution.
 When validation fails, the method with the `ValidationFailed` suffix is called.
 
-```php?start_inline
+```php
 use Ray\Di\Di\Inject;
 use Ray\Di\Di\Named;
 use Ray\WebFormModule\Annotation\FormValidation;
@@ -4855,14 +4855,14 @@ The submit parameters will be passed to the `onPostValidationFailed` method.
 
 Specify the element name to get the `input` elements and error messages
 
-```php?start_inline
+```php
   $form->input('name'); // <input id="name" type="text" name="name" size="20" maxlength="20" />
   $form->error('name'); // "Please enter a double-byte characters or letters in the name." or blank
 ```
 
 The same applies to Twig template
 
-```php?start_inline
+```php
 {% raw %}{{ form.input('name') }}
 {{ form.error('name') }}{% endraw %}
 ```
@@ -4871,10 +4871,10 @@ The same applies to Twig template
 
 We can add a CSRF(Cross site request forgeries) object to the form to apply CSRF protections.
 
-```php?start_inline
+```php
 use Ray\WebFormModule\SetAntiCsrfTrait;
 
-class MyForm extends AbstractAuraForm
+class MyForm extends AbstractForm
 {
     use SetAntiCsrfTrait;
 ```
@@ -4889,7 +4889,7 @@ For convenience, HTML representation is not used in this case.
 
 When we `echo` the `error` property of the caught exception, we can see the representation of the media type [application/vnd.error+json](https://github.com/blongden/vnd.error).
 
-```php?start_inline
+```php
 http_response_code(400);
 echo $e->error;
 
@@ -4906,7 +4906,7 @@ echo $e->error;
 
 We can add the necessary information to `vnd.error+json` using `@VndError` annotation.
 
-```php?start_inline
+```php
 /**
  * @FormValidation(form="contactForm")
  * @VndError(
@@ -4924,7 +4924,7 @@ If we install `Ray\WebFormModule\FormVndErrorModule`, the method annotated with 
 will throw an exception in the same way as the method annotated with `@InputValidation`.
 We can use the page resources as API.
 
-```php?start_inline
+```php
 class FooModule extends AbstractModule
 {
     protected function configure()

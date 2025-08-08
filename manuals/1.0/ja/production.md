@@ -80,7 +80,7 @@ class ProdModule extends AbstractModule
         // memcache
         // {host}:{port}:{weight},...
         $memcachedServers = 'mem1.domain.com:11211:33,mem2.domain.com:11211:67';
-        $this->install(new StorageMemcachedModule(memcachedServers));
+        $this->install(new StorageMemcachedModule($memcachedServers));
         
         // Prodロガーのインストール
         $this->install(new ProdLoggerModule);
@@ -171,9 +171,9 @@ mv autoload.php api.autoload.php
 
 ### autoload.php
 
-`{project_path}/autoload.php`に最適化されたautoload.phpファイルが出力されます。`composer dumpa-autoload --optimize`で出力される`vendor/autoload.php`よりずっと高速です。
+`{project_path}/autoload.php`に最適化されたautoload.phpファイルが出力されます。`composer dump-autoload --optimize`で出力される`vendor/autoload.php`よりずっと高速です。
 
-注意：`preload.php`を利用する場合、ほとんどの利用クラスが読み込まれた状態で起動するのでコンパイルされた`autoload.php`は不要です。composerが生成する`vendor/autload.php`をご利用ください。
+注意：`preload.php`を利用する場合、ほとんどの利用クラスが読み込まれた状態で起動するのでコンパイルされた`autoload.php`は不要です。composerが生成する`vendor/autoload.php`をご利用ください。
 
 ### preload.php
 
@@ -229,7 +229,7 @@ class RedisAdapter extends OriginAdapter implements Serializable
 
     public function __construct(ProviderInterface $redisProvider, string $namespace = '', int $defaultLifetime = 0, ?MarshallerInterface $marshaller = null)
     {
-    　　// do nothing
+        // do nothing
     }
 }
 ```

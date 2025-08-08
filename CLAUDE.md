@@ -62,6 +62,13 @@ The site uses a sophisticated system for managing documentation:
 3. Combined documentation generated via `merge_md_files.rb`
 4. LLMs.txt compliance through frontmatter-stripped copies in `_site/manuals/`
 
+## Jekyll Configuration
+
+- Uses Kramdown markdown processor with Rouge syntax highlighting
+- Custom plugin (`_plugins/copy_markdown.rb`) ensures markdown files are copied to `_site/`
+- Special include/keep_files configuration for llms.txt standard compliance
+- Navigation structure embedded in HTML files rather than configuration
+
 ## Deployment
 
 - **GitHub Actions**: `.github/workflows/jekyll.yml` handles automatic deployment

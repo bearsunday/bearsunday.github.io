@@ -84,7 +84,7 @@ class ProdModule extends AbstractModule
     protected function configure()
     {
         $this->install(new QiqErrorModule);
-        $this->install(new QiqProdModule($this->appDir . '/var/tmp'));
+        $this->install(new QiqProdModule($this->appMeta->appDir . '/var/tmp'));
     }
 }
 ```

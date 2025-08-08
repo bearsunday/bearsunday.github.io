@@ -36,7 +36,7 @@ class Hello extends ResourceObject
 }
 ```
 
-In the above example, when the page is requested using a GET method, `Hello` and `$_GET['name']` strings are joined, and assigned to a variable `greeting`.
+In the above example, when the page is requested using a GET method, `Hello` and the `$name` parameter (which corresponds to `$_GET['name']`) are joined, and assigned to a variable `greeting`.
 The BEAR.Sunday application that you have created will work on a web server, but also in the console.
 
 ```bash

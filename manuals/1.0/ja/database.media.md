@@ -79,7 +79,7 @@ protected function configure(): void
             Queries::fromDir('/path/to/queryInterface'),
             [
                 new DbQueryConfig('/path/to/sql'),
-                new WebQueryConfig('/path/to/web_query.json', ['domain' => 'api.exmaple.com'])
+                new WebQueryConfig('/path/to/web_query.json', ['domain' => 'api.example.com'])
             ],
         ),
     );
@@ -461,7 +461,7 @@ protected function configure(): void
 - `{% raw %}{{ id }}{% endraw %}`: クエリーID
 - `{% raw %}{{ sql }}{% endraw %}`: 実際のSQL文
 
-デフォルトテンプレート：`-- {% raw %}{{{ id }}.sql\n{{ sql }}{% endraw %}`
+デフォルトテンプレート：`-- {% raw %}{{ id }}.sql\n{{ sql }}{% endraw %}`
 
 この機能により、実行されるSQLにクエリーIDがコメントとして含まれ、データベースのスローログを分析する際に、どのアプリケーションのどのクエリーが実行されたかを容易に特定できます。
 

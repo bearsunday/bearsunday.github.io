@@ -75,7 +75,7 @@ class Entry extends ResourceObject
 
 ### コード
 
-適切なステータスコードを返します。テストが容易になり、botやクローラーにも正しい情報が伝えることができます。
+適切なステータスコードを返します。テストが容易になり、botやクローラーにも正しい情報を伝えることができます。
 
 * `100` Continue 複数のリクエストの継続
 * `200` OK
@@ -109,12 +109,12 @@ BEAR.SundayはHTMLのWebフォームで`POST`リクエストの時に`X-HTTP-Met
 * [define](http://php.net/manual/ja/function.define.php)は使用しない
 * 設定値を保持する`Config`クラスを作成しない
 * グローバルなオブジェクトコンテナ（サービスロケータ）を使用しない
-* [date](http://php.net/manual/ja/function.date.php)関数や[DateTime](http://php.net/manual/ja/class.datetime.php)クラスで現在時刻を直接取得することは推奨されません。外部から時刻をインジェクトします。[^now]
+* [date](http://php.net/manual/ja/function.date.php)関数や[DateTime](http://php.net/manual/ja/class.datetime.php)クラスで現在時刻を直接取得することは推奨されません[^now]。外部から時刻をインジェクトします。
 * スタティックメソッドなどのグローバルなメソッドコールも推奨されません。
 * アプリケーションコードが必要とする値は設定ファイルなどから取得するのではなく、全てインジェクトします。[^inject-all]
 
 [^now]: [koriym/now](https://github.com/koriym/Koriym.Now)
-[^inject-all]: Web APIなど外部のシステムの値を利用する時には、クライアントクラスやWeb APIアクセスリソースなど１つにの場所に集中させDIやAOPでモッキングが容易にするようにします。
+[^inject-all]: Web APIなど外部のシステムの値を利用する時には、クライアントクラスやWeb APIアクセスリソースなど１つの場所に集中させDIやAOPでモッキングが容易にするようにします。
 
 ## クラスとオブジェクト
 
@@ -135,7 +135,7 @@ BEAR.SundayはHTMLのWebフォームで`POST`リクエストの時に`X-HTTP-Met
 
 * インターセプターの適用を必須にしてはいけません。例えばログやDBのトランザクションなどはインターセプターの有無でプログラムの本質的な動作は変わりません。
 * メソッド内の依存をインターセプターがインジェクトしないようにします。メソッド実装時にしか決定できない値は`@Assisted`インジェクションで引数にインジェクトします。
-* 複数のインタセプターがある場合にその実行順に可能な限り依存しないようにします。
+* 複数のインターセプターがある場合にその実行順に可能な限り依存しないようにします。
 * 無条件に全メソッドに適用するインターセプターであれば`bootstrap.php`での記述を考慮してください。
 * 横断的関心事と、本質的関心事を分けるために使われるものです。特定のメソッドのhackのためにインターセプトするような使い方は推奨されません。
 
@@ -157,4 +157,4 @@ BEAR.SundayはHTMLのWebフォームで`POST`リクエストの時に`X-HTTP-Met
 
 ## HTMLテンプレート
 
-* 大きなループ文を避けます。ループの中のif文は[ジェネレーター](https://www.php.net/manual/ja/language.generators.overview.php)で置き換えれないか検討しましょう。
+* 大きなループ文を避けます。ループの中のif文は[ジェネレーター](https://www.php.net/manual/ja/language.generators.overview.php)で置き換えられないか検討しましょう。
