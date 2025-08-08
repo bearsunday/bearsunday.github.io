@@ -17,7 +17,7 @@ It transfers its resource state as a resource representation from stateless requ
 
 Here are some examples of a resource object:
 
-```php?start_inline
+```php
 class Index extends ResourceObject
 {
     public $code = 200;
@@ -34,7 +34,7 @@ class Index extends ResourceObject
 }
 ```
 
-```php?start_inline
+```php
 class Todo extends ResourceObject
 {
     public function onPost(string $id, string $todo): static
@@ -116,7 +116,7 @@ Get information on parameters and responses required for resource request. It is
 
 The response method argument is passed the request value corresponding to the variable name.
 
-```php?start_inline
+```php
 class Index extends ResourceObject
 {
     // $_GET['id'] to $id
@@ -140,7 +140,7 @@ The request method of a ResourceObject is not concerned with the representation 
 
 Use the resource client to request other resources. This request executes a request to the `app://self/blog/posts` resource with the query `?id=1`.
 
-```php?start_inline
+```php
 use BEAR\Sunday\Inject\ResourceInject;
 
 class Index extends ResourceObject
@@ -158,7 +158,7 @@ class Index extends ResourceObject
 
 Other historical notations include the following
 
-```php?start_inline
+```php
 // PHP 5.x and up
 $posts = $this->resource->get->uri('app://self/posts')->withQuery(['id' => 1])->eager->request();
 // PHP 7.x and up

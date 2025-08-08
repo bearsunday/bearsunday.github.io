@@ -15,7 +15,7 @@ BEAR.Sundayは[AOP Alliance](http://aopalliance.sourceforge.net/)に準拠した
 
 インターセプターの`invoke`メソッドでは`$invocation`メソッド実行オブジェクトを受け取り、メソッドの前後に処理を加えます。これはインターセプト元メソッドを実行するためのオブジェクトです。前後にログやトランザクションなどの横断的処理を記述します。
 
-```php?start_inline
+```php
 use Ray\Aop\MethodInterceptor;
 use Ray\Aop\MethodInvocation;
 
@@ -41,7 +41,7 @@ class MyInterceptor implements MethodInterceptor
 
 [モジュール](module.html)で対象となるクラスとメソッドを`Matcher`で"検索"して、マッチするメソッドにインターセプターを束縛します。
 
-```php?start_inline
+```php
 $this->bindInterceptor(
     $this->matcher->any(),                   // どのクラスでも
     $this->matcher->startsWith('delete'),    // "delete"で始まるメソッド名のメソッドには
@@ -74,7 +74,7 @@ $this->bindInterceptor(
 
 リフレクションのメソッドでアノテーションを取得することができます。
 
-```php?start_inline
+```php
 $method = $invocation->getMethod();
 $class = $invocation->getMethod()->getDeclaringClass();
 ```
@@ -91,7 +91,7 @@ $class = $invocation->getMethod()->getDeclaringClass();
 `contains`マッチャーを作成するには、2つのメソッドを持つクラスを提供する必要があります。
 1つはクラスのマッチを行う`matchesClass`メソッド、もう1つはメソッドのマッチを行う`matchesMethod`メソッドです。いずれもマッチしたかどうかをboolで返します。
 
-```php?start_inline
+```php
 use Ray\Aop\AbstractMatcher;
 
 /**
@@ -123,7 +123,7 @@ class ContainsMatcher extends AbstractMatcher
 
 モジュール
 
-```php?start_inline
+```php
 class AppModule extends AbstractAppModule
 {
     protected function configure()
