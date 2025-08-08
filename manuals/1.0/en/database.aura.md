@@ -452,7 +452,7 @@ Use the following methods to construct an UPDATE query. You can also call the me
                 'zim' => 'dib',
                 'gir' => 'doom',
             ]);
-        $sth = $this->pdo->prepare($update->getStatement())
+        $sth = $this->pdo->prepare($this->update->getStatement());
         $sth->execute($this->update->getBindValues());
         // or
         // $sth = $this->pdo->perform($this->update->getStatement(), $this->update->getBindValues());
@@ -485,7 +485,7 @@ Use the following methods to construct a DELETE query. You can also call the met
                 'zim' => 'dib',
                 'gir' => 'doom',
             ]);
-        $sth = $this->pdo->prepare($update->getStatement())
+        $sth = $this->pdo->prepare($this->delete->getStatement());
         $sth->execute($this->delete->getBindValues());
 ```
 
