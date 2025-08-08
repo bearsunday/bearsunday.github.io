@@ -38,7 +38,7 @@ class Weekday extends ResourceObject
 {
     public function onGet(int $year, int $month, int $day): static
     {
-        $dateTime = (new DateTimeImmutable)->createFromFormat('Y-m-d', "$year-$month-$day");
+        $dateTime = DateTimeImmutable::createFromFormat('Y-m-d', "$year-$month-$day");
         $weekday = $dateTime->format('D');
         $this->body = ['weekday' => $weekday];
 
@@ -261,7 +261,7 @@ composer cs-fix
 composer sa
 ```
 
-これまでのコードを解析すると、以下のエラーがphpstanで検出されます。
+これまでのコードを解析すると、以下のエラーがPHPStanで検出されます。
 
 ```
  ------ --------------------------------------------------------- 
@@ -323,7 +323,7 @@ class Weekday extends ResourceObject
 {
     public function onGet(int $year, int $month, int $day): static
     {
-        $dateTime = (new DateTimeImmutable)->createFromFormat('Y-m-d', "$year-$month-$day");
+        $dateTime = DateTimeImmutable::createFromFormat('Y-m-d', "$year-$month-$day");
 +        if (! $dateTime instanceof DateTimeImmutable) {
 +            throw new InvalidDateTimeException("$year-$month-$day");
 +        }
@@ -702,7 +702,7 @@ class Index extends ResourceObject
 }
 ```
 
-`page`リソースクラスは`app`リソースと同じクラスですが、HTML表示に特化した役割を持せたい時などに公開リソースとして`page`リソースを使い、内部のリソースとして`app`リソースをつかったりと役割を変えて使うことができます。
+`page`リソースクラスは`app`リソースと同じクラスですが、HTML表示に特化した役割を持たせたい時などに公開リソースとして`page`リソースを使い、内部のリソースとして`app`リソースを使ったりと役割を変えて使うことができます。
 
 動作を確認してみましょう。
 
