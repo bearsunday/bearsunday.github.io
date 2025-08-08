@@ -88,7 +88,7 @@ Reads resources. This method does not provide any changing of the resource state
 The POST method requests processing of the representation contained in the request. For example, adding a new resource to a target URI or adding a representation to an existing resource. Unlike PUT, requests do not have [idempotence](https://ja.wikipedia.org/wiki/%E5%86%AA%E7%AD%89), and multiple consecutive executions will not produce the same result.
 
 ### PUT
-Replaces the resource with the payload of the request at the requested URI. If the target resource does not exist, it is created. Unlike POST, there is not idempotent.
+Replaces the resource with the payload of the request at the requested URI. If the target resource does not exist, it is created. Unlike POST, there is idempotent.
 
 ### PATCH
 
@@ -108,7 +108,7 @@ Get information on parameters and responses required for resource request. It is
 | GET | Yes | Yes | Yes
 | POST | No | No | No
 | PUT | No | Yes | No
-| PATCH | No | Yes | No
+| PATCH | No | No | No
 | DELETE | No | Yes | No
 | OPTIONS | Yes | Yes | No
 

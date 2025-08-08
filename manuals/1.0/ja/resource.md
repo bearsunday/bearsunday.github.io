@@ -104,12 +104,12 @@ POSTと違って冪等性があります。
 
 #### メソッドの特性一覧
 
-| メソッド　| [安全性](https://developer.mozilla.org/ja/docs/Glossary/safe) | [冪等性](https://developer.mozilla.org/ja/docs/Glossary/Idempotent)　| [キャッシュ](https://developer.mozilla.org/ja/docs/Glossary/cacheable) | 
+| メソッド | [安全性](https://developer.mozilla.org/ja/docs/Glossary/safe) | [冪等性](https://developer.mozilla.org/ja/docs/Glossary/Idempotent) | [キャッシュ](https://developer.mozilla.org/ja/docs/Glossary/cacheable) | 
 |-|-|-|-|
 | GET | あり | あり | 可能
 | POST | なし | なし | 不可
 | PUT | なし | あり | 不可
-| PATCH | なし | あり | 不可
+| PATCH | なし | なし | 不可
 | DELETE | なし | あり | 不可
 | OPTIONS | あり | あり | 不可
 
@@ -147,7 +147,7 @@ use BEAR\Sunday\Inject\ResourceInject;
 class Index extends ResourceObject
 {
     public function __construct(
-    	private readonly ResourceInterface $resource
+        private readonly ResourceInterface $resource
     ){}
 
     public function onGet(): static
@@ -183,7 +183,7 @@ $posts = $request(['id' => 1]);
 
 ```php
 $this->body = [
-    'lazy' => $this->resource->get('app://self/posts')->withQuery(['id' => 3])->request();
+    'lazy' => $this->resource->get('app://self/posts')->withQuery(['id' => 3])->request()
 ];
 ```
 
