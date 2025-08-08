@@ -469,7 +469,7 @@ class Weekday extends ResourceObject
 
     public function onGet(int $year, int $month, int $day): static
     {
-        $weekday = (new DateTimeImmutable)->createFromFormat('Y-m-d', "$year-$month-$day")->format('D');
+        $weekday = DateTimeImmutable::createFromFormat('Y-m-d', "$year-$month-$day")->format('D');
         $this->body = [
             'weekday' => $weekday
         ];
