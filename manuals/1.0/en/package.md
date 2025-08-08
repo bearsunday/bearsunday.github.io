@@ -16,10 +16,10 @@ The file layout of the BEAR.Sunday application conforms to [php-pds/skeleton](ht
 
 ### Invoke sequence
 
- 1. Console input(`bin/app.php`, `bin/page.php`) or web entry file (`public/index.php`) execute `bootstrap.php` function.
- 3. `$app` application object is created by `$context` in `bootstrap.php`.
- 4. A router in `$app` converts external resource request to internal resource request.
- 4. A resource request is invoked. The representation of the result is transferred to a client.
+ 1. Console input (`bin/app.php`, `bin/page.php`) or the web entry file (`public/index.php`) executes the `bootstrap.php` function.
+ 2. The `$app` application object is created for the given `$context` in `bootstrap.php`.
+ 3. The router in `$app` converts the external resource request to an internal resource request.
+ 4. The resource request is invoked, and the resulting representation is transferred to the client.
 
 
 ### bootstrap/

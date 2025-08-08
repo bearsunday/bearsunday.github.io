@@ -104,14 +104,14 @@ POSTと違って冪等性があります。
 
 #### メソッドの特性一覧
 
-| メソッド | [安全性](https://developer.mozilla.org/ja/docs/Glossary/safe) | [冪等性](https://developer.mozilla.org/ja/docs/Glossary/Idempotent) | [キャッシュ](https://developer.mozilla.org/ja/docs/Glossary/cacheable) | 
+| メソッド | [安全性](https://developer.mozilla.org/ja/docs/Glossary/safe) | [冪等性](https://developer.mozilla.org/ja/docs/Glossary/Idempotent) | [キャッシュ](https://developer.mozilla.org/ja/docs/Glossary/cacheable) |
 |-|-|-|-|
-| GET | あり | あり | 可能
-| POST | なし | なし | 不可
-| PUT | なし | あり | 不可
-| PATCH | なし | なし | 不可
-| DELETE | なし | あり | 不可
-| OPTIONS | あり | あり | 不可
+| GET | あり | あり | 可能 |
+| POST | なし | なし | 不可 |
+| PUT | なし | あり | 不可 |
+| PATCH | なし | なし | 不可 |
+| DELETE | なし | あり | 不可 |
+| OPTIONS | あり | あり | 不可 |
 
 ## パラメーター
 
