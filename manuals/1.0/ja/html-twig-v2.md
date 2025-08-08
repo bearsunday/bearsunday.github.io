@@ -62,7 +62,7 @@ class Index extends ResourceObject
 }
 ```
 
-`var/templates/Page/Index.twig.php`:
+`var/templates/Page/Index.html.twig`:
 ```twig
 <h1>{{ greeting }}</h1>
 ```

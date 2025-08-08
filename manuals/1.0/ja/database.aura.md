@@ -614,7 +614,7 @@ $this->delete
         'gir' => 'doom',
     ]);
 
-$sth = $this->pdo->prepare($update->getStatement());
+$sth = $this->pdo->prepare($this->delete->getStatement());
 $sth->execute($this->delete->getBindValues());
 ```
 
