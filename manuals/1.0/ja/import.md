@@ -105,7 +105,7 @@ echo $weekday->body['weekday'] . PHP_EOL;
 
 大きなアプリケーションを小さな複数のアプリケーションの集合体として構築できる点はマイクロサービスと同じですが、インフラストラクチャのオーバーヘッドの増加などのマイクロサービスのデメリットがありません。またモジュラーモノリスよりもコンポーネントの独立性や境界が明確です。
 
-このページのコードは [bearsunday/example-app-import](https://github.com/bearsunday/example-import-app/commits/master) にあります。
+このページのコードは [bearsunday/example-import-app](https://github.com/bearsunday/example-import-app/commits/master) にあります。
 
 ## 多言語フレームワーク
 

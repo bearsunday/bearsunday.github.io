@@ -65,7 +65,7 @@ Content-Type: application/hal+json
 php -S 127.0.0.1:8080 -t public
 ```
 
-webブラウザまたはcurlコマンドで[http://127.0.0.1:8080/hello](http://127.0.0.1:8080/hello)をリクエストします。
+Webブラウザまたはcurlコマンドで[http://127.0.0.1:8080/hello](http://127.0.0.1:8080/hello)をリクエストします。
 
 ```bash
 curl -i 127.0.0.1:8080/hello

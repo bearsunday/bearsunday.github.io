@@ -24,7 +24,7 @@ permalink: /manuals/1.0/ja/upgrade/injector.html
 
 ```php
 $injector = Injector::getInstance($context);
-$instance = $injector->getInsntance($interface, name);
+$instance = $injector->getInstance($interface, name);
 ```
 
 ## 利点
@@ -37,7 +37,7 @@ $instance = $injector->getInsntance($interface, name);
 
  * テストが高速になります。
 
-従来の`AppInjector`ではインジェクターインスタンスの取得を毎回行っていましたが、新しい`Injector`ではシングルトンにテスト間で共用されます。
+従来の`AppInjector`ではインジェクターインスタンスの取得を毎回行っていましたが、新しい`Injector`ではシングルトンでテスト間で共用されます。
 速度が劇的に改善され、テスト毎のDB接続で接続数が枯渇するような事がありません。
 
 アプリケーションやコンテキストを超えたアクセスが同一メモリ空間で可能になるほど、実装がクリーンに改善されました。

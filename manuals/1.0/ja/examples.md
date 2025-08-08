@@ -7,7 +7,7 @@ permalink: /manuals/1.0/ja/examples.html
 
 # Examples
 
-[Coding Guide](http://bearsunday.github.io/manuals/1.0/en/coding-guide.html)に従って作られたアプリケーションの例です。
+[Coding Guide](http://bearsunday.github.io/manuals/1.0/ja/coding-guide.html)に従って作られたアプリケーションの例です。
 
 ## Polidog.Todo
 

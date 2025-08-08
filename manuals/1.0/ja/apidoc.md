@@ -37,7 +37,7 @@ phpdocでは以下の部分が取得されます。認証などリソースに�
  *
  * {description}
  *
- * {@link htttp;//example.com/docs/auth 認証}
+ * {@link https://example.com/docs/auth 認証}
  */
 class Foo extends ResourceObject { }
 ```
