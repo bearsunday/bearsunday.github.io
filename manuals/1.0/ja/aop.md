@@ -13,7 +13,7 @@ BEAR.Sundayは[AOP Alliance](http://aopalliance.sourceforge.net/)に準拠した
 
 ## インターセプター
 
-インターセプターの`invoke`メソッドでは`$invocation`メソッド実行変数を受け取り、メソッドの前後に処理を加えます。これはインターセプター元メソッドを実行するためだけの変数です。前後にログやトランザクションなどの横断的処理を記述します。
+インターセプターの`invoke`メソッドでは`$invocation`メソッド実行オブジェクトを受け取り、メソッドの前後に処理を加えます。これはインターセプト元メソッドを実行するためのオブジェクトです。前後にログやトランザクションなどの横断的処理を記述します。
 
 ```php?start_inline
 use Ray\Aop\MethodInterceptor;
