@@ -139,7 +139,7 @@ We can add a CSRF(Cross site request forgeries) object to the form to apply CSRF
 ```php?start_inline
 use Ray\WebFormModule\SetAntiCsrfTrait;
 
-class MyForm extends AbstractAuraForm
+class MyForm extends AbstractForm
 {
     use SetAntiCsrfTrait;
 ```

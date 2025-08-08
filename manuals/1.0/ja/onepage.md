@@ -2800,7 +2800,7 @@ protected function configure(): void
             Queries::fromDir('/path/to/queryInterface'),
             [
                 new DbQueryConfig('/path/to/sql'),
-                new WebQueryConfig('/path/to/web_query.json', ['domain' => 'api.exmaple.com'])
+                new WebQueryConfig('/path/to/web_query.json', ['domain' => 'api.example.com'])
             ],
         ),
     );
@@ -6348,7 +6348,7 @@ protected function configure(): void
             Queries::fromDir('/path/to/queryInterface'),
             [
                 new DbQueryConfig('/path/to/sql'),
-                new WebQueryConfig('/path/to/web_query.json', ['domain' => 'api.exmaple.com'])
+                new WebQueryConfig('/path/to/web_query.json', ['domain' => 'api.example.com'])
             ],
         ),
     );
@@ -7558,7 +7558,7 @@ class ProdModule extends AbstractModule
     protected function configure()
     {
         $this->install(new QiqErrorModule);
-        $this->install(new QiqProdModule($this->appDir . '/var/tmp'));
+        $this->install(new QiqProdModule($this->appMeta->appDir . '/var/tmp'));
     }
 }
 ```
@@ -7716,7 +7716,7 @@ class Index extends ResourceObject
 }
 ```
 
-`var/templates/Page/Index.twig.php`:
+`var/templates/Page/Index.html.twig`:
 ```twig
 <h1>{{ greeting }}</h1>
 ```
@@ -8089,7 +8089,7 @@ CSRF(クロスサイトリクエストフォージェリ)対策を行うため�
 ```php
 use Ray\WebFormModule\SetAntiCsrfTrait;
 
-class MyForm extends AbstractAuraForm
+class MyForm extends AbstractForm
 {
     use SetAntiCsrfTrait;
 }

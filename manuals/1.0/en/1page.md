@@ -740,7 +740,7 @@ class Weekday extends ResourceObject
 
     public function onGet(int $year, int $month, int $day): static
     {
-        $weekday = (new DateTimeImmutable)->createFromFormat('Y-m-d', "$year-$month-$day")->format('D');
+        $weekday = DateTimeImmutable::createFromFormat('Y-m-d', "$year-$month-$day")->format('D');
         $this->body = [
             'weekday' => $weekday
         ];
@@ -4874,7 +4874,7 @@ We can add a CSRF(Cross site request forgeries) object to the form to apply CSRF
 ```php?start_inline
 use Ray\WebFormModule\SetAntiCsrfTrait;
 
-class MyForm extends AbstractAuraForm
+class MyForm extends AbstractForm
 {
     use SetAntiCsrfTrait;
 ```

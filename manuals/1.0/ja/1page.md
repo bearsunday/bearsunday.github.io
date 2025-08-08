@@ -761,7 +761,7 @@ class Weekday extends ResourceObject
 
     public function onGet(int $year, int $month, int $day): static
     {
-        $weekday = (new DateTimeImmutable)->createFromFormat('Y-m-d', "$year-$month-$day")->format('D');
+        $weekday = DateTimeImmutable::createFromFormat('Y-m-d', "$year-$month-$day")->format('D');
         $this->body = [
             'weekday' => $weekday
         ];
@@ -4593,7 +4593,7 @@ CSRF(クロスサイトリクエストフォージェリ)対策を行うため�
 ```php
 use Ray\WebFormModule\SetAntiCsrfTrait;
 
-class MyForm extends AbstractAuraForm
+class MyForm extends AbstractForm
 {
     use SetAntiCsrfTrait;
 }
