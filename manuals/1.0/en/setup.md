@@ -44,6 +44,9 @@ brew tap koriym/homebrew-malt
 brew install malt
 ```
 
+**💡 About Homebrew taps:**  
+A tap is a third-party repository that provides packages (formulae) beyond Homebrew's core repository. Adding a tap with `brew tap <name>` allows you to install packages from that tap using short names instead of full repository paths.
+
 ### Basic Usage
 
 ```bash
@@ -234,16 +237,19 @@ sudo systemctl start mysqld
 Useful PHP extensions for development:
 
 ```bash
+# Add extensions tap (one-time setup)
+brew tap shivammathur/extensions
+
 # Xdebug (for debugging)
-brew install php@8.4-xdebug  # macOS
+brew install xdebug@8.4  # macOS
 sudo apt install php8.4-xdebug  # Ubuntu
 
 # Redis
-brew install php@8.4-redis  # macOS  
+brew install redis@8.4  # macOS  
 sudo apt install php8.4-redis  # Ubuntu
 
 # APCu (caching)
-brew install php@8.4-apcu  # macOS
+brew install apcu@8.4  # macOS
 sudo apt install php8.4-apcu  # Ubuntu
 ```
 

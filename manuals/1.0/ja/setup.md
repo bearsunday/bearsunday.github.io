@@ -37,12 +37,17 @@ BEAR.Sundayプロジェクトの開発環境構築方法を説明します。お
 ### インストール
 
 ```bash
-# Homebrew tap の追加
-brew tap koriym/homebrew-malt
+# 必要なHomebrew tapの追加
+brew tap shivammathur/php        # PHP本体
+brew tap shivammathur/extensions # PHP拡張
+brew tap koriym/malt            # maltツール
 
 # malt のインストール
 brew install malt
 ```
+
+**💡 Homebrew tapとは:**  
+Homebrewの標準リポジトリ以外のパッケージ（Formula）を提供するサードパーティリポジトリです。`brew tap <name>` で追加すると、そのtapのパッケージを短縮名でインストールできるようになります。
 
 ### 基本的な使い方
 
@@ -231,16 +236,19 @@ sudo systemctl start mysqld
 開発に有用なPHP拡張：
 
 ```bash
+# 拡張用tapの追加（初回のみ）
+brew tap shivammathur/extensions
+
 # Xdebug（デバッグ用）
-brew install php@8.4-xdebug  # Homebrew
+brew install xdebug@8.4  # Homebrew
 sudo apt install php8.4-xdebug  # Ubuntu
 
 # Redis
-brew install php@8.4-redis  # Homebrew  
+brew install redis@8.4  # Homebrew  
 sudo apt install php8.4-redis  # Ubuntu
 
 # APCu（キャッシュ）
-brew install php@8.4-apcu  # Homebrew
+brew install apcu@8.4  # Homebrew
 sudo apt install php8.4-apcu  # Ubuntu
 ```
 
