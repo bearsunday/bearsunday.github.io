@@ -20,20 +20,6 @@ composer create-project bear/skeleton MyVendor.Weekday
 
 **vendor**名を`MyVendor`に、**project**名を`Weekday`として入力します[^2]。
 
-> **注記**: 自動化したい場合は以下のコマンドを使用できます:
-> ```bash
-> expect << 'EOF'
-> spawn composer create-project bear/skeleton MyVendor.Weekday
-> expect "What is the vendor name ?"
-> send "MyVendor\r"
-> expect "What is the project name ?"
-> send "Weekday\r"
-> expect eof
-> EOF
-> ```
-> 
-> expectが利用できない場合: `printf "MyVendor\nWeekday\n" | composer create-project bear/skeleton MyVendor.Weekday`
-
 ## リソース
 
 BEAR.Sundayアプリケーションはリソースで構成されます。**ResourceObject**は、Webリソースそのものを表現するオブジェクトです。HTTPリクエストを受け取り、自分自身をそのリソースの現在の状態にします。
