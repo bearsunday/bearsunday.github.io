@@ -20,6 +20,20 @@ composer create-project bear/skeleton MyVendor.Weekday
 
 **vendor**名を`MyVendor`に、**project**名を`Weekday`として入力します[^2]。
 
+> **注記**: 自動化したい場合は以下のコマンドを使用できます:
+> ```bash
+> expect << 'EOF'
+> spawn composer create-project bear/skeleton MyVendor.Weekday
+> expect "What is the vendor name ?"
+> send "MyVendor\r"
+> expect "What is the project name ?"
+> send "Weekday\r"
+> expect eof
+> EOF
+> ```
+> 
+> expectが利用できない場合: `printf "MyVendor\nWeekday\n" | composer create-project bear/skeleton MyVendor.Weekday`
+
 ## リソース
 
 最初にアプリケーションリソースファイルを`src/Resource/App/Weekday.php`に作成します。

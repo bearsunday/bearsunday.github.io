@@ -18,6 +18,20 @@ composer create-project bear/skeleton MyVendor.Weekday
 
 Enter `MyVendor` for the **vendor** name and `Weekday` for the **project** name. [^2]
 
+> **Note**: For automated setup, you can use:
+> ```bash
+> expect << 'EOF'
+> spawn composer create-project bear/skeleton MyVendor.Weekday
+> expect "What is the vendor name ?"
+> send "MyVendor\r"
+> expect "What is the project name ?"
+> send "Weekday\r"
+> expect eof
+> EOF
+> ```
+> 
+> Or if expect is not available: `printf "MyVendor\nWeekday\n" | composer create-project bear/skeleton MyVendor.Weekday`
+
 ## Resources
 
 First, create an application resource file at `src/Resource/App/Weekday.php`.
