@@ -8,6 +8,9 @@ This file provides information on key components, coding practices, and deployme
 ## Manuals
 
 - [Introduction](/manuals/1.0/en/index.md): Overview of BEAR.Sunday's philosophy and core concepts.
+- [Environment Setup](/manuals/1.0/en/setup.md): Complete guide for setting up development environments.
+- [Tutorial](/manuals/1.0/en/tutorial.md): Step-by-step introduction to BEAR.Sunday basics.
+- [DI](/manuals/1.0/en/di.md): Dependency injection patterns and best practices.
 - [AOP](/manuals/1.0/en/aop.md): Understand how Aspect-Oriented Programming enables modular, maintainable code.
 - [Resource](/manuals/1.0/en/resource.md): Learn about resources and their methods.
 - [Resource Parameters](/manuals/1.0/en/resource_param.md): How data from web requests binds to resources.
@@ -16,16 +19,12 @@ This file provides information on key components, coding practices, and deployme
 - [Router](/manuals/1.0/en/router.md): How external requests are mapped to internal resources.
 - [Production](/manuals/1.0/en/production.md): Setting up the application for a live environment.
 - [Import](/manuals/1.0/en/import.md): Learn to use features from other BEAR applications.
+- [Database](/manuals/1.0/en/database.md): Using various databases modules.
 - [Tests](/manuals/1.0/en/test.md): Understand how to test resources.
 - [Examples](/manuals/1.0/en/examples.md): Explore practical examples of BEAR.Sunday applications.
-- [Database](/manuals/1.0/en/database.md): Using various databases modules.
 - [Coding Guide](/manuals/1.0/en/coding-guide.md): Learn about BEAR.Sunday coding-guide.
 - [PHPDoc Types](/manuals/1.0/en/types.md): Using phpdoc to create statically analysed code.
-- [Stream](/manuals/1.0/en/stream.md): Creating Streaming output for large file.
-- [CLI](/manuals/1.0/en/cli.md): Create command line tools for your app.
-- [Attributes](/manuals/1.0/en/attribute.md): PHP8 attribute usage.
 - [API Doc](/manuals/1.0/en/apidoc.md): Automatic API document generation with ApiDoc.
-- [AaaS](/manuals/1.0/en/aaas.md): Create an application that can run in other frameworks.
 
 ## Version
 - [Version Policy](/manuals/1.0/en/version.md): Versions of BEAR.Sunday and the long term support.
