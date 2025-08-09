@@ -270,7 +270,7 @@ DB接続などのセットアップを行えば、SQLファイルをIDEで直接
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Ticket",
   "type": "object",
-  "required": ["id", "title", "date_created"],
+  "required": ["id", "title", "dateCreated"],
   "properties": {
     "id": {
       "description": "The unique identifier for a ticket.",
@@ -282,7 +282,7 @@ DB接続などのセットアップを行えば、SQLファイルをIDEで直接
       "type": "string",
       "maxLength": 255
     },
-    "date_created": {
+    "dateCreated": {
       "description": "The date and time that the ticket was created.",
       "type": "string",
       "format": "date-time"
@@ -403,13 +403,19 @@ namespace MyVendor\Ticket\Entity;
 
 class Ticket
 {
+    public readonly string $dateCreated;
+
     public function __construct(
         public readonly string $id,
         public readonly string $title,
-        public readonly string $dateCreated
-    ) {}
+        string $date_created
+    ) {
+        $this->dateCreated = $date_created;
+    }
 }
 ```
+
+データベースはスネークケース（`date_created`）、JSONはキャメルケース（`dateCreated`）という異なる命名慣習を持ちます。2語以上のプロパティ名では、コンストラクターで明示的に変換することで、データベースとJSONの命名文化のギャップを解消できます。
 
 ## リソース
 
