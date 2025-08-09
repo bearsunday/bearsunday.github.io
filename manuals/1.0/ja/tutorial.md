@@ -36,6 +36,8 @@ composer create-project bear/skeleton MyVendor.Weekday
 
 ## リソース
 
+BEAR.Sundayアプリケーションはリソースで構成されます。**ResourceObject**は、Webリソースそのものを表現するオブジェクトです。HTTPリクエストを受け取り、自分自身をそのリソースの現在の状態にします。
+
 最初にアプリケーションリソースファイルを`src/Resource/App/Weekday.php`に作成します。
 
 ```php
@@ -63,6 +65,8 @@ class Weekday extends ResourceObject
 
 `MyVendor\Weekday\Resource\App\Weekday`クラスは`/weekday`というパスでアクセス可能なリソースです。
 `GET`メソッドのクエリーパラメータが`onGet`メソッドの引数として渡されます。
+
+ResourceObjectの仕事はリクエストを受け取って自己の状態を決定することです。
 
 コンソールでアクセスしてみましょう。まずはエラーケースを試します。
 
@@ -102,7 +106,7 @@ Content-Type: application/hal+json
 }
 ```
 
-[application/hal+json](https://tools.ietf.org/html/draft-kelly-json-hal-06)メディアタイプで結果が返ってきました。
+[application/hal+json](https://tools.ietf.org/html/draft-kelly-json-hal-06)メディアタイプで結果が返ってきました。HAL+JSONは、`_links`セクションで関係のあるリソースをリンクするJSON形式です。HAL+JSONについて詳しくは[こちら](https://learn.microsoft.com/ja-jp/iis-administration/api/hal)をご覧ください。
 
 これをWeb APIサービスとして公開してみましょう。
 まずBuilt-inサーバーを立ち上げます。
