@@ -135,7 +135,6 @@ version: '3.8'
 services:
   mysql:
     image: mysql:8.0
-    platform: linux/amd64  # Apple Silicon support
     environment:
       MYSQL_ROOT_PASSWORD: ""
       MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
@@ -256,11 +255,12 @@ Create `.env` file in project root:
 
 ```bash
 # Database connection (MySQL)
-DB_HOST=127.0.0.1:3306
+DB_HOST=127.0.0.1
+DB_PORT=3306
 DB_NAME=myapp  
 DB_USER=root
 DB_PASS=
-DB_DSN=mysql:host=127.0.0.1:3306;dbname=myapp
+DB_DSN=mysql:host=127.0.0.1;port=3306;dbname=myapp
 
 # Database connection (SQLite)
 DB_DSN=sqlite:var/db.sqlite3
@@ -398,7 +398,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.4'
-          extensions: mbstring, xml, mysql
+          extensions: mbstring, xml, pdo_mysql, mysqli, intl, curl, zip
           
       - name: Install dependencies
         run: composer install
