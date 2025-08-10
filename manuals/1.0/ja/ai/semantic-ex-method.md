@@ -306,7 +306,7 @@ class ConstraintUXExperiment {
 - **Risk mitigation**: Problems discovered in controlled environment
 - **Stakeholder confidence**: Decisions backed by experimental proof
 
-## SEC Method in Practice
+## Semantic-Ex Method in Practice
 
 ### Case Study: E-commerce Product System
 
@@ -326,7 +326,7 @@ class ConstraintUXExperiment {
 - Descriptions too short for detailed items
 - Price range ignores currency formatting issues
 
-#### SEC Method Application
+#### Semantic-Ex Method Application
 
 **Phase 1: Semantics**
 ```json
@@ -383,9 +383,9 @@ Generate 1000+ realistic products:
 }
 ```
 
-## SEC vs Traditional Approaches
+## Semantic-Ex vs Traditional Approaches
 
-| Aspect | Abstract-First | SEC Method |
+| Aspect | Abstract-First | Semantic-Ex Method |
 |--------|----------------|------------|
 | **Starting Point** | Arbitrary rules | Semantic meaning |
 | **Validation** | Hope and prayer | Experiential evidence |
@@ -394,7 +394,7 @@ Generate 1000+ realistic products:
 | **Maintenance** | Constant revision | Stable, evidence-based |
 | **User Experience** | Often poor fit | Naturally optimized |
 
-## Benefits of the SEC Method
+## Benefits of the Semantic-Ex Method
 
 ### 1. Evidence-Based Constraints
 Every constraint has a **documented reason** based on real usage.
@@ -477,7 +477,7 @@ Let **reality inform rules**.
 }
 ```
 
-## The SEC Mindset Shift
+## The Semantic-Ex Mindset Shift
 
 ### From Questions Like:
 - "What's a reasonable character limit?"
@@ -491,14 +491,14 @@ Let **reality inform rules**.
 
 ## Conclusion: Grounding Design in Reality
 
-The SEC Method transforms software design from **assumption-driven** to **evidence-driven**.
+The Semantic-Ex Method transforms software design from **assumption-driven** to **evidence-driven**.
 
 By starting with semantic meaning, experiencing realistic scenarios, and discovering constraints through observation, we create systems that **naturally fit** how they'll actually be used.
 
-**SEC isn't just a methodology—it's a mindset shift toward grounding our digital creations in human reality.**
+**Semantic-Ex isn't just a methodology—it's a mindset shift toward grounding our digital creations in human reality.**
 
-The next time you're tempted to write `"maxLength": 255`, ask yourself: **What would the SEC Method discover?**
+The next time you're tempted to write `"maxLength": 255`, ask yourself: **What would the Semantic-Ex Method discover?**
 
 ---
 
-*The SEC Method emerged from the constraint-driven development analysis and represents a practical approach to discovering meaningful constraints through experiential validation rather than abstract speculation.*　
+*The Semantic-Ex Method emerged from the constraint-driven development analysis and represents a practical approach to discovering meaningful constraints through experiential validation rather than abstract speculation.*　
