@@ -20,7 +20,23 @@ composer create-project bear/skeleton MyVendor.Weekday
 
 **vendor**名を`MyVendor`に、**project**名を`Weekday`として入力します[^2]。
 
+> **注記**: 自動化したい場合は以下のコマンドを使用できます:
+> ```bash
+> expect << 'EOF'
+> spawn composer create-project bear/skeleton MyVendor.Weekday
+> expect "What is the vendor name ?"
+> send "MyVendor\r"
+> expect "What is the project name ?"
+> send "Weekday\r"
+> expect eof
+> EOF
+> ```
+> 
+> expectが利用できない場合: `printf "MyVendor\nWeekday\n" | composer create-project bear/skeleton MyVendor.Weekday`
+
 ## リソース
+
+BEAR.Sundayアプリケーションはリソースで構成されます。**ResourceObject**は、Webリソースそのものを表現するオブジェクトです。HTTPリクエストを受け取り、自分自身をそのリソースの現在の状態にします。
 
 最初にアプリケーションリソースファイルを`src/Resource/App/Weekday.php`に作成します。
 
@@ -49,6 +65,8 @@ class Weekday extends ResourceObject
 
 `MyVendor\Weekday\Resource\App\Weekday`クラスは`/weekday`というパスでアクセス可能なリソースです。
 `GET`メソッドのクエリーパラメータが`onGet`メソッドの引数として渡されます。
+
+ResourceObjectの仕事はリクエストを受け取って自己の状態を決定することです。
 
 コンソールでアクセスしてみましょう。まずはエラーケースを試します。
 
@@ -88,7 +106,7 @@ Content-Type: application/hal+json
 }
 ```
 
-[application/hal+json](https://tools.ietf.org/html/draft-kelly-json-hal-06)メディアタイプで結果が返ってきました。
+[application/hal+json](https://tools.ietf.org/html/draft-kelly-json-hal-06)メディアタイプで結果が返ってきました。HAL+JSONは、`_links`セクションで関係のあるリソースをリンクするJSON形式です。HAL+JSONについて詳しくは[こちら](https://learn.microsoft.com/ja-jp/iis-administration/api/hal)をご覧ください。
 
 これをWeb APIサービスとして公開してみましょう。
 まずBuilt-inサーバーを立ち上げます。

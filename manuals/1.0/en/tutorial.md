@@ -18,7 +18,23 @@ composer create-project bear/skeleton MyVendor.Weekday
 
 Enter `MyVendor` for the **vendor** name and `Weekday` for the **project** name. [^2]
 
+> **Note**: For automated setup, you can use:
+> ```bash
+> expect << 'EOF'
+> spawn composer create-project bear/skeleton MyVendor.Weekday
+> expect "What is the vendor name ?"
+> send "MyVendor\r"
+> expect "What is the project name ?"
+> send "Weekday\r"
+> expect eof
+> EOF
+> ```
+> 
+> Or if expect is not available: `printf "MyVendor\nWeekday\n" | composer create-project bear/skeleton MyVendor.Weekday`
+
 ## Resources
+
+BEAR.Sunday applications are made up of resources. A **ResourceObject** is an object that represents a web resource itself. It receives HTTP requests and transforms itself into the current state of that resource.
 
 First, create an application resource file at `src/Resource/App/Weekday.php`.
 
@@ -46,6 +62,8 @@ class Weekday extends ResourceObject
 ```
 
 This resource class `MyVendor\Weekday\Resource\App\Weekday` can be accessed via the path `/weekday`. The query parameters of the `GET` method are passed to the `onGet` method.
+
+The job of a ResourceObject is to receive requests and determine its own state.
 
 Try accessing it via the console. First, test with an error.
 
@@ -84,7 +102,7 @@ Content-Type: application/hal+json
 }
 ```
 
-The result is correctly returned in the [application/hal+json](https://tools.ietf.org/html/draft-kelly-json-hal-06) media type.
+The result is correctly returned in the [application/hal+json](https://tools.ietf.org/html/draft-kelly-json-hal-06) media type. HAL+JSON is a JSON format that uses the `_links` section to link related resources. For more details about HAL+JSON, see [here](https://en.wikipedia.org/wiki/Hypertext_Application_Language).
 
 Let's turn this into a Web API service. Start the built-in server.
 

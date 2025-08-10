@@ -272,7 +272,7 @@ Create new files that will represent the resource `Ticket` (ticket item) and `Ti
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Ticket",
   "type": "object",
-  "required": ["id", "title", "date_created"],
+  "required": ["id", "title", "dateCreated"],
   "properties": {
     "id": {
       "description": "The unique identifier for a ticket.",
@@ -284,7 +284,7 @@ Create new files that will represent the resource `Ticket` (ticket item) and `Ti
       "type": "string",
       "maxLength": 255
     },
-    "date_created": {
+    "dateCreated": {
       "description": "The date and time that the ticket was created",
       "type": "string",
       "format": "datetime"
@@ -403,13 +403,19 @@ namespace MyVendor\Ticket\Entity;
 
 class Ticket
 {
+    public readonly string $dateCreated;
+
     public function __construct(
         public readonly string $id,
         public readonly string $title,
-        public readonly string $dateCreated
-    ) {}
+        string $date_created
+    ) {
+        $this->dateCreated = $date_created;
+    }
 }
 ```
+
+Databases use snake_case (`date_created`) while JSON uses camelCase (`dateCreated`) naming conventions. For multi-word property names, explicit conversion in the constructor resolves the gap between database and JSON naming cultures.
 
 ## Resources
 
