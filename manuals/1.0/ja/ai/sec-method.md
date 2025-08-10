@@ -27,8 +27,8 @@ Abstract Requirements → Arbitrary Constraints → Implementation → "Why does
 
 **Example of Abstract-First Failure:**
 ```json
-// Abstract constraint definition
 {
+  "$comment": "Abstract constraint definition",
   "productName": {
     "type": "string",
     "maxLength": 255
@@ -51,8 +51,8 @@ Abstract Requirements → Arbitrary Constraints → Implementation → "Why does
 The first phase focuses on **experiencing** what our semantic concepts actually mean in practice. Instead of starting with abstract definitions, we immerse ourselves in the real-world manifestation of our concepts.
 
 ```json
-// ALPS semantic descriptor - the starting point
 {
+  "$comment": "ALPS semantic descriptor - the starting point",
   "id": "productName", 
   "type": "semantic",
   "def": "https://schema.org/name",
@@ -121,17 +121,22 @@ const constraintTestingExamples = {
 ### Example-Based Validation
 
 ```json
-// Constraints emerging from example analysis
 {
+  "$comment": "Constraints emerging from example analysis",
   "productName": {
     "type": "string",
-    "minLength": 4,      // "iPad" is valid minimum
-    "maxLength": 120,    // Fits mobile UI, accommodates most real names
-    "pattern": "^[\\p{L}\\p{N}\\p{P}\\p{S}\\s]+$",  // Unicode-aware, allows international
+    "minLength": 4,
+    "maxLength": 120,
+    "pattern": "^[\\p{L}\\p{N}\\p{P}\\p{S}\\s]+$",
     "not": {
-      "pattern": "[<>{}\"'`]"  // Prevents HTML/script injection
+      "pattern": "[<>{}\"'`]"
     },
-    "description": "Product name that works across all UI contexts and supports global markets"
+    "description": "Product name that works across all UI contexts and supports global markets",
+    "examples": {
+      "min_valid": "iPad",
+      "max_realistic": "Microsoft Surface Pro 9 for Business with Windows 11 Pro, Intel Core i7, 16GB RAM, 512GB SSD, Platinum",
+      "international": "東芝 Dynabook T75/PW PT75PWP-SJA ノートPC"
+    }
   }
 }
 ```
@@ -346,25 +351,32 @@ Generate 1000+ realistic products:
 **Phase 3: Constraints**
 ```json
 {
+  "$comment": "Experience-informed constraints from 1000+ product analysis",
   "product": {
     "name": {
       "type": "string", 
       "minLength": 5,
-      "maxLength": 120,  // Accommodates real product names
+      "maxLength": 120,
+      "description": "Accommodates real product names",
       "examples": ["iPhone 15 Pro Max", "The Lord of the Rings: The Fellowship of the Ring"]
     },
     "description": {
       "type": "string",
       "minLength": 20,
-      "maxLength": 2000,  // Based on actual product descriptions
+      "maxLength": 2000,
+      "description": "Based on actual product descriptions",
       "examples": ["High-performance laptop with M3 chip..."]
     },
     "price": {
-      "type": "object",  // Complex type discovered through experience
+      "type": "object",
+      "description": "Complex type discovered through experience",
       "properties": {
         "amount": {"type": "number", "minimum": 0.01},
         "currency": {"type": "string", "enum": ["USD", "EUR", "JPY"]},
-        "display": {"type": "string"}  // For formatted display like "$1,299.99"
+        "display": {
+          "type": "string",
+          "description": "For formatted display like '$1,299.99'"
+        }
       }
     }
   }
@@ -390,7 +402,8 @@ Every constraint has a **documented reason** based on real usage.
 ```json
 {
   "userBio": {
-    "maxLength": 160,  // Twitter-style bio that fits in profile cards
+    "maxLength": 160,
+    "description": "Twitter-style bio that fits in profile cards",
     "reason": "Testing showed longer bios break mobile layouts"
   }
 }
@@ -451,10 +464,15 @@ Let **reality inform rules**.
 {
   "customerReview": {
     "type": "string",
-    "minLength": 10,   // Filters out useless "Great!" reviews
-    "maxLength": 2000, // Accommodates detailed experiences
-    "pattern": "^[^<>{}]+$",  // Prevents HTML injection
-    "description": "Customer review that provides meaningful feedback"
+    "minLength": 10,
+    "maxLength": 2000,
+    "pattern": "^[^<>{}]+$",
+    "description": "Customer review that provides meaningful feedback",
+    "constraints": {
+      "minLength_reason": "Filters out useless 'Great!' reviews",
+      "maxLength_reason": "Accommodates detailed experiences", 
+      "pattern_reason": "Prevents HTML injection"
+    }
   }
 }
 ```
