@@ -285,7 +285,7 @@ Even if a PHP error occurs, the error handler catches it and displays the error 
 ### Using assert
 
 ```php
-$dateTime =(new DateTimeImmutable)->createFromFormat('Y-m-d', "$year-$month-$day");
+$dateTime = DateTimeImmutable::createFromFormat('Y-m-d', "$year-$month-$day");
 assert($dateTime instanceof DateTimeImmutable);
 ```
 

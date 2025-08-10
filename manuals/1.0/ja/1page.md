@@ -1018,7 +1018,7 @@ PHPエラーが発生した場合でもエラーハンドラーがキャッチ�
 ### assertを使用する場合
 
 ```php
-$dateTime = (new DateTimeImmutable)->createFromFormat('Y-m-d', "$year-$month-$day");
+$dateTime = DateTimeImmutable::createFromFormat('Y-m-d', "$year-$month-$day");
 assert($dateTime instanceof DateTimeImmutable);
 ```
 
