@@ -14,8 +14,8 @@ Choose **malt / Docker / manual setup** based on your OS and team structure. Thi
 ## Method Selection
 
 | Method        | Target OS              | Features                                           | Recommended Use      |
-| ------------- | --------------------- | ------------------------------------------------- | -------------------- |
-| **malt**      | macOS, WSL2, Linux    | Homebrew-based, lightweight, configuration shareable, local-complete, batch service management commands | Individual dev, team dev |
+| ------------- | --------------------- |---------------------------------------------------| -------------------- |
+| **malt**      | macOS, WSL2, Linux    | Homebrew-based, lightweight, configuration shareable, local-complete<br>Batch service management commands | Individual dev, team dev |
 | **Docker**    | macOS, Windows, Linux | Container-based complete environment reproduction, CI/CD friendly | Team dev, CI/CD, production-like |
 | **Manual**    | All OS                | Use existing environment as-is, fine-grained control | Existing infrastructure, constrained environments |
 
@@ -422,7 +422,7 @@ jobs:
 
 ---
 
-## Environment Selection Guidelines (Summary)
+## Environment Selection Guidelines
 
 Development environments prioritize transparency and direct access, while production environments prioritize reproducibility and monitoring capabilities.
 
@@ -430,13 +430,5 @@ Development environments prioritize transparency and direct access, while produc
 * **Team Development**: malt (configuration sharing) or Docker (reproducibility priority)
 * **Production & CI/CD**: **Docker only** (same behavior anywhere, rich monitoring tool ecosystem)
 * **Complex Configurations**: Docker (assuming integration and scale of dependent services)
-
-- Docker: Well-known. Container-mediated access, complex configuration inspection, virtualization overhead
-
-- Docker: Identical behavior anywhere, rich monitoring tool ecosystem - essentially Docker only
-
-- **Team Development**: malt (with config sharing) or Docker
-- **Production/CI/CD**: Docker only
-- **Complex Configurations**: Docker
 
 > Follow your project's tutorials and team conventions for detailed configuration and BEAR.Sunday best practices.
