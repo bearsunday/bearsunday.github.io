@@ -225,9 +225,13 @@ sudo systemctl start mysqld
 ### 開発に有用な PHP 拡張
 
 ```bash
-# Xdebug（デバッグ）
+# Xdebug（デバッグ用）
 brew install shivammathur/extensions/xdebug@8.4    # Homebrew
 sudo apt install php8.4-xdebug                    # Ubuntu
+
+# XHProf（プロファイリング用）
+brew install shivammathur/extensions/xhprof@8.4   # Homebrew
+sudo apt install php8.4-xhprof                    # Ubuntu
 
 # Redis
 brew install shivammathur/extensions/redis@8.4    # Homebrew
@@ -236,6 +240,19 @@ sudo apt install php8.4-redis                     # Ubuntu
 # APCu（キャッシュ）
 brew install shivammathur/extensions/apcu@8.4     # Homebrew
 sudo apt install php8.4-apcu                      # Ubuntu
+```
+
+**重要**: Xdebug や XHProf はパフォーマンスに大きく影響するため、php.ini で常時有効にせず、必要時のみ `-d` オプションで有効化することを推奨します。
+
+```bash
+# デバッグ時のみ Xdebug を有効化
+php -dzend_extension=xdebug.so -S 127.0.0.1:8080 -t public
+
+# プロファイリング時のみ XHProf を有効化  
+php -dzend_extension=xhprof.so script.php
+
+# Composer実行時は拡張を無効化（高速化）
+php -dzend_extension= /usr/local/bin/composer install
 ```
 
 ---
@@ -293,7 +310,7 @@ composer require --dev robmorgan/phinx
 # 8080 番で起動
 php -S 127.0.0.1:8080 -t public
 
-# Xdebug 有効で起動
+# デバッグ時のみ Xdebug 有効で起動
 php -dzend_extension=xdebug.so -S 127.0.0.1:8080 -t public
 ```
 
