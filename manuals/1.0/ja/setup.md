@@ -52,7 +52,7 @@ brew tap koriym/malt
 brew install malt
 ```
 
-### 基本操作　最短導線）
+### 基本操作（最短導線）
 
 malt init && malt install && malt create && malt start
 source <(malt env)
