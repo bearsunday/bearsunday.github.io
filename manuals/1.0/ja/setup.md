@@ -242,7 +242,7 @@ brew install shivammathur/extensions/apcu@8.4     # Homebrew
 sudo apt install php8.4-apcu                      # Ubuntu
 ```
 
-**重要**: Xdebug や XHProf はパフォーマンスに大きく影響するため、php.ini で常時有効にせず、必要時のみ `-d` オプションで有効化することを推奨します。
+**重要**: Xdebug や XHProf はパフォーマンスに影響するため、php.ini で常時有効にせず、必要時のみ `-d` オプションで有効化することを推奨します。
 
 ```bash
 # デバッグ時のみ Xdebug を有効化
