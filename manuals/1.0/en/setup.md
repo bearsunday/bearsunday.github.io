@@ -233,6 +233,10 @@ sudo systemctl start mysqld
 brew install shivammathur/extensions/xdebug@8.4    # Homebrew
 sudo apt install php8.4-xdebug                    # Ubuntu
 
+# XHProf (profiling)
+brew install shivammathur/extensions/xhprof@8.4   # Homebrew
+sudo apt install php8.4-xhprof                    # Ubuntu
+
 # Redis
 brew install shivammathur/extensions/redis@8.4    # Homebrew
 sudo apt install php8.4-redis                     # Ubuntu
@@ -240,6 +244,19 @@ sudo apt install php8.4-redis                     # Ubuntu
 # APCu (caching)
 brew install shivammathur/extensions/apcu@8.4     # Homebrew
 sudo apt install php8.4-apcu                      # Ubuntu
+```
+
+**Important**: Xdebug and XHProf impact performance, so avoid enabling them permanently in php.ini. Instead, enable them only when needed using the `-d` option.
+
+```bash
+# Enable Xdebug only when debugging
+php -dzend_extension=xdebug.so -S 127.0.0.1:8080 -t public
+
+# Enable XHProf only when profiling
+php -dzend_extension=xhprof.so script.php
+
+# Disable extensions when running Composer (for speed)
+php -dzend_extension= /usr/local/bin/composer install
 ```
 
 ---
@@ -297,7 +314,7 @@ composer require --dev robmorgan/phinx
 # Start on port 8080
 php -S 127.0.0.1:8080 -t public
 
-# Start with Xdebug enabled
+# Enable Xdebug only when debugging
 php -dzend_extension=xdebug.so -S 127.0.0.1:8080 -t public
 ```
 
