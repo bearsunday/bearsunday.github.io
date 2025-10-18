@@ -273,6 +273,36 @@ $this->headers[Header::SURROGATE_KEY] = $this->uriTag->fromAssoc(
 
 In the above case, this cache will be invalidated for both server-side and CDN when `app://self/item?id=1` and `app://self/item?id=2` are changed.
 
+## Configuration
+
+### Redis Marshaller
+
+The Redis cache adapter allows you to configure data compression and serialization methods.
+
+A marshaller handles the serialization of PHP objects and arrays when storing them in Redis, and deserialization when retrieving them.
+
+```php
+use BEAR\QueryRepository\StorageRedisDsnModule;
+
+$this->install(
+    new StorageRedisDsnModule(
+        dsn: 'redis://localhost:6379',
+        marshallingOptions: [
+            'enabled' => true,
+            'type' => 'deflate',      // 'default' or 'deflate'
+            'use_igbinary' => true    // requires ext-igbinary
+        ]
+    )
+);
+```
+
+**Marshaller types:**
+
+- `default`: Uses PHP's standard serialization (enabling `use_igbinary` uses a more efficient binary format)
+- `deflate`: Compresses data before storing (uses zlib)
+
+Use `deflate` if you want to reduce Redis memory usage. This is a trade-off with CPU usage.
+
 ## CDN
 
 If you install a module that supports a specific CDN, vendor-specific headers will be output.
