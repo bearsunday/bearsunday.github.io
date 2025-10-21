@@ -248,6 +248,36 @@ $this->headers[Header::SURROGATE_KEY] = $this->uriTag->fromAssoc(
 
 上記の場合、`app://self/item?id=1`および`app://self/item?id=2`に変更があった場合に、このキャッシュはサーバーサイド、CDN共に無効化されます。
 
+## 設定
+
+### Redis Marshaller
+
+Redisキャッシュアダプターでは、データの圧縮とシリアライズ方式を設定できます。
+
+Marshallerは、PHPのオブジェクトや配列をRedisに保存する際のシリアライズと、取り出す際のデシリアライズを行います。
+
+```php
+use BEAR\QueryRepository\StorageRedisDsnModule;
+
+$this->install(
+    new StorageRedisDsnModule(
+        dsn: 'redis://localhost:6379',
+        marshallingOptions: [
+            'enabled' => true,
+            'type' => 'deflate',      // 'default' または 'deflate'
+            'use_igbinary' => true    // ext-igbinary が必要
+        ]
+    )
+);
+```
+
+**Marshallerの種類：**
+
+- `default`: PHPの標準シリアライズを使用（`use_igbinary`を有効にするとより効率的なバイナリ形式を使用）
+- `deflate`: データを圧縮してから保存（zlibを使用）
+
+Redisのメモリ使用量を削減したい場合は`deflate`を使用してください。CPU使用率とのトレードオフになります。
+
 ## CDN特定
 
 特定CDN対応のモジュールをインストールすると、ベンダー固有のヘッダーが出力されます：
