@@ -139,7 +139,7 @@ SELECT id, title, user_name, email_address FROM invoices WHERE id = :id
 
 #### type: 'row'
 
-SQL実行の戻り値が連想配列の場合は`type: 'row'`を指定します。
+単一行の結果を連想配列で取得する場合は`type: 'row'`を指定します。
 
 ```php
 interface TodoItemInterface
