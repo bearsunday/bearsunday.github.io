@@ -218,7 +218,7 @@ public function __invoke(Uuid $uuid = null): void; // UUIDが生成され渡さ�
 
 ## ページネーション
 
-`#[Pager]`アトリビュートでSELECTクエリーをページングすることができます。
+`#[Pager]`アトリビュートでSELECTクエリーをページングできます。
 
 ```php
 use Ray\MediaQuery\Annotation\DbQuery;
