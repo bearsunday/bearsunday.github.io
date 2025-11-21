@@ -102,7 +102,7 @@ interface TodoItemInterface
 }
 ```
 
-**Constructor Property Promotion（推奨）**
+### Constructor Property Promotion（推奨）
 
 コンストラクタプロパティプロモーションを使うと型安全でイミュータブルなエンティティを作成できます。
 
@@ -116,7 +116,7 @@ final class Todo
 }
 ```
 
-**snake_case → camelCase 自動変換**
+### snake_case → camelCase 自動変換
 
 データベースのカラム名（snake_case）とプロパティ名（camelCase）は自動的に変換されます。
 
