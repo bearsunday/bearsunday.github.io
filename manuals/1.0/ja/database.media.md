@@ -7,7 +7,7 @@ permalink: /manuals/1.0/ja/database_media.html
 
 # Ray.MediaQuery
 
-`Ray.MediaQuery`はDBやWeb APIなどの外部メディアのクエリーのインターフェイスから、クエリー実行オブジェクトを生成しインジェクトします。
+`Ray.MediaQuery`はデータベースクエリーのインターフェイスから、クエリー実行オブジェクトを生成しインジェクトします。
 
 * ドメイン層とインフラ層の境界を明確にします。
 * ボイラープレートコードを削減します。
@@ -16,72 +16,44 @@ permalink: /manuals/1.0/ja/database_media.html
 ## インストール
 
 ```bash
-$ composer require ray/media-query
+composer require ray/media-query
 ```
+
+> **Note**: Web API機能は別パッケージ [ray/web-query](https://github.com/ray-di/Ray.WebQuery) に移動しました。
 
 ## 利用方法
 
-メディアアクセスするインターフェイスを定義します。
+データベースアクセスするインターフェイスを定義します。
 
-### データベースの場合
+### インターフェイス定義
 
-`DbQuery`アトリビュートでSQLのIDを指定します。
+`#[DbQuery]`アトリビュートでSQLのIDを指定します。
 
 ```php
+use Ray\MediaQuery\Annotation\DbQuery;
+
 interface TodoAddInterface
 {
-    #[DbQuery('user_add')]
+    #[DbQuery('todo_add')]
     public function add(string $id, string $title): void;
 }
 ```
 
-### Web APIの場合
+### モジュール設定
 
-`WebQuery`アトリビュートでWeb APIのIDを指定します。
-
-```php
-interface PostItemInterface
-{
-    #[WebQuery('user_item')]
-    public function get(string $id): array;
-}
-```
-
-APIパスリストのファイルを`media_query.json`として作成します。
-
-```json
-{
-    "$schema": "https://ray-di.github.io/Ray.MediaQuery/schema/web_query.json",
-    "webQuery": [
-        {
-            "id": "user_item",
-            "method": "GET",
-            "path": "https://{domain}/users/{id}"
-        }
-    ]
-}
-```
-
-MediaQueryModuleは、`DbQueryConfig`や`WebQueryConfig`、またはその両方の設定でSQLやWeb APIリクエストの実行をインターフェイスに束縛します。
+`MediaQuerySqlModule`でSQLディレクトリとインターフェイスディレクトリを指定します。
 
 ```php
 use Ray\AuraSqlModule\AuraSqlModule;
-use Ray\MediaQuery\ApiDomainModule;
-use Ray\MediaQuery\DbQueryConfig;
-use Ray\MediaQuery\MediaQueryModule;
-use Ray\MediaQuery\Queries;
-use Ray\MediaQuery\WebQueryConfig;
+use Ray\MediaQuery\MediaQuerySqlModule;
 
 protected function configure(): void
 {
     $this->install(
-        new MediaQueryModule(
-            Queries::fromDir('/path/to/queryInterface'),
-            [
-                new DbQueryConfig('/path/to/sql'),
-                new WebQueryConfig('/path/to/web_query.json', ['domain' => 'api.example.com'])
-            ],
-        ),
+        new MediaQuerySqlModule(
+            interfaceDir: '/path/to/query/interfaces',
+            sqlDir: '/path/to/sql'
+        )
     );
     $this->install(new AuraSqlModule(
         'mysql:host=localhost;dbname=test',
@@ -91,7 +63,7 @@ protected function configure(): void
 }
 ```
 
-MediaQueryModuleはAuraSqlModuleのインストールが必要です。
+MediaQuerySqlModuleはAuraSqlModuleのインストールが必要です。
 
 ### 注入
 
@@ -120,77 +92,61 @@ SQL実行がメソッドにマップされ、IDで指定されたSQLをメソッ
 
 #### Entity
 
-SQL実行結果を用意したエンティティクラスを`entity`で指定して変換（hydrate）することができます。
+メソッドの戻り値の型を指定すると、SQL実行結果が自動的にそのエンティティクラスに変換（hydrate）されます。
 
 ```php
 interface TodoItemInterface
 {
-    #[DbQuery('todo_item', entity: Todo::class)]
+    #[DbQuery('todo_item')]
     public function getItem(string $id): Todo;
 }
 ```
 
-```php
-final class Todo
-{
-    public string $id;
-    public string $title;
-}
-```
+### Constructor Property Promotion（推奨）
 
-プロパティをキャメルケースに変換する場合には`CamelCaseTrait`を使います。
-
-```php
-use Ray\MediaQuery\CamelCaseTrait;
-
-class Invoice
-{
-    use CamelCaseTrait;
-    public $userName;
-}
-```
-
-コンストラクタがあると、フェッチしたデータでコールされます。
+コンストラクタプロパティプロモーションを使うと型安全でイミュータブルなエンティティを作成できます。
 
 ```php
 final class Todo
 {
     public function __construct(
-        public string $id,
-        public string $title
+        public readonly string $id,
+        public readonly string $title
     ) {}
 }
 ```
 
+### snake_case → camelCase 自動変換
+
+データベースのカラム名（snake_case）とプロパティ名（camelCase）は自動的に変換されます。
+
+```php
+final class Invoice
+{
+    public function __construct(
+        public readonly string $id,
+        public readonly string $title,
+        public readonly string $userName,      // user_name → userName
+        public readonly string $emailAddress,  // email_address → emailAddress
+    ) {}
+}
+```
+
+```sql
+-- invoice.sql
+SELECT id, title, user_name, email_address FROM invoices WHERE id = :id
+```
+
 #### type: 'row'
 
-SQL実行の戻り値が単一行なら`type: 'row'`のアトリビュートを指定します。ただし、インターフェイスの戻り値がエンティティクラスなら省略することができます。
+単一行の結果を連想配列で取得する場合は`type: 'row'`を指定します。
 
 ```php
-/** 返り値がEntityの場合 */
 interface TodoItemInterface
 {
-    #[DbQuery('todo_item', entity: Todo::class)]
-    public function getItem(string $id): Todo;
+    #[DbQuery('todo_stats', type: 'row')]
+    public function getStats(string $id): array;  // ['total' => 10, 'active' => 5]
 }
-```
-
-```php
-/** 返り値がarrayの場合 */
-interface TodoItemInterface
-{
-    #[DbQuery('todo_item', entity: Todo::class, type: 'row')]
-    public function getItem(string $id): array;
-}
-```
-
-### Web API
-
-* メソッドの引数が `uri`で指定されたURI templateにバインドされ、Web APIリクエストオブジェクトが生成されます。
-* 認証のためのヘッダーなどのカスタムはGuzzleの`ClinetInterface`をバインドして行います。
-
-```php
-$this->bind(ClientInterface::class)->toProvider(YourGuzzleClientProvider::class);
 ```
 
 ## パラメーター
@@ -262,15 +218,17 @@ public function __invoke(Uuid $uuid = null): void; // UUIDが生成され渡さ�
 
 ## ページネーション
 
-DBの場合、`#[Pager]`アトリビュートでSELECTクエリーをページングすることができます。
+`#[Pager]`アトリビュートでSELECTクエリーをページングできます。
 
 ```php
-use Ray\MediaQuery\PagesInterface;
+use Ray\MediaQuery\Annotation\DbQuery;
+use Ray\MediaQuery\Annotation\Pager;
+use Ray\MediaQuery\Pages;
 
 interface TodoList
 {
-    #[DbQuery, Pager(perPage: 10, template: '/{?page}')]
-    public function __invoke(): PagesInterface;
+    #[DbQuery('todo_list'), Pager(perPage: 10, template: '/{?page}')]
+    public function __invoke(): Pages;
 }
 ```
 
@@ -470,16 +428,22 @@ protected function configure(): void
 SELECT * FROM todo WHERE id = :id
 ```
 
-## アノテーション / アトリビュート
+## PHP 8 アトリビュート
 
-属性を表すのに[doctrineアノテーション](https://github.com/doctrine/annotations/)、[アトリビュート](https://www.php.net/manual/ja/language.attributes.overview.php)どちらも利用できます。次の2つは同じものです。
+Ray.MediaQuery 1.0以降は、PHP 8の[アトリビュート](https://www.php.net/manual/ja/language.attributes.overview.php)を使用します。
 
 ```php
 use Ray\MediaQuery\Annotation\DbQuery;
+use Ray\MediaQuery\Annotation\Pager;
 
-#[DbQuery('user_add')]
-public function add1(string $id, string $title): void;
+interface TodoRepository
+{
+    #[DbQuery('todo_add')]
+    public function add(string $id, string $title): void;
 
-/** @DbQuery("user_add") */
-public function add2(string $id, string $title): void;
+    #[DbQuery('todo_list'), Pager(perPage: 20)]
+    public function list(): Pages;
+}
 ```
+
+> **Note**: Doctrineアノテーション（`@DbQuery`）のサポートは終了しました。マイグレーション方法は[Ray.MediaQuery MIGRATION.md](https://github.com/ray-di/Ray.MediaQuery/blob/1.x/MIGRATION.md)を参照してください。

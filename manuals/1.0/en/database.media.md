@@ -7,7 +7,7 @@ permalink: /manuals/1.0/en/database_media.html
 
 # Ray.MediaQuery
 
-`Ray.MediaQuery` generates and injects query execution objects from interfaces for querying external media such as databases and Web APIs.
+`Ray.MediaQuery` generates and injects query execution objects from database query interfaces.
 
 * Clarifies the boundary between domain layer and infrastructure layer.
 * Reduces boilerplate code.
@@ -16,72 +16,44 @@ permalink: /manuals/1.0/en/database_media.html
 ## Installation
 
 ```bash
-$ composer require ray/media-query
+composer require ray/media-query
 ```
+
+> **Note**: Web API functionality has been moved to a separate package [ray/web-query](https://github.com/ray-di/Ray.WebQuery).
 
 ## Usage
 
-Define an interface for media access.
+Define an interface for database access.
 
-### Database
+### Interface Definition
 
-Specify the SQL ID with the `DbQuery` attribute.
+Specify the SQL ID with the `#[DbQuery]` attribute.
 
 ```php
+use Ray\MediaQuery\Annotation\DbQuery;
+
 interface TodoAddInterface
 {
-    #[DbQuery('user_add')]
+    #[DbQuery('todo_add')]
     public function add(string $id, string $title): void;
 }
 ```
 
-### Web API
+### Module Configuration
 
-Specify the Web API ID with the `WebQuery` attribute.
-
-```php
-interface PostItemInterface
-{
-    #[WebQuery('user_item')]
-    public function get(string $id): array;
-}
-```
-
-Create an API path list file as `media_query.json`.
-
-```json
-{
-    "$schema": "https://ray-di.github.io/Ray.MediaQuery/schema/web_query.json",
-    "webQuery": [
-        {
-            "id": "user_item",
-            "method": "GET",
-            "path": "https://{domain}/users/{id}"
-        }
-    ]
-}
-```
-
-MediaQueryModule binds SQL and Web API request execution to interfaces with `DbQueryConfig` and/or `WebQueryConfig` settings.
+Specify SQL directory and interface directory with `MediaQuerySqlModule`.
 
 ```php
 use Ray\AuraSqlModule\AuraSqlModule;
-use Ray\MediaQuery\ApiDomainModule;
-use Ray\MediaQuery\DbQueryConfig;
-use Ray\MediaQuery\MediaQueryModule;
-use Ray\MediaQuery\Queries;
-use Ray\MediaQuery\WebQueryConfig;
+use Ray\MediaQuery\MediaQuerySqlModule;
 
 protected function configure(): void
 {
     $this->install(
-        new MediaQueryModule(
-            Queries::fromDir('/path/to/queryInterface'),
-            [
-                new DbQueryConfig('/path/to/sql'),
-                new WebQueryConfig('/path/to/web_query.json', ['domain' => 'api.example.com'])
-            ],
-        ),
+        new MediaQuerySqlModule(
+            interfaceDir: '/path/to/query/interfaces',
+            sqlDir: '/path/to/sql'
+        )
     );
     $this->install(new AuraSqlModule(
         'mysql:host=localhost;dbname=test',
@@ -91,7 +63,7 @@ protected function configure(): void
 }
 ```
 
-MediaQueryModule requires AuraSqlModule to be installed.
+MediaQuerySqlModule requires AuraSqlModule to be installed.
 
 ### Injection
 
@@ -113,84 +85,68 @@ class Todo
 
 ### DbQuery
 
-SQL execution is mapped to methods, binding the SQL specified by ID with method arguments for execution. For example, with ID `todo_item`, it executes `todo_item.sql` bound with `['id' => $id]`.
+SQL execution is mapped to methods, binding the SQL specified by ID with method arguments for execution. For example, with ID `todo_item`, it executes `todo_item.sql` SQL statement bound with `['id => $id]`.
 
 * Prepare SQL files in the `$sqlDir` directory.
 * SQL files can contain multiple SQL statements. The last SELECT statement becomes the return value.
 
 #### Entity
 
-SQL execution results can be converted (hydrated) to prepared entity classes by specifying `entity`.
+When you specify a return type for a method, SQL execution results are automatically converted (hydrated) to that entity class.
 
 ```php
 interface TodoItemInterface
 {
-    #[DbQuery('todo_item', entity: Todo::class)]
+    #[DbQuery('todo_item')]
     public function getItem(string $id): Todo;
 }
 ```
 
-```php
-final class Todo
-{
-    public string $id;
-    public string $title;
-}
-```
+**Constructor Property Promotion (Recommended)**
 
-Use `CamelCaseTrait` to convert properties to camelCase.
-
-```php
-use Ray\MediaQuery\CamelCaseTrait;
-
-class Invoice
-{
-    use CamelCaseTrait;
-    public $userName;
-}
-```
-
-If a constructor exists, it will be called with the fetched data.
+Using constructor property promotion creates type-safe and immutable entities.
 
 ```php
 final class Todo
 {
     public function __construct(
-        public string $id,
-        public string $title
+        public readonly string $id,
+        public readonly string $title
     ) {}
 }
 ```
 
+**Automatic snake_case → camelCase Conversion**
+
+Database column names (snake_case) and property names (camelCase) are automatically converted.
+
+```php
+final class Invoice
+{
+    public function __construct(
+        public readonly string $id,
+        public readonly string $title,
+        public readonly string $userName,      // user_name → userName
+        public readonly string $emailAddress,  // email_address → emailAddress
+    ) {}
+}
+```
+
+```sql
+-- invoice.sql
+SELECT id, title, user_name, email_address FROM invoices WHERE id = :id
+```
+
 #### type: 'row'
 
-If SQL execution returns a single row, specify the `type: 'row'` attribute. However, this can be omitted if the interface return value is an entity class.
+Specify `type: 'row'` to retrieve a single row result as an associative array.
 
 ```php
-/** When return value is Entity */
 interface TodoItemInterface
 {
-    #[DbQuery('todo_item', entity: Todo::class)]
-    public function getItem(string $id): Todo;
+    #[DbQuery('todo_stats', type: 'row')]
+    public function getStats(string $id): array;  // ['total' => 10, 'active' => 5]
 }
-```
-
-```php
-/** When return value is array */
-interface TodoItemInterface
-{
-    #[DbQuery('todo_item', entity: Todo::class, type: 'row')]
-    public function getItem(string $id): array;
-}
-```
-
-### Web API
-
-* Method arguments are bound to the URI template specified in `uri` to generate Web API request objects.
-* Customization for authentication headers, etc. is done by binding Guzzle's `ClientInterface`.
-
-```php
-$this->bind(ClientInterface::class)->toProvider(YourGuzzleClientProvider::class);
 ```
 
 ## Parameters
@@ -240,7 +196,7 @@ class UserId implements ToScalarInterface
     public function __construct(
         private readonly LoginUser $user
     ) {}
-    
+
     public function toScalar(): int
     {
         return $this->user->id;
@@ -262,15 +218,17 @@ public function __invoke(Uuid $uuid = null): void; // UUID is generated and pass
 
 ## Pagination
 
-For databases, you can paginate SELECT queries with the `#[Pager]` attribute.
+You can paginate SELECT queries with the `#[Pager]` attribute.
 
 ```php
-use Ray\MediaQuery\PagesInterface;
+use Ray\MediaQuery\Annotation\DbQuery;
+use Ray\MediaQuery\Annotation\Pager;
+use Ray\MediaQuery\Pages;
 
 interface TodoList
 {
-    #[DbQuery, Pager(perPage: 10, template: '/{?page}')]
-    public function __invoke(): PagesInterface;
+    #[DbQuery('todo_list'), Pager(perPage: 10, template: '/{?page}')]
+    public function __invoke(): Pages;
 }
 ```
 
@@ -400,24 +358,24 @@ final class CustomPerformSql implements PerformSqlInterface
     public function perform(ExtendedPdoInterface $pdo, string $sqlId, string $sql, array $values): PDOStatement
     {
         $startTime = microtime(true);
-        
+
         // Custom logging
         $this->logger->info("Executing SQL: {$sqlId}", [
             'sql' => $sql,
             'params' => $values
         ]);
-        
+
         try {
             /** @var array<string, mixed> $values */
             $statement = $pdo->perform($sql, $values);
-            
+
             // Execution time logging
             $executionTime = microtime(true) - $startTime;
             $this->logger->info("SQL executed successfully", [
                 'sqlId' => $sqlId,
                 'execution_time' => $executionTime
             ]);
-            
+
             return $statement;
         } catch (Exception $e) {
             $this->logger->error("SQL execution failed: {$sqlId}", [
@@ -457,6 +415,7 @@ protected function configure(): void
 ```
 
 Available template variables:
+
 - `{% raw %}{{ id }}{% endraw %}`: Query ID
 - `{% raw %}{{ sql }}{% endraw %}`: The actual SQL statement
 
@@ -469,16 +428,22 @@ This feature includes the query ID as a comment in the executed SQL, making it e
 SELECT * FROM todo WHERE id = :id
 ```
 
-## Annotations / Attributes
+## PHP 8 Attributes
 
-Both [doctrine annotations](https://github.com/doctrine/annotations/) and [attributes](https://www.php.net/manual/en/language.attributes.overview.php) can be used to represent properties. The following two are equivalent:
+Ray.MediaQuery 1.0 and later uses PHP 8 [attributes](https://www.php.net/manual/en/language.attributes.overview.php).
 
 ```php
 use Ray\MediaQuery\Annotation\DbQuery;
+use Ray\MediaQuery\Annotation\Pager;
 
-#[DbQuery('user_add')]
-public function add1(string $id, string $title): void;
+interface TodoRepository
+{
+    #[DbQuery('todo_add')]
+    public function add(string $id, string $title): void;
 
-/** @DbQuery("user_add") */
-public function add2(string $id, string $title): void;
+    #[DbQuery('todo_list'), Pager(perPage: 20)]
+    public function list(): Pages;
+}
 ```
+
+> **Note**: Doctrine annotation (`@DbQuery`) support has been removed. For migration instructions, see [Ray.MediaQuery MIGRATION.md](https://github.com/ray-di/Ray.MediaQuery/blob/1.x/MIGRATION.md).
