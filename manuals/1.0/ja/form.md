@@ -35,7 +35,7 @@ class AppModule extends AbstractAppModule
 
 ## Webフォーム
 
-フォーム要素の登録やルールを定めた**フォームクラス**を作成して、`@FormValidation`アノテーションを使用して特定のメソッドと束縛します。メソッドは送信されたデータがバリデーションOKのときのみ実行されます。
+フォーム要素の登録やルールを定めた**フォームクラス**を作成して、`#[FormValidation]`アトリビュートを使用して特定のメソッドと束縛します。メソッドは送信されたデータがバリデーションOKのときのみ実行されます。
 
 ```php
 use Ray\WebFormModule\AbstractForm;
@@ -69,9 +69,9 @@ class MyForm extends AbstractForm
 
 メソッドの引数を連想配列にしたものをバリデーションします。入力を変更したい場合は`SubmitInterface`インターフェイスの`submit()`メソッドを実装して入力する値を返します。
 
-## @FormValidationアノテーション
+## #[FormValidation]アトリビュート
 
-フォームのバリデーションを行うメソッドを`@FormValidation`でアノテートすると、実行前に`form`プロパティのフォームオブジェクトでバリデーションが行われます。バリデーションに失敗するとメソッド名に`ValidationFailed`サフィックスをつけたメソッドが呼ばれます：
+フォームのバリデーションを行うメソッドを`#[FormValidation]`でアノテートすると、実行前に`form`プロパティのフォームオブジェクトでバリデーションが行われます。バリデーションに失敗するとメソッド名に`ValidationFailed`サフィックスをつけたメソッドが呼ばれます：
 
 ```php
 use Ray\Di\Di\Inject;
@@ -81,25 +81,18 @@ use Ray\WebFormModule\FormInterface;
 
 class MyController
 {
-    /**
-     * @var FormInterface
-     */
-    protected $form;
+    protected FormInterface $form;
 
-    /**
-     * @Inject
-     * @Named("contact_form")
-     */
+    #[Inject]
+    #[Named('contact_form')]
     public function setForm(FormInterface $form)
     {
         $this->form = $form;
     }
 
-    /**
-     * @FormValidation
-     * // または
-     * @FormValidation(form="form", onFailure="onPostValidationFailed")
-     */
+    #[FormValidation]
+    // または
+    // #[FormValidation(form: 'form', onFailure: 'onPostValidationFailed')]
     public function onPost($name, $age)
     {
         // バリデーション成功時の処理
@@ -112,7 +105,7 @@ class MyController
 }
 ```
 
-`@FormValidation`アノテーションの`form`と`onValidationFailed`プロパティを変更して、`form`プロパティの名前やメソッドの名前を明示的に指定することもできます。`onPostValidationFailed`にはサブミットされた値が渡されます。
+`#[FormValidation]`アトリビュートの`form`と`onValidationFailed`プロパティを変更して、`form`プロパティの名前やメソッドの名前を明示的に指定することもできます。`onPostValidationFailed`にはサブミットされた値が渡されます。
 
 ## ビュー
 
@@ -145,9 +138,9 @@ class MyForm extends AbstractForm
 
 セキュリティレベルを高めるには、ユーザーの認証を含んだカスタムCsrfクラスを作成してフォームクラスにセットします。詳しくはAura.Inputの[Applying CSRF Protections](https://github.com/auraphp/Aura.Input#applying-csrf-protections)をご覧ください。
 
-## @InputValidation
+## #[InputValidation]
 
-`@FormValidation`の代わりに`@InputValidation`とアノテートすると、バリデーションが失敗したときに`Ray\WebFormModule\Exception\ValidationException`が投げられます。この場合はHTML表現は使用されません。Web APIに便利です。
+`#[FormValidation]`の代わりに`#[InputValidation]`とアノテートすると、バリデーションが失敗したときに`Ray\WebFormModule\Exception\ValidationException`が投げられます。この場合はHTML表現は使用されません。Web APIに便利です。
 
 キャッチした例外の`error`プロパティを`echo`すると[application/vnd.error+json](https://github.com/blongden/vnd.error)メディアタイプの表現が出力されます：
 
@@ -167,24 +160,22 @@ echo $e->error;
 // }
 ```
 
-`@VndError`アノテーションで`vnd.error+json`に必要な情報を追加できます：
+`#[VndError]`アトリビュートで`vnd.error+json`に必要な情報を追加できます：
 
 ```php
-/**
- * @FormValidation(form="contactForm")
- * @VndError(
- *   message="foo validation failed",
- *   logref="a1000",
- *   path="/path/to/error",
- *   href={"_self"="/path/to/error", "help"="/path/to/help"}
- * )
- */
+#[FormValidation(form: 'contactForm')]
+#[VndError(
+    message: 'foo validation failed',
+    logref: 'a1000',
+    path: '/path/to/error',
+    href: ['_self' => '/path/to/error', 'help' => '/path/to/help']
+)]
 public function onPost()
 ```
 
 ## Vnd Error
 
-`Ray\WebFormModule\FormVndErrorModule`をインストールすると、`@FormValidation`でアノテートしたメソッドも`@InputValidation`とアノテートしたメソッドと同じように例外を投げるようになります。作成したPageリソースをAPIとして使用することができます：
+`Ray\WebFormModule\FormVndErrorModule`をインストールすると、`#[FormValidation]`でアノテートしたメソッドも`#[InputValidation]`とアノテートしたメソッドと同じように例外を投げるようになります。作成したPageリソースをAPIとして使用することができます：
 
 ```php
 use BEAR\Package\AbstractAppModule;

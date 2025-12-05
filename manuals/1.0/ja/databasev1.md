@@ -237,7 +237,7 @@ class User extends ResourceObject
 }
 ```
 
-`@ReadOnlyConnection`、`@WriteConnection`でアノテートされたメソッドはメソッド名に関わらず、呼ばれた時にアノテーションに応じたDBオブジェクトが`$this->pdo`に上書きされます。
+`#[ReadOnlyConnection]`、`#[WriteConnection]`でアノテートされたメソッドはメソッド名に関わらず、呼ばれた時にアトリビュートに応じたDBオブジェクトが`$this->pdo`に上書きされます。
 
 ```php?start_inline
 use Ray\AuraSqlModule\Annotation\ReadOnlyConnection;  // important
@@ -245,24 +245,20 @@ use Ray\AuraSqlModule\Annotation\WriteConnection;     // important
 
 class User
 {
-    public $pdo; // @ReadOnlyConnectionや@WriteConnectionのメソッドが呼ばれた時に上書きされる
+    public $pdo; // #[ReadOnlyConnection]や#[WriteConnection]のメソッドが呼ばれた時に上書きされる
 
     public function onPost($todo)
     {
          $this->read();
     }
 
-    /**
-     * @ReadOnlyConnection
-     */
+    #[ReadOnlyConnection]
     public function read()
     {
          $this->pdo; // slave db
     }
 
-    /**
-     * @WriteConnection
-     */
+    #[WriteConnection]
     public function write()
     {
          $this->pdo; // master db
@@ -273,13 +269,14 @@ class User
 ### 複数DB
 
 接続先の違う複数の`PdoExtendedInterface`オブジェクトを受け取るためには
-`@Named`アノテーションで指定します。
+`#[Named]`アトリビュートで指定します。
 
 ```php?start_inline
-/**
- * @Inject
- * @Named("log_db")
- */
+use Ray\Di\Di\Inject;
+use Ray\Di\Di\Named;
+
+#[Inject]
+#[Named('log_db')]
 public function setLoggerDb(ExtendedPdoInterface $pdo)
 {
     // ...
@@ -291,7 +288,7 @@ public function setLoggerDb(ExtendedPdoInterface $pdo)
 ```php?start_inline
 $this->install(
   new NamedPdoModule(
-    'log_db', // @Namedで指定するデータベースの種類
+    'log_db', // #[Named]で指定するデータベースの種類
     'mysql:host=localhost;dbname=log',
     'username',
     'pass',
@@ -302,28 +299,24 @@ $this->install(
 
 ### トランザクション
 
-`@Transactional`とアノテートしたメソッドはトランザクション管理されます。
+`#[Transactional]`とアノテートしたメソッドはトランザクション管理されます。
 
 ```php?start_inline
 use Ray\AuraSqlModule\Annotation\Transactional;
 
 // ....
-    /**
-     * @Transactional
-     */
+    #[Transactional]
     public function write()
     {
          // 例外発生したら\Ray\AuraSqlModule\Exception\RollbackExceptionに
     }
 ```
 
-複数接続したデータベースのトランザクションを行うためには`@Transactional`アノテーションにプロパティを指定します。
-指定しない場合は`{"pdo"}`になります。
+複数接続したデータベースのトランザクションを行うためには`#[Transactional]`アトリビュートにプロパティを指定します。
+指定しない場合は`['pdo']`になります。
 
 ```php?start_inline
-/**
- * @Transactional({"pdo", "userDb"})
- */
+#[Transactional(['pdo', 'userDb'])]
 public function write()
 ```
 
