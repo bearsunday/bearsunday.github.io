@@ -36,7 +36,7 @@ class AppModule extends AbstractAppModule
 
 ##  Web Form
 
-Create **a form class** that defines the registration and the rules of form elements, then bind it to a method using `@FormValidation` annotation.
+Create **a form class** that defines the registration and the rules of form elements, then bind it to a method using `#[FormValidation]` attribute.
 The method runs only when the sent data is validated.
 
 ```php
@@ -68,9 +68,9 @@ Please refer to [Rules To Validate Fields](https://github.com/auraphp/Aura.Filte
 We validate an associative array of the argument of the method.
 If we want to change the input, we can set the values by implementing `submit()` method of `SubmitInterface` interface.
 
-## @FormValidation Annotation
+## #[FormValidation] Attribute
 
-Annotate the method that we want to validate with the `@FormValidation`, so that the validation is done in the form object specified by the `form` property before execution.
+Annotate the method that we want to validate with the `#[FormValidation]`, so that the validation is done in the form object specified by the `form` property before execution.
 When validation fails, the method with the `ValidationFailed` suffix is called.
 
 ```php
@@ -81,25 +81,18 @@ use Ray\WebFormModule\FormInterface;
 
 class MyController
 {
-    /**
-     * @var FormInterface
-     */
-    protected $form;
+    protected FormInterface $form;
 
-    /**
-     * @Inject
-     * @Named("contact_form")
-     */
+    #[Inject]
+    #[Named('contact_form')]
     public function setForm(FormInterface $form)
     {
         $this->form = $form;
     }
 
-    /**
-     * @FormValidation
-     * // or
-     * @FormValidation(form="form", onFailure="onPostValidationFailed")
-     */
+    #[FormValidation]
+    // or
+    // #[FormValidation(form: 'form', onFailure: 'onPostValidationFailed')]
     public function onPost($name, $age)
     {
         // validation success
@@ -112,7 +105,7 @@ class MyController
 }
 ```
 
-We can explicitly specify the name and the method by changing the `form` property of `@FormValidation` annotation or the `onValidationFailed` property.
+We can explicitly specify the name and the method by changing the `form` property of `#[FormValidation]` attribute or the `onValidationFailed` property.
 
 The submit parameters will be passed to the `onPostValidationFailed` method.
 
@@ -147,9 +140,9 @@ class MyForm extends AbstractForm
 In order to increase the security level, add a custom CSRF class that contains the user authentication to the form class.
 Please refer to the [Applying CSRF Protections](https://github.com/auraphp/Aura.Input#applying-csrf-protections) of Aura.Input for more information.
 
-## @InputValidation annotation
+## #[InputValidation] attribute
 
-If we annotate the method with `@InputValidation` instead of `@FormValidation`, the exception `Ray\WebFormModule\Exception\ValidationException` is thrown when validation fails.
+If we annotate the method with `#[InputValidation]` instead of `#[FormValidation]`, the exception `Ray\WebFormModule\Exception\ValidationException` is thrown when validation fails.
 For convenience, HTML representation is not used in this case.
 
 When we `echo` the `error` property of the caught exception, we can see the representation of the media type [application/vnd.error+json](https://github.com/blongden/vnd.error).
@@ -169,24 +162,23 @@ echo $e->error;
 // }
 ```
 
-We can add the necessary information to `vnd.error+json` using `@VndError` annotation.
+We can add the necessary information to `vnd.error+json` using `#[VndError]` attribute.
 
 ```php
-/**
- * @FormValidation(form="contactForm")
- * @VndError(
- *   message="foo validation failed",
- *   logref="a1000", path="/path/to/error",
- *   href={"_self"="/path/to/error", "help"="/path/to/help"}
- * )
- */
- public function onPost()
+#[FormValidation(form: 'contactForm')]
+#[VndError(
+    message: 'foo validation failed',
+    logref: 'a1000',
+    path: '/path/to/error',
+    href: ['_self' => '/path/to/error', 'help' => '/path/to/help']
+)]
+public function onPost()
 ```
 
 ## FormVndErrorModule
 
-If we install `Ray\WebFormModule\FormVndErrorModule`, the method annotated with `@FormValidation`
-will throw an exception in the same way as the method annotated with `@InputValidation`.
+If we install `Ray\WebFormModule\FormVndErrorModule`, the method annotated with `#[FormValidation]`
+will throw an exception in the same way as the method annotated with `#[InputValidation]`.
 We can use the page resources as API.
 
 ```php

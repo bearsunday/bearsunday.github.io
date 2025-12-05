@@ -37,17 +37,13 @@ use BEAR\Resource\ResourceObject;
 use BEAR\Sunday\Inject\ResourceInject;
 use Ray\AuraSqlModule\AuraSqlInject;
 
-/**
- * @Cacheable
- */
+#[Cacheable]
 class Entry extends ResourceObject
 {
     use AuraSqlInject;
     use ResourceInject;
 
-    /**
-     * @Embed(rel="author", src="/author{?author_id}")
-     */
+    #[Embed(rel: 'author', src: '/author{?author_id}')]
     public function onGet(string $author_id, string $slug): static
     {
         // ...
@@ -55,10 +51,8 @@ class Entry extends ResourceObject
         return $this;
     }
 
-    /**
-     * @Link(rel="next_act", href="/act1")
-     * @Link(rel="next_act2", href="/act2")
-     */
+    #[Link(rel: 'next_act', href: '/act1')]
+    #[Link(rel: 'next_act2', href: '/act2')]
     public function onPost (
         string $tile,
         string $body,
@@ -75,25 +69,7 @@ class Entry extends ResourceObject
 
 A [DocBlock comment]([https://phpdoc.org/docs/latest/getting-started/your-first-set-of-documentation.html]) is optional. A DocBlock contains the method summary in one line.
 Then followed by the description, which can be a multiple lines.
-We should also put @params and @Link after description if possible.
-
-
-
-```php?start_inline
-/**
- * A summary informing the user what the associated element does.
- *
- * A *description*, that can span multiple lines, to go _in-depth_ into the details of this element
- * and to provide some background information or textual references.
- *
- * @param string $arg1 *description*
- * @param string $arg2 *description*
- * @param string $arg3 *description*
- *
- * @Link(rel="next_act", href="/next_act_uri")
- * @Link(rel="next_act2", href="/next_act_uri2")
-*/
-```
+We should also put @params after description if possible.
 
 ## Resources
 
@@ -182,8 +158,8 @@ BEAR.Sunday can overwrite methods using the `X-HTTP-Method-Override` header or` 
 
 ## AOP
 
- * Do not make interceptor mandatory. We will make the program work even without an interceptor. (For example, if you remove `@Transactional` interceptor, the function of transaction will be lost, but "core concers" will work without issue.)
- * Prevent the interceptor from injecting dependencies in methods. Values that can only be determined at implementation time are injected into arguments via `@Assisted` injection.
+ * Do not make interceptor mandatory. We will make the program work even without an interceptor. (For example, if you remove `#[Transactional]` interceptor, the function of transaction will be lost, but "core concers" will work without issue.)
+ * Prevent the interceptor from injecting dependencies in methods. Values that can only be determined at implementation time are injected into arguments via `#[Assisted]` injection.
  * If there are multiple interceptors, do not depend on the execution order.
  * If it is an interceptor unconditionally applied to all methods, consider the description in `bootstrap.php`.
 

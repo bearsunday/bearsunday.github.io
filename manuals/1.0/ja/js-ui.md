@@ -156,9 +156,9 @@ class AppModule extends AbstractAppModule
 
 `$build`フォルダはJavaScriptファイルがあるディレクトリです（`ui/ui.config.js`で指定するwebpackの出力先）。
 
-### @Ssrアノテーション
+### #[Ssr]アトリビュート
 
-リソースをSSRするメソッドに`@Ssr`とアノテートします。`app`にJavaScriptアプリケーション名を指定する必要があります：
+リソースをSSRするメソッドに`#[Ssr]`とアノテートします。`app`にJavaScriptアプリケーション名を指定する必要があります：
 
 ```php
 <?php
@@ -169,9 +169,7 @@ use BEAR\SsrModule\Annotation\Ssr;
 
 class Index extends ResourceObject
 {
-    /**
-     * @Ssr(app="index_ssr")
-     */
+    #[Ssr(app: 'index_ssr')]
     public function onGet($name = 'BEAR.Sunday')
     {
         $this->body = [
@@ -187,13 +185,11 @@ class Index extends ResourceObject
 CSRとSSRの値を区別して渡したい場合は、`state`と`metas`でbodyのキーを指定します：
 
 ```php
-/**
- * @Ssr(
- *     app="index_ssr",
- *     state={"name", "age"},
- *     metas={"title"}
- * )
- */
+#[Ssr(
+    app: 'index_ssr',
+    state: ['name', 'age'],
+    metas: ['title']
+)]
 public function onGet()
 {
     $this->body = [

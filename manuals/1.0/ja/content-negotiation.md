@@ -67,7 +67,7 @@ Accept-Language: ja-JP
 
 ## リソース
 
-リソース単位でコンテントネゴシエーションを行う場合は`AcceptModule`モジュールをインストールして`@Produces`アノテーションを使います。
+リソース単位でコンテントネゴシエーションを行う場合は`AcceptModule`モジュールをインストールして`#[Produces]`アトリビュートを使います。
 
 ### モジュール
 
@@ -80,14 +80,12 @@ protected function configure()
 }
 ```
 
-## @Producesアノテーション
+## #[Produces]アトリビュート
 
 ```php
 use BEAR\Accept\Annotation\Produces;
 
-/**
- * @Produces({"application/hal+json", "text/csv"})
- */
+#[Produces(['application/hal+json', 'text/csv'])]
 public function onGet()
 ```
 

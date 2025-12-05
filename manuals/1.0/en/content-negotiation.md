@@ -67,7 +67,7 @@ At this time `JaModule` requires binding for Japanese text. For details, refer t
 
 ## Enable by Resource
 
-To do content negotiation on a resource basis, install the `AcceptModule` module and use the `@Produces` annotation.
+To do content negotiation on a resource basis, install the `AcceptModule` module and use the `#[Produces]` attribute.
 
 ### Module Install
 
@@ -80,14 +80,12 @@ protected function configure()
 }
 ```
 
-## @Produces annotation
+## #[Produces] attribute
 
 ```php?start_inline
 use BEAR\Accept\Annotation\Produces;
 
-/**
- * @Produces({"application/hal+json", "text/csv"})
- */
+#[Produces(['application/hal+json', 'text/csv'])]
 public function onGet()
 ```
 

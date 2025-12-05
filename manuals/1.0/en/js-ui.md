@@ -161,9 +161,9 @@ class AppModule extends AbstractAppModule
 The `$build` directory is where the JS files live.(The Webpack output location set in `ui/ui.config.js`)
 
 
-### @Ssr Annotation
+### #[Ssr] Attribute
 
-Annotate the resource function to be SSR'd with `@Ssr`. The JS application name is required in `app`.
+Annotate the resource function to be SSR'd with `#[Ssr]`. The JS application name is required in `app`.
 
 ```php?start_inline
 <?php
@@ -175,9 +175,7 @@ use BEAR\SsrModule\Annotation\Ssr;
 
 class Index extends ResourceObject
 {
-    /**
-     * @Ssr(app="index_ssr")
-     */
+    #[Ssr(app: 'index_ssr')]
     public function onGet($name = 'BEAR.Sunday')
     {
         $this->body = [
@@ -192,13 +190,11 @@ class Index extends ResourceObject
 When you want to pass in distinct values for SSR and CSR set a key in `state` and `metas`.
 
 ```php?start_inline
-/**
- * @Ssr(
- *   app="index_ssr",
- *   state={"name", "age"},
- *   metas={"title"}
- * )
- */
+#[Ssr(
+    app: 'index_ssr',
+    state: ['name', 'age'],
+    metas: ['title']
+)]
 public function onGet()
 {
     $this->body = [

@@ -124,7 +124,7 @@ class User extends ResourceObject
 }
 ```
 
-`$this->pdo` is overwritten if the method is annotated with`@ReadOnlyConnection` or`@WriteConnection`. The master / slave db connection corresponds to the annotation.
+`$this->pdo` is overwritten if the method is annotated with`#[ReadOnlyConnection]` or`#[WriteConnection]`. The master / slave db connection corresponds to the attribute.
 
 ```php?start_inline
 use Ray\AuraSqlModule\Annotation\ReadOnlyConnection;  // important
@@ -132,24 +132,20 @@ use Ray\AuraSqlModule\Annotation\WriteConnection;     // important
 
 class User
 {
-    public $pdo; // override when @ReadOnlyConnection or @WriteConnection annotated method called
+    public $pdo; // override when #[ReadOnlyConnection] or #[WriteConnection] annotated method called
 
     public function onPost($todo)
     {
          $this->read();
     }
 
-    /**
-     * @ReadOnlyConnection
-     */
+    #[ReadOnlyConnection]
     public function read()
     {
          $this->pdo; // slave db
     }
 
-    /**
-     * @WriteConnection
-     */
+    #[WriteConnection]
     public function write()
     {
          $this->pdo; // master db
@@ -159,13 +155,14 @@ class User
 
 ## Connect to multiple databases
 
-To receive multiple `PdoExtendedInterface` objects with different connection destinations, use `@Named` annotation.
+To receive multiple `PdoExtendedInterface` objects with different connection destinations, use `#[Named]` attribute.
 
 ```php?start_inline
-/**
- * @Inject
- * @Named("log_db")
- */
+use Ray\Di\Di\Inject;
+use Ray\Di\Di\Named;
+
+#[Inject]
+#[Named('log_db')]
 public function setLoggerDb(ExtendedPdoInterface $pdo)
 {
     // ...
@@ -184,7 +181,7 @@ In the module, you specify an identifier in `NamedPdoModule` and bind it.
 ```php?start_inline
 $this->install(
   new NamedPdoModule(
-    'log_db', // Type of database specified by @Named
+    'log_db', // Type of database specified by #[Named]
     'mysql:host=localhost;dbname=log',
     'username',
     'pass',
@@ -195,28 +192,24 @@ $this->install(
 
 ## Transactions
 
-Using the `@Transactional` annotation wraps methods with a transaction.
+Using the `#[Transactional]` attribute wraps methods with a transaction.
 
 ```php?start_inline
 use Ray\AuraSqlModule\Annotation\Transactional;
 
 // ....
-    /**
-     * @Transactional
-     */
+    #[Transactional]
     public function write()
     {
          // \Ray\AuraSqlModule\Exception\RollbackException thrown if it failed.
     }
 ```
 
-To do transactions on multiple connected databases, specify properties in the `@Transactional` annotation.
-If not specified, it becomes `{"pdo"}`.
+To do transactions on multiple connected databases, specify properties in the `#[Transactional]` attribute.
+If not specified, it becomes `['pdo']`.
 
 ```php?start_inline
-/**
- * @Transactional({"pdo", "userDb"})
- */
+#[Transactional(['pdo', 'userDb'])]
 public function write()
 ```
 
@@ -605,10 +598,11 @@ $this->install(new DbalModule($jobDsn, 'job_db');
 ```
 
 ```php?start_inline
-/**
- * @Inject
- * @Named("log_db")
- */
+use Ray\Di\Di\Inject;
+use Ray\Di\Di\Named;
+
+#[Inject]
+#[Named('log_db')]
 public function setLogDb(Connection $logDb)
 ```
 

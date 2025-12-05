@@ -8,7 +8,7 @@ permalink: /manuals/1.0/en/validation.html
 # Validation
 
  * You can define resource APIs in the JSON schema.
- * You can separate the validation code with `@Valid`, `@OnValidate` annotation.
+ * You can separate the validation code with `#[Valid]`, `#[OnValidate]` attribute.
  * Please see the form for validation by web form.
 
 # JSON Schema
@@ -172,9 +172,9 @@ To apply schema validation to the representation of the resource object (the ren
  * [Understanding JSON Schema](https://spacetelescope.github.io/understanding-json-schema/)
  * [JSON Schema Generator](https://jsonschema.net/#/editor)
 
-## @Valid annotation
+## #[Valid] attribute
 
-The `@Valid` annotation is a validation for input.
+The `#[Valid]` attribute is a validation for input.
 You can set up validation as AOP for your method.
 By separating validation logic from the method, the code will be readable and testable.
 
@@ -203,25 +203,23 @@ class AppModule extends AbstractAppModule
 }
 ```
 
-### Annotation
+### Attribute
 
-There are three annotations `@Valid`, `@OnValidate`, `@OnFailure` for validation.
+There are three attributes `#[Valid]`, `#[OnValidate]`, `#[OnFailure]` for validation.
 
-First of all, annotate the method that you want to validate with `@Valid`
+First of all, annotate the method that you want to validate with `#[Valid]`
 
 ```php?start_inline
 use Ray\Validation\Annotation\Valid;
 
 class News
 {
-    /**
-     * @Valid
-     */
+    #[Valid]
     public function createUser($name)
     {
 ```
 
-Validation will be conducted in the method annotated with `@OnValidate`.
+Validation will be conducted in the method annotated with `#[OnValidate]`.
 
 The arguments of the method should be the same as the original method. The method name can be anything.
 
@@ -230,9 +228,7 @@ use Ray\Validation\Annotation\OnValidate;
 
 class News
 {
-    /**
-     * @OnValidate
-     */
+    #[OnValidate]
     public function onValidate($name)
     {
         $validation = new Validation;
@@ -247,16 +243,14 @@ class News
 Add validations to your elements by `addError()` with the `element name` and` error message` as parameters, then return the validation object.
 
 When validation fails, the exception `Ray\Validation\Exception\InvalidArgumentException` will be thrown,
-but if you have a method annotated with the `@OnFailure`, it will be called, instead of throwing an exception
+but if you have a method annotated with the `#[OnFailure]`, it will be called, instead of throwing an exception
 
 ```php?start_inline
 use Ray\Validation\Annotation\OnFailure;
 
 class News
 {
-    /**
-     * @OnFailure
-     */
+    #[OnFailure]
     public function onFailure(FailureInterface $failure)
     {
         // original parameters
@@ -271,7 +265,7 @@ class News
     }
 ```
 
-In the method annotated with `@OnFailure`, you can access the validated messages with `$failure->getMessages()`
+In the method annotated with `#[OnFailure]`, you can access the validated messages with `$failure->getMessages()`
 and also you can get the object of the original method with `$failure->getInvocation()`.
 
 ### Various validation
@@ -285,21 +279,15 @@ use Ray\Validation\Annotation\OnFailure;
 
 class News
 {
-    /**
-     * @Valid("foo")
-     */
+    #[Valid('foo')]
     public function fooAction($name, $address, $zip)
     {
 
-    /**
-     * @OnValidate("foo")
-     */
+    #[OnValidate('foo')]
     public function onValidateFoo($name, $address, $zip)
     {
 
-    /**
-     * @OnFailure("foo")
-     */
+    #[OnFailure('foo')]
     public function onFailureFoo(FailureInterface $failure)
     {
 ```
