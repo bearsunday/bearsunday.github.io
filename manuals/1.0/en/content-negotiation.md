@@ -14,7 +14,7 @@ In HTTP, [Content Negotiation](https://en.wikipedia.org/wiki/Content_negotiation
 Install [BEAR.Accept](https://github.com/bearsunday/BEAR.Accept) with composer
 
 ```bash
-composer require bear/accept ^0.1
+composer require bear/accept
 ```
 
 Next, save the context corresponding to the `Accept *` request header in `/var/locale/available.php`
