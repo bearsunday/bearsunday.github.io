@@ -1,31 +1,52 @@
 # BEAR.Sunday PHP Framework
 
-> BEAR.Sunday is a resource-oriented PHP framework that combines clean object-oriented design with web principles, emphasizing standards compliance, longevity, high efficiency, and flexibility. It consists of Ray.Di (Dependency Injection), Ray.Aop (Aspect-Oriented Programming), and BEAR.Resource (REST Resources). It uses well-known third party libraries to build web applications with high performance and testability.
+> BEAR.Sunday is a resource-oriented PHP framework combining clean object-oriented design with REST principles. Built on Ray.Di (Dependency Injection), Ray.Aop (Aspect-Oriented Programming), and BEAR.Resource (REST Resources). Emphasizes standards compliance, longevity, and flexibility.
 
-BEAR.Sunday provides a structured approach to building web applications centered around REST principles.
-This file provides information on key components, coding practices, and deployment strategies. For more details on framework usage and implementation, see the links below.
+## Getting Started
 
-## Manuals
+- [Introduction](/manuals/1.0/en/index.md): Framework philosophy and core concepts
+- [Technology](/manuals/1.0/en/tech.md): Architecture and design principles
+- [Version](/manuals/1.0/en/version.md): Eternal 1.x policy and long-term support
+- [Quick Start](/manuals/1.0/en/quick-start.md): 5-minute project setup
 
-- [Introduction](/manuals/1.0/en/index.md): Overview of BEAR.Sunday's philosophy and core concepts.
-- [Environment Setup](/manuals/1.0/en/setup.md): Complete guide for setting up development environments.
-- [Tutorial](/manuals/1.0/en/tutorial.md): Step-by-step introduction to BEAR.Sunday basics.
-- [DI](/manuals/1.0/en/di.md): Dependency injection patterns and best practices.
-- [AOP](/manuals/1.0/en/aop.md): Understand how Aspect-Oriented Programming enables modular, maintainable code.
-- [Resource](/manuals/1.0/en/resource.md): Learn about resources and their methods.
-- [Resource Parameters](/manuals/1.0/en/resource_param.md): How data from web requests binds to resources.
-- [Resource Link](/manuals/1.0/en/resource_link.md): How resources link to each other.
-- [Rendering and Transfer](/manuals/1.0/en/resource_renderer.md): Understand how representations (HTML, JSON) are produced and transferred.
-- [Router](/manuals/1.0/en/router.md): How external requests are mapped to internal resources.
-- [Production](/manuals/1.0/en/production.md): Setting up the application for a live environment.
-- [Import](/manuals/1.0/en/import.md): Learn to use features from other BEAR applications.
-- [Database](/manuals/1.0/en/database.md): Using various databases modules.
-- [Tests](/manuals/1.0/en/test.md): Understand how to test resources.
-- [Examples](/manuals/1.0/en/examples.md): Explore practical examples of BEAR.Sunday applications.
-- [Coding Guide](/manuals/1.0/en/coding-guide.md): Learn about BEAR.Sunday coding-guide.
-- [PHPDoc Types](/manuals/1.0/en/types.md): Using phpdoc to create statically analysed code.
-- [API Doc](/manuals/1.0/en/apidoc.md): Automatic API document generation with ApiDoc.
+## Core Concepts
 
-## Version
-- [Version Policy](/manuals/1.0/en/version.md): Versions of BEAR.Sunday and the long term support.
+- [Package](/manuals/1.0/en/package.md): Package structure and organization
+- [Application](/manuals/1.0/en/application.md): Application architecture
+- [Module](/manuals/1.0/en/module.md): Application configuration and bindings
+- [DI](/manuals/1.0/en/di.md): Dependency injection with Ray.Di
+- [AOP](/manuals/1.0/en/aop.md): Aspect-oriented programming with Ray.Aop
+- [Resource](/manuals/1.0/en/resource.md): REST resources and methods
 
+## Development
+
+- [Database](/manuals/1.0/en/database.md): Database integration and query builders
+- [Router](/manuals/1.0/en/router.md): Request routing to resources
+- [Production](/manuals/1.0/en/production.md): Deployment and optimization
+- [Test](/manuals/1.0/en/test.md): Testing resources
+- [Reference](/manuals/1.0/en/reference.md): Attributes and modules reference
+
+## Optional
+
+- [Setup](/manuals/1.0/en/setup.md): Detailed environment setup guide
+- [Tutorial](/manuals/1.0/en/tutorial.md): Step-by-step hands-on tutorial
+- [Tutorial 2](/manuals/1.0/en/tutorial2.md): Advanced tutorial with database
+- [Tutorial 3](/manuals/1.0/en/tutorial3.md): CLI application tutorial
+- [Resource Parameters](/manuals/1.0/en/resource_param.md): Parameter binding from requests
+- [Resource Link](/manuals/1.0/en/resource_link.md): Linking resources together
+- [Rendering](/manuals/1.0/en/resource_renderer.md): Output representations (HTML, JSON)
+- [HTML](/manuals/1.0/en/html.md): Template rendering with Twig/Qiq
+- [Form](/manuals/1.0/en/form.md): Form handling and validation
+- [Validation](/manuals/1.0/en/validation.md): Input validation with JSON Schema
+- [Content Negotiation](/manuals/1.0/en/content-negotiation.md): Accept header handling
+- [Hypermedia API](/manuals/1.0/en/hypermedia-api.md): HAL and hypermedia controls
+- [Import](/manuals/1.0/en/import.md): Using resources from other applications
+- [Cache](/manuals/1.0/en/cache.md): Caching strategies
+- [Stream](/manuals/1.0/en/stream.md): Streaming responses
+- [Swoole](/manuals/1.0/en/swoole.md): Async server with Swoole
+- [CLI](/manuals/1.0/en/cli.md): Command line interface
+- [Coding Guide](/manuals/1.0/en/coding-guide.md): Best practices
+- [PHPDoc Utility Types](/manuals/1.0/en/types-utility.md): Advanced PHPDoc type annotations
+- [Attribute](/manuals/1.0/en/attribute.md): PHP 8 attributes
+- [API Doc](/manuals/1.0/en/apidoc.md): API documentation generation
+- [Examples](/manuals/1.0/en/examples.md): Sample applications
