@@ -80,18 +80,16 @@ protected function configure()
 }
 ```
 
-## @Producesアノテーション
+## #[Produces]アトリビュート
 
 ```php
-use BEAR\Accept\Annotation\Produces;
+use BEAR\Accept\Attribute\Produces;
 
-/**
- * @Produces({"application/hal+json", "text/csv"})
- */
+#[Produces(['application/hal+json', 'text/csv'])]
 public function onGet()
 ```
 
-利用可能なメディアタイプを左から優先順位でアノテートします。対応したコンテキストのレンダラーがAOPでセットされ表現が変わります。
+利用可能なメディアタイプを左から優先順位で指定します。対応したコンテキストのレンダラーがAOPでセットされ表現が変わります。
 アプリケーション単位でのネゴシエーションの時と違って、`Vary`ヘッダーを手動で付加する必要はありません。
 
 ## curlを使ったアクセス
