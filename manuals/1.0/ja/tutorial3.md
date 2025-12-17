@@ -17,8 +17,8 @@ permalink: /manuals/1.0/ja/tutorial3.html
 ### 1.1 新規プロジェクトの作成
 
 ```bash
-composer create-project -n bear/skeleton MyVendor.Greet
-cd MyVendor.Greet
+VENDOR=MyVendor PACKAGE=Greet composer create-project bear/skeleton greet
+cd greet
 ```
 
 ### 1.2 開発サーバーの起動確認

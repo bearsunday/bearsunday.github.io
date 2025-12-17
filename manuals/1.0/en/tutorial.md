@@ -13,10 +13,10 @@ In this tutorial, we introduce the basic features of BEAR.Sunday, including **DI
 Let's create a web service that returns the day of the week when a date (year, month, day) is entered. Start by creating a project.
 
 ```bash
-composer create-project bear/skeleton MyVendor.Weekday
+VENDOR=MyVendor PACKAGE=Weekday composer create-project bear/skeleton weekday
+cd weekday
 ```
-
-Enter `MyVendor` for the **vendor** name and `Weekday` for the **project** name. [^2]
+[^2]
 
 ## Resources
 

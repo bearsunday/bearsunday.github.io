@@ -21,11 +21,10 @@ Let's proceed with the commits found in [tutorial2](https://github.com/bearsunda
 
 Create the project skeleton.
 
+```bash
+VENDOR=MyVendor PACKAGE=Ticket composer create-project bear/skeleton ticket
+cd ticket
 ```
-composer create-project bear/skeleton MyVendor.Ticket
-```
-
-Enter the **vendor** name as `MyVendor` and the **project** name as `Ticket`.
 
 ## Migration
 

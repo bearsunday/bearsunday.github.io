@@ -19,11 +19,10 @@ permalink: /manuals/1.0/ja/tutorial2.html
 
 プロジェクトスケルトンを作成します。
 
+```bash
+VENDOR=MyVendor PACKAGE=Ticket composer create-project bear/skeleton ticket
+cd ticket
 ```
-composer create-project bear/skeleton MyVendor.Ticket
-```
-
-**vendor**名を`MyVendor`に、**project**名を`Ticket`として入力します。
 
 ## マイグレーション
 

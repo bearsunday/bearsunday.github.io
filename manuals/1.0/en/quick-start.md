@@ -9,9 +9,11 @@ permalink: /manuals/1.0/en/quick-start.html
 Installation is done via [composer](http://getcomposer.org)
 
 ```bash
-composer create-project -n bear/skeleton MyVendor.MyProject
-cd MyVendor.MyProject
+VENDOR=MyVendor PACKAGE=MyProject composer create-project bear/skeleton my-project
+cd my-project
 ```
+
+If not specified, you will be prompted interactively.
 
 Next, let's create a new resource. A resource is a class which corresponds, for instance, to a JSON payload (if working with an API-first driven model) 
 or a web page.
