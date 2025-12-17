@@ -14,7 +14,7 @@ VENDOR=MyVendor PACKAGE=MyProject composer create-project bear/skeleton my-proje
 cd my-project
 ```
 
-環境変数を指定しない場合は対話的にプロンプトされます。
+`VENDOR`でベンダー名を、`PACKAGE`でパッケージ名を指定します。環境変数を指定しない場合は対話的にプロンプトされます。
 
 次にPageリソースを作成します。PageリソースはWebページに対応したクラスです。`src/Resource/Page/Hello.php`に作成します。
 
