@@ -15,10 +15,10 @@ permalink: /manuals/1.0/ja/tutorial.html
 まずプロジェクトを作成しましょう。
 
 ```bash
-composer create-project bear/skeleton MyVendor.Weekday
+VENDOR=MyVendor PACKAGE=Weekday composer create-project bear/skeleton weekday
+cd weekday
 ```
-
-**vendor**名を`MyVendor`に、**project**名を`Weekday`として入力します[^2]。
+[^2]
 
 ## リソース
 

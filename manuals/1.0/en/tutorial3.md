@@ -17,8 +17,8 @@ permalink: /manuals/1.0/en/tutorial3.html
 ### 1.1 Create a New Project
 
 ```bash
-composer create-project -n bear/skeleton MyVendor.Greet
-cd MyVendor.Greet
+VENDOR=MyVendor PACKAGE=Greet composer create-project bear/skeleton greet
+cd greet
 ```
 
 ### 1.2 Verify Development Server
