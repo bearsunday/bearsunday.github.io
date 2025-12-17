@@ -13,7 +13,7 @@ VENDOR=MyVendor PACKAGE=MyProject composer create-project bear/skeleton my-proje
 cd my-project
 ```
 
-The `VENDOR` environment variable specifies the vendor name, and `PACKAGE` specifies the package name. If not specified, you will be prompted interactively.
+Use `VENDOR` to specify the vendor name and `PACKAGE` to specify the package name for installation. If not specified, you will be prompted interactively.
 
 Next, let's create a new resource. A resource is a class which corresponds, for instance, to a JSON payload (if working with an API-first driven model) 
 or a web page.
