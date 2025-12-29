@@ -1935,7 +1935,31 @@ Uses Claude AI to find security issues that pattern matching cannot detect:
 
 ## Psalm Plugin
 
-Traces how user input (like `$id` in `onGet($id)`) flows through your code. Reports when it reaches dangerous operations like database queries without proper escaping:
+Marks user input (like `$id` in `onGet($id)`) as tainted and traces how it flows through your code. Reports when tainted data reaches dangerous operations like database queries or HTML output without proper escaping.
+
+Add the plugin and stubs to your `psalm.xml`:
+
+```xml
+<psalm>
+    <stubs>
+        <file name="vendor/bear/security/stubs/AuraSql.phpstub"/>
+        <file name="vendor/bear/security/stubs/PDO.phpstub"/>
+        <file name="vendor/bear/security/stubs/Qiq.phpstub"/>
+    </stubs>
+    <plugins>
+        <pluginClass class="BEAR\Security\Psalm\ResourceTaintPlugin">
+            <targets>
+                <target>Page</target>
+                <target>App</target>
+            </targets>
+        </pluginClass>
+    </plugins>
+</psalm>
+```
+
+The `targets` specify which resources receive external input. Use `Page` when serving web pages with `html` context, `App` when serving APIs with `api` context.
+
+Run taint analysis:
 
 ```bash
 ./vendor/bin/psalm --taint-analysis

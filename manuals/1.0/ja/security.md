@@ -79,7 +79,31 @@ composer require --dev bear/security
 
 ## Psalm Plugin
 
-ユーザー入力（`onGet($id)`の`$id`など）がコード内をどう流れるかを追跡します。適切なエスケープなしでデータベースクエリに到達した場合に報告します：
+ユーザー入力（`onGet($id)`の`$id`など）を汚染されたものとマークしておいてコード内をどう流れるかを追跡します。適切なエスケープなしでデータベースクエリやHTML表示などに到達した場合に報告します。
+
+`psalm.xml`にプラグインとスタブを追加：
+
+```xml
+<psalm>
+    <stubs>
+        <file name="vendor/bear/security/stubs/AuraSql.phpstub"/>
+        <file name="vendor/bear/security/stubs/PDO.phpstub"/>
+        <file name="vendor/bear/security/stubs/Qiq.phpstub"/>
+    </stubs>
+    <plugins>
+        <pluginClass class="BEAR\Security\Psalm\ResourceTaintPlugin">
+            <targets>
+                <target>Page</target>
+                <target>App</target>
+            </targets>
+        </pluginClass>
+    </plugins>
+</psalm>
+```
+
+`targets`で外部入力を受け取るリソースを指定します。`html`コンテキストでWebページを提供する場合は`Page`、`api`コンテキストでAPIを提供する場合は`App`を指定します。
+
+テイント解析を実行：
 
 ```bash
 ./vendor/bin/psalm --taint-analysis
