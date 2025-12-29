@@ -345,9 +345,11 @@ The version of the framework does not lock the version of the library. The libra
 Installation is done via [composer](http://getcomposer.org)
 
 ```bash
-composer create-project -n bear/skeleton MyVendor.MyProject
-cd MyVendor.MyProject
+VENDOR=MyVendor PACKAGE=MyProject composer create-project bear/skeleton my-project
+cd my-project
 ```
+
+Use `VENDOR` to specify the vendor name and `PACKAGE` to specify the package name for installation. If not specified, you will be prompted interactively.
 
 Next, let's create a new resource. A resource is a class which corresponds, for instance, to a JSON payload (if working with an API-first driven model) 
 or a web page.
@@ -1859,6 +1861,115 @@ Reference
 
 
 
+# Security
+
+The [bear/security](https://github.com/bearsunday/BEAR.Security) package helps find security vulnerabilities in your BEAR.Sunday application.
+
+## Installation
+
+```bash
+composer require --dev bear/security
+```
+
+## Scanning Tools
+
+| Tool | What it does | When to use |
+|------|--------------|-------------|
+| SAST | Finds dangerous patterns in your code | During development |
+| DAST | Sends attack requests to your app | Before deployment |
+| AI Auditor | AI reviews your code for security issues | Code review |
+| Psalm Plugin | Traces user input to dangerous operations | During development |
+
+## SAST
+
+Scans your source code for dangerous patterns:
+
+```bash
+./vendor/bin/bear.security-scan src
+```
+
+Detects 14 vulnerability types:
+
+| Category | Examples |
+|----------|----------|
+| Injection | SQL injection, Command injection, XSS |
+| Access Control | Path traversal, Open redirect |
+| Cryptography | Weak hash algorithms, Hardcoded secrets |
+| Data Protection | Insecure deserialization, XXE |
+| Session | Session fixation, CSRF |
+| Network | SSRF, Remote file inclusion |
+
+## DAST
+
+Sends attack payloads to your running application to test real vulnerabilities:
+
+```bash
+./vendor/bin/bear-security-dast 'MyVendor\MyApp' prod-app /path/to/app
+```
+
+Tests include:
+
+| Test | What it sends |
+|------|---------------|
+| SQL Injection | `' OR '1'='1`, `; DROP TABLE` |
+| XSS | `<script>alert(1)</script>` |
+| Command Injection | `; ls -la`, `\| cat /etc/passwd` |
+| Path Traversal | `../../../etc/passwd` |
+| Security Headers | Checks for missing headers |
+
+## AI Auditor
+
+Uses Claude AI to find security issues that pattern matching cannot detect:
+
+```bash
+# Requires ANTHROPIC_API_KEY or Claude CLI authentication
+./vendor/bin/bear-security-audit src
+```
+
+| Issue | Description |
+|-------|-------------|
+| IDOR | Accessing other users' data without authorization check |
+| Mass Assignment | Accepting unvalidated fields in updates |
+| Race Condition | Time-of-check to time-of-use flaws |
+| Business Logic | Application-specific security flaws |
+
+## Psalm Plugin
+
+Traces how user input (like `$id` in `onGet($id)`) flows through your code. Reports when it reaches dangerous operations like database queries without proper escaping:
+
+```bash
+./vendor/bin/psalm --taint-analysis
+```
+
+## GitHub Actions
+
+Add security scanning to your CI pipeline:
+
+```bash
+cp vendor/bear/security/workflows/security-sast.yml .github/workflows/
+```
+
+This workflow runs on every push and pull request:
+
+| Job | What it does |
+|-----|--------------|
+| SAST Scan | Scans code and uploads results to GitHub Security tab |
+| Psalm Taint | Traces user input flows and uploads results to GitHub Security tab |
+
+Results appear in your repository's **Security > Code scanning** section.
+
+## Why It Works
+
+BEAR.Sunday's architecture makes security scanning more effective:
+
+- **Clear Entry Points**: Every endpoint is a ResourceObject with `onGet`, `onPost` methods. Scanners can identify all inputs and trace data flow.
+
+- **No Hidden Magic**: Dependencies are explicit through constructor injection. Scanners can analyze the complete code path.
+
+- **Framework-Aware AI**: The AI Auditor understands BEAR.Sunday patterns and can detect business logic flaws, not just generic vulnerabilities.
+
+
+
 # Reference
 
 ## Attributes
@@ -2377,10 +2488,10 @@ In this tutorial, we introduce the basic features of BEAR.Sunday, including **DI
 Let's create a web service that returns the day of the week when a date (year, month, day) is entered. Start by creating a project.
 
 ```bash
-composer create-project bear/skeleton MyVendor.Weekday
+VENDOR=MyVendor PACKAGE=Weekday composer create-project bear/skeleton weekday
+cd weekday
 ```
-
-Enter `MyVendor` for the **vendor** name and `Weekday` for the **project** name. [^2]
+[^2]
 
 ## Resources
 
@@ -3483,11 +3594,10 @@ Let's proceed with the commits found in [tutorial2](https://github.com/bearsunda
 
 Create the project skeleton.
 
+```bash
+VENDOR=MyVendor PACKAGE=Ticket composer create-project bear/skeleton ticket
+cd ticket
 ```
-composer create-project bear/skeleton MyVendor.Ticket
-```
-
-Enter the **vendor** name as `MyVendor` and the **project** name as `Ticket`.
 
 ## Migration
 
@@ -4371,8 +4481,8 @@ The comment is not only descriptive, but also makes it easier to identify the SQ
 ### 1.1 Create a New Project
 
 ```bash
-composer create-project -n bear/skeleton MyVendor.Greet
-cd MyVendor.Greet
+VENDOR=MyVendor PACKAGE=Greet composer create-project bear/skeleton greet
+cd greet
 ```
 
 ### 1.2 Verify Development Server
@@ -6199,7 +6309,7 @@ At this time `JaModule` requires binding for Japanese text. For details, refer t
 
 ## Enable by Resource
 
-To do content negotiation on a resource basis, install the `AcceptModule` module and use the `@Produces` annotation.
+To do content negotiation on a resource basis, install the `AcceptModule` module and use the `#[Produces]` attribute.
 
 ### Module Install
 
@@ -6212,18 +6322,16 @@ protected function configure()
 }
 ```
 
-## @Produces annotation
+## #[Produces] Attribute
 
 ```php?start_inline
-use BEAR\Accept\Annotation\Produces;
+use BEAR\Accept\Attribute\Produces;
 
-/**
- * @Produces({"application/hal+json", "text/csv"})
- */
+#[Produces(['application/hal+json', 'text/csv'])]
 public function onGet()
 ```
 
-Annotate available media type from left by priority. The representation (JSON or HTML) is changed by the contextual renderer. You do not need to add `Vary` header manually unlike application level content-negotiation.
+Specify available media types from left by priority. The representation (JSON or HTML) is changed by the contextual renderer. You do not need to add `Vary` header manually unlike application level content-negotiation.
 
 ## Access using curl
 
@@ -6785,6 +6893,36 @@ $this->headers[Header::SURROGATE_KEY] = $this->uriTag->fromAssoc(
 ```
 
 In the above case, this cache will be invalidated for both server-side and CDN when `app://self/item?id=1` and `app://self/item?id=2` are changed.
+
+## Configuration
+
+### Redis Marshaller
+
+The Redis cache adapter allows you to configure data compression and serialization methods.
+
+A marshaller handles the serialization of PHP objects and arrays when storing them in Redis, and deserialization when retrieving them.
+
+```php
+use BEAR\QueryRepository\StorageRedisDsnModule;
+
+$this->install(
+    new StorageRedisDsnModule(
+        dsn: 'redis://localhost:6379',
+        marshallingOptions: [
+            'enabled' => true,
+            'type' => 'deflate',      // 'default' or 'deflate'
+            'use_igbinary' => true    // requires ext-igbinary
+        ]
+    )
+);
+```
+
+**Marshaller types:**
+
+- `default`: Uses PHP's standard serialization (enabling `use_igbinary` uses a more efficient binary format)
+- `deflate`: Compresses data before storing (uses zlib)
+
+Use `deflate` if you want to reduce Redis memory usage. This is a trade-off with CPU usage.
 
 ## CDN
 
