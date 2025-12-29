@@ -57,7 +57,7 @@ Tests include:
 |------|---------------|
 | SQL Injection | `' OR '1'='1`, `; DROP TABLE` |
 | XSS | `<script>alert(1)</script>` |
-| Command Injection | `; ls -la`, `| cat /etc/passwd` |
+| Command Injection | `; ls -la`, `\| cat /etc/passwd` |
 | Path Traversal | `../../../etc/passwd` |
 | Security Headers | Checks for missing headers |
 

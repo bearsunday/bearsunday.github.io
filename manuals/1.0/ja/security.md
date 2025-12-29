@@ -57,7 +57,7 @@ composer require --dev bear/security
 |--------|----------|
 | SQLインジェクション | `' OR '1'='1`, `; DROP TABLE` |
 | XSS | `<script>alert(1)</script>` |
-| コマンドインジェクション | `; ls -la`, `| cat /etc/passwd` |
+| コマンドインジェクション | `; ls -la`, `\| cat /etc/passwd` |
 | パストラバーサル | `../../../etc/passwd` |
 | セキュリティヘッダー | 欠落ヘッダーのチェック |
 
