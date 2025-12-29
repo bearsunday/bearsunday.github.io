@@ -24,6 +24,7 @@
 - [Router](/manuals/1.0/en/router.md): Request routing to resources
 - [Production](/manuals/1.0/en/production.md): Deployment and optimization
 - [Test](/manuals/1.0/en/test.md): Testing resources
+- [Security](/manuals/1.0/en/security.md): Security scanning (SAST, DAST, AI Auditor)
 - [Reference](/manuals/1.0/en/reference.md): Attributes and modules reference
 
 ## Optional
