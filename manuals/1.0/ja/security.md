@@ -19,10 +19,13 @@ composer require --dev bear/security
 
 | ツール | 機能 | 使用タイミング |
 |--------|------|----------------|
-| SAST | コード内の危険なパターンを検出 | 開発中 |
-| DAST | アプリに攻撃リクエストを送信 | デプロイ前 |
+| SAST[^1] | 静的解析でコード内の危険なパターンを検出 | 開発中 |
+| DAST[^2] | 動的解析でアプリに攻撃リクエストを送信 | デプロイ前 |
 | AI Auditor | AIがコードをレビュー | コードレビュー時 |
 | Psalm Plugin | ユーザー入力の流れを追跡 | 開発中 |
+
+[^1]: Static Application Security Testing
+[^2]: Dynamic Application Security Testing
 
 ## SAST
 
