@@ -77,9 +77,9 @@ Uses Claude AI to find security issues that pattern matching cannot detect:
 | Race Condition | Time-of-check to time-of-use flaws |
 | Business Logic | Application-specific security flaws |
 
-## Psalm Plugin
+## Psalm Plugin (Taint Analysis)
 
-Marks user input (like `$id` in `onGet($id)`) as tainted and traces how it flows through your code. Reports when tainted data reaches dangerous operations like database queries or HTML output without proper escaping.
+Taint analysis is a static analysis technique that marks user input as tainted variables and traces how that taint propagates through your code. It reports vulnerabilities when tainted data reaches SQL queries or HTML output without proper sanitization.
 
 ### Setup
 
