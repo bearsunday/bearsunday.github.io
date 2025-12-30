@@ -7,7 +7,7 @@ permalink: /manuals/1.0/ja/security.html
 
 # セキュリティ
 
-[bear/security](https://github.com/bearsunday/BEAR.Security)パッケージは、BEAR.Sundayアプリケーションのセキュリティ脆弱性を検出します。
+BEAR.Sundayはフレームワーク専用のセキュリティツール[bear/security](https://github.com/bearsunday/BEAR.Security)を提供します。リソース指向アーキテクチャを理解した静的解析、動的テスト、テイント解析、AI監査により、汎用ツールでは検出困難な脆弱性を発見できます。
 
 ## インストール
 
@@ -77,14 +77,23 @@ composer require --dev bear/security
 | レースコンディション | チェック時と使用時の競合 |
 | ビジネスロジック | アプリケーション固有のセキュリティ欠陥 |
 
-## Psalm Plugin
+## Psalm Plugin（テイント解析）
 
-ユーザー入力（`onGet($id)`の`$id`など）を汚染されたものとマークしておいてコード内をどう流れるかを追跡します。適切なエスケープなしでデータベースクエリやHTML表示などに到達した場合に報告します。
+テイント解析は、ユーザー入力を汚染された変数とマークし、その汚染がコード内をどう伝播するかを追跡する静的解析手法です。汚染されたデータが適切なサニタイズなしにSQLクエリやHTML出力に到達した場合、脆弱性として報告します。
+
+### セットアップ
 
 `psalm.xml`にプラグインとスタブを追加：
 
 ```xml
-<psalm>
+<?xml version="1.0"?>
+<psalm
+    xmlns="https://getpsalm.org/schema/config"
+    errorLevel="1"
+>
+    <projectFiles>
+        <directory name="src"/>
+    </projectFiles>
     <stubs>
         <file name="vendor/bear/security/stubs/AuraSql.phpstub"/>
         <file name="vendor/bear/security/stubs/PDO.phpstub"/>
@@ -103,10 +112,40 @@ composer require --dev bear/security
 
 `targets`で外部入力を受け取るリソースを指定します。`html`コンテキストでWebページを提供する場合は`Page`、`api`コンテキストでAPIを提供する場合は`App`を指定します。
 
+### スタブ
+
+スタブはサードパーティライブラリにテイントアノテーションを提供します：
+
+| スタブ | 目的 |
+|--------|------|
+| `AuraSql.phpstub` | SQLクエリメソッドをテイントシンクとしてマーク |
+| `PDO.phpstub` | PDOメソッドをテイントシンクとしてマーク |
+| `Qiq.phpstub` | テンプレート出力をテイントシンクとしてマーク |
+
+### 実行
+
 テイント解析を実行：
 
 ```bash
 ./vendor/bin/psalm --taint-analysis
+```
+
+`composer.json`に便利スクリプトを追加：
+
+```json
+{
+    "scripts": {
+        "taint": "./vendor/bin/psalm --taint-analysis 2>&1 | grep -E 'Tainted' || true"
+    }
+}
+```
+
+これにより、テイントエラーのみが表示されます。
+
+以下で実行：
+
+```bash
+composer taint
 ```
 
 ## GitHub Actions
@@ -126,7 +165,7 @@ cp vendor/bear/security/workflows/security-sast.yml .github/workflows/
 
 結果はリポジトリの **Security > Code scanning** セクションに表示されます。
 
-## なぜ効果的か
+## アーキテクチャとセキュリティ
 
 BEAR.Sundayのアーキテクチャがセキュリティスキャンをより効果的にします：
 
