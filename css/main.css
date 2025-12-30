@@ -3,6 +3,10 @@ body {
     min-height: 100vh;
 }
 
+html {
+    scroll-behavior: smooth;
+}
+
 body {
     position: relative;
     padding-bottom: 4rem;
