@@ -11,6 +11,8 @@ Security tools can scan your application for vulnerability assessment. With stat
 
 ## Installation
 
+Install [bear/security](https://github.com/bearsunday/BEAR.Security).
+
 ```bash
 composer require --dev bear/security
 ```

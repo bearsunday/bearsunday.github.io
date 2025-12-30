@@ -11,6 +11,8 @@ permalink: /manuals/1.0/ja/security.html
 
 ## インストール
 
+[bear/security](https://github.com/bearsunday/BEAR.Security)をインストールします。
+
 ```bash
 composer require --dev bear/security
 ```
