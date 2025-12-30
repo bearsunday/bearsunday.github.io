@@ -7,7 +7,7 @@ permalink: /manuals/1.0/en/security.html
 
 # Security
 
-The [bear/security](https://github.com/bearsunday/BEAR.Security) package helps find security vulnerabilities in your BEAR.Sunday application.
+BEAR.Sunday provides a framework-specific security tool [bear/security](https://github.com/bearsunday/BEAR.Security). Because it understands the resource-oriented architecture, its static analysis, dynamic testing, taint analysis, and AI auditing can detect vulnerabilities that generic tools miss.
 
 ## Installation
 
@@ -66,7 +66,12 @@ Tests include:
 Uses Claude AI to find security issues that pattern matching cannot detect:
 
 ```bash
-# Requires ANTHROPIC_API_KEY or Claude CLI authentication
+# Option 1: API Key
+export ANTHROPIC_API_KEY=sk-ant-...
+./vendor/bin/bear-security-audit src
+
+# Option 2: Claude CLI (Max Plan - no API key required)
+claude auth login
 ./vendor/bin/bear-security-audit src
 ```
 
@@ -77,14 +82,23 @@ Uses Claude AI to find security issues that pattern matching cannot detect:
 | Race Condition | Time-of-check to time-of-use flaws |
 | Business Logic | Application-specific security flaws |
 
-## Psalm Plugin
+## Psalm Plugin (Taint Analysis)
 
-Marks user input (like `$id` in `onGet($id)`) as tainted and traces how it flows through your code. Reports when tainted data reaches dangerous operations like database queries or HTML output without proper escaping.
+Taint analysis is a static analysis technique that marks user input as tainted variables and traces how that taint propagates through your code. It reports vulnerabilities when tainted data reaches SQL queries or HTML output without proper sanitization.
+
+### Setup
 
 Add the plugin and stubs to your `psalm.xml`:
 
 ```xml
-<psalm>
+<?xml version="1.0"?>
+<psalm
+    xmlns="https://getpsalm.org/schema/config"
+    errorLevel="1"
+>
+    <projectFiles>
+        <directory name="src"/>
+    </projectFiles>
     <stubs>
         <file name="vendor/bear/security/stubs/AuraSql.phpstub"/>
         <file name="vendor/bear/security/stubs/PDO.phpstub"/>
@@ -103,10 +117,40 @@ Add the plugin and stubs to your `psalm.xml`:
 
 The `targets` specify which resources receive external input. Use `Page` when serving web pages with `html` context, `App` when serving APIs with `api` context.
 
+### Stubs
+
+Stubs provide taint annotations for third-party libraries:
+
+| Stub | Purpose |
+|------|---------|
+| `AuraSql.phpstub` | Marks SQL query methods as taint sinks |
+| `PDO.phpstub` | Marks PDO methods as taint sinks |
+| `Qiq.phpstub` | Marks template output as taint sinks |
+
+### Running
+
 Run taint analysis:
 
 ```bash
 ./vendor/bin/psalm --taint-analysis
+```
+
+Add a convenience script to `composer.json`:
+
+```json
+{
+    "scripts": {
+        "taint": "./vendor/bin/psalm --taint-analysis 2>&1 | grep -E 'Tainted' || true"
+    }
+}
+```
+
+This filters output to show only taint errors.
+
+Then run with:
+
+```bash
+composer taint
 ```
 
 ## GitHub Actions
@@ -126,7 +170,7 @@ This workflow runs on every push and pull request:
 
 Results appear in your repository's **Security > Code scanning** section.
 
-## Why It Works
+## Architecture and Security
 
 BEAR.Sunday's architecture makes security scanning more effective:
 
