@@ -2,10 +2,11 @@
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
         e.preventDefault();
-        const target = document.querySelector(this.getAttribute('href'));
+        const targetId = this.getAttribute('href').substring(1);
+        const target = document.getElementById(targetId);
+        if (!target) return;
         const targetTop = target.getBoundingClientRect().top + window.pageYOffset;
-        const targetId = this.getAttribute('href');
-        history.pushState({ id: targetId, top: targetTop }, null, targetId);
+        history.pushState({ id: targetId, top: targetTop }, null, '#' + targetId);
         target.scrollIntoView({
             behavior: 'smooth'
         });
@@ -14,7 +15,8 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 
 window.addEventListener('popstate', function(e) {
     if (e.state && e.state.id) {
-        const target = document.querySelector(e.state.id);
+        const target = document.getElementById(e.state.id);
+        if (!target) return;
         window.scrollTo({
             top: e.state.top,
             behavior: 'smooth'
