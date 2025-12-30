@@ -165,7 +165,7 @@ This workflow runs on every push and pull request:
 
 Results appear in your repository's **Security > Code scanning** section.
 
-## Why It Works
+## Architecture and Security
 
 BEAR.Sunday's architecture makes security scanning more effective:
 
