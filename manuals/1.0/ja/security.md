@@ -81,10 +81,19 @@ composer require --dev bear/security
 
 ユーザー入力（`onGet($id)`の`$id`など）を汚染されたものとマークしておいてコード内をどう流れるかを追跡します。適切なエスケープなしでデータベースクエリやHTML表示などに到達した場合に報告します。
 
+### セットアップ
+
 `psalm.xml`にプラグインとスタブを追加：
 
 ```xml
-<psalm>
+<?xml version="1.0"?>
+<psalm
+    xmlns="https://getpsalm.org/schema/config"
+    errorLevel="1"
+>
+    <projectFiles>
+        <directory name="src"/>
+    </projectFiles>
     <stubs>
         <file name="vendor/bear/security/stubs/AuraSql.phpstub"/>
         <file name="vendor/bear/security/stubs/PDO.phpstub"/>
@@ -103,10 +112,40 @@ composer require --dev bear/security
 
 `targets`で外部入力を受け取るリソースを指定します。`html`コンテキストでWebページを提供する場合は`Page`、`api`コンテキストでAPIを提供する場合は`App`を指定します。
 
+### スタブ
+
+スタブはサードパーティライブラリにテイントアノテーションを提供します：
+
+| スタブ | 目的 |
+|--------|------|
+| `AuraSql.phpstub` | SQLクエリメソッドをテイントシンクとしてマーク |
+| `PDO.phpstub` | PDOメソッドをテイントシンクとしてマーク |
+| `Qiq.phpstub` | テンプレート出力をテイントシンクとしてマーク |
+
+### 実行
+
 テイント解析を実行：
 
 ```bash
 ./vendor/bin/psalm --taint-analysis
+```
+
+`composer.json`に便利スクリプトを追加：
+
+```json
+{
+    "scripts": {
+        "taint": "./vendor/bin/psalm --taint-analysis 2>&1 | grep -E 'Tainted' || true"
+    }
+}
+```
+
+これにより、テイントエラーのみが表示されます。
+
+以下で実行：
+
+```bash
+composer taint
 ```
 
 ## GitHub Actions

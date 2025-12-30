@@ -81,10 +81,19 @@ Uses Claude AI to find security issues that pattern matching cannot detect:
 
 Marks user input (like `$id` in `onGet($id)`) as tainted and traces how it flows through your code. Reports when tainted data reaches dangerous operations like database queries or HTML output without proper escaping.
 
+### Setup
+
 Add the plugin and stubs to your `psalm.xml`:
 
 ```xml
-<psalm>
+<?xml version="1.0"?>
+<psalm
+    xmlns="https://getpsalm.org/schema/config"
+    errorLevel="1"
+>
+    <projectFiles>
+        <directory name="src"/>
+    </projectFiles>
     <stubs>
         <file name="vendor/bear/security/stubs/AuraSql.phpstub"/>
         <file name="vendor/bear/security/stubs/PDO.phpstub"/>
@@ -103,10 +112,40 @@ Add the plugin and stubs to your `psalm.xml`:
 
 The `targets` specify which resources receive external input. Use `Page` when serving web pages with `html` context, `App` when serving APIs with `api` context.
 
+### Stubs
+
+Stubs provide taint annotations for third-party libraries:
+
+| Stub | Purpose |
+|------|---------|
+| `AuraSql.phpstub` | Marks SQL query methods as taint sinks |
+| `PDO.phpstub` | Marks PDO methods as taint sinks |
+| `Qiq.phpstub` | Marks template output as taint sinks |
+
+### Running
+
 Run taint analysis:
 
 ```bash
 ./vendor/bin/psalm --taint-analysis
+```
+
+Add a convenience script to `composer.json`:
+
+```json
+{
+    "scripts": {
+        "taint": "./vendor/bin/psalm --taint-analysis 2>&1 | grep -E 'Tainted' || true"
+    }
+}
+```
+
+This filters output to show only taint errors.
+
+Then run with:
+
+```bash
+composer taint
 ```
 
 ## GitHub Actions
