@@ -38,7 +38,8 @@
 {% if page.category == 'Manual' %}
 <script src="/js/generate-table-of-contents/index.min.js"></script>
 
-<script src="/js/copy_header_link.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/anchor-js/anchor.min.js"></script>
+<script>anchors.add('h2, h3, h4');</script>
 {% endif %}
 </body>
 </html>
