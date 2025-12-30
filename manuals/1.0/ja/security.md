@@ -7,7 +7,7 @@ permalink: /manuals/1.0/ja/security.html
 
 # セキュリティ
 
-[bear/security](https://github.com/bearsunday/BEAR.Security)パッケージは、BEAR.Sundayアプリケーションのセキュリティ脆弱性を検出します。
+BEAR.Sundayはフレームワーク専用のセキュリティツール[bear/security](https://github.com/bearsunday/BEAR.Security)を提供します。リソース指向アーキテクチャを理解した静的解析、動的テスト、テイント解析、AI監査により、汎用ツールでは検出困難な脆弱性を発見できます。
 
 ## インストール
 
@@ -165,7 +165,7 @@ cp vendor/bear/security/workflows/security-sast.yml .github/workflows/
 
 結果はリポジトリの **Security > Code scanning** セクションに表示されます。
 
-## なぜ効果的か
+## アーキテクチャとセキュリティ
 
 BEAR.Sundayのアーキテクチャがセキュリティスキャンをより効果的にします：
 

@@ -7,7 +7,7 @@ permalink: /manuals/1.0/en/security.html
 
 # Security
 
-The [bear/security](https://github.com/bearsunday/BEAR.Security) package helps find security vulnerabilities in your BEAR.Sunday application.
+BEAR.Sunday provides a framework-specific security tool [bear/security](https://github.com/bearsunday/BEAR.Security). By understanding the resource-oriented architecture, static analysis, dynamic testing, taint analysis, and AI auditing can detect vulnerabilities that generic tools miss.
 
 ## Installation
 
