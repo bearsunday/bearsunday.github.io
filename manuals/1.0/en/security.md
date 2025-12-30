@@ -48,6 +48,8 @@ Detects 14 vulnerability types:
 | Session | Session fixation, CSRF |
 | Network | SSRF, Remote file inclusion |
 
+See the [Vulnerability Reference](https://bearsunday.github.io/BEAR.Security/issues/en/) for details on each vulnerability.
+
 ## DAST
 
 Sends attack payloads to your running application to test real vulnerabilities:

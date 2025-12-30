@@ -48,6 +48,8 @@ composer require --dev bear/security
 | セッション | セッション固定、CSRF |
 | ネットワーク | SSRF、リモートファイルインクルージョン |
 
+各脆弱性の詳細は[脆弱性リファレンス](https://bearsunday.github.io/BEAR.Security/issues/ja/)を参照してください。
+
 ## DAST
 
 実行中のアプリケーションに攻撃ペイロードを送信して脆弱性をテストします：
