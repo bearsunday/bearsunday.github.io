@@ -186,3 +186,30 @@ BEAR.Sundayのアーキテクチャがセキュリティスキャンをより効
 - **隠れたマジックがない**: 依存関係はコンストラクタインジェクションで明示的です。スキャナーは完全なコードパスを解析できます。
 
 - **フレームワークを理解するAI**: AI AuditorはBEAR.Sundayのパターンを理解し、一般的な脆弱性だけでなくビジネスロジックの欠陥も検出できます。
+
+## AIエージェント用プロンプト
+
+<details>
+<summary>AIコーディングアシスタント用セットアッププロンプト</summary>
+
+```
+Set up bear/security for this BEAR.Sunday project:
+
+1. Install: composer require --dev bear/security
+
+2. Configure psalm.xml with taint plugin and stubs:
+   - Add stubs: AuraSql.phpstub, PDO.phpstub, Qiq.phpstub
+   - Add plugin: BEAR\Security\Psalm\ResourceTaintPlugin
+   - Set targets: Page (for html context), App (for api context)
+
+3. Add composer scripts:
+   - "security": "./vendor/bin/bear.security-scan src"
+   - "taint": "./vendor/bin/psalm --taint-analysis 2>&1 | grep -E 'Tainted' || true"
+
+4. Copy GitHub Actions workflow:
+   cp vendor/bear/security/workflows/security-sast.yml .github/workflows/
+
+5. Verify: Run composer security and composer taint
+```
+
+</details>
