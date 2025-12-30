@@ -66,7 +66,12 @@ Tests include:
 Uses Claude AI to find security issues that pattern matching cannot detect:
 
 ```bash
-# Requires ANTHROPIC_API_KEY or Claude CLI authentication
+# Option 1: API Key
+export ANTHROPIC_API_KEY=sk-ant-...
+./vendor/bin/bear-security-audit src
+
+# Option 2: Claude CLI (Max Plan - no API key required)
+claude auth login
 ./vendor/bin/bear-security-audit src
 ```
 

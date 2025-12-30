@@ -66,7 +66,12 @@ composer require --dev bear/security
 パターンマッチングでは検出できないセキュリティ問題をClaude AIが検出します：
 
 ```bash
-# ANTHROPIC_API_KEY または Claude CLI認証が必要
+# 方法1: APIキー
+export ANTHROPIC_API_KEY=sk-ant-...
+./vendor/bin/bear-security-audit src
+
+# 方法2: Claude CLI（Maxプラン - APIキー不要）
+claude auth login
 ./vendor/bin/bear-security-audit src
 ```
 
