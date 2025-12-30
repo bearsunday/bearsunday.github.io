@@ -7,7 +7,7 @@ permalink: /manuals/1.0/en/security.html
 
 # Security
 
-BEAR.Sunday provides a framework-specific security tool [bear/security](https://github.com/bearsunday/BEAR.Security). By understanding the resource-oriented architecture, static analysis, dynamic testing, taint analysis, and AI auditing can detect vulnerabilities that generic tools miss.
+BEAR.Sunday provides a framework-specific security tool [bear/security](https://github.com/bearsunday/BEAR.Security). Because it understands the resource-oriented architecture, its static analysis, dynamic testing, taint analysis, and AI auditing can detect vulnerabilities that generic tools miss.
 
 ## Installation
 
