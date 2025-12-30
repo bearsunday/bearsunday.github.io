@@ -19,13 +19,13 @@ composer require --dev bear/security
 
 | Tool | What it does | When to use |
 |------|--------------|-------------|
-| SAST[^1] | Static analysis to find dangerous patterns in your code | During development |
-| DAST[^2] | Dynamic analysis to send attack requests to your app | Before deployment |
+| SAST[^sast] | Static analysis to find dangerous patterns in your code | During development |
+| DAST[^dast] | Dynamic analysis to send attack requests to your app | Before deployment |
 | AI Auditor | AI reviews your code for security issues | Code review |
 | Psalm Plugin | Traces user input to dangerous operations | During development |
 
-[^1]: Static Application Security Testing
-[^2]: Dynamic Application Security Testing
+[^sast]: Static Application Security Testing
+[^dast]: Dynamic Application Security Testing
 
 ## SAST
 
