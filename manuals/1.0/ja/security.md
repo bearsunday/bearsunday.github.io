@@ -222,9 +222,23 @@ BEAR.Sundayのアーキテクチャがセキュリティスキャンをより効
 
 ## AIエージェント用プロンプト
 
-AIコーディングアシスタントでbear/securityをセットアップするには、このプロンプトを使用してください：
+### セットアップ
+
+AIコーディングアシスタントでbear/securityをセットアップするには：
 
 ```
 Follow the setup instructions at:
 https://raw.githubusercontent.com/bearsunday/BEAR.Skills/1.x/.claude/skills/bear-security-setup/SKILL.md
+```
+
+### セキュリティ検査
+
+セキュリティ検査を実行するには：
+
+```
+Run security scan:
+1. Run vendor/bin/bear.security-scan src
+2. Review results, fix vulnerabilities, add @security-ignore to false positives
+3. Run vendor/bin/bear-security-audit src
+4. Fix detected issues and re-scan to verify
 ```

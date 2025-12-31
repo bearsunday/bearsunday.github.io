@@ -222,9 +222,23 @@ BEAR.Sunday's architecture makes security scanning more effective:
 
 ## Prompt for AI Agents
 
-To set up bear/security with an AI coding assistant, use this prompt:
+### Setup
+
+To set up bear/security with an AI coding assistant:
 
 ```
 Follow the setup instructions at:
 https://raw.githubusercontent.com/bearsunday/BEAR.Skills/1.x/.claude/skills/bear-security-setup/SKILL.md
+```
+
+### Security Scan
+
+To run a security scan:
+
+```
+Run security scan:
+1. Run vendor/bin/bear.security-scan src
+2. Review results, fix vulnerabilities, add @security-ignore to false positives
+3. Run vendor/bin/bear-security-audit src
+4. Fix detected issues and re-scan to verify
 ```
