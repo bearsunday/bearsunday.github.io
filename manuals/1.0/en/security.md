@@ -5,7 +5,7 @@ category: Manual
 permalink: /manuals/1.0/en/security.html
 ---
 
-# Security
+# Security <sup style="font-size:0.5em; color:#666; font-weight:normal;">Beta</sup>
 
 Security tools can scan your application for vulnerability assessment. With static analysis, dynamic testing, taint analysis, and AI auditing, architecture-aware tools analyze from multiple angles, detecting vulnerabilities that generic tools miss.
 

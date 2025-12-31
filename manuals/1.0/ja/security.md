@@ -5,7 +5,7 @@ category: Manual
 permalink: /manuals/1.0/ja/security.html
 ---
 
-# セキュリティ
+# セキュリティ <sup style="font-size:0.5em; color:#666; font-weight:normal;">Beta</sup>
 
 セキュリティツールでアプリケーションをスキャンして脆弱性診断ができます。静的解析・動的テスト・テイント解析・AI監査など、アーキテクチャを理解した専用ツールが多方面から解析するため、汎用ツールでは難しい脆弱性も検知します。
 
