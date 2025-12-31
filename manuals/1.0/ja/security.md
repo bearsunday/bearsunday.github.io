@@ -43,14 +43,16 @@ BEAR.Securityは**Recall（再現率）を最優先**する設計を採用して
 ### 推奨ワークフロー
 
 ```bash
-# 1. SAST実行
+# 1. SASTでパターンベースの脆弱性を検出
 vendor/bin/bear.security-scan src
 
 # 2. 結果を確認し、脆弱性を修正
-# 偽陽性には @security-ignore コメントを付与
+# 偽陽性には @security-ignore コメントを付与（下記例参照）
 
 # 3. AI Auditorでビジネスロジックの問題を検出
 vendor/bin/bear-security-audit src
+
+# 4. 検出された問題を確認・修正
 ```
 
 偽陽性の抑制例：
@@ -60,6 +62,15 @@ $path = $this->buildPath($id); // @security-ignore path-traversal: $id is valida
 ```
 
 `@security-ignore`を付与すると次回スキャンから抑制されます。
+
+### AIエージェントで実行
+
+上記ワークフローをAIエージェントで実行するには、以下のプロンプトを使用してください：
+
+```
+Follow the setup instructions at:
+https://raw.githubusercontent.com/bearsunday/BEAR.Skills/1.x/.claude/skills/bear-security-setup/SKILL.md
+```
 
 ## SAST
 
@@ -222,12 +233,3 @@ BEAR.Sundayのアーキテクチャがセキュリティスキャンをより効
 - **隠れたマジックがない**: 依存関係はコンストラクタインジェクションで明示的です。スキャナーは完全なコードパスを解析できます。
 
 - **フレームワークを理解するAI**: AI AuditorはBEAR.Sundayのパターンを理解し、一般的な脆弱性だけでなくビジネスロジックの欠陥も検出できます。
-
-## AIエージェント用プロンプト
-
-AIコーディングアシスタントでbear/securityをセットアップするには、このプロンプトを使用してください：
-
-```
-Follow the setup instructions at:
-https://raw.githubusercontent.com/bearsunday/BEAR.Skills/1.x/.claude/skills/bear-security-setup/SKILL.md
-```

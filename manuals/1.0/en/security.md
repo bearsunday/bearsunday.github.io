@@ -43,14 +43,16 @@ In security scanners, **missing a vulnerability (False Negative) is critical**. 
 ### Recommended Workflow
 
 ```bash
-# 1. Run SAST
+# 1. Run SAST to detect pattern-based vulnerabilities
 vendor/bin/bear.security-scan src
 
 # 2. Review results and fix vulnerabilities
-# Add @security-ignore comment to false positives
+# Add @security-ignore comment to false positives (see example below)
 
-# 3. Run AI Auditor for business logic issues
+# 3. Run AI Auditor to detect business logic issues
 vendor/bin/bear-security-audit src
+
+# 4. Review and fix detected issues
 ```
 
 Example of suppressing a false positive:
@@ -60,6 +62,15 @@ $path = $this->buildPath($id); // @security-ignore path-traversal: $id is valida
 ```
 
 Once `@security-ignore` is added, the issue is suppressed in subsequent scans.
+
+### Run with AI Agent
+
+To run the above workflow with an AI agent, use this prompt:
+
+```
+Follow the setup instructions at:
+https://raw.githubusercontent.com/bearsunday/BEAR.Skills/1.x/.claude/skills/bear-security-setup/SKILL.md
+```
 
 ## SAST
 
@@ -222,12 +233,3 @@ BEAR.Sunday's architecture makes security scanning more effective:
 - **No Hidden Magic**: Dependencies are explicit through constructor injection. Scanners can analyze the complete code path.
 
 - **Framework-Aware AI**: The AI Auditor understands BEAR.Sunday patterns and can detect business logic flaws, not just generic vulnerabilities.
-
-## Prompt for AI Agents
-
-To set up bear/security with an AI coding assistant, use this prompt:
-
-```
-Follow the setup instructions at:
-https://raw.githubusercontent.com/bearsunday/BEAR.Skills/1.x/.claude/skills/bear-security-setup/SKILL.md
-```
