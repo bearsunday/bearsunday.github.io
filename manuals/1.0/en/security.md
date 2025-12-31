@@ -53,6 +53,12 @@ vendor/bin/bear-security-audit src
 # 3. False positives suppressed in next scan
 ```
 
+Example of suppressing a false positive:
+
+```php
+$path = $this->buildPath($id); // @security-ignore path-traversal: $id is validated integer from router
+```
+
 ## SAST
 
 Scans your source code for dangerous patterns:

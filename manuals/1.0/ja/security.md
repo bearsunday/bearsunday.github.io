@@ -53,6 +53,12 @@ vendor/bin/bear-security-audit src
 # 3. 次回スキャンで偽陽性は抑制される
 ```
 
+偽陽性の抑制例：
+
+```php
+$path = $this->buildPath($id); // @security-ignore path-traversal: $id is validated integer from router
+```
+
 ## SAST
 
 ソースコードをスキャンして危険なパターンを検出します：
