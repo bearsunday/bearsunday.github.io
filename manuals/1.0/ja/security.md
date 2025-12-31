@@ -29,16 +29,11 @@ composer require --dev bear/security
 [^sast]: Static Application Security Testing
 [^dast]: Dynamic Application Security Testing
 
-## 設計方針: Recall優先（見逃しゼロ志向）
+## 設計方針: Recall優先
 
-BEAR.Securityは**Recall（再現率）を最優先**する設計を採用しています。
+セキュリティスキャナーには従来、Precision優先（確実なものだけ報告）とRecall優先（疑わしいものも報告）があり、トレードオフの関係にありました。
 
-| 方針 | 特徴 | リスク |
-|------|------|--------|
-| Precision優先 | 確実なものだけ報告 | 見逃しリスク高い |
-| **Recall優先** | 疑わしいものは報告 | 偽陽性が出るが見逃しゼロ ✓ |
-
-セキュリティスキャナーにおいて、**脆弱性の見逃し（False Negative）は致命的**です。一方、**偽陽性（False Positive）は確認すれば除外できます**。
+BEAR.SecurityはRecall優先を採用しています。脆弱性の見逃し（False Negative）は致命的ですが、偽陽性（False Positive）は確認すれば除外できるからです。偽陽性の確認をAIエージェントが代行できる今、この戦略はより効果的です。
 
 ### 推奨ワークフロー
 

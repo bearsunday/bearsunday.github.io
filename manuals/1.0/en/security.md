@@ -29,16 +29,11 @@ composer require --dev bear/security
 [^sast]: Static Application Security Testing
 [^dast]: Dynamic Application Security Testing
 
-## Design Philosophy: Recall-First (Zero Missed Detections)
+## Design Philosophy: Recall-First
 
-BEAR.Security adopts a **Recall-first** design that prioritizes detection rate.
+Security scanners have traditionally had two approaches: precision-first (report only certain issues) and recall-first (report suspicious patterns), with a trade-off between them.
 
-| Approach | Characteristic | Risk |
-|----------|----------------|------|
-| Precision-first | Reports only certain issues | High risk of missed vulnerabilities |
-| **Recall-first** | Reports suspicious patterns | False positives occur, but zero missed detections ✓ |
-
-In security scanners, **missing a vulnerability (False Negative) is critical**. On the other hand, **false positives (False Positive) can be reviewed and excluded**.
+BEAR.Security adopts a recall-first approach. Missing a vulnerability (False Negative) is critical, but false positives (False Positive) can be reviewed and excluded. With AI agents now able to handle false positive verification, this strategy is more effective than ever.
 
 ### Recommended Workflow
 
