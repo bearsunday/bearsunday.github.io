@@ -147,16 +147,20 @@ claude auth login
 ```json
 {
     "scripts": {
+        "security": "./vendor/bin/bear.security-scan src",
         "taint": "./vendor/bin/psalm --taint-analysis 2>&1 | grep -E 'Tainted' || true"
+    },
+    "scripts-descriptions": {
+        "security": "Run SAST security scan",
+        "taint": "Run Psalm taint analysis"
     }
 }
 ```
 
-これにより、テイントエラーのみが表示されます。
-
 以下で実行：
 
 ```bash
+composer security
 composer taint
 ```
 

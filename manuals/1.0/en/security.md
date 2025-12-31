@@ -142,21 +142,25 @@ Run taint analysis:
 ./vendor/bin/psalm --taint-analysis
 ```
 
-Add a convenience script to `composer.json`:
+Add convenience scripts to `composer.json`:
 
 ```json
 {
     "scripts": {
+        "security": "./vendor/bin/bear.security-scan src",
         "taint": "./vendor/bin/psalm --taint-analysis 2>&1 | grep -E 'Tainted' || true"
+    },
+    "scripts-descriptions": {
+        "security": "Run SAST security scan",
+        "taint": "Run Psalm taint analysis"
     }
 }
 ```
 
-This filters output to show only taint errors.
-
 Then run with:
 
 ```bash
+composer security
 composer taint
 ```
 
