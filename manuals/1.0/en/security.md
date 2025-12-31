@@ -63,15 +63,6 @@ $path = $this->buildPath($id); // @security-ignore path-traversal: $id is valida
 
 Once `@security-ignore` is added, the issue is suppressed in subsequent scans.
 
-### Run with AI Agent
-
-To run the above workflow with an AI agent, use this prompt:
-
-```
-Follow the setup instructions at:
-https://raw.githubusercontent.com/bearsunday/BEAR.Skills/1.x/.claude/skills/bear-security-setup/SKILL.md
-```
-
 ## SAST
 
 Scans your source code for dangerous patterns:
@@ -233,3 +224,12 @@ BEAR.Sunday's architecture makes security scanning more effective:
 - **No Hidden Magic**: Dependencies are explicit through constructor injection. Scanners can analyze the complete code path.
 
 - **Framework-Aware AI**: The AI Auditor understands BEAR.Sunday patterns and can detect business logic flaws, not just generic vulnerabilities.
+
+## Prompt for AI Agents
+
+To set up bear/security with an AI coding assistant, use this prompt:
+
+```
+Follow the setup instructions at:
+https://raw.githubusercontent.com/bearsunday/BEAR.Skills/1.x/.claude/skills/bear-security-setup/SKILL.md
+```

@@ -63,15 +63,6 @@ $path = $this->buildPath($id); // @security-ignore path-traversal: $id is valida
 
 `@security-ignore`を付与すると次回スキャンから抑制されます。
 
-### AIエージェントで実行
-
-上記ワークフローをAIエージェントで実行するには、以下のプロンプトを使用してください：
-
-```
-Follow the setup instructions at:
-https://raw.githubusercontent.com/bearsunday/BEAR.Skills/1.x/.claude/skills/bear-security-setup/SKILL.md
-```
-
 ## SAST
 
 ソースコードをスキャンして危険なパターンを検出します：
@@ -233,3 +224,12 @@ BEAR.Sundayのアーキテクチャがセキュリティスキャンをより効
 - **隠れたマジックがない**: 依存関係はコンストラクタインジェクションで明示的です。スキャナーは完全なコードパスを解析できます。
 
 - **フレームワークを理解するAI**: AI AuditorはBEAR.Sundayのパターンを理解し、一般的な脆弱性だけでなくビジネスロジックの欠陥も検出できます。
+
+## AIエージェント用プロンプト
+
+AIコーディングアシスタントでbear/securityをセットアップするには、このプロンプトを使用してください：
+
+```
+Follow the setup instructions at:
+https://raw.githubusercontent.com/bearsunday/BEAR.Skills/1.x/.claude/skills/bear-security-setup/SKILL.md
+```
