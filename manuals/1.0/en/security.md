@@ -5,7 +5,7 @@ category: Manual
 permalink: /manuals/1.0/en/security.html
 ---
 
-# Security
+# Security <sup style="font-size:0.5em; color:#666; font-weight:normal;">Beta</sup>
 
 Security tools can scan your application for vulnerability assessment. With static analysis, dynamic testing, taint analysis, and AI auditing, architecture-aware tools analyze from multiple angles, detecting vulnerabilities that generic tools miss.
 
@@ -28,6 +28,40 @@ composer require --dev bear/security
 
 [^sast]: Static Application Security Testing
 [^dast]: Dynamic Application Security Testing
+
+## Design Philosophy: Recall-First (Zero Missed Detections)
+
+BEAR.Security adopts a **Recall-first** design that prioritizes detection rate.
+
+| Approach | Characteristic | Risk |
+|----------|----------------|------|
+| Precision-first | Reports only certain issues | High risk of missed vulnerabilities |
+| **Recall-first** | Reports suspicious patterns | False positives occur, but zero missed detections ✓ |
+
+In security scanners, **missing a vulnerability (False Negative) is critical**. On the other hand, **false positives (False Positive) can be reviewed and excluded**.
+
+### Recommended Workflow
+
+```bash
+# 1. Run SAST to detect pattern-based vulnerabilities
+vendor/bin/bear.security-scan src
+
+# 2. Review results and fix vulnerabilities
+# Add @security-ignore comment to false positives (see example below)
+
+# 3. Run AI Auditor to detect business logic issues
+vendor/bin/bear-security-audit src
+
+# 4. Review and fix detected issues
+```
+
+Example of suppressing a false positive:
+
+```php
+$path = $this->buildPath($id); // @security-ignore path-traversal: $id is validated integer from router
+```
+
+Once `@security-ignore` is added, the issue is suppressed in subsequent scans.
 
 ## SAST
 

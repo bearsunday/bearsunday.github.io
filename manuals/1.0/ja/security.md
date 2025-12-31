@@ -5,7 +5,7 @@ category: Manual
 permalink: /manuals/1.0/ja/security.html
 ---
 
-# セキュリティ
+# セキュリティ <sup style="font-size:0.5em; color:#666; font-weight:normal;">Beta</sup>
 
 セキュリティツールでアプリケーションをスキャンして脆弱性診断ができます。静的解析・動的テスト・テイント解析・AI監査など、アーキテクチャを理解した専用ツールが多方面から解析するため、汎用ツールでは難しい脆弱性も検知します。
 
@@ -28,6 +28,40 @@ composer require --dev bear/security
 
 [^sast]: Static Application Security Testing
 [^dast]: Dynamic Application Security Testing
+
+## 設計方針: Recall優先（見逃しゼロ志向）
+
+BEAR.Securityは**Recall（再現率）を最優先**する設計を採用しています。
+
+| 方針 | 特徴 | リスク |
+|------|------|--------|
+| Precision優先 | 確実なものだけ報告 | 見逃しリスク高い |
+| **Recall優先** | 疑わしいものは報告 | 偽陽性が出るが見逃しゼロ ✓ |
+
+セキュリティスキャナーにおいて、**脆弱性の見逃し（False Negative）は致命的**です。一方、**偽陽性（False Positive）は確認すれば除外できます**。
+
+### 推奨ワークフロー
+
+```bash
+# 1. SASTでパターンベースの脆弱性を検出
+vendor/bin/bear.security-scan src
+
+# 2. 結果を確認し、脆弱性を修正
+# 偽陽性には @security-ignore コメントを付与（下記例参照）
+
+# 3. AI Auditorでビジネスロジックの問題を検出
+vendor/bin/bear-security-audit src
+
+# 4. 検出された問題を確認・修正
+```
+
+偽陽性の抑制例：
+
+```php
+$path = $this->buildPath($id); // @security-ignore path-traversal: $id is validated integer from router
+```
+
+`@security-ignore`を付与すると次回スキャンから抑制されます。
 
 ## SAST
 
