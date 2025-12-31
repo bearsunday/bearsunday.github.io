@@ -29,6 +29,32 @@ composer require --dev bear/security
 [^sast]: Static Application Security Testing
 [^dast]: Dynamic Application Security Testing
 
+## Design Philosophy: Recall-First (Zero Missed Detections)
+
+BEAR.Security adopts a **Recall-first** design that prioritizes detection rate.
+
+| Approach | Characteristic | Risk |
+|----------|----------------|------|
+| Precision-first | Reports only certain issues | High risk of missed vulnerabilities |
+| **Recall-first** | Reports suspicious patterns | False positives occur, but zero missed detections ✓ |
+
+In security scanners, **missing a vulnerability (False Negative) is critical**. On the other hand, **false positives (False Positive) can be reviewed and excluded**.
+
+### Recommended Workflow
+
+```bash
+# 1. Run SAST
+vendor/bin/bear.security-scan src
+
+# 2. Review findings with AI
+vendor/bin/bear-security-audit src
+# Or ask Claude to verify the results
+
+# 3. Add @security-ignore comment to false positives (same line)
+
+# 4. Suppressed in next scan
+```
+
 ## SAST
 
 Scans your source code for dangerous patterns:
