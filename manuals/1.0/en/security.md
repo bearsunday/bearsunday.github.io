@@ -46,11 +46,11 @@ In security scanners, **missing a vulnerability (False Negative) is critical**. 
 # 1. Run SAST
 vendor/bin/bear.security-scan src
 
-# 2. Review and fix with AI agent
-vendor/bin/bear-security-audit src
-# Fixes vulnerabilities, adds @security-ignore to false positives
+# 2. Review results and fix vulnerabilities
+# Add @security-ignore comment to false positives
 
-# 3. False positives suppressed in next scan
+# 3. Run AI Auditor for business logic issues
+vendor/bin/bear-security-audit src
 ```
 
 Example of suppressing a false positive:
@@ -58,6 +58,8 @@ Example of suppressing a false positive:
 ```php
 $path = $this->buildPath($id); // @security-ignore path-traversal: $id is validated integer from router
 ```
+
+Once `@security-ignore` is added, the issue is suppressed in subsequent scans.
 
 ## SAST
 

@@ -46,11 +46,11 @@ BEAR.Securityは**Recall（再現率）を最優先**する設計を採用して
 # 1. SAST実行
 vendor/bin/bear.security-scan src
 
-# 2. AIエージェントで確認・修正
-vendor/bin/bear-security-audit src
-# 脆弱性は修正、偽陽性には @security-ignore コメントを付与
+# 2. 結果を確認し、脆弱性を修正
+# 偽陽性には @security-ignore コメントを付与
 
-# 3. 次回スキャンで偽陽性は抑制される
+# 3. AI Auditorでビジネスロジックの問題を検出
+vendor/bin/bear-security-audit src
 ```
 
 偽陽性の抑制例：
@@ -58,6 +58,8 @@ vendor/bin/bear-security-audit src
 ```php
 $path = $this->buildPath($id); // @security-ignore path-traversal: $id is validated integer from router
 ```
+
+`@security-ignore`を付与すると次回スキャンから抑制されます。
 
 ## SAST
 
