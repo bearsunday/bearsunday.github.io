@@ -46,13 +46,11 @@ BEAR.Securityは**Recall（再現率）を最優先**する設計を採用して
 # 1. SAST実行
 vendor/bin/bear.security-scan src
 
-# 2. 検出結果をAIで確認
+# 2. AIエージェントで確認・修正
 vendor/bin/bear-security-audit src
-# または結果をClaudeに確認依頼
+# 脆弱性は修正、偽陽性には @security-ignore コメントを付与
 
-# 3. 偽陽性には @security-ignore コメントを付与（同一行）
-
-# 4. 次回スキャンで抑制される
+# 3. 次回スキャンで偽陽性は抑制される
 ```
 
 ## SAST

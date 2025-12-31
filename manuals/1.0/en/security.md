@@ -46,13 +46,11 @@ In security scanners, **missing a vulnerability (False Negative) is critical**. 
 # 1. Run SAST
 vendor/bin/bear.security-scan src
 
-# 2. Review findings with AI
+# 2. Review and fix with AI agent
 vendor/bin/bear-security-audit src
-# Or ask Claude to verify the results
+# Fixes vulnerabilities, adds @security-ignore to false positives
 
-# 3. Add @security-ignore comment to false positives (same line)
-
-# 4. Suppressed in next scan
+# 3. False positives suppressed in next scan
 ```
 
 ## SAST
