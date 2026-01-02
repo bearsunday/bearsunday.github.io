@@ -60,7 +60,7 @@ $path = $this->buildPath($id); // @security-ignore path-traversal: $id is valida
 
 ## SAST
 
-ソースコードをスキャンして危険なパターンを検出します：
+ソースコードをスキャンして危険なパターンを検出します。AIエージェント（Claude Code等）から実行し、検出結果の確認もAIに任せることを推奨します。
 
 ```bash
 ./vendor/bin/bear.security-scan src
@@ -195,7 +195,7 @@ composer taint
 
 ## GitHub Actions
 
-CIパイプラインにセキュリティスキャンを追加：
+CIパイプラインにセキュリティスキャンを追加できます：
 
 ```bash
 cp vendor/bear/security/workflows/security-sast.yml .github/workflows/
@@ -209,6 +209,8 @@ cp vendor/bear/security/workflows/security-sast.yml .github/workflows/
 | Psalm Taint | ユーザー入力の流れを追跡してGitHub Securityタブに結果をアップロード |
 
 結果はリポジトリの **Security > Code scanning** セクションに表示されます。
+
+**推奨手順**: 初回はAIエージェントからスキャンを実行し、偽陽性に `@security-ignore` を付与してからCIを有効にしてください。
 
 ## アーキテクチャとセキュリティ
 
