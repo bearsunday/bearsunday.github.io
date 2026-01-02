@@ -195,7 +195,7 @@ composer taint
 
 ## GitHub Actions
 
-Add security scanning to your CI pipeline:
+You can add security scanning to your CI pipeline:
 
 ```bash
 cp vendor/bear/security/workflows/security-sast.yml .github/workflows/
