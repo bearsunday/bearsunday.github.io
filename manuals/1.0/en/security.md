@@ -39,13 +39,13 @@ BEAR.Security adopts a recall-first approach. Missing a vulnerability (False Neg
 
 ```bash
 # 1. Run SAST to detect pattern-based vulnerabilities
-vendor/bin/bear.security-scan src
+./vendor/bin/bear.security-scan src
 
 # 2. Review results and fix vulnerabilities
 # Add @security-ignore comment to false positives (see example below)
 
 # 3. Run AI Auditor to detect business logic issues
-vendor/bin/bear-security-audit src
+./vendor/bin/bear-security-audit src
 
 # 4. Review and fix detected issues
 ```

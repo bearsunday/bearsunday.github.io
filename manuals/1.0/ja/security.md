@@ -39,13 +39,13 @@ BEAR.SecurityはRecall優先を採用しています。脆弱性の見逃し（F
 
 ```bash
 # 1. SASTでパターンベースの脆弱性を検出
-vendor/bin/bear.security-scan src
+./vendor/bin/bear.security-scan src
 
 # 2. 結果を確認し、脆弱性を修正
 # 偽陽性には @security-ignore コメントを付与（下記例参照）
 
 # 3. AI Auditorでビジネスロジックの問題を検出
-vendor/bin/bear-security-audit src
+./vendor/bin/bear-security-audit src
 
 # 4. 検出された問題を確認・修正
 ```
