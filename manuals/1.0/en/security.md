@@ -60,7 +60,7 @@ Once `@security-ignore` is added, the issue is suppressed in subsequent scans.
 
 ## SAST
 
-Scans your source code for dangerous patterns:
+Scans your source code for dangerous patterns. We recommend running this from an AI agent (such as Claude Code) and having the AI verify whether detections are false positives.
 
 ```bash
 ./vendor/bin/bear.security-scan src
@@ -209,6 +209,8 @@ This workflow runs on every push and pull request:
 | Psalm Taint | Traces user input flows and uploads results to GitHub Security tab |
 
 Results appear in your repository's **Security > Code scanning** section.
+
+**Recommended**: Run the scan from an AI agent first, add `@security-ignore` to false positives, then enable CI.
 
 ## Architecture and Security
 
