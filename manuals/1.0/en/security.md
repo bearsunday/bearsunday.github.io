@@ -53,7 +53,7 @@ BEAR.Security adopts a recall-first approach. Missing a vulnerability (False Neg
 Example of suppressing a false positive:
 
 ```php
-$path = $this->buildPath($id); // @security-ignore path-traversal: $id is validated integer from router
+$path = $this->buildPath($id); // @security-ignore PATH_TRAVERSAL_FILE_OPS: $id is validated integer from router
 ```
 
 Once `@security-ignore` is added, the issue is suppressed in subsequent scans.

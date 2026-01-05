@@ -53,7 +53,7 @@ BEAR.SecurityはRecall優先を採用しています。脆弱性の見逃し（F
 偽陽性の抑制例：
 
 ```php
-$path = $this->buildPath($id); // @security-ignore path-traversal: $id is validated integer from router
+$path = $this->buildPath($id); // @security-ignore PATH_TRAVERSAL_FILE_OPS: $id is validated integer from router
 ```
 
 `@security-ignore`を付与すると次回スキャンから抑制されます。
