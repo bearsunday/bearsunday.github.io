@@ -10,6 +10,11 @@ ApiDoc generates API documentation from your application.
 
 The auto-generated documentation from your code and JSON schema will reduce your effort and keep your API documentation accurate.
 
+## Demo
+
+- [ApiDoc](https://bearsunday.github.io/BEAR.ApiDoc/)
+- [OpenAPI](https://bearsunday.github.io/BEAR.ApiDoc/openapi/)
+
 ## Usage
 
 ### Requirements
@@ -35,9 +40,9 @@ composer docs-openapi # Generate OpenAPI spec
 
 ## Source
 
-ApiDoc generates documentation by retrieving information from PHP Attributes, method signatures, and JSON schema.
+ApiDoc generates documentation by retrieving information from PHP Attributes, method signatures, and JSON Schema.
 
-#### PHP Attributes
+### PHP Attributes
 
 Reflecting the method signature and attributes (e.g. `#[Title]`, `#[Description]`, `#[JsonSchema]`) generates the documentation.
 
@@ -86,7 +91,7 @@ Application namespaces
 
 #### scheme
 
-The name of the schema to use for API documentation. `page` or `app`.
+The resource scheme to use for API documentation: `app` or `page`.
 
 #### docDir
 
@@ -96,7 +101,7 @@ Output directory name.
 
 The output format: `html`, `md` (Markdown), or `openapi` (OpenAPI 3.1).
 
-### Optional attributes
+### Optional Attributes
 
 #### title
 
@@ -130,25 +135,22 @@ Links. The `href` is the URL of the link, and the `rel` is its content.
 Specifies an "ALPS profile" that defines the terms used by the API.
 
 ```xml
-<alps>alps/profile.json</alps>.
+<alps>alps.json</alps>
 ```
 
 ## Profile
 
 ApiDoc supports the [ALPS](http://alps.io/) format of the [RFC 6906 Profile](https://tools.ietf.org/html/rfc6906) which gives additional information to the application.
 
-Words used in API request and response keys are called semantic descriptors, and if you create a dictionary of profiles, you don't need to describe the words for each request.
-Centralized definitions of words and phrases prevent notational errors and aid in shared understanding.
-
-The words used in API request and response keys are called semantic descriptors, and creating a dictionary of profiles eliminates the need to explain the words for each request.
-Centralized definitions of words and phrases prevent shaky notation and aid in shared understanding.
+Words used in API request and response keys are called semantic descriptors. By creating a profile dictionary, you don't need to describe each term for every request. Centralized definitions prevent inconsistencies and aid in shared understanding.
 
 The following is an example of defining descriptors `firstName` and `familyName` with `title` and `def` respectively.
 While `title` describes a word and clarifies its meaning, `def` links standard words defined in vocabulary sites such as [Schema.org](https://schema.org/).
 
 ALPS profiles can be written in XML or JSON.
 
-profile.xml
+**profile.xml**
+
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <alps
@@ -160,15 +162,15 @@ profile.xml
 </alps>
 ```
 
-profile.json
+**profile.json**
 
 ```json
 {
   "$schema": "https://alps-io.github.io/schemas/alps.json",
   "alps": {
     "descriptor": [
-      {"id": "firstName", "title": "The person's first name."}
-      {"id": "familyName", "def": "https://schema.org/familyName"},
+      {"id": "firstName", "title": "The person's first name."},
+      {"id": "familyName", "def": "https://schema.org/familyName"}
     ]
   }
 }
@@ -176,8 +178,58 @@ profile.json
 
 Descriptions of words appearing in ApiDoc take precedence over phpdoc > JsonSchema > ALPS in that order.
 
+## GitHub Actions
+
+You can use the reusable workflow to generate and publish API documentation automatically.
+
+### Setup
+
+1. Install bear/api-doc and configure `apidoc.xml`
+2. Create `.github/workflows/apidoc.yml` in your repository:
+
+```yaml
+name: API Docs
+on:
+  push:
+    branches: [main]
+
+jobs:
+  docs:
+    uses: bearsunday/BEAR.ApiDoc/.github/workflows/apidoc.yml@v1
+    with:
+      format: 'html,openapi,alps'
+      alps-profile: 'alps.json'
+```
+
+3. Enable GitHub Pages in your repository settings:
+   - Go to Settings → Pages
+   - Set Source to "GitHub Actions"
+
+### Inputs
+
+| Input | Default | Description |
+|-------|---------|-------------|
+| `php-version` | `'8.2'` | PHP version |
+| `format` | `'html'` | Comma-separated: html (apidoc), md, openapi, alps |
+| `alps-profile` | `''` | ALPS profile path (required for alps format) |
+| `docs-path` | `'docs/api'` | Output directory |
+| `publish-to` | `'github-pages'` | `github-pages` or `artifact-only` |
+
+### Output Structure
+
+```text
+docs/
+├── index.html          # apidoc
+├── schemas/            # JSON Schema
+│   └── *.json
+├── openapi/
+│   ├── openapi.json    # OpenAPI spec
+│   └── index.html      # Redocly HTML
+└── alps/
+    ├── alps.json       # ALPS profile
+    └── index.html      # ASD HTML
+```
+
 ## Reference
 
-* [Demo](https://bearsunday.github.io/BEAR.ApiDoc/)
-* [ALPS](http://alps.io/)
-* [ALPS-ASD](https://github.com/koriym/app-state-diagram)
+* [ALPS](https://www.app-state-diagram.com/)

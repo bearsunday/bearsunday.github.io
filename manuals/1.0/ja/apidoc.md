@@ -9,52 +9,61 @@ permalink: /manuals/1.0/ja/apidoc.html
 
 BEAR.ApiDocは、アプリケーションからAPIドキュメントを生成します。コードとJSONスキーマから自動生成されるドキュメントは、手間を減らし正確なAPIドキュメントを維持し続けることができます。
 
+## デモ
+
+- [ApiDoc](https://bearsunday.github.io/BEAR.ApiDoc/)
+- [OpenAPI](https://bearsunday.github.io/BEAR.ApiDoc/openapi/)
+
 ## 利用方法
 
-BEAR.ApiDocをインストールします。
+### 動作環境
 
-```
-composer require bear/api-doc --dev
-```
+* PHP 8.2+
 
-設定ファイルをコピーします。
+### インストール
 
-```
-cp ./vendor/bear/api-doc/apidoc.xml.dist ./apidoc.xml
+    composer require bear/api-doc --dev
+
+### 設定ファイルをコピー
+
+    cp ./vendor/bear/api-doc/apidoc.xml.dist ./apidoc.xml
+
+### 実行
+
+```bash
+composer docs        # 外部CSSでドキュメント生成
+composer docs-dev    # インラインCSSでドキュメント生成（開発用）
+composer docs-md     # Markdownドキュメント生成
+composer docs-openapi # OpenAPI仕様を生成
 ```
 
 ## ソース
 
-BEAR.ApiDocはphpdoc、メソッドシグネチャ、JSONスキーマから情報を取得してドキュメントを生成します。
+BEAR.ApiDocはPHP属性、メソッドシグネチャ、JSONスキーマから情報を取得してドキュメントを生成します。
 
-#### PHPDOC
+### PHP属性
 
-phpdocでは以下の部分が取得されます。認証などリソースに横断的に適用される情報は別のドキュメントページを用意して`@link`でリンクします。
-
-```php
-/**
- * {title}
- *
- * {description}
- *
- * {@link https://example.com/docs/auth 認証}
- */
-class Foo extends ResourceObject { }
-```
+メソッドシグネチャと属性（例：`#[Title]`、`#[Description]`、`#[JsonSchema]`）を反映してドキュメントを生成します。
 
 ```php
-/**
- * {title}
- *
- * {description}
- *
- * @param string $id ユーザーID
- */
-public function onGet(string $id = 'kuma'): static { }
+use BEAR\ApiDoc\Annotation\Title;
+use BEAR\ApiDoc\Annotation\Description;
+use BEAR\Resource\Annotation\Link;
+
+#[Title("User")]
+#[Description("User resource")]
+#[Link(rel: "friend", href: "/friend?id={id}")]
+class User extends ResourceObject
+{
+    #[Title("Get User")]
+    public function onGet(string $id): static
+    {
+    }
+}
 ```
 
-* メソッドのphpdocに`@param`記述が無い場合、メソッドシグネチャーから引数の情報を取得します。
-* 情報取得の優先順はphpdoc、JSONスキーマ、プロファイルの順です。
+* 属性がない場合は、PHPDocまたはメソッドシグネチャから情報を取得します。
+* 情報取得の優先順は属性、PHPDoc、JSONスキーマ、プロファイルの順です。
 
 ## 設定ファイル
 
@@ -63,8 +72,8 @@ public function onGet(string $id = 'kuma'): static { }
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <apidoc
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:noNamespaceSchemaLocation="https://bearsunday.github.io/BEAR.ApiDoc/apidoc.xsd">
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="https://bearsunday.github.io/BEAR.ApiDoc/apidoc.xsd">
     <appName>MyVendor\MyProject</appName>
     <scheme>app</scheme>
     <docDir>docs</docDir>
@@ -75,33 +84,43 @@ public function onGet(string $id = 'kuma'): static { }
 ### 必須属性
 
 #### appName
+
 アプリケーションの名前空間
 
 #### scheme
-APIドキュメントにするスキーマ名。`page`または`app`
+
+APIドキュメントにするリソーススキーム：`app`または`page`
 
 #### docDir
+
 出力ディレクトリ名
 
 #### format
-出力フォーマット。HTMLまたはMD (Markdown)
+
+出力フォーマット：`html`、`md`（Markdown）、または`openapi`（OpenAPI 3.1）
 
 ### オプション属性
 
 #### title
+
 APIタイトル
+
 ```xml
 <title>MyBlog API</title>
 ```
 
 #### description
+
 APIディスクリプション
+
 ```xml
 <description>MyBlog API description</description>
 ```
 
 #### links
+
 リンク。`href`でリンク先URL、`rel`でその内容を表します。
+
 ```xml
 <links>
     <link href="https://www.example.com/issue" rel="issue" />
@@ -110,51 +129,104 @@ APIディスクリプション
 ```
 
 #### alps
-APIで使われる語句を定義する"ALPSプロファイル"を指定します。
+
+APIで使われる語句を定義する「ALPSプロファイル」を指定します。
+
 ```xml
-<alps>alps/profile.json</alps>
+<alps>alps.json</alps>
 ```
 
 ## プロファイル
 
 BEAR.ApiDocはアプリケーションに追加情報を与える[RFC 6906 プロファイル](https://tools.ietf.org/html/rfc6906)の[ALPS](http://alps.io/)フォーマットをサポートします。
 
-APIのリクエストやレスポンスのキーで使う語句をセマンティックディスクリプタ（意味的記述子）と呼びますが、プロファイルでその辞書を作っておけばリクエスト毎に語句を説明する必要がなくなります。語句の定義が集中することで表記揺れを防ぎ、理解共有を助けます。
+APIのリクエストやレスポンスのキーで使う語句をセマンティックディスクリプタ（意味的記述子）と呼びます。プロファイルでその辞書を作っておけば、リクエスト毎に語句を説明する必要がなくなります。語句の定義が集中することで表記揺れを防ぎ、理解共有を助けます。
 
-以下は`firstName`,`familyName`というディスクリプタをそれぞれ`title`、`def`で定義した例です。`title`は言葉を記述して意味を明らかにしますが、`def`は[Schema.org](https://schema.org/)などのボキャブラリサイトで定義されたスタンダードな語句をリンクします。
+以下は`firstName`、`familyName`というディスクリプタをそれぞれ`title`、`def`で定義した例です。`title`は言葉を記述して意味を明らかにしますが、`def`は[Schema.org](https://schema.org/)などのボキャブラリサイトで定義されたスタンダードな語句をリンクします。
 
 ALPSプロファイルはXMLまたはJSONで記述します。
 
-profile.xml
+**profile.xml**
+
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <alps
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:noNamespaceSchemaLocation="https://alps-io.github.io/schemas/alps.xsd">
+     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:noNamespaceSchemaLocation="https://alps-io.github.io/schemas/alps.xsd">
     <!-- Ontology -->
     <descriptor id="firstName" title="The person's first name."/>
     <descriptor id="familyName" def="https://schema.org/familyName"/>
 </alps>
 ```
 
-profile.json
+**profile.json**
+
 ```json
 {
-    "$schema": "https://alps-io.github.io/schemas/alps.json",
-    "alps": {
-        "descriptor": [
-            {"id": "firstName", "title": "The person's first name."},
-            {"id": "familyName", "def": "https://schema.org/familyName"}
-        ]
-    }
+  "$schema": "https://alps-io.github.io/schemas/alps.json",
+  "alps": {
+    "descriptor": [
+      {"id": "firstName", "title": "The person's first name."},
+      {"id": "familyName", "def": "https://schema.org/familyName"}
+    ]
+  }
 }
 ```
 
-ApiDocに登場する語句の説明はphpdoc > JsonSchema > ALPSの順で優先します。
+ApiDocに登場する語句の説明はPHPDoc > JSONSchema > ALPSの順で優先します。
 
-## リンク
+## GitHub Actions
 
-* [Demo](https://bearsunday.github.io/BEAR.ApiDoc/)
-* [ALPS](http://alps.io/)
-* [ALPS-ASD](https://github.com/koriym/app-state-diagram)
-* [メディアタイプとALPSプロファイル](https://qiita.com/koriym/items/2e928efb2167d559052e)
+再利用可能なワークフローを使用して、APIドキュメントを自動的に生成・公開できます。
+
+### セットアップ
+
+1. bear/api-docをインストールし、`apidoc.xml`を設定
+2. リポジトリに`.github/workflows/apidoc.yml`を作成：
+
+```yaml
+name: API Docs
+on:
+  push:
+    branches: [main]
+
+jobs:
+  docs:
+    uses: bearsunday/BEAR.ApiDoc/.github/workflows/apidoc.yml@v1
+    with:
+      format: 'html,openapi,alps'
+      alps-profile: 'alps.json'
+```
+
+3. リポジトリ設定でGitHub Pagesを有効化：
+   - Settings → Pages に移動
+   - Source を「GitHub Actions」に設定
+
+### 入力パラメータ
+
+| 入力 | デフォルト | 説明 |
+|------|-----------|------|
+| `php-version` | `'8.2'` | PHPバージョン |
+| `format` | `'html'` | カンマ区切り: html (apidoc), md, openapi, alps |
+| `alps-profile` | `''` | ALPSプロファイルのパス（alps形式に必須） |
+| `docs-path` | `'docs/api'` | 出力ディレクトリ |
+| `publish-to` | `'github-pages'` | `github-pages`または`artifact-only` |
+
+### 出力構造
+
+```text
+docs/
+├── index.html          # apidoc
+├── schemas/            # JSON Schema
+│   └── *.json
+├── openapi/
+│   ├── openapi.json    # OpenAPI仕様
+│   └── index.html      # Redocly HTML
+└── alps/
+    ├── alps.json       # ALPSプロファイル
+    └── index.html      # ASD HTML
+```
+
+## リファレンス
+
+* [ALPS](https://www.app-state-diagram.com/)
