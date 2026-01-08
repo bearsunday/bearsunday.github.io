@@ -6,9 +6,14 @@ permalink: /manuals/1.0/en/apidoc.html
 ---
 # API Doc
 
-ApiDoc generates API documentation from your application.
+BEAR.ApiDoc visualizes your API design and publishes it in formats that both humans and machines can understand.
 
-The auto-generated documentation from your code and JSON schema will reduce your effort and keep your API documentation accurate.
+- **HTML**: Developer documentation
+- **OpenAPI**: Tool chain integration (SDK generation, mock servers, Swagger UI)
+- **JSON Schema**: Client-side validation and form generation
+- **ALPS**: Semantic vocabulary definitions
+
+The documentation generated from your code and JSON Schema is always accurate and synchronized with the actual implementation.
 
 ## Demo
 
