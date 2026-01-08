@@ -12,51 +12,54 @@ The auto-generated documentation from your code and JSON schema will reduce your
 
 ## Usage
 
-Install BEAR.ApiDoc.
+### Requirements
+
+* PHP 8.2+
+
+### Installation
 
     composer require bear/api-doc --dev
 
-Copy the configuration file.
+### Copy Configuration
 
     cp ./vendor/bear/api-doc/apidoc.xml.dist ./apidoc.xml
 
+### Run
+
+```bash
+composer docs        # Generate docs with external CSS
+composer docs-dev    # Generate docs with inline CSS for development
+composer docs-md     # Generate Markdown docs
+composer docs-openapi # Generate OpenAPI spec
+```
+
 ## Source
 
-ApiDoc generates documentation by retrieving information from phpdoc, method signatures, and JSON schema.
+ApiDoc generates documentation by retrieving information from PHP Attributes, method signatures, and JSON schema.
 
-#### PHPDOC
+#### PHP Attributes
 
-In phpdoc, the following parts are retrieved.
-For information that applies across resources, such as authentication, prepare a separate documentation page and link it with `@link`.
-
-```php
-/**
- * {title}
- *
- * {description}
- *
- * {@link htttp;//example.com/docs/auth 認証}
- */
- class Foo extends ResourceObject
- {
- }
-```
+Reflecting the method signature and attributes (e.g. `#[Title]`, `#[Description]`, `#[JsonSchema]`) generates the documentation.
 
 ```php
-/**
- * {title}
- *
- * {description}
- *
- * @param string $id ユーザーID
- */
- public function onGet(string $id ='kuma'): static
- {
- }
+use BEAR\ApiDoc\Annotation\Title;
+use BEAR\ApiDoc\Annotation\Description;
+use BEAR\Resource\Annotation\Link;
+
+#[Title("User")]
+#[Description("User resource")]
+#[Link(rel: "friend", href: "/friend?id={id}")]
+class User extends ResourceObject
+{
+    #[Title("Get User")]
+    public function onGet(string $id): static
+    {
+    }
+}
 ```
 
-* If there is no `@param` description in the phpdoc of the method, get the information of the argument from the method signature.
-* The order of priority for information acquisition is phpdoc, JSON schema, and profile.
+* If there is no attribute, information is retrieved from PHPDoc or method signature.
+* The order of priority for information acquisition is Attribute, PHPDoc, JSON schema, and profile.
 
 ## Configuration
 
@@ -91,7 +94,7 @@ Output directory name.
 
 #### format
 
-The output format, HTML or MD (Mark down).
+The output format: `html`, `md` (Markdown), or `openapi` (OpenAPI 3.1).
 
 ### Optional attributes
 
@@ -108,7 +111,7 @@ API title
 API description
 
 ```xml
-<description>MyBlog API description</description
+<description>MyBlog API description</description>
 ```
 
 #### links
