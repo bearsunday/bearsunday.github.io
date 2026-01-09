@@ -203,3 +203,103 @@ array (
                     ),
  ...
 ```
+
+### DataLoader
+
+Crawl operations can cause N+1 problems when each linked resource makes individual database queries. The DataLoader pattern solves this by batching multiple requests into a single query.
+
+The DataLoader name comes from [Facebook's DataLoader](https://github.com/graphql/dataloader), which provides a consistent API for batching and caching data loading operations.
+
+#### Without DataLoader
+
+```
+Author (1 query)
+└── Post × 3 (1 query, returns 3)
+    └── Meta (3 queries) ← N+1 problem!
+```
+
+#### With DataLoader
+
+```
+Author (1 query)
+└── Post × 3 (1 query)
+    └── Meta (1 batched query) ← Solved!
+```
+
+#### Implementation
+
+1. Create a DataLoader class implementing `DataLoaderInterface`:
+
+```php
+use Aura\Sql\ExtendedPdoInterface;
+use BEAR\Resource\DataLoader\DataLoaderInterface;
+
+class MetaDataLoader implements DataLoaderInterface
+{
+    public function __construct(
+        private ExtendedPdoInterface $pdo
+    ) {}
+
+    public function __invoke(array $queries): array
+    {
+        // $queries contains query parameters for each request
+        // e.g., [['post_id' => '1'], ['post_id' => '2'], ['post_id' => '3']]
+
+        $postIds = array_column($queries, 'post_id');
+
+        // Single bulk query with IN clause
+        $sql = "SELECT * FROM meta WHERE post_id IN (:post_ids)";
+        return $this->pdo->fetchAll($sql, ['post_ids' => $postIds]);
+    }
+}
+
+// You can also use Ray.MediaQuery pattern:
+// class MetaDataLoader implements DataLoaderInterface
+// {
+//     public function __construct(private MetaQueryInterface $query) {}
+//     public function __invoke(array $queries): array
+//     {
+//         return $this->query->list(array_column($queries, 'post_id'));
+//     }
+// }
+```
+
+2. Specify the DataLoader in the `#[Link]` attribute:
+
+```php
+#[Link(crawl: "post-tree", rel: "meta", href: "app://self/meta{?post_id}", dataLoader: MetaDataLoader::class)]
+public function onGet($author_id)
+```
+
+The DataLoader automatically:
+- Collects all queries during crawl
+- Calls your DataLoader once with all queries
+- Distributes results to the appropriate resources based on key matching
+
+#### Key Inference
+
+The key for matching results is auto-inferred from the URI template:
+
+| URI Template | Inferred Key |
+|--------------|--------------|
+| `{?post_id}` | `post_id` |
+| `post_id={id}` | `post_id` |
+| `{?post_id,locale}` | `post_id`, `locale` |
+
+The returned rows must contain the key column(s) for proper distribution.
+
+#### Multiple Keys
+
+For multiple key parameters, use all keys in your query:
+
+```php
+// URI template: app://self/translation{?post_id,locale}
+// $queries: [['post_id' => '1', 'locale' => 'en'], ['post_id' => '1', 'locale' => 'ja']]
+
+public function __invoke(array $queries): array
+{
+    // Build query using both keys
+    $sql = "SELECT * FROM translation WHERE (post_id, locale) IN (...)";
+    // ...
+}
+```

@@ -194,3 +194,103 @@ array (
                     ), 
                     // ...
 ```
+
+### DataLoader
+
+Crawl操作では、リンクされた各リソースが個別にデータベースクエリを実行するとN+1問題が発生します。DataLoaderパターンは、複数のリクエストを単一のクエリにバッチ処理することでこの問題を解決します。
+
+DataLoaderという名前は、[Facebook's DataLoader](https://github.com/graphql/dataloader)パターンに由来しています。
+
+#### DataLoaderなし
+
+```
+Author (1クエリ)
+└── Post × 3 (1クエリ、3件返却)
+    └── Meta (3クエリ) ← N+1問題！
+```
+
+#### DataLoaderあり
+
+```
+Author (1クエリ)
+└── Post × 3 (1クエリ)
+    └── Meta (1バッチクエリ) ← 解決！
+```
+
+#### 実装方法
+
+1. `DataLoaderInterface`を実装したDataLoaderクラスを作成します:
+
+```php
+use Aura\Sql\ExtendedPdoInterface;
+use BEAR\Resource\DataLoader\DataLoaderInterface;
+
+class MetaDataLoader implements DataLoaderInterface
+{
+    public function __construct(
+        private ExtendedPdoInterface $pdo
+    ) {}
+
+    public function __invoke(array $queries): array
+    {
+        // $queriesには各リクエストのクエリパラメータが含まれます
+        // 例: [['post_id' => '1'], ['post_id' => '2'], ['post_id' => '3']]
+
+        $postIds = array_column($queries, 'post_id');
+
+        // IN句を使用した単一のバルククエリ
+        $sql = "SELECT * FROM meta WHERE post_id IN (:post_ids)";
+        return $this->pdo->fetchAll($sql, ['post_ids' => $postIds]);
+    }
+}
+
+// Ray.MediaQueryパターンも使用できます:
+// class MetaDataLoader implements DataLoaderInterface
+// {
+//     public function __construct(private MetaQueryInterface $query) {}
+//     public function __invoke(array $queries): array
+//     {
+//         return $this->query->list(array_column($queries, 'post_id'));
+//     }
+// }
+```
+
+2. `#[Link]`アトリビュートでDataLoaderを指定します:
+
+```php
+#[Link(crawl: "post-tree", rel: "meta", href: "app://self/meta{?post_id}", dataLoader: MetaDataLoader::class)]
+public function onGet($author_id)
+```
+
+DataLoaderは自動的に:
+- Crawl中にすべてのクエリを収集
+- DataLoaderを一度だけ呼び出し
+- キーマッチングに基づいて結果を適切なリソースに分配
+
+#### キーの推論
+
+結果のマッチングに使用するキーは、URIテンプレートから自動的に推論されます:
+
+| URIテンプレート | 推論されるキー |
+|--------------|--------------|
+| `{?post_id}` | `post_id` |
+| `post_id={id}` | `post_id` |
+| `{?post_id,locale}` | `post_id`, `locale` |
+
+返される行には、適切な分配のためにキーカラムが含まれている必要があります。
+
+#### 複数キー
+
+複数のキーパラメータの場合、クエリですべてのキーを使用します:
+
+```php
+// URIテンプレート: app://self/translation{?post_id,locale}
+// $queries: [['post_id' => '1', 'locale' => 'en'], ['post_id' => '1', 'locale' => 'ja']]
+
+public function __invoke(array $queries): array
+{
+    // 両方のキーを使用してクエリを構築
+    $sql = "SELECT * FROM translation WHERE (post_id, locale) IN (...)";
+    // ...
+}
+```
