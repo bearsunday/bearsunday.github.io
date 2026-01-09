@@ -23,7 +23,53 @@ Your application is the documentation.
 
 ```bash
 composer require bear/api-doc --dev
-cp vendor/bear/api-doc/apidoc.xml.dist apidoc.xml
+./vendor/bin/apidoc init
+```
+
+The `init` command generates `apidoc.xml` from your `composer.json`. Edit it to customize.
+
+```xml
+<apidoc>
+    <appName>MyVendor\MyProject</appName>  <!-- Application namespace -->
+    <scheme>app</scheme>                    <!-- app or page -->
+    <docDir>docs/api</docDir>
+    <format>html</format>                   <!-- html, html,openapi, etc. -->
+</apidoc>
+```
+
+The `format` accepts comma-separated values: `html`, `md`, `openapi`.
+
+## Usage
+
+Generate documentation from the command line.
+
+```bash
+./vendor/bin/apidoc -capidoc.xml
+```
+
+### OpenAPI HTML Generation
+
+When `openapi` format is specified, `openapi.json` is generated. Use Redocly CLI to convert it to HTML.
+
+```bash
+npm install -g @redocly/cli
+redocly build-docs docs/api/openapi/openapi.json -o docs/api/openapi/index.html
+```
+
+### Composer Scripts
+
+Add scripts to `composer.json` for convenience.
+
+```json
+{
+    "scripts": {
+        "docs": "./vendor/bin/apidoc -capidoc.xml"
+    }
+}
+```
+
+```bash
+composer docs
 ```
 
 ## GitHub Actions
@@ -98,7 +144,7 @@ docs/
 
 ## Profile
 
-[ALPS](http://alps.io/) profile defines your API vocabulary. Centralized definitions prevent inconsistencies and aid shared understanding.
+ALPS profile defines your API vocabulary. Centralized definitions prevent inconsistencies and aid shared understanding.
 
 ```json
 {
@@ -118,4 +164,7 @@ Code is the single source of truth. Documentation generated from your applicatio
 
 ## Reference
 
-- [ALPS](https://www.app-state-diagram.com/manuals/1.0/en/)
+- [BEAR.ApiDoc](https://github.com/bearsunday/BEAR.ApiDoc) - API documentation generator
+- [ALPS](https://www.app-state-diagram.com/manuals/1.0/en/) - Application-Level Profile Semantics
+- [JSON Schema](https://json-schema.org/) - Data validation and documentation
+- [Redocly CLI](https://redocly.com/docs/cli/installation/) - OpenAPI to HTML conversion

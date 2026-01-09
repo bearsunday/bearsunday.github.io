@@ -23,7 +23,53 @@ permalink: /manuals/1.0/ja/apidoc.html
 
 ```bash
 composer require bear/api-doc --dev
-cp vendor/bear/api-doc/apidoc.xml.dist apidoc.xml
+./vendor/bin/apidoc init
+```
+
+`init`コマンドは`composer.json`から`apidoc.xml`を生成します。必要に応じて編集してください。
+
+```xml
+<apidoc>
+    <appName>MyVendor\MyProject</appName>  <!-- アプリケーションの名前空間 -->
+    <scheme>app</scheme>                    <!-- app または page -->
+    <docDir>docs/api</docDir>
+    <format>html</format>                   <!-- html, html,openapi など -->
+</apidoc>
+```
+
+`format`には`html`、`md`、`openapi`をカンマ区切りで指定できます。
+
+## 使い方
+
+コマンドラインからドキュメントを生成します。
+
+```bash
+./vendor/bin/apidoc -capidoc.xml
+```
+
+### OpenAPI HTML生成
+
+`openapi`形式を指定すると`openapi.json`が生成されます。これをHTMLに変換するにはRedocly CLIを使用します。
+
+```bash
+npm install -g @redocly/cli
+redocly build-docs docs/api/openapi/openapi.json -o docs/api/openapi/index.html
+```
+
+### Composerスクリプト
+
+`composer.json`にスクリプトを追加すると便利です。
+
+```json
+{
+    "scripts": {
+        "docs": "./vendor/bin/apidoc -capidoc.xml"
+    }
+}
+```
+
+```bash
+composer docs
 ```
 
 ## GitHub Actions
@@ -98,7 +144,7 @@ docs/
 
 ## プロファイル
 
-[ALPS](http://alps.io/)プロファイルはAPIの語彙を定義します。定義を集中させることで表記揺れを防ぎ、理解共有を助けます。
+ALPSプロファイルはAPIの語彙を定義します。定義を集中させることで表記揺れを防ぎ、理解共有を助けます。
 
 ```json
 {
@@ -118,4 +164,7 @@ docs/
 
 ## リファレンス
 
-- [ALPS](https://www.app-state-diagram.com/manuals/1.0/ja/)
+- [BEAR.ApiDoc](https://github.com/bearsunday/BEAR.ApiDoc) - APIドキュメント生成ツール
+- [ALPS](https://www.app-state-diagram.com/manuals/1.0/ja/) - Application-Level Profile Semantics
+- [JSON Schema](https://json-schema.org/) - データ検証とドキュメンテーション
+- [Redocly CLI](https://redocly.com/docs/cli/installation/) - OpenAPIからHTMLへの変換
