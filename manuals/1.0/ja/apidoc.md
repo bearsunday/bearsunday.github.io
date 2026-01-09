@@ -63,7 +63,10 @@ redocly build-docs docs/api/openapi/openapi.json -o docs/api/openapi/index.html
 ```json
 {
     "scripts": {
-        "docs": "./vendor/bin/apidoc -capidoc.xml"
+        "docs": "./vendor/bin/apidoc"
+    },
+    "scripts-descriptions": {
+        "docs": "Generate API documentation"
     }
 }
 ```

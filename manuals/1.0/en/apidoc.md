@@ -63,7 +63,10 @@ Add scripts to `composer.json` for convenience.
 ```json
 {
     "scripts": {
-        "docs": "./vendor/bin/apidoc -capidoc.xml"
+        "docs": "./vendor/bin/apidoc"
+    },
+    "scripts-descriptions": {
+        "docs": "Generate API documentation"
     }
 }
 ```
