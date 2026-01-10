@@ -13,6 +13,7 @@ permalink: /manuals/1.0/ja/apidoc.html
 - **OpenAPI 3.1**: ツールチェーン連携
 - **JSON Schema**: 情報モデル
 - **ALPS**: AIが理解できる語彙の意味論
+- **llms.txt**: AI向けアプリケーション概要
 
 ## デモ
 
@@ -37,7 +38,7 @@ composer require bear/api-doc --dev
 </apidoc>
 ```
 
-`format`には`html`、`md`、`openapi`をカンマ区切りで指定できます。
+`format`には`html`、`md`、`openapi`、`llms`をカンマ区切りで指定できます。
 
 ## 使い方
 
@@ -89,7 +90,7 @@ jobs:
   docs:
     uses: bearsunday/BEAR.ApiDoc/.github/workflows/apidoc.yml@v1
     with:
-      format: 'html,openapi,alps'
+      format: 'html,openapi,llms,alps'
       alps-profile: 'alps.json'
 ```
 
@@ -100,7 +101,7 @@ GitHub Pagesを有効化: Settings → Pages → Source: "GitHub Actions"
 | 入力 | デフォルト | 説明 |
 |------|-----------|------|
 | `php-version` | `'8.2'` | PHPバージョン |
-| `format` | `'html,openapi'` | カンマ区切り: html, md, openapi, alps |
+| `format` | `'html,openapi,llms'` | カンマ区切り: html, md, openapi, alps, llms |
 | `alps-profile` | `''` | ALPSプロファイルのパス（alps形式に必須） |
 | `docs-path` | `'docs/api'` | 出力ディレクトリ |
 | `publish-to` | `'github-pages'` | `github-pages`または`artifact-only` |
@@ -110,6 +111,7 @@ GitHub Pagesを有効化: Settings → Pages → Source: "GitHub Actions"
 ```
 docs/
 ├── index.html          # APIドキュメント
+├── llms.txt            # AI向け概要
 ├── schemas/
 │   ├── index.html      # スキーマ一覧
 │   └── *.json          # JSON Schema
@@ -141,7 +143,7 @@ docs/
 | `appName` | Yes | アプリケーションの名前空間 |
 | `scheme` | Yes | `app`または`page` |
 | `docDir` | Yes | 出力ディレクトリ |
-| `format` | Yes | `html`, `md`, `openapi` |
+| `format` | Yes | `html`, `md`, `openapi`, `llms` |
 | `title` | | APIタイトル |
 | `alps` | | ALPSプロファイルのパス |
 

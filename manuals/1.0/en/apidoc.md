@@ -13,6 +13,7 @@ Your application is the documentation.
 - **OpenAPI 3.1**: Tool chain integration
 - **JSON Schema**: Information model
 - **ALPS**: Vocabulary semantics for AI understanding
+- **llms.txt**: AI-readable application overview
 
 ## Demo
 
@@ -37,7 +38,7 @@ The `init` command generates `apidoc.xml` from your `composer.json`. Edit it to 
 </apidoc>
 ```
 
-The `format` accepts comma-separated values: `html`, `md`, `openapi`.
+The `format` accepts comma-separated values: `html`, `md`, `openapi`, `llms`.
 
 ## Usage
 
@@ -89,7 +90,7 @@ jobs:
   docs:
     uses: bearsunday/BEAR.ApiDoc/.github/workflows/apidoc.yml@v1
     with:
-      format: 'html,openapi,alps'
+      format: 'html,openapi,llms,alps'
       alps-profile: 'alps.json'
 ```
 
@@ -100,7 +101,7 @@ Enable GitHub Pages: Settings → Pages → Source: "GitHub Actions"
 | Input | Default | Description |
 |-------|---------|-------------|
 | `php-version` | `'8.2'` | PHP version |
-| `format` | `'html,openapi'` | Comma-separated: html, md, openapi, alps |
+| `format` | `'html,openapi,llms'` | Comma-separated: html, md, openapi, alps, llms |
 | `alps-profile` | `''` | ALPS profile path (required for alps format) |
 | `docs-path` | `'docs/api'` | Output directory |
 | `publish-to` | `'github-pages'` | `github-pages` or `artifact-only` |
@@ -110,6 +111,7 @@ Enable GitHub Pages: Settings → Pages → Source: "GitHub Actions"
 ```
 docs/
 ├── index.html          # API documentation
+├── llms.txt            # AI-readable overview
 ├── schemas/
 │   ├── index.html      # Schema list
 │   └── *.json          # JSON Schema
@@ -141,7 +143,7 @@ docs/
 | `appName` | Yes | Application namespace |
 | `scheme` | Yes | `app` or `page` |
 | `docDir` | Yes | Output directory |
-| `format` | Yes | `html`, `md`, `openapi` |
+| `format` | Yes | `html`, `md`, `openapi`, `llms` |
 | `title` | | API title |
 | `alps` | | ALPS profile path |
 
