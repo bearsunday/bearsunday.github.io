@@ -108,7 +108,7 @@ Enable GitHub Pages: Settings → Pages → Source: "GitHub Actions"
 
 ### Output Structure
 
-```
+```text
 docs/
 ├── index.html          # API documentation
 ├── llms.txt            # AI-readable overview

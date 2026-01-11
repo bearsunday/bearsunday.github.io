@@ -108,7 +108,7 @@ GitHub Pagesを有効化: Settings → Pages → Source: "GitHub Actions"
 
 ### 出力構造
 
-```
+```text
 docs/
 ├── index.html          # APIドキュメント
 ├── llms.txt            # AI向け概要
