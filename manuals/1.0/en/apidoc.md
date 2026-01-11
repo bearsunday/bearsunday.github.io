@@ -57,6 +57,10 @@ npm install -g @redocly/cli
 redocly build-docs docs/api/openapi.json -o docs/api/openapi.html
 ```
 
+### llms.txt
+
+The `llms` format generates `llms.txt` following the [llms.txt specification](https://llmstxt.org/). Unlike typical API references that list endpoints, this provides a comprehensive application document—including infrastructure boundary interfaces (Query/Command), their query language (SQL), and domain ontology (Entities). It captures the full information architecture, enabling AI agents to understand not just what operations exist, but how the application is structured.
+
 ### Composer Scripts
 
 Add scripts to `composer.json` for convenience.

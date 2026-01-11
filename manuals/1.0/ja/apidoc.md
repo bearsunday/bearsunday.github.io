@@ -57,6 +57,10 @@ npm install -g @redocly/cli
 redocly build-docs docs/api/openapi.json -o docs/api/openapi.html
 ```
 
+### llms.txt
+
+`llms`フォーマットは[llms.txt仕様](https://llmstxt.org/)に従った`llms.txt`を生成します。エンドポイントを列挙する一般的なAPIリファレンスとは異なり、インフラ境界のインターフェイス（Query/Command）、そのクエリ言語（SQL）、ドメインオントロジー（Entity）を含む包括的なアプリケーションドキュメントを提供します。完全な情報アーキテクチャを捉え、AIエージェントがオペレーションだけでなくアプリケーションの構造を理解できるようにします。
+
 ### Composerスクリプト
 
 `composer.json`にスクリプトを追加すると便利です。
