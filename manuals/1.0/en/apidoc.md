@@ -45,7 +45,7 @@ The `format` accepts comma-separated values: `html`, `md`, `openapi`, `llms`.
 Generate documentation from the command line.
 
 ```bash
-./vendor/bin/apidoc -capidoc.xml
+./vendor/bin/apidoc
 ```
 
 ### OpenAPI HTML Generation
@@ -117,10 +117,10 @@ docs/
 │   └── *.json          # JSON Schema
 ├── openapi/
 │   ├── openapi.json    # OpenAPI spec
-│   └── index.html      # Redocly HTML
+│   └── index.html      # Redocly HTML (gh workflow only)
 └── alps/
     ├── alps.json       # ALPS profile
-    └── index.html      # ASD state diagram
+    └── index.html      # ASD state diagram (gh workflow only)
 ```
 
 ## Configuration

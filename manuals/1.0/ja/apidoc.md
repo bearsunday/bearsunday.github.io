@@ -45,7 +45,7 @@ composer require bear/api-doc --dev
 コマンドラインからドキュメントを生成します。
 
 ```bash
-./vendor/bin/apidoc -capidoc.xml
+./vendor/bin/apidoc
 ```
 
 ### OpenAPI HTML生成
@@ -117,10 +117,10 @@ docs/
 │   └── *.json          # JSON Schema
 ├── openapi/
 │   ├── openapi.json    # OpenAPI仕様
-│   └── index.html      # Redocly HTML
+│   └── index.html      # Redocly HTML (gh workflowのみ)
 └── alps/
     ├── alps.json       # ALPSプロファイル
-    └── index.html      # ASD状態遷移図
+    └── index.html      # ASD状態遷移図 (gh workflowのみ)
 ```
 
 ## 設定ファイル
