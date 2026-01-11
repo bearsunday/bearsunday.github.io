@@ -112,15 +112,10 @@ GitHub Pagesを有効化: Settings → Pages → Source: "GitHub Actions"
 docs/
 ├── index.html          # APIドキュメント
 ├── llms.txt            # AI向け概要
-├── schemas/
-│   ├── index.html      # スキーマ一覧
-│   └── *.json          # JSON Schema
-├── openapi/
-│   ├── openapi.json    # OpenAPI仕様
-│   └── index.html      # Redocly HTML (gh workflowのみ)
-└── alps/
-    ├── alps.json       # ALPSプロファイル
-    └── index.html      # ASD状態遷移図 (gh workflowのみ)
+├── openapi.json        # OpenAPI仕様
+└── schemas/
+    ├── index.html      # スキーマ一覧
+    └── *.json          # JSON Schema
 ```
 
 ## 設定ファイル
