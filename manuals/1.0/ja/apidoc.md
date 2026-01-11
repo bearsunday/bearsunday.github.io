@@ -34,7 +34,7 @@ composer require bear/api-doc --dev
     <appName>MyVendor\MyProject</appName>  <!-- アプリケーションの名前空間 -->
     <scheme>app</scheme>                    <!-- app または page -->
     <docDir>docs/api</docDir>
-    <format>html</format>                   <!-- html, html,openapi など -->
+    <format>html</format>                   <!-- html, openapi など -->
 </apidoc>
 ```
 
@@ -59,7 +59,7 @@ redocly build-docs docs/api/openapi.json -o docs/api/openapi.html
 
 ### llms.txt
 
-`llms`フォーマットは[llms.txt仕様](https://llmstxt.org/)に従った`llms.txt`を生成します。エンドポイントを列挙する一般的なAPIリファレンスとは異なり、インフラ境界のインターフェイス（Query/Command）、そのクエリ言語（SQL）、ドメインオントロジー（Entity）を含む包括的なアプリケーションドキュメントを提供します。完全な情報アーキテクチャを捉え、AIエージェントがオペレーションだけでなくアプリケーションの構造を理解できるようにします。
+`llms`フォーマットは[llms.txt仕様](https://llmstxt.org/)に従った`llms.txt`を生成します。出力にはAPIエンドポイント、リソースオブジェクト、インフラインターフェイス（Query/Command）、SQL文、エンティティ定義が含まれます。
 
 ### Composerスクリプト
 
@@ -94,8 +94,7 @@ jobs:
   docs:
     uses: bearsunday/BEAR.ApiDoc/.github/workflows/apidoc.yml@v1
     with:
-      format: 'html,openapi,llms,alps'
-      alps-profile: 'alps.json'
+      format: 'html,openapi,llms'
 ```
 
 GitHub Pagesを有効化: Settings → Pages → Source: "GitHub Actions"
@@ -105,9 +104,8 @@ GitHub Pagesを有効化: Settings → Pages → Source: "GitHub Actions"
 | 入力 | デフォルト | 説明 |
 |------|-----------|------|
 | `php-version` | `'8.2'` | PHPバージョン |
-| `format` | `'html,openapi,llms'` | カンマ区切り: html, md, openapi, alps, llms |
-| `alps-profile` | `''` | ALPSプロファイルのパス（alps形式に必須） |
-| `docs-path` | `'docs/api'` | 出力ディレクトリ |
+| `format` | `'html,openapi,llms'` | カンマ区切り: html, md, openapi, llms |
+| `docs-path` | `'docs'` | 出力ディレクトリ |
 | `publish-to` | `'github-pages'` | `github-pages`または`artifact-only` |
 
 ### 出力構造
@@ -164,7 +162,9 @@ ALPSプロファイルはAPIの語彙を定義します。定義を集中させ�
 
 ## Application as Documentation
 
-コードこそが唯一の信頼できる情報源です。アプリケーションから生成されるドキュメントは実装と決して乖離しません。JSON Schemaは単なるエンドポイントのリストではなく情報モデルを公開し、クライアント側でのバリデーションやフォーム生成を可能にします。ALPSは語彙の意味論を定義し、AIエージェントがAPIの構造だけでなく意味も理解できるようにします。
+コードこそが唯一の信頼できる情報源です。アプリケーションから生成されるドキュメントは実装と決して乖離しません。
+
+[llms.txt](https://llmstxt.org/)はAIが読み取れるアプリケーション概要を提供します。AIエージェントがアプリケーションに触れると、コードから直接生成されたこの単一ドキュメントを通じて全体構造を素早く把握できます。エンドポイントを列挙する一般的なAPIリファレンスとは異なり、llms.txtはDan Klynの[情報アーキテクチャフレームワーク](https://understandinggroup.com/ia-theory/explaining-information-architecture)—Ontology、Taxonomy、Choreography—に従って完全な情報アーキテクチャを捉えます。ALPSの語彙意味論とJSON Schemaの情報モデルと組み合わせることで、AIエージェントはオペレーションだけでなく、その背後にある意味と構造を理解できます。
 
 ## リファレンス
 
