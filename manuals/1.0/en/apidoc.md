@@ -54,7 +54,7 @@ When `openapi` format is specified, `openapi.json` is generated. Use Redocly CLI
 
 ```bash
 npm install -g @redocly/cli
-redocly build-docs docs/api/openapi/openapi.json -o docs/api/openapi/index.html
+redocly build-docs docs/api/openapi.json -o docs/api/openapi.html
 ```
 
 ### Composer Scripts
