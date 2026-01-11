@@ -112,15 +112,10 @@ Enable GitHub Pages: Settings → Pages → Source: "GitHub Actions"
 docs/
 ├── index.html          # API documentation
 ├── llms.txt            # AI-readable overview
-├── schemas/
-│   ├── index.html      # Schema list
-│   └── *.json          # JSON Schema
-├── openapi/
-│   ├── openapi.json    # OpenAPI spec
-│   └── index.html      # Redocly HTML (gh workflow only)
-└── alps/
-    ├── alps.json       # ALPS profile
-    └── index.html      # ASD state diagram (gh workflow only)
+├── openapi.json        # OpenAPI spec
+└── schemas/
+    ├── index.html      # Schema list
+    └── *.json          # JSON Schema
 ```
 
 ## Configuration
