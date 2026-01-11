@@ -34,7 +34,7 @@ The `init` command generates `apidoc.xml` from your `composer.json`. Edit it to 
     <appName>MyVendor\MyProject</appName>  <!-- Application namespace -->
     <scheme>app</scheme>                    <!-- app or page -->
     <docDir>docs/api</docDir>
-    <format>html</format>                   <!-- html, html,openapi, etc. -->
+    <format>html</format>                   <!-- html, openapi, etc. -->
 </apidoc>
 ```
 
@@ -59,7 +59,7 @@ redocly build-docs docs/api/openapi.json -o docs/api/openapi.html
 
 ### llms.txt
 
-The `llms` format generates `llms.txt` following the [llms.txt specification](https://llmstxt.org/). Unlike typical API references that list endpoints, this provides a comprehensive application document—including infrastructure boundary interfaces (Query/Command), their query language (SQL), and domain ontology (Entities). It captures the full information architecture, enabling AI agents to understand not just what operations exist, but how the application is structured.
+The `llms` format generates `llms.txt` following the [llms.txt specification](https://llmstxt.org/). The output includes API endpoints, resource objects, infrastructure interfaces (Query/Command), SQL statements, and entity definitions.
 
 ### Composer Scripts
 
@@ -94,8 +94,7 @@ jobs:
   docs:
     uses: bearsunday/BEAR.ApiDoc/.github/workflows/apidoc.yml@v1
     with:
-      format: 'html,openapi,llms,alps'
-      alps-profile: 'alps.json'
+      format: 'html,openapi,llms'
 ```
 
 Enable GitHub Pages: Settings → Pages → Source: "GitHub Actions"
@@ -105,9 +104,8 @@ Enable GitHub Pages: Settings → Pages → Source: "GitHub Actions"
 | Input | Default | Description |
 |-------|---------|-------------|
 | `php-version` | `'8.2'` | PHP version |
-| `format` | `'html,openapi,llms'` | Comma-separated: html, md, openapi, alps, llms |
-| `alps-profile` | `''` | ALPS profile path (required for alps format) |
-| `docs-path` | `'docs/api'` | Output directory |
+| `format` | `'html,openapi,llms'` | Comma-separated: html, md, openapi, llms |
+| `docs-path` | `'docs'` | Output directory |
 | `publish-to` | `'github-pages'` | `github-pages` or `artifact-only` |
 
 ### Output Structure
@@ -164,7 +162,9 @@ ALPS profile defines your API vocabulary. Centralized definitions prevent incons
 
 ## Application as Documentation
 
-Code is the single source of truth. Documentation generated from your application never diverges from the implementation. JSON Schema publishes your information model—not just a list of endpoints—enabling client-side validation and form generation. ALPS defines vocabulary semantics, allowing AI agents to understand not just the structure, but the meaning of your API.
+Code is the single source of truth. Documentation generated from your application never diverges from the implementation.
+
+[llms.txt](https://llmstxt.org/) provides AI-readable application overviews. When an AI agent encounters your application, it can quickly grasp the entire structure through this single document—generated directly from your code. Unlike typical API references that list endpoints, llms.txt captures the full information architecture following Dan Klyn's [framework](https://understandinggroup.com/ia-theory/explaining-information-architecture)—Ontology, Taxonomy, and Choreography. Combined with ALPS vocabulary semantics and JSON Schema information models, AI agents can understand not just what operations exist, but the meaning and structure behind them.
 
 ## Reference
 
