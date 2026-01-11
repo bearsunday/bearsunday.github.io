@@ -13,6 +13,7 @@ Your application is the documentation.
 - **OpenAPI 3.1**: Tool chain integration
 - **JSON Schema**: Information model
 - **ALPS**: Vocabulary semantics for AI understanding
+- **llms.txt**: AI-readable application overview
 
 ## Demo
 
@@ -37,14 +38,14 @@ The `init` command generates `apidoc.xml` from your `composer.json`. Edit it to 
 </apidoc>
 ```
 
-The `format` accepts comma-separated values: `html`, `md`, `openapi`.
+The `format` accepts comma-separated values: `html`, `md`, `openapi`, `llms`.
 
 ## Usage
 
 Generate documentation from the command line.
 
 ```bash
-./vendor/bin/apidoc -capidoc.xml
+./vendor/bin/apidoc
 ```
 
 ### OpenAPI HTML Generation
@@ -53,7 +54,7 @@ When `openapi` format is specified, `openapi.json` is generated. Use Redocly CLI
 
 ```bash
 npm install -g @redocly/cli
-redocly build-docs docs/api/openapi/openapi.json -o docs/api/openapi/index.html
+redocly build-docs docs/api/openapi.json -o docs/api/openapi.html
 ```
 
 ### Composer Scripts
@@ -89,7 +90,7 @@ jobs:
   docs:
     uses: bearsunday/BEAR.ApiDoc/.github/workflows/apidoc.yml@v1
     with:
-      format: 'html,openapi,alps'
+      format: 'html,openapi,llms,alps'
       alps-profile: 'alps.json'
 ```
 
@@ -100,25 +101,26 @@ Enable GitHub Pages: Settings → Pages → Source: "GitHub Actions"
 | Input | Default | Description |
 |-------|---------|-------------|
 | `php-version` | `'8.2'` | PHP version |
-| `format` | `'html,openapi'` | Comma-separated: html, md, openapi, alps |
+| `format` | `'html,openapi,llms'` | Comma-separated: html, md, openapi, alps, llms |
 | `alps-profile` | `''` | ALPS profile path (required for alps format) |
 | `docs-path` | `'docs/api'` | Output directory |
 | `publish-to` | `'github-pages'` | `github-pages` or `artifact-only` |
 
 ### Output Structure
 
-```
+```text
 docs/
 ├── index.html          # API documentation
+├── llms.txt            # AI-readable overview
 ├── schemas/
 │   ├── index.html      # Schema list
 │   └── *.json          # JSON Schema
 ├── openapi/
 │   ├── openapi.json    # OpenAPI spec
-│   └── index.html      # Redocly HTML
+│   └── index.html      # Redocly HTML (gh workflow only)
 └── alps/
     ├── alps.json       # ALPS profile
-    └── index.html      # ASD state diagram
+    └── index.html      # ASD state diagram (gh workflow only)
 ```
 
 ## Configuration
@@ -141,7 +143,7 @@ docs/
 | `appName` | Yes | Application namespace |
 | `scheme` | Yes | `app` or `page` |
 | `docDir` | Yes | Output directory |
-| `format` | Yes | `html`, `md`, `openapi` |
+| `format` | Yes | `html`, `md`, `openapi`, `llms` |
 | `title` | | API title |
 | `alps` | | ALPS profile path |
 
