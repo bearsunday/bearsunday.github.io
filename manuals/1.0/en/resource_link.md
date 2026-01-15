@@ -203,3 +203,87 @@ array (
                     ),
  ...
 ```
+
+## DataLoader <sup style="font-size:0.5em; color:#666; font-weight:normal;">Beta</sup>
+
+> Available in `bear/resource:1.x-dev`
+
+When crawling resources with links, each child resource triggers individual queries, causing the N+1 problem. DataLoader solves this by batching multiple resource requests into a single efficient query.
+
+### The N+1 Problem
+
+```text
+Request: GET /author/1 with linkCrawl('post-tree')
+
+[Query 1] SELECT * FROM author WHERE id = 1
+  └─ Author has 3 posts
+
+[Query 2] SELECT * FROM post WHERE author_id = 1
+  └─ Returns 3 posts (id: 10, 11, 12)
+
+[Query 3] SELECT * FROM meta WHERE post_id = 10  ← N+1 starts here
+[Query 4] SELECT * FROM meta WHERE post_id = 11
+[Query 5] SELECT * FROM meta WHERE post_id = 12
+
+Total: 5 queries (grows with data size!)
+```
+
+### With DataLoader
+
+```text
+[Query 1] SELECT * FROM author WHERE id = 1
+[Query 2] SELECT * FROM post WHERE author_id = 1
+[Query 3] SELECT * FROM meta WHERE post_id IN (10, 11, 12)  ← Batched!
+
+Total: 3 queries (constant regardless of data size)
+```
+
+### Usage
+
+Add the `dataLoader` parameter to the `#[Link]` attribute:
+
+```php
+#[Link(crawl: 'post-tree', rel: 'meta', href: 'app://self/meta{?post_id}', dataLoader: MetaDataLoader::class)]
+public function onGet($author_id)
+{
+```
+
+### DataLoader Implementation
+
+Implement `DataLoaderInterface` to batch queries:
+
+```php
+use BEAR\Resource\DataLoader\DataLoaderInterface;
+
+class MetaDataLoader implements DataLoaderInterface
+{
+    public function __construct(
+        private ExtendedPdoInterface $pdo
+    ){}
+
+    /**
+     * @param list<array<string, mixed>> $queries
+     * @return list<array<string, mixed>>
+     */
+    public function __invoke(array $queries): array
+    {
+        $postIds = array_column($queries, 'post_id');
+
+        // Batch query: SELECT * FROM meta WHERE post_id IN (...)
+        return $this->pdo->fetchAll(
+            'SELECT * FROM meta WHERE post_id IN (:post_ids)',
+            ['post_ids' => $postIds]
+        );
+    }
+}
+```
+
+This example uses SQL directly for clarity, but [Ray.MediaQuery](database_media.html) can also be used for the implementation.
+
+### Supported URI Template Formats
+
+The key is auto-inferred from the URI template:
+
+- `{?post_id}` - key: `post_id`
+- `post_id={id}` - key: `post_id`
+- `{?post_id,locale}` - multiple keys supported

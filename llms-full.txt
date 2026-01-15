@@ -5567,7 +5567,26 @@ array (
  ...
 ```
 
+## DataLoader (Beta)
 
+> Available in `bear/resource:1.x-dev`
+
+DataLoader solves the N+1 problem in crawl operations by batching multiple resource requests into a single query.
+
+```php
+#[Link(crawl: 'post-tree', rel: 'meta', href: 'app://self/meta{?post_id}', dataLoader: MetaDataLoader::class)]
+```
+
+```php
+class MetaDataLoader implements DataLoaderInterface
+{
+    public function __invoke(array $queries): array
+    {
+        $postIds = array_column($queries, 'post_id');
+        return $this->pdo->fetchAll('SELECT * FROM meta WHERE post_id IN (:post_ids)', ['post_ids' => $postIds]);
+    }
+}
+```
 
 # Rendering and transfer
 
