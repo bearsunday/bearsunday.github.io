@@ -191,6 +191,90 @@ array (
                                 'name' => 'zim',
                             ),
                         ),
-                    ), 
+                    ),
                     // ...
 ```
+
+## DataLoader <sup style="font-size:0.5em; color:#666; font-weight:normal;">Beta</sup>
+
+> `bear/resource:1.x-dev`で利用可能
+
+リソースをクロールする際、各子リソースが個別のクエリを発行するためN+1問題が発生します。DataLoaderは複数のリソースリクエストを1つの効率的なクエリにバッチ処理することでこの問題を解決します。
+
+### N+1問題
+
+```text
+リクエスト: GET /author/1 with linkCrawl('post-tree')
+
+[クエリ 1] SELECT * FROM author WHERE id = 1
+  └─ 著者は3つの投稿を持っている
+
+[クエリ 2] SELECT * FROM post WHERE author_id = 1
+  └─ 3つの投稿を返す (id: 10, 11, 12)
+
+[クエリ 3] SELECT * FROM meta WHERE post_id = 10  ← N+1の始まり
+[クエリ 4] SELECT * FROM meta WHERE post_id = 11
+[クエリ 5] SELECT * FROM meta WHERE post_id = 12
+
+合計: 5クエリ (データ量に比例して増加！)
+```
+
+### DataLoader使用時
+
+```text
+[クエリ 1] SELECT * FROM author WHERE id = 1
+[クエリ 2] SELECT * FROM post WHERE author_id = 1
+[クエリ 3] SELECT * FROM meta WHERE post_id IN (10, 11, 12)  ← バッチ化！
+
+合計: 3クエリ (データ量に関係なく一定)
+```
+
+### 使用方法
+
+`#[Link]`アトリビュートに`dataLoader`パラメータを追加します:
+
+```php
+#[Link(crawl: 'post-tree', rel: 'meta', href: 'app://self/meta{?post_id}', dataLoader: MetaDataLoader::class)]
+public function onGet($author_id)
+{
+```
+
+### DataLoaderの実装
+
+`DataLoaderInterface`を実装してクエリをバッチ処理します:
+
+```php
+use BEAR\Resource\DataLoader\DataLoaderInterface;
+
+class MetaDataLoader implements DataLoaderInterface
+{
+    public function __construct(
+        private ExtendedPdoInterface $pdo
+    ){}
+
+    /**
+     * @param list<array<string, mixed>> $queries
+     * @return list<array<string, mixed>>
+     */
+    public function __invoke(array $queries): array
+    {
+        $postIds = array_column($queries, 'post_id');
+
+        // バッチクエリ: SELECT * FROM meta WHERE post_id IN (...)
+        return $this->pdo->fetchAll(
+            'SELECT * FROM meta WHERE post_id IN (:post_ids)',
+            ['post_ids' => $postIds]
+        );
+    }
+}
+```
+
+ここでは説明のためにSQLを直接記述していますが、[Ray.MediaQuery](database_media.html)を使った実装も可能です。
+
+### サポートされるURIテンプレート形式
+
+キーはURIテンプレートから自動推論されます:
+
+- `{?post_id}` - キー: `post_id`
+- `post_id={id}` - キー: `post_id`
+- `{?post_id,locale}` - 複数キーもサポート
