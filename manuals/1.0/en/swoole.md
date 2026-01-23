@@ -72,7 +72,7 @@ cd frankenphp && docker compose up -d && curl http://localhost:8080/
 
 - **Event-Driven**: Asynchronous I/O handling
 - **Coroutines**: Concurrent request processing without threads
-- **High Performance**: Up to 28x faster than Apache
+- **High Performance**: Eliminates per-request boot overhead
 - **Memory Efficient**: Shared memory between workers
 
 ### Install
