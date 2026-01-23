@@ -187,7 +187,7 @@ composer require spiral/roadrunner-http nyholm/psr7
 
 ### 設定
 
-`.rr.yaml`を作成：
+`.rr.yaml`を作成（[bin/worker.php](https://github.com/bearsunday/bear-sunday-servers/blob/main/roadrunner/bin/worker.php)の実装例を参照）：
 
 ```yaml
 version: "3"
