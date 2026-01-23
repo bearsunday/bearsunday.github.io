@@ -253,6 +253,7 @@ public function onGet($author_id)
 Implement `DataLoaderInterface` to batch queries:
 
 ```php
+use Aura\Sql\ExtendedPdoInterface;
 use BEAR\Resource\DataLoader\DataLoaderInterface;
 
 class MetaDataLoader implements DataLoaderInterface
@@ -280,10 +281,30 @@ class MetaDataLoader implements DataLoaderInterface
 
 This example uses SQL directly for clarity, but [Ray.MediaQuery](database_media.html) can also be used for the implementation.
 
-### Supported URI Template Formats
+### Key Inference
 
-The key is auto-inferred from the URI template:
+The key for matching results is auto-inferred from the URI template:
 
-- `{?post_id}` - key: `post_id`
-- `post_id={id}` - key: `post_id`
-- `{?post_id,locale}` - multiple keys supported
+| URI Template | Inferred Key |
+|--------------|--------------|
+| `{?post_id}` | `post_id` |
+| `post_id={id}` | `post_id` |
+| `{?post_id,locale}` | `post_id`, `locale` |
+
+The returned rows must contain the key column(s) for proper distribution.
+
+### Multiple Keys
+
+For multiple key parameters, use all keys in your query:
+
+```php
+// URI template: app://self/translation{?post_id,locale}
+// $queries: [['post_id' => '1', 'locale' => 'en'], ['post_id' => '1', 'locale' => 'ja']]
+
+public function __invoke(array $queries): array
+{
+    // Build query using both keys
+    $sql = "SELECT * FROM translation WHERE (post_id, locale) IN (...)";
+    // ...
+}
+```

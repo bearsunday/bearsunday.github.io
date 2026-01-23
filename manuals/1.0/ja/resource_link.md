@@ -244,6 +244,7 @@ public function onGet($author_id)
 `DataLoaderInterface`を実装してクエリをバッチ処理します:
 
 ```php
+use Aura\Sql\ExtendedPdoInterface;
 use BEAR\Resource\DataLoader\DataLoaderInterface;
 
 class MetaDataLoader implements DataLoaderInterface
@@ -271,10 +272,30 @@ class MetaDataLoader implements DataLoaderInterface
 
 ここでは説明のためにSQLを直接記述していますが、[Ray.MediaQuery](database_media.html)を使った実装も可能です。
 
-### サポートされるURIテンプレート形式
+### キーの推論
 
-キーはURIテンプレートから自動推論されます:
+結果のマッチングに使用するキーは、URIテンプレートから自動的に推論されます:
 
-- `{?post_id}` - キー: `post_id`
-- `post_id={id}` - キー: `post_id`
-- `{?post_id,locale}` - 複数キーもサポート
+| URIテンプレート | 推論されるキー |
+|--------------|--------------|
+| `{?post_id}` | `post_id` |
+| `post_id={id}` | `post_id` |
+| `{?post_id,locale}` | `post_id`, `locale` |
+
+返される行には、適切な分配のためにキーカラムが含まれている必要があります。
+
+### 複数キー
+
+複数のキーパラメータの場合、クエリですべてのキーを使用します:
+
+```php
+// URIテンプレート: app://self/translation{?post_id,locale}
+// $queries: [['post_id' => '1', 'locale' => 'en'], ['post_id' => '1', 'locale' => 'ja']]
+
+public function __invoke(array $queries): array
+{
+    // 両方のキーを使用してクエリを構築
+    $sql = "SELECT * FROM translation WHERE (post_id, locale) IN (...)";
+    // ...
+}
+```
