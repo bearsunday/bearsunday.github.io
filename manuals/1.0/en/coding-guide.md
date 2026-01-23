@@ -158,7 +158,7 @@ BEAR.Sunday can overwrite methods using the `X-HTTP-Method-Override` header or` 
 
 ## AOP
 
- * Do not make interceptor mandatory. We will make the program work even without an interceptor. (For example, if you remove `#[Transactional]` interceptor, the function of transaction will be lost, but "core concers" will work without issue.)
+ * Do not make interceptor mandatory. We will make the program work even without an interceptor. (For example, if you remove `#[Transactional]` interceptor, the function of transaction will be lost, but "core concerns" will work without issue.)
  * Prevent the interceptor from injecting dependencies in methods. Values that can only be determined at implementation time are injected into arguments via `#[Assisted]` injection.
  * If there are multiple interceptors, do not depend on the execution order.
  * If it is an interceptor unconditionally applied to all methods, consider the description in `bootstrap.php`.

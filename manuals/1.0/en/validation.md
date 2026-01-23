@@ -207,7 +207,7 @@ class AppModule extends AbstractAppModule
 
 There are three attributes `#[Valid]`, `#[OnValidate]`, `#[OnFailure]` for validation.
 
-First of all, annotate the method that you want to validate with `#[Valid]`
+Annotate the method that you want to validate with `#[Valid]`
 
 ```php?start_inline
 use Ray\Validation\Annotation\Valid;
