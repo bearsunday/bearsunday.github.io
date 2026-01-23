@@ -37,8 +37,8 @@
 {% if page.category == 'Manual' %}
 <script src="/js/generate-table-of-contents/index.min.js"></script>
 
-<script src="https://cdn.jsdelivr.net/npm/anchor-js/anchor.min.js"></script>
-<script>anchors.add('h2, h3, h4');</script>
+<script src="https://cdn.jsdelivr.net/npm/anchor-js@5.0.0/anchor.min.js" integrity="sha384-jSRyD8wNnUz5C4NoTBYsKI6tN7xI3kanaqGb3XNbQyioKv0Syqx5uPDEasUzZYGy" crossorigin="anonymous"></script>
+<script>anchors.add('#article h2, #article h3, #article h4');</script>
 {% endif %}
 </body>
 </html>
