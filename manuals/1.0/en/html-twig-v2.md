@@ -184,11 +184,11 @@ class Todos extends ResourceObject
 ### page://self/index
 
 ```php
+use BEAR\Resource\Annotation\Embed;
+
 class Index extends ResourceObject
 {
-    /**
-     * @Embed(rel="todos", src="app://self/todos")
-     */
+    #[Embed(rel: 'todos', src: 'app://self/todos')]
     public function onGet(): static
     {
         return $this;
@@ -213,18 +213,16 @@ use Ray\Di\ProviderInterface;
 
 class MyTwigProvider implements ProviderInterface
 {
-    private $twig;
+    private \Twig_Environment $twig;
 
-    /**
-     * @Named("original")
-     */
-    public function __construct(\Twig_Environment $twig)
-    {
+    public function __construct(
+        #[Named('original')] \Twig_Environment $twig
+    ) {
         // $twig is an original \Twig_Environment instance
         $this->twig = $twig;
     }
 
-    public function get()
+    public function get(): \Twig_Environment
     {
         // Extending Twig
         $this->twig->addExtension(new MyTwigExtension());
