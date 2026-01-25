@@ -90,6 +90,7 @@ composer require bear/async
 
 - **ext-parallel**: For thread-based parallel execution (requires ZTS PHP)
 - **ext-swoole**: For coroutine-based parallel execution
+- **ext-mysqli**: For mysqli batch execution
 
 ## Configuration
 
@@ -213,6 +214,73 @@ class DevModule extends AbstractModule
 }
 ```
 
+## SQL Batch Execution
+
+BEAR.Async also provides parallel SQL query execution using mysqli's native async support.
+
+### Configuration
+
+```php
+use BEAR\Async\Module\MysqliBatchModule;
+
+class AppModule extends AbstractModule
+{
+    protected function configure(): void
+    {
+        $this->install(new MysqliBatchModule(
+            host: 'localhost',
+            user: 'root',
+            pass: 'password',
+            database: 'mydb',
+        ));
+    }
+}
+```
+
+Or with environment variables:
+
+```php
+use BEAR\Async\Module\MysqliEnvModule;
+
+$this->install(new MysqliEnvModule(
+    'MYSQLI_HOST',
+    'MYSQLI_USER',
+    'MYSQLI_PASSWORD',
+    'MYSQLI_DATABASE',
+));
+```
+
+### Usage
+
+```php
+use BEAR\Async\SqlBatch;
+use BEAR\Async\SqlBatchExecutorInterface;
+
+class MyService
+{
+    public function __construct(
+        private SqlBatchExecutorInterface $executor,
+    ) {}
+
+    public function getData(int $userId): array
+    {
+        $results = (new SqlBatch($this->executor, [
+            'user' => ['SELECT * FROM users WHERE id = :id', ['id' => $userId]],
+            'posts' => ['SELECT * FROM posts WHERE user_id = :user_id', ['user_id' => $userId]],
+            'comments' => ['SELECT * FROM comments WHERE user_id = :user_id', ['user_id' => $userId]],
+        ]))();
+
+        return [
+            'user' => $results['user'][0] ?? null,
+            'posts' => $results['posts'],
+            'comments' => $results['comments'],
+        ];
+    }
+}
+```
+
+Three queries execute in parallel using `mysqli_poll`, reducing total execution time to the duration of the slowest query.
+
 ## Performance
 
 ### Benchmark Results
@@ -238,6 +306,7 @@ class DevModule extends AbstractModule
 ## References
 
 - [BEAR.Async Repository](https://github.com/bearsunday/BEAR.Async)
+- [BEAR.Projection](https://github.com/bearsunday/BEAR.Projection) - CQRS read model with SQL-based projections
 - [Parallel Execution Architecture](https://bearsunday.github.io/BEAR.Async/parallel-execution-architecture.html)
 - [Resource Link](resource_link.html) - Documentation for `#[Embed]` and `#[Link]`
 - [High-Performance Servers](swoole.html) - Running BEAR.Sunday on Swoole

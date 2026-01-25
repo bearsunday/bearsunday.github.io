@@ -90,6 +90,7 @@ composer require bear/async
 
 - **ext-parallel**: スレッドベースの並列実行用（ZTS PHPが必要）
 - **ext-swoole**: コルーチンベースの並列実行用
+- **ext-mysqli**: mysqliバッチ実行用
 
 ## 設定
 
@@ -213,6 +214,73 @@ class DevModule extends AbstractModule
 }
 ```
 
+## SQLバッチ実行
+
+BEAR.Asyncは、mysqliのネイティブ非同期サポートを使用した並列SQLクエリ実行も提供します。
+
+### 設定
+
+```php
+use BEAR\Async\Module\MysqliBatchModule;
+
+class AppModule extends AbstractModule
+{
+    protected function configure(): void
+    {
+        $this->install(new MysqliBatchModule(
+            host: 'localhost',
+            user: 'root',
+            pass: 'password',
+            database: 'mydb',
+        ));
+    }
+}
+```
+
+または環境変数を使用：
+
+```php
+use BEAR\Async\Module\MysqliEnvModule;
+
+$this->install(new MysqliEnvModule(
+    'MYSQLI_HOST',
+    'MYSQLI_USER',
+    'MYSQLI_PASSWORD',
+    'MYSQLI_DATABASE',
+));
+```
+
+### 使用方法
+
+```php
+use BEAR\Async\SqlBatch;
+use BEAR\Async\SqlBatchExecutorInterface;
+
+class MyService
+{
+    public function __construct(
+        private SqlBatchExecutorInterface $executor,
+    ) {}
+
+    public function getData(int $userId): array
+    {
+        $results = (new SqlBatch($this->executor, [
+            'user' => ['SELECT * FROM users WHERE id = :id', ['id' => $userId]],
+            'posts' => ['SELECT * FROM posts WHERE user_id = :user_id', ['user_id' => $userId]],
+            'comments' => ['SELECT * FROM comments WHERE user_id = :user_id', ['user_id' => $userId]],
+        ]))();
+
+        return [
+            'user' => $results['user'][0] ?? null,
+            'posts' => $results['posts'],
+            'comments' => $results['comments'],
+        ];
+    }
+}
+```
+
+3つのクエリが`mysqli_poll`を使用して並列実行され、合計実行時間は最も遅いクエリの時間に短縮されます。
+
 ## パフォーマンス
 
 ### ベンチマーク結果
@@ -238,6 +306,7 @@ class DevModule extends AbstractModule
 ## 参考リンク
 
 - [BEAR.Asyncリポジトリ](https://github.com/bearsunday/BEAR.Async)
+- [BEAR.Projection](https://github.com/bearsunday/BEAR.Projection) - SQLベースのプロジェクションを使用したCQRSリードモデル
 - [並列実行アーキテクチャ](https://bearsunday.github.io/BEAR.Async/parallel-execution-architecture.html)
 - [リソースリンク](resource_link.html) - `#[Embed]`と`#[Link]`のドキュメント
 - [高性能サーバー](swoole.html) - BEAR.SundayをSwooleで実行
