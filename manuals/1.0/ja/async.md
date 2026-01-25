@@ -281,6 +281,25 @@ class MyService
 
 3つのクエリが`mysqli_poll`を使用して並列実行され、合計実行時間は最も遅いクエリの時間に短縮されます。
 
+## BEAR.Projection との連携
+
+[BEAR.Projection](https://github.com/bearsunday/BEAR.Projection) を使用すると、SQLベースのプロジェクションを `query://` スキームでリソースとして公開できます。`#[Embed]` と組み合わせることで、複数のSQLクエリが並列実行されます。
+
+```php
+use BEAR\Resource\Annotation\Embed;
+
+class User extends ResourceObject
+{
+    #[Embed(rel: 'profile', src: 'query://self/user_profile{?id}')]
+    #[Embed(rel: 'orders', src: 'query://self/user_orders{?id}')]
+    public function onGet(string $id): static
+    {
+        // profile と orders は並列実行される
+        return $this;
+    }
+}
+```
+
 ## パフォーマンス
 
 ### ベンチマーク結果

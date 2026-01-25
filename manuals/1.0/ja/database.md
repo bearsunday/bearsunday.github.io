@@ -37,3 +37,15 @@ permalink: /manuals/1.0/ja/database.html
 * [Ray.QueryModule](https://github.com/ray-di/Ray.QueryModule/blob/1.x/README.ja.md)
 
 `DBAL`はDoctrine、`CakeDB`はCakePHPのDBライブラリです。`Ray.QueryModule`はRay.MediaQueryの以前のライブラリでSQLを無名関数に変換します。
+
+## CQRSリードモデル
+
+* [BEAR.Projection](https://github.com/bearsunday/BEAR.Projection)
+
+`BEAR.Projection`はSQLベースのプロジェクションを型付きバリューオブジェクトにマップします。プロジェクションは`query://`スキームでリソースとして公開され、`#[Embed]`と組み合わせて[並列実行](async.html)できます。
+
+```php
+#[Embed(rel: 'profile', src: 'query://self/user_profile{?id}')]
+#[Embed(rel: 'orders', src: 'query://self/user_orders{?id}')]
+public function onGet(string $id): static
+```

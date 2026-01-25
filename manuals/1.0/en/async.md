@@ -281,6 +281,25 @@ class MyService
 
 Three queries execute in parallel using `mysqli_poll`, reducing total execution time to the duration of the slowest query.
 
+## BEAR.Projection Integration
+
+[BEAR.Projection](https://github.com/bearsunday/BEAR.Projection) allows SQL-based projections to be exposed as resources via the `query://` scheme. Combined with `#[Embed]`, multiple SQL queries execute in parallel.
+
+```php
+use BEAR\Resource\Annotation\Embed;
+
+class User extends ResourceObject
+{
+    #[Embed(rel: 'profile', src: 'query://self/user_profile{?id}')]
+    #[Embed(rel: 'orders', src: 'query://self/user_orders{?id}')]
+    public function onGet(string $id): static
+    {
+        // profile and orders execute in parallel
+        return $this;
+    }
+}
+```
+
 ## Performance
 
 ### Benchmark Results

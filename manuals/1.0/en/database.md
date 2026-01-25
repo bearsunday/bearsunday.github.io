@@ -36,4 +36,16 @@ Modules are provided for using the database. They are all independent libraries 
 
 `DBAL` is Doctrine and `CakeDB` is CakePHP's DB library. `Ray.QueryModule` is an earlier library of Ray.MediaQuery that converts SQL to anonymous functions.
 
+## CQRS Read Model
+
+* [BEAR.Projection](https://github.com/bearsunday/BEAR.Projection)
+
+`BEAR.Projection` provides SQL-based projections mapped to typed value objects. Projections are exposed as resources via the `query://` scheme and can be embedded with `#[Embed]` for [parallel execution](async.html).
+
+```php
+#[Embed(rel: 'profile', src: 'query://self/user_profile{?id}')]
+#[Embed(rel: 'orders', src: 'query://self/user_orders{?id}')]
+public function onGet(string $id): static
+```
+
 ----
