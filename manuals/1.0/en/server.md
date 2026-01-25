@@ -31,6 +31,8 @@ Request -> Route -> Execute -> Response
 
 This eliminates boot overhead, resulting in significantly lower latency and higher throughput.
 
+BEAR.Sunday's stateless resource design and immutable architecture are well-suited for persistent worker environments, enabling seamless transition to worker mode without global state issues.
+
 ## Server Comparison
 
 | Feature | Swoole | RoadRunner | FrankenPHP |

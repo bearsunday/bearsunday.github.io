@@ -5,74 +5,43 @@ category: Manual
 permalink: /manuals/1.0/en/async.html
 ---
 
-# Parallel Resource Execution
+# Parallel Resource Execution <sup style="font-size:0.5em; color:#666; font-weight:normal;">Alpha</sup>
 
-BEAR.Async enables transparent parallel execution of BEAR.Sunday's `#[Embed]` resources. By replacing the standard `LinkerInterface` implementation, embedded resources are fetched concurrently without changing any application code.
+BEAR.Async enables transparent parallel execution of `#[Embed]` resources. Embedded resources are fetched in parallel without changing any application code. Resource classes written 10 years ago can benefit from parallel execution just by adding a Module.
 
 ## Overview
 
-In standard BEAR.Sunday, `#[Embed]` resources are fetched sequentially:
+In standard BEAR.Sunday, `#[Embed]` resources are fetched sequentially. With BEAR.Async, they are fetched in parallel.
 
 ```text
-Request
-    │
-    ├── Embed 1 ──── 50ms
-    ├── Embed 2 ──── 50ms
-    ├── Embed 3 ──── 50ms
-    └── Embed 4 ──── 50ms
-    │
-Response (200ms total)
+[Sequential]                     [Parallel]
+Request                          Request
+    │                                │
+    ├── Embed 1 ──── 50ms            ├── Embed 1 ──┬── 50ms
+    ├── Embed 2 ──── 50ms            ├── Embed 2 ──┤
+    ├── Embed 3 ──── 50ms            ├── Embed 3 ──┤
+    └── Embed 4 ──── 50ms            └── Embed 4 ──┘
+    │                                │
+Response (200ms)                 Response (50ms)
 ```
 
-With BEAR.Async, embedded resources are fetched in parallel:
+## Design Philosophy
 
-```text
-Request
-    │
-    ├── Embed 1 ──┬── 50ms
-    ├── Embed 2 ──┤
-    ├── Embed 3 ──┤
-    └── Embed 4 ──┘
-    │
-Response (50ms total)
+### URL as Intent
+
+In BEAR.Sunday, a URI expresses **intent**, not just a location.
+
+```php
+#[Embed(rel: 'profile', src: 'query://self/user_profile{?id}')]
 ```
 
-## How It Works
+The `query://self/user_profile` expresses only the intent: "I want the user's profile information." This separation of "What" from "How" allows the same code to work in both sync and parallel execution. Debug with Xdebug in development, then switch Module in production to enable parallel execution.
 
-### Architecture
+### Solving the Function Coloring Problem
 
-```text
-LinkerInterface (bear/resource)
-       ↓ replaced by
-AsyncLinker ──uses──→ AsyncInterface
-                           ↓ implemented by
-              ┌────────────┼────────────┐
-        ParallelAsync  SwooleAsync  SyncAsync
-        (ext-parallel)  (ext-swoole) (fallback)
-```
+Async programming has the "Function Coloring" problem—functions calling async functions must themselves be async, causing "async contamination" throughout the codebase.
 
-### Key Components
-
-| Component | Responsibility |
-|-----------|----------------|
-| AsyncLinker | Replaces standard Linker, executes crawl requests level-by-level in parallel |
-| AsyncInterface | Adapter interface for different async runtimes |
-| ParallelAsync | Thread pool executor using ext-parallel |
-| SwooleAsync | Coroutine executor using ext-swoole |
-| SyncAsync | Sequential fallback when no async extension is available |
-
-### Execution Flow
-
-1. `AsyncLinker.linkCrawl()` collects all embed requests at each level
-2. `RequestBatch` deduplicates requests by URI+query hash
-3. `AsyncInterface` executes all tasks in parallel
-4. Results are cached and distributed to all requesters
-
-```text
-Level 1: Users → all user requests execute in parallel
-Level 2: Posts for each user → all post requests execute in parallel
-Level 3: Comments for each post → all comment requests execute in parallel
-```
+In BEAR.Sunday, the "resource" boundary cuts through this problem. No async-specific code is required—resource classes don't need to know how they were invoked.
 
 ## Installation
 
@@ -80,33 +49,24 @@ Level 3: Comments for each post → all comment requests execute in parallel
 composer require bear/async
 ```
 
-### Requirements
-
-- PHP 8.2+
-- bear/resource ^1.17
-- ray/di ^2.18
-
-### Optional Extensions
-
-- **ext-parallel**: For thread-based parallel execution (requires ZTS PHP)
-- **ext-swoole**: For coroutine-based parallel execution
-- **ext-mysqli**: For mysqli batch execution
-
 ## Configuration
 
-### PHP-FPM + ext-parallel
+Choose the appropriate module based on your server environment.
 
-Recommended for typical web applications using PHP-FPM or Apache.
+| Environment | Module | Features |
+|-------------|--------|----------|
+| PHP-FPM / Apache | `AsyncParallelModule` | Uses ext-parallel, requires ZTS PHP |
+| Swoole HTTP Server | `AsyncSwooleModule` | Uses coroutines, requires connection pool |
+
+### AsyncParallelModule
 
 ```php
 use BEAR\Async\Module\AsyncParallelModule;
-use Ray\Di\AbstractModule;
 
 class AppModule extends AbstractModule
 {
     protected function configure(): void
     {
-        $this->install(new PackageModule());
         $this->install(new AsyncParallelModule(
             namespace: 'MyVendor\MyApp',
             context: 'prod-app',
@@ -116,65 +76,29 @@ class AppModule extends AbstractModule
 }
 ```
 
-Pool size defaults to CPU core count. To override:
-
-```php
-$this->install(new AsyncParallelModule(
-    namespace: 'MyVendor\MyApp',
-    context: 'prod-app',
-    appDir: dirname(__DIR__),
-    poolSize: 8,
-));
-```
-
-### Swoole + Coroutines
-
-For applications running on Swoole HTTP Server with high concurrency requirements.
+### AsyncSwooleModule
 
 ```php
 use BEAR\Async\Module\AsyncSwooleModule;
-use BEAR\Async\Module\PdoPoolModule;
-use Ray\Di\AbstractModule;
+use BEAR\Async\Module\PdoPoolEnvModule;
 
 class AppModule extends AbstractModule
 {
     protected function configure(): void
     {
-        $this->install(new PackageModule());
         $this->install(new AsyncSwooleModule());
-        // Connection pool required for Swoole coroutines
-        $this->install(new PdoPoolModule($dsn, $user, $password));
+        $this->install(new PdoPoolEnvModule('PDO_DSN', 'PDO_USER', 'PDO_PASSWORD'));
     }
 }
 ```
 
-#### Why PdoPoolModule?
-
-In Swoole, coroutines share memory within the same process. Database connections created in one coroutine cannot be safely used by another. `PdoPoolModule` provides a connection pool that manages PDO instances across coroutines.
-
-## Module Selection
-
-| Use Case | Recommended Module |
-|----------|-------------------|
-| PHP-FPM / Apache | `AsyncParallelModule` |
-| Swoole HTTP Server | `AsyncSwooleModule` |
-
-### Comparison
-
-| | AsyncParallelModule | AsyncSwooleModule |
-|---|---|---|
-| Concurrency | Thread pool (CPU cores) | Coroutines (thousands) |
-| PDO handling | Isolated per thread | Connection pool required |
-| Server | PHP-FPM / Apache | Swoole HTTP Server |
-| Setup | Simple | Requires Swoole server |
+Swoole coroutines share memory, so `PdoPoolEnvModule` is required for connection pooling.
 
 ## Usage
 
-Once the module is installed, no code changes are required. Existing `#[Embed]` resources will automatically be executed in parallel.
+Once the module is installed, existing `#[Embed]` resources are automatically executed in parallel.
 
 ```php
-use BEAR\Resource\Annotation\Embed;
-
 class Dashboard extends ResourceObject
 {
     #[Embed(rel: 'user', src: '/user{?id}')]
@@ -188,69 +112,82 @@ class Dashboard extends ResourceObject
 }
 ```
 
-All three embedded resources (`user`, `notifications`, `stats`) will be fetched in parallel.
+By not installing the async module in development and only enabling it in production, you can debug in sync mode and run parallel in production.
 
-### Context-Based Configuration
+## BEAR.Projection Integration
 
-Use different contexts to enable async in production while using sync in development:
+[BEAR.Projection](https://github.com/bearsunday/BEAR.Projection) transforms SQL query results into typed Projection objects and exposes them as resources via the `query://` scheme. Combined with `#[Embed]`, multiple SQL queries execute in parallel.
+
+Projection classes are defined as immutable value objects.
 
 ```php
-// src/Module/ProdModule.php
-class ProdModule extends AbstractModule
+final class UserProfile
 {
-    protected function configure(): void
-    {
-        $this->install(new AsyncParallelModule(/* ... */));
+    public function __construct(
+        public readonly string $id,
+        public readonly string $name,
+        public readonly int $age,
+        public readonly string $avatarUrl,
+    ) {}
+}
+```
+
+Factory classes transform raw SQL data into Projections. Dependencies can be injected via DI, enabling business logic like age calculation or URL resolution.
+
+```php
+final class UserProfileFactory
+{
+    public function __construct(
+        private readonly AgeCalculator $ageCalculator,
+        private readonly ImageUrlResolver $imageResolver,
+    ) {}
+
+    public function __invoke(
+        string $id,
+        string $name,
+        string $birthDate,
+        string $avatarPath,
+    ): UserProfile {
+        return new UserProfile(
+            id: $id,
+            name: $name,
+            age: $this->ageCalculator->fromBirthDate($birthDate),
+            avatarUrl: $this->imageResolver->resolve($avatarPath),
+        );
     }
 }
+```
 
-// src/Module/DevModule.php
-class DevModule extends AbstractModule
+SQL files return columns corresponding to Factory parameter names.
+
+```sql
+-- var/sql/query/user_profile.sql
+SELECT id, name, birth_date, avatar_path FROM users WHERE id = :id
+```
+
+When used with `#[Embed]`, multiple Projections execute in parallel.
+
+```php
+class User extends ResourceObject
 {
-    protected function configure(): void
+    #[Embed(rel: 'profile', src: 'query://self/user_profile{?id}')]
+    #[Embed(rel: 'orders', src: 'query://self/user_orders{?id}')]
+    public function onGet(string $id): static
     {
-        // No async module - uses standard sequential execution
+        return $this;
     }
 }
 ```
 
 ## SQL Batch Execution
 
-BEAR.Async also provides parallel SQL query execution using mysqli's native async support.
-
-### Configuration
+Parallel SQL query execution using mysqli's native async support is also provided.
 
 ```php
-use BEAR\Async\Module\MysqliBatchModule;
+use BEAR\Async\Module\MysqliBatchEnvModule;
 
-class AppModule extends AbstractModule
-{
-    protected function configure(): void
-    {
-        $this->install(new MysqliBatchModule(
-            host: 'localhost',
-            user: 'root',
-            pass: 'password',
-            database: 'mydb',
-        ));
-    }
-}
+$this->install(new MysqliBatchEnvModule('MYSQL_HOST', 'MYSQL_USER', 'MYSQL_PASS', 'MYSQL_DB'));
 ```
-
-Or with environment variables:
-
-```php
-use BEAR\Async\Module\MysqliEnvModule;
-
-$this->install(new MysqliEnvModule(
-    'MYSQLI_HOST',
-    'MYSQLI_USER',
-    'MYSQLI_PASSWORD',
-    'MYSQLI_DATABASE',
-));
-```
-
-### Usage
 
 ```php
 use BEAR\Async\SqlBatch;
@@ -264,68 +201,16 @@ class MyService
 
     public function getData(int $userId): array
     {
-        $results = (new SqlBatch($this->executor, [
-            'user' => ['SELECT * FROM users WHERE id = :id', ['id' => $userId]],
-            'posts' => ['SELECT * FROM posts WHERE user_id = :user_id', ['user_id' => $userId]],
-            'comments' => ['SELECT * FROM comments WHERE user_id = :user_id', ['user_id' => $userId]],
+        return (new SqlBatch($this->executor, [
+            'user' => ['SELECT * FROM users WHERE id = ?', [$userId]],
+            'posts' => ['SELECT * FROM posts WHERE user_id = ?', [$userId]],
         ]))();
-
-        return [
-            'user' => $results['user'][0] ?? null,
-            'posts' => $results['posts'],
-            'comments' => $results['comments'],
-        ];
     }
 }
 ```
-
-Three queries execute in parallel using `mysqli_poll`, reducing total execution time to the duration of the slowest query.
-
-## BEAR.Projection Integration
-
-[BEAR.Projection](https://github.com/bearsunday/BEAR.Projection) allows SQL-based projections to be exposed as resources via the `query://` scheme. Combined with `#[Embed]`, multiple SQL queries execute in parallel.
-
-```php
-use BEAR\Resource\Annotation\Embed;
-
-class User extends ResourceObject
-{
-    #[Embed(rel: 'profile', src: 'query://self/user_profile{?id}')]
-    #[Embed(rel: 'orders', src: 'query://self/user_orders{?id}')]
-    public function onGet(string $id): static
-    {
-        // profile and orders execute in parallel
-        return $this;
-    }
-}
-```
-
-## Performance
-
-### Benchmark Results
-
-| Scenario | Sync Time | Parallel Time | Speedup |
-|----------|-----------|---------------|---------|
-| 3 embeds (50ms each) | 150ms | ~52ms | 2.9x |
-| 5 embeds (50ms each) | 250ms | ~54ms | 4.6x |
-| 11 embeds (50ms each) | 550ms | ~59ms | 9.4x |
-
-### When Parallel Execution Helps
-
-- I/O-bound embed operations (database queries, API calls)
-- Multiple independent embeds
-- Adequate CPU cores available
-
-### When It May Not Help
-
-- CPU-bound operations (complex calculations)
-- Single embed or sequential dependencies
-- Very fast queries (< 5ms) where overhead dominates
 
 ## References
 
-- [BEAR.Async Repository](https://github.com/bearsunday/BEAR.Async)
-- [BEAR.Projection](https://github.com/bearsunday/BEAR.Projection) - CQRS read model with SQL-based projections
+- [BEAR.Async](https://github.com/bearsunday/BEAR.Async)
+- [BEAR.Projection](https://github.com/bearsunday/BEAR.Projection)
 - [Parallel Execution Architecture](https://bearsunday.github.io/BEAR.Async/parallel-execution-architecture.html)
-- [Resource Link](resource_link.html) - Documentation for `#[Embed]` and `#[Link]`
-- [High-Performance Servers](swoole.html) - Running BEAR.Sunday on Swoole

@@ -96,6 +96,14 @@ In this way, BEAR.Sunday and Fastly's integration of ROA-based caching strategy 
 
 In the original world of DI, users avoid dealing directly with the injector (DI container) as much as possible. Instead, they generate a single root object at the application's entry point to start the application. In BEAR.Sunday's DI, there is virtually no DI container manipulation even at configuration time. The root object is huge but is a single variable, so it is reused beyond requests, realizing an optimized bootstrap to the limit.
 
+### Transparent Parallel Execution
+
+In BEAR.Sunday, a URI expresses "intent" rather than being merely a communication protocol or locator. `query://self/user_profile` expresses only the intent "I want the user's profile information"—whether it comes from MySQL or Redis is hidden from the application.
+
+This complete separation of "What" from "How" enables multiple resources embedded with `#[Embed]` to be fetched in parallel without changing any application code. Resource classes written 10 years ago can benefit from parallel execution just by adding a Module.
+
+Three tiers of solutions are available based on server environment constraints: ext-parallel (thread pool), Swoole (coroutines), and mysqli (DB queries only). Whichever you choose, application code requires no changes. Develop and debug with standard PHP, then switch to parallel execution in production with just a configuration change.
+
 ## Developer Experience
 
 ### Ease of Testing
@@ -107,9 +115,16 @@ BEAR.Sunday allows for easy and effective testing due to the following design fe
 * API testing can be performed while following hypermedia links, and tests can be written in the same code for PHP and HTTP.
 * Different implementations are bound during testing through context-based binding.
 
-### API Documentation Generation
+### Application as Documentation
 
-API documentation is automatically generated from the code. It maintains consistency between code and documentation and improves maintainability.
+In BEAR.Sunday, the application itself is the documentation. Multiple documentation formats are automatically generated from code.
+
+- **ApiDoc HTML**: Developer reference
+- **OpenAPI 3.1**: Toolchain integration
+- **JSON Schema**: Information model definition
+- **llms.txt**: AI-readable application overview
+
+When using an ALPS profile as the SSOT (Single Source of Truth), you define the application semantics (vocabulary, state transitions, operation meanings) first, then generate code from it. The same document holds different meanings for different readers—developers see endpoints, architects read state transitions, and AI extracts ontology.
 
 ### Visualization and Debugging
 
@@ -192,6 +207,14 @@ To provide applications with high code quality, the BEAR.Sunday framework also s
 * The framework code is applied at the strictest level by both static analysis tools, Psalm and PHPStan.
 * It maintains 100% test coverage and nearly 100% type coverage.
 * It is fundamentally an immutable system and is so clean that initialization is not required every time, even in tests. It unleashes the power of PHP's asynchronous communication engines like Swoole.
+
+### Architecture-Enabled Security Analysis
+
+BEAR.Sunday's architecture fundamentally simplifies security analysis.
+
+Every endpoint is a ResourceObject with explicit `onGet` and `onPost` methods, inputs are declared via JSON Schema, and dependencies are explicit through constructor injection. With no hidden magic or global state, static analysis tools can trace complete data flows.
+
+This declarative architecture enables multi-layered security scanning combining SAST (static analysis), DAST (dynamic testing), taint analysis, and AI auditing. Framework-aware specialized tools detect vulnerabilities that generic tools cannot find.
 
 ## The Value BEAR.Sunday Brings
 
