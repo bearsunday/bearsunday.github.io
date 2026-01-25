@@ -25,7 +25,8 @@ psr7
 js-ui
 stream
 cache
-swoole
+async
+server
 coding-guide
 types
 test

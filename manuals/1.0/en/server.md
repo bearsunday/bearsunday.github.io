@@ -506,6 +506,10 @@ See [BEAR.HelloworldBenchmark](https://github.com/bearsunday/BEAR.HelloworldBenc
 
 - [Benchmark results](https://github.com/bearsunday/BEAR.HelloworldBenchmark/wiki)
 
+## Related
+
+- [Parallel Resource Execution](async.html) - Parallel execution of `#[Embed]` resources with BEAR.Async
+
 ## References
 
 - [Swoole](https://www.swoole.com/) - [Documentation](https://wiki.swoole.com/)

@@ -292,6 +292,10 @@ docker compose -f docker-compose.prod.yml up -d
 
 - [ベンチマーク結果](https://github.com/bearsunday/BEAR.HelloworldBenchmark/wiki)
 
+## 関連
+
+- [並列リソース実行](async.html) - BEAR.Asyncによる`#[Embed]`リソースの並列実行
+
 ## 参考リンク
 
 - [Swoole](https://www.swoole.com/) - [ドキュメント](https://wiki.swoole.com/)
