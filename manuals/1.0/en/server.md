@@ -504,8 +504,6 @@ docker compose -f docker-compose.prod.yml up -d
 
 See [BEAR.HelloworldBenchmark](https://github.com/bearsunday/BEAR.HelloworldBenchmark) for benchmark comparisons.
 
-- [Benchmark results](https://github.com/bearsunday/BEAR.HelloworldBenchmark/wiki)
-
 ## Related
 
 - [Parallel Resource Execution](async.html) - Parallel execution of `#[Embed]` resources with BEAR.Async

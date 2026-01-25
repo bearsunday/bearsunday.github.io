@@ -286,12 +286,6 @@ cd swoole  # または roadrunner, frankenphp
 docker compose -f docker-compose.prod.yml up -d
 ```
 
-## ベンチマーク
-
-ベンチマーク比較については[BEAR.HelloworldBenchmark](https://github.com/bearsunday/BEAR.HelloworldBenchmark)を参照してください。
-
-- [ベンチマーク結果](https://github.com/bearsunday/BEAR.HelloworldBenchmark/wiki)
-
 ## 関連
 
 - [並列リソース実行](async.html) - BEAR.Asyncによる`#[Embed]`リソースの並列実行
