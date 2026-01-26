@@ -168,6 +168,14 @@ In this way, BEAR.Sunday and Fastly's integration of ROA-based caching strategy 
 
 In the original world of DI, users avoid dealing directly with the injector (DI container) as much as possible. Instead, they generate a single root object at the application's entry point to start the application. In BEAR.Sunday's DI, there is virtually no DI container manipulation even at configuration time. The root object is huge but is a single variable, so it is reused beyond requests, realizing an optimized bootstrap to the limit.
 
+### Transparent Parallel Execution
+
+In BEAR.Sunday, a URI expresses "intent" rather than being merely a communication protocol or locator. `query://self/user_profile` expresses only the intent "I want the user's profile information"—whether it comes from MySQL or Redis is hidden from the application.
+
+This complete separation of "What" from "How" enables multiple resources embedded with `#[Embed]` to be fetched in parallel without changing any application code. Resource classes written 10 years ago can benefit from parallel execution just by adding a Module.
+
+Three tiers of solutions are available based on server environment constraints: ext-parallel (thread pool), Swoole (coroutines), and mysqli (DB queries only). Whichever you choose, application code requires no changes. Develop and debug with standard PHP, then switch to parallel execution in production with just a configuration change.
+
 ## Developer Experience
 
 ### Ease of Testing
@@ -179,9 +187,16 @@ BEAR.Sunday allows for easy and effective testing due to the following design fe
 * API testing can be performed while following hypermedia links, and tests can be written in the same code for PHP and HTTP.
 * Different implementations are bound during testing through context-based binding.
 
-### API Documentation Generation
+### Application as Documentation
 
-API documentation is automatically generated from the code. It maintains consistency between code and documentation and improves maintainability.
+In BEAR.Sunday, the application itself is the documentation. Multiple documentation formats are automatically generated from code.
+
+- **ApiDoc HTML**: Developer reference
+- **OpenAPI 3.1**: Toolchain integration
+- **JSON Schema**: Information model definition
+- **llms.txt**: AI-readable application overview
+
+When using an ALPS profile as the SSOT (Single Source of Truth), you define the application semantics (vocabulary, state transitions, operation meanings) first, then generate code from it. The same document holds different meanings for different readers—developers see endpoints, architects read state transitions, and AI extracts ontology.
 
 ### Visualization and Debugging
 
@@ -264,6 +279,14 @@ To provide applications with high code quality, the BEAR.Sunday framework also s
 * The framework code is applied at the strictest level by both static analysis tools, Psalm and PHPStan.
 * It maintains 100% test coverage and nearly 100% type coverage.
 * It is fundamentally an immutable system and is so clean that initialization is not required every time, even in tests. It unleashes the power of PHP's asynchronous communication engines like Swoole.
+
+### Architecture-Enabled Security Analysis
+
+BEAR.Sunday's architecture fundamentally simplifies security analysis.
+
+Every endpoint is a ResourceObject with explicit `onGet` and `onPost` methods, inputs are declared via JSON Schema, and dependencies are explicit through constructor injection. With no hidden magic or global state, static analysis tools can trace complete data flows.
+
+This declarative architecture enables multi-layered security scanning combining SAST (static analysis), DAST (dynamic testing), taint analysis, and AI auditing. Framework-aware specialized tools detect vulnerabilities that generic tools cannot find.
 
 ## The Value BEAR.Sunday Brings
 
@@ -707,8 +730,54 @@ $this->bind($interface)->to($class)->in(Scope::SINGLETON);
 $this->bind($interface)->toConstructor($class, $named);
 ```
 
-Bindings declared first take priority
 More info can be found at Ray.Di [README](https://github.com/ray-di/Ray.Di/blob/2.x/README.md)
+
+### Binding Priority
+
+#### Within a Single Module
+
+Bindings declared first take priority. In the following example, `Foo1` takes priority:
+
+```php?start_inline
+$this->bind(FooInterface::class)->to(Foo1::class);
+$this->bind(FooInterface::class)->to(Foo2::class);
+```
+
+#### Module Installation Priority
+
+Modules installed first take priority. In the following example, `Foo1Module` takes priority:
+
+```php?start_inline
+$this->install(new Foo1Module);
+$this->install(new Foo2Module);
+```
+
+To give a later module priority, use `override()`. In the following example, `Foo2Module` takes priority:
+
+```php?start_inline
+$this->install(new Foo1Module);
+$this->override(new Foo2Module);
+```
+
+#### Context String Priority
+
+Context modules are processed in **reverse order** (right-to-left). For example, with context `prod-hal-api-app`:
+
+```
+Installation order: AppModule → ApiModule → HalModule → ProdModule
+```
+
+Later installed modules can override earlier bindings. This means:
+
+- `HalModule` takes priority over `AppModule`
+- `ProdModule` takes priority over `HalModule`
+
+When creating a custom context module that needs to override bindings from a built-in context (like `HalModule`), position it to the left of that context in the context string. For example, to override `HalModule`'s `RenderInterface` binding:
+
+```php?start_inline
+// Context: "prod-mycontext-hal-api-app"
+// Installation order: AppModule → ApiModule → HalModule → MycontextModule → ProdModule
+```
 
 ## AOP Bindings
 
@@ -1171,6 +1240,18 @@ Modules are provided for using the database. They are all independent libraries 
 * [Ray.QueryModule](https://github.com/ray-di/Ray.QueryModule/blob/1.x/README.md)
 
 `DBAL` is Doctrine and `CakeDB` is CakePHP's DB library. `Ray.QueryModule` is an earlier library of Ray.MediaQuery that converts SQL to anonymous functions.
+
+## CQRS Read Model
+
+* [BEAR.Projection](https://github.com/bearsunday/BEAR.Projection)
+
+`BEAR.Projection` provides SQL-based projections mapped to typed value objects. Projections are exposed as resources via the `query://` scheme and can be embedded with `#[Embed]` for [parallel execution](async.html).
+
+```php
+#[Embed(rel: 'profile', src: 'query://self/user_profile{?id}')]
+#[Embed(rel: 'orders', src: 'query://self/user_orders{?id}')]
+public function onGet(string $id): static
+```
 
 ----
 
@@ -1861,11 +1942,13 @@ Reference
 
 
 
-# Security
+# Security <sup style="font-size:0.5em; color:#666; font-weight:normal;">Beta</sup>
 
-The [bear/security](https://github.com/bearsunday/BEAR.Security) package helps find security vulnerabilities in your BEAR.Sunday application.
+Security tools can scan your application for vulnerability assessment. With static analysis, dynamic testing, taint analysis, and AI auditing, architecture-aware tools analyze from multiple angles, detecting vulnerabilities that generic tools miss.
 
 ## Installation
+
+Install [bear/security](https://github.com/bearsunday/BEAR.Security).
 
 ```bash
 composer require --dev bear/security
@@ -1875,14 +1958,46 @@ composer require --dev bear/security
 
 | Tool | What it does | When to use |
 |------|--------------|-------------|
-| SAST | Finds dangerous patterns in your code | During development |
-| DAST | Sends attack requests to your app | Before deployment |
+| SAST[^sast] | Static analysis to find dangerous patterns in your code | During development |
+| DAST[^dast] | Dynamic analysis to send attack requests to your app | Before deployment |
 | AI Auditor | AI reviews your code for security issues | Code review |
 | Psalm Plugin | Traces user input to dangerous operations | During development |
 
+[^sast]: Static Application Security Testing
+[^dast]: Dynamic Application Security Testing
+
+## Design Philosophy: Recall-First
+
+Security scanners have traditionally had two approaches: precision-first (report only certain issues) and recall-first (report suspicious patterns), with a trade-off between them.
+
+BEAR.Security adopts a recall-first approach. Missing a vulnerability (False Negative) is critical, but false positives (False Positive) can be reviewed and excluded. With AI agents now able to handle false positive verification, this strategy is more effective than ever.
+
+### Recommended Workflow
+
+```bash
+# 1. Run SAST to detect pattern-based vulnerabilities
+./vendor/bin/bear.security-scan src
+
+# 2. Review results and fix vulnerabilities
+# Add @security-ignore comment to false positives (see example below)
+
+# 3. Run AI Auditor to detect business logic issues
+./vendor/bin/bear-security-audit src
+
+# 4. Review and fix detected issues
+```
+
+Example of suppressing a false positive:
+
+```php
+$path = $this->buildPath($id); // @security-ignore PATH_TRAVERSAL_FILE_OPS: $id is validated integer from router
+```
+
+Once `@security-ignore` is added, the issue is suppressed in subsequent scans.
+
 ## SAST
 
-Scans your source code for dangerous patterns:
+Scans your source code for dangerous patterns. We recommend running this from an AI agent (such as Claude Code) and having the AI verify whether detections are false positives.
 
 ```bash
 ./vendor/bin/bear.security-scan src
@@ -1898,6 +2013,8 @@ Detects 14 vulnerability types:
 | Data Protection | Insecure deserialization, XXE |
 | Session | Session fixation, CSRF |
 | Network | SSRF, Remote file inclusion |
+
+See the [Vulnerability Reference](https://bearsunday.github.io/BEAR.Security/issues/en/) for details on each vulnerability.
 
 ## DAST
 
@@ -1922,7 +2039,12 @@ Tests include:
 Uses Claude AI to find security issues that pattern matching cannot detect:
 
 ```bash
-# Requires ANTHROPIC_API_KEY or Claude CLI authentication
+# Option 1: API Key
+export ANTHROPIC_API_KEY=sk-ant-...
+./vendor/bin/bear-security-audit src
+
+# Option 2: Claude CLI (Max Plan - no API key required)
+claude auth login
 ./vendor/bin/bear-security-audit src
 ```
 
@@ -1933,14 +2055,23 @@ Uses Claude AI to find security issues that pattern matching cannot detect:
 | Race Condition | Time-of-check to time-of-use flaws |
 | Business Logic | Application-specific security flaws |
 
-## Psalm Plugin
+## Psalm Plugin (Taint Analysis)
 
-Marks user input (like `$id` in `onGet($id)`) as tainted and traces how it flows through your code. Reports when tainted data reaches dangerous operations like database queries or HTML output without proper escaping.
+Taint analysis is a static analysis technique that marks user input as tainted variables and traces how that taint propagates through your code. It reports vulnerabilities when tainted data reaches SQL queries or HTML output without proper sanitization.
+
+### Setup
 
 Add the plugin and stubs to your `psalm.xml`:
 
 ```xml
-<psalm>
+<?xml version="1.0"?>
+<psalm
+    xmlns="https://getpsalm.org/schema/config"
+    errorLevel="1"
+>
+    <projectFiles>
+        <directory name="src"/>
+    </projectFiles>
     <stubs>
         <file name="vendor/bear/security/stubs/AuraSql.phpstub"/>
         <file name="vendor/bear/security/stubs/PDO.phpstub"/>
@@ -1959,15 +2090,49 @@ Add the plugin and stubs to your `psalm.xml`:
 
 The `targets` specify which resources receive external input. Use `Page` when serving web pages with `html` context, `App` when serving APIs with `api` context.
 
+### Stubs
+
+Stubs provide taint annotations for third-party libraries:
+
+| Stub | Purpose |
+|------|---------|
+| `AuraSql.phpstub` | Marks SQL query methods as taint sinks |
+| `PDO.phpstub` | Marks PDO methods as taint sinks |
+| `Qiq.phpstub` | Marks template output as taint sinks |
+
+### Running
+
 Run taint analysis:
 
 ```bash
 ./vendor/bin/psalm --taint-analysis
 ```
 
+Add convenience scripts to `composer.json`:
+
+```json
+{
+    "scripts": {
+        "security": "./vendor/bin/bear.security-scan src",
+        "taint": "./vendor/bin/psalm --taint-analysis 2>&1 | grep -E 'Tainted' || true"
+    },
+    "scripts-descriptions": {
+        "security": "Run SAST security scan",
+        "taint": "Run Psalm taint analysis"
+    }
+}
+```
+
+Then run with:
+
+```bash
+composer security
+composer taint
+```
+
 ## GitHub Actions
 
-Add security scanning to your CI pipeline:
+You can add security scanning to your CI pipeline:
 
 ```bash
 cp vendor/bear/security/workflows/security-sast.yml .github/workflows/
@@ -1982,7 +2147,9 @@ This workflow runs on every push and pull request:
 
 Results appear in your repository's **Security > Code scanning** section.
 
-## Why It Works
+**Recommended**: Run the scan from an AI agent first, add `@security-ignore` to false positives, then enable CI.
+
+## Architecture and Security
 
 BEAR.Sunday's architecture makes security scanning more effective:
 
@@ -1991,6 +2158,15 @@ BEAR.Sunday's architecture makes security scanning more effective:
 - **No Hidden Magic**: Dependencies are explicit through constructor injection. Scanners can analyze the complete code path.
 
 - **Framework-Aware AI**: The AI Auditor understands BEAR.Sunday patterns and can detect business logic flaws, not just generic vulnerabilities.
+
+## Prompt for AI Agents
+
+To set up bear/security with an AI coding assistant, use this prompt:
+
+```
+Follow the setup instructions at:
+https://raw.githubusercontent.com/bearsunday/BEAR.Skills/1.x/.claude/skills/bear-security-setup/SKILL.md
+```
 
 
 
@@ -5567,26 +5743,112 @@ array (
  ...
 ```
 
-## DataLoader (Beta)
+## DataLoader <sup style="font-size:0.5em; color:#666; font-weight:normal;">Beta</sup>
 
 > Available in `bear/resource:1.x-dev`
 
-DataLoader solves the N+1 problem in crawl operations by batching multiple resource requests into a single query.
+When crawling resources with links, each child resource triggers individual queries, causing the N+1 problem. DataLoader solves this by batching multiple resource requests into a single efficient query.
+
+### The N+1 Problem
+
+```text
+Request: GET /author/1 with linkCrawl('post-tree')
+
+[Query 1] SELECT * FROM author WHERE id = 1
+  └─ Author has 3 posts
+
+[Query 2] SELECT * FROM post WHERE author_id = 1
+  └─ Returns 3 posts (id: 10, 11, 12)
+
+[Query 3] SELECT * FROM meta WHERE post_id = 10  ← N+1 starts here
+[Query 4] SELECT * FROM meta WHERE post_id = 11
+[Query 5] SELECT * FROM meta WHERE post_id = 12
+
+Total: 5 queries (grows with data size!)
+```
+
+### With DataLoader
+
+```text
+[Query 1] SELECT * FROM author WHERE id = 1
+[Query 2] SELECT * FROM post WHERE author_id = 1
+[Query 3] SELECT * FROM meta WHERE post_id IN (10, 11, 12)  ← Batched!
+
+Total: 3 queries (constant regardless of data size)
+```
+
+### Usage
+
+Add the `dataLoader` parameter to the `#[Link]` attribute:
 
 ```php
 #[Link(crawl: 'post-tree', rel: 'meta', href: 'app://self/meta{?post_id}', dataLoader: MetaDataLoader::class)]
+public function onGet($author_id)
+{
 ```
 
+### DataLoader Implementation
+
+Implement `DataLoaderInterface` to batch queries:
+
 ```php
+use Aura\Sql\ExtendedPdoInterface;
+use BEAR\Resource\DataLoader\DataLoaderInterface;
+
 class MetaDataLoader implements DataLoaderInterface
 {
+    public function __construct(
+        private ExtendedPdoInterface $pdo
+    ){}
+
+    /**
+     * @param list<array<string, mixed>> $queries
+     * @return list<array<string, mixed>>
+     */
     public function __invoke(array $queries): array
     {
         $postIds = array_column($queries, 'post_id');
-        return $this->pdo->fetchAll('SELECT * FROM meta WHERE post_id IN (:post_ids)', ['post_ids' => $postIds]);
+
+        // Batch query: SELECT * FROM meta WHERE post_id IN (...)
+        return $this->pdo->fetchAll(
+            'SELECT * FROM meta WHERE post_id IN (:post_ids)',
+            ['post_ids' => $postIds]
+        );
     }
 }
 ```
+
+This example uses SQL directly for clarity, but [Ray.MediaQuery](database_media.html) can also be used for the implementation.
+
+### Key Inference
+
+The key for matching results is auto-inferred from the URI template:
+
+| URI Template | Inferred Key |
+|--------------|--------------|
+| `{?post_id}` | `post_id` |
+| `post_id={id}` | `post_id` |
+| `{?post_id,locale}` | `post_id`, `locale` |
+
+The returned rows must contain the key column(s) for proper distribution.
+
+### Multiple Keys
+
+For multiple key parameters, use all keys in your query:
+
+```php
+// URI template: app://self/translation{?post_id,locale}
+// $queries: [['post_id' => '1', 'locale' => 'en'], ['post_id' => '1', 'locale' => 'ja']]
+
+public function __invoke(array $queries): array
+{
+    // Build query using both keys
+    $sql = "SELECT * FROM translation WHERE (post_id, locale) IN (...)";
+    // ...
+}
+```
+
+
 
 # Rendering and transfer
 
@@ -5812,7 +6074,7 @@ class AppModule extends AbstractAppModule
 
 ##  Web Form
 
-Create **a form class** that defines the registration and the rules of form elements, then bind it to a method using `@FormValidation` annotation.
+Create **a form class** that defines the registration and the rules of form elements, then bind it to a method using `#[FormValidation]` attribute.
 The method runs only when the sent data is validated.
 
 ```php
@@ -5844,9 +6106,9 @@ Please refer to [Rules To Validate Fields](https://github.com/auraphp/Aura.Filte
 We validate an associative array of the argument of the method.
 If we want to change the input, we can set the values by implementing `submit()` method of `SubmitInterface` interface.
 
-## @FormValidation Annotation
+## #[FormValidation] Attribute
 
-Annotate the method that we want to validate with the `@FormValidation`, so that the validation is done in the form object specified by the `form` property before execution.
+Annotate the method that we want to validate with the `#[FormValidation]`, so that the validation is done in the form object specified by the `form` property before execution.
 When validation fails, the method with the `ValidationFailed` suffix is called.
 
 ```php
@@ -5857,25 +6119,18 @@ use Ray\WebFormModule\FormInterface;
 
 class MyController
 {
-    /**
-     * @var FormInterface
-     */
-    protected $form;
+    protected FormInterface $form;
 
-    /**
-     * @Inject
-     * @Named("contact_form")
-     */
+    #[Inject]
+    #[Named('contact_form')]
     public function setForm(FormInterface $form)
     {
         $this->form = $form;
     }
 
-    /**
-     * @FormValidation
-     * // or
-     * @FormValidation(form="form", onFailure="onPostValidationFailed")
-     */
+    #[FormValidation]
+    // or
+    // #[FormValidation(form: 'form', onFailure: 'onPostValidationFailed')]
     public function onPost($name, $age)
     {
         // validation success
@@ -5888,7 +6143,7 @@ class MyController
 }
 ```
 
-We can explicitly specify the name and the method by changing the `form` property of `@FormValidation` annotation or the `onValidationFailed` property.
+We can explicitly specify the name and the method by changing the `form` property of `#[FormValidation]` attribute or the `onValidationFailed` property.
 
 The submit parameters will be passed to the `onPostValidationFailed` method.
 
@@ -5923,9 +6178,9 @@ class MyForm extends AbstractForm
 In order to increase the security level, add a custom CSRF class that contains the user authentication to the form class.
 Please refer to the [Applying CSRF Protections](https://github.com/auraphp/Aura.Input#applying-csrf-protections) of Aura.Input for more information.
 
-## @InputValidation annotation
+## #[InputValidation] attribute
 
-If we annotate the method with `@InputValidation` instead of `@FormValidation`, the exception `Ray\WebFormModule\Exception\ValidationException` is thrown when validation fails.
+If we annotate the method with `#[InputValidation]` instead of `#[FormValidation]`, the exception `Ray\WebFormModule\Exception\ValidationException` is thrown when validation fails.
 For convenience, HTML representation is not used in this case.
 
 When we `echo` the `error` property of the caught exception, we can see the representation of the media type [application/vnd.error+json](https://github.com/blongden/vnd.error).
@@ -5945,24 +6200,23 @@ echo $e->error;
 // }
 ```
 
-We can add the necessary information to `vnd.error+json` using `@VndError` annotation.
+We can add the necessary information to `vnd.error+json` using `#[VndError]` attribute.
 
 ```php
-/**
- * @FormValidation(form="contactForm")
- * @VndError(
- *   message="foo validation failed",
- *   logref="a1000", path="/path/to/error",
- *   href={"_self"="/path/to/error", "help"="/path/to/help"}
- * )
- */
- public function onPost()
+#[FormValidation(form: 'contactForm')]
+#[VndError(
+    message: 'foo validation failed',
+    logref: 'a1000',
+    path: '/path/to/error',
+    href: ['_self' => '/path/to/error', 'help' => '/path/to/help']
+)]
+public function onPost()
 ```
 
 ## FormVndErrorModule
 
-If we install `Ray\WebFormModule\FormVndErrorModule`, the method annotated with `@FormValidation`
-will throw an exception in the same way as the method annotated with `@InputValidation`.
+If we install `Ray\WebFormModule\FormVndErrorModule`, the method annotated with `#[FormValidation]`
+will throw an exception in the same way as the method annotated with `#[InputValidation]`.
 We can use the page resources as API.
 
 ```php
@@ -5986,7 +6240,7 @@ a confirmation form and multiple forms in a single page work.
 # Validation
 
  * You can define resource APIs in the JSON schema.
- * You can separate the validation code with `@Valid`, `@OnValidate` annotation.
+ * You can separate the validation code with `#[Valid]`, `#[OnValidate]` attribute.
  * Please see the form for validation by web form.
 
 # JSON Schema
@@ -6150,9 +6404,9 @@ To apply schema validation to the representation of the resource object (the ren
  * [Understanding JSON Schema](https://spacetelescope.github.io/understanding-json-schema/)
  * [JSON Schema Generator](https://jsonschema.net/#/editor)
 
-## @Valid annotation
+## #[Valid] attribute
 
-The `@Valid` annotation is a validation for input.
+The `#[Valid]` attribute is a validation for input.
 You can set up validation as AOP for your method.
 By separating validation logic from the method, the code will be readable and testable.
 
@@ -6181,25 +6435,23 @@ class AppModule extends AbstractAppModule
 }
 ```
 
-### Annotation
+### Attribute
 
-There are three annotations `@Valid`, `@OnValidate`, `@OnFailure` for validation.
+There are three attributes `#[Valid]`, `#[OnValidate]`, `#[OnFailure]` for validation.
 
-First of all, annotate the method that you want to validate with `@Valid`
+Annotate the method that you want to validate with `#[Valid]`
 
 ```php?start_inline
 use Ray\Validation\Annotation\Valid;
 
 class News
 {
-    /**
-     * @Valid
-     */
+    #[Valid]
     public function createUser($name)
     {
 ```
 
-Validation will be conducted in the method annotated with `@OnValidate`.
+Validation will be conducted in the method annotated with `#[OnValidate]`.
 
 The arguments of the method should be the same as the original method. The method name can be anything.
 
@@ -6208,9 +6460,7 @@ use Ray\Validation\Annotation\OnValidate;
 
 class News
 {
-    /**
-     * @OnValidate
-     */
+    #[OnValidate]
     public function onValidate($name)
     {
         $validation = new Validation;
@@ -6225,16 +6475,14 @@ class News
 Add validations to your elements by `addError()` with the `element name` and` error message` as parameters, then return the validation object.
 
 When validation fails, the exception `Ray\Validation\Exception\InvalidArgumentException` will be thrown,
-but if you have a method annotated with the `@OnFailure`, it will be called, instead of throwing an exception
+but if you have a method annotated with the `#[OnFailure]`, it will be called, instead of throwing an exception
 
 ```php?start_inline
 use Ray\Validation\Annotation\OnFailure;
 
 class News
 {
-    /**
-     * @OnFailure
-     */
+    #[OnFailure]
     public function onFailure(FailureInterface $failure)
     {
         // original parameters
@@ -6249,7 +6497,7 @@ class News
     }
 ```
 
-In the method annotated with `@OnFailure`, you can access the validated messages with `$failure->getMessages()`
+In the method annotated with `#[OnFailure]`, you can access the validated messages with `$failure->getMessages()`
 and also you can get the object of the original method with `$failure->getInvocation()`.
 
 ### Various validation
@@ -6263,21 +6511,15 @@ use Ray\Validation\Annotation\OnFailure;
 
 class News
 {
-    /**
-     * @Valid("foo")
-     */
+    #[Valid('foo')]
     public function fooAction($name, $address, $zip)
     {
 
-    /**
-     * @OnValidate("foo")
-     */
+    #[OnValidate('foo')]
     public function onValidateFoo($name, $address, $zip)
     {
 
-    /**
-     * @OnFailure("foo")
-     */
+    #[OnFailure('foo')]
     public function onFailureFoo(FailureInterface $failure)
     {
 ```
@@ -6555,6 +6797,12 @@ You can access all the resources by following the link from the root like the we
  * [HAL Browser](https://github.com/mikekelly/hal-browser) - [example](http://haltalk.herokuapp.com/explorer/browser.html#/)
  * [hyperagent.js](https://weluse.github.io/hyperagent/)
 
+### HAL Layout <sup style="font-size:0.5em; color:#666; font-weight:normal;">Beta</sup>
+
+Libraries for rendering HAL resources as React/Vue components:
+
+* [hal-layout](https://github.com/koriym/hal-layout) - React
+* [hal-layout-vue](https://github.com/koriym/hal-layout-vue) - Vue 3
 
 ## Siren
 
@@ -7192,54 +7440,7 @@ The demo is available at [MyVendor.Stream](https://github.com/bearsunday/MyVendo
 ---
 *[This document](https://github.com/bearsunday/bearsunday.github.io/blob/master/manuals/1.0/en/stream.md) needs to be proofread by native speaker.*
 
-
-
-# Swoole
-
-You can execute your BEAR.Sunday application using Swoole directly from the command line. It dramatically improves performance.
-
-## Install
-
-### Swoole Install
-
-See [https://github.com/swoole/swoole-src#%EF%B8%8F-installation](https://github.com/swoole/swoole-src#%EF%B8%8F-installation)
-
-### BEAR.Swoole Install
-
-```bash
-composer require bear/swoole ^0.4
-```
-Place the bootstrap script at `bin/swoole.php`
-
-```php
-<?php
-require dirname(__DIR__) . '/autoload.php';
-exit((require dirname(__DIR__) . '/vendor/bear/swoole/bootstrap.php')(
-    'prod-hal-app',       // context
-    'MyVendor\MyProject', // application name
-    '127.0.0.1',          // IP
-    8080                  // port
-));
-```
-
-## Excute
-
-```
-php bin/swoole.php
-```
-```
-Swoole http server is started at http://127.0.0.1:8088
-```
-
-## Benchmarking site
-
-See [BEAR.HelloworldBenchmark](https://github.com/bearsunday/BEAR.HelloworldBenchmark)
-You can expect x2 to x10 times bootstrap performance boost.
-
- * [The benchmarking result](https://github.com/bearsunday/BEAR.HelloworldBenchmark/wiki)
-
-[<img src="https://github.com/swoole/swoole-src/raw/master/mascot.png">](https://github.com/swoole/swoole-src)
-
+- [Swoole](/manuals/1.0/en/swoole.md): Async server with Swoole
 
 # Command Line Interface (CLI)
 
@@ -7552,17 +7753,13 @@ use BEAR\Resource\ResourceObject;
 use BEAR\Sunday\Inject\ResourceInject;
 use Ray\AuraSqlModule\AuraSqlInject;
 
-/**
- * @Cacheable
- */
+#[Cacheable]
 class Entry extends ResourceObject
 {
     use AuraSqlInject;
     use ResourceInject;
 
-    /**
-     * @Embed(rel="author", src="/author{?author_id}")
-     */
+    #[Embed(rel: 'author', src: '/author{?author_id}')]
     public function onGet(string $author_id, string $slug): static
     {
         // ...
@@ -7570,10 +7767,8 @@ class Entry extends ResourceObject
         return $this;
     }
 
-    /**
-     * @Link(rel="next_act", href="/act1")
-     * @Link(rel="next_act2", href="/act2")
-     */
+    #[Link(rel: 'next_act', href: '/act1')]
+    #[Link(rel: 'next_act2', href: '/act2')]
     public function onPost (
         string $tile,
         string $body,
@@ -7590,25 +7785,7 @@ class Entry extends ResourceObject
 
 A [DocBlock comment]([https://phpdoc.org/docs/latest/getting-started/your-first-set-of-documentation.html]) is optional. A DocBlock contains the method summary in one line.
 Then followed by the description, which can be a multiple lines.
-We should also put @params and @Link after description if possible.
-
-
-
-```php?start_inline
-/**
- * A summary informing the user what the associated element does.
- *
- * A *description*, that can span multiple lines, to go _in-depth_ into the details of this element
- * and to provide some background information or textual references.
- *
- * @param string $arg1 *description*
- * @param string $arg2 *description*
- * @param string $arg3 *description*
- *
- * @Link(rel="next_act", href="/next_act_uri")
- * @Link(rel="next_act2", href="/next_act_uri2")
-*/
-```
+We should also put @params after description if possible.
 
 ## Resources
 
@@ -7697,8 +7874,8 @@ BEAR.Sunday can overwrite methods using the `X-HTTP-Method-Override` header or` 
 
 ## AOP
 
- * Do not make interceptor mandatory. We will make the program work even without an interceptor. (For example, if you remove `@Transactional` interceptor, the function of transaction will be lost, but "core concers" will work without issue.)
- * Prevent the interceptor from injecting dependencies in methods. Values that can only be determined at implementation time are injected into arguments via `@Assisted` injection.
+ * Do not make interceptor mandatory. We will make the program work even without an interceptor. (For example, if you remove `#[Transactional]` interceptor, the function of transaction will be lost, but "core concerns" will work without issue.)
+ * Prevent the interceptor from injecting dependencies in methods. Values that can only be determined at implementation time are injected into arguments via `#[Assisted]` injection.
  * If there are multiple interceptors, do not depend on the execution order.
  * If it is an interceptor unconditionally applied to all methods, consider the description in `bootstrap.php`.
 
@@ -8156,180 +8333,174 @@ $this->install(new AttributeModule());
 
 [^1]:Attributes take precedence when mixed in a single method.
 
+
 # API Doc
 
-ApiDoc generates API documentation from your application.
+Your application is the documentation.
 
-The auto-generated documentation from your code and JSON schema will reduce your effort and keep your API documentation accurate.
+- **ApiDoc HTML**: Developer documentation
+- **OpenAPI 3.1**: Tool chain integration
+- **JSON Schema**: Information model
+- **ALPS**: Vocabulary semantics for AI understanding
+- **llms.txt**: AI-readable application overview
+
+## Demo
+
+- [HTML](https://bearsunday.github.io/BEAR.ApiDoc/)
+- [OpenAPI](https://bearsunday.github.io/BEAR.ApiDoc/openapi/)
+
+## Installation
+
+```bash
+composer require bear/api-doc --dev
+./vendor/bin/apidoc init
+```
+
+The `init` command generates `apidoc.xml` from your `composer.json`. Edit it to customize.
+
+```xml
+<apidoc>
+    <appName>MyVendor\MyProject</appName>  <!-- Application namespace -->
+    <scheme>app</scheme>                    <!-- app or page -->
+    <docDir>docs/api</docDir>
+    <format>html</format>                   <!-- html, openapi, etc. -->
+</apidoc>
+```
+
+The `format` accepts comma-separated values: `html`, `md`, `openapi`, `llms`.
 
 ## Usage
 
-Install BEAR.ApiDoc.
+Generate documentation from the command line.
 
-    composer require bear/api-doc --dev
-
-Copy the configuration file.
-
-    cp ./vendor/bear/api-doc/apidoc.xml.dist ./apidoc.xml
-
-## Source
-
-ApiDoc generates documentation by retrieving information from phpdoc, method signatures, and JSON schema.
-
-#### PHPDOC
-
-In phpdoc, the following parts are retrieved.
-For information that applies across resources, such as authentication, prepare a separate documentation page and link it with `@link`.
-
-```php
-/**
- * {title}
- *
- * {description}
- *
- * {@link htttp;//example.com/docs/auth 認証}
- */
- class Foo extends ResourceObject
- {
- }
+```bash
+./vendor/bin/apidoc
 ```
 
-```php
-/**
- * {title}
- *
- * {description}
- *
- * @param string $id ユーザーID
- */
- public function onGet(string $id ='kuma'): static
- {
- }
+### OpenAPI HTML Generation
+
+When `openapi` format is specified, `openapi.json` is generated. Use Redocly CLI to convert it to HTML.
+
+```bash
+npm install -g @redocly/cli
+redocly build-docs docs/api/openapi.json -o docs/api/openapi.html
 ```
 
-* If there is no `@param` description in the phpdoc of the method, get the information of the argument from the method signature.
-* The order of priority for information acquisition is phpdoc, JSON schema, and profile.
+### llms.txt
+
+The `llms` format generates `llms.txt` following the [llms.txt specification](https://llmstxt.org/). The output includes API endpoints, resource objects, infrastructure interfaces (Query/Command), SQL statements, and entity definitions.
+
+### Composer Scripts
+
+Add scripts to `composer.json` for convenience.
+
+```json
+{
+    "scripts": {
+        "docs": "./vendor/bin/apidoc"
+    },
+    "scripts-descriptions": {
+        "docs": "Generate API documentation"
+    }
+}
+```
+
+```bash
+composer docs
+```
+
+## GitHub Actions
+
+Push to main branch to automatically generate and publish API documentation to GitHub Pages. The reusable workflow handles HTML generation, OpenAPI conversion with Redocly, and ALPS state diagram creation.
+
+```yaml
+name: API Docs
+on:
+  push:
+    branches: [main]
+
+jobs:
+  docs:
+    uses: bearsunday/BEAR.ApiDoc/.github/workflows/apidoc.yml@v1
+    with:
+      format: 'html,openapi,llms'
+```
+
+Enable GitHub Pages: Settings → Pages → Source: "GitHub Actions"
+
+### Inputs
+
+| Input | Default | Description |
+|-------|---------|-------------|
+| `php-version` | `'8.2'` | PHP version |
+| `format` | `'html,openapi,llms'` | Comma-separated: html, md, openapi, llms |
+| `docs-path` | `'docs'` | Output directory |
+| `publish-to` | `'github-pages'` | `github-pages` or `artifact-only` |
+
+### Output Structure
+
+```text
+docs/
+├── index.html          # API documentation
+├── llms.txt            # AI-readable overview
+├── openapi.json        # OpenAPI spec
+└── schemas/
+    ├── index.html      # Schema list
+    └── *.json          # JSON Schema
+```
 
 ## Configuration
-
-The configuration is written in XML.
-The minimum specification is as follows.
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <apidoc
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:noNamespaceSchemaLocation="https://bearsunday.github.io/BEAR.ApiDoc/apidoc.xsd">
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="https://bearsunday.github.io/BEAR.ApiDoc/apidoc.xsd">
     <appName>MyVendor\MyProject</appName>
     <scheme>app</scheme>
     <docDir>docs</docDir>
     <format>html</format>
+    <alps>alps.json</alps>
 </apidoc>
 ```
 
-### Required Attributes
-
-#### appName
-
-Application namespaces
-
-#### scheme
-
-The name of the schema to use for API documentation. `page` or `app`.
-
-#### docDir
-
-Output directory name.
-
-#### format
-
-The output format, HTML or MD (Mark down).
-
-### Optional attributes
-
-#### title
-
-API title
-
-```xml
-<title>MyBlog API</title>
-```
-
-#### description
-
-API description
-
-```xml
-<description>MyBlog API description</description
-```
-
-#### links
-
-Links. The `href` is the URL of the link, and the `rel` is its content.
-
-```xml
-<links>
-    <link href="https://www.example.com/issue" rel="issue" />
-    <link href="https://www.example.com/help" rel="help" />
-</links>
-```
-
-#### alps
-
-Specifies an "ALPS profile" that defines the terms used by the API.
-
-```xml
-<alps>alps/profile.json</alps>.
-```
+| Option | Required | Description |
+|--------|----------|-------------|
+| `appName` | Yes | Application namespace |
+| `scheme` | Yes | `app` or `page` |
+| `docDir` | Yes | Output directory |
+| `format` | Yes | `html`, `md`, `openapi`, `llms` |
+| `title` | | API title |
+| `alps` | | ALPS profile path |
 
 ## Profile
 
-ApiDoc supports the [ALPS](http://alps.io/) format of the [RFC 6906 Profile](https://tools.ietf.org/html/rfc6906) which gives additional information to the application.
-
-Words used in API request and response keys are called semantic descriptors, and if you create a dictionary of profiles, you don't need to describe the words for each request.
-Centralized definitions of words and phrases prevent notational errors and aid in shared understanding.
-
-The words used in API request and response keys are called semantic descriptors, and creating a dictionary of profiles eliminates the need to explain the words for each request.
-Centralized definitions of words and phrases prevent shaky notation and aid in shared understanding.
-
-The following is an example of defining descriptors `firstName` and `familyName` with `title` and `def` respectively.
-While `title` describes a word and clarifies its meaning, `def` links standard words defined in vocabulary sites such as [Schema.org](https://schema.org/).
-
-ALPS profiles can be written in XML or JSON.
-
-profile.xml
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<alps
-     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-     xsi:noNamespaceSchemaLocation="https://alps-io.github.io/schemas/alps.xsd">
-    <!-- Ontology -->
-    <descriptor id="firstName" title="The person's first name."/>
-    <descriptor id="familyName" def="https://schema.org/familyName"/>
-</alps>
-```
-
-profile.json
+ALPS profile defines your API vocabulary. Centralized definitions prevent inconsistencies and aid shared understanding.
 
 ```json
 {
-  "$schema": "https://alps-io.github.io/schemas/alps.json",
-  "alps": {
-    "descriptor": [
-      {"id": "firstName", "title": "The person's first name."}
-      {"id": "familyName", "def": "https://schema.org/familyName"},
-    ]
-  }
+    "$schema": "https://alps-io.github.io/schemas/alps.json",
+    "alps": {
+        "descriptor": [
+            {"id": "firstName", "title": "The person's first name."},
+            {"id": "familyName", "def": "https://schema.org/familyName"}
+        ]
+    }
 }
 ```
 
-Descriptions of words appearing in ApiDoc take precedence over phpdoc > JsonSchema > ALPS in that order.
+## Application as Documentation
+
+Code is the single source of truth. Documentation generated from your application never diverges from the implementation.
+
+[llms.txt](https://llmstxt.org/) provides AI-readable application overviews. When an AI agent encounters your application, it can quickly grasp the entire structure through this single document—generated directly from your code. Unlike typical API references that list endpoints, llms.txt captures the full information architecture following Dan Klyn's [framework](https://understandinggroup.com/ia-theory/explaining-information-architecture)—Ontology, Taxonomy, and Choreography. Combined with ALPS vocabulary semantics and JSON Schema information models, AI agents can understand not just what operations exist, but the meaning and structure behind them.
 
 ## Reference
 
-* [Demo](https://bearsunday.github.io/BEAR.ApiDoc/)
-* [ALPS](http://alps.io/)
-* [ALPS-ASD](https://github.com/koriym/app-state-diagram)
+- [BEAR.ApiDoc](https://github.com/bearsunday/BEAR.ApiDoc) - API documentation generator
+- [ALPS](https://www.app-state-diagram.com/manuals/1.0/en/) - Application-Level Profile Semantics
+- [JSON Schema](https://json-schema.org/) - Data validation and documentation
+- [Redocly CLI](https://redocly.com/docs/cli/installation/) - OpenAPI to HTML conversion
 
 
 

@@ -107,9 +107,20 @@ $this->override(new Foo2Module);
 
 ### コンテキスト文字列での優先順位
 
-コンテキスト文字列では、左のモジュールの束縛が優先されます。例えば、`prod-hal-app`の場合：
+コンテキストモジュールは**逆順**（右から左）で処理されます。例えば、`prod-hal-api-app`の場合：
 
-- AppModuleよりHalModule
-- HalModuleよりProdModule
+```
+インストール順序: AppModule → ApiModule → HalModule → ProdModule
+```
 
-の順で優先してインストールされます。
+後からインストールされたモジュールが先のモジュールの束縛を上書きできます。つまり：
+
+- `HalModule`は`AppModule`より優先
+- `ProdModule`は`HalModule`より優先
+
+組み込みコンテキスト（`HalModule`など）の束縛を上書きするカスタムコンテキストモジュールを作成する場合、コンテキスト文字列でそのコンテキストの**左側**に配置します。例えば、`HalModule`の`RenderInterface`束縛を上書きするには：
+
+```php
+// コンテキスト: "prod-mycontext-hal-api-app"
+// インストール順序: AppModule → ApiModule → HalModule → MycontextModule → ProdModule
+```
