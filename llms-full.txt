@@ -763,7 +763,7 @@ $this->override(new Foo2Module);
 
 Context modules are processed in **reverse order** (right-to-left). For example, with context `prod-hal-api-app`:
 
-```
+```text
 Installation order: AppModule → ApiModule → HalModule → ProdModule
 ```
 

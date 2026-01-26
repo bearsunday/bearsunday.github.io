@@ -109,7 +109,7 @@ $this->override(new Foo2Module);
 
 コンテキストモジュールは**逆順**（右から左）で処理されます。例えば、`prod-hal-api-app`の場合：
 
-```
+```text
 インストール順序: AppModule → ApiModule → HalModule → ProdModule
 ```
 
