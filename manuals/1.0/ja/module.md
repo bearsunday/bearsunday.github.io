@@ -80,6 +80,8 @@ $this->bindInterceptor(
 
 ## 束縛の優先順位
 
+参照: [Ray.Di 束縛](https://ray-di.github.io/manuals/1.0/ja/bindings.html)
+
 ### 同一モジュール内での優先順位
 
 同じモジュール内では、先に束縛された方が優先されます。以下の例では、Foo1が優先されます：

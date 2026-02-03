@@ -57,6 +57,8 @@ More info can be found at Ray.Di [README](https://github.com/ray-di/Ray.Di/blob/
 
 ### Binding Priority
 
+See also: [Ray.Di Bindings](https://ray-di.github.io/manuals/1.0/en/bindings.html)
+
 #### Within a Single Module
 
 Bindings declared first take priority. In the following example, `Foo1` takes priority:
