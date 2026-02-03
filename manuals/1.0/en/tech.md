@@ -92,13 +92,17 @@ BEAR.Sunday adopts a donut caching strategy and uses ESI (Edge Side Includes) to
 
 In this way, BEAR.Sunday and Fastly's integration of ROA-based caching strategy not only realizes advanced distributed caching but also enhances application performance and fault tolerance.
 
-### Accelerated Startup
+### Runtime Optimization
 
-In the original world of DI, users avoid dealing directly with the injector (DI container) as much as possible. Instead, they generate a single root object at the application's entry point to start the application. In BEAR.Sunday's DI, there is virtually no DI container manipulation even at configuration time. The root object is huge but is a single variable, so it is reused beyond requests, realizing an optimized bootstrap to the limit.
+BEAR.Sunday is designed to minimize framework overhead regardless of server configuration.
+
+DI resolution is completed at compile time, with no container lookups at runtime. The entire application is generated as a single root object variable and reused across requests. In php-fpm configurations, the pre-compiled dependency graph and opcache enable fast bootstrapping.
+
+In Swoole configurations, persistent workers reduce bootstrapping to a single initial boot. Coroutine-context-based request isolation enables safe concurrent processing without reliance on superglobals. Combined with the transparent parallel execution described next, I/O wait time is further minimized.
 
 ### Transparent Parallel Execution
 
-In BEAR.Sunday, a URI expresses "intent" rather than being merely a communication protocol or locator. `query://self/user_profile` expresses only the intent "I want the user's profile information"—whether it comes from MySQL or Redis is hidden from the application.
+In BEAR.Sunday, a URI expresses "intent" rather than being merely a communication protocol or locator. `app://self/user` expresses only the intent "I want user information"—whether it comes from MySQL or Redis is hidden from the application.
 
 This complete separation of "What" from "How" enables multiple resources embedded with `#[Embed]` to be fetched in parallel without changing any application code. Resource classes written 10 years ago can benefit from parallel execution just by adding a Module.
 
@@ -184,8 +188,6 @@ BEAR.Sunday is designed with an emphasis on maintaining backward compatibility i
 
 BEAR.Sunday not only adopts semantic versioning but also does not perform major version upgrades that involve breaking changes. It prevents new feature additions or changes to existing features from affecting existing code. Code that has become old and unused is given the attribute "deprecated" but is never deleted and does not affect the behavior of existing code. Instead, new features are added, and evolution continues.
 
-Here's the English translation of the revised text:
-
 ### Acyclic Dependencies Principle (ADP)
 
 The Acyclic Dependencies Principle states that dependencies should be unidirectional and non-circular. The BEAR.Sunday framework adheres to this principle and is composed of a series of packages with a hierarchical structure where larger framework packages depend on smaller framework packages. Each level does not need to be aware of the existence of other levels that encompass it, and the dependencies are unidirectional and do not form cycles. For example, Ray.Aop is not even aware of the existence of Ray.Di, and Ray.Di is not aware of the existence of BEAR.Sunday.
@@ -227,7 +229,7 @@ This declarative architecture enables multi-layered security scanning combining 
 
 ### Value for Users
 
-* High performance: BEAR.Sunday's optimized fast startup and CDN-centric caching strategy brings users a fast and responsive experience.
+* High performance: BEAR.Sunday's runtime optimization and CDN-centric caching strategy brings users a fast and responsive experience.
 * Reliability and availability: BEAR.Sunday's CDN-centric caching strategy minimizes single points of failure (SPOF), allowing users to enjoy stable services.
 * Ease of use: BEAR.Sunday's excellent connectivity makes it easy to collaborate with other languages and systems.
 
@@ -237,6 +239,8 @@ This declarative architecture enables multi-layered security scanning combining 
 * Reduced maintenance costs: BEAR.Sunday's approach to maintaining backward compatibility increases technical continuity and minimizes the time and cost of change response.
 * High extensibility: With technologies like DI (Dependency Injection) and AOP (Aspect Oriented Programming) that change behavior while minimizing code changes, BEAR.Sunday allows applications to be easily extended in line with business growth and changes.
 * Excellent User Experience (UX): BEAR.Sunday provides high performance and high availability, increasing user satisfaction, enhancing customer loyalty, expanding the customer base, and contributing to business success.
+
+### Summary
 
 Excellent constraints do not change. The constraints brought by BEAR.Sunday provide specific value to developers, users, and businesses respectively.
 
