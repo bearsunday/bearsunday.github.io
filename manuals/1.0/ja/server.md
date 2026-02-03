@@ -74,12 +74,13 @@ cd frankenphp && docker compose up -d && curl http://localhost:8080/
 
 - **イベント駆動**: 非同期I/O処理
 - **コルーチン**: スレッドなしの並行リクエスト処理
+- **リクエスト分離**: コルーチンコンテキストによるリクエスト分離
 - **高性能**: リクエストごとのブートオーバーヘッドを排除
 - **メモリ効率**: ワーカー間でメモリを共有
 
 ### インストール
 
-#### Swoole拡張
+#### Swoole拡張（ext-swoole ^6.1）
 
 ```bash
 pecl install swoole
@@ -161,6 +162,15 @@ docker compose restart
 # Dockerなしの場合
 pkill -f swoole.php && php bin/swoole.php
 ```
+
+### 並列実行
+
+Swooleサーバーには2つの独立した関心事があります：
+
+- **サーバー**: アプリケーションをどう実行するか（このページ）
+- **並列実行**: 埋め込みリソースをどう並行処理するか
+
+BEAR.Asyncを使用すると、`#[Embed]`リソースがSwooleコルーチンで自動的に並列実行されます。詳細は[並列リソース実行](async.html)を参照してください。
 
 ---
 
