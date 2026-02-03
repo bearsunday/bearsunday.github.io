@@ -74,12 +74,13 @@ cd frankenphp && docker compose up -d && curl http://localhost:8080/
 
 - **Event-Driven**: Asynchronous I/O handling
 - **Coroutines**: Concurrent request processing without threads
+- **Request Isolation**: Coroutine-context request isolation
 - **High Performance**: Eliminates per-request boot overhead
 - **Memory Efficient**: Shared memory between workers
 
 ### Install
 
-#### Swoole Extension
+#### Swoole Extension (ext-swoole ^6.1)
 
 ```bash
 pecl install swoole
@@ -175,6 +176,15 @@ docker compose restart
 # Without Docker
 pkill -f swoole.php && php bin/swoole.php
 ```
+
+### Parallel Execution
+
+Swoole server involves two independent concerns:
+
+- **Server**: How to run the application (this page)
+- **Parallel Execution**: How to execute embedded resources concurrently
+
+With BEAR.Async, `#[Embed]` resources are automatically executed in parallel using Swoole coroutines. See [Parallel Resource Execution](async.html) for details.
 
 ---
 

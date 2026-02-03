@@ -53,8 +53,56 @@ $this->bind($interface)->to($class)->in(Scope::SINGLETON);
 $this->bind($interface)->toConstructor($class, $named);
 ```
 
-Bindings declared first take priority
 More info can be found at Ray.Di [README](https://github.com/ray-di/Ray.Di/blob/2.x/README.md)
+
+### Binding Priority
+
+See also: [Ray.Di Bindings](https://ray-di.github.io/manuals/1.0/en/bindings.html)
+
+#### Within a Single Module
+
+Bindings declared first take priority. In the following example, `Foo1` takes priority:
+
+```php?start_inline
+$this->bind(FooInterface::class)->to(Foo1::class);
+$this->bind(FooInterface::class)->to(Foo2::class);
+```
+
+#### Module Installation Priority
+
+Modules installed first take priority. In the following example, `Foo1Module` takes priority:
+
+```php?start_inline
+$this->install(new Foo1Module);
+$this->install(new Foo2Module);
+```
+
+To give a later module priority, use `override()`. In the following example, `Foo2Module` takes priority:
+
+```php?start_inline
+$this->install(new Foo1Module);
+$this->override(new Foo2Module);
+```
+
+#### Context String Priority
+
+Context modules are processed in **reverse order** (right-to-left). For example, with context `prod-hal-api-app`:
+
+```text
+Installation order: AppModule → ApiModule → HalModule → ProdModule
+```
+
+Later installed modules can override earlier bindings. This means:
+
+- `HalModule` takes priority over `AppModule`
+- `ProdModule` takes priority over `HalModule`
+
+When creating a custom context module that needs to override bindings from a built-in context (like `HalModule`), position it to the left of that context in the context string. For example, to override `HalModule`'s `RenderInterface` binding:
+
+```php?start_inline
+// Context: "prod-mycontext-hal-api-app"
+// Installation order: AppModule → ApiModule → HalModule → MycontextModule → ProdModule
+```
 
 ## AOP Bindings
 

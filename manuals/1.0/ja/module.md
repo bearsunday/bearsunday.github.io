@@ -80,6 +80,8 @@ $this->bindInterceptor(
 
 ## 束縛の優先順位
 
+参照: [Ray.Di 束縛](https://ray-di.github.io/manuals/1.0/ja/bindings.html)
+
 ### 同一モジュール内での優先順位
 
 同じモジュール内では、先に束縛された方が優先されます。以下の例では、Foo1が優先されます：
@@ -107,9 +109,20 @@ $this->override(new Foo2Module);
 
 ### コンテキスト文字列での優先順位
 
-コンテキスト文字列では、左のモジュールの束縛が優先されます。例えば、`prod-hal-app`の場合：
+コンテキストモジュールは**逆順**（右から左）で処理されます。例えば、`prod-hal-api-app`の場合：
 
-- AppModuleよりHalModule
-- HalModuleよりProdModule
+```text
+インストール順序: AppModule → ApiModule → HalModule → ProdModule
+```
 
-の順で優先してインストールされます。
+後からインストールされたモジュールが先のモジュールの束縛を上書きできます。つまり：
+
+- `HalModule`は`AppModule`より優先
+- `ProdModule`は`HalModule`より優先
+
+組み込みコンテキスト（`HalModule`など）の束縛を上書きするカスタムコンテキストモジュールを作成する場合、コンテキスト文字列でそのコンテキストの**左側**に配置します。例えば、`HalModule`の`RenderInterface`束縛を上書きするには：
+
+```php
+// コンテキスト: "prod-mycontext-hal-api-app"
+// インストール順序: AppModule → ApiModule → HalModule → MycontextModule → ProdModule
+```
