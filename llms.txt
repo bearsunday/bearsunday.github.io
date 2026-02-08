@@ -1,6 +1,8 @@
 # BEAR.Sunday PHP Framework
 
 > BEAR.Sunday is a resource-oriented PHP framework combining clean object-oriented design with REST principles. Built on Ray.Di (Dependency Injection), Ray.Aop (Aspect-Oriented Programming), and BEAR.Resource (REST Resources). Emphasizes standards compliance, longevity, and flexibility.
+>
+> Instead of a global MODE constant and conditionals, application behavior is determined by a context string (e.g. `prod-hal-api-app`). Each segment maps to a DI module whose bindings override earlier ones — no `if` branches on environment values. The context is used only at compile time to build the object graph; application code never knows what context it runs in.
 
 ## Getting Started
 
