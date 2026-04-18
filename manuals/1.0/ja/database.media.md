@@ -175,6 +175,42 @@ $result->isAffected();  // bool — count > 0 のときtrue
 
 SQLファイルに複数のステートメントが含まれる場合、`AffectedRows`は**最後に実行されたステートメントの結果**を表します。
 
+#### Collection戻り値（auto-wrap）
+
+`Traversable`を実装したクラスを戻り値型に指定すると、Ray.MediaQueryが行リストを渡して自動的にインスタンス化します。呼び出し側で`new UserCollection($repo->list())`と書く必要がありません。
+
+```php
+interface UserRepositoryInterface
+{
+    #[DbQuery('user_list')]
+    public function list(): UserCollection;  // 連想配列が渡される
+
+    #[DbQuery('user_list', factory: UserFactory::class)]
+    public function hydrated(): UserCollection;  // Userインスタンスが渡される
+
+    #[DbQuery('user_list')]
+    /** @return UserCollection<User> */
+    public function byDocblock(): UserCollection;  // docblock経由でUserにhydrate
+}
+
+final class UserCollection implements IteratorAggregate, Countable
+{
+    public function __construct(public readonly array $items) {}
+    public function getIterator(): ArrayIterator { return new ArrayIterator($this->items); }
+    public function count(): int { return count($this->items); }
+}
+```
+
+auto-wrap対象となる条件:
+
+1. `Traversable`を実装している（`IteratorAggregate`や`Iterator`経由を含む）
+2. インスタンス化可能（抽象クラス・interface以外）
+3. コンストラクタの引数が1つ以上
+
+最初の引数の型は問いません。そのため、PHP標準の`ArrayObject`、Laravel `Illuminate\Support\Collection`（型宣言のない`$items = []`）、Doctrine `ArrayCollection`（`array $elements`）、ユーザー独自のコレクションクラスのいずれも追加実装なしで動作します。
+
+コンストラクタに渡される配列の中身は、`factory:`または`@return Collection<Entity>`のdocblockでエンティティクラスが指定されていればhydrate済みのオブジェクト配列、指定が無ければ連想配列になります。
+
 ## パラメーター
 
 ### 日付時刻
