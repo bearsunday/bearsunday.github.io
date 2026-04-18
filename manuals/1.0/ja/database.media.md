@@ -149,6 +149,32 @@ interface TodoItemInterface
 }
 ```
 
+#### AffectedRows（DMLの結果取得）
+
+`INSERT` / `UPDATE` / `DELETE`メソッドの戻り値に`AffectedRows`を指定すると、影響行数と（`INSERT`の場合は）最後に採番されたIDを受け取れます。
+
+```php
+use Ray\MediaQuery\Result\AffectedRows;
+
+interface TodoRepositoryInterface
+{
+    #[DbQuery('todo_add')]
+    public function add(string $title): AffectedRows;
+
+    #[DbQuery('todo_delete')]
+    public function delete(string $id): AffectedRows;
+}
+
+$result = $todoRepo->add('ドキュメント作成');
+$result->count;         // int — 影響を受けた行数
+$result->lastInsertId;  // ?string — INSERT時のauto-increment ID、それ以外はnull
+$result->isAffected();  // bool — count > 0 のときtrue
+```
+
+`lastInsertId`は`INSERT`以外、あるいはauto-incrementが発火しなかった`INSERT`では`null`に正規化されます。既存の`void`戻り値はそのまま動作します。
+
+SQLファイルに複数のステートメントが含まれる場合、`AffectedRows`は**最後に実行されたステートメントの結果**を表します。
+
 ## パラメーター
 
 ### 日付時刻

@@ -149,6 +149,32 @@ interface TodoItemInterface
 }
 ```
 
+#### AffectedRows (DML result)
+
+Declare an `AffectedRows` return type on `INSERT` / `UPDATE` / `DELETE` methods to receive the affected row count and (for `INSERT`) the last insert id.
+
+```php
+use Ray\MediaQuery\Result\AffectedRows;
+
+interface TodoRepositoryInterface
+{
+    #[DbQuery('todo_add')]
+    public function add(string $title): AffectedRows;
+
+    #[DbQuery('todo_delete')]
+    public function delete(string $id): AffectedRows;
+}
+
+$result = $todoRepo->add('Write docs');
+$result->count;         // int — number of affected rows
+$result->lastInsertId;  // ?string — auto-increment id after INSERT, null otherwise
+$result->isAffected();  // bool — true when count > 0
+```
+
+`lastInsertId` is normalised to `null` for non-`INSERT` statements and for inserts that do not produce an auto-increment value. Existing `void` return types keep working unchanged.
+
+When a SQL file contains multiple statements, `AffectedRows` reflects the **last executed statement only**.
+
 ## Parameters
 
 ### DateTime
