@@ -7,7 +7,7 @@ permalink: /manuals/1.0/ja/production.html
 
 # プロダクション
 
-BEAR.Sundayの既定の`prod`束縛に対して、アプリケーションがそれぞれの[デプロイ環境](https://en.wikipedia.org/wiki/Deployment_environment)に応じたモジュールをカスタマイズして束縛を行います。
+BEAR.Sundayの既定の`prod`束縛をベースに、アプリケーション側で各[デプロイ環境](https://en.wikipedia.org/wiki/Deployment_environment)に応じたモジュールを追加・上書きしてカスタマイズします。
 
 ## 既定のProdModule
 
@@ -18,7 +18,7 @@ BEAR.Sundayの既定の`prod`束縛に対して、アプリケーションがそ
 * ローカルキャッシュ
 * 分散キャッシュ
 
-詳細はBEAR.Packageの[ProdModule.php](https://github.com/bearsunday/BEAR.Package/blob/1.x/src/Context/ProdModule.php)参照。
+詳細はBEAR.Packageの[ProdModule.php](https://github.com/bearsunday/BEAR.Package/blob/1.x/src/Context/ProdModule.php)を参照してください。
 
 ## アプリケーションのProdModule
 

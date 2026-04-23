@@ -10,7 +10,7 @@ permalink: /manuals/1.0/ja/tutorial2.html
 
 * JSONのスキーマを定義し、バリデーションやドキュメンテーションに利用する [JSON Schema](https://json-schema.org/)
 * ハイパーメディアタイプ [HAL (Hypertext Application Language)](https://stateless.group/hal_specification.html)  
-* CakePHPが開発しているDBマイグレーションツール [Phinx](https://book.cakephp.org/phinx/0/en/index.html) 
+* CakePHPが開発しているDBマイグレーションツール [Phinx](https://book.cakephp.org/phinx/0/en/)
 * PHPのインターフェイスとSQL文実行を束縛する [Ray.MediaQuery](https://github.com/ray-di/Ray.MediaQuery)
 
 [tutorial2](https://github.com/bearsunday/tutorial2/commits/v2-php8.2)のコミットを参考にして進めましょう。
@@ -160,7 +160,7 @@ All Done. Took 0.0248s
 
 テーブルが作成されました。次回からこのプロジェクトのデータベース環境を整えるには`composer setup`を実行するだけで行えます。
 
-マイグレーションクラスの記述について詳しくは[Phinxのマニュアル：マイグレーションを書く](https://book.cakephp.org/3.x/ja/phinx/migrations.html)をご覧ください。
+マイグレーションクラスの記述について詳しくは[Phinxのマニュアル: Writing Migrations](https://book.cakephp.org/phinx/0/en/migrations.html)をご覧ください。
 
 ## モジュール
 

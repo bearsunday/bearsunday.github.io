@@ -83,7 +83,7 @@ echo $response->code . PHP_EOL;
 
 ```
 
-`index.php`と保存して実行してみましょう。
+`index.php`として保存して実行してみましょう。
 
 ```
 php index.php
@@ -92,7 +92,7 @@ php index.php
 201
 ```
 
-APIを他のメソッドに渡したり、他のフレームワークなどのコンテナに格納したりするには`callable`オブジェクトにします。
+APIを他のメソッドに渡したり、他のフレームワークのコンテナに格納したりするには、`callable`オブジェクトとして扱います。
 `$createTicket`は普通の関数のように扱うことができます。
 
 ```php

@@ -92,7 +92,7 @@ Content-Type: application/hal+json
 }
 ```
 
-[application/hal+json](https://tools.ietf.org/html/draft-kelly-json-hal-06)メディアタイプで結果が返ってきました。HAL+JSONは、`_links`セクションで関係のあるリソースをリンクするJSON形式です。HAL+JSONについて詳しくは[こちら](https://learn.microsoft.com/ja-jp/iis-administration/api/hal)をご覧ください。
+[application/hal+json](https://datatracker.ietf.org/doc/html/draft-kelly-json-hal)メディアタイプで結果が返ってきました。HAL+JSONは、`_links`セクションで関係のあるリソースをリンクするJSON形式です。HAL+JSONについて詳しくは[HAL specification](https://stateless.group/hal_specification.html)をご覧ください。
 
 これをWeb APIサービスとして公開してみましょう。
 まずBuilt-inサーバーを立ち上げます。
@@ -148,7 +148,7 @@ HTTP/1.1 405 Method Not Allowed
 ...
 ```
 
-また、HTTP `OPTIONS`メソッドを使用すると、利用可能なHTTPメソッドと必要なパラメーターを確認できます（[RFC7231](https://tools.ietf.org/html/rfc7231#section-4.3.7)）。
+また、HTTP `OPTIONS`メソッドを使用すると、利用可能なHTTPメソッドと必要なパラメーターを確認できます（[RFC7231](https://www.rfc-editor.org/rfc/rfc7231#section-4.3.7)）。
 
 ```bash
 curl -i -X OPTIONS http://127.0.0.1:8080/weekday
@@ -1000,7 +1000,7 @@ Location: /todos?id=1
 
 ステータスコード`201 Created`は、リソースが正常に作成されたことを示します。
 また、`Location`ヘッダーには、新しく作成されたリソースのURIが含まれています。
-([RFC7231 Section-6.3.2](https://tools.ietf.org/html/rfc7231#section-6.3.2) [日本語訳](https://triple-underscore.github.io/RFC7231-ja.html#section-6.3.2))
+([RFC7231 Section-6.3.2](https://www.rfc-editor.org/rfc/rfc7231#section-6.3.2) [日本語訳](https://triple-underscore.github.io/RFC7231-ja.html#section-6.3.2))
 
 #### GETリクエスト
 
