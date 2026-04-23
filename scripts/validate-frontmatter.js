@@ -64,6 +64,11 @@ function main() {
   let errorCount = 0;
   
   for (const file of files) {
+    // Skip generated files
+    if (file.includes('1page.md') || file.includes('onepage.md')) {
+      continue;
+    }
+
     try {
       validateFrontmatter(file);
     } catch (error) {
