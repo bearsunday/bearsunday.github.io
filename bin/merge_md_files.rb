@@ -19,7 +19,7 @@ def extract_order_from_contents(language)
   contents = File.read(contents_file)
 
   # Extract permalinks from nav items
-  permalinks = contents.scan(/href="\/manuals\/1\.0\/#{language}\/([^"]+\.html)"/).flatten
+  permalinks = contents.scan(/href="\/manuals\/1\.0\/#{language}\/([^\"]+\.html)"/).flatten
 
   # Validate that we found some permalinks
   if permalinks.empty?

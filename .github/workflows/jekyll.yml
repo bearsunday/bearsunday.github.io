@@ -48,7 +48,6 @@ jobs:
         run: |
           ruby bin/merge_md_files.rb
 
-
       - name: Build with Jekyll
         # Outputs to the './_site' directory by default
         run: bundle exec jekyll build --baseurl "${{ steps.pages.outputs.base_path }}"
