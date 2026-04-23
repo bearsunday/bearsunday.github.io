@@ -149,6 +149,68 @@ interface TodoItemInterface
 }
 ```
 
+#### AffectedRows（DMLの結果取得）
+
+`INSERT` / `UPDATE` / `DELETE`メソッドの戻り値に`AffectedRows`を指定すると、影響行数と（`INSERT`の場合は）最後に採番されたIDを受け取れます。
+
+```php
+use Ray\MediaQuery\Result\AffectedRows;
+
+interface TodoRepositoryInterface
+{
+    #[DbQuery('todo_add')]
+    public function add(string $title): AffectedRows;
+
+    #[DbQuery('todo_delete')]
+    public function delete(string $id): AffectedRows;
+}
+
+$result = $todoRepo->add('ドキュメント作成');
+$result->count;         // int — 影響を受けた行数
+$result->lastInsertId;  // ?string — INSERT時のauto-increment ID、それ以外はnull
+$result->isAffected();  // bool — count > 0 のときtrue
+```
+
+`lastInsertId`は`INSERT`以外、あるいはauto-incrementが発火しなかった`INSERT`では`null`に正規化されます。既存の`void`戻り値はそのまま動作します。
+
+SQLファイルに複数のステートメントが含まれる場合、`AffectedRows`は**最後に実行されたステートメントの結果**を表します。
+
+#### Collection戻り値（auto-wrap）
+
+`Traversable`を実装したクラスを戻り値型に指定すると、Ray.MediaQueryが行リストを渡して自動的にインスタンス化します。呼び出し側で`new UserCollection($repo->list())`と書く必要がありません。
+
+```php
+interface UserRepositoryInterface
+{
+    #[DbQuery('user_list')]
+    public function list(): UserCollection;  // 連想配列が渡される
+
+    #[DbQuery('user_list', factory: UserFactory::class)]
+    public function hydrated(): UserCollection;  // Userインスタンスが渡される
+
+    #[DbQuery('user_list')]
+    /** @return UserCollection<User> */
+    public function byDocblock(): UserCollection;  // docblock経由でUserにhydrate
+}
+
+final class UserCollection implements IteratorAggregate, Countable
+{
+    public function __construct(public readonly array $items) {}
+    public function getIterator(): ArrayIterator { return new ArrayIterator($this->items); }
+    public function count(): int { return count($this->items); }
+}
+```
+
+auto-wrap対象となる条件:
+
+1. `Traversable`を実装している（`IteratorAggregate`や`Iterator`経由を含む）
+2. インスタンス化可能（抽象クラス・interface以外）
+3. コンストラクタの引数が1つ以上
+
+最初の引数の型は問いません。そのため、PHP標準の`ArrayObject`、Laravel `Illuminate\Support\Collection`（型宣言のない`$items = []`）、Doctrine `ArrayCollection`（`array $elements`）、ユーザー独自のコレクションクラスのいずれも追加実装なしで動作します。
+
+コンストラクタに渡される配列の中身は、`factory:`または`@return Collection<Entity>`のdocblockでエンティティクラスが指定されていればhydrate済みのオブジェクト配列、指定が無ければ連想配列になります。
+
 ## パラメーター
 
 ### 日付時刻

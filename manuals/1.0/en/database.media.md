@@ -149,6 +149,68 @@ interface TodoItemInterface
 }
 ```
 
+#### AffectedRows (DML result)
+
+Declare an `AffectedRows` return type on `INSERT` / `UPDATE` / `DELETE` methods to receive the affected row count and (for `INSERT`) the last insert id.
+
+```php
+use Ray\MediaQuery\Result\AffectedRows;
+
+interface TodoRepositoryInterface
+{
+    #[DbQuery('todo_add')]
+    public function add(string $title): AffectedRows;
+
+    #[DbQuery('todo_delete')]
+    public function delete(string $id): AffectedRows;
+}
+
+$result = $todoRepo->add('Write docs');
+$result->count;         // int — number of affected rows
+$result->lastInsertId;  // ?string — auto-increment id after INSERT, null otherwise
+$result->isAffected();  // bool — true when count > 0
+```
+
+`lastInsertId` is normalised to `null` for non-`INSERT` statements and for inserts that do not produce an auto-increment value. Existing `void` return types keep working unchanged.
+
+When a SQL file contains multiple statements, `AffectedRows` reflects the **last executed statement only**.
+
+#### Collection return type (auto-wrap)
+
+Declare any `Traversable` class as the return type and Ray.MediaQuery will instantiate it with the row list, so callers no longer write `new UserCollection($repo->list())` at every call site.
+
+```php
+interface UserRepositoryInterface
+{
+    #[DbQuery('user_list')]
+    public function list(): UserCollection;  // raw associative arrays
+
+    #[DbQuery('user_list', factory: UserFactory::class)]
+    public function hydrated(): UserCollection;  // User instances
+
+    #[DbQuery('user_list')]
+    /** @return UserCollection<User> */
+    public function byDocblock(): UserCollection;  // User instances via docblock hint
+}
+
+final class UserCollection implements IteratorAggregate, Countable
+{
+    public function __construct(public readonly array $items) {}
+    public function getIterator(): ArrayIterator { return new ArrayIterator($this->items); }
+    public function count(): int { return count($this->items); }
+}
+```
+
+A class qualifies for auto-wrap when it:
+
+1. implements `Traversable` (directly or via `IteratorAggregate` / `Iterator`)
+2. is instantiable (not an abstract class or interface)
+3. has a constructor with at least one parameter
+
+The first parameter's type is not constrained, so PHP's built-in `ArrayObject`, Laravel `Illuminate\Support\Collection` (untyped `$items = []`), Doctrine `ArrayCollection` (`array $elements`), and user-defined collections all work without additional integration.
+
+Items passed to the constructor are entity-hydrated when `factory:` or a `@return Collection<Entity>` docblock resolves to an entity class; otherwise raw associative arrays are passed.
+
 ## Parameters
 
 ### DateTime
