@@ -51,6 +51,34 @@ def strip_frontmatter(content)
   content.sub(/\A---\s*\r?\n.*?\r?\n---\s*\r?\n/m, '')
 end
 
+def normalize_generated_markdown(content)
+  inside_fence = false
+  fence_marker = nil
+
+  content.each_line.map do |line|
+    stripped = line.strip
+
+    if stripped.start_with?('```', '~~~')
+      marker = stripped[0, 3]
+      if inside_fence && stripped == fence_marker
+        inside_fence = false
+        fence_marker = nil
+        line
+      elsif !inside_fence
+        inside_fence = true
+        fence_marker = marker
+        stripped == marker ? line.sub(marker, "#{marker}text") : line
+      else
+        line
+      end
+    elsif !inside_fence && stripped == '---'
+      line.sub('---', '***')
+    else
+      line
+    end
+  end.join
+end
+
 def generate_combined_file(language, intro_message)
   source = Pathname.new(__dir__).join("..", "manuals/1.0/#{language}")
   output_file = source.join("1page.md")
@@ -108,7 +136,7 @@ def generate_combined_file(language, intro_message)
     # Process all files in a single pass
     all_files.each_with_index do |path, idx|
       begin
-        content = strip_frontmatter(path.read).strip
+        content = normalize_generated_markdown(strip_frontmatter(path.read)).strip
         next if content.empty?
 
         # Add separator between sections (except first)

@@ -27,8 +27,8 @@ BEAR.SundayはPHPの公式サポート期間([Supported Versions](https://www.ph
 * `7.2` (30 Nov 2020)
 * `7.3` (6 Dec 2021)
 * `7.4` (28 Nov 2022)
-* `8.1` (31 Dec 2025)
 * `8.0` (26 Nov 2023)
+* `8.1` (31 Dec 2025)
 
 ## Semver
 

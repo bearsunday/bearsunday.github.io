@@ -306,7 +306,7 @@ The version of the framework does not lock the version of the library. The libra
 
 Choose **malt / Docker / manual setup** based on your OS and team structure. This is a practical guide that consolidates the features, setup procedures, and operational points for each method in one place.
 
----
+***
 
 ## Method Selection
 
@@ -316,7 +316,7 @@ Choose **malt / Docker / manual setup** based on your OS and team structure. Thi
 | **Docker**    | macOS, Windows, Linux | Container-based complete environment reproduction, CI/CD friendly | Team dev, CI/CD, production-like |
 | **Manual**    | All OS                | Use existing environment as-is, fine-grained control | Existing infrastructure, constrained environments |
 
----
+***
 
 ## Environment Setup with malt
 
@@ -359,7 +359,7 @@ source <(malt env)
 
 ### Configuration Files
 
-```
+```text
 malt.json          # malt configuration
 malt/
   conf/
@@ -397,7 +397,7 @@ mysql@3306 -e "CREATE DATABASE IF NOT EXISTS myapp"
 
 > **Important**: `mysql@3306` is **project-specific connection**. It's isolated from the system's global MySQL.
 
----
+***
 
 ## Environment Setup with Docker
 
@@ -486,7 +486,7 @@ docker-compose exec mysql mysql -u root
 
 **Warning**: If `mysql` is installed on your system, running just `mysql` will connect to your system's MySQL, not the Docker container. To access the Docker database, you must either specify host/port or execute from within the container.
 
----
+***
 
 ## Manual Environment Setup
 
@@ -543,20 +543,23 @@ brew install shivammathur/extensions/apcu@8.4     # Homebrew
 sudo apt install php8.4-apcu                      # Ubuntu
 ```
 
-**Important**: Xdebug and XHProf impact performance, so avoid enabling them permanently in php.ini. Instead, enable them only when needed using the `-d` option.
+**Important**: Xdebug and XHProf impact performance, so avoid leaving them enabled all the time. When you configure them, Xdebug uses `zend_extension=xdebug.so`, while XHProf uses `extension=xhprof.so`; enable them from the CLI only when needed.
 
 ```bash
 # Enable Xdebug only when debugging
 php -dzend_extension=xdebug.so -S 127.0.0.1:8080 -t public
 
 # Enable XHProf only when profiling
-php -dzend_extension=xhprof.so script.php
+php -dextension=xhprof.so script.php
 
-# Disable extensions when running Composer (for speed)
-php -dzend_extension= /usr/local/bin/composer install
+# Disable Xdebug when running Composer (recommended)
+XDEBUG_MODE=off composer install
+
+# Or override the PHP ini setting
+php -dxdebug.mode=off /usr/local/bin/composer install
 ```
 
----
+***
 
 ## BEAR.Sunday Quick Start Example
 
@@ -567,7 +570,7 @@ malt init && malt install && malt create && malt start
 source <(malt env)
 ```
 
----
+***
 
 ## Project-specific Configuration
 
@@ -582,8 +585,8 @@ DB_USER=root
 DB_PASS=
 DB_DSN=mysql:host=127.0.0.1;port=3306;dbname=myapp
 
-# SQLite (for switching)
-DB_DSN=sqlite:var/db.sqlite3
+# SQLite (switching example)
+# DB_DSN=sqlite:var/db.sqlite3
 
 # Redis
 REDIS_HOST=127.0.0.1:6379
@@ -601,7 +604,7 @@ composer require --dev robmorgan/phinx
 ./vendor/bin/phinx migrate
 ```
 
----
+***
 
 ## Development Server
 
@@ -634,7 +637,7 @@ malt stop apache
 malt stop nginx
 ```
 
----
+***
 
 ## Troubleshooting
 
@@ -684,13 +687,13 @@ malt start
 
 ### .gitignore for Team Development
 
-```
+```gitignore
 malt/logs/
 malt/data/
 malt/tmp/
 ```
 
----
+***
 
 ## CI/CD (GitHub Actions Example)
 
@@ -734,7 +737,7 @@ jobs:
         run: ./vendor/bin/phpunit
 ```
 
----
+***
 
 ## Environment Selection Guidelines
 
@@ -802,7 +805,7 @@ Try accessing it via the console. First, test with an error.
 php bin/app.php get /weekday
 ```
 
-```
+```text
 400 Bad Request
 content-type: application/vnd.error+json
 
@@ -857,11 +860,11 @@ require dirname(__DIR__) . '/autoload.php';
 + exit((new Bootstrap())(PHP_SAPI === 'cli-server' ? 'hal-api-app' : 'prod-hal-api-app', $GLOBALS, $_SERVER));
 ```
 
-```
+```text
 curl -i 'http://127.0.0.1:8080/weekday?year=2001&month=1&day=1'
 ```
 
-```
+```text
 HTTP/1.1 200 OK
 Host: 127.0.0.1:8080
 Date: Tue, 04 May 2021 01:55:59 GMT
@@ -881,22 +884,22 @@ Content-Type: application/hal+json
 
 This resource class does not have methods other than GET, so trying other methods will return `405 Method Not Allowed`. Let's test this as well.
 
-```
+```text
 curl -i -X POST 'http://127.0.0.1:8080/weekday?year=2001&month=1&day=1'
 ```
 
-```
+```text
 HTTP/1.1 405 Method Not Allowed
 ...
 ```
 
 The HTTP `OPTIONS` method request can be used to determine the available HTTP methods and required parameters ([RFC7231](https://tools.ietf.org/html/rfc7231#section-4.3.7)).
 
-```
+```text
 curl -i -X OPTIONS http://127.0.0.1:8080/weekday
 ```
 
-```
+```text
 HTTP/1.1 200 OK
 ...
 Content-Type: application/json
@@ -964,10 +967,10 @@ The `setUp()` method specifies the context (app) and uses the application's inje
 
 Let's run it.
 
-```
+```text
 ./vendor/bin/phpunit
 ```
-```
+```text
 PHPUnit 9.5.4 by Sebastian Bergmann and contributors.
 
 ....                                                                4 / 4 (100%)
@@ -977,13 +980,13 @@ Time: 00:00.281, Memory: 14.00 MB
 
 The installed project also includes commands for running tests and code inspections. To obtain test coverage, run `composer coverage`.
 
-```
+```text
 composer coverage
 ```
 
 [pcov](https://pecl.php.net/package/pcov) can measure coverage more quickly.
 
-```
+```text
 composer pcov
 ```
 
@@ -992,10 +995,10 @@ You can view the details of the coverage by opening `build/coverage/index.html` 
 To check if the coding standards are being followed, use the `composer cs` command.
 Automatic corrections can be done with the `composer cs-fix` command.
 
-```
+```text
 composer cs
 ```
-```
+```text
 composer cs-fix
 ```
 
@@ -1003,13 +1006,13 @@ composer cs-fix
 
 Static analysis of the code is performed using the `composer sa` command.
 
-```
+```text
 composer sa
 ```
 
 When running the code up to this point, the following error was detected by phpstan.
 
-```
+```text
  ------ --------------------------------------------------------- 
   Line   src/Resource/App/Weekday.php                             
  ------ --------------------------------------------------------- 
@@ -1021,7 +1024,7 @@ The earlier code did not consider that `DateTimeImmutable::createFromFormat` mig
 
 Let's try it.
 
-```
+```text
 php bin/app.php get '/weekday?year=-1&month=1&day=1'
 ```
 
@@ -1107,7 +1110,7 @@ Add a test as well.
 
 `composer tests` not only performs `composer test` but also checks coding standards (cs) and static analysis (sa).
 
-```
+```text
 composer tests
 ```
 
@@ -1455,7 +1458,7 @@ Let's see what representation this resource has.
 ```bash
 php bin/page.php get '/?year=2000&month=1&day=1'
 ```
-```
+```text
 200 OK
 Content-Type: application/hal+json
 
@@ -1752,7 +1755,7 @@ Next, get this resource.
 php bin/test.php get '/todos?id=1'
 ```
 
-```
+```text
 200 OK
 ETag: 2527085682
 Last-Modified: Sun, 04 Jun 2017 15:23:39 GMT
@@ -1809,7 +1812,7 @@ curl -i http://127.0.0.1:8081/todos -X PUT -d "id=1&todo=think"
 ```
 A `204 No Content` response is returned, indicating there is no body.
 
-```
+```text
 HTTP/1.1 204 No Content
 ...
 ```
@@ -1840,11 +1843,11 @@ BEAR.Sunday applications have these characteristics of REST, adhering to HTTP st
 
 BEAR.Sunday is a connecting layer framework that ties dependencies with **DI**, cross-cutting concerns with **AOP**, and application information as resources with the power of **REST**.
 
----
+***
 
 [^1]:The source code for this project is committed to [bearsunday/Tutorial](https://github.com/bearsunday/tutorial1/commits/v3) section by section. Please refer to it as needed.
 [^2]:Normally, the **vendor** name is the name of an individual or team (organization). A GitHub account name or team name would be suitable. Enter the application name for **project**.
-```
+```text
 
 ***
 
@@ -1873,13 +1876,13 @@ cd ticket
 
 Install Phinx.
 
-```
+```text
 composer require --dev robmorgan/phinx
 ```
 
 Configure the DB connection information in the `.env.dist` file in the project root folder.
 
-```
+```text
 TKT_DB_HOST=127.0.0.1:3306
 TKT_DB_NAME=ticket
 TKT_DB_USER=root
@@ -1953,10 +1956,10 @@ passthru('./vendor/bin/phinx migrate -c var/phinx/phinx.php -e test');
 
 Next, we will create a migration class to create the `ticket` table.
 
-```
+```text
 ./vendor/bin/phinx create Ticket -c var/phinx/phinx.php
 ```
-```
+```text
 Phinx by CakePHP - https://phinx.org.
 
 ...
@@ -1994,10 +1997,10 @@ In addition, edit `.env.dist` like the following.
 
 Now that we are done with the setup, run the setup command to create the table.
 
-```
+```text
 composer setup
 ```
-```
+```text
 > php bin/setup.php
 ...
 All Done. Took 0.0248s
@@ -2011,7 +2014,7 @@ For more information about writing migration classes, see [Phinx Manual: Writing
 
 Install the module as a composer.
 
-```
+```text
 composer require ray/identity-value-module ray/media-query -w
 ```
 
@@ -2383,7 +2386,7 @@ See [resource](resource.html) for details.
 
 If you make the request again, you will see that the status of the project resource has been added to the property `_embedded`.
 
-```
+```text
 % php bin/app.php get '/ticket?id=1'
 ```
 ```diff
@@ -2631,7 +2634,7 @@ The bootstrap script for the test server will also be changed to the API context
 
 Let's run it.
 
-```
+```text
 ./vendor/bin/phpunit --testsuite http
 ```
 
@@ -2639,7 +2642,7 @@ Let's run it.
 
 The actual HTTP request/response log made by curl will be recorded in the resource log of the third argument.
 
-```
+```text
 curl -s -i 'http://127.0.0.1:8080/'
 
 HTTP/1.1 200 OK
@@ -2661,7 +2664,7 @@ Content-Type: application/hal+json
 }
 ```
 
-```
+```text
 curl -s -i -H 'Content-Type:application/json' -X POST -d '{"title":"title1"}' http://127.0.0.1:8080/tickets
 
 HTTP/1.1 201 Created
@@ -2683,7 +2686,7 @@ Because of its self-descriptiveness, API documentation can be generated automati
 
 Let's create it. The documentation will be output to the [docs](https://bearsunday.github.io/tutorial2/) folder.
 
-```
+```text
 composer doc
 ```
 
@@ -3265,7 +3268,7 @@ You can reuse common packages and tool combinations as modules with only modules
 
 All packages adhere to [Semantic Versioning](http://semver.org/).
 
----
+***
 
 [^1]: See [Koriym.DbAppPackage](https://github.com/koriym/Koriym.DbAppPackage)
 
@@ -3328,7 +3331,7 @@ Depending on your context choose a boot file.
 php -S 127.0.0.1:8080 public/index.php
 ```
 
-```
+```text
 // console access
 php bin/app.php get /user/1
 ```
@@ -3371,7 +3374,7 @@ For example the `cli` context relates to a `CliModule`, then binds all of the DI
 
 The context value is used only to create the root object and then disappears. There is no global "mode" that can be referenced by the application, and the application can not know what context it is currently running in. The behavior should only change through **code that is dependent on an interface**[^dip] and changes of dependencies by context.
 
----
+***
 
 [^dip]: [Dependency inversion principle](https://en.wikipedia.org/wiki/Dependency_inversion_principle)
 
@@ -3639,7 +3642,7 @@ There are various matchers.
  * [Matcher::logicalOr](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/MatcherInterface.php#L44)
  * [Matcher::logicalAnd](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/MatcherInterface.php#L51)
  * [Matcher::logicalNot](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/MatcherInterface.php#L58) 
-```
+```text
 
 With the `MethodInvocation` object, you can access the target method's invocation object, method's and parameters.
 
@@ -3905,7 +3908,7 @@ One important REST constraint is resource linking; ResourceObject supports both 
 
 The functionality of the BEAR.Sunday resource object is also available in a stand-alone package for stand-alone use: BEAR.Resource [README](https://github.com/bearsunday/BEAR.Resource/blob/1.x/README.ja.md).
 
----
+***
 
 ***
 
@@ -4006,7 +4009,7 @@ class AppModule extends AbstractAppModule
 
 Delete cached DI files to activate new router.
 
-```
+```text
 rm -rf var/tmp/*
 ```
 
@@ -4144,7 +4147,7 @@ $this->install(new RequestHeaderModule());
 
 Implement [RouterInterface](https://github.com/bearsunday/BEAR.Sunday/blob/1.x/src/Extension/Router/RouterInterface.php) with by referring to [BEAR.AuraRouterModule](https://github.com/bearsunday/BEAR.AuraRouterModule).
 
----
+***
 *[This document](https://github.com/bearsunday/bearsunday.github.io/blob/master/manuals/1.0/en/router.md) needs to be proofread by native speaker. *
 
 ***
@@ -4265,7 +4268,7 @@ $this->install(new StorageExpiryModule($short, $medium, $long));
 
 Change the cache version when the resource schema changes and compatibility is lost. This is especially important for CQRS operation that does not disappear over TTL time.
 
-```
+```text
 $this->install(new CacheVersionModule($cacheVersion));
 ```
 
@@ -4316,7 +4319,7 @@ The compile script creates all static cache files such as dynamically created fi
 
 When compiling multiple contexts (ex. api-app, html-app) in one application, such as when performing content negotiation, it is necessary to evacuate the files.
 
-```
+```text
 mv autoload.php api.autoload.php  
 ```
 
@@ -4336,7 +4339,7 @@ To enable preloading, you need to specify [opcache.preload](https://www.php.net/
 
 Example)
 
-```
+```text
 opcache.preload=/path/to/project/preload.php
 opcache.preload_user=www-data
 ```
@@ -4405,7 +4408,7 @@ Currently, there are no dedicated cache adapters available. Please refer to [Imm
 
 ### php.ini
 
-```
+```text
 // Extensions
 extension="apcu.so"
 extension="immutable_cache.so" 
@@ -5177,7 +5180,7 @@ PHP
 
 Twig
 
-```
+```text
 {% raw %}{{ var | raw }}
 {{ var }}
 {{ var | helper }}
@@ -5188,7 +5191,7 @@ Twig
 
 Qiq
 
-```
+```text
 {% raw %}{{% var }}
 {{h $var }}
 {{h helper($var) }}
@@ -5236,7 +5239,7 @@ Halo also displays performance information about the resource, including executi
 
 To enable profiling, you need to install [xhprof](https://www.php.net/manual/en/intro.xhprof.php), which helps identify performance bottlenecks.
 
-```
+```text
 pecl install xhprof
 // Also add 'extension=xhprof.so' to your php.ini file
 ```
@@ -5244,7 +5247,7 @@ pecl install xhprof
 To visualize and graphically display call graphs, you need to install [graphviz](https://graphviz.org/download/).
 Example: [Call Graph Demo](/docs/demo/halo/callgraph.svg)
 
-```
+```text
 // macOS
 brew install graphviz
 
@@ -5267,7 +5270,7 @@ class DevModule extends AbstractModule
 }
 ```
 
----
+***
 
 ***
 
@@ -5559,7 +5562,7 @@ In `ResourceObject`, you can mix stream with a normal string. The output is conv
 
 You can also create a BEAR.Sunday PSR-7 project with `bear/project` from scratch.
 
-```
+```text
 composer create-project bear/project my-psr7-project
 cd my-psr7-project/
 php -S 127.0.0.1:8080 -t public
@@ -5645,7 +5648,7 @@ If you want to further control streaming such as streaming bandwidth and timing 
 The demo is available at [MyVendor.Stream](https://github.com/bearsunday/MyVendor.Stream).
 
 
----
+***
 *[This document](https://github.com/bearsunday/bearsunday.github.io/blob/master/manuals/1.0/en/stream.md) needs to be proofread by native speaker.*
 
 ***
@@ -6275,9 +6278,14 @@ class User extends ResourceObject
 Parallel SQL query execution using mysqli's native async support is also provided.
 
 ```php
-use BEAR\Async\Module\MysqliBatchEnvModule;
+use BEAR\Async\Module\MysqliEnvModule;
 
-$this->install(new MysqliBatchEnvModule('MYSQL_HOST', 'MYSQL_USER', 'MYSQL_PASS', 'MYSQL_DB'));
+$this->install(new MysqliEnvModule(
+    'MYSQLI_HOST',
+    'MYSQLI_USER',
+    'MYSQLI_PASSWORD',
+    'MYSQLI_DATABASE',
+));
 ```
 
 ```php
@@ -6292,10 +6300,17 @@ class MyService
 
     public function getData(int $userId): array
     {
-        return (new SqlBatch($this->executor, [
-            'user' => ['SELECT * FROM users WHERE id = ?', [$userId]],
-            'posts' => ['SELECT * FROM posts WHERE user_id = ?', [$userId]],
+        $results = (new SqlBatch($this->executor, [
+            'user' => ['SELECT * FROM users WHERE id = :id', ['id' => $userId]],
+            'posts' => ['SELECT * FROM posts WHERE user_id = :user_id', ['user_id' => $userId]],
+            'comments' => ['SELECT * FROM comments WHERE user_id = :user_id', ['user_id' => $userId]],
         ]))();
+
+        return [
+            'user' => $results['user'][0] ?? null,
+            'posts' => $results['posts'],
+            'comments' => $results['comments'],
+        ];
     }
 }
 ```
@@ -6322,7 +6337,7 @@ Proper testing makes software better with continuity. A clean application of BEA
 
 Run `vendor/bin/phpunit` or `composer test`.　Other commands are as follows.
 
-```
+```text
 composer test    // phpunit test
 composer tests   // test + sa + cs
 composer coverage // test coverage
@@ -6709,7 +6724,7 @@ BEAR.Sunday's architecture makes security scanning more effective:
 
 To set up bear/security with an AI coding assistant, use this prompt:
 
-```
+```text
 Follow the setup instructions at:
 https://raw.githubusercontent.com/bearsunday/BEAR.Skills/1.x/.claude/skills/bear-security-setup/SKILL.md
 ```
@@ -6815,7 +6830,7 @@ ServiceLocator::setReader(new AttributeReader());
 $this->install(new AttributeModule());
 ```
 
----
+***
 
 [^1]:Attributes take precedence when mixed in a single method.
 

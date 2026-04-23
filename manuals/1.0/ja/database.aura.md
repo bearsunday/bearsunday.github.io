@@ -620,7 +620,7 @@ $sth->execute($this->delete->getBindValues());
 
 ### ページネーション
 
-[ray/aura-sql-module](https://packagist.org/packages/ray/aura-sql-module)はRay.Sqlの生SQL、Ray.AuraSqlQueryのクエリービルダー双方でページネーション（ページ分割）をサポートしています。
+[ray/aura-sql-module](https://packagist.org/packages/ray/aura-sql-module)はAura.Sqlの生SQL、Ray.AuraSqlQueryのクエリービルダー双方でページネーション（ページ分割）をサポートしています。
 
 バインドする値と1ページあたりのアイテム数、それに`{page}`をページ番号にしたuri_templateでページャーファクトリーを`newInstance()`で生成して、ページ番号で配列アクセスします。
 
