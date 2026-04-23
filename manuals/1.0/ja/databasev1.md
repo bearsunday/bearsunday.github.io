@@ -80,7 +80,7 @@ class Index
 
 ### perform() メソッド
 
-`perform()`メソッドは、1つのプレイスホルダーしかないSQLに配列の値をバインドすることが出来ます。
+`perform()`メソッドは、1つのプレイスホルダーしかないSQLに配列の値をバインドすることができます。
 
 ```php?start_inline
 $stm = 'SELECT * FROM test WHERE foo IN (:foo)'
@@ -91,7 +91,7 @@ $array = ['foo', 'bar', 'baz'];
 
 ```php?start_inline
 // the native PDO way does not work (PHP Notice:  Array to string conversion)
-// ネイティブのPDOでは`:foo`に配列を指定することは出来ません
+// ネイティブのPDOでは`:foo`に配列を指定することはできません
 $sth = $pdo->prepare($stm);
 $sth->bindValue('foo', $array);
 ```
@@ -104,7 +104,7 @@ $values = ['foo' => ['foo', 'bar', 'baz']];
 $sth = $pdo->perform($stm, $values);
 ```
 
-`:foo`に`['foo', 'bar', 'baz']`がバインドがされます。`queryString`で実際のクエリーを調べることが出来ます。
+`:foo`に`['foo', 'bar', 'baz']`がバインドされます。`queryString`で実際のクエリーを調べることができます。
 
 ```php?start_inline
 echo $sth->queryString;
@@ -334,7 +334,7 @@ $this->userDb->commit();
 
 ## Aura.SqlQuery
 
-[Aura.Sql](https://github.com/auraphp/Aura.Sql)はPDOを拡張したライブラリですが、[Aura.SqlQuery](https://github.com/auraphp/Aura.SqlQuery)は MySQL、Postgres,、SQLiteあるいは Microsoft SQL Serverといったデータベース固有のSQLのビルダーを提供します。
+[Aura.Sql](https://github.com/auraphp/Aura.Sql)はPDOを拡張したライブラリですが、[Aura.SqlQuery](https://github.com/auraphp/Aura.SqlQuery)はMySQL、Postgres、SQLite、あるいはMicrosoft SQL Serverといったデータベース固有のSQLビルダーを提供します。
 
 データベースを指定してアプリケーションモジュール`src/Module/AppModule.php`でインストールします。
 
@@ -345,8 +345,8 @@ $this->install(new AuraSqlQueryModule('mysql')); // pgsql, sqlite, or sqlsrv
 
 ### SELECT
 
-リソースではDBクエリービルダオブジェクトを受け取り、下記のメソッドを使ってSELECTクエリーを組み立てます。
-メソッドに特定の順番はなく複数回呼ぶことこともできます。
+リソースではDBクエリービルダーオブジェクトを受け取り、下記のメソッドを使ってSELECTクエリーを組み立てます。
+メソッドに特定の順番はなく複数回呼ぶこともできます。
 
 ```php?start_inline
 use Ray\AuraSqlModule\AuraSqlInject;
@@ -537,7 +537,7 @@ class User extend ResourceObject
 ```
 
 ### UPDATE
-下記のメソッドを使ってUPDATEクエリーを組み立てます。 メソッドに特定の順番はなく複数回呼ぶことこともできます。
+下記のメソッドを使ってUPDATEクエリーを組み立てます。メソッドに特定の順番はなく複数回呼ぶこともできます。
 
 ```php?start_inline
         $this->update
@@ -576,7 +576,7 @@ class User extend ResourceObject
 ```
 
 ### DELETE
-下記のメソッドを使ってDELETEクエリーを組み立てます。 メソッドに特定の順番はなく複数回呼ぶことこともできます。
+下記のメソッドを使ってDELETEクエリーを組み立てます。メソッドに特定の順番はなく複数回呼ぶこともできます。
 ```php?start_inline
         $this->delete
             ->from('foo')                   // FROM this table
@@ -593,9 +593,9 @@ class User extend ResourceObject
         $sth->execute($this->delete->getBindValues());
 ```
 
-### パジネーション
+### ページネーション
 
-[ray/aura-sql-module](https://packagist.org/packages/ray/aura-sql-module)はRay.Sqlの生SQL、Ray.AuraSqlQueryのクエリービルダー双方でパジネーション（ページ分割）をサポートしています。
+[ray/aura-sql-module](https://packagist.org/packages/ray/aura-sql-module)はAura.Sqlの生SQL、Ray.AuraSqlQueryのクエリービルダー双方でページネーション（ページ分割）をサポートしています。
 バインドする値と１ページあたりのアイテム数、それに{page}をページ番号にしたuri_templateでページャーファクトリーを`newInstance()`で生成して、ページ番号で配列アクセスします。
 
 #### Aura.Sql用
@@ -652,4 +652,3 @@ class AppModule extends AbstractAppModule
     }
 }
 ```
-

@@ -184,9 +184,14 @@ class User extends ResourceObject
 mysqliのネイティブ非同期サポートを使用した並列SQLクエリ実行も提供します。
 
 ```php
-use BEAR\Async\Module\MysqliBatchEnvModule;
+use BEAR\Async\Module\MysqliEnvModule;
 
-$this->install(new MysqliBatchEnvModule('MYSQL_HOST', 'MYSQL_USER', 'MYSQL_PASS', 'MYSQL_DB'));
+$this->install(new MysqliEnvModule(
+    'MYSQLI_HOST',
+    'MYSQLI_USER',
+    'MYSQLI_PASSWORD',
+    'MYSQLI_DATABASE',
+));
 ```
 
 ```php
@@ -201,10 +206,17 @@ class MyService
 
     public function getData(int $userId): array
     {
-        return (new SqlBatch($this->executor, [
-            'user' => ['SELECT * FROM users WHERE id = ?', [$userId]],
-            'posts' => ['SELECT * FROM posts WHERE user_id = ?', [$userId]],
+        $results = (new SqlBatch($this->executor, [
+            'user' => ['SELECT * FROM users WHERE id = :id', ['id' => $userId]],
+            'posts' => ['SELECT * FROM posts WHERE user_id = :user_id', ['user_id' => $userId]],
+            'comments' => ['SELECT * FROM comments WHERE user_id = :user_id', ['user_id' => $userId]],
         ]))();
+
+        return [
+            'user' => $results['user'][0] ?? null,
+            'posts' => $results['posts'],
+            'comments' => $results['comments'],
+        ];
     }
 }
 ```

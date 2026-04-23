@@ -51,12 +51,46 @@ def strip_frontmatter(content)
   content.sub(/\A---\s*\r?\n.*?\r?\n---\s*\r?\n/m, '')
 end
 
+def normalize_generated_markdown(content)
+  inside_fence = false
+  fence_marker = nil
+
+  content.each_line.map do |line|
+    stripped = line.strip
+
+    if stripped.start_with?('```', '~~~')
+      marker = stripped[0, 3]
+      if inside_fence && stripped == fence_marker
+        inside_fence = false
+        fence_marker = nil
+        line
+      elsif !inside_fence
+        inside_fence = true
+        fence_marker = marker
+        stripped == marker ? line.sub(marker, "#{marker}text") : line
+      else
+        line
+      end
+    elsif !inside_fence && stripped == '---'
+      line.sub('---', '***')
+    else
+      line
+    end
+  end.join
+end
+
 def generate_combined_file(language, intro_message)
   source = Pathname.new(__dir__).join("..", "manuals/1.0/#{language}")
   output_file = source.join("1page.md")
+  legacy_output_file = source.join("onepage.md")
 
   puts "Processing #{language} documentation..."
   raise "Source folder does not exist!" unless source.directory?
+
+  if legacy_output_file.exist?
+    FileUtils.rm_f(legacy_output_file)
+    puts "Removed legacy file: #{legacy_output_file}"
+  end
 
   # Determine file order from contents.html or fallback to alphabetical
   file_order = extract_order_from_contents(language)
@@ -102,7 +136,7 @@ def generate_combined_file(language, intro_message)
     # Process all files in a single pass
     all_files.each_with_index do |path, idx|
       begin
-        content = strip_frontmatter(path.read).strip
+        content = normalize_generated_markdown(strip_frontmatter(path.read)).strip
         next if content.empty?
 
         # Add separator between sections (except first)

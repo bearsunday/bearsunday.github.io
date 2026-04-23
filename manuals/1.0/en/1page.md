@@ -98,9 +98,21 @@ BEAR.Sunday adopts a donut caching strategy and uses ESI (Edge Side Includes) to
 
 In this way, BEAR.Sunday and Fastly's integration of ROA-based caching strategy not only realizes advanced distributed caching but also enhances application performance and fault tolerance.
 
-### Accelerated Startup
+### Runtime Optimization
 
-In the original world of DI, users avoid dealing directly with the injector (DI container) as much as possible. Instead, they generate a single root object at the application's entry point to start the application. In BEAR.Sunday's DI, there is virtually no DI container manipulation even at configuration time. The root object is huge but is a single variable, so it is reused beyond requests, realizing an optimized bootstrap to the limit.
+BEAR.Sunday is designed to minimize framework overhead regardless of server configuration.
+
+DI resolution is completed at compile time, with no container lookups at runtime. The entire application is generated as a single root object variable and reused across requests. In php-fpm configurations, the pre-compiled dependency graph and opcache enable fast bootstrapping.
+
+In Swoole configurations, persistent workers reduce bootstrapping to a single initial boot. Coroutine-context-based request isolation enables safe concurrent processing without reliance on superglobals. Combined with the transparent parallel execution described next, I/O wait time is further minimized.
+
+### Transparent Parallel Execution
+
+In BEAR.Sunday, a URI expresses "intent" rather than being merely a communication protocol or locator. `app://self/user` expresses only the intent "I want user information"—whether it comes from MySQL or Redis is hidden from the application.
+
+This complete separation of "What" from "How" enables multiple resources embedded with `#[Embed]` to be fetched in parallel without changing any application code. Resource classes written 10 years ago can benefit from parallel execution just by adding a Module.
+
+Three tiers of solutions are available based on server environment constraints: ext-parallel (thread pool), Swoole (coroutines), and mysqli (DB queries only). Whichever you choose, application code requires no changes. Develop and debug with standard PHP, then switch to parallel execution in production with just a configuration change.
 
 ## Developer Experience
 
@@ -113,9 +125,16 @@ BEAR.Sunday allows for easy and effective testing due to the following design fe
 * API testing can be performed while following hypermedia links, and tests can be written in the same code for PHP and HTTP.
 * Different implementations are bound during testing through context-based binding.
 
-### API Documentation Generation
+### Application as Documentation
 
-API documentation is automatically generated from the code. It maintains consistency between code and documentation and improves maintainability.
+In BEAR.Sunday, the application itself is the documentation. Multiple documentation formats are automatically generated from code.
+
+- **ApiDoc HTML**: Developer reference
+- **OpenAPI 3.1**: Toolchain integration
+- **JSON Schema**: Information model definition
+- **llms.txt**: AI-readable application overview
+
+When using an ALPS profile as the SSOT (Single Source of Truth), you define the application semantics (vocabulary, state transitions, operation meanings) first, then generate code from it. The same document holds different meanings for different readers—developers see endpoints, architects read state transitions, and AI extracts ontology.
 
 ### Visualization and Debugging
 
@@ -175,8 +194,6 @@ BEAR.Sunday is designed with an emphasis on maintaining backward compatibility i
 
 BEAR.Sunday not only adopts semantic versioning but also does not perform major version upgrades that involve breaking changes. It prevents new feature additions or changes to existing features from affecting existing code. Code that has become old and unused is given the attribute "deprecated" but is never deleted and does not affect the behavior of existing code. Instead, new features are added, and evolution continues.
 
-Here's the English translation of the revised text:
-
 ### Acyclic Dependencies Principle (ADP)
 
 The Acyclic Dependencies Principle states that dependencies should be unidirectional and non-circular. The BEAR.Sunday framework adheres to this principle and is composed of a series of packages with a hierarchical structure where larger framework packages depend on smaller framework packages. Each level does not need to be aware of the existence of other levels that encompass it, and the dependencies are unidirectional and do not form cycles. For example, Ray.Aop is not even aware of the existence of Ray.Di, and Ray.Di is not aware of the existence of BEAR.Sunday.
@@ -199,6 +216,14 @@ To provide applications with high code quality, the BEAR.Sunday framework also s
 * It maintains 100% test coverage and nearly 100% type coverage.
 * It is fundamentally an immutable system and is so clean that initialization is not required every time, even in tests. It unleashes the power of PHP's asynchronous communication engines like Swoole.
 
+### Architecture-Enabled Security Analysis
+
+BEAR.Sunday's architecture fundamentally simplifies security analysis.
+
+Every endpoint is a ResourceObject with explicit `onGet` and `onPost` methods, inputs are declared via JSON Schema, and dependencies are explicit through constructor injection. With no hidden magic or global state, static analysis tools can trace complete data flows.
+
+This declarative architecture enables multi-layered security scanning combining SAST (static analysis), DAST (dynamic testing), taint analysis, and AI auditing. Framework-aware specialized tools detect vulnerabilities that generic tools cannot find.
+
 ## The Value BEAR.Sunday Brings
 
 ### Value for Developers
@@ -210,7 +235,7 @@ To provide applications with high code quality, the BEAR.Sunday framework also s
 
 ### Value for Users
 
-* High performance: BEAR.Sunday's optimized fast startup and CDN-centric caching strategy brings users a fast and responsive experience.
+* High performance: BEAR.Sunday's runtime optimization and CDN-centric caching strategy brings users a fast and responsive experience.
 * Reliability and availability: BEAR.Sunday's CDN-centric caching strategy minimizes single points of failure (SPOF), allowing users to enjoy stable services.
 * Ease of use: BEAR.Sunday's excellent connectivity makes it easy to collaborate with other languages and systems.
 
@@ -220,6 +245,8 @@ To provide applications with high code quality, the BEAR.Sunday framework also s
 * Reduced maintenance costs: BEAR.Sunday's approach to maintaining backward compatibility increases technical continuity and minimizes the time and cost of change response.
 * High extensibility: With technologies like DI (Dependency Injection) and AOP (Aspect Oriented Programming) that change behavior while minimizing code changes, BEAR.Sunday allows applications to be easily extended in line with business growth and changes.
 * Excellent User Experience (UX): BEAR.Sunday provides high performance and high availability, increasing user satisfaction, enhancing customer loyalty, expanding the customer base, and contributing to business success.
+
+### Summary
 
 Excellent constraints do not change. The constraints brought by BEAR.Sunday provide specific value to developers, users, and businesses respectively.
 
@@ -277,78 +304,69 @@ The version of the framework does not lock the version of the library. The libra
 
 # Environment Setup
 
-This guide explains how to set up a development environment for BEAR.Sunday projects. Choose the appropriate method for your environment.
+Choose **malt / Docker / manual setup** based on your OS and team structure. This is a practical guide that consolidates the features, setup procedures, and operational points for each method in one place.
 
-## Setup Methods Comparison
+***
 
-| Method | OS Support | Features | Recommended For |
-|---|---|---|---|
-| **malt** | macOS, Linux | Homebrew-based, lightweight, sharable config | Individual & team development |
-| **Docker** | Windows, macOS, Linux | Container-based, complete reproducibility | Team development, CI/CD |
-| **Manual Setup** | All OS | Use existing infrastructure, fine control | Existing infrastructure |
+## Method Selection
 
-## Setup with malt
+| Method        | Target OS              | Features                                           | Recommended Use      |
+| ------------- | --------------------- |---------------------------------------------------| -------------------- |
+| **malt**      | macOS, WSL2, Linux    | Homebrew-based, lightweight, configuration shareable, local-complete<br>Batch service management commands | Individual dev, team dev |
+| **Docker**    | macOS, Windows, Linux | Container-based complete environment reproduction, CI/CD friendly | Team dev, CI/CD, production-like |
+| **Manual**    | All OS                | Use existing environment as-is, fine-grained control | Existing infrastructure, constrained environments |
+
+***
+
+## Environment Setup with malt
 
 ### Overview
 
-[malt](https://github.com/koriym/homebrew-malt) is a development environment management tool based on Homebrew.
+**malt** is a development environment management tool based on Homebrew. It consolidates configuration and data directly under the project, achieving local completion.
 
-**Key Features of malt:**
-- **Completely Local**: All settings and data are stored within the project directory
-- **Clean Removal**: Simply delete the project folder to completely remove the environment
-- **Dedicated Port Commands**: Aliases like `mysql@3306`, `redis@6379` for port-specific connections
-- **No Global Pollution**: No impact on system-wide MySQL/Redis or other services
-- **Visible Configuration**: All configuration files are managed and shareable within the project
+**Key Features**
+
+* **Completely Local**: All configuration and data stored within the project
+* **Clean Deletion**: Folder deletion = environment deletion
+* **Dedicated Port Commands**: Aliases like `mysql@3306` / `redis@6379`
+* **No Global Pollution**: No impact on system MySQL/Redis etc.
+* **Configuration Visibility**: Configuration files can be shared and reviewed within the project
+* **Batch Service Management**: `malt start` / `malt stop` can start/stop related services together
 
 ### Prerequisites
 
-- macOS or Linux
-- [Homebrew](https://brew.sh/) installed
+* macOS or Linux (including WSL2)
+* Homebrew installed
 
 ### Installation
 
 ```bash
-# Add Homebrew tap
-brew tap koriym/homebrew-malt
+# Add Homebrew taps
+brew tap shivammathur/php
+brew tap shivammathur/extensions
+brew tap koriym/malt
 
 # Install malt
 brew install malt
 ```
 
-**💡 About Homebrew taps:**  
-A tap is a third-party repository that provides packages (formulae) beyond Homebrew's core repository. Adding a tap with `brew tap <name>` allows you to install packages from that tap using short names instead of full repository paths.
-
-### Basic Usage
+### Basic Operations (Shortest Path)
 
 ```bash
-# Initialize project
-malt init
-
-# Generate configuration files
-malt create
-
-# Install dependencies (if needed)
-malt install
-
-# Start services
-malt start
-
-# Set environment variables (run in each session)
+malt init && malt install && malt create && malt start
 source <(malt env)
 ```
 
 ### Configuration Files
 
-malt manages the environment with these files:
-
-```
+```text
 malt.json          # malt configuration
 malt/
   conf/
-    my_3306.cnf    # MySQL config
-    php.ini        # PHP config
-    httpd_8080.conf # Apache config
-    nginx_80.conf   # Nginx config
+    my_3306.cnf     # MySQL configuration
+    php.ini         # PHP configuration
+    httpd_8080.conf # Apache configuration
+    nginx_80.conf   # Nginx configuration
 ```
 
 These files can be included in your project for team environment sharing.
@@ -356,12 +374,12 @@ These files can be included in your project for team environment sharing.
 ### Service Management
 
 ```bash
-# Check status
+# Status check
 malt status
 
-# Start/stop/restart
+# Start / stop / restart all services
 malt start
-malt stop  
+malt stop
 malt restart
 
 # Specific services only
@@ -372,20 +390,16 @@ malt stop nginx
 ### Database Operations
 
 ```bash
-# Dedicated port commands (recommended)
-mysql@3306  # Project-specific MySQL connection
-redis@6379  # Project-specific Redis connection
-
-# Traditional method
-mysql --defaults-file=malt/conf/my_3306.cnf -h 127.0.0.1
-
-# Database creation example
+mysql@3306  # Connect to project-specific MySQL
+redis@6379  # Connect to project-specific Redis
 mysql@3306 -e "CREATE DATABASE IF NOT EXISTS myapp"
 ```
 
-**Important**: `mysql@3306` is a project-specific connection, completely isolated from your system's global MySQL installation.
+> **Important**: `mysql@3306` is **project-specific connection**. It's isolated from the system's global MySQL.
 
-## Setup with Docker
+***
+
+## Environment Setup with Docker
 
 ### Overview
 
@@ -395,6 +409,8 @@ Docker provides OS-independent, consistent development environments.
 - **Global Command Conflicts**: The system `mysql` command points to global MySQL installation
 - **Container-specific Access**: Requires specific connection methods for Docker container databases
 - **Port Conflict Risk**: Ports like 3306 may conflict with system services
+- **macOS File Access**: Host-container file mount performance degradation, especially noticeable during bulk file operations (builds, tests)
+- **Security**: `MYSQL_ALLOW_EMPTY_PASSWORD` should be limited to development use only
 
 ### Prerequisites
 
@@ -419,6 +435,11 @@ services:
       - mysql_data:/var/lib/mysql
       - ./docker/mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
     command: --default-authentication-plugin=mysql_native_password
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
     
   redis:
     image: redis:alpine
@@ -443,7 +464,7 @@ docker-compose up -d
 # Check status
 docker-compose ps
 
-# View logs
+# Check logs
 docker-compose logs mysql
 
 # Stop environment
@@ -456,21 +477,20 @@ docker-compose down -v
 ### Database Connection
 
 ```bash
-# From host (port specification required)
+# Connect from host (port specification required)
 mysql -h 127.0.0.1 -P 3306 -u root
 
-# From inside container (recommended)
+# Connect from within container (recommended)
 docker-compose exec mysql mysql -u root
-
-# Via phpMyAdmin (browser)
-open http://localhost:8080
 ```
 
 **Warning**: If `mysql` is installed on your system, running just `mysql` will connect to your system's MySQL, not the Docker container. To access the Docker database, you must either specify host/port or execute from within the container.
 
-## Manual Setup
+***
 
-### PHP Environment
+## Manual Environment Setup
+
+### PHP
 
 ```bash
 # macOS (Homebrew)
@@ -487,10 +507,10 @@ sudo mv composer.phar /usr/local/bin/composer
 sudo dnf install php php-{cli,mysql,mbstring,xml,zip,curl}
 ```
 
-### MySQL Environment
+### MySQL
 
 ```bash
-# macOS (Homebrew) 
+# macOS (Homebrew)
 brew install mysql@8.0
 brew services start mysql@8.0
 
@@ -503,69 +523,88 @@ sudo dnf install mysql-server
 sudo systemctl start mysqld
 ```
 
-### PHP Extensions
-
-Useful PHP extensions for development:
+### Useful PHP Extensions for Development
 
 ```bash
-# Add extensions tap (one-time setup)
-brew tap shivammathur/extensions
+# Xdebug (debugging)
+brew install shivammathur/extensions/xdebug@8.4    # Homebrew
+sudo apt install php8.4-xdebug                    # Ubuntu
 
-# Xdebug (for debugging)
-brew install xdebug@8.4  # macOS
-sudo apt install php8.4-xdebug  # Ubuntu
+# XHProf (profiling)
+brew install shivammathur/extensions/xhprof@8.4   # Homebrew
+sudo apt install php8.4-xhprof                    # Ubuntu
 
 # Redis
-brew install redis@8.4  # macOS  
-sudo apt install php8.4-redis  # Ubuntu
+brew install shivammathur/extensions/redis@8.4    # Homebrew
+sudo apt install php8.4-redis                     # Ubuntu
 
 # APCu (caching)
-brew install apcu@8.4  # macOS
-sudo apt install php8.4-apcu  # Ubuntu
+brew install shivammathur/extensions/apcu@8.4     # Homebrew
+sudo apt install php8.4-apcu                      # Ubuntu
 ```
+
+**Important**: Xdebug and XHProf impact performance, so avoid leaving them enabled all the time. When you configure them, Xdebug uses `zend_extension=xdebug.so`, while XHProf uses `extension=xhprof.so`; enable them from the CLI only when needed.
+
+```bash
+# Enable Xdebug only when debugging
+php -dzend_extension=xdebug.so -S 127.0.0.1:8080 -t public
+
+# Enable XHProf only when profiling
+php -dextension=xhprof.so script.php
+
+# Disable Xdebug when running Composer (recommended)
+XDEBUG_MODE=off composer install
+
+# Or override the PHP ini setting
+php -dxdebug.mode=off /usr/local/bin/composer install
+```
+
+***
+
+## BEAR.Sunday Quick Start Example
+
+```bash
+composer create-project bear/skeleton my-app
+cd my-app
+malt init && malt install && malt create && malt start
+source <(malt env)
+```
+
+***
 
 ## Project-specific Configuration
 
-### Environment Variables
+### .env (Example)
 
-Create `.env` file in project root:
-
-```bash
-# Database connection (MySQL)
+```dotenv
+# MySQL
 DB_HOST=127.0.0.1
 DB_PORT=3306
-DB_NAME=myapp  
+DB_NAME=myapp
 DB_USER=root
 DB_PASS=
 DB_DSN=mysql:host=127.0.0.1;port=3306;dbname=myapp
 
-# Database connection (SQLite)
-DB_DSN=sqlite:var/db.sqlite3
+# SQLite (switching example)
+# DB_DSN=sqlite:var/db.sqlite3
 
-# Cache (Redis)
+# Redis
 REDIS_HOST=127.0.0.1:6379
 
-# Session (Memcached)  
+# Memcached
 MEMCACHED_HOST=127.0.0.1:11211
 ```
 
-### Database Migrations
-
-Using Phinx:
+### Migration (Phinx Example)
 
 ```bash
-# Install Phinx
 composer require --dev robmorgan/phinx
-
-# Create config file
 ./vendor/bin/phinx init
-
-# Create migration
 ./vendor/bin/phinx create MyMigration
-
-# Run migration
 ./vendor/bin/phinx migrate
 ```
+
+***
 
 ## Development Server
 
@@ -575,47 +614,49 @@ composer require --dev robmorgan/phinx
 # Start on port 8080
 php -S 127.0.0.1:8080 -t public
 
-# With Xdebug enabled
+# Enable Xdebug only when debugging
 php -dzend_extension=xdebug.so -S 127.0.0.1:8080 -t public
 ```
 
 ### malt Server
 
 ```bash
-# Choose Apache or Nginx to start
-malt start apache   # Apache (http://127.0.0.1:8080)
-malt start nginx    # Nginx (http://127.0.0.1:80)
+# Choose Apache / Nginx and start
+malt start apache   # http://127.0.0.1:8080
+malt start nginx    # http://127.0.0.1:80
 
-# Check service status
+# Check services
 malt status
 
-# Stop specific server
+# Start/stop all services
+malt start
+malt stop
+
+# Individual stop
 malt stop apache
 malt stop nginx
 ```
 
+***
+
 ## Troubleshooting
 
 ### Port Conflicts
-
-Check port usage:
 
 ```bash
 # macOS/Linux
 lsof -i :3306
 netstat -tulpn | grep :3306
 
-# Kill process
-kill -9 PID
+# Kill the process
+kill -9 <PID>
 ```
 
-### PHP Configuration
-
-Check configuration files:
+### PHP Configuration Check
 
 ```bash
-php --ini
-php -m  # Check loaded modules
+php --ini     # Loaded configuration
+php -m        # Loaded modules
 ```
 
 ### MySQL Connection Errors
@@ -624,17 +665,17 @@ php -m  # Check loaded modules
 # Connection test
 mysql -h 127.0.0.1 -P 3306 -u root -p
 
-# Service status (Linux)
+# Linux service status
 sudo systemctl status mysql
 
-# Check error logs
+# Error logs
 sudo tail -f /var/log/mysql/error.log
 ```
 
 ### malt-specific Issues
 
 ```bash
-# Check service status
+# Status check
 malt status
 
 # Reset configuration
@@ -644,9 +685,17 @@ malt create
 malt start
 ```
 
-## CI/CD Environment Setup
+### .gitignore for Team Development
 
-### GitHub Actions
+```gitignore
+malt/logs/
+malt/data/
+malt/tmp/
+```
+
+***
+
+## CI/CD (GitHub Actions Example)
 
 ```yaml
 name: Tests
@@ -656,7 +705,7 @@ on: [push, pull_request]
 jobs:
   test:
     runs-on: ubuntu-latest
-    
+
     services:
       mysql:
         image: mysql:8.0
@@ -666,45 +715,40 @@ jobs:
           MYSQL_DATABASE: test_db
         ports:
           - 3306:3306
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
-    
+        options: >-
+          --health-cmd="mysqladmin ping" 
+          --health-interval=10s 
+          --health-timeout=5s 
+          --health-retries=3
+
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.4'
           extensions: mbstring, xml, pdo_mysql, mysqli, intl, curl, zip
-          
+
       - name: Install dependencies
-        run: composer install
-        
+        run: composer install --no-interaction --prefer-dist
+
       - name: Run tests
         run: ./vendor/bin/phpunit
 ```
 
+***
+
 ## Environment Selection Guidelines
 
-### Development vs Production Environment Differences
+Development environments prioritize transparency and direct access, while production environments prioritize reproducibility and monitoring capabilities.
 
-**Development environments prioritize transparency and directness**
-- malt: `mysql@3306` for instant project-specific DB access, direct config file editing, **native file system performance**
-- Docker: Well-known. Container-mediated access, complex configuration inspection, virtualization overhead
+* **Daily Development & Learning**: malt (instant `mysql@3306`, visible configuration, fast file access)
+* **Team Development**: malt (configuration sharing) or Docker (reproducibility priority)
+* **Production & CI/CD**: **Docker only** (same behavior anywhere, rich monitoring tool ecosystem)
+* **Complex Configurations**: Docker (assuming integration and scale of dependent services)
 
-Environment sharing works excellently with both approaches.
-
-**Production environments prioritize reproducibility and monitoring capabilities**
-- Docker: Identical behavior anywhere, rich monitoring tool ecosystem - essentially Docker only
-
-## Summary
-
-- **Daily Development/Learning**: malt recommended
-- **Team Development**: malt (with config sharing) or Docker
-- **Production/CI/CD**: Docker only
-- **Complex Configurations**: Docker
-
-Refer to individual tutorials for detailed configuration examples for each environment.
+> Follow your project's tutorials and team conventions for detailed configuration and BEAR.Sunday best practices.
 
 ***
 
@@ -717,10 +761,10 @@ In this tutorial, we introduce the basic features of BEAR.Sunday, including **DI
 Let's create a web service that returns the day of the week when a date (year, month, day) is entered. Start by creating a project.
 
 ```bash
-composer create-project bear/skeleton MyVendor.Weekday
+VENDOR=MyVendor PACKAGE=Weekday composer create-project bear/skeleton weekday
+cd weekday
 ```
-
-Enter `MyVendor` for the **vendor** name and `Weekday` for the **project** name. [^2]
+[^2]
 
 ## Resources
 
@@ -761,7 +805,7 @@ Try accessing it via the console. First, test with an error.
 php bin/app.php get /weekday
 ```
 
-```
+```text
 400 Bad Request
 content-type: application/vnd.error+json
 
@@ -816,11 +860,11 @@ require dirname(__DIR__) . '/autoload.php';
 + exit((new Bootstrap())(PHP_SAPI === 'cli-server' ? 'hal-api-app' : 'prod-hal-api-app', $GLOBALS, $_SERVER));
 ```
 
-```
+```text
 curl -i 'http://127.0.0.1:8080/weekday?year=2001&month=1&day=1'
 ```
 
-```
+```text
 HTTP/1.1 200 OK
 Host: 127.0.0.1:8080
 Date: Tue, 04 May 2021 01:55:59 GMT
@@ -840,22 +884,22 @@ Content-Type: application/hal+json
 
 This resource class does not have methods other than GET, so trying other methods will return `405 Method Not Allowed`. Let's test this as well.
 
-```
+```text
 curl -i -X POST 'http://127.0.0.1:8080/weekday?year=2001&month=1&day=1'
 ```
 
-```
+```text
 HTTP/1.1 405 Method Not Allowed
 ...
 ```
 
 The HTTP `OPTIONS` method request can be used to determine the available HTTP methods and required parameters ([RFC7231](https://tools.ietf.org/html/rfc7231#section-4.3.7)).
 
-```
+```text
 curl -i -X OPTIONS http://127.0.0.1:8080/weekday
 ```
 
-```
+```text
 HTTP/1.1 200 OK
 ...
 Content-Type: application/json
@@ -923,10 +967,10 @@ The `setUp()` method specifies the context (app) and uses the application's inje
 
 Let's run it.
 
-```
+```text
 ./vendor/bin/phpunit
 ```
-```
+```text
 PHPUnit 9.5.4 by Sebastian Bergmann and contributors.
 
 ....                                                                4 / 4 (100%)
@@ -936,13 +980,13 @@ Time: 00:00.281, Memory: 14.00 MB
 
 The installed project also includes commands for running tests and code inspections. To obtain test coverage, run `composer coverage`.
 
-```
+```text
 composer coverage
 ```
 
 [pcov](https://pecl.php.net/package/pcov) can measure coverage more quickly.
 
-```
+```text
 composer pcov
 ```
 
@@ -951,10 +995,10 @@ You can view the details of the coverage by opening `build/coverage/index.html` 
 To check if the coding standards are being followed, use the `composer cs` command.
 Automatic corrections can be done with the `composer cs-fix` command.
 
-```
+```text
 composer cs
 ```
-```
+```text
 composer cs-fix
 ```
 
@@ -962,13 +1006,13 @@ composer cs-fix
 
 Static analysis of the code is performed using the `composer sa` command.
 
-```
+```text
 composer sa
 ```
 
 When running the code up to this point, the following error was detected by phpstan.
 
-```
+```text
  ------ --------------------------------------------------------- 
   Line   src/Resource/App/Weekday.php                             
  ------ --------------------------------------------------------- 
@@ -980,7 +1024,7 @@ The earlier code did not consider that `DateTimeImmutable::createFromFormat` mig
 
 Let's try it.
 
-```
+```text
 php bin/app.php get '/weekday?year=-1&month=1&day=1'
 ```
 
@@ -1066,7 +1110,7 @@ Add a test as well.
 
 `composer tests` not only performs `composer test` but also checks coding standards (cs) and static analysis (sa).
 
-```
+```text
 composer tests
 ```
 
@@ -1414,7 +1458,7 @@ Let's see what representation this resource has.
 ```bash
 php bin/page.php get '/?year=2000&month=1&day=1'
 ```
-```
+```text
 200 OK
 Content-Type: application/hal+json
 
@@ -1711,7 +1755,7 @@ Next, get this resource.
 php bin/test.php get '/todos?id=1'
 ```
 
-```
+```text
 200 OK
 ETag: 2527085682
 Last-Modified: Sun, 04 Jun 2017 15:23:39 GMT
@@ -1768,7 +1812,7 @@ curl -i http://127.0.0.1:8081/todos -X PUT -d "id=1&todo=think"
 ```
 A `204 No Content` response is returned, indicating there is no body.
 
-```
+```text
 HTTP/1.1 204 No Content
 ...
 ```
@@ -1799,11 +1843,11 @@ BEAR.Sunday applications have these characteristics of REST, adhering to HTTP st
 
 BEAR.Sunday is a connecting layer framework that ties dependencies with **DI**, cross-cutting concerns with **AOP**, and application information as resources with the power of **REST**.
 
----
+***
 
 [^1]:The source code for this project is committed to [bearsunday/Tutorial](https://github.com/bearsunday/tutorial1/commits/v3) section by section. Please refer to it as needed.
 [^2]:Normally, the **vendor** name is the name of an individual or team (organization). A GitHub account name or team name would be suitable. Enter the application name for **project**.
-```
+```text
 
 ***
 
@@ -1823,23 +1867,22 @@ Let's proceed with the commits found in [tutorial2](https://github.com/bearsunda
 
 Create the project skeleton.
 
+```bash
+VENDOR=MyVendor PACKAGE=Ticket composer create-project bear/skeleton ticket
+cd ticket
 ```
-composer create-project bear/skeleton MyVendor.Ticket
-```
-
-Enter the **vendor** name as `MyVendor` and the **project** name as `Ticket`.
 
 ## Migration
 
 Install Phinx.
 
-```
+```text
 composer require --dev robmorgan/phinx
 ```
 
 Configure the DB connection information in the `.env.dist` file in the project root folder.
 
-```
+```text
 TKT_DB_HOST=127.0.0.1:3306
 TKT_DB_NAME=ticket
 TKT_DB_USER=root
@@ -1913,10 +1956,10 @@ passthru('./vendor/bin/phinx migrate -c var/phinx/phinx.php -e test');
 
 Next, we will create a migration class to create the `ticket` table.
 
-```
+```text
 ./vendor/bin/phinx create Ticket -c var/phinx/phinx.php
 ```
-```
+```text
 Phinx by CakePHP - https://phinx.org.
 
 ...
@@ -1954,10 +1997,10 @@ In addition, edit `.env.dist` like the following.
 
 Now that we are done with the setup, run the setup command to create the table.
 
-```
+```text
 composer setup
 ```
-```
+```text
 > php bin/setup.php
 ...
 All Done. Took 0.0248s
@@ -1971,7 +2014,7 @@ For more information about writing migration classes, see [Phinx Manual: Writing
 
 Install the module as a composer.
 
-```
+```text
 composer require ray/identity-value-module ray/media-query -w
 ```
 
@@ -2343,7 +2386,7 @@ See [resource](resource.html) for details.
 
 If you make the request again, you will see that the status of the project resource has been added to the property `_embedded`.
 
-```
+```text
 % php bin/app.php get '/ticket?id=1'
 ```
 ```diff
@@ -2591,7 +2634,7 @@ The bootstrap script for the test server will also be changed to the API context
 
 Let's run it.
 
-```
+```text
 ./vendor/bin/phpunit --testsuite http
 ```
 
@@ -2599,7 +2642,7 @@ Let's run it.
 
 The actual HTTP request/response log made by curl will be recorded in the resource log of the third argument.
 
-```
+```text
 curl -s -i 'http://127.0.0.1:8080/'
 
 HTTP/1.1 200 OK
@@ -2621,7 +2664,7 @@ Content-Type: application/hal+json
 }
 ```
 
-```
+```text
 curl -s -i -H 'Content-Type:application/json' -X POST -d '{"title":"title1"}' http://127.0.0.1:8080/tickets
 
 HTTP/1.1 201 Created
@@ -2643,7 +2686,7 @@ Because of its self-descriptiveness, API documentation can be generated automati
 
 Let's create it. The documentation will be output to the [docs](https://bearsunday.github.io/tutorial2/) folder.
 
-```
+```text
 composer doc
 ```
 
@@ -2712,8 +2755,8 @@ The comment is not only descriptive, but also makes it easier to identify the SQ
 ### 1.1 Create a New Project
 
 ```bash
-composer create-project -n bear/skeleton MyVendor.Greet
-cd MyVendor.Greet
+VENDOR=MyVendor PACKAGE=Greet composer create-project bear/skeleton greet
+cd greet
 ```
 
 ### 1.2 Verify Development Server
@@ -3225,7 +3268,7 @@ You can reuse common packages and tool combinations as modules with only modules
 
 All packages adhere to [Semantic Versioning](http://semver.org/).
 
----
+***
 
 [^1]: See [Koriym.DbAppPackage](https://github.com/koriym/Koriym.DbAppPackage)
 
@@ -3288,7 +3331,7 @@ Depending on your context choose a boot file.
 php -S 127.0.0.1:8080 public/index.php
 ```
 
-```
+```text
 // console access
 php bin/app.php get /user/1
 ```
@@ -3331,7 +3374,7 @@ For example the `cli` context relates to a `CliModule`, then binds all of the DI
 
 The context value is used only to create the root object and then disappears. There is no global "mode" that can be referenced by the application, and the application can not know what context it is currently running in. The behavior should only change through **code that is dependent on an interface**[^dip] and changes of dependencies by context.
 
----
+***
 
 [^dip]: [Dependency inversion principle](https://en.wikipedia.org/wiki/Dependency_inversion_principle)
 
@@ -3385,8 +3428,56 @@ $this->bind($interface)->to($class)->in(Scope::SINGLETON);
 $this->bind($interface)->toConstructor($class, $named);
 ```
 
-Bindings declared first take priority
 More info can be found at Ray.Di [README](https://github.com/ray-di/Ray.Di/blob/2.x/README.md)
+
+### Binding Priority
+
+See also: [Ray.Di Bindings](https://ray-di.github.io/manuals/1.0/en/bindings.html)
+
+#### Within a Single Module
+
+Bindings declared first take priority. In the following example, `Foo1` takes priority:
+
+```php?start_inline
+$this->bind(FooInterface::class)->to(Foo1::class);
+$this->bind(FooInterface::class)->to(Foo2::class);
+```
+
+#### Module Installation Priority
+
+Modules installed first take priority. In the following example, `Foo1Module` takes priority:
+
+```php?start_inline
+$this->install(new Foo1Module);
+$this->install(new Foo2Module);
+```
+
+To give a later module priority, use `override()`. In the following example, `Foo2Module` takes priority:
+
+```php?start_inline
+$this->install(new Foo1Module);
+$this->override(new Foo2Module);
+```
+
+#### Context String Priority
+
+Context modules are processed in **reverse order** (right-to-left). For example, with context `prod-hal-api-app`:
+
+```text
+Installation order: AppModule → ApiModule → HalModule → ProdModule
+```
+
+Later installed modules can override earlier bindings. This means:
+
+- `HalModule` takes priority over `AppModule`
+- `ProdModule` takes priority over `HalModule`
+
+When creating a custom context module that needs to override bindings from a built-in context (like `HalModule`), position it to the left of that context in the context string. For example, to override `HalModule`'s `RenderInterface` binding:
+
+```php?start_inline
+// Context: "prod-mycontext-hal-api-app"
+// Installation order: AppModule → ApiModule → HalModule → MycontextModule → ProdModule
+```
 
 ## AOP Bindings
 
@@ -3551,7 +3642,7 @@ There are various matchers.
  * [Matcher::logicalOr](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/MatcherInterface.php#L44)
  * [Matcher::logicalAnd](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/MatcherInterface.php#L51)
  * [Matcher::logicalNot](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/MatcherInterface.php#L58) 
-```
+```text
 
 With the `MethodInvocation` object, you can access the target method's invocation object, method's and parameters.
 
@@ -3817,7 +3908,7 @@ One important REST constraint is resource linking; ResourceObject supports both 
 
 The functionality of the BEAR.Sunday resource object is also available in a stand-alone package for stand-alone use: BEAR.Resource [README](https://github.com/bearsunday/BEAR.Resource/blob/1.x/README.ja.md).
 
----
+***
 
 ***
 
@@ -3918,7 +4009,7 @@ class AppModule extends AbstractAppModule
 
 Delete cached DI files to activate new router.
 
-```
+```text
 rm -rf var/tmp/*
 ```
 
@@ -4056,7 +4147,7 @@ $this->install(new RequestHeaderModule());
 
 Implement [RouterInterface](https://github.com/bearsunday/BEAR.Sunday/blob/1.x/src/Extension/Router/RouterInterface.php) with by referring to [BEAR.AuraRouterModule](https://github.com/bearsunday/BEAR.AuraRouterModule).
 
----
+***
 *[This document](https://github.com/bearsunday/bearsunday.github.io/blob/master/manuals/1.0/en/router.md) needs to be proofread by native speaker. *
 
 ***
@@ -4177,7 +4268,7 @@ $this->install(new StorageExpiryModule($short, $medium, $long));
 
 Change the cache version when the resource schema changes and compatibility is lost. This is especially important for CQRS operation that does not disappear over TTL time.
 
-```
+```text
 $this->install(new CacheVersionModule($cacheVersion));
 ```
 
@@ -4228,7 +4319,7 @@ The compile script creates all static cache files such as dynamically created fi
 
 When compiling multiple contexts (ex. api-app, html-app) in one application, such as when performing content negotiation, it is necessary to evacuate the files.
 
-```
+```text
 mv autoload.php api.autoload.php  
 ```
 
@@ -4248,7 +4339,7 @@ To enable preloading, you need to specify [opcache.preload](https://www.php.net/
 
 Example)
 
-```
+```text
 opcache.preload=/path/to/project/preload.php
 opcache.preload_user=www-data
 ```
@@ -4317,7 +4408,7 @@ Currently, there are no dedicated cache adapters available. Please refer to [Imm
 
 ### php.ini
 
-```
+```text
 // Extensions
 extension="apcu.so"
 extension="immutable_cache.so" 
@@ -4472,6 +4563,18 @@ Modules are provided for using the database. They are all independent libraries 
 
 `DBAL` is Doctrine and `CakeDB` is CakePHP's DB library. `Ray.QueryModule` is an earlier library of Ray.MediaQuery that converts SQL to anonymous functions.
 
+## CQRS Read Model
+
+* [BEAR.Projection](https://github.com/bearsunday/BEAR.Projection)
+
+`BEAR.Projection` provides SQL-based projections mapped to typed value objects. Projections are exposed as resources via the `query://` scheme and can be embedded with `#[Embed]` for [parallel execution](async.html).
+
+```php
+#[Embed(rel: 'profile', src: 'query://self/user_profile{?id}')]
+#[Embed(rel: 'orders', src: 'query://self/user_orders{?id}')]
+public function onGet(string $id): static
+```
+
 ----
 
 ***
@@ -4479,7 +4582,7 @@ Modules are provided for using the database. They are all independent libraries 
 # Validation
 
  * You can define resource APIs in the JSON schema.
- * You can separate the validation code with `@Valid`, `@OnValidate` annotation.
+ * You can separate the validation code with `#[Valid]`, `#[OnValidate]` attribute.
  * Please see the form for validation by web form.
 
 # JSON Schema
@@ -4643,9 +4746,9 @@ To apply schema validation to the representation of the resource object (the ren
  * [Understanding JSON Schema](https://spacetelescope.github.io/understanding-json-schema/)
  * [JSON Schema Generator](https://jsonschema.net/#/editor)
 
-## @Valid annotation
+## #[Valid] attribute
 
-The `@Valid` annotation is a validation for input.
+The `#[Valid]` attribute is a validation for input.
 You can set up validation as AOP for your method.
 By separating validation logic from the method, the code will be readable and testable.
 
@@ -4674,25 +4777,23 @@ class AppModule extends AbstractAppModule
 }
 ```
 
-### Annotation
+### Attribute
 
-There are three annotations `@Valid`, `@OnValidate`, `@OnFailure` for validation.
+There are three attributes `#[Valid]`, `#[OnValidate]`, `#[OnFailure]` for validation.
 
-First of all, annotate the method that you want to validate with `@Valid`
+Annotate the method that you want to validate with `#[Valid]`
 
 ```php?start_inline
 use Ray\Validation\Annotation\Valid;
 
 class News
 {
-    /**
-     * @Valid
-     */
+    #[Valid]
     public function createUser($name)
     {
 ```
 
-Validation will be conducted in the method annotated with `@OnValidate`.
+Validation will be conducted in the method annotated with `#[OnValidate]`.
 
 The arguments of the method should be the same as the original method. The method name can be anything.
 
@@ -4701,9 +4802,7 @@ use Ray\Validation\Annotation\OnValidate;
 
 class News
 {
-    /**
-     * @OnValidate
-     */
+    #[OnValidate]
     public function onValidate($name)
     {
         $validation = new Validation;
@@ -4718,16 +4817,14 @@ class News
 Add validations to your elements by `addError()` with the `element name` and` error message` as parameters, then return the validation object.
 
 When validation fails, the exception `Ray\Validation\Exception\InvalidArgumentException` will be thrown,
-but if you have a method annotated with the `@OnFailure`, it will be called, instead of throwing an exception
+but if you have a method annotated with the `#[OnFailure]`, it will be called, instead of throwing an exception
 
 ```php?start_inline
 use Ray\Validation\Annotation\OnFailure;
 
 class News
 {
-    /**
-     * @OnFailure
-     */
+    #[OnFailure]
     public function onFailure(FailureInterface $failure)
     {
         // original parameters
@@ -4742,7 +4839,7 @@ class News
     }
 ```
 
-In the method annotated with `@OnFailure`, you can access the validated messages with `$failure->getMessages()`
+In the method annotated with `#[OnFailure]`, you can access the validated messages with `$failure->getMessages()`
 and also you can get the object of the original method with `$failure->getInvocation()`.
 
 ### Various validation
@@ -4756,21 +4853,15 @@ use Ray\Validation\Annotation\OnFailure;
 
 class News
 {
-    /**
-     * @Valid("foo")
-     */
+    #[Valid('foo')]
     public function fooAction($name, $address, $zip)
     {
 
-    /**
-     * @OnValidate("foo")
-     */
+    #[OnValidate('foo')]
     public function onValidateFoo($name, $address, $zip)
     {
 
-    /**
-     * @OnFailure("foo")
-     */
+    #[OnFailure('foo')]
     public function onFailureFoo(FailureInterface $failure)
     {
 ```
@@ -5089,7 +5180,7 @@ PHP
 
 Twig
 
-```
+```text
 {% raw %}{{ var | raw }}
 {{ var }}
 {{ var | helper }}
@@ -5100,7 +5191,7 @@ Twig
 
 Qiq
 
-```
+```text
 {% raw %}{{% var }}
 {{h $var }}
 {{h helper($var) }}
@@ -5148,7 +5239,7 @@ Halo also displays performance information about the resource, including executi
 
 To enable profiling, you need to install [xhprof](https://www.php.net/manual/en/intro.xhprof.php), which helps identify performance bottlenecks.
 
-```
+```text
 pecl install xhprof
 // Also add 'extension=xhprof.so' to your php.ini file
 ```
@@ -5156,7 +5247,7 @@ pecl install xhprof
 To visualize and graphically display call graphs, you need to install [graphviz](https://graphviz.org/download/).
 Example: [Call Graph Demo](/docs/demo/halo/callgraph.svg)
 
-```
+```text
 // macOS
 brew install graphviz
 
@@ -5179,7 +5270,7 @@ class DevModule extends AbstractModule
 }
 ```
 
----
+***
 
 ***
 
@@ -5214,7 +5305,7 @@ class AppModule extends AbstractAppModule
 
 ##  Web Form
 
-Create **a form class** that defines the registration and the rules of form elements, then bind it to a method using `@FormValidation` annotation.
+Create **a form class** that defines the registration and the rules of form elements, then bind it to a method using `#[FormValidation]` attribute.
 The method runs only when the sent data is validated.
 
 ```php
@@ -5246,9 +5337,9 @@ Please refer to [Rules To Validate Fields](https://github.com/auraphp/Aura.Filte
 We validate an associative array of the argument of the method.
 If we want to change the input, we can set the values by implementing `submit()` method of `SubmitInterface` interface.
 
-## @FormValidation Annotation
+## #[FormValidation] Attribute
 
-Annotate the method that we want to validate with the `@FormValidation`, so that the validation is done in the form object specified by the `form` property before execution.
+Annotate the method that we want to validate with the `#[FormValidation]`, so that the validation is done in the form object specified by the `form` property before execution.
 When validation fails, the method with the `ValidationFailed` suffix is called.
 
 ```php
@@ -5259,25 +5350,18 @@ use Ray\WebFormModule\FormInterface;
 
 class MyController
 {
-    /**
-     * @var FormInterface
-     */
-    protected $form;
+    protected FormInterface $form;
 
-    /**
-     * @Inject
-     * @Named("contact_form")
-     */
+    #[Inject]
+    #[Named('contact_form')]
     public function setForm(FormInterface $form)
     {
         $this->form = $form;
     }
 
-    /**
-     * @FormValidation
-     * // or
-     * @FormValidation(form="form", onFailure="onPostValidationFailed")
-     */
+    #[FormValidation]
+    // or
+    // #[FormValidation(form: 'form', onFailure: 'onPostValidationFailed')]
     public function onPost($name, $age)
     {
         // validation success
@@ -5290,7 +5374,7 @@ class MyController
 }
 ```
 
-We can explicitly specify the name and the method by changing the `form` property of `@FormValidation` annotation or the `onValidationFailed` property.
+We can explicitly specify the name and the method by changing the `form` property of `#[FormValidation]` attribute or the `onValidationFailed` property.
 
 The submit parameters will be passed to the `onPostValidationFailed` method.
 
@@ -5325,9 +5409,9 @@ class MyForm extends AbstractForm
 In order to increase the security level, add a custom CSRF class that contains the user authentication to the form class.
 Please refer to the [Applying CSRF Protections](https://github.com/auraphp/Aura.Input#applying-csrf-protections) of Aura.Input for more information.
 
-## @InputValidation annotation
+## #[InputValidation] attribute
 
-If we annotate the method with `@InputValidation` instead of `@FormValidation`, the exception `Ray\WebFormModule\Exception\ValidationException` is thrown when validation fails.
+If we annotate the method with `#[InputValidation]` instead of `#[FormValidation]`, the exception `Ray\WebFormModule\Exception\ValidationException` is thrown when validation fails.
 For convenience, HTML representation is not used in this case.
 
 When we `echo` the `error` property of the caught exception, we can see the representation of the media type [application/vnd.error+json](https://github.com/blongden/vnd.error).
@@ -5347,24 +5431,23 @@ echo $e->error;
 // }
 ```
 
-We can add the necessary information to `vnd.error+json` using `@VndError` annotation.
+We can add the necessary information to `vnd.error+json` using `#[VndError]` attribute.
 
 ```php
-/**
- * @FormValidation(form="contactForm")
- * @VndError(
- *   message="foo validation failed",
- *   logref="a1000", path="/path/to/error",
- *   href={"_self"="/path/to/error", "help"="/path/to/help"}
- * )
- */
- public function onPost()
+#[FormValidation(form: 'contactForm')]
+#[VndError(
+    message: 'foo validation failed',
+    logref: 'a1000',
+    path: '/path/to/error',
+    href: ['_self' => '/path/to/error', 'help' => '/path/to/help']
+)]
+public function onPost()
 ```
 
 ## FormVndErrorModule
 
-If we install `Ray\WebFormModule\FormVndErrorModule`, the method annotated with `@FormValidation`
-will throw an exception in the same way as the method annotated with `@InputValidation`.
+If we install `Ray\WebFormModule\FormVndErrorModule`, the method annotated with `#[FormValidation]`
+will throw an exception in the same way as the method annotated with `#[InputValidation]`.
 We can use the page resources as API.
 
 ```php
@@ -5479,7 +5562,7 @@ In `ResourceObject`, you can mix stream with a normal string. The output is conv
 
 You can also create a BEAR.Sunday PSR-7 project with `bear/project` from scratch.
 
-```
+```text
 composer create-project bear/project my-psr7-project
 cd my-psr7-project/
 php -S 127.0.0.1:8080 -t public
@@ -5565,7 +5648,7 @@ If you want to further control streaming such as streaming bandwidth and timing 
 The demo is available at [MyVendor.Stream](https://github.com/bearsunday/MyVendor.Stream).
 
 
----
+***
 *[This document](https://github.com/bearsunday/bearsunday.github.io/blob/master/manuals/1.0/en/stream.md) needs to be proofread by native speaker.*
 
 ***
@@ -5838,6 +5921,36 @@ $this->headers[Header::SURROGATE_KEY] = $this->uriTag->fromAssoc(
 
 In the above case, this cache will be invalidated for both server-side and CDN when `app://self/item?id=1` and `app://self/item?id=2` are changed.
 
+## Configuration
+
+### Redis Marshaller
+
+The Redis cache adapter allows you to configure data compression and serialization methods.
+
+A marshaller handles the serialization of PHP objects and arrays when storing them in Redis, and deserialization when retrieving them.
+
+```php
+use BEAR\QueryRepository\StorageRedisDsnModule;
+
+$this->install(
+    new StorageRedisDsnModule(
+        dsn: 'redis://localhost:6379',
+        marshallingOptions: [
+            'enabled' => true,
+            'type' => 'deflate',      // 'default' or 'deflate'
+            'use_igbinary' => true    // requires ext-igbinary
+        ]
+    )
+);
+```
+
+**Marshaller types:**
+
+- `default`: Uses PHP's standard serialization (enabling `use_igbinary` uses a more efficient binary format)
+- `deflate`: Compresses data before storing (uses zlib)
+
+Use `deflate` if you want to reduce Redis memory usage. This is a trade-off with CPU usage.
+
 ## CDN
 
 If you install a module that supports a specific CDN, vendor-specific headers will be output.
@@ -5986,51 +6099,227 @@ Web content can be of the information (data) type or the computation (process) t
 
 ***
 
-# Swoole
+# Parallel Resource Execution <sup style="font-size:0.5em; color:#666; font-weight:normal;">Alpha</sup>
 
-You can execute your BEAR.Sunday application using Swoole directly from the command line. It dramatically improves performance.
+BEAR.Async enables transparent parallel execution of `#[Embed]` resources. Embedded resources are fetched in parallel without changing any application code. Resource classes written 10 years ago can benefit from parallel execution just by adding a Module.
 
-## Install
+## Overview
 
-### Swoole Install
+In standard BEAR.Sunday, `#[Embed]` resources are fetched sequentially. With BEAR.Async, they are fetched in parallel.
 
-See [https://github.com/swoole/swoole-src#%EF%B8%8F-installation](https://github.com/swoole/swoole-src#%EF%B8%8F-installation)
-
-### BEAR.Swoole Install
-
-```bash
-composer require bear/swoole ^0.4
+```text
+[Sequential]                     [Parallel]
+Request                          Request
+    │                                │
+    ├── Embed 1 ──── 50ms            ├── Embed 1 ──┬── 50ms
+    ├── Embed 2 ──── 50ms            ├── Embed 2 ──┤
+    ├── Embed 3 ──── 50ms            ├── Embed 3 ──┤
+    └── Embed 4 ──── 50ms            └── Embed 4 ──┘
+    │                                │
+Response (200ms)                 Response (50ms)
 ```
-Place the bootstrap script at `bin/swoole.php`
+
+## Design Philosophy
+
+### URL as Intent
+
+In BEAR.Sunday, a URI expresses **intent**, not just a location.
 
 ```php
-<?php
-require dirname(__DIR__) . '/autoload.php';
-exit((require dirname(__DIR__) . '/vendor/bear/swoole/bootstrap.php')(
-    'prod-hal-app',       // context
-    'MyVendor\MyProject', // application name
-    '127.0.0.1',          // IP
-    8080                  // port
+#[Embed(rel: 'profile', src: 'query://self/user_profile{?id}')]
+```
+
+The `query://self/user_profile` expresses only the intent: "I want the user's profile information." This separation of "What" from "How" allows the same code to work in both sync and parallel execution. Debug with Xdebug in development, then switch Module in production to enable parallel execution.
+
+### Solving the Function Coloring Problem
+
+Async programming has the "Function Coloring" problem—functions calling async functions must themselves be async, causing "async contamination" throughout the codebase.
+
+In BEAR.Sunday, the "resource" boundary cuts through this problem. No async-specific code is required—resource classes don't need to know how they were invoked.
+
+## Installation
+
+```bash
+composer require bear/async
+```
+
+## Configuration
+
+Choose the appropriate module based on your server environment.
+
+| Environment | Module | Features |
+|-------------|--------|----------|
+| PHP-FPM / Apache | `AsyncParallelModule` | Uses ext-parallel, requires ZTS PHP |
+| Swoole HTTP Server | `AsyncSwooleModule` | Uses coroutines, requires connection pool |
+
+### AsyncParallelModule
+
+```php
+use BEAR\Async\Module\AsyncParallelModule;
+
+class AppModule extends AbstractModule
+{
+    protected function configure(): void
+    {
+        $this->install(new AsyncParallelModule(
+            namespace: 'MyVendor\MyApp',
+            context: 'prod-app',
+            appDir: dirname(__DIR__),
+        ));
+    }
+}
+```
+
+### AsyncSwooleModule
+
+```php
+use BEAR\Async\Module\AsyncSwooleModule;
+use BEAR\Async\Module\PdoPoolEnvModule;
+
+class AppModule extends AbstractModule
+{
+    protected function configure(): void
+    {
+        $this->install(new AsyncSwooleModule());
+        $this->install(new PdoPoolEnvModule('PDO_DSN', 'PDO_USER', 'PDO_PASSWORD'));
+    }
+}
+```
+
+Swoole coroutines share memory, so `PdoPoolEnvModule` is required for connection pooling.
+
+## Usage
+
+Once the module is installed, existing `#[Embed]` resources are automatically executed in parallel.
+
+```php
+class Dashboard extends ResourceObject
+{
+    #[Embed(rel: 'user', src: '/user{?id}')]
+    #[Embed(rel: 'notifications', src: '/notifications{?user_id}')]
+    #[Embed(rel: 'stats', src: '/stats{?user_id}')]
+    public function onGet(string $id): static
+    {
+        $this->body['id'] = $id;
+        return $this;
+    }
+}
+```
+
+By not installing the async module in development and only enabling it in production, you can debug in sync mode and run parallel in production.
+
+## BEAR.Projection Integration
+
+[BEAR.Projection](https://github.com/bearsunday/BEAR.Projection) transforms SQL query results into typed Projection objects and exposes them as resources via the `query://` scheme. Combined with `#[Embed]`, multiple SQL queries execute in parallel.
+
+Projection classes are defined as immutable value objects.
+
+```php
+final class UserProfile
+{
+    public function __construct(
+        public readonly string $id,
+        public readonly string $name,
+        public readonly int $age,
+        public readonly string $avatarUrl,
+    ) {}
+}
+```
+
+Factory classes transform raw SQL data into Projections. Dependencies can be injected via DI, enabling business logic like age calculation or URL resolution.
+
+```php
+final class UserProfileFactory
+{
+    public function __construct(
+        private readonly AgeCalculator $ageCalculator,
+        private readonly ImageUrlResolver $imageResolver,
+    ) {}
+
+    public function __invoke(
+        string $id,
+        string $name,
+        string $birthDate,
+        string $avatarPath,
+    ): UserProfile {
+        return new UserProfile(
+            id: $id,
+            name: $name,
+            age: $this->ageCalculator->fromBirthDate($birthDate),
+            avatarUrl: $this->imageResolver->resolve($avatarPath),
+        );
+    }
+}
+```
+
+SQL files return columns corresponding to Factory parameter names.
+
+```sql
+-- var/sql/query/user_profile.sql
+SELECT id, name, birth_date, avatar_path FROM users WHERE id = :id
+```
+
+When used with `#[Embed]`, multiple Projections execute in parallel.
+
+```php
+class User extends ResourceObject
+{
+    #[Embed(rel: 'profile', src: 'query://self/user_profile{?id}')]
+    #[Embed(rel: 'orders', src: 'query://self/user_orders{?id}')]
+    public function onGet(string $id): static
+    {
+        return $this;
+    }
+}
+```
+
+## SQL Batch Execution
+
+Parallel SQL query execution using mysqli's native async support is also provided.
+
+```php
+use BEAR\Async\Module\MysqliEnvModule;
+
+$this->install(new MysqliEnvModule(
+    'MYSQLI_HOST',
+    'MYSQLI_USER',
+    'MYSQLI_PASSWORD',
+    'MYSQLI_DATABASE',
 ));
 ```
 
-## Excute
+```php
+use BEAR\Async\SqlBatch;
+use BEAR\Async\SqlBatchExecutorInterface;
 
+class MyService
+{
+    public function __construct(
+        private SqlBatchExecutorInterface $executor,
+    ) {}
+
+    public function getData(int $userId): array
+    {
+        $results = (new SqlBatch($this->executor, [
+            'user' => ['SELECT * FROM users WHERE id = :id', ['id' => $userId]],
+            'posts' => ['SELECT * FROM posts WHERE user_id = :user_id', ['user_id' => $userId]],
+            'comments' => ['SELECT * FROM comments WHERE user_id = :user_id', ['user_id' => $userId]],
+        ]))();
+
+        return [
+            'user' => $results['user'][0] ?? null,
+            'posts' => $results['posts'],
+            'comments' => $results['comments'],
+        ];
+    }
+}
 ```
-php bin/swoole.php
-```
-```
-Swoole http server is started at http://127.0.0.1:8088
-```
 
-## Benchmarking site
+## References
 
-See [BEAR.HelloworldBenchmark](https://github.com/bearsunday/BEAR.HelloworldBenchmark)
-You can expect x2 to x10 times bootstrap performance boost.
-
- * [The benchmarking result](https://github.com/bearsunday/BEAR.HelloworldBenchmark/wiki)
-
-[<img src="https://github.com/swoole/swoole-src/raw/master/mascot.png">](https://github.com/swoole/swoole-src)
+- [BEAR.Async](https://github.com/bearsunday/BEAR.Async)
+- [BEAR.Projection](https://github.com/bearsunday/BEAR.Projection)
+- [Parallel Execution Architecture](https://bearsunday.github.io/BEAR.Async/parallel-execution-architecture.html)
 
 ***
 
@@ -6048,7 +6337,7 @@ Proper testing makes software better with continuity. A clean application of BEA
 
 Run `vendor/bin/phpunit` or `composer test`.　Other commands are as follows.
 
-```
+```text
 composer test    // phpunit test
 composer tests   // test + sa + cs
 composer coverage // test coverage
@@ -6214,6 +6503,234 @@ Reference
 
 ***
 
+# Security <sup style="font-size:0.5em; color:#666; font-weight:normal;">Beta</sup>
+
+Security tools can scan your application for vulnerability assessment. With static analysis, dynamic testing, taint analysis, and AI auditing, architecture-aware tools analyze from multiple angles, detecting vulnerabilities that generic tools miss.
+
+## Installation
+
+Install [bear/security](https://github.com/bearsunday/BEAR.Security).
+
+```bash
+composer require --dev bear/security
+```
+
+## Scanning Tools
+
+| Tool | What it does | When to use |
+|------|--------------|-------------|
+| SAST[^sast] | Static analysis to find dangerous patterns in your code | During development |
+| DAST[^dast] | Dynamic analysis to send attack requests to your app | Before deployment |
+| AI Auditor | AI reviews your code for security issues | Code review |
+| Psalm Plugin | Traces user input to dangerous operations | During development |
+
+[^sast]: Static Application Security Testing
+[^dast]: Dynamic Application Security Testing
+
+## Design Philosophy: Recall-First
+
+Security scanners have traditionally had two approaches: precision-first (report only certain issues) and recall-first (report suspicious patterns), with a trade-off between them.
+
+BEAR.Security adopts a recall-first approach. Missing a vulnerability (False Negative) is critical, but false positives (False Positive) can be reviewed and excluded. With AI agents now able to handle false positive verification, this strategy is more effective than ever.
+
+### Recommended Workflow
+
+```bash
+# 1. Run SAST to detect pattern-based vulnerabilities
+./vendor/bin/bear.security-scan src
+
+# 2. Review results and fix vulnerabilities
+# Add @security-ignore comment to false positives (see example below)
+
+# 3. Run AI Auditor to detect business logic issues
+./vendor/bin/bear-security-audit src
+
+# 4. Review and fix detected issues
+```
+
+Example of suppressing a false positive:
+
+```php
+$path = $this->buildPath($id); // @security-ignore PATH_TRAVERSAL_FILE_OPS: $id is validated integer from router
+```
+
+Once `@security-ignore` is added, the issue is suppressed in subsequent scans.
+
+## SAST
+
+Scans your source code for dangerous patterns. We recommend running this from an AI agent (such as Claude Code) and having the AI verify whether detections are false positives.
+
+```bash
+./vendor/bin/bear.security-scan src
+```
+
+Detects 14 vulnerability types:
+
+| Category | Examples |
+|----------|----------|
+| Injection | SQL injection, Command injection, XSS |
+| Access Control | Path traversal, Open redirect |
+| Cryptography | Weak hash algorithms, Hardcoded secrets |
+| Data Protection | Insecure deserialization, XXE |
+| Session | Session fixation, CSRF |
+| Network | SSRF, Remote file inclusion |
+
+See the [Vulnerability Reference](https://bearsunday.github.io/BEAR.Security/issues/en/) for details on each vulnerability.
+
+## DAST
+
+Sends attack payloads to your running application to test real vulnerabilities:
+
+```bash
+./vendor/bin/bear-security-dast 'MyVendor\MyApp' prod-app /path/to/app
+```
+
+Tests include:
+
+| Test | What it sends |
+|------|---------------|
+| SQL Injection | `' OR '1'='1`, `; DROP TABLE` |
+| XSS | `<script>alert(1)</script>` |
+| Command Injection | `; ls -la`, `\| cat /etc/passwd` |
+| Path Traversal | `../../../etc/passwd` |
+| Security Headers | Checks for missing headers |
+
+## AI Auditor
+
+Uses Claude AI to find security issues that pattern matching cannot detect:
+
+```bash
+# Option 1: API Key
+export ANTHROPIC_API_KEY=sk-ant-...
+./vendor/bin/bear-security-audit src
+
+# Option 2: Claude CLI (Max Plan - no API key required)
+claude auth login
+./vendor/bin/bear-security-audit src
+```
+
+| Issue | Description |
+|-------|-------------|
+| IDOR | Accessing other users' data without authorization check |
+| Mass Assignment | Accepting unvalidated fields in updates |
+| Race Condition | Time-of-check to time-of-use flaws |
+| Business Logic | Application-specific security flaws |
+
+## Psalm Plugin (Taint Analysis)
+
+Taint analysis is a static analysis technique that marks user input as tainted variables and traces how that taint propagates through your code. It reports vulnerabilities when tainted data reaches SQL queries or HTML output without proper sanitization.
+
+### Setup
+
+Add the plugin and stubs to your `psalm.xml`:
+
+```xml
+<?xml version="1.0"?>
+<psalm
+    xmlns="https://getpsalm.org/schema/config"
+    errorLevel="1"
+>
+    <projectFiles>
+        <directory name="src"/>
+    </projectFiles>
+    <stubs>
+        <file name="vendor/bear/security/stubs/AuraSql.phpstub"/>
+        <file name="vendor/bear/security/stubs/PDO.phpstub"/>
+        <file name="vendor/bear/security/stubs/Qiq.phpstub"/>
+    </stubs>
+    <plugins>
+        <pluginClass class="BEAR\Security\Psalm\ResourceTaintPlugin">
+            <targets>
+                <target>Page</target>
+                <target>App</target>
+            </targets>
+        </pluginClass>
+    </plugins>
+</psalm>
+```
+
+The `targets` specify which resources receive external input. Use `Page` when serving web pages with `html` context, `App` when serving APIs with `api` context.
+
+### Stubs
+
+Stubs provide taint annotations for third-party libraries:
+
+| Stub | Purpose |
+|------|---------|
+| `AuraSql.phpstub` | Marks SQL query methods as taint sinks |
+| `PDO.phpstub` | Marks PDO methods as taint sinks |
+| `Qiq.phpstub` | Marks template output as taint sinks |
+
+### Running
+
+Run taint analysis:
+
+```bash
+./vendor/bin/psalm --taint-analysis
+```
+
+Add convenience scripts to `composer.json`:
+
+```json
+{
+    "scripts": {
+        "security": "./vendor/bin/bear.security-scan src",
+        "taint": "./vendor/bin/psalm --taint-analysis 2>&1 | grep -E 'Tainted' || true"
+    },
+    "scripts-descriptions": {
+        "security": "Run SAST security scan",
+        "taint": "Run Psalm taint analysis"
+    }
+}
+```
+
+Then run with:
+
+```bash
+composer security
+composer taint
+```
+
+## GitHub Actions
+
+You can add security scanning to your CI pipeline:
+
+```bash
+cp vendor/bear/security/workflows/security-sast.yml .github/workflows/
+```
+
+This workflow runs on every push and pull request:
+
+| Job | What it does |
+|-----|--------------|
+| SAST Scan | Scans code and uploads results to GitHub Security tab |
+| Psalm Taint | Traces user input flows and uploads results to GitHub Security tab |
+
+Results appear in your repository's **Security > Code scanning** section.
+
+**Recommended**: Run the scan from an AI agent first, add `@security-ignore` to false positives, then enable CI.
+
+## Architecture and Security
+
+BEAR.Sunday's architecture makes security scanning more effective:
+
+- **Clear Entry Points**: Every endpoint is a ResourceObject with `onGet`, `onPost` methods. Scanners can identify all inputs and trace data flow.
+
+- **No Hidden Magic**: Dependencies are explicit through constructor injection. Scanners can analyze the complete code path.
+
+- **Framework-Aware AI**: The AI Auditor understands BEAR.Sunday patterns and can detect business logic flaws, not just generic vulnerabilities.
+
+## Prompt for AI Agents
+
+To set up bear/security with an AI coding assistant, use this prompt:
+
+```text
+Follow the setup instructions at:
+https://raw.githubusercontent.com/bearsunday/BEAR.Skills/1.x/.claude/skills/bear-security-setup/SKILL.md
+```
+
+***
+
 # Examples
 
 This example application is built on the principles described in the [Coding Guide](http://bearsunday.github.io/manuals/1.0/en/coding-guide.html).
@@ -6313,7 +6830,7 @@ ServiceLocator::setReader(new AttributeReader());
 $this->install(new AttributeModule());
 ```
 
----
+***
 
 [^1]:Attributes take precedence when mixed in a single method.
 
@@ -6321,178 +6838,171 @@ $this->install(new AttributeModule());
 
 # API Doc
 
-ApiDoc generates API documentation from your application.
+Your application is the documentation.
 
-The auto-generated documentation from your code and JSON schema will reduce your effort and keep your API documentation accurate.
+- **ApiDoc HTML**: Developer documentation
+- **OpenAPI 3.1**: Tool chain integration
+- **JSON Schema**: Information model
+- **ALPS**: Vocabulary semantics for AI understanding
+- **llms.txt**: AI-readable application overview
+
+## Demo
+
+- [HTML](https://bearsunday.github.io/BEAR.ApiDoc/)
+- [OpenAPI](https://bearsunday.github.io/BEAR.ApiDoc/openapi/)
+
+## Installation
+
+```bash
+composer require bear/api-doc --dev
+./vendor/bin/apidoc init
+```
+
+The `init` command generates `apidoc.xml` from your `composer.json`. Edit it to customize.
+
+```xml
+<apidoc>
+    <appName>MyVendor\MyProject</appName>  <!-- Application namespace -->
+    <scheme>app</scheme>                    <!-- app or page -->
+    <docDir>docs/api</docDir>
+    <format>html</format>                   <!-- html, openapi, etc. -->
+</apidoc>
+```
+
+The `format` accepts comma-separated values: `html`, `md`, `openapi`, `llms`.
 
 ## Usage
 
-Install BEAR.ApiDoc.
+Generate documentation from the command line.
 
-    composer require bear/api-doc --dev
-
-Copy the configuration file.
-
-    cp ./vendor/bear/api-doc/apidoc.xml.dist ./apidoc.xml
-
-## Source
-
-ApiDoc generates documentation by retrieving information from phpdoc, method signatures, and JSON schema.
-
-#### PHPDOC
-
-In phpdoc, the following parts are retrieved.
-For information that applies across resources, such as authentication, prepare a separate documentation page and link it with `@link`.
-
-```php
-/**
- * {title}
- *
- * {description}
- *
- * {@link htttp;//example.com/docs/auth 認証}
- */
- class Foo extends ResourceObject
- {
- }
+```bash
+./vendor/bin/apidoc
 ```
 
-```php
-/**
- * {title}
- *
- * {description}
- *
- * @param string $id ユーザーID
- */
- public function onGet(string $id ='kuma'): static
- {
- }
+### OpenAPI HTML Generation
+
+When `openapi` format is specified, `openapi.json` is generated. Use Redocly CLI to convert it to HTML.
+
+```bash
+npm install -g @redocly/cli
+redocly build-docs docs/api/openapi.json -o docs/api/openapi.html
 ```
 
-* If there is no `@param` description in the phpdoc of the method, get the information of the argument from the method signature.
-* The order of priority for information acquisition is phpdoc, JSON schema, and profile.
+### llms.txt
+
+The `llms` format generates `llms.txt` following the [llms.txt specification](https://llmstxt.org/). The output includes API endpoints, resource objects, infrastructure interfaces (Query/Command), SQL statements, and entity definitions.
+
+### Composer Scripts
+
+Add scripts to `composer.json` for convenience.
+
+```json
+{
+    "scripts": {
+        "docs": "./vendor/bin/apidoc"
+    },
+    "scripts-descriptions": {
+        "docs": "Generate API documentation"
+    }
+}
+```
+
+```bash
+composer docs
+```
+
+## GitHub Actions
+
+Push to main branch to automatically generate and publish API documentation to GitHub Pages. The reusable workflow handles HTML generation, OpenAPI conversion with Redocly, and ALPS state diagram creation.
+
+```yaml
+name: API Docs
+on:
+  push:
+    branches: [main]
+
+jobs:
+  docs:
+    uses: bearsunday/BEAR.ApiDoc/.github/workflows/apidoc.yml@v1
+    with:
+      format: 'html,openapi,llms'
+```
+
+Enable GitHub Pages: Settings → Pages → Source: "GitHub Actions"
+
+### Inputs
+
+| Input | Default | Description |
+|-------|---------|-------------|
+| `php-version` | `'8.2'` | PHP version |
+| `format` | `'html,openapi,llms'` | Comma-separated: html, md, openapi, llms |
+| `docs-path` | `'docs'` | Output directory |
+| `publish-to` | `'github-pages'` | `github-pages` or `artifact-only` |
+
+### Output Structure
+
+```text
+docs/
+├── index.html          # API documentation
+├── llms.txt            # AI-readable overview
+├── openapi.json        # OpenAPI spec
+└── schemas/
+    ├── index.html      # Schema list
+    └── *.json          # JSON Schema
+```
 
 ## Configuration
-
-The configuration is written in XML.
-The minimum specification is as follows.
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <apidoc
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:noNamespaceSchemaLocation="https://bearsunday.github.io/BEAR.ApiDoc/apidoc.xsd">
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="https://bearsunday.github.io/BEAR.ApiDoc/apidoc.xsd">
     <appName>MyVendor\MyProject</appName>
     <scheme>app</scheme>
     <docDir>docs</docDir>
     <format>html</format>
+    <alps>alps.json</alps>
 </apidoc>
 ```
 
-### Required Attributes
-
-#### appName
-
-Application namespaces
-
-#### scheme
-
-The name of the schema to use for API documentation. `page` or `app`.
-
-#### docDir
-
-Output directory name.
-
-#### format
-
-The output format, HTML or MD (Mark down).
-
-### Optional attributes
-
-#### title
-
-API title
-
-```xml
-<title>MyBlog API</title>
-```
-
-#### description
-
-API description
-
-```xml
-<description>MyBlog API description</description
-```
-
-#### links
-
-Links. The `href` is the URL of the link, and the `rel` is its content.
-
-```xml
-<links>
-    <link href="https://www.example.com/issue" rel="issue" />
-    <link href="https://www.example.com/help" rel="help" />
-</links>
-```
-
-#### alps
-
-Specifies an "ALPS profile" that defines the terms used by the API.
-
-```xml
-<alps>alps/profile.json</alps>.
-```
+| Option | Required | Description |
+|--------|----------|-------------|
+| `appName` | Yes | Application namespace |
+| `scheme` | Yes | `app` or `page` |
+| `docDir` | Yes | Output directory |
+| `format` | Yes | `html`, `md`, `openapi`, `llms` |
+| `title` | | API title |
+| `alps` | | ALPS profile path |
 
 ## Profile
 
-ApiDoc supports the [ALPS](http://alps.io/) format of the [RFC 6906 Profile](https://tools.ietf.org/html/rfc6906) which gives additional information to the application.
-
-Words used in API request and response keys are called semantic descriptors, and if you create a dictionary of profiles, you don't need to describe the words for each request.
-Centralized definitions of words and phrases prevent notational errors and aid in shared understanding.
-
-The words used in API request and response keys are called semantic descriptors, and creating a dictionary of profiles eliminates the need to explain the words for each request.
-Centralized definitions of words and phrases prevent shaky notation and aid in shared understanding.
-
-The following is an example of defining descriptors `firstName` and `familyName` with `title` and `def` respectively.
-While `title` describes a word and clarifies its meaning, `def` links standard words defined in vocabulary sites such as [Schema.org](https://schema.org/).
-
-ALPS profiles can be written in XML or JSON.
-
-profile.xml
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<alps
-     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-     xsi:noNamespaceSchemaLocation="https://alps-io.github.io/schemas/alps.xsd">
-    <!-- Ontology -->
-    <descriptor id="firstName" title="The person's first name."/>
-    <descriptor id="familyName" def="https://schema.org/familyName"/>
-</alps>
-```
-
-profile.json
+ALPS profile defines your API vocabulary. Centralized definitions prevent inconsistencies and aid shared understanding.
 
 ```json
 {
-  "$schema": "https://alps-io.github.io/schemas/alps.json",
-  "alps": {
-    "descriptor": [
-      {"id": "firstName", "title": "The person's first name."}
-      {"id": "familyName", "def": "https://schema.org/familyName"},
-    ]
-  }
+    "$schema": "https://alps-io.github.io/schemas/alps.json",
+    "alps": {
+        "descriptor": [
+            {"id": "firstName", "title": "The person's first name."},
+            {"id": "familyName", "def": "https://schema.org/familyName"}
+        ]
+    }
 }
 ```
 
-Descriptions of words appearing in ApiDoc take precedence over phpdoc > JsonSchema > ALPS in that order.
+## Application as Documentation
+
+Code is the single source of truth. Documentation generated from your application never diverges from the implementation.
+
+[llms.txt](https://llmstxt.org/) provides AI-readable application overviews. When an AI agent encounters your application, it can quickly grasp the entire structure through this single document—generated directly from your code. Unlike typical API references that list endpoints, llms.txt captures the full information architecture following Dan Klyn's [framework](https://understandinggroup.com/ia-theory/explaining-information-architecture)—Ontology, Taxonomy, and Choreography. Combined with ALPS vocabulary semantics and JSON Schema information models, AI agents can understand not just what operations exist, but the meaning and structure behind them.
 
 ## Reference
 
-* [Demo](https://bearsunday.github.io/BEAR.ApiDoc/)
-* [ALPS](http://alps.io/)
-* [ALPS-ASD](https://github.com/koriym/app-state-diagram)
+- [BEAR.ApiDoc](https://github.com/bearsunday/BEAR.ApiDoc) - API documentation generator
+- [ALPS](https://www.app-state-diagram.com/manuals/1.0/en/) - Application-Level Profile Semantics
+- [JSON Schema](https://json-schema.org/) - Data validation and documentation
+- [Redocly CLI](https://redocly.com/docs/cli/installation/) - OpenAPI to HTML conversion
 
 ***
 
