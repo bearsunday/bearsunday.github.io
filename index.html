@@ -13,7 +13,10 @@ category: Index
     </a>
     <script>
         window.addEventListener('DOMContentLoaded', () => {
-            const locales = window.navigator.languages ?? [window.navigator.language ?? ''];
+            const navigatorLanguages = window.navigator.languages;
+            const locales = (navigatorLanguages && navigatorLanguages.length)
+                ? navigatorLanguages
+                : [window.navigator.language ?? ''];
             const prefersJapanese = locales.some((locale) => locale.toLowerCase().startsWith('ja'));
 
             if (!prefersJapanese) {

@@ -11,4 +11,4 @@ COPY Gemfile Gemfile.lock ./
 RUN bundle install
 
 EXPOSE 4000
-CMD ["sh", "-lc", "./bin/copy_markdown_files.sh && bundle exec jekyll serve --host 0.0.0.0"]
+CMD ["sh", "-lc", "set -e; bundle exec jekyll serve --host 0.0.0.0 & pid=$!; while [ ! -f _site/index.html ]; do if ! kill -0 $pid 2>/dev/null; then wait $pid; exit 1; fi; sleep 1; done; ./bin/copy_markdown_files.sh; wait $pid"]
