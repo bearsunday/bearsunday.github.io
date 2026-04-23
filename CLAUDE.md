@@ -32,17 +32,12 @@ bundle install
 ```bash
 # Build site
 bundle exec jekyll build
-
-# Build with custom scripts (production)
-ruby bin/merge_md_files.rb
-bundle exec jekyll build
 ```
 
 ## Key Scripts
 
 - `bin/serve_local.sh`: Local development server with Jekyll watch mode
 - `bin/serve_docker.sh`: Docker-based development
-- `bin/merge_md_files.rb`: Generates combined documentation files (`1page.md`) from individual markdown files
 - `bin/copy_markdown_files.sh`: Copies markdown files to `_site` for llms.txt compliance (removes Jekyll frontmatter)
 
 ## File Structure
@@ -71,8 +66,7 @@ The site uses a sophisticated system for managing documentation:
 
 1. Individual markdown files in `manuals/1.0/{en,ja}/`
 2. Navigation order determined by `_includes/manuals/1.0/{language}/contents.html`
-3. Combined documentation generated via `merge_md_files.rb`
-4. LLMs.txt compliance through frontmatter-stripped copies in `_site/manuals/`
+3. LLMs.txt compliance through frontmatter-stripped copies in `_site/manuals/`
 
 ## Jekyll Configuration
 
@@ -85,4 +79,3 @@ The site uses a sophisticated system for managing documentation:
 
 - **GitHub Actions**: `.github/workflows/jekyll.yml` handles automatic deployment
 - **Ruby Version**: 3.2.2 in CI, 3.2.3 locally (Jekyll compatibility requirement)
-- **Custom Build Steps**: Runs `merge_md_files.rb` before Jekyll build in CI

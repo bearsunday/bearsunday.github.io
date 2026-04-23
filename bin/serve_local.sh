@@ -6,9 +6,8 @@ set -euo pipefail
 # 'jekyll serve' starts a Jekyll development server.
 # '--watch' option automatically rebuilds the site when files are modified.
 
-# Build first, then generate combined manuals and copy markdown files for llms.txt compliance.
+# Copy markdown files for llms.txt compliance after initial build
 echo "Starting Jekyll server with llms.txt compliance..."
 bundle exec jekyll build
-ruby bin/merge_md_files.rb
 ./bin/copy_markdown_files.sh
 bundle exec jekyll serve --watch
