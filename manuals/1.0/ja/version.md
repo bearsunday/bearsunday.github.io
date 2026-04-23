@@ -11,14 +11,14 @@ permalink: /manuals/1.0/ja/version.html
 
 [![Continuous Integration](https://github.com/bearsunday/BEAR.SupportedVersions/actions/workflows/continuous-integration.yml/badge.svg)](https://github.com/bearsunday/BEAR.SupportedVersions/actions/workflows/continuous-integration.yml)
 
-BEAR.SundayはPHPの公式サポート期間([Supported Versions](http://php.net/supported-versions.php))に準じてPHPバージョンをサポートしています。
+BEAR.SundayはPHPの公式サポート期間([Supported Versions](https://www.php.net/supported-versions.php))に準じてPHPバージョンをサポートしています。最新のサポート状況は公式サイトを参照してください。
 
-* `8.1` (古い安定版 25 Nov 2021 - 31 Dec 2025)
-* `8.2` (古い安定版 8 Dec 2022 - 31 Dec 2026)
-* `8.3` (古い安定版 23 Nov 2023 - 31 Dec 2027)
-* `8.4` (現在の安定版 21 Nov 2024 - 31 Dec 2028)
+* `8.2` (初回リリース 8 Dec 2022 / サポート終了 31 Dec 2026)
+* `8.3` (初回リリース 23 Nov 2023 / サポート終了 31 Dec 2027)
+* `8.4` (初回リリース 21 Nov 2024 / サポート終了 31 Dec 2028)
+* `8.5` (初回リリース 20 Nov 2025 / サポート終了 31 Dec 2029)
 
-End of life ([EOL](http://php.net/eol.php))
+サポート終了（[EOL](https://www.php.net/eol.php)）
 
 * `5.5` (21 Jul 2016)
 * `5.6` (31 Dec 2018)
@@ -27,11 +27,12 @@ End of life ([EOL](http://php.net/eol.php))
 * `7.2` (30 Nov 2020)
 * `7.3` (6 Dec 2021)
 * `7.4` (28 Nov 2022)
+* `8.1` (31 Dec 2025)
 * `8.0` (26 Nov 2023)
 
 ## Semver
 
-BEAR.Sundayは[セマンティックバージョニング](http://semver.org/lang/ja/)に従います。マイナーバージョンアップ（バージョン番号が`0.1`増加）ではアプリケーションコードの修正は不要です。
+BEAR.Sundayは[セマンティックバージョニング](https://semver.org/lang/ja/)に従います。マイナーバージョンアップ（バージョン番号が`0.1`増加）ではアプリケーションコードの修正は不要です。
 
 ## バージョニング・ポリシー
 

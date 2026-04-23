@@ -184,7 +184,7 @@ Allow: GET
 
 ## テスト
 
-[PHPUnit](https://phpunit.readthedocs.io/ja/latest/)を使用してリソースのテストを作成します。
+[PHPUnit](https://docs.phpunit.de/)を使用してリソースのテストを作成します。
 
 `tests/Resource/App/WeekdayTest.php`に以下のテストコードを記述します。
 
@@ -410,7 +410,7 @@ class AppModule extends AbstractAppModule
 ```php
 <?php
 /** 
- * @see http://bearsunday.github.io/manuals/1.0/ja/router.html
+ * @see https://bearsunday.github.io/manuals/1.0/ja/router.html
  * @var \Aura\Router\Map $map 
  */
 

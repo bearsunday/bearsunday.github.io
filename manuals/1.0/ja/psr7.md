@@ -11,7 +11,7 @@ permalink: /manuals/1.0/ja/psr7.html
 
 ## HTTPリクエスト
 
-PHPには[`$_SERVER`](http://php.net/manual/ja/reserved.variables.server.php)や[`$_COOKIE`](http://php.net/manual/ja/reserved.variables.cookies.php)などの[スーパーグローバル](http://php.net/manual/ja/language.variables.superglobals.php)がありますが、それらの代わりに[PSR-7 HTTP message interface](https://www.php-fig.org/psr/psr-7/)を使ってサーバーサイドリクエストの情報（`$_COOKIE`、`$_GET`、`$_POST`、`$_FILES`、`$_SERVER`）を受け取ることができます。
+PHPには[`$_SERVER`](https://www.php.net/manual/ja/reserved.variables.server.php)や[`$_COOKIE`](https://www.php.net/manual/ja/reserved.variables.cookies.php)などの[スーパーグローバル](https://www.php.net/manual/ja/language.variables.superglobals.php)がありますが、それらの代わりに[PSR-7 HTTP message interface](https://www.php-fig.org/psr/psr-7/)を使ってサーバーサイドリクエストの情報（`$_COOKIE`、`$_GET`、`$_POST`、`$_FILES`、`$_SERVER`）を受け取ることができます。
 
 ### ServerRequest（サーバーリクエスト全般）
 
@@ -64,7 +64,7 @@ class Index extends ResourceObject
 
 ## PSR-7ミドルウェア
 
-既存のBEAR.Sundayアプリケーションは、特別な変更なしに[PSR-7](http://www.php-fig.org/psr/psr-7/)ミドルウェアとして動作させることができます。
+既存のBEAR.Sundayアプリケーションは、特別な変更なしに[PSR-7](https://www.php-fig.org/psr/psr-7/)ミドルウェアとして動作させることができます。
 
 以下のコマンドで`bear/middleware`を追加して、ミドルウェアとして動作させるための[bootstrapスクリプト](https://github.com/bearsunday/BEAR.Middleware/blob/1.x/bootstrap/bootstrap.php)に置き換えます：
 
@@ -81,7 +81,7 @@ php -S 127.0.0.1:8080 -t public
 
 ### ストリーム
 
-ミドルウェアに対応したBEAR.Sundayのリソースは[ストリーム](http://php.net/manual/ja/intro.stream.php)の出力に対応しています。HTTP出力は`StreamTransfer`が標準です。詳しくは[ストリーム出力](http://bearsunday.github.io/manuals/1.0/ja/stream.html)をご覧ください。
+ミドルウェアに対応したBEAR.Sundayのリソースは[ストリーム](https://www.php.net/manual/ja/intro.stream.php)の出力に対応しています。HTTP出力は`StreamTransfer`が標準です。詳しくは[ストリーム出力](stream.html)をご覧ください。
 
 ### 新規プロジェクト
 

@@ -4,4 +4,6 @@ watch
 .DS_Store
 /manuals/1.0/en/1page.md
 /manuals/1.0/ja/1page.md
+/manuals/1.0/en/onepage.md
+/manuals/1.0/ja/onepage.md
 /.claude

@@ -54,9 +54,15 @@ end
 def generate_combined_file(language, intro_message)
   source = Pathname.new(__dir__).join("..", "manuals/1.0/#{language}")
   output_file = source.join("1page.md")
+  legacy_output_file = source.join("onepage.md")
 
   puts "Processing #{language} documentation..."
   raise "Source folder does not exist!" unless source.directory?
+
+  if legacy_output_file.exist?
+    FileUtils.rm_f(legacy_output_file)
+    puts "Removed legacy file: #{legacy_output_file}"
+  end
 
   # Determine file order from contents.html or fallback to alphabetical
   file_order = extract_order_from_contents(language)

@@ -160,7 +160,7 @@ All Done. Took 0.0248s
 
 テーブルが作成されました。次回からこのプロジェクトのデータベース環境を整えるには`composer setup`を実行するだけで行えます。
 
-マイグレーションクラスの記述について詳しくは[Phinxのマニュアル：マイグレーションを書く](https://book.cakephp.org/3.0/ja/phinx/migrations.html)をご覧ください。
+マイグレーションクラスの記述について詳しくは[Phinxのマニュアル：マイグレーションを書く](https://book.cakephp.org/3.x/ja/phinx/migrations.html)をご覧ください。
 
 ## モジュール
 
@@ -893,4 +893,3 @@ BEAR.Sundayは標準に基づいたクリーンなコードであることを重
 コメントは説明になるだけでなく、スロークエリーログ等からもSQLを特定しやすくなります。
 
 ※ 以前のPHP 7対応のチュートリアルは[tutorial2_v1](tutorial2_v1.html)にあります。
-
