@@ -7,10 +7,30 @@ permalink: /manuals/1.0/ja/troubleshooting/errors.html
 
 # エラーと警告
 
-このページでは、アプリケーションや実行環境の変更が必要になる可能性がある
-実行時エラーと警告を説明します。
+このページでは、BEAR.Sunday の実行時診断をドメイン例外クラス名または
+警告メッセージから探せるように整理します。
 
-## インジェクターキャッシュ警告
+## 例外
+
+### `BEAR\Package\Exception\InvalidCliContextException`
+{: #invalid-cli-context-exception }
+
+CLI コンテキストが CLI 引数を持たない server data を受け取ったときに
+投げられます。
+
+通常は、Web リクエストが CLI コンテキストで処理されていることを意味します。
+Web リクエストには非 CLI コンテキストを使い、CLI コンテキストはコンソール
+エントリーポイントにだけ使ってください。
+
+親例外:
+
+```text
+BEAR\Package\Exception\InvalidContextException
+```
+
+## 警告
+
+### インジェクターキャッシュ警告
 {: #injector-cache-warning }
 
 メッセージ:

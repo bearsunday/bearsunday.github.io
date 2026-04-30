@@ -7,10 +7,29 @@ permalink: /manuals/1.0/en/troubleshooting/errors.html
 
 # Errors and Warnings
 
-This page explains runtime errors and warnings that may require application or
-environment changes.
+This page indexes BEAR.Sunday runtime diagnostics by domain exception class or
+warning message.
 
-## Injector Cache Warning
+## Exceptions
+
+### `BEAR\Package\Exception\InvalidCliContextException`
+{: #invalid-cli-context-exception }
+
+Thrown when the CLI context receives server data without CLI arguments.
+
+This usually means a web request was routed through the CLI context. Use a
+non-CLI context for web requests, and use the CLI context only for console
+entrypoints.
+
+Parent exception:
+
+```text
+BEAR\Package\Exception\InvalidContextException
+```
+
+## Warnings
+
+### Injector Cache Warning
 {: #injector-cache-warning }
 
 Message:
@@ -28,3 +47,6 @@ the object graph so that the compiled injector can be serialized.
 
 If serialization succeeds but the cached item cannot be restored, the cache
 adapter or runtime environment did not store the item as expected. This can
+happen with intentionally non-persistent adapters such as `NullAdapter`, or cache
+backends that are unavailable in the current runtime context. When the cache is
+intentionally non-persistent, this warning can be ignored.
