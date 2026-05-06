@@ -198,7 +198,7 @@ $result->values;  // array<string, mixed> — resolved values bound to the drive
 $result->id;      // ?string — auto-increment id, null when none was assigned
 ```
 
-`$id` is normalised to `null` when the driver returns `false` / `''` / `'0'`.
+`$result->id` is normalised to `null` when the driver returns `false` / `''` / `'0'`.
 
 ##### Custom typed collection wrappers (SELECT)
 
