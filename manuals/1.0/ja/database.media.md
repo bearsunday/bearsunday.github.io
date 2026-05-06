@@ -149,67 +149,90 @@ interface TodoItemInterface
 }
 ```
 
-#### AffectedRows（DMLの結果取得）
+#### PostQueryInterface（型付き結果クラス）
 
-`INSERT` / `UPDATE` / `DELETE`メソッドの戻り値に`AffectedRows`を指定すると、影響行数と（`INSERT`の場合は）最後に採番されたIDを受け取れます。
+クエリ実行後に結果を組み立てる戻り値型は、`PostQueryInterface`を実装したクラスとして表現します。インターセプターは戻り値型がこのインターフェースを実装していれば、静的ファクトリ`fromContext()`に実行コンテキスト（`PDOStatement`、PDO、解決済みパラメーター値、SELECTの場合はhydrate済みrows）を渡して結果を構築します。フレームワークはDMLとSELECTを同じ仕組みでルーティングします。
+
+```php
+interface PostQueryInterface
+{
+    public static function fromContext(PostQueryContext $context): static;
+}
+```
+
+##### AffectedRows（UPDATE / DELETE の影響行数）
+
+`UPDATE` / `DELETE`の影響行数を受け取るには、戻り値型に`AffectedRows`を指定します。
 
 ```php
 use Ray\MediaQuery\Result\AffectedRows;
 
 interface TodoRepositoryInterface
 {
-    #[DbQuery('todo_add')]
-    public function add(string $title): AffectedRows;
-
     #[DbQuery('todo_delete')]
     public function delete(string $id): AffectedRows;
 }
 
-$result = $todoRepo->add('ドキュメント作成');
-$result->count;         // int — 影響を受けた行数
-$result->lastInsertId;  // ?string — INSERT時のauto-increment ID、それ以外はnull
-$result->isAffected();  // bool — count > 0 のときtrue
+$result = $todoRepo->delete($id);
+$result->count;        // int — 影響を受けた行数
+$result->isAffected(); // bool — count > 0 のときtrue
 ```
-
-`lastInsertId`は`INSERT`以外、あるいはauto-incrementが発火しなかった`INSERT`では`null`に正規化されます。既存の`void`戻り値はそのまま動作します。
 
 SQLファイルに複数のステートメントが含まれる場合、`AffectedRows`は**最後に実行されたステートメントの結果**を表します。
 
-#### Collection戻り値（auto-wrap）
+##### InsertedRow（INSERT の解決済み値とID）
 
-`Traversable`を実装したクラスを戻り値型に指定すると、Ray.MediaQueryが行リストを渡して自動的にインスタンス化します。呼び出し側で`new UserCollection($repo->list())`と書く必要がありません。
+`INSERT`で、フレームワークが注入した値（UUID・タイムスタンプなど）と採番された`lastInsertId`を受け取るには、戻り値型に`InsertedRow`を指定します。
 
 ```php
-interface UserRepositoryInterface
+use Ray\MediaQuery\Result\InsertedRow;
+
+interface TodoRepositoryInterface
 {
-    #[DbQuery('user_list')]
-    public function list(): UserCollection;  // 連想配列が渡される
-
-    #[DbQuery('user_list', factory: UserFactory::class)]
-    public function hydrated(): UserCollection;  // Userインスタンスが渡される
-
-    #[DbQuery('user_list')]
-    /** @return UserCollection<User> */
-    public function byDocblock(): UserCollection;  // docblock経由でUserにhydrate
+    #[DbQuery('todo_add')]
+    public function add(string $title): InsertedRow;
 }
 
-final class UserCollection implements IteratorAggregate, Countable
+$result = $todoRepo->add('ドキュメント作成');
+$result->values;  // array<string, mixed> — ドライバーにバインドされた解決済み値
+$result->id;      // ?string — auto-increment ID（採番されない場合はnull）
+```
+
+`$id`はドライバーが`false` / `''` / `'0'`を返した場合、すべて`null`に正規化されます。
+
+##### 独自の型付きコレクションラッパー（SELECT）
+
+SELECTの結果を独自のコレクションでラップしたい場合も、同じ`PostQueryInterface`で表現します。`PostQueryContext::$rows`にはhydrate済みのエンティティ配列が入ります。
+
+```php
+use Ray\MediaQuery\Result\PostQueryContext;
+use Ray\MediaQuery\Result\PostQueryInterface;
+
+/** @implements IteratorAggregate<int, Article> */
+final class Articles implements PostQueryInterface, IteratorAggregate, Countable
 {
+    /** @param list<Article> $items */
     public function __construct(public readonly array $items) {}
+
+    public static function fromContext(PostQueryContext $context): static
+    {
+        /** @var list<Article> $rows */
+        $rows = $context->rows;
+        return new static($rows);
+    }
+
     public function getIterator(): ArrayIterator { return new ArrayIterator($this->items); }
     public function count(): int { return count($this->items); }
 }
+
+interface ArticleRepositoryInterface
+{
+    #[DbQuery('article_list', factory: ArticleFactory::class)]
+    public function list(): Articles;
+}
 ```
 
-auto-wrap対象となる条件:
-
-1. `Traversable`を実装している（`IteratorAggregate`や`Iterator`経由を含む）
-2. インスタンス化可能（抽象クラス・interface以外）
-3. コンストラクタの引数が1つ以上
-
-最初の引数の型は問いません。そのため、PHP標準の`ArrayObject`、Laravel `Illuminate\Support\Collection`（型宣言のない`$items = []`）、Doctrine `ArrayCollection`（`array $elements`）、ユーザー独自のコレクションクラスのいずれも追加実装なしで動作します。
-
-コンストラクタに渡される配列の中身は、`factory:`または`@return Collection<Entity>`のdocblockでエンティティクラスが指定されていればhydrate済みのオブジェクト配列、指定が無ければ連想配列になります。
+エンティティのhydrationは従来どおり`factory:`または`@return Articles<Article>`のdocblockで指示します。継承ではなく**コンポジション**で表現することで、Laravel `Collection`、Doctrine `ArrayCollection`、独自実装などを自由に内部に保持できます。
 
 ## パラメーター
 

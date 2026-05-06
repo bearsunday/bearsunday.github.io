@@ -149,67 +149,90 @@ interface TodoItemInterface
 }
 ```
 
-#### AffectedRows (DML result)
+#### PostQueryInterface (typed result types)
 
-Declare an `AffectedRows` return type on `INSERT` / `UPDATE` / `DELETE` methods to receive the affected row count and (for `INSERT`) the last insert id.
+Return types that build a result after the query executes are expressed as classes implementing `PostQueryInterface`. The interceptor detects the interface on the return type and calls the static `fromContext()` factory with the executed `PDOStatement`, the connection, the resolved parameter values, and — for SELECT — the hydrated rows. The same dispatch covers DML and SELECT.
+
+```php
+interface PostQueryInterface
+{
+    public static function fromContext(PostQueryContext $context): static;
+}
+```
+
+##### AffectedRows (UPDATE / DELETE row count)
+
+Declare `AffectedRows` as the return type to receive the number of rows affected by an `UPDATE` / `DELETE`.
 
 ```php
 use Ray\MediaQuery\Result\AffectedRows;
 
 interface TodoRepositoryInterface
 {
-    #[DbQuery('todo_add')]
-    public function add(string $title): AffectedRows;
-
     #[DbQuery('todo_delete')]
     public function delete(string $id): AffectedRows;
 }
 
-$result = $todoRepo->add('Write docs');
-$result->count;         // int — number of affected rows
-$result->lastInsertId;  // ?string — auto-increment id after INSERT, null otherwise
-$result->isAffected();  // bool — true when count > 0
+$result = $todoRepo->delete($id);
+$result->count;        // int — number of affected rows
+$result->isAffected(); // bool — true when count > 0
 ```
-
-`lastInsertId` is normalised to `null` for non-`INSERT` statements and for inserts that do not produce an auto-increment value. Existing `void` return types keep working unchanged.
 
 When a SQL file contains multiple statements, `AffectedRows` reflects the **last executed statement only**.
 
-#### Collection return type (auto-wrap)
+##### InsertedRow (INSERT resolved values and id)
 
-Declare any `Traversable` class as the return type and Ray.MediaQuery will instantiate it with the row list, so callers no longer write `new UserCollection($repo->list())` at every call site.
+Use `InsertedRow` to recover the values the framework injected on the caller's behalf (UUIDs, timestamps, `DateTime` → SQL strings, `ToScalarInterface` reductions) together with the auto-increment id reported by the driver.
 
 ```php
-interface UserRepositoryInterface
+use Ray\MediaQuery\Result\InsertedRow;
+
+interface TodoRepositoryInterface
 {
-    #[DbQuery('user_list')]
-    public function list(): UserCollection;  // raw associative arrays
-
-    #[DbQuery('user_list', factory: UserFactory::class)]
-    public function hydrated(): UserCollection;  // User instances
-
-    #[DbQuery('user_list')]
-    /** @return UserCollection<User> */
-    public function byDocblock(): UserCollection;  // User instances via docblock hint
+    #[DbQuery('todo_add')]
+    public function add(string $title): InsertedRow;
 }
 
-final class UserCollection implements IteratorAggregate, Countable
+$result = $todoRepo->add('Write docs');
+$result->values;  // array<string, mixed> — resolved values bound to the driver
+$result->id;      // ?string — auto-increment id, null when none was assigned
+```
+
+`$id` is normalised to `null` when the driver returns `false` / `''` / `'0'`.
+
+##### Custom typed collection wrappers (SELECT)
+
+To wrap SELECT results in your own collection type, implement `PostQueryInterface` on the wrapper. `PostQueryContext::$rows` carries the hydrated entities.
+
+```php
+use Ray\MediaQuery\Result\PostQueryContext;
+use Ray\MediaQuery\Result\PostQueryInterface;
+
+/** @implements IteratorAggregate<int, Article> */
+final class Articles implements PostQueryInterface, IteratorAggregate, Countable
 {
+    /** @param list<Article> $items */
     public function __construct(public readonly array $items) {}
+
+    public static function fromContext(PostQueryContext $context): static
+    {
+        /** @var list<Article> $rows */
+        $rows = $context->rows;
+        return new static($rows);
+    }
+
     public function getIterator(): ArrayIterator { return new ArrayIterator($this->items); }
     public function count(): int { return count($this->items); }
 }
+
+interface ArticleRepositoryInterface
+{
+    #[DbQuery('article_list', factory: ArticleFactory::class)]
+    public function list(): Articles;
+}
 ```
 
-A class qualifies for auto-wrap when it:
-
-1. implements `Traversable` (directly or via `IteratorAggregate` / `Iterator`)
-2. is instantiable (not an abstract class or interface)
-3. has a constructor with at least one parameter
-
-The first parameter's type is not constrained, so PHP's built-in `ArrayObject`, Laravel `Illuminate\Support\Collection` (untyped `$items = []`), Doctrine `ArrayCollection` (`array $elements`), and user-defined collections all work without additional integration.
-
-Items passed to the constructor are entity-hydrated when `factory:` or a `@return Collection<Entity>` docblock resolves to an entity class; otherwise raw associative arrays are passed.
+Hydration is configured as before via `factory:` or a `@return Articles<Article>` docblock. The wrapper uses **composition** rather than inheritance, so it can hold any internal collection — Laravel `Collection`, Doctrine `ArrayCollection`, or a custom one — without coupling to any specific library.
 
 ## Parameters
 
