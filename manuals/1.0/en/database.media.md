@@ -90,6 +90,24 @@ SQL execution is mapped to methods, binding the SQL specified by ID with method 
 * Prepare SQL files in the `$sqlDir` directory.
 * SQL files can contain multiple SQL statements. The last SELECT statement becomes the return value.
 
+#### Return type at a glance
+
+The return type you declare on the interface drives what Ray.MediaQuery returns and how it hydrates results. The full set of supported shapes:
+
+| Use case            | Declared return type                          | What you get                                |
+|---------------------|-----------------------------------------------|---------------------------------------------|
+| Single row (assoc)  | `array` + `#[DbQuery(type: 'row')]`           | One row as an associative array             |
+| Single row (object) | `Entity` / `Entity\|null`                     | One row hydrated to an entity               |
+| Row list (assoc)    | `array`                                       | Rows as associative arrays                  |
+| Row list (object)   | `array` + `@return list<Entity>`              | Rows as hydrated entities                   |
+| Custom collection   | `MyColl` implementing `PostQueryInterface`    | Your own typed wrapper (`IteratorAggregate`, etc.) |
+| Pagination          | `PagesInterface` + `#[Pager]`                 | Pagerfanta-backed pages                     |
+| DML affected rows   | `AffectedRows`                                | `UPDATE` / `DELETE` affected row count      |
+| DML inserted row    | `InsertedRow`                                 | `INSERT` resolved values + `lastInsertId`   |
+| DML execute only    | `void`                                        | Run the statement without a result          |
+
+The sections below describe each row in more detail.
+
 #### Entity
 
 When you specify a return type for a method, SQL execution results are automatically converted (hydrated) to that entity class.
@@ -102,7 +120,7 @@ interface TodoItemInterface
 }
 ```
 
-**Constructor Property Promotion (Recommended)**
+##### Constructor Property Promotion (Recommended)
 
 Using constructor property promotion creates type-safe and immutable entities.
 
@@ -116,7 +134,7 @@ final class Todo
 }
 ```
 
-**Automatic snake_case → camelCase Conversion**
+##### Automatic snake_case → camelCase conversion
 
 Database column names (snake_case) and property names (camelCase) are automatically converted.
 
@@ -151,7 +169,7 @@ interface TodoItemInterface
 
 #### PostQueryInterface (typed result types)
 
-Return types that build a result after the query executes are expressed as classes implementing `PostQueryInterface`. The interceptor detects the interface on the return type and calls the static `fromContext()` factory with the executed `PDOStatement`, the connection, the resolved parameter values, and — for SELECT — the hydrated rows. The same dispatch covers DML and SELECT.
+Return types that build a result after the query executes are expressed as classes implementing `PostQueryInterface`. The interceptor detects the interface on the return type and calls the static `fromContext()` factory with a `PostQueryContext` describing the execution. The same dispatch covers DML (Data Manipulation Language — `INSERT` / `UPDATE` / `DELETE`) and SELECT.
 
 ```php
 interface PostQueryInterface
@@ -159,6 +177,15 @@ interface PostQueryInterface
     public static function fromContext(PostQueryContext $context): static;
 }
 ```
+
+`PostQueryContext` exposes the execution as four readonly properties:
+
+| Property     | Type                       | Purpose                                                       |
+|--------------|----------------------------|---------------------------------------------------------------|
+| `$statement` | `PDOStatement`             | The executed statement; inspect `rowCount()`, column metadata, etc. |
+| `$pdo`       | `ExtendedPdoInterface`     | The connection; useful for `lastInsertId()` and follow-up reads.    |
+| `$values`    | `array<string, mixed>`     | Parameter values resolved by `ParamConverter` / `ParamInjector` (UUIDs, timestamps, value-object scalars). |
+| `$rows`      | `array<mixed>`             | SELECT: pre-hydrated rows (entities or assoc arrays). DML: `[]`.    |
 
 ##### AffectedRows (UPDATE / DELETE row count)
 
@@ -173,9 +200,9 @@ interface TodoRepositoryInterface
     public function delete(string $id): AffectedRows;
 }
 
-$result = $todoRepo->delete($id);
-$result->count;        // int — number of affected rows
-$result->isAffected(); // bool — true when count > 0
+$affected = $todoRepo->delete($id);
+$affected->count;        // int — number of affected rows
+$affected->isAffected(); // bool — true when count > 0
 ```
 
 When a SQL file contains multiple statements, `AffectedRows` reflects the **last executed statement only**.
@@ -193,12 +220,12 @@ interface TodoRepositoryInterface
     public function add(string $title): InsertedRow;
 }
 
-$result = $todoRepo->add('Write docs');
-$result->values;  // array<string, mixed> — resolved values bound to the driver
-$result->id;      // ?string — auto-increment id, null when none was assigned
+$inserted = $todoRepo->add('Write docs');
+$inserted->values;  // array<string, mixed> — resolved values bound to the driver
+$inserted->id;      // ?string — auto-increment id, null when none was assigned
 ```
 
-`$result->id` is normalised to `null` when the driver returns `false` / `''` / `'0'`.
+`$inserted->id` is normalised to `null` when the driver returns `false` / `''` / `'0'`.
 
 ##### Custom typed collection wrappers (SELECT)
 
@@ -233,6 +260,12 @@ interface ArticleRepositoryInterface
 ```
 
 Hydration is configured as before via `factory:` or a `@return Articles<Article>` docblock. The wrapper uses **composition** rather than inheritance, so it can hold any internal collection — Laravel `Collection`, Doctrine `ArrayCollection`, or a custom one — without coupling to any specific library.
+
+For a real-world reference, the BEAR.Sunday sample app [MyVendor.Cms](https://github.com/bearsunday/MyVendor.Cms) ships these patterns end-to-end:
+
+- [`ArticleSelection`](https://github.com/bearsunday/MyVendor.Cms/blob/1.x/src/Result/ArticleSelection.php) — `PostQueryInterface` collection with domain methods `published()` / `titles()` / `first()`
+- [`ArticleSelectionQueryInterface`](https://github.com/bearsunday/MyVendor.Cms/blob/1.x/src/Query/ArticleSelectionQueryInterface.php) — declaring the wrapper as the return type with `factory: ArticleFactory::class`
+- [`ArticleAffectedRowsCommandInterface`](https://github.com/bearsunday/MyVendor.Cms/blob/1.x/src/Query/Samples/ArticleAffectedRowsCommandInterface.php) — `AffectedRows` for `UPDATE` / `DELETE`
 
 ## Parameters
 

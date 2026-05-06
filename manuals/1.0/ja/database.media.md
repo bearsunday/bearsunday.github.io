@@ -90,6 +90,24 @@ SQL実行がメソッドにマップされ、IDで指定されたSQLをメソッ
 * `$sqlDir`ディレクトリにSQLファイルを用意します。
 * SQLファイルには複数のSQL文が記述できます。最後の行のSELECTが返り値になります。
 
+#### 戻り値型の一覧
+
+インターフェイスで宣言する戻り値の型が、Ray.MediaQueryの返却内容と hydrate 方法を決定します。サポートされる全てのパターン:
+
+| 用途              | 戻り値型の宣言                                    | 受け取れるもの                              |
+|------------------|--------------------------------------------------|-------------------------------------------|
+| 単行 (assoc)     | `array` + `#[DbQuery(type: 'row')]`              | 1行を連想配列で                            |
+| 単行 (object)    | `Entity` / `Entity\|null`                        | 1行をhydrate済みエンティティで              |
+| 複数 (assoc)     | `array`                                          | 複数行を連想配列の配列で                    |
+| 複数 (object)    | `array` + `@return list<Entity>`                 | 複数行をhydrate済みエンティティで            |
+| 独自コレクション | `MyColl` (`PostQueryInterface` 実装)             | 自前の型付きラッパー（`IteratorAggregate` 等） |
+| ページネーション | `PagesInterface` + `#[Pager]`                    | Pagerfanta ベースのページャ                |
+| DML 影響行数     | `AffectedRows`                                   | `UPDATE` / `DELETE` の影響行数             |
+| DML 採番ID       | `InsertedRow`                                    | `INSERT` の解決済み値 + `lastInsertId`     |
+| DML 結果のみ     | `void`                                           | 実行のみ（戻り値不要）                      |
+
+以下の各節は、上の表の各行の詳細です。
+
 #### Entity
 
 メソッドの戻り値の型を指定すると、SQL実行結果が自動的にそのエンティティクラスに変換（hydrate）されます。
@@ -102,7 +120,7 @@ interface TodoItemInterface
 }
 ```
 
-### Constructor Property Promotion（推奨）
+##### Constructor Property Promotion（推奨）
 
 コンストラクタプロパティプロモーションを使うと型安全でイミュータブルなエンティティを作成できます。
 
@@ -116,7 +134,7 @@ final class Todo
 }
 ```
 
-### snake_case → camelCase 自動変換
+##### snake_case → camelCase 自動変換
 
 データベースのカラム名（snake_case）とプロパティ名（camelCase）は自動的に変換されます。
 
@@ -151,7 +169,7 @@ interface TodoItemInterface
 
 #### PostQueryInterface（型付き結果クラス）
 
-クエリ実行後に結果を組み立てる戻り値型は、`PostQueryInterface`を実装したクラスとして表現します。インターセプターは戻り値型がこのインターフェースを実装していれば、静的ファクトリ`fromContext()`に実行コンテキスト（`PDOStatement`、PDO、解決済みパラメーター値、SELECTの場合はhydrate済みrows）を渡して結果を構築します。フレームワークはDMLとSELECTを同じ仕組みでルーティングします。
+クエリ実行後に結果を組み立てる戻り値型は、`PostQueryInterface`を実装したクラスとして表現します。インターセプターは戻り値型がこのインターフェースを実装していれば、静的ファクトリ`fromContext()`に実行コンテキストを表す`PostQueryContext`を渡して結果を構築します。フレームワークはDML（Data Manipulation Language — `INSERT` / `UPDATE` / `DELETE`）とSELECTを同じ仕組みでルーティングします。
 
 ```php
 interface PostQueryInterface
@@ -159,6 +177,15 @@ interface PostQueryInterface
     public static function fromContext(PostQueryContext $context): static;
 }
 ```
+
+`PostQueryContext`は実行内容を4つの readonly プロパティとして公開します:
+
+| プロパティ   | 型                          | 用途                                                                |
+|------------|----------------------------|---------------------------------------------------------------------|
+| `$statement` | `PDOStatement`             | 実行済みステートメント。`rowCount()`やカラムメタデータ等を参照可能。       |
+| `$pdo`       | `ExtendedPdoInterface`     | 接続。`lastInsertId()` や追加読み取りに使う。                          |
+| `$values`    | `array<string, mixed>`     | `ParamConverter` / `ParamInjector` 解決後の値（UUID、タイムスタンプ、value object のスカラー化等）。 |
+| `$rows`      | `array<mixed>`             | SELECT時はhydrate済みの行（エンティティまたは連想配列）。DML時は `[]`。  |
 
 ##### AffectedRows（UPDATE / DELETE の影響行数）
 
@@ -173,9 +200,9 @@ interface TodoRepositoryInterface
     public function delete(string $id): AffectedRows;
 }
 
-$result = $todoRepo->delete($id);
-$result->count;        // int — 影響を受けた行数
-$result->isAffected(); // bool — count > 0 のときtrue
+$affected = $todoRepo->delete($id);
+$affected->count;        // int — 影響を受けた行数
+$affected->isAffected(); // bool — count > 0 のときtrue
 ```
 
 SQLファイルに複数のステートメントが含まれる場合、`AffectedRows`は**最後に実行されたステートメントの結果**を表します。
@@ -193,12 +220,12 @@ interface TodoRepositoryInterface
     public function add(string $title): InsertedRow;
 }
 
-$result = $todoRepo->add('ドキュメント作成');
-$result->values;  // array<string, mixed> — ドライバーにバインドされた解決済み値
-$result->id;      // ?string — auto-increment ID（採番されない場合はnull）
+$inserted = $todoRepo->add('ドキュメント作成');
+$inserted->values;  // array<string, mixed> — ドライバーにバインドされた解決済み値
+$inserted->id;      // ?string — auto-increment ID（採番されない場合はnull）
 ```
 
-`$result->id`はドライバーが`false` / `''` / `'0'`を返した場合、`null`に正規化されます。
+`$inserted->id`はドライバーが`false` / `''` / `'0'`を返した場合、`null`に正規化されます。
 
 ##### 独自の型付きコレクションラッパー（SELECT）
 
@@ -233,6 +260,12 @@ interface ArticleRepositoryInterface
 ```
 
 エンティティのhydrationは従来どおり`factory:`または`@return Articles<Article>`のdocblockで指示します。継承ではなく**コンポジション**で表現することで、Laravel `Collection`、Doctrine `ArrayCollection`、独自実装などを自由に内部に保持できます。
+
+実プロジェクトでの応用例として、BEAR.Sunday リファレンス実装 [MyVendor.Cms](https://github.com/bearsunday/MyVendor.Cms) では以下のパターンを通しで使っています:
+
+- [`ArticleSelection`](https://github.com/bearsunday/MyVendor.Cms/blob/1.x/src/Result/ArticleSelection.php) — `PostQueryInterface` のコレクションラッパーに `published()` / `titles()` / `first()` のドメインメソッドを実装
+- [`ArticleSelectionQueryInterface`](https://github.com/bearsunday/MyVendor.Cms/blob/1.x/src/Query/ArticleSelectionQueryInterface.php) — `factory: ArticleFactory::class` でラッパーを戻り値型に宣言
+- [`ArticleAffectedRowsCommandInterface`](https://github.com/bearsunday/MyVendor.Cms/blob/1.x/src/Query/Samples/ArticleAffectedRowsCommandInterface.php) — `UPDATE` / `DELETE` で `AffectedRows` を受け取る例
 
 ## パラメーター
 
