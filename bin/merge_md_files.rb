@@ -3,12 +3,21 @@ require 'yaml'
 require 'pathname'
 
 def convert_to_markdown_filename(base_name)
-  # Generic kebab-case to CamelCase converter
-  # This handles both underscore and hyphen separators
+  # Legacy kebab-case to CamelCase converter.
   base_name.split(/[_-]/).map(&:capitalize).join + '.md'
 end
 
-def extract_order_from_contents(language)
+def resolve_markdown_filename(base_name, source)
+  candidates = [
+    "#{base_name}.md",
+    "#{base_name.tr('_', '.')}.md",
+    convert_to_markdown_filename(base_name)
+  ].uniq
+
+  candidates.find { |candidate| source.join(candidate).file? }
+end
+
+def extract_order_from_contents(language, source)
   # Read contents.html to get the proper order
   contents_file = File.expand_path("../_includes/manuals/1.0/#{language}/contents.html", __dir__)
   unless File.exist?(contents_file)
@@ -38,8 +47,13 @@ def extract_order_from_contents(language)
     skip_pages = ['ai-assistant', 'index', '1page']
     next nil if skip_pages.include?(base)
 
-    # Convert kebab-case to CamelCase
-    convert_to_markdown_filename(base)
+    filename = resolve_markdown_filename(base, source)
+    unless filename
+      puts "Warning: Markdown file not found for #{permalink}"
+      next nil
+    end
+
+    filename
   end.compact
 
   markdown_files
@@ -51,6 +65,10 @@ def strip_frontmatter(content)
   content.sub(/\A---\s*\r?\n.*?\r?\n---\s*\r?\n/m, '')
 end
 
+def normalize_content(content)
+  strip_frontmatter(content).lines.map(&:rstrip).join("\n").strip
+end
+
 def generate_combined_file(language, intro_message)
   source = Pathname.new(__dir__).join("..", "manuals/1.0/#{language}")
   output_file = source.join("1page.md")
@@ -59,7 +77,7 @@ def generate_combined_file(language, intro_message)
   raise "Source folder does not exist!" unless source.directory?
 
   # Determine file order from contents.html or fallback to alphabetical
-  file_order = extract_order_from_contents(language)
+  file_order = extract_order_from_contents(language, source)
   if file_order.nil? || file_order.empty?
     puts "Warning: Could not extract order from contents.html, using alphabetical order"
     main_md_files = source.glob("*.md")
@@ -102,7 +120,7 @@ def generate_combined_file(language, intro_message)
     # Process all files in a single pass
     all_files.each_with_index do |path, idx|
       begin
-        content = strip_frontmatter(path.read).strip
+        content = normalize_content(path.read)
         next if content.empty?
 
         # Add separator between sections (except first)

@@ -260,7 +260,7 @@ interface ArticleRepositoryInterface
 
 |              | 1行                                  | 複数行（rowlist）                                    |
 |--------------|--------------------------------------|----------------------------------------------------|
-| エンティティ | `Entity` / `Entity\|null`            | `array` + `@return list<Entity>` または `factory:`  |
+| エンティティ | `Entity` / <code>Entity&#124;null</code> | `array` + `@return list<Entity>` または `factory:`  |
 | 連想配列     | `array` + `#[DbQuery(type: 'row')]`  | `array`（docblock / `factory:` なし）              |
 
 応用的な戻り値型:
@@ -551,4 +551,3 @@ protected function configure(): void
 -- App: todo_item.sql
 SELECT * FROM todo WHERE id = :id
 ```
-

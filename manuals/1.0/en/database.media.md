@@ -260,7 +260,7 @@ Reference implementation ([MyVendor.Cms](https://github.com/bearsunday/MyVendor.
 
 |             | Single row                          | Rowlist                                              |
 |-------------|-------------------------------------|------------------------------------------------------|
-| Hydrated    | `Entity` / `Entity\|null`           | `array` + `@return list<Entity>` or `factory:`       |
+| Hydrated    | `Entity` / <code>Entity&#124;null</code> | `array` + `@return list<Entity>` or `factory:`       |
 | Assoc array | `array` + `#[DbQuery(type: 'row')]` | `array` (no docblock / `factory:`)                   |
 
 For richer return types:
@@ -551,4 +551,3 @@ This feature includes the query ID as a comment in the executed SQL, making it e
 -- App: todo_item.sql
 SELECT * FROM todo WHERE id = :id
 ```
-

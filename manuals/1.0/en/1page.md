@@ -12,7 +12,7 @@ This comprehensive manual contains all BEAR.Sunday documentation in a single pag
 ***
 # Technology
 
-The distinctive technologies and features of BEAR.Sunday are explained in the following chapters. 
+The distinctive technologies and features of BEAR.Sunday are explained in the following chapters.
 
 * [Architecture and Design Principles](#architecture-and-design-principles)
 * [Performance and Scalability](#performance-and-scalability)
@@ -98,9 +98,21 @@ BEAR.Sunday adopts a donut caching strategy and uses ESI (Edge Side Includes) to
 
 In this way, BEAR.Sunday and Fastly's integration of ROA-based caching strategy not only realizes advanced distributed caching but also enhances application performance and fault tolerance.
 
-### Accelerated Startup
+### Runtime Optimization
 
-In the original world of DI, users avoid dealing directly with the injector (DI container) as much as possible. Instead, they generate a single root object at the application's entry point to start the application. In BEAR.Sunday's DI, there is virtually no DI container manipulation even at configuration time. The root object is huge but is a single variable, so it is reused beyond requests, realizing an optimized bootstrap to the limit.
+BEAR.Sunday is designed to minimize framework overhead regardless of server configuration.
+
+DI resolution is completed at compile time, with no container lookups at runtime. The entire application is generated as a single root object variable and reused across requests. In php-fpm configurations, the pre-compiled dependency graph and opcache enable fast bootstrapping.
+
+In Swoole configurations, persistent workers reduce bootstrapping to a single initial boot. Coroutine-context-based request isolation enables safe concurrent processing without reliance on superglobals. Combined with the transparent parallel execution described next, I/O wait time is further minimized.
+
+### Transparent Parallel Execution
+
+In BEAR.Sunday, a URI expresses "intent" rather than being merely a communication protocol or locator. `app://self/user` expresses only the intent "I want user information"—whether it comes from MySQL or Redis is hidden from the application.
+
+This complete separation of "What" from "How" enables multiple resources embedded with `#[Embed]` to be fetched in parallel without changing any application code. Resource classes written 10 years ago can benefit from parallel execution just by adding a Module.
+
+Three tiers of solutions are available based on server environment constraints: ext-parallel (thread pool), Swoole (coroutines), and mysqli (DB queries only). Whichever you choose, application code requires no changes. Develop and debug with standard PHP, then switch to parallel execution in production with just a configuration change.
 
 ## Developer Experience
 
@@ -113,9 +125,16 @@ BEAR.Sunday allows for easy and effective testing due to the following design fe
 * API testing can be performed while following hypermedia links, and tests can be written in the same code for PHP and HTTP.
 * Different implementations are bound during testing through context-based binding.
 
-### API Documentation Generation
+### Application as Documentation
 
-API documentation is automatically generated from the code. It maintains consistency between code and documentation and improves maintainability.
+In BEAR.Sunday, the application itself is the documentation. Multiple documentation formats are automatically generated from code.
+
+- **ApiDoc HTML**: Developer reference
+- **OpenAPI 3.1**: Toolchain integration
+- **JSON Schema**: Information model definition
+- **llms.txt**: AI-readable application overview
+
+When using an ALPS profile as the SSOT (Single Source of Truth), you define the application semantics (vocabulary, state transitions, operation meanings) first, then generate code from it. The same document holds different meanings for different readers—developers see endpoints, architects read state transitions, and AI extracts ontology.
 
 ### Visualization and Debugging
 
@@ -175,8 +194,6 @@ BEAR.Sunday is designed with an emphasis on maintaining backward compatibility i
 
 BEAR.Sunday not only adopts semantic versioning but also does not perform major version upgrades that involve breaking changes. It prevents new feature additions or changes to existing features from affecting existing code. Code that has become old and unused is given the attribute "deprecated" but is never deleted and does not affect the behavior of existing code. Instead, new features are added, and evolution continues.
 
-Here's the English translation of the revised text:
-
 ### Acyclic Dependencies Principle (ADP)
 
 The Acyclic Dependencies Principle states that dependencies should be unidirectional and non-circular. The BEAR.Sunday framework adheres to this principle and is composed of a series of packages with a hierarchical structure where larger framework packages depend on smaller framework packages. Each level does not need to be aware of the existence of other levels that encompass it, and the dependencies are unidirectional and do not form cycles. For example, Ray.Aop is not even aware of the existence of Ray.Di, and Ray.Di is not aware of the existence of BEAR.Sunday.
@@ -199,6 +216,14 @@ To provide applications with high code quality, the BEAR.Sunday framework also s
 * It maintains 100% test coverage and nearly 100% type coverage.
 * It is fundamentally an immutable system and is so clean that initialization is not required every time, even in tests. It unleashes the power of PHP's asynchronous communication engines like Swoole.
 
+### Architecture-Enabled Security Analysis
+
+BEAR.Sunday's architecture fundamentally simplifies security analysis.
+
+Every endpoint is a ResourceObject with explicit `onGet` and `onPost` methods, inputs are declared via JSON Schema, and dependencies are explicit through constructor injection. With no hidden magic or global state, static analysis tools can trace complete data flows.
+
+This declarative architecture enables multi-layered security scanning combining SAST (static analysis), DAST (dynamic testing), taint analysis, and AI auditing. Framework-aware specialized tools detect vulnerabilities that generic tools cannot find.
+
 ## The Value BEAR.Sunday Brings
 
 ### Value for Developers
@@ -210,7 +235,7 @@ To provide applications with high code quality, the BEAR.Sunday framework also s
 
 ### Value for Users
 
-* High performance: BEAR.Sunday's optimized fast startup and CDN-centric caching strategy brings users a fast and responsive experience.
+* High performance: BEAR.Sunday's runtime optimization and CDN-centric caching strategy brings users a fast and responsive experience.
 * Reliability and availability: BEAR.Sunday's CDN-centric caching strategy minimizes single points of failure (SPOF), allowing users to enjoy stable services.
 * Ease of use: BEAR.Sunday's excellent connectivity makes it easy to collaborate with other languages and systems.
 
@@ -220,6 +245,8 @@ To provide applications with high code quality, the BEAR.Sunday framework also s
 * Reduced maintenance costs: BEAR.Sunday's approach to maintaining backward compatibility increases technical continuity and minimizes the time and cost of change response.
 * High extensibility: With technologies like DI (Dependency Injection) and AOP (Aspect Oriented Programming) that change behavior while minimizing code changes, BEAR.Sunday allows applications to be easily extended in line with business growth and changes.
 * Excellent User Experience (UX): BEAR.Sunday provides high performance and high availability, increasing user satisfaction, enhancing customer loyalty, expanding the customer base, and contributing to business success.
+
+### Summary
 
 Excellent constraints do not change. The constraints brought by BEAR.Sunday provide specific value to developers, users, and businesses respectively.
 
@@ -275,80 +302,139 @@ The version of the framework does not lock the version of the library. The libra
 
 ***
 
+# Quick Start
+
+Installation is done via [composer](http://getcomposer.org)
+
+```bash
+VENDOR=MyVendor PACKAGE=MyProject composer create-project bear/skeleton my-project
+cd my-project
+```
+
+Use `VENDOR` to specify the vendor name and `PACKAGE` to specify the package name for installation. If not specified, you will be prompted interactively.
+
+Next, let's create a new resource. A resource is a class which corresponds, for instance, to a JSON payload (if working with an API-first driven model)
+or a web page.
+Create your own basic page resource in `src/Resource/Page/Hello.php`
+
+```php
+<?php
+namespace MyVendor\MyProject\Resource\Page;
+
+use BEAR\Resource\ResourceObject;
+
+class Hello extends ResourceObject
+{
+    public function onGet(string $name = 'BEAR.Sunday'): static
+    {
+        $this->body = [
+            'greeting' => 'Hello ' . $name
+        ];
+
+        return $this;
+    }
+}
+```
+
+In the above example, when the page is requested using a GET method, `Hello` and the `$name` parameter (which corresponds to `$_GET['name']`) are joined, and assigned to a variable `greeting`.
+The BEAR.Sunday application that you have created will work on a web server, but also in the console.
+
+```bash
+php bin/page.php get /hello
+php bin/page.php get '/hello?name=World'
+```
+
+```bash
+200 OK
+Content-Type: application/hal+json
+
+{
+    "greeting": "Hello World",
+    "_links": {
+        "self": {
+            "href": "/hello?name=World"
+        }
+    }
+}
+```
+
+Let us fire up the php server and access our page at [http://127.0.0.1:8080/hello](http://127.0.0.1:8080/hello).
+
+```bash
+php -S 127.0.0.1:8080 -t public
+```
+
+```bash
+curl -i 127.0.0.1:8080/hello
+```
+
+***
+
 # Environment Setup
 
-This guide explains how to set up a development environment for BEAR.Sunday projects. Choose the appropriate method for your environment.
+Choose **malt / Docker / manual setup** based on your OS and team structure. This is a practical guide that consolidates the features, setup procedures, and operational points for each method in one place.
 
-## Setup Methods Comparison
+---
 
-| Method | OS Support | Features | Recommended For |
-|---|---|---|---|
-| **malt** | macOS, Linux | Homebrew-based, lightweight, sharable config | Individual & team development |
-| **Docker** | Windows, macOS, Linux | Container-based, complete reproducibility | Team development, CI/CD |
-| **Manual Setup** | All OS | Use existing infrastructure, fine control | Existing infrastructure |
+## Method Selection
 
-## Setup with malt
+| Method        | Target OS              | Features                                           | Recommended Use      |
+| ------------- | --------------------- |---------------------------------------------------| -------------------- |
+| **malt**      | macOS, WSL2, Linux    | Homebrew-based, lightweight, configuration shareable, local-complete<br>Batch service management commands | Individual dev, team dev |
+| **Docker**    | macOS, Windows, Linux | Container-based complete environment reproduction, CI/CD friendly | Team dev, CI/CD, production-like |
+| **Manual**    | All OS                | Use existing environment as-is, fine-grained control | Existing infrastructure, constrained environments |
+
+---
+
+## Environment Setup with malt
 
 ### Overview
 
-[malt](https://github.com/koriym/homebrew-malt) is a development environment management tool based on Homebrew.
+**malt** is a development environment management tool based on Homebrew. It consolidates configuration and data directly under the project, achieving local completion.
 
-**Key Features of malt:**
-- **Completely Local**: All settings and data are stored within the project directory
-- **Clean Removal**: Simply delete the project folder to completely remove the environment
-- **Dedicated Port Commands**: Aliases like `mysql@3306`, `redis@6379` for port-specific connections
-- **No Global Pollution**: No impact on system-wide MySQL/Redis or other services
-- **Visible Configuration**: All configuration files are managed and shareable within the project
+**Key Features**
+
+* **Completely Local**: All configuration and data stored within the project
+* **Clean Deletion**: Folder deletion = environment deletion
+* **Dedicated Port Commands**: Aliases like `mysql@3306` / `redis@6379`
+* **No Global Pollution**: No impact on system MySQL/Redis etc.
+* **Configuration Visibility**: Configuration files can be shared and reviewed within the project
+* **Batch Service Management**: `malt start` / `malt stop` can start/stop related services together
 
 ### Prerequisites
 
-- macOS or Linux
-- [Homebrew](https://brew.sh/) installed
+* macOS or Linux (including WSL2)
+* Homebrew installed
 
 ### Installation
 
 ```bash
-# Add Homebrew tap
-brew tap koriym/homebrew-malt
+# Add Homebrew taps
+brew tap shivammathur/php
+brew tap shivammathur/extensions
+brew tap koriym/malt
 
 # Install malt
 brew install malt
 ```
 
-**💡 About Homebrew taps:**  
-A tap is a third-party repository that provides packages (formulae) beyond Homebrew's core repository. Adding a tap with `brew tap <name>` allows you to install packages from that tap using short names instead of full repository paths.
-
-### Basic Usage
+### Basic Operations (Shortest Path)
 
 ```bash
-# Initialize project
-malt init
-
-# Generate configuration files
-malt create
-
-# Install dependencies (if needed)
-malt install
-
-# Start services
-malt start
-
-# Set environment variables (run in each session)
+malt init && malt install && malt create && malt start
 source <(malt env)
 ```
 
 ### Configuration Files
 
-malt manages the environment with these files:
-
 ```
 malt.json          # malt configuration
 malt/
   conf/
-    my_3306.cnf    # MySQL config
-    php.ini        # PHP config
-    httpd_8080.conf # Apache config
-    nginx_80.conf   # Nginx config
+    my_3306.cnf     # MySQL configuration
+    php.ini         # PHP configuration
+    httpd_8080.conf # Apache configuration
+    nginx_80.conf   # Nginx configuration
 ```
 
 These files can be included in your project for team environment sharing.
@@ -356,12 +442,12 @@ These files can be included in your project for team environment sharing.
 ### Service Management
 
 ```bash
-# Check status
+# Status check
 malt status
 
-# Start/stop/restart
+# Start / stop / restart all services
 malt start
-malt stop  
+malt stop
 malt restart
 
 # Specific services only
@@ -372,20 +458,16 @@ malt stop nginx
 ### Database Operations
 
 ```bash
-# Dedicated port commands (recommended)
-mysql@3306  # Project-specific MySQL connection
-redis@6379  # Project-specific Redis connection
-
-# Traditional method
-mysql --defaults-file=malt/conf/my_3306.cnf -h 127.0.0.1
-
-# Database creation example
+mysql@3306  # Connect to project-specific MySQL
+redis@6379  # Connect to project-specific Redis
 mysql@3306 -e "CREATE DATABASE IF NOT EXISTS myapp"
 ```
 
-**Important**: `mysql@3306` is a project-specific connection, completely isolated from your system's global MySQL installation.
+> **Important**: `mysql@3306` is **project-specific connection**. It's isolated from the system's global MySQL.
 
-## Setup with Docker
+---
+
+## Environment Setup with Docker
 
 ### Overview
 
@@ -395,6 +477,8 @@ Docker provides OS-independent, consistent development environments.
 - **Global Command Conflicts**: The system `mysql` command points to global MySQL installation
 - **Container-specific Access**: Requires specific connection methods for Docker container databases
 - **Port Conflict Risk**: Ports like 3306 may conflict with system services
+- **macOS File Access**: Host-container file mount performance degradation, especially noticeable during bulk file operations (builds, tests)
+- **Security**: `MYSQL_ALLOW_EMPTY_PASSWORD` should be limited to development use only
 
 ### Prerequisites
 
@@ -419,12 +503,17 @@ services:
       - mysql_data:/var/lib/mysql
       - ./docker/mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
     command: --default-authentication-plugin=mysql_native_password
-    
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
   redis:
     image: redis:alpine
     ports:
       - "6379:6379"
-      
+
   memcached:
     image: memcached:alpine
     ports:
@@ -443,7 +532,7 @@ docker-compose up -d
 # Check status
 docker-compose ps
 
-# View logs
+# Check logs
 docker-compose logs mysql
 
 # Stop environment
@@ -456,21 +545,20 @@ docker-compose down -v
 ### Database Connection
 
 ```bash
-# From host (port specification required)
+# Connect from host (port specification required)
 mysql -h 127.0.0.1 -P 3306 -u root
 
-# From inside container (recommended)
+# Connect from within container (recommended)
 docker-compose exec mysql mysql -u root
-
-# Via phpMyAdmin (browser)
-open http://localhost:8080
 ```
 
 **Warning**: If `mysql` is installed on your system, running just `mysql` will connect to your system's MySQL, not the Docker container. To access the Docker database, you must either specify host/port or execute from within the container.
 
-## Manual Setup
+---
 
-### PHP Environment
+## Manual Environment Setup
+
+### PHP
 
 ```bash
 # macOS (Homebrew)
@@ -487,10 +575,10 @@ sudo mv composer.phar /usr/local/bin/composer
 sudo dnf install php php-{cli,mysql,mbstring,xml,zip,curl}
 ```
 
-### MySQL Environment
+### MySQL
 
 ```bash
-# macOS (Homebrew) 
+# macOS (Homebrew)
 brew install mysql@8.0
 brew services start mysql@8.0
 
@@ -503,69 +591,85 @@ sudo dnf install mysql-server
 sudo systemctl start mysqld
 ```
 
-### PHP Extensions
-
-Useful PHP extensions for development:
+### Useful PHP Extensions for Development
 
 ```bash
-# Add extensions tap (one-time setup)
-brew tap shivammathur/extensions
+# Xdebug (debugging)
+brew install shivammathur/extensions/xdebug@8.4    # Homebrew
+sudo apt install php8.4-xdebug                    # Ubuntu
 
-# Xdebug (for debugging)
-brew install xdebug@8.4  # macOS
-sudo apt install php8.4-xdebug  # Ubuntu
+# XHProf (profiling)
+brew install shivammathur/extensions/xhprof@8.4   # Homebrew
+sudo apt install php8.4-xhprof                    # Ubuntu
 
 # Redis
-brew install redis@8.4  # macOS  
-sudo apt install php8.4-redis  # Ubuntu
+brew install shivammathur/extensions/redis@8.4    # Homebrew
+sudo apt install php8.4-redis                     # Ubuntu
 
 # APCu (caching)
-brew install apcu@8.4  # macOS
-sudo apt install php8.4-apcu  # Ubuntu
+brew install shivammathur/extensions/apcu@8.4     # Homebrew
+sudo apt install php8.4-apcu                      # Ubuntu
 ```
+
+**Important**: Xdebug and XHProf impact performance, so avoid enabling them permanently in php.ini. Instead, enable them only when needed using the `-d` option.
+
+```bash
+# Enable Xdebug only when debugging
+php -dzend_extension=xdebug.so -S 127.0.0.1:8080 -t public
+
+# Enable XHProf only when profiling
+php -dzend_extension=xhprof.so script.php
+
+# Disable extensions when running Composer (for speed)
+php -dzend_extension= /usr/local/bin/composer install
+```
+
+---
+
+## BEAR.Sunday Quick Start Example
+
+```bash
+composer create-project bear/skeleton my-app
+cd my-app
+malt init && malt install && malt create && malt start
+source <(malt env)
+```
+
+---
 
 ## Project-specific Configuration
 
-### Environment Variables
+### .env (Example)
 
-Create `.env` file in project root:
-
-```bash
-# Database connection (MySQL)
+```dotenv
+# MySQL
 DB_HOST=127.0.0.1
 DB_PORT=3306
-DB_NAME=myapp  
+DB_NAME=myapp
 DB_USER=root
 DB_PASS=
 DB_DSN=mysql:host=127.0.0.1;port=3306;dbname=myapp
 
-# Database connection (SQLite)
+# SQLite (for switching)
 DB_DSN=sqlite:var/db.sqlite3
 
-# Cache (Redis)
+# Redis
 REDIS_HOST=127.0.0.1:6379
 
-# Session (Memcached)  
+# Memcached
 MEMCACHED_HOST=127.0.0.1:11211
 ```
 
-### Database Migrations
-
-Using Phinx:
+### Migration (Phinx Example)
 
 ```bash
-# Install Phinx
 composer require --dev robmorgan/phinx
-
-# Create config file
 ./vendor/bin/phinx init
-
-# Create migration
 ./vendor/bin/phinx create MyMigration
-
-# Run migration
 ./vendor/bin/phinx migrate
 ```
+
+---
 
 ## Development Server
 
@@ -575,47 +679,49 @@ composer require --dev robmorgan/phinx
 # Start on port 8080
 php -S 127.0.0.1:8080 -t public
 
-# With Xdebug enabled
+# Enable Xdebug only when debugging
 php -dzend_extension=xdebug.so -S 127.0.0.1:8080 -t public
 ```
 
 ### malt Server
 
 ```bash
-# Choose Apache or Nginx to start
-malt start apache   # Apache (http://127.0.0.1:8080)
-malt start nginx    # Nginx (http://127.0.0.1:80)
+# Choose Apache / Nginx and start
+malt start apache   # http://127.0.0.1:8080
+malt start nginx    # http://127.0.0.1:80
 
-# Check service status
+# Check services
 malt status
 
-# Stop specific server
+# Start/stop all services
+malt start
+malt stop
+
+# Individual stop
 malt stop apache
 malt stop nginx
 ```
 
+---
+
 ## Troubleshooting
 
 ### Port Conflicts
-
-Check port usage:
 
 ```bash
 # macOS/Linux
 lsof -i :3306
 netstat -tulpn | grep :3306
 
-# Kill process
-kill -9 PID
+# Kill the process
+kill -9 <PID>
 ```
 
-### PHP Configuration
-
-Check configuration files:
+### PHP Configuration Check
 
 ```bash
-php --ini
-php -m  # Check loaded modules
+php --ini     # Loaded configuration
+php -m        # Loaded modules
 ```
 
 ### MySQL Connection Errors
@@ -624,17 +730,17 @@ php -m  # Check loaded modules
 # Connection test
 mysql -h 127.0.0.1 -P 3306 -u root -p
 
-# Service status (Linux)
+# Linux service status
 sudo systemctl status mysql
 
-# Check error logs
+# Error logs
 sudo tail -f /var/log/mysql/error.log
 ```
 
 ### malt-specific Issues
 
 ```bash
-# Check service status
+# Status check
 malt status
 
 # Reset configuration
@@ -644,9 +750,17 @@ malt create
 malt start
 ```
 
-## CI/CD Environment Setup
+### .gitignore for Team Development
 
-### GitHub Actions
+```
+malt/logs/
+malt/data/
+malt/tmp/
+```
+
+---
+
+## CI/CD (GitHub Actions Example)
 
 ```yaml
 name: Tests
@@ -656,7 +770,7 @@ on: [push, pull_request]
 jobs:
   test:
     runs-on: ubuntu-latest
-    
+
     services:
       mysql:
         image: mysql:8.0
@@ -666,45 +780,40 @@ jobs:
           MYSQL_DATABASE: test_db
         ports:
           - 3306:3306
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
-    
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.4'
           extensions: mbstring, xml, pdo_mysql, mysqli, intl, curl, zip
-          
+
       - name: Install dependencies
-        run: composer install
-        
+        run: composer install --no-interaction --prefer-dist
+
       - name: Run tests
         run: ./vendor/bin/phpunit
 ```
 
+---
+
 ## Environment Selection Guidelines
 
-### Development vs Production Environment Differences
+Development environments prioritize transparency and direct access, while production environments prioritize reproducibility and monitoring capabilities.
 
-**Development environments prioritize transparency and directness**
-- malt: `mysql@3306` for instant project-specific DB access, direct config file editing, **native file system performance**
-- Docker: Well-known. Container-mediated access, complex configuration inspection, virtualization overhead
+* **Daily Development & Learning**: malt (instant `mysql@3306`, visible configuration, fast file access)
+* **Team Development**: malt (configuration sharing) or Docker (reproducibility priority)
+* **Production & CI/CD**: **Docker only** (same behavior anywhere, rich monitoring tool ecosystem)
+* **Complex Configurations**: Docker (assuming integration and scale of dependent services)
 
-Environment sharing works excellently with both approaches.
-
-**Production environments prioritize reproducibility and monitoring capabilities**
-- Docker: Identical behavior anywhere, rich monitoring tool ecosystem - essentially Docker only
-
-## Summary
-
-- **Daily Development/Learning**: malt recommended
-- **Team Development**: malt (with config sharing) or Docker
-- **Production/CI/CD**: Docker only
-- **Complex Configurations**: Docker
-
-Refer to individual tutorials for detailed configuration examples for each environment.
+> Follow your project's tutorials and team conventions for detailed configuration and BEAR.Sunday best practices.
 
 ***
 
@@ -717,10 +826,10 @@ In this tutorial, we introduce the basic features of BEAR.Sunday, including **DI
 Let's create a web service that returns the day of the week when a date (year, month, day) is entered. Start by creating a project.
 
 ```bash
-composer create-project bear/skeleton MyVendor.Weekday
+VENDOR=MyVendor PACKAGE=Weekday composer create-project bear/skeleton weekday
+cd weekday
 ```
-
-Enter `MyVendor` for the **vendor** name and `Weekday` for the **project** name. [^2]
+[^2]
 
 ## Resources
 
@@ -969,11 +1078,11 @@ composer sa
 When running the code up to this point, the following error was detected by phpstan.
 
 ```
- ------ --------------------------------------------------------- 
-  Line   src/Resource/App/Weekday.php                             
- ------ --------------------------------------------------------- 
-  15     Cannot call method format() on DateTimeImmutable|false.  
- ------ --------------------------------------------------------- 
+ ------ ---------------------------------------------------------
+  Line   src/Resource/App/Weekday.php
+ ------ ---------------------------------------------------------
+  15     Cannot call method format() on DateTimeImmutable|false.
+ ------ ---------------------------------------------------------
 ```
 
 The earlier code did not consider that `DateTimeImmutable::createFromFormat` might return false when invalid values (such as the year being -1) are passed.
@@ -1112,9 +1221,9 @@ Place the router script file in `var/conf/aura.route.php`.
 
 ```php
 <?php
-/** 
+/**
  * @see http://bearsunday.github.io/manuals/1.0/ja/router.html
- * @var \Aura\Router\Map $map 
+ * @var \Aura\Router\Map $map
  */
 
 $map->route('/weekday', '/weekday/{year}/{month}/{day}');
@@ -1580,7 +1689,7 @@ class AppModule extends AbstractAppModule
     protected function configure(): void
     {
         // ...
-+        $this->bind(DateTimeImmutable::class);        
++        $this->bind(DateTimeImmutable::class);
 +        $this->install(new AuraSqlModule(sprintf('sqlite:%s/var/db/todo.sqlite3', $this->appMeta->appDir)));
         $this->install(new PackageModule());
     }
@@ -1823,11 +1932,10 @@ Let's proceed with the commits found in [tutorial2](https://github.com/bearsunda
 
 Create the project skeleton.
 
+```bash
+VENDOR=MyVendor PACKAGE=Ticket composer create-project bear/skeleton ticket
+cd ticket
 ```
-composer create-project bear/skeleton MyVendor.Ticket
-```
-
-Enter the **vendor** name as `MyVendor` and the **project** name as `Ticket`.
 
 ## Migration
 
@@ -2243,7 +2351,7 @@ class Ticket extends ResourceObject
     public function __construct(
         private TicketQueryInterface $query
     ){}
-    
+
    #[JsonSchema("ticket.json")]
    public function onGet(string $id = ''): static
     {
@@ -2259,7 +2367,7 @@ It is validated for each request by AOP.
 
 Let's try to request a resource by entering a seed. [^8]
 
-```bash 
+```bash
 % mysql -u root -e "INSERT INTO ticket (id, title, date_created) VALUES ('1', 'foo', '1970-01-01 00:00:00')" ticket
 ```
 
@@ -2398,7 +2506,7 @@ class Tickets extends ResourceObject
         $this->body = [
             'tickets' => $this->query->list()
         ];
-        
+
         return $this;
     }
 
@@ -2712,8 +2820,8 @@ The comment is not only descriptive, but also makes it easier to identify the SQ
 ### 1.1 Create a New Project
 
 ```bash
-composer create-project -n bear/skeleton MyVendor.Greet
-cd MyVendor.Greet
+VENDOR=MyVendor PACKAGE=Greet composer create-project bear/skeleton greet
+cd greet
 ```
 
 ### 1.2 Verify Development Server
@@ -2773,7 +2881,7 @@ class Greeting extends ResourceObject
             'es' => '¡Hola',
             default => 'Hello',
         };
-        
+
         $this->body = [
             'message' => "{$greeting}, {$name}!",
             'language' => $lang
@@ -2861,7 +2969,7 @@ class Greeting extends ResourceObject
         bool $timeGreeting = false
     ): static {
         $greeting = $this->getGreeting($lang, $timeGreeting);
-        
+
         $this->body = [
             'message' => "{$greeting}, {$name}!",
             'language' => $lang,
@@ -2870,7 +2978,7 @@ class Greeting extends ResourceObject
 
         return $this;
     }
-    
+
     private function getGreeting(string $lang, bool $timeGreeting): string
     {
         $baseGreeting = match ($lang) {
@@ -2879,13 +2987,13 @@ class Greeting extends ResourceObject
             'es' => '¡Hola',
             default => 'Hello',
         };
-        
+
         if (!$timeGreeting) {
             return $baseGreeting;
         }
-        
+
         $hour = (int) (new DateTimeImmutable())->format('H');
-        
+
         return match ($lang) {
             'ja' => match (true) {
                 $hour < 12 => 'おはようございます',
@@ -2954,7 +3062,7 @@ class GreetingTest extends TestCase
     public function testDefaultGreeting(): void
     {
         $response = $this->resource->get('page://self/greeting');
-        
+
         $this->assertSame(200, $response->code);
         $this->assertSame('Hello, World!', $response->body['message']);
         $this->assertSame('en', $response->body['language']);
@@ -2966,7 +3074,7 @@ class GreetingTest extends TestCase
             'name' => '太郎',
             'lang' => 'ja'
         ]);
-        
+
         $this->assertSame('こんにちは, 太郎!', $response->body['message']);
         $this->assertSame('ja', $response->body['language']);
     }
@@ -2978,7 +3086,7 @@ class GreetingTest extends TestCase
             'lang' => 'en',
             'timeGreeting' => true
         ]);
-        
+
         $this->assertStringContains('Alice!', $response->body['message']);
         $this->assertArrayHasKey('time', $response->body);
     }
@@ -3033,7 +3141,7 @@ This tutorial has demonstrated more than just CLI tool creation—it has reveale
 BEAR.Sunday functions as a **boundary framework**, transparently handling:
 
 - **Protocol boundaries**: HTTP ↔ Command line
-- **Interface boundaries**: Web ↔ CLI ↔ Package distribution  
+- **Interface boundaries**: Web ↔ CLI ↔ Package distribution
 - **Environment boundaries**: Development ↔ Production ↔ User environments
 
 ### Design Philosophy in Action
@@ -3054,7 +3162,7 @@ class Greeting extends ResourceObject {
 # As Web API
 curl "http://localhost/greeting?name=World&lang=ja"
 
-# As CLI  
+# As CLI
 ./bin/cli/greet -n "World" -l ja
 
 # As Homebrew package
@@ -3385,8 +3493,56 @@ $this->bind($interface)->to($class)->in(Scope::SINGLETON);
 $this->bind($interface)->toConstructor($class, $named);
 ```
 
-Bindings declared first take priority
 More info can be found at Ray.Di [README](https://github.com/ray-di/Ray.Di/blob/2.x/README.md)
+
+### Binding Priority
+
+See also: [Ray.Di Bindings](https://ray-di.github.io/manuals/1.0/en/bindings.html)
+
+#### Within a Single Module
+
+Bindings declared first take priority. In the following example, `Foo1` takes priority:
+
+```php?start_inline
+$this->bind(FooInterface::class)->to(Foo1::class);
+$this->bind(FooInterface::class)->to(Foo2::class);
+```
+
+#### Module Installation Priority
+
+Modules installed first take priority. In the following example, `Foo1Module` takes priority:
+
+```php?start_inline
+$this->install(new Foo1Module);
+$this->install(new Foo2Module);
+```
+
+To give a later module priority, use `override()`. In the following example, `Foo2Module` takes priority:
+
+```php?start_inline
+$this->install(new Foo1Module);
+$this->override(new Foo2Module);
+```
+
+#### Context String Priority
+
+Context modules are processed in **reverse order** (right-to-left). For example, with context `prod-hal-api-app`:
+
+```text
+Installation order: AppModule → ApiModule → HalModule → ProdModule
+```
+
+Later installed modules can override earlier bindings. This means:
+
+- `HalModule` takes priority over `AppModule`
+- `ProdModule` takes priority over `HalModule`
+
+When creating a custom context module that needs to override bindings from a built-in context (like `HalModule`), position it to the left of that context in the context string. For example, to override `HalModule`'s `RenderInterface` binding:
+
+```php?start_inline
+// Context: "prod-mycontext-hal-api-app"
+// Installation order: AppModule → ApiModule → HalModule → MycontextModule → ProdModule
+```
 
 ## AOP Bindings
 
@@ -3479,7 +3635,7 @@ Dependency injection is basically providing the objects that an object needs (it
 
 With dependency injection, objects accept dependencies in their constructors. To construct an object, you first build its dependencies. But to build each dependency, you need its dependencies, and so on. So when you build an object, you really need to build an object graph.
 
-Building object graphs by hand is labour intensive, error prone, and makes testing difficult. Instead, **Dependency Injector** ([Ray.Di](https://github.com/ray-di/Ray.Di)) can build the object graph for you. 
+Building object graphs by hand is labour intensive, error prone, and makes testing difficult. Instead, **Dependency Injector** ([Ray.Di](https://github.com/ray-di/Ray.Di)) can build the object graph for you.
 
 | What is object graph ?
 | Object-oriented applications contain complex webs of interrelated objects. Objects are linked to each other by one object either owning or containing another object or holding a reference to another object. This web of objects is called an object graph and it is the more abstract structure that can be used in discussing an application's state. - [Wikipedia](http://en.wikipedia.org/wiki/Object_graph)
@@ -3544,13 +3700,13 @@ $this->bindInterceptor(
 
 There are various matchers.
 
- * [Matcher::any](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/MatcherInterface.php#L16) 
- * [Matcher::annotatedWith](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/MatcherInterface.php#L23) 
+ * [Matcher::any](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/MatcherInterface.php#L16)
+ * [Matcher::annotatedWith](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/MatcherInterface.php#L23)
  * [Matcher::subclassesOf](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/MatcherInterface.php#L30)
  * [Matcher::startsWith](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/MatcherInterface.php#L37)
  * [Matcher::logicalOr](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/MatcherInterface.php#L44)
  * [Matcher::logicalAnd](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/MatcherInterface.php#L51)
- * [Matcher::logicalNot](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/MatcherInterface.php#L58) 
+ * [Matcher::logicalNot](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/MatcherInterface.php#L58)
 ```
 
 With the `MethodInvocation` object, you can access the target method's invocation object, method's and parameters.
@@ -3573,7 +3729,7 @@ $class = $invocation->getMethod()->getDeclaringClass();
  * `$class->getAnnotation($name)`
 
 ## Own matcher
-   
+
 You can have your own matcher.
 To create `contains` matcher, You need to provide a class which has two methods. One is `matchesClass` for a class match.
 The other one is `matchesMethod` method match. Both return the boolean result of match.
@@ -3722,7 +3878,7 @@ Get information on parameters and responses required for resource request. It is
 
 #### List of method properties
 
-| Methods | [Safe](https://developer.mozilla.org/en-US/docs/Glossary/Safe/HTTP) | [Idempotent](https://developer.mozilla.org/en-US/docs/Glossary/Idempotent) | [Cacheable](https://developer.mozilla.org/en-US/docs/Glossary/cacheable) 
+| Methods | [Safe](https://developer.mozilla.org/en-US/docs/Glossary/Safe/HTTP) | [Idempotent](https://developer.mozilla.org/en-US/docs/Glossary/Idempotent) | [Cacheable](https://developer.mozilla.org/en-US/docs/Glossary/cacheable)
 |-|-|-|-|-
 | GET | Yes | Yes | Yes
 | POST | No | No | No
@@ -3818,6 +3974,871 @@ One important REST constraint is resource linking; ResourceObject supports both 
 The functionality of the BEAR.Sunday resource object is also available in a stand-alone package for stand-alone use: BEAR.Resource [README](https://github.com/bearsunday/BEAR.Resource/blob/1.x/README.ja.md).
 
 ---
+
+***
+
+# Resource Parameters
+
+## Basics
+
+Web runtime values such as HTTP requests and cookies that ResourceObjects require are passed directly to method arguments. For HTTP requests, the `onGet` and `onPost` method arguments receive `$_GET` and `$_POST` respectively, according to variable names.
+
+For example, the following `$id` receives `$_GET['id']`. When input is from HTTP, string arguments are cast to the specified type.
+
+```php
+class Index extends ResourceObject
+{
+    public function onGet(int $id): static
+    {
+        // ....
+```
+
+## Parameter Types
+
+### Scalar Parameters
+
+All parameters passed via HTTP are strings, but specifying non-string types like `int` will cast them.
+
+### Array Parameters
+
+Parameters can be nested data [^2]. Data sent as JSON or nested query strings can be received as arrays.
+
+[^2]: See [parse_str](https://www.php.net/manual/en/function.parse-str.php)
+
+```php
+class Index extends ResourceObject
+{
+    public function onPost(array $user): static
+    {
+        $name = $user['name']; // bear
+```
+
+### Class Parameters
+
+Parameters can also be received as dedicated Input classes.
+
+```php
+class Index extends ResourceObject
+{
+    public function onPost(User $user): static
+    {
+        $name = $user->name; // bear
+```
+
+Input classes are pre-defined with parameters as public properties.
+
+```php
+<?php
+namespace Vendor\App\Input;
+
+final class User
+{
+    public int $id;
+    public string $name;
+}
+```
+
+If a constructor exists, it will be called. [^php8]
+
+[^php8]: Called with named arguments in PHP8.x, but with positional arguments in PHP7.x.
+
+```php
+<?php
+namespace Vendor\App\Input;
+
+final class User
+{
+    public function __construct(
+        public readonly int $id,
+        public readonly string $name
+    ) {}
+}
+```
+
+Namespaces are arbitrary. Input classes can implement methods to aggregate or validate input data.
+
+### Ray.InputQuery Integration
+
+Use the `#[Input]` attribute to leverage type-safe input object generation from the `Ray.InputQuery` library.
+
+```php
+use Ray\InputQuery\Attribute\Input;
+
+class Index extends ResourceObject
+{
+    public function onPost(#[Input] ArticleInput $article): static
+    {
+        $this->body = [
+            'title' => $article->title,
+            'author' => $article->author->name
+        ];
+        return $this;
+    }
+}
+```
+
+Parameters with the `#[Input]` attribute automatically receive structured objects generated from flat query data.
+
+```php
+use Ray\InputQuery\Attribute\Input;
+
+final class ArticleInput
+{
+    public function __construct(
+        #[Input] public readonly string $title,
+        #[Input] public readonly AuthorInput $author
+    ) {}
+}
+
+final class AuthorInput
+{
+    public function __construct(
+        #[Input] public readonly string $name,
+        #[Input] public readonly string $email
+    ) {}
+}
+```
+
+In this case, nested object structures are automatically generated from flat data like `title=Hello&authorName=John&authorEmail=john@example.com`.
+
+Array data can also be handled.
+
+#### Simple Arrays
+
+```php
+final class TagsInput
+{
+    public function __construct(
+        #[Input] public readonly string $title,
+        #[Input] public readonly array $tags
+    ) {}
+}
+```
+
+```php
+class Index extends ResourceObject
+{
+    public function onPost(#[Input] TagsInput $input): static
+    {
+        // For tags[]=php&tags[]=web&title=Hello
+        // $input->tags = ['php', 'web']
+        // $input->title = 'Hello'
+    }
+}
+```
+
+#### Object Arrays
+
+Use the `item` parameter to generate array elements as objects of the specified Input class.
+
+```php
+use Ray\InputQuery\Attribute\Input;
+
+final class UserInput
+{
+    public function __construct(
+        #[Input] public readonly string $id,
+        #[Input] public readonly string $name
+    ) {}
+}
+
+class Index extends ResourceObject
+{
+    public function onPost(
+        #[Input(item: UserInput::class)] array $users
+    ): static {
+        foreach ($users as $user) {
+            echo $user->name; // Each element is a UserInput instance
+        }
+    }
+}
+```
+
+This generates arrays from data in the following format:
+
+```php
+// users[0][id]=1&users[0][name]=John&users[1][id]=2&users[1][name]=Jane
+$data = [
+    'users' => [
+        ['id' => '1', 'name' => 'John'],
+        ['id' => '2', 'name' => 'Jane']
+    ]
+];
+```
+
+* When a parameter has the `#[Input]` attribute: Object generation with Ray.InputQuery
+* When a parameter doesn't have the `#[Input]` attribute: Traditional dependency injection
+
+### File Upload
+
+Use the `#[InputFile]` attribute to implement type-safe file upload processing with direct mapping between HTML forms and PHP code. Form `name` attributes correspond directly to method parameter names, making code the specification and improving readability.
+
+#### Single File Upload
+
+HTML Form:
+```html
+<form method="post" enctype="multipart/form-data" action="/image-upload">
+    <input type="file" name="image" accept="image/*" required>
+    <input type="text" name="title" placeholder="Image title">
+    <button type="submit">Upload</button>
+</form>
+```
+
+Corresponding resource method:
+```php
+use Ray\InputQuery\Attribute\InputFile;
+use Koriym\FileUpload\FileUpload;
+use Koriym\FileUpload\ErrorFileUpload;
+
+class ImageUpload extends ResourceObject
+{
+    public function onPost(
+        #[InputFile(
+            maxSize: 1024 * 1024, // 1MB
+            allowedTypes: ['image/jpeg', 'image/png', 'image/svg+xml'],
+            allowedExtensions: ['jpg', 'jpeg', 'png', 'svg'],
+            required: false  // Make file upload optional
+        )]
+        FileUpload|ErrorFileUpload|null $image = null, // null when no file specified
+        string $title = 'Default Title'
+    ): static {
+        if ($image === null) {
+            // Handle case when no file is specified
+            $this->body = ['title' => $title, 'image' => null];
+            return $this;
+        }
+
+        if ($image instanceof ErrorFileUpload) {
+            // Handle validation errors
+            $this->code = 400;
+            $this->body = [
+                'error' => true,
+                'message' => $image->message
+            ];
+            return $this;
+        }
+
+        // Handle successful file upload - move file to destination directory
+        $uploadDir = '/var/www/uploads/';
+        $originalName = basename($image->name);
+        $extension = pathinfo($originalName, PATHINFO_EXTENSION);
+        $safeName = preg_replace('/[^a-zA-Z0-9._-]/', '', pathinfo($originalName, PATHINFO_FILENAME));
+        $filename = bin2hex(random_bytes(8)) . '_' . uniqid() . '_' . $safeName . '.' . $extension;
+        $image->move($uploadDir . $filename);
+
+        $this->body = [
+            'success' => true,
+            'filename' => $image->name,
+            'savedAs' => $filename,
+            'size' => $image->size,
+            'type' => $image->type,
+            'title' => $title
+        ];
+        return $this;
+    }
+}
+```
+
+#### Multiple File Upload
+
+HTML Form:
+```html
+<form method="post" enctype="multipart/form-data" action="/gallery-upload">
+    <input type="file" name="images[]" multiple accept="image/*" required>
+    <input type="text" name="galleryName" placeholder="Gallery name">
+    <button type="submit">Upload</button>
+</form>
+```
+
+Corresponding resource method:
+```php
+class GalleryUpload extends ResourceObject
+{
+    /**
+     * @param array<FileUpload|ErrorFileUpload> $images
+     */
+    public function onPost(
+        #[InputFile(
+            maxSize: 2 * 1024 * 1024, // 2MB
+            allowedTypes: ['image/jpeg', 'image/png', 'image/svg+xml']
+        )]
+        array $images, // Receive multiple files as array
+        string $galleryName = 'Default Gallery'
+    ): static {
+        $uploadDir = '/var/www/uploads/gallery/';
+        $results = [];
+        $hasError = false;
+
+        foreach ($images as $index => $image) {
+            if ($image instanceof ErrorFileUpload) {
+                $hasError = true;
+                $results[] = [
+                    'index' => $index,
+                    'error' => true,
+                    'message' => $image->message
+                ];
+                continue;
+            }
+
+            // Save file
+            $originalName = basename($image->name);
+            $extension = pathinfo($originalName, PATHINFO_EXTENSION);
+            $safeName = preg_replace('/[^a-zA-Z0-9._-]/', '', pathinfo($originalName, PATHINFO_FILENAME));
+            $filename = bin2hex(random_bytes(8)) . '_' . uniqid() . '_' . $safeName . '.' . $extension;
+            $image->move($uploadDir . $filename);
+
+            $results[] = [
+                'index' => $index,
+                'success' => true,
+                'filename' => $image->name,
+                'savedAs' => $filename,
+                'size' => $image->size,
+                'type' => $image->type
+            ];
+        }
+
+        $this->code = $hasError ? 207 : 200; // 207 Multi-Status
+        $this->body = [
+            'galleryName' => $galleryName,
+            'files' => $results,
+            'total' => count($images),
+            'hasErrors' => $hasError
+        ];
+        return $this;
+    }
+}
+```
+
+#### Testing File Uploads
+
+File upload functionality can be easily tested:
+
+```php
+use Koriym\FileUpload\FileUpload;
+use Koriym\FileUpload\ErrorFileUpload;
+
+class FileUploadTest extends TestCase
+{
+    public function testSuccessfulFileUpload(): void
+    {
+        // Create FileUpload object from actual file
+        $fileUpload = FileUpload::fromFile(__DIR__ . '/fixtures/test.jpg');
+
+        $resource = $this->getResource();
+        $result = $resource->post('app://self/image-upload', [
+            'image' => $fileUpload,
+            'title' => 'Test Image'
+        ]);
+
+        $this->assertSame(200, $result->code);
+        $this->assertTrue($result->body['success']);
+        $this->assertSame('test.jpg', $result->body['filename']);
+    }
+
+    public function testFileUploadValidationError(): void
+    {
+        // Simulate validation error
+        $errorFileUpload = new ErrorFileUpload([
+            'name' => 'large.jpg',
+            'type' => 'image/jpeg',
+            'size' => 5 * 1024 * 1024, // 5MB - exceeds size limit
+            'tmp_name' => '/tmp/test',
+            'error' => UPLOAD_ERR_OK
+        ], 'File size exceeds maximum allowed size');
+
+        $resource = $this->getResource();
+        $result = $resource->post('app://self/image-upload', [
+            'image' => $errorFileUpload
+        ]);
+
+        $this->assertSame(400, $result->code);
+        $this->assertTrue($result->body['error']);
+        $this->assertStringContainsString('exceeds maximum allowed size', $result->body['message']);
+    }
+
+    public function testMultipleFileUpload(): void
+    {
+        // Test multiple files
+        $file1 = FileUpload::fromFile(__DIR__ . '/fixtures/image1.jpg');
+        $file2 = FileUpload::fromFile(__DIR__ . '/fixtures/image2.png');
+
+        $resource = $this->getResource();
+        $result = $resource->post('app://self/gallery-upload', [
+            'images' => [$file1, $file2],
+            'galleryName' => 'Test Gallery'
+        ]);
+
+        $this->assertSame(200, $result->code);
+        $this->assertSame(2, $result->body['total']);
+        $this->assertCount(2, $result->body['files']);
+    }
+}
+```
+
+The `#[InputFile]` attribute enables direct correspondence between HTML form `input` elements and PHP method parameters, achieving type-safe and intuitive file upload processing. Array support makes multiple file uploads easy to implement, and testing is also straightforward.
+
+For more details, see the [Ray.InputQuery](https://github.com/ray-di/Ray.InputQuery) documentation.
+
+### Enum Parameters
+
+You can specify PHP8.1 [enumerations](https://www.php.net/manual/en/language.types.enumerations.php) to restrict possible values.
+
+```php
+enum IceCreamId: int
+{
+    case VANILLA = 1;
+    case PISTACHIO = 2;
+}
+```
+
+```php
+class Index extends ResourceObject
+{
+    public function onGet(IceCreamId $iceCreamId): static
+    {
+        $id = $iceCreamId->value; // 1 or 2
+    }
+}
+```
+
+In the above case, passing anything other than 1 or 2 will raise a `ParameterInvalidEnumException`.
+
+## Web Context Binding
+
+Values from PHP superglobals like `$_GET` and `$_COOKIE` can be bound to method arguments instead of retrieving them within methods.
+
+```php
+use Ray\WebContextParam\Annotation\QueryParam;
+
+class News extends ResourceObject
+{
+    public function foo(
+        #[QueryParam('id')] string $id
+    ): static {
+        // $id = $_GET['id'];
+```
+
+You can also bind values from `$_ENV`, `$_POST`, and `$_SERVER`.
+
+```php
+use Ray\WebContextParam\Annotation\QueryParam;
+use Ray\WebContextParam\Annotation\CookieParam;
+use Ray\WebContextParam\Annotation\EnvParam;
+use Ray\WebContextParam\Annotation\FormParam;
+use Ray\WebContextParam\Annotation\ServerParam;
+
+class News extends ResourceObject
+{
+    public function onGet(
+        #[QueryParam('id')] string $userId,            // $_GET['id']
+        #[CookieParam('id')] string $tokenId = "0000", // $_COOKIE['id'] or "0000" when unset
+        #[EnvParam('app_mode')] string $app_mode,      // $_ENV['app_mode']
+        #[FormParam('token')] string $token,           // $_POST['token']
+        #[ServerParam('SERVER_NAME')] string $server   // $_SERVER['SERVER_NAME']
+    ): static {
+```
+
+When clients specify values, those values take precedence and bound values become invalid. This is useful for testing.
+
+## Resource Binding
+
+The `#[ResourceParam]` annotation can bind results from other resource requests to method arguments.
+
+```php
+use BEAR\Resource\Annotation\ResourceParam;
+
+class News extends ResourceObject
+{
+    public function onGet(
+        #[ResourceParam('app://self//login#nickname')] string $name
+    ): static {
+```
+
+In this example, when the method is called, it makes a `get` request to the `login` resource and receives `$body['nickname']` as `$name`.
+
+## Content Negotiation
+
+HTTP request `content-type` headers are supported. `application/json` and `x-www-form-urlencoded` media types are distinguished and values are passed to parameters. [^json]
+
+[^json]: When sending API requests as JSON, set the `content-type` header to `application/json`.
+
+***
+
+# Reousrce link
+
+Resources can be linked to other resources. There are two types of links: external links [^LO], which link external resources, and internal links [^LE], which embed other resources in the resource itself.
+
+[^LE]: [embedded links](http://amundsen.com/hypermedia/hfactor/#le) Example: html can embed independent image resources.
+[^LO]: [out-bound links](http://amundsen.com/hypermedia/hfactor/#le) e.g.) html can link to other related html.
+
+## Out-bound links
+
+Specify links by `rel` (relation) and `href` of the link name. The `href` can be a regular URI or [RFC6570 URI template](https://github.com/ioseb/uri-template).
+
+```php?start_inline
+    #[Link rel: 'profile', href: '/profile{?id}']
+    public function onGet($id): static
+    {
+        $this->body = [
+            'id' => 10
+        ];
+
+        return $this;
+    }
+```
+
+In the above example, `href` is represented by and `$body['id']` is assigned to `{?id}`. The output in [HAL](https://stateless.group/hal_specification.html) format is as follows
+
+```json
+{
+    "id": 10,
+    "_links": {
+        "self": {
+            "href": "/test"
+        },
+        "profile": {
+            "href": "/profile?id=10"
+        }
+    }
+}
+```
+
+
+## Internal links
+
+A resource can embed another resource. Specify the resource in the `src` of `#[Embed]`.
+
+Internally linked resources may also internally link other resources. In that case, another internally linked resource is needed, and the process is repeated recursively to obtain a **resource graph**. The client can retrieve the desired set of resources at once without having to fetch the resources multiple times. [^di] For example, instead of calling a customer resource and a product resource respectively, embed them both in an order resource.
+
+[^di]:This is similar to an object graph where the dependency tree is a graph in DI.
+
+```php?start_inline
+use BEAR\Resource\Annotation\Embed;
+
+class News extends ResourceObject
+{
+    #[Embed(rel: 'sports', src: '/news/sports')]
+    #[Embed(rel: 'weather', src: '/news/weather')]
+    public function onGet(): static
+```
+
+It is the resource **request** that is embedded. It is executed at rendering time, but before that you can add arguments with the `addQuery()` method or replace them with `withQuery()`.
+
+A URI template can be used for the `src`, and **request method arguments** will be bound to it. (Unlike external links, it is not `$body`)
+
+```php?start_inline
+use BEAR\Resource\Annotation\Embed;
+
+class News extends ResourceObject
+{
+    #[Embed(rel: 'website', src: '/website{?id}']
+    public function onGet(string $id): static
+    {
+        // ...
+        $this->body['website']->addQuery(['title' => $title]); // 引数追加
+```
+
+### Self linking
+
+Linking a relation as `_self` in ``#[Embed]`` copies the linked resource state to its own resource state.
+
+```php
+namespace MyVendor\Weekday\ResourcePage;.
+
+class Weekday extends ResourceObject
+{
+#[Embed(rel: '_self', src: 'app://self/weekday{?year,month,day}'])
+public function onGet(string $id): static
+{
+```
+
+In this example, the Page resource copies the state of the `weekday` resource of the App resource to itself.
+
+### Internal links in HAL
+
+Handled as `_embedded ` in the [HAL](https://github.com/blongden/hal) renderer.
+
+## Link request
+
+Clients can link resources connected by hyperlinks.
+
+```php?start_inline
+$blog = $this
+    ->resource
+    ->get
+    ->uri('app://self/user')
+    ->withQuery(['id' => 1])
+    ->linkSelf("blog")
+    ->eager
+    ->request()
+    ->body;
+```
+
+There are three types of links. The `body` linked resource of the original resource is embedded using `$rel` as the key.
+
+* `linkSelf($rel)` which will be replaced with the link destination.
+* `linkNew($rel)` the linked resource is added to the original resource
+* `linkCrawl($rel)` crawl the link and create a resource graph.
+
+## crawl
+
+Crawls are lists (arrays) of resources, and links can be traversed in sequence to compose complex resource graphs.
+Just as a crawler crawls a web page, the resource client crawls hyperlinks and generates a source graph.
+
+#### Crawl Example
+
+Consider a resource graph with author, post, meta, tag, and tag/name associated with each.
+Name this resource graph **post-tree** and specify a hyperreference **href** in the `#[Link]' attribute of each resource.
+
+
+
+The first starting point, the author resource, has a hyperlink to the post resource. 1:n relationship.
+
+```php
+#[Link(crawl: "post-tree", rel: "post", href: "app://self/post?author_id={id}")]
+public function onGet($id = null)
+```
+
+The post resource has hyperlinks to the meta and tag resources. 1:n relationship.
+
+```php
+#[Link(crawl: "post-tree", rel: "meta", href: "app://self/meta?post_id={id}")]
+#[Link(crawl: "post-tree", rel: "tag", href: "app://self/tag?post_id={id}")]
+public function onGet($author_id)
+{
+```
+
+A tag resource is just an ID with a hyperlink to the corresponding tag/name resource. 1:1 relationship.
+
+```php
+#[Link(crawl:"post-tree", rel:"tag_name", href:"app://self/tag/name?tag_id={tag_id}")]
+public function onGet($post_id)
+```
+
+Each is now connected. Request with a crawl name.
+
+```php
+$graph = $resource
+  ->get
+  ->uri('app://self/marshal/author')
+  ->linkCrawl('post-tree')
+  ->eager
+  ->request();
+```
+
+When a resource client finds a crawl name specified in the #[Link] attribute, it creates a resource graph by connecting resources by their **rel** names.
+
+```
+var_export($graph->body);
+
+array (
+    0 =>
+    array (
+        'name' => 'Athos',
+        'post' =>
+        array (
+            0 =>
+            array (
+                'author_id' => '1',
+                'body' => 'Anna post #1',
+                'meta' =>
+                array (
+                    0 =>
+                    array (
+                        'data' => 'meta 1',
+                    ),
+                ),
+                'tag' =>
+                array (
+                    0 =>
+                    array (
+                        'tag_name' =>
+                        array (
+                            0 =>
+                            array (
+                                'name' => 'zim',
+                            ),
+                        ),
+                    ),
+ ...
+```
+
+## DataLoader <sup style="font-size:0.5em; color:#666; font-weight:normal;">Beta</sup>
+
+> Available in `bear/resource:1.x-dev`
+
+When crawling resources with links, each child resource triggers individual queries, causing the N+1 problem. DataLoader solves this by batching multiple resource requests into a single efficient query.
+
+### The N+1 Problem
+
+```text
+Request: GET /author/1 with linkCrawl('post-tree')
+
+[Query 1] SELECT * FROM author WHERE id = 1
+  └─ Author has 3 posts
+
+[Query 2] SELECT * FROM post WHERE author_id = 1
+  └─ Returns 3 posts (id: 10, 11, 12)
+
+[Query 3] SELECT * FROM meta WHERE post_id = 10  ← N+1 starts here
+[Query 4] SELECT * FROM meta WHERE post_id = 11
+[Query 5] SELECT * FROM meta WHERE post_id = 12
+
+Total: 5 queries (grows with data size!)
+```
+
+### With DataLoader
+
+```text
+[Query 1] SELECT * FROM author WHERE id = 1
+[Query 2] SELECT * FROM post WHERE author_id = 1
+[Query 3] SELECT * FROM meta WHERE post_id IN (10, 11, 12)  ← Batched!
+
+Total: 3 queries (constant regardless of data size)
+```
+
+### Usage
+
+Add the `dataLoader` parameter to the `#[Link]` attribute:
+
+```php
+#[Link(crawl: 'post-tree', rel: 'meta', href: 'app://self/meta{?post_id}', dataLoader: MetaDataLoader::class)]
+public function onGet($author_id)
+{
+```
+
+### DataLoader Implementation
+
+Implement `DataLoaderInterface` to batch queries:
+
+```php
+use Aura\Sql\ExtendedPdoInterface;
+use BEAR\Resource\DataLoader\DataLoaderInterface;
+
+class MetaDataLoader implements DataLoaderInterface
+{
+    public function __construct(
+        private ExtendedPdoInterface $pdo
+    ){}
+
+    /**
+     * @param list<array<string, mixed>> $queries
+     * @return list<array<string, mixed>>
+     */
+    public function __invoke(array $queries): array
+    {
+        $postIds = array_column($queries, 'post_id');
+
+        // Batch query: SELECT * FROM meta WHERE post_id IN (...)
+        return $this->pdo->fetchAll(
+            'SELECT * FROM meta WHERE post_id IN (:post_ids)',
+            ['post_ids' => $postIds]
+        );
+    }
+}
+```
+
+This example uses SQL directly for clarity, but [Ray.MediaQuery](database_media.html) can also be used for the implementation.
+
+### Key Inference
+
+The key for matching results is auto-inferred from the URI template:
+
+| URI Template | Inferred Key |
+|--------------|--------------|
+| `{?post_id}` | `post_id` |
+| `post_id={id}` | `post_id` |
+| `{?post_id,locale}` | `post_id`, `locale` |
+
+The returned rows must contain the key column(s) for proper distribution.
+
+### Multiple Keys
+
+For multiple key parameters, use all keys in your query:
+
+```php
+// URI template: app://self/translation{?post_id,locale}
+// $queries: [['post_id' => '1', 'locale' => 'en'], ['post_id' => '1', 'locale' => 'ja']]
+
+public function __invoke(array $queries): array
+{
+    // Build query using both keys
+    $sql = "SELECT * FROM translation WHERE (post_id, locale) IN (...)";
+    // ...
+}
+```
+
+***
+
+# Rendering and transfer
+
+The request method of a ResourceObject is not concerned with the representation of the resource. The context-sensitive injected renderer generates the representation of the resource. The same application can be output in HTML or JSON and benefit by simply changing the context.
+
+## Lazy evaluation
+
+Rendering occurs when the resource is string-evaluated.
+
+```php?start_inline
+
+$weekday = $api->resource->get('app://self/weekday', ['year' => 2000, 'month'=> 1, 'day'=> 1]);
+var_dump($weekday->body);
+//array(1) {
+//    ["weekday"]=>
+//  string(3) "Sat"
+//}
+
+echo $weekday;
+//{
+//    "weekday": "Sat",
+//    "_links": {
+//    "self": {
+//        "href": "/weekday/2000/1/1"
+//        }
+//    }
+//}
+```
+
+## Renderer
+
+Each ResourceObject is injected with a renderer for its representation as specified by its context. When performing resource-specific rendering, inject or set the `renderer` property.
+
+Example: If you write a renderer for the default JSON representation from scratch
+
+```php?start_inline
+class Index extends ResourceObject
+{
+    #[Inject]
+    public function setRenderer(RenderInterface $renderer)
+    {
+        $this->renderer = new class implements RenderInterface {
+            public function render(ResourceObject $ro)
+            {
+                $ro->headers['content-type'] = 'application/json;';
+                $ro->view = json_encode($ro->body);
+
+                return $ro->view;
+            }
+        };
+    }
+}
+```
+
+## Transfer
+
+Transfers the resource representation injected into the root object `$app` to the client (console or web client). Normally, output is done with the `header` function or `echo`, but for large data, etc., [stream transfer](stream.html) is useful.
+
+Override the `transfer` method to perform resource-specific transfers.
+
+```php
+public function transfer(TransferInterface $responder, array $server)
+{
+    $responder($this, $server);
+}
+```
+
+## Resource autonomy
+
+Each resource class has the ability to change its own resource state upon request and transfer it as an expression.
 
 ***
 
@@ -3942,7 +4963,7 @@ $map->route('/blog/comment', '/blog/{id}/comment');
 (= `Blog` class's` onGet($id)` method with the value `$id`=`bear`.)
  * `token` is used to restrict parameters with regular expressions.
  * `/blog/{id}/comment` to route `Blog\Comment` class.
-  
+
 ### Preferred router
 
 If it is not routed by the Aura router, a web router will be used.
@@ -4229,7 +5250,7 @@ The compile script creates all static cache files such as dynamically created fi
 When compiling multiple contexts (ex. api-app, html-app) in one application, such as when performing content negotiation, it is necessary to evacuate the files.
 
 ```
-mv autoload.php api.autoload.php  
+mv autoload.php api.autoload.php
 ```
 
 Edit `composer.json` to change the content of `composer compile`.
@@ -4267,7 +5288,7 @@ Example) If there is an AuthProvider that throws an exception when authenticatio
 /tests/Null/AuthProvider.php
 ```php
 <?php
-class AuthProvider 
+class AuthProvider
 {  // Only for instantiation, so implementation is not required
 }
 ```
@@ -4293,7 +5314,7 @@ use Symfony\Component\Cache\Marshaller\MarshallerInterface;
 class RedisAdapter extends OriginAdapter implements Serializable
 {
     use SerializableTrait;
-    
+
     public function __construct(ProviderInterface $redisProvider, string $namespace = '', int $defaultLifetime = 0, ?MarshallerInterface $marshaller = null)
     {
     　　// do nothing
@@ -4320,7 +5341,7 @@ Currently, there are no dedicated cache adapters available. Please refer to [Imm
 ```
 // Extensions
 extension="apcu.so"
-extension="immutable_cache.so" 
+extension="immutable_cache.so"
 extension="igbinary.so"
 
 // Specifying serializer
@@ -4472,14 +5493,575 @@ Modules are provided for using the database. They are all independent libraries 
 
 `DBAL` is Doctrine and `CakeDB` is CakePHP's DB library. `Ray.QueryModule` is an earlier library of Ray.MediaQuery that converts SQL to anonymous functions.
 
+## CQRS Read Model
+
+* [BEAR.Projection](https://github.com/bearsunday/BEAR.Projection)
+
+`BEAR.Projection` provides SQL-based projections mapped to typed value objects. Projections are exposed as resources via the `query://` scheme and can be embedded with `#[Embed]` for [parallel execution](async.html).
+
+```php
+#[Embed(rel: 'profile', src: 'query://self/user_profile{?id}')]
+#[Embed(rel: 'orders', src: 'query://self/user_orders{?id}')]
+public function onGet(string $id): static
+```
+
 ----
+
+***
+
+# Ray.MediaQuery
+
+`Ray.MediaQuery` generates and injects query execution objects from database query interfaces.
+
+* Clarifies the boundary between domain layer and infrastructure layer.
+* Reduces boilerplate code.
+* Since it's independent of the actual external media, storage can be changed later. Enables easy parallel development and stub creation.
+
+## Installation
+
+```bash
+composer require ray/media-query
+```
+
+> **Note**: For the same interface-driven approach over Web APIs, see [ray/web-query](https://github.com/ray-di/Ray.WebQuery).
+
+## Usage
+
+Define an interface for database access.
+
+### Interface Definition
+
+Specify the SQL ID with the `#[DbQuery]` attribute.
+
+```php
+use Ray\MediaQuery\Annotation\DbQuery;
+
+interface TodoAddInterface
+{
+    #[DbQuery('todo_add')]
+    public function add(string $title): void;
+}
+```
+
+### Module Configuration
+
+Specify SQL directory and interface directory with `MediaQuerySqlModule`.
+
+```php
+use Ray\AuraSqlModule\AuraSqlModule;
+use Ray\MediaQuery\MediaQuerySqlModule;
+
+protected function configure(): void
+{
+    $this->install(
+        new MediaQuerySqlModule(
+            interfaceDir: '/path/to/query/interfaces',
+            sqlDir: '/path/to/sql'
+        )
+    );
+    $this->install(new AuraSqlModule(
+        'mysql:host=localhost;dbname=test',
+        'username',
+        'password'
+    ));
+}
+```
+
+MediaQuerySqlModule requires AuraSqlModule to be installed.
+
+### Injection
+
+Objects are generated directly from interfaces and injected. No implementation class coding is required.
+
+```php
+class Todo
+{
+    public function __construct(
+        private TodoAddInterface $todoAdd
+    ) {}
+
+    public function add(string $id, string $title): void
+    {
+        $this->todoAdd->add($id, $title);
+    }
+}
+```
+
+### DbQuery
+
+SQL execution is mapped to methods, binding the SQL specified by ID with method arguments for execution. For example, with ID `todo_item`, it executes `todo_item.sql` SQL statement bound with `['id' => $id]`.
+
+* Prepare SQL files in the `$sqlDir` directory.
+* SQL files can contain multiple SQL statements. The last SELECT statement becomes the return value.
+
+The two basic shapes are **Entity** (single row hydrated to an object) and **Entity list** (rowlist hydrated to an array of objects). Other shapes — raw assoc arrays, custom collections, pagination, DML results — build on these.
+
+#### Entity (single row)
+
+When you specify an entity class as the return type, the SQL result is automatically converted (_hydrated_) into an instance of that class.
+
+```php
+interface TodoItemInterface
+{
+    #[DbQuery('todo_item')]
+    public function getItem(string $id): Todo;
+}
+```
+
+##### Constructor Property Promotion (Recommended)
+
+Using constructor property promotion creates type-safe and immutable entities.
+
+```php
+final class Todo
+{
+    public function __construct(
+        public readonly string $id,
+        public readonly string $title
+    ) {}
+}
+```
+
+Values are bound to constructor arguments **by position**, in the order of the columns in the SELECT clause. Column names (e.g. `user_name`) do not need to match property names (e.g. `$userName`) — just make sure the column order matches the constructor argument order.
+
+`Entity|null` is also supported and returns `null` when no row matches.
+
+> **Note**: When the entity has no constructor, Ray.MediaQuery falls back to PDO's `FETCH_CLASS` and maps **column name → property name** (no snake_case conversion). This avoids any dependency on column ordering, which is useful for wide read-only DTOs or PHP 8.4 `readonly class` declarations.
+
+#### Entity list (rowlist)
+
+Declare `array` as the return type to receive multiple rows. Tell the framework which entity to hydrate each row into via a `@return list<Entity>` docblock or the `factory:` parameter on `#[DbQuery]`.
+
+```php
+interface TodoListInterface
+{
+    /** @return list<Todo> */
+    #[DbQuery('todo_list')]
+    public function list(): array;
+
+    #[DbQuery('todo_list', factory: TodoFactory::class)]
+    public function listByFactory(): array;
+}
+```
+
+Without `@return list<Entity>` or `factory:`, rows are returned as associative arrays — see [type: 'row'](#type-row-raw-associative-array) below for the single-row equivalent.
+
+#### type: 'row' (raw associative array)
+
+By default, an `array` return type yields multiple rows (`[['total' => 10, ...], ...]`). To receive a single row **directly** as an associative array — without it being wrapped in a list at `$result[0]` — specify `type: 'row'`.
+
+```php
+interface TodoItemInterface
+{
+    #[DbQuery('todo_stats', type: 'row')]
+    public function getStats(string $id): array;  // ['total' => 10, 'active' => 5]
+}
+```
+
+#### AffectedRows (UPDATE / DELETE row count)
+
+Declare `AffectedRows` as the return type to receive the affected row count of an `UPDATE` / `DELETE` as a typed value rather than a bare `int`.
+
+```php
+use Ray\MediaQuery\Result\AffectedRows;
+
+interface TodoRepositoryInterface
+{
+    #[DbQuery('todo_delete')]
+    public function delete(string $id): AffectedRows;
+}
+
+$affected = $todoRepo->delete($id);
+$affected->count;        // int — number of affected rows
+$affected->isAffected(); // bool — true when count > 0
+```
+
+When a SQL file contains multiple statements, `AffectedRows` reflects the **last executed statement only**.
+
+Reference implementation: [`ArticleAffectedRowsCommandInterface`](https://github.com/bearsunday/MyVendor.Cms/blob/1.x/src/Query/Samples/ArticleAffectedRowsCommandInterface.php) ([MyVendor.Cms](https://github.com/bearsunday/MyVendor.Cms)).
+
+#### InsertedRow (INSERT resolved values and id)
+
+Use `InsertedRow` to recover the values the framework injected on the caller's behalf (UUIDs, timestamps, `DateTime` → SQL strings, `ToScalarInterface` reductions) together with the auto-increment id reported by the driver. The same SQL id can be reused with a different return type — the framework switches behaviour (execute-only / affected count / inserted id) based on the declared return type alone.
+
+```php
+use Ray\MediaQuery\Result\InsertedRow;
+
+interface TodoAddInterface
+{
+    #[DbQuery('todo_add')]
+    public function add(string $title): void;
+
+    #[DbQuery('todo_add')]
+    public function addReturning(string $title): InsertedRow;
+}
+
+$inserted = $todoAdd->addReturning('Write docs');
+$inserted->values;  // array<string, mixed> — resolved values bound to the driver
+$inserted->id;      // ?string — auto-increment id, null when none was assigned
+```
+
+`$inserted->id` is normalised to `null` when the driver returns `false` / `''` / `'0'`.
+
+#### PostQueryInterface (custom typed results)
+
+Sometimes you want to wrap a SELECT result in your own collection type — exposing domain methods like `published()` / `titles()` instead of returning a plain `array<Article>`. Declare a class that implements `PostQueryInterface` as the return type, and the framework collects the post-execution state into a `PostQueryContext`, passes it to the static `fromContext()` factory, and lets the class decide how to assemble itself.
+
+```php
+interface PostQueryInterface
+{
+    public static function fromContext(PostQueryContext $context): static;
+}
+```
+
+`PostQueryContext` provides four readonly properties:
+
+| Property     | Type                       | Purpose                                                       |
+|--------------|----------------------------|---------------------------------------------------------------|
+| `$statement` | `PDOStatement`             | The executed statement; inspect `rowCount()`, column metadata, etc. |
+| `$pdo`       | `ExtendedPdoInterface`     | The connection; useful for `lastInsertId()` and follow-up reads.    |
+| `$values`    | `array<string, mixed>`     | Parameter values resolved by `ParamConverter` / `ParamInjector` (UUIDs, timestamps, [value object](#value-objects-vo) scalars). |
+| `$rows`      | `array<mixed>`             | Fetched rows on SELECT — hydrated entities when `factory:` is specified, associative arrays otherwise. Always `[]` for DML. |
+
+```php
+use Ray\MediaQuery\Result\PostQueryContext;
+use Ray\MediaQuery\Result\PostQueryInterface;
+
+/** @implements IteratorAggregate<int, Article> */
+final class Articles implements PostQueryInterface, IteratorAggregate, Countable
+{
+    /** @param list<Article> $items */
+    public function __construct(public readonly array $items) {}
+
+    public static function fromContext(PostQueryContext $context): static
+    {
+        /** @var list<Article> $rows */
+        $rows = $context->rows;
+        return new static($rows);
+    }
+
+    public function getIterator(): ArrayIterator { return new ArrayIterator($this->items); }
+    public function count(): int { return count($this->items); }
+}
+
+interface ArticleRepositoryInterface
+{
+    #[DbQuery('article_list', factory: ArticleFactory::class)]
+    public function list(): Articles;
+}
+```
+
+Hydration of each row is configured the same way as for an Entity list: via `factory:`. The wrapper uses **composition** rather than inheritance, so it can hold any internal collection — Laravel `Collection`, Doctrine `ArrayCollection`, or a custom one — without coupling to any specific library.
+
+Reference implementation ([MyVendor.Cms](https://github.com/bearsunday/MyVendor.Cms)):
+
+- [`ArticleSelection`](https://github.com/bearsunday/MyVendor.Cms/blob/1.x/src/Result/ArticleSelection.php) — collection with domain methods `published()` / `titles()` / `first()`
+- [`ArticleSelectionQueryInterface`](https://github.com/bearsunday/MyVendor.Cms/blob/1.x/src/Query/ArticleSelectionQueryInterface.php) — declaring the wrapper as the return type with `factory: ArticleFactory::class`
+
+> `AffectedRows` and `InsertedRow` are themselves implementations of `PostQueryInterface`. If you need a custom DML result type — e.g. one that bundles audit logging or aggregate counters — you can build it through the same mechanism.
+
+#### Return type cheat sheet
+
+|             | Single row                          | Rowlist                                              |
+|-------------|-------------------------------------|------------------------------------------------------|
+| Hydrated    | `Entity` / <code>Entity&#124;null</code> | `array` + `@return list<Entity>` or `factory:`       |
+| Assoc array | `array` + `#[DbQuery(type: 'row')]` | `array` (no docblock / `factory:`)                   |
+
+For richer return types:
+
+- `MyColl` implementing `PostQueryInterface` — custom typed collection wrappers
+- `PagesInterface` + `#[Pager]` — pagination
+- `AffectedRows` — DML affected row count
+- `InsertedRow` — DML insert id + resolved values
+- `void` — DML execute only
+
+## Parameters
+
+### DateTime
+
+You can pass value objects as parameters. For example, `DateTimeInterface` objects can be specified like this:
+
+```php
+interface TaskAddInterface
+{
+    #[DbQuery('task_add')]
+    public function __invoke(string $title, DateTimeInterface $createdAt = null): void;
+}
+```
+
+Values are converted to date-formatted strings during SQL execution.
+
+```sql
+INSERT INTO task (title, created_at) VALUES (:title, :createdAt); # 2021-2-14 00:00:00
+```
+
+If no value is passed, the bound current time is injected. This eliminates the need to hard-code `NOW()` in SQL or pass current time every time.
+
+### Test Time
+
+For testing, you can bind `DateTimeInterface` to a single time like this:
+
+```php
+$this->bind(DateTimeInterface::class)->to(UnixEpochTime::class);
+```
+
+### Value Objects (VO)
+
+When value objects other than `DateTime` are passed, the return value of the `toScalar()` method implementing `ToScalarInterface`, or the `__toString()` method becomes the argument.
+
+```php
+interface MemoAddInterface
+{
+    #[DbQuery('memo_add')]
+    public function __invoke(string $memo, UserId $userId = null): void;
+}
+```
+
+```php
+class UserId implements ToScalarInterface
+{
+    public function __construct(
+        private readonly LoginUser $user
+    ) {}
+
+    public function toScalar(): int
+    {
+        return $this->user->id;
+    }
+}
+```
+
+```sql
+INSERT INTO memo (user_id, memo) VALUES (:user_id, :memo);
+```
+
+### Parameter Injection
+
+Note that the default value `null` for value object arguments is never used in SQL or Web requests. When no value is passed, the scalar value of the value object injected by parameter type is used instead of null.
+
+```php
+public function __invoke(Uuid $uuid = null): void; // UUID is generated and passed
+```
+
+## Pagination
+
+You can paginate SELECT queries with the `#[Pager]` attribute.
+
+```php
+use Ray\MediaQuery\Annotation\DbQuery;
+use Ray\MediaQuery\Annotation\Pager;
+use Ray\MediaQuery\PagesInterface;
+
+interface TodoList
+{
+    #[DbQuery('todo_list'), Pager(perPage: 10, template: '/{?page}')]
+    public function __invoke(): PagesInterface;
+}
+```
+
+You can get the count with `count()`, and get page objects with array access by page number. `PagesInterface` is a SQL lazy execution object.
+
+```php
+$pages = ($todoList)();
+$cnt = count($pages);    // Count SQL is generated and queried when count() is called
+$page = $pages[2];       // DB query for that page is executed when array access is made
+
+// $page->data           // sliced data
+// $page->current;       // current page number
+// $page->total          // total count
+// $page->hasNext        // whether next page exists
+// $page->hasPrevious    // whether previous page exists
+// $page->maxPerPage;    // maximum items per page
+// (string) $page        // pager HTML
+```
+
+## SqlQuery
+
+`SqlQuery` executes SQL by specifying the SQL file ID. Used when preparing implementation classes for detailed implementation.
+
+```php
+class TodoItem implements TodoItemInterface
+{
+    public function __construct(
+        private SqlQueryInterface $sqlQuery
+    ) {}
+
+    public function __invoke(string $id): array
+    {
+        return $this->sqlQuery->getRow('todo_item', ['id' => $id]);
+    }
+}
+```
+
+## get* Methods
+
+Use appropriate `get*` methods to retrieve SELECT results based on the expected result type.
+
+```php
+$sqlQuery->getRow($queryId, $params);        // Result is single row
+$sqlQuery->getRowList($queryId, $params);    // Result is multiple rows
+$statement = $sqlQuery->getStatement();       // Get PDO Statement
+$pages = $sqlQuery->getPages();              // Get pager
+```
+
+Ray.MediaQuery includes [Ray.AuraSqlModule](https://github.com/ray-di/Ray.AuraSqlModule). For lower-level operations, use Aura.Sql's [Query Builder](https://github.com/ray-di/Ray.AuraSqlModule#query-builder) or PDO-extended [Aura.Sql](https://github.com/auraphp/Aura.Sql). [doctrine/dbal](https://github.com/ray-di/Ray.DbalModule) is also available.
+
+Like parameter injection, passing `DateTimeInterface` objects converts them to date-formatted strings.
+
+```php
+$sqlQuery->exec('memo_add', [
+    'memo' => 'run',
+    'created_at' => new DateTime()
+]);
+```
+
+Other objects are converted to `toScalar()` or `__toString()` values.
+
+### Integration with Ray.InputQuery
+
+When using Ray.InputQuery with BEAR.Resource, Input classes can be passed directly as MediaQuery parameters.
+
+```php
+use Ray\InputQuery\Attribute\Input;
+
+final class UserCreateInput
+{
+    public function __construct(
+        #[Input] public readonly string $name,
+        #[Input] public readonly string $email,
+        #[Input] public readonly int $age
+    ) {}
+}
+```
+
+```php
+interface UserCreateInterface
+{
+    #[DbQuery('user_create')]
+    public function add(UserCreateInput $input): void;
+}
+```
+
+Input object properties are automatically expanded to SQL parameters.
+
+```sql
+-- user_create.sql
+INSERT INTO users (name, email, age) VALUES (:name, :email, :age);
+```
+
+This integration enables consistent type-safe data flow from ResourceObject to MediaQuery.
+
+## Profiler
+
+Media access is logged by loggers. By default, a memory logger for testing is bound.
+
+```php
+public function testAdd(): void
+{
+    $this->sqlQuery->exec('todo_add', $todoRun);
+    $this->assertStringContainsString(
+        'query: todo_add({"id":"1","title":"run"})',
+        (string) $this->log
+    );
+}
+```
+
+You can implement your own [MediaQueryLoggerInterface](src/MediaQueryLoggerInterface.php) to benchmark each media query or log with injected PSR loggers.
+
+## PerformSqlInterface
+
+By implementing `PerformSqlInterface`, you can completely customize the SQL execution layer. Replace the default execution process with your own implementation to achieve advanced logging, performance monitoring, security controls, and more.
+
+```php
+use Exception;
+use Ray\MediaQuery\PerformSqlInterface;
+
+final class CustomPerformSql implements PerformSqlInterface
+{
+    public function __construct(
+        private LoggerInterface $logger
+    ) {}
+
+    #[Override]
+    public function perform(ExtendedPdoInterface $pdo, string $sqlId, string $sql, array $values): PDOStatement
+    {
+        $startTime = microtime(true);
+
+        // Custom logging
+        $this->logger->info("Executing SQL: {$sqlId}", [
+            'sql' => $sql,
+            'params' => $values
+        ]);
+
+        try {
+            /** @var array<string, mixed> $values */
+            $statement = $pdo->perform($sql, $values);
+
+            // Execution time logging
+            $executionTime = microtime(true) - $startTime;
+            $this->logger->info("SQL executed successfully", [
+                'sqlId' => $sqlId,
+                'execution_time' => $executionTime
+            ]);
+
+            return $statement;
+        } catch (Exception $e) {
+            $this->logger->error("SQL execution failed: {$sqlId}", [
+                'error' => $e->getMessage(),
+                'sql' => $sql
+            ]);
+            throw $e;
+        }
+    }
+}
+```
+
+To use your custom implementation, bind it in the DI container:
+
+```php
+use Ray\MediaQuery\PerformSqlInterface;
+
+protected function configure(): void
+{
+    $this->bind(PerformSqlInterface::class)->to(CustomPerformSql::class);
+}
+```
+
+## SQL Template
+
+You can customize SQL log formatting to include query IDs in the executed SQL, making it easier to identify which queries are running when analyzing slow logs.
+
+Use `MediaQuerySqlTemplateModule` to customize the SQL log format.
+
+```php
+use Ray\MediaQuery\MediaQuerySqlTemplateModule;
+
+protected function configure(): void
+{
+    $this->install(new MediaQuerySqlTemplateModule("-- App: {{ id }}.sql\n{{ sql }}"));
+}
+```
+
+Available template variables:
+
+- `{% raw %}{{ id }}{% endraw %}`: Query ID
+- `{% raw %}{{ sql }}{% endraw %}`: The actual SQL statement
+
+Default template: `-- {% raw %}{{ id }}.sql\n{{ sql }}{% endraw %}`
+
+This feature includes the query ID as a comment in the executed SQL, making it easy to identify which application query was executed when analyzing database slow logs.
+
+```sql
+-- App: todo_item.sql
+SELECT * FROM todo WHERE id = :id
+```
 
 ***
 
 # Validation
 
  * You can define resource APIs in the JSON schema.
- * You can separate the validation code with `@Valid`, `@OnValidate` annotation.
+ * You can separate the validation code with `#[Valid]`, `#[OnValidate]` attribute.
  * Please see the form for validation by web form.
 
 # JSON Schema
@@ -4587,7 +6169,7 @@ class User extends ResourceObject
                 'lastName' => 'alfons',
                 'age' => 12
             ]
-        ];        
+        ];
 
         return $this;
     }
@@ -4643,9 +6225,9 @@ To apply schema validation to the representation of the resource object (the ren
  * [Understanding JSON Schema](https://spacetelescope.github.io/understanding-json-schema/)
  * [JSON Schema Generator](https://jsonschema.net/#/editor)
 
-## @Valid annotation
+## #[Valid] attribute
 
-The `@Valid` annotation is a validation for input.
+The `#[Valid]` attribute is a validation for input.
 You can set up validation as AOP for your method.
 By separating validation logic from the method, the code will be readable and testable.
 
@@ -4674,25 +6256,23 @@ class AppModule extends AbstractAppModule
 }
 ```
 
-### Annotation
+### Attribute
 
-There are three annotations `@Valid`, `@OnValidate`, `@OnFailure` for validation.
+There are three attributes `#[Valid]`, `#[OnValidate]`, `#[OnFailure]` for validation.
 
-First of all, annotate the method that you want to validate with `@Valid`
+Annotate the method that you want to validate with `#[Valid]`
 
 ```php?start_inline
 use Ray\Validation\Annotation\Valid;
 
 class News
 {
-    /**
-     * @Valid
-     */
+    #[Valid]
     public function createUser($name)
     {
 ```
 
-Validation will be conducted in the method annotated with `@OnValidate`.
+Validation will be conducted in the method annotated with `#[OnValidate]`.
 
 The arguments of the method should be the same as the original method. The method name can be anything.
 
@@ -4701,9 +6281,7 @@ use Ray\Validation\Annotation\OnValidate;
 
 class News
 {
-    /**
-     * @OnValidate
-     */
+    #[OnValidate]
     public function onValidate($name)
     {
         $validation = new Validation;
@@ -4718,16 +6296,14 @@ class News
 Add validations to your elements by `addError()` with the `element name` and` error message` as parameters, then return the validation object.
 
 When validation fails, the exception `Ray\Validation\Exception\InvalidArgumentException` will be thrown,
-but if you have a method annotated with the `@OnFailure`, it will be called, instead of throwing an exception
+but if you have a method annotated with the `#[OnFailure]`, it will be called, instead of throwing an exception
 
 ```php?start_inline
 use Ray\Validation\Annotation\OnFailure;
 
 class News
 {
-    /**
-     * @OnFailure
-     */
+    #[OnFailure]
     public function onFailure(FailureInterface $failure)
     {
         // original parameters
@@ -4742,7 +6318,7 @@ class News
     }
 ```
 
-In the method annotated with `@OnFailure`, you can access the validated messages with `$failure->getMessages()`
+In the method annotated with `#[OnFailure]`, you can access the validated messages with `$failure->getMessages()`
 and also you can get the object of the original method with `$failure->getInvocation()`.
 
 ### Various validation
@@ -4756,21 +6332,15 @@ use Ray\Validation\Annotation\OnFailure;
 
 class News
 {
-    /**
-     * @Valid("foo")
-     */
+    #[Valid('foo')]
     public function fooAction($name, $address, $zip)
     {
 
-    /**
-     * @OnValidate("foo")
-     */
+    #[OnValidate('foo')]
     public function onValidateFoo($name, $address, $zip)
     {
 
-    /**
-     * @OnFailure("foo")
-     */
+    #[OnFailure('foo')]
     public function onFailureFoo(FailureInterface $failure)
     {
 ```
@@ -4986,7 +6556,7 @@ $ git push origin v0.1.0
 +  sha256 "..." # Add hash value obtained from the command below
 +  version "0.1.0"
    head "https://github.com/your-vendor/greet.git", branch: "main"
-   
+
    depends_on "php@8.1"
    depends_on "composer"
  end
@@ -5042,7 +6612,7 @@ class Greet < Formula
   url "https://github.com/your-vendor/greet/archive/refs/tags/v0.1.0.tar.gz"
   sha256 "..." # tgz SHA256
   version "0.1.0"
-  
+
   depends_on "php@8.4"  # Specify PHP version
   depends_on "composer"
 
@@ -5214,7 +6784,7 @@ class AppModule extends AbstractAppModule
 
 ##  Web Form
 
-Create **a form class** that defines the registration and the rules of form elements, then bind it to a method using `@FormValidation` annotation.
+Create **a form class** that defines the registration and the rules of form elements, then bind it to a method using `#[FormValidation]` attribute.
 The method runs only when the sent data is validated.
 
 ```php
@@ -5246,9 +6816,9 @@ Please refer to [Rules To Validate Fields](https://github.com/auraphp/Aura.Filte
 We validate an associative array of the argument of the method.
 If we want to change the input, we can set the values by implementing `submit()` method of `SubmitInterface` interface.
 
-## @FormValidation Annotation
+## #[FormValidation] Attribute
 
-Annotate the method that we want to validate with the `@FormValidation`, so that the validation is done in the form object specified by the `form` property before execution.
+Annotate the method that we want to validate with the `#[FormValidation]`, so that the validation is done in the form object specified by the `form` property before execution.
 When validation fails, the method with the `ValidationFailed` suffix is called.
 
 ```php
@@ -5259,25 +6829,18 @@ use Ray\WebFormModule\FormInterface;
 
 class MyController
 {
-    /**
-     * @var FormInterface
-     */
-    protected $form;
+    protected FormInterface $form;
 
-    /**
-     * @Inject
-     * @Named("contact_form")
-     */
+    #[Inject]
+    #[Named('contact_form')]
     public function setForm(FormInterface $form)
     {
         $this->form = $form;
     }
 
-    /**
-     * @FormValidation
-     * // or
-     * @FormValidation(form="form", onFailure="onPostValidationFailed")
-     */
+    #[FormValidation]
+    // or
+    // #[FormValidation(form: 'form', onFailure: 'onPostValidationFailed')]
     public function onPost($name, $age)
     {
         // validation success
@@ -5290,7 +6853,7 @@ class MyController
 }
 ```
 
-We can explicitly specify the name and the method by changing the `form` property of `@FormValidation` annotation or the `onValidationFailed` property.
+We can explicitly specify the name and the method by changing the `form` property of `#[FormValidation]` attribute or the `onValidationFailed` property.
 
 The submit parameters will be passed to the `onPostValidationFailed` method.
 
@@ -5325,9 +6888,9 @@ class MyForm extends AbstractForm
 In order to increase the security level, add a custom CSRF class that contains the user authentication to the form class.
 Please refer to the [Applying CSRF Protections](https://github.com/auraphp/Aura.Input#applying-csrf-protections) of Aura.Input for more information.
 
-## @InputValidation annotation
+## #[InputValidation] attribute
 
-If we annotate the method with `@InputValidation` instead of `@FormValidation`, the exception `Ray\WebFormModule\Exception\ValidationException` is thrown when validation fails.
+If we annotate the method with `#[InputValidation]` instead of `#[FormValidation]`, the exception `Ray\WebFormModule\Exception\ValidationException` is thrown when validation fails.
 For convenience, HTML representation is not used in this case.
 
 When we `echo` the `error` property of the caught exception, we can see the representation of the media type [application/vnd.error+json](https://github.com/blongden/vnd.error).
@@ -5347,24 +6910,23 @@ echo $e->error;
 // }
 ```
 
-We can add the necessary information to `vnd.error+json` using `@VndError` annotation.
+We can add the necessary information to `vnd.error+json` using `#[VndError]` attribute.
 
 ```php
-/**
- * @FormValidation(form="contactForm")
- * @VndError(
- *   message="foo validation failed",
- *   logref="a1000", path="/path/to/error",
- *   href={"_self"="/path/to/error", "help"="/path/to/help"}
- * )
- */
- public function onPost()
+#[FormValidation(form: 'contactForm')]
+#[VndError(
+    message: 'foo validation failed',
+    logref: 'a1000',
+    path: '/path/to/error',
+    href: ['_self' => '/path/to/error', 'help' => '/path/to/help']
+)]
+public function onPost()
 ```
 
 ## FormVndErrorModule
 
-If we install `Ray\WebFormModule\FormVndErrorModule`, the method annotated with `@FormValidation`
-will throw an exception in the same way as the method annotated with `@InputValidation`.
+If we install `Ray\WebFormModule\FormVndErrorModule`, the method annotated with `#[FormValidation]`
+will throw an exception in the same way as the method annotated with `#[InputValidation]`.
 We can use the page resources as API.
 
 ```php
@@ -5382,6 +6944,284 @@ class FooModule extends AbstractModule
 
 Try the demo app [MyVendor.ContactForm](https://github.com/bearsunday/MyVendor.ContactForm) to get an idea on how forms such as
 a confirmation form and multiple forms in a single page work.
+
+***
+
+# Content Negotiation
+
+In HTTP, [Content Negotiation](https://en.wikipedia.org/wiki/Content_negotiation) is a mechanism used to provide various versions of resources for the same URL. BEAR.Sunday supports server-side content negotiation of media type 'Accept' and 'Accept-Language' of language. It can be specified on an application basis or resource basis.
+
+## Install
+
+Install [BEAR.Accept](https://github.com/bearsunday/BEAR.Accept) with composer
+
+```bash
+composer require bear/accept
+```
+
+Next, save the context corresponding to the `Accept *` request header in `/var/locale/available.php`
+
+```php?
+<?php
+return [
+    'Accept' => [
+        'text/hal+json' => 'hal-app',
+        'application/json' => 'app',
+        'cli' => 'cli-hal-app'
+    ],
+    'Accept-Language' => [ // lower case for key
+        'ja-jp' => 'ja',
+        'ja' => 'ja',
+        'en-us' => 'en',
+        'en' => 'en'
+    ]
+];
+```
+
+The `Accept` key array specifies an array whose context is a value with the media type as a key. `cli` is not used in web access in the context of console access.
+
+The `Accept-Language` key array specifies an array with the context key as the key for the language.
+
+## Enable by Application
+
+Change `public/index.php` to enable content negotiation **throughout the application**.
+
+```php
+<?php
+use BEAR\Accept\Accept;
+
+require dirname(__DIR__) . '/vendor/autoload.php';
+
+$accept = new Accept(require dirname(__DIR__) . '/var/locale/available.php');
+list($context, $vary) = $accept($_SERVER);
+
+require dirname(__DIR__) . '/bootstrap/bootstrap.php';
+```
+
+For example, in the above setting, the access context of the following `Accept*` header will be `prod-hal-ja-app`.
+
+```
+Accept: application/hal+json
+Accept-Language: ja-JP
+```
+
+At this time `JaModule` requires binding for Japanese text. For details, refer to the demo application [MyVendor.Locale](https://github.com/koriym/MyVendor.Locale).
+
+## Enable by Resource
+
+To do content negotiation on a resource basis, install the `AcceptModule` module and use the `#[Produces]` attribute.
+
+### Module Install
+
+```php?start_inline
+protected function configure()
+{
+    // ...
+    $available = $appDir . '/var/locale/available.php';
+    $this->install(new AcceptModule($available));
+}
+```
+
+## #[Produces] Attribute
+
+```php?start_inline
+use BEAR\Accept\Attribute\Produces;
+
+#[Produces(['application/hal+json', 'text/csv'])]
+public function onGet()
+```
+
+Specify available media types from left by priority. The representation (JSON or HTML) is changed by the contextual renderer. You do not need to add `Vary` header manually unlike application level content-negotiation.
+
+## Access using curl
+
+Specify the `Accept*` header with the `-H` option.
+
+```
+curl -H 'Accept-Language: en' http://127.0.0.1:8080/
+```
+
+```
+curl -i -H 'Accept-Language: en' -H 'Accept: application/hal+json' http://127.0.0.1:8080/
+```
+
+```
+HTTP/1.1 200 OK
+Host: 127.0.0.1:8080
+Date: Fri, 11 Aug 2017 08:32:33 +0200
+Connection: close
+X-Powered-By: PHP/7.1.4
+Vary: Accept, Accept-Language
+content-type: application/hal+json
+
+{
+    "greeting": "Hello BEAR.Sunday",
+    "_links": {
+        "self": {
+            "href": "/index"
+        }
+    }
+}
+```
+
+***
+
+# Hypermedia API
+
+## HAL
+
+BEAR.Sunday supports the [HAL](https://en.wikipedia.org/wiki/Hypertext_Application_Language) hypermedia (`application/hal+json`) API.
+
+
+The HAL resource model consists of the following elements:
+
+ * Link
+ * Embedded resources
+ * State
+
+HAL is the JSON which represents only the state of the conventional resource plus the link `_links` plus `_embedded` to embed other resources. HAL makes API searchable and can find its API document from the API itself.
+
+
+### Links
+
+
+Resources should have a `self` URI
+
+```
+{
+    "_links": {
+        "self": { "href": "/user" }
+    }
+}
+```
+
+### Link Relations
+
+Link rels are the main way of distinguishing between a resource's links.
+
+There is a `rel` (relation) on the link, and it shows how the relationship is linked. It is similar to the `rel` used in the HTML `<link>` and `<a>` tag.
+
+```
+{
+    "_links": {
+        "next": { "href": "/page=2" }
+    }
+}
+```
+
+For more information about HAL please visit [http://stateless.co/hal_specification.html](http://stateless.co/hal_specification.html).
+
+## Resource Class
+
+You can annotate links and embed other resources.
+
+### #[Link]
+
+You can declaratively describe the `@Link` annotation, or dynamic ones are assigned to `body['_links']`.
+
+```php?start_inline
+#[Link(rel="user", href="/user")]
+#[Link(rel="latest-post", href="/latest-post", title="latest post entrty")]
+public function onGet()
+```
+
+or
+
+```php?start_inline
+public function onGet() {
+    if ($hasCommentPrivilege) {
+        $this->body += [
+            '_links' => [
+                'comment' => [
+                    'href' => '/comments/{post-id}',
+                    'templated' => true
+                ]
+            ]
+        ];
+    }
+}
+
+```
+
+### #[Embed]
+
+To embed other resources statically, use the `@Embed` annotation, and to embed it dynamically, assign the "request" to` body`.
+
+```php?start_inline
+#[Embed(rel="todos", src="/todos{?status}")]
+#[Embed(rel="me", src="/me")]
+public function onGet(string $status): static
+
+```
+
+or
+
+```php?start_inline
+$this->body['_embedded']['todos'] = $this->resource->uri('app://self/todos');
+```
+
+## API document service
+
+The API server can also be an API document server. It solves problems such as the time required to create the API document, deviation from actual API, verification, maintenance.
+
+In order for it to be on service, install `bear/api-doc` and install it by inheriting the `BEAR\ApiDoc\ApiDoc` page class
+
+```
+composer require bear/api-doc
+```
+
+```php
+<?php
+namespace MyVendor\MyPorject\Resource\Page\Rels;
+
+use BEAR\ApiDoc\ApiDoc;
+
+class Index extends ApiDoc
+{
+}
+```
+
+Publish the folder of JSON Schema to the web
+
+```
+ln -s var/json_schema public/schemas
+```
+
+API documents are automatically generated using Docblock comments and JSON Schema. The page class has its own renderer and is not affected by `$context`, it serves a document (`text/html`) for people. Since it is not affected by `$context`, you can install either` App` or `Page`.
+
+If CURIEs is installed at the root, the API itself can be used even for raw JSON which is not hypermedia. Documents generated in real time always accurately reflect property information and validation constraints.
+
+### Run demo
+
+```
+git clone https://github.com/koriym/Polidog.Todo.git
+cd Polidog.Todo/
+composer install
+composer setup
+composer doc
+```
+
+Open [docs/index.md](https://github.com/koriym/Polidog.Todo/blob/master/docs/index.md) to see API doc page.
+
+## Browsable
+
+The API set written in HAL functions as **headless REST application**.
+
+You can access all the resources by following the link from the root like the website with the Web-based HAL Browser or the CURL command of the console.
+
+ * [HAL Browser](https://github.com/mikekelly/hal-browser) - [example](http://haltalk.herokuapp.com/explorer/browser.html#/)
+ * [hyperagent.js](https://weluse.github.io/hyperagent/)
+
+### HAL Layout <sup style="font-size:0.5em; color:#666; font-weight:normal;">Beta</sup>
+
+Libraries for rendering HAL resources as React/Vue components:
+
+* [hal-layout](https://github.com/koriym/hal-layout) - React
+* [hal-layout-vue](https://github.com/koriym/hal-layout-vue) - Vue 3
+
+## Siren
+
+[Siren Module](https://github.com/kuma-guy/BEAR.SirenModule) is also available for [Siren](https://github.com/kevinswiber/siren) hypermedia (`application/vnd.siren+json`) type.
 
 ***
 
@@ -5488,6 +7328,249 @@ php -S 127.0.0.1:8080 -t public
 ### PSR-7 middleware
 
  * [oscarotero/psr7-middlewares](https://github.com/oscarotero/psr7-middlewares)
+
+***
+
+# JavaScript SSR
+
+Instead of rendering views with PHP template engines such as Twig, this module enables server-side JavaScript rendering. PHP handles authorization, authentication, initial state, and API delivery, while JavaScript renders the UI. Only resources with the `#[Ssr]` attribute are affected, making adoption straightforward within existing projects.
+
+## Background and Use Cases
+
+This module was developed to enable JavaScript server-side rendering (SSR) within PHP applications.
+
+Today, JavaScript ecosystem frameworks like Next.js, Nuxt, and Remix provide mature solutions for SSR entirely within JavaScript. For new projects with JavaScript-centric UIs, these frameworks are typically the preferred choice.
+
+This module is suited for the following scenarios:
+
+- Rendering most pages with your existing template engine, while using JS UI only for pages requiring high interactivity
+- Adding React or Vue.js UI to specific pages in an existing BEAR.Sunday project
+- Maintaining a single PHP application without separating frontend and backend
+- Enabling PHP and JS teams to develop in parallel using `state/metas` as the contract
+
+Only resources with the `#[Ssr]` attribute are rendered with JS UI, allowing easy coexistence with traditional template engines.
+
+## Prerequisites
+
+* PHP 8.2+
+* [Node.js](https://nodejs.org/)
+* [V8Js](https://www.php.net/manual/en/book.v8js.php) (Development option)
+
+Note: If you do not install V8Js then JS will be run using Node.js.
+
+## JavaScript
+
+### Installation
+
+Install `bear/ssr-module` into the project.
+
+```bash
+// composer create-project bear/skeleton MyVendor.MyProject && cd MyVendor.MyProject;
+composer require bear/ssr-module
+```
+
+Install the UI skeleton app `koriym/js-ui-skeleton`.
+
+```bash
+composer require koriym/js-ui-skeleton 1.x-dev
+cp -r vendor/koriym/js-ui-skeleton/ui .
+cp -r vendor/koriym/js-ui-skeleton/package.json .
+npm install
+```
+
+### Running the UI application
+
+Lets start by running the demo application.
+From the displayed web page lets select the rendering engine and run the JS application.
+
+```
+npm run ui
+```
+This applications inputs can be set using the `ui/dev/config/` config files.
+
+```php?
+<?php
+$app = 'index';                   // =index.bundle.js
+$state = [                        // Application state
+    'hello' =>['name' => 'World']
+];
+$metas = [                        // value used in SSR only
+    'title' =>'page-title'
+];
+
+return [$app, $state, $metas];
+```
+Lets copy the configuration file and try changing the input values.
+
+```
+cp ui/dev/config/index.php ui/dev/config/myapp.php
+```
+
+Reload the browser and try out the new settings.
+
+In this way without changing the JavaScript or core PHP application we can alter the UI data and check that it is working.
+
+The PHP configuration files that have been edited in this section are only used when executing `npm run ui`.
+All the PHP side needs is the output bundled JS file.
+
+
+### Creating the UI application.
+
+Using the variables that have been passed in from PHP, create a **render** function that returns a rendered string.
+
+
+```
+const render = (state, metas) => (
+  __AWESOME_UI__ // Using a SSR compatible library or JS template engine return an output string.
+)
+```
+
+The `state` value is needed in the document root, `metas` contains other variables, such as those needed in <head>. The `render` function name cannot be changed.
+
+Here we can grab the name and create a greeting string to be returned.
+
+```
+const render = state => (
+  `Hello ${state.name}`
+)
+```
+
+Save this as `ui/src/page/hello/server.js` and register this as a Webpack entry point in `ui/entry.js`.
+
+```javascript?start_inline
+module.exports = {
+  hello: 'src/page/hello/server',
+};
+```
+
+Having done this a `hello.bundle.js` bundled file is created for us.
+
+Create a file at `ui/dev/config/myapp.php` to test run this application.
+
+```php
+<?php
+$app = 'hello';
+$state = ['name' => 'World'];
+$metas = [];
+
+return [$app, $state, $metas];
+```
+
+Thats it! Reload the browser to try it out.
+
+Inside the render function you can use any UI framework such as React or Vue.js to create a rich UI.
+In a regular application in order to limit the number of dependencies in the `server.js` entry file import the render module as below.
+
+```javascript
+import render from './render';
+global.render = render;
+```
+
+Thus far there has been nothing happening on the PHP side. Development on the SSR application and PHP development can done independently.
+
+## PHP
+
+### Module Installation
+
+Install `SsrModule` in AppModule.
+
+```php
+<?php
+use BEAR\SsrModule\SsrModule;
+
+class AppModule extends AbstractAppModule
+{
+    protected function configure()
+    {
+        // ...
+        $build = dirname(__DIR__, 2) . '/var/www/build';
+        $this->install(new SsrModule($build));
+    }
+}
+```
+
+The `$build` directory is where the JS files live.(The Webpack output location set in `ui/ui.config.js`)
+
+
+### #[Ssr] Attribute
+
+Annotate the resource function to be SSR'd with `#[Ssr]`. The JS application name is required in `app`.
+
+```php
+<?php
+
+namespace MyVendor\MyRedux\Resource\Page;
+
+use BEAR\Resource\ResourceObject;
+use BEAR\SsrModule\Annotation\Ssr;
+
+class Index extends ResourceObject
+{
+    #[Ssr(app: 'index_ssr')]
+    public function onGet(string $name = 'BEAR.Sunday'): static
+    {
+        $this->body = [
+            'hello' => ['name' => $name]
+        ];
+
+        return $this;
+    }
+}
+```
+
+When you want to pass in distinct values for SSR and CSR set a key in `state` and `metas`.
+
+```php
+#[Ssr(app: 'index_ssr', state: ['name', 'age'], metas: ['title'])]
+public function onGet(): static
+{
+    $this->body = [
+        'name' => 'World',
+        'age' => 4.6E8,
+        'title' => 'Age of the World'
+    ];
+
+    return $this;
+}
+```
+
+To see exactly how you pass in `state` and `metas` to achieve SSR see the sample application `ui/src/page/index/server`. The only influence is from the annotated method, the rest comes straight from the API or HTML rendering configuration.
+
+
+### Runtime PHP Application Settings
+
+Edit `ui/ui.config.js`, set the Webpack build location in `build` and web directory in `public`. The `build` directory is the same that you set in the SsrModule installation.
+
+```javascript
+const path = require('path');
+
+module.exports = {
+  public: path.join(__dirname, '../var/www'),
+  build: path.join(__dirname, '../var/www/build')
+};
+```
+
+### Running the PHP application
+
+```
+npm run dev
+```
+
+Run using live updating.
+When the PHP file is changed it will be automatically reloaded, if there is a change in a React component without hitting refresh the component will update. If you want to run the app without live updating you can by running `npm run start`.
+
+For other commands such `lint` or `test` etc. please see [commands](https://github.com/koriym/Koriym.JsUiSkeleton/blob/1.x/README.md#command).
+
+## Performance
+
+The V8 snapshot can be saved to APCu for improved performance. Install `ApcSsrModule` in `ProdModule`. V8Js is required:
+
+```php
+$bundleSrcBasePath = dirname(__DIR__, 2) . '/var/www/build';
+$this->install(new ApcSsrModule($bundleSrcBasePath));
+```
+
+The `$bundleSrcBasePath` is the directory path where the JavaScript bundle files are located.
 
 ***
 
@@ -5709,7 +7792,7 @@ class Todo extends ResourceObject
     #[RefreshCache]
     public function onDelete(int $id = 0): static
     {
-    }	
+    }
 }
 ```
 
@@ -5837,6 +7920,36 @@ $this->headers[Header::SURROGATE_KEY] = $this->uriTag->fromAssoc(
 ```
 
 In the above case, this cache will be invalidated for both server-side and CDN when `app://self/item?id=1` and `app://self/item?id=2` are changed.
+
+## Configuration
+
+### Redis Marshaller
+
+The Redis cache adapter allows you to configure data compression and serialization methods.
+
+A marshaller handles the serialization of PHP objects and arrays when storing them in Redis, and deserialization when retrieving them.
+
+```php
+use BEAR\QueryRepository\StorageRedisDsnModule;
+
+$this->install(
+    new StorageRedisDsnModule(
+        dsn: 'redis://localhost:6379',
+        marshallingOptions: [
+            'enabled' => true,
+            'type' => 'deflate',      // 'default' or 'deflate'
+            'use_igbinary' => true    // requires ext-igbinary
+        ]
+    )
+);
+```
+
+**Marshaller types:**
+
+- `default`: Uses PHP's standard serialization (enabling `use_igbinary` uses a more efficient binary format)
+- `deflate`: Compresses data before storing (uses zlib)
+
+Use `deflate` if you want to reduce Redis memory usage. This is a trade-off with CPU usage.
 
 ## CDN
 
@@ -5986,57 +8099,764 @@ Web content can be of the information (data) type or the computation (process) t
 
 ***
 
-# Swoole
+# Parallel Resource Execution <sup style="font-size:0.5em; color:#666; font-weight:normal;">Alpha</sup>
 
-You can execute your BEAR.Sunday application using Swoole directly from the command line. It dramatically improves performance.
+BEAR.Async enables transparent parallel execution of `#[Embed]` resources. Embedded resources are fetched in parallel without changing any application code. Resource classes written 10 years ago can benefit from parallel execution just by adding a Module.
 
-## Install
+## Overview
 
-### Swoole Install
+In standard BEAR.Sunday, `#[Embed]` resources are fetched sequentially. With BEAR.Async, they are fetched in parallel.
 
-See [https://github.com/swoole/swoole-src#%EF%B8%8F-installation](https://github.com/swoole/swoole-src#%EF%B8%8F-installation)
+```text
+[Sequential]                     [Parallel]
+Request                          Request
+    │                                │
+    ├── Embed 1 ──── 50ms            ├── Embed 1 ──┬── 50ms
+    ├── Embed 2 ──── 50ms            ├── Embed 2 ──┤
+    ├── Embed 3 ──── 50ms            ├── Embed 3 ──┤
+    └── Embed 4 ──── 50ms            └── Embed 4 ──┘
+    │                                │
+Response (200ms)                 Response (50ms)
+```
 
-### BEAR.Swoole Install
+## Design Philosophy
+
+### URL as Intent
+
+In BEAR.Sunday, a URI expresses **intent**, not just a location.
+
+```php
+#[Embed(rel: 'profile', src: 'query://self/user_profile{?id}')]
+```
+
+The `query://self/user_profile` expresses only the intent: "I want the user's profile information." This separation of "What" from "How" allows the same code to work in both sync and parallel execution. Debug with Xdebug in development, then switch Module in production to enable parallel execution.
+
+### Solving the Function Coloring Problem
+
+Async programming has the "Function Coloring" problem—functions calling async functions must themselves be async, causing "async contamination" throughout the codebase.
+
+In BEAR.Sunday, the "resource" boundary cuts through this problem. No async-specific code is required—resource classes don't need to know how they were invoked.
+
+## Installation
 
 ```bash
-composer require bear/swoole ^0.4
+composer require bear/async
 ```
-Place the bootstrap script at `bin/swoole.php`
+
+## Configuration
+
+Choose the appropriate module based on your server environment.
+
+| Environment | Module | Features |
+|-------------|--------|----------|
+| PHP-FPM / Apache | `AsyncParallelModule` | Uses ext-parallel, requires ZTS PHP |
+| Swoole HTTP Server | `AsyncSwooleModule` | Uses coroutines, requires connection pool |
+
+### AsyncParallelModule
+
+```php
+use BEAR\Async\Module\AsyncParallelModule;
+
+class AppModule extends AbstractModule
+{
+    protected function configure(): void
+    {
+        $this->install(new AsyncParallelModule(
+            namespace: 'MyVendor\MyApp',
+            context: 'prod-app',
+            appDir: dirname(__DIR__),
+        ));
+    }
+}
+```
+
+### AsyncSwooleModule
+
+```php
+use BEAR\Async\Module\AsyncSwooleModule;
+use BEAR\Async\Module\PdoPoolEnvModule;
+
+class AppModule extends AbstractModule
+{
+    protected function configure(): void
+    {
+        $this->install(new AsyncSwooleModule());
+        $this->install(new PdoPoolEnvModule('PDO_DSN', 'PDO_USER', 'PDO_PASSWORD'));
+    }
+}
+```
+
+Swoole coroutines share memory, so `PdoPoolEnvModule` is required for connection pooling.
+
+## Usage
+
+Once the module is installed, existing `#[Embed]` resources are automatically executed in parallel.
+
+```php
+class Dashboard extends ResourceObject
+{
+    #[Embed(rel: 'user', src: '/user{?id}')]
+    #[Embed(rel: 'notifications', src: '/notifications{?user_id}')]
+    #[Embed(rel: 'stats', src: '/stats{?user_id}')]
+    public function onGet(string $id): static
+    {
+        $this->body['id'] = $id;
+        return $this;
+    }
+}
+```
+
+By not installing the async module in development and only enabling it in production, you can debug in sync mode and run parallel in production.
+
+## BEAR.Projection Integration
+
+[BEAR.Projection](https://github.com/bearsunday/BEAR.Projection) transforms SQL query results into typed Projection objects and exposes them as resources via the `query://` scheme. Combined with `#[Embed]`, multiple SQL queries execute in parallel.
+
+Projection classes are defined as immutable value objects.
+
+```php
+final class UserProfile
+{
+    public function __construct(
+        public readonly string $id,
+        public readonly string $name,
+        public readonly int $age,
+        public readonly string $avatarUrl,
+    ) {}
+}
+```
+
+Factory classes transform raw SQL data into Projections. Dependencies can be injected via DI, enabling business logic like age calculation or URL resolution.
+
+```php
+final class UserProfileFactory
+{
+    public function __construct(
+        private readonly AgeCalculator $ageCalculator,
+        private readonly ImageUrlResolver $imageResolver,
+    ) {}
+
+    public function __invoke(
+        string $id,
+        string $name,
+        string $birthDate,
+        string $avatarPath,
+    ): UserProfile {
+        return new UserProfile(
+            id: $id,
+            name: $name,
+            age: $this->ageCalculator->fromBirthDate($birthDate),
+            avatarUrl: $this->imageResolver->resolve($avatarPath),
+        );
+    }
+}
+```
+
+SQL files return columns corresponding to Factory parameter names.
+
+```sql
+-- var/sql/query/user_profile.sql
+SELECT id, name, birth_date, avatar_path FROM users WHERE id = :id
+```
+
+When used with `#[Embed]`, multiple Projections execute in parallel.
+
+```php
+class User extends ResourceObject
+{
+    #[Embed(rel: 'profile', src: 'query://self/user_profile{?id}')]
+    #[Embed(rel: 'orders', src: 'query://self/user_orders{?id}')]
+    public function onGet(string $id): static
+    {
+        return $this;
+    }
+}
+```
+
+## SQL Batch Execution
+
+Parallel SQL query execution using mysqli's native async support is also provided.
+
+```php
+use BEAR\Async\Module\MysqliBatchEnvModule;
+
+$this->install(new MysqliBatchEnvModule('MYSQL_HOST', 'MYSQL_USER', 'MYSQL_PASS', 'MYSQL_DB'));
+```
+
+```php
+use BEAR\Async\SqlBatch;
+use BEAR\Async\SqlBatchExecutorInterface;
+
+class MyService
+{
+    public function __construct(
+        private SqlBatchExecutorInterface $executor,
+    ) {}
+
+    public function getData(int $userId): array
+    {
+        return (new SqlBatch($this->executor, [
+            'user' => ['SELECT * FROM users WHERE id = ?', [$userId]],
+            'posts' => ['SELECT * FROM posts WHERE user_id = ?', [$userId]],
+        ]))();
+    }
+}
+```
+
+## References
+
+- [BEAR.Async](https://github.com/bearsunday/BEAR.Async)
+- [BEAR.Projection](https://github.com/bearsunday/BEAR.Projection)
+- [Parallel Execution Architecture](https://bearsunday.github.io/BEAR.Async/parallel-execution-architecture.html)
+
+***
+
+# Coding Guide
+
+## Project
+
+`Vendor` should be the company name, team name or the owner (`excite`, `koriym` etc.).
+`Package` is the name of the application or service (`blog`, `news` etc.).
+Projects must be created on a per application basis. Even when you create a Web API and an HTML from different hosts, they are considered one project.
+
+
+## Style
+
+BEAR.Sunday follows the PSR style.
+
+  * [PSR1](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-1-basic-coding-standard.md)
+  * [PSR2](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-2-coding-style-guide.md)
+  * [PSR4](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-4-autoloader.md)
+
+
+Here is ResourceObject code example.
 
 ```php
 <?php
-require dirname(__DIR__) . '/autoload.php';
-exit((require dirname(__DIR__) . '/vendor/bear/swoole/bootstrap.php')(
-    'prod-hal-app',       // context
-    'MyVendor\MyProject', // application name
-    '127.0.0.1',          // IP
-    8080                  // port
-));
+namespace Koriym\Blog\Resource\App;
+
+use BEAR\RepositoryModule\Annotation\Cacheable;
+use BEAR\Resource\Annotation\Embed;
+use BEAR\Resource\Annotation\Link;
+use BEAR\Resource\Code;
+use BEAR\Resource\ResourceObject;
+use BEAR\Sunday\Inject\ResourceInject;
+use Ray\AuraSqlModule\AuraSqlInject;
+
+#[Cacheable]
+class Entry extends ResourceObject
+{
+    use AuraSqlInject;
+    use ResourceInject;
+
+    #[Embed(rel: 'author', src: '/author{?author_id}')]
+    public function onGet(string $author_id, string $slug): static
+    {
+        // ...
+
+        return $this;
+    }
+
+    #[Link(rel: 'next_act', href: '/act1')]
+    #[Link(rel: 'next_act2', href: '/act2')]
+    public function onPost (
+        string $tile,
+        string $body,
+        string $uid,
+        string $slug
+    ): static {
+        // ...
+        $this->code = Code::CREATED;
+
+        return $this;
+    }
+}
 ```
 
-## Excute
+A [DocBlock comment]([https://phpdoc.org/docs/latest/getting-started/your-first-set-of-documentation.html]) is optional. A DocBlock contains the method summary in one line.
+Then followed by the description, which can be a multiple lines.
+We should also put @params after description if possible.
+
+## Resources
+
+See [Resource Best Practices](resource_bp.html) for best practices for resources.
+
+## Globals
+
+We do not recommend referencing global values in resources or application classes. It is only used with Modules.
+
+* Do not refer to the value of [Superglobal](http://php.net/manual/ja/language.variables.superglobals.php)
+* Do not use [define](http://php.net/manual/en/function.define.php)
+* Do not create `Config` class to hold set values.
+* Do not use global object container (service locator) [[1]](http://koriym.github.io/adv10/), [[2]](http://blog.ploeh.dk/2010/02/03/ServiceLocatorisanAnti-Pattern/)
+* Use [Date](http://php.net/manual/en/function.date.php) function and [DateTime](http://php.net/manual/en/class.datetime.php) class. It is not recommended to get the time directly. Inject the time from outside using [koriym/now](https://github.com/koriym/Koriym.Now).
+
+
+Global method calls such as static methods are also not recommended.
+
+The values required by the application code are all injected. The setting files are used for injecting. When you need an external value such as Web API, make a special gateway class for all requests. Then you can mock that special class with DI or AOP.
+
+## Classes and object
+
+* * [Traits](http://php.net/manual/en/language.oop5.traits.php) are not recommended. Traits for injection such as `ResourceInject` that reduce boilerplate code for injection were added in PHP8 [constructor property promotion (declaring properties in the constructor signature)](https://www.php.net/manual/en/language.oop5.decon.php#language.oop5.decon.constructor.promotion). Use constructor injection.
+* It is not recommended for the child classes to use the parent class methods. Common functions are not shared by inheritance and trait, they are dedicated classes and they are injected and used. [Composite from inheritance](https://en.wikipedia.org/wiki/Composition_over_inheritance).
+* A class with only one method should reflect the function to the class name and should set the name of the method to `__invoke ()` so that function access can be made.
+
+## Script command
+
+* It is recommended to end the setup by using the `composer setup` command. This script includes the necessary database initialization and library checking. If manual operation such as `.env` setting is required, it is recommended that the procedure be displayed on the screen.
+* It is recommended that all application caches and logs are cleared with `composer cleanup` command.
+* It is recommended that all executable test (phpinit/phpcs/phpmd ..) are invoked with `composer test` command.
+* It is recommended an application is deployed with `composer deploy` command.
+
+## Code check
+
+It is recommended to check the codes for each commit with the following commands. These commands can be installed with [bear/qatools](https://github.com/bearsunday/BEAR.QATools).
 
 ```
-php bin/swoole.php
+phpcs src tests
+phpmd src text ./phpmd.xml
+php-cs-fixer fix --config-file=./.php_cs
+phpcbf src
 ```
-```
-Swoole http server is started at http://127.0.0.1:8088
-```
 
-## Benchmarking site
+## Resources
 
-See [BEAR.HelloworldBenchmark](https://github.com/bearsunday/BEAR.HelloworldBenchmark)
-You can expect x2 to x10 times bootstrap performance boost.
+Please also refer to [Resouce best practice](/manuals/1.0/en/resource.html#best-practice).
 
- * [The benchmarking result](https://github.com/bearsunday/BEAR.HelloworldBenchmark/wiki)
+### Code
 
-[<img src="https://github.com/swoole/swoole-src/raw/master/mascot.png">](https://github.com/swoole/swoole-src)
+Returns the appropriate status code. Testing is easier, and the correct information can be conveyed to bots and crawlers.
+
+* `100` Continue Continuation of multiple requests
+* `200` OK
+* `201` Created Resource Creation
+* `202` Accepted queue / batch acceptance
+* `204` If there is no content body
+* `304` Not Modified Not Updated
+* `400` Bad request
+* `401` Unauthorized Authentication required
+* `403` Forbidden ban
+* `404` Not Found
+* `405` Method Not Allowed
+* `503` Service Unavailable Temporary error on server side
+
+In `OnPut` method, you deal with the resource state with idempotence. For example, resource creation with UUID or update resource state.
+
+`OnPatch` is implemented when changing the state of a part of a resource.
+
+### HTML Form Method
+
+BEAR.Sunday can overwrite methods using the `X-HTTP-Method-Override` header or` _method` query at the `POST` request in the HTML web form, but it is not necessarily recommended . For the Page resource, it is OK to implement policies other than `onGet` and` onPost`. [[1]](http://programmers.stacxchange.com/questions/114156/why-are-there-are-no-put-and-delete-methods-on-html-forms), [[2]](Http://roy.gbiv.com/untangled/2009/it-is-okay-to-use-post)
+
+### Hyperlink
+
+* It is recommended that resources with links be indicated by `#[Link]`.
+* It is recommended that resources be embedded as a graph of semantic coherence with `#[Embed]`.
+
+## DI
+
+ * Do not inject the value itself of the execution context (prod, dev etc). Instead, we inject instances according to the context. The application does not know in which context it is running.
+ * Setter injection is not recommended for library code.
+ * It is recommended that you override the `toConstructor` bindings instead and avoid the `Provider` bindings as much as possible.
+ * Avoid binding by `Module` according to conditions. [AvoidConditionalLogicInModules](https://github.com/google/guice/wiki/AvoidConditionalLogicInModules)
+ * It is not recommended to reference environmental variables since there is no module. Pass it in the constructor.
+
+## AOP
+
+ * Do not make interceptor mandatory. We will make the program work even without an interceptor. (For example, if you remove `#[Transactional]` interceptor, the function of transaction will be lost, but "core concerns" will work without issue.)
+ * Prevent the interceptor from injecting dependencies in methods. Values that can only be determined at implementation time are injected into arguments via `#[Assisted]` injection.
+ * If there are multiple interceptors, do not depend on the execution order.
+ * If it is an interceptor unconditionally applied to all methods, consider the description in `bootstrap.php`.
+
+## Environment
+
+To make applications testable, it should also work on the console, and not only on the Web.
+
+It is recommended not to include the `.env` file in the project repository.
+
+## Testing
+
+* Focus on resource testing using resource clients, adding resource representation testing (e.g. HTML) if needed.
+* Hypermedia tests can leave use cases as tests.
+* `prod` is the context for production. Use of the `prod` context in tests should be minimal, preferably none.
+
+## HTML templates
+
+* Avoid large loop statements. Consider replacing if statements in loops with [Generator](https://www.php.net/manual/en/language.generators.overview.php).
+
+---
 
 ***
 
 # Types
 
 This page is a placeholder for types documentation.
+
+***
+
+# PHPDoc Utility Types
+
+Utility types are used to manipulate existing types or dynamically generate new types. Using these types enables more flexible and expressive type definitions.
+
+## Table of Contents
+
+1. [key-of<T>](#key-oft)
+2. [value-of<T>](#value-oft)
+3. [properties-of<T>](#properties-oft)
+4. [class-string-map<T of Foo, T>](#class-string-mapt-of-foo-t)
+5. [T[K]](#tk)
+6. [Type aliases](#type-aliases)
+7. [Variable templates](#variable-templates)
+
+## key-of<T>
+
+`key-of<T>` represents the type of all possible keys of type `T`.
+
+```php
+/**
+ * @template T of array
+ * @param T $data
+ * @param key-of<T> $key
+ * @return mixed
+ */
+function getValueByKey(array $data, $key) {
+    return $data[$key];
+}
+
+// Usage example
+$userData = ['id' => 1, 'name' => 'John'];
+$name = getValueByKey($userData, 'name'); // OK
+$age = getValueByKey($userData, 'age'); // Psalm will warn
+```
+
+## value-of<T>
+
+`value-of<T>` represents the type of all possible values of type `T`.
+
+```php
+/**
+ * @template T of array
+ * @param T $data
+ * @return value-of<T>
+ */
+function getRandomValue(array $data) {
+    return $data[array_rand($data)];
+}
+
+// Usage example
+$numbers = [1, 2, 3, 4, 5];
+$randomNumber = getRandomValue($numbers); // int type
+```
+
+## properties-of<T>
+
+`properties-of<T>` represents the type of all properties of type `T`.
+
+```php
+class User {
+    public int $id;
+    public string $name;
+    public ?string $email;
+}
+
+/**
+ * @param User $user
+ * @param key-of<properties-of<User>> $property
+ * @return value-of<properties-of<User>>
+ */
+function getUserProperty(User $user, string $property) {
+    return $user->$property;
+}
+
+// Usage example
+$user = new User();
+$name = getUserProperty($user, 'name'); // string type
+$id = getUserProperty($user, 'id'); // int type
+$unknown = getUserProperty($user, 'unknown'); // Psalm will warn
+```
+
+## class-string-map<T of Foo, T>
+
+`class-string-map` represents an array with class names as keys and their instances as values.
+
+```php
+interface Repository {}
+class UserRepository implements Repository {}
+class ProductRepository implements Repository {}
+
+/**
+ * @template T of Repository
+ * @param class-string-map<T, T> $repositories
+ * @param class-string<T> $className
+ * @return T
+ */
+function getRepository(array $repositories, string $className) {
+    return $repositories[$className];
+}
+
+// Usage example
+$repositories = [
+    UserRepository::class => new UserRepository(),
+    ProductRepository::class => new ProductRepository(),
+];
+
+$userRepo = getRepository($repositories, UserRepository::class); // UserRepository type
+```
+
+## T[K]
+
+`T[K]` represents indexed access to type `T` with key `K`.
+
+```php
+/**
+ * @template T of array
+ * @template K of key-of<T>
+ * @param T $data
+ * @param K $key
+ * @return T[K]
+ */
+function getTypedValue(array $data, $key) {
+    return $data[$key];
+}
+
+// Usage example
+$config = [
+    'database' => ['host' => 'localhost', 'port' => 3306],
+    'cache' => ['driver' => 'redis', 'ttl' => 3600]
+];
+
+$dbConfig = getTypedValue($config, 'database'); // array{host: string, port: int}
+$host = getTypedValue($config['database'], 'host'); // string
+```
+
+## Type aliases
+
+Type aliases allow you to create reusable type definitions.
+
+```php
+/**
+ * @psalm-type UserId = positive-int
+ * @psalm-type UserData = array{id: UserId, name: string, email: string}
+ * @psalm-type UserCollection = array<UserId, UserData>
+ */
+
+class UserService {
+    /**
+     * @param UserData $userData
+     * @return UserId
+     */
+    public function createUser(array $userData): int {
+        // Implementation
+        return $userData['id'];
+    }
+
+    /**
+     * @param UserCollection $users
+     * @param UserId $id
+     * @return UserData|null
+     */
+    public function findUser(array $users, int $id): ?array {
+        return $users[$id] ?? null;
+    }
+}
+```
+
+## Variable templates
+
+Variable templates allow for more dynamic type definitions.
+
+```php
+/**
+ * @template T
+ * @template K of key-of<T>
+ * @param T $data
+ * @param K ...$keys
+ * @return array<K, T[K]>
+ */
+function pick(array $data, ...$keys): array {
+    $result = [];
+    foreach ($keys as $key) {
+        if (array_key_exists($key, $data)) {
+            $result[$key] = $data[$key];
+        }
+    }
+    return $result;
+}
+
+// Usage example
+$user = [
+    'id' => 1,
+    'name' => 'John',
+    'email' => 'john@example.com',
+    'password' => 'secret'
+];
+
+$publicData = pick($user, 'id', 'name', 'email');
+// array{id: int, name: string, email: string}
+```
+
+## Advanced Utility Type Examples
+
+### Conditional Types
+
+```php
+/**
+ * @template T
+ * @psalm-type NonEmpty<T> = T is array ? non-empty-array<T> : T
+ */
+
+/**
+ * @template T of array
+ * @param T $data
+ * @return NonEmpty<T>
+ * @throws InvalidArgumentException
+ */
+function ensureNonEmpty(array $data): array {
+    if (empty($data)) {
+        throw new InvalidArgumentException('Array cannot be empty');
+    }
+    return $data;
+}
+```
+
+### Recursive Types
+
+```php
+/**
+ * @psalm-type JsonValue = scalar|null|JsonArray|JsonObject
+ * @psalm-type JsonArray = array<JsonValue>
+ * @psalm-type JsonObject = array<string, JsonValue>
+ */
+
+class JsonParser {
+    /**
+     * @param string $json
+     * @return JsonValue
+     */
+    public function parse(string $json) {
+        return json_decode($json, true);
+    }
+}
+```
+
+### Mapped Types
+
+```php
+/**
+ * @template T of object
+ * @psalm-type Partial<T> = array<key-of<properties-of<T>>, value-of<properties-of<T>>|null>
+ */
+
+class UserUpdateService {
+    /**
+     * @param User $user
+     * @param Partial<User> $updates
+     * @return User
+     */
+    public function updateUser(User $user, array $updates): User {
+        foreach ($updates as $property => $value) {
+            if ($value !== null && property_exists($user, $property)) {
+                $user->$property = $value;
+            }
+        }
+        return $user;
+    }
+}
+
+// Usage
+$user = new User();
+$updates = ['name' => 'Jane', 'email' => null]; // Partial<User>
+$updatedUser = $service->updateUser($user, $updates);
+```
+
+## Best Practices
+
+### 1. Use Descriptive Type Names
+
+```php
+// Good
+/**
+ * @psalm-type DatabaseConfig = array{host: string, port: positive-int, database: string}
+ */
+
+// Avoid
+/**
+ * @psalm-type Config = array{host: string, port: positive-int, database: string}
+ */
+```
+
+### 2. Combine Utility Types for Complex Scenarios
+
+```php
+/**
+ * @template T of object
+ * @template K of key-of<properties-of<T>>
+ * @param T $object
+ * @param K $property
+ * @return properties-of<T>[K]
+ */
+function getProperty(object $object, string $property) {
+    return $object->$property;
+}
+```
+
+### 3. Document Complex Type Relationships
+
+```php
+/**
+ * Repository pattern with typed collections
+ *
+ * @template TEntity of object
+ * @template TId of scalar
+ * @psalm-type EntityCollection<TEntity, TId> = array<TId, TEntity>
+ * @psalm-type EntitySpec<TEntity> = array<key-of<properties-of<TEntity>>, mixed>
+ */
+interface Repository {
+    /**
+     * @param TId $id
+     * @return TEntity|null
+     */
+    public function find($id): ?object;
+
+    /**
+     * @param EntitySpec<TEntity> $criteria
+     * @return EntityCollection<TEntity, TId>
+     */
+    public function findBy(array $criteria): array;
+}
+```
+
+## Integration with Static Analysis Tools
+
+These utility types work best with static analysis tools like Psalm and PHPStan:
+
+### Psalm Configuration
+
+```xml
+<!-- psalm.xml -->
+<psalm>
+    <projectFiles>
+        <directory name="src" />
+    </projectFiles>
+    <plugins>
+        <pluginClass class="Psalm\Plugin\DocblockTypeProvider" />
+    </plugins>
+</psalm>
+```
+
+### PHPStan Configuration
+
+```neon
+# phpstan.neon
+parameters:
+    level: 8
+    paths:
+        - src
+    treatPhpDocTypesAsCertain: false
+```
+
+Utility types provide powerful abstractions for type-safe PHP development, enabling more robust code with better IDE support and static analysis capabilities.
 
 ***
 
@@ -6072,7 +8892,7 @@ use BEAR\Resource\ResourceInterface;
 class TodoTest extends TestCase
 {
     private ResourceInterface $resource;
-    
+
     protected function setUp(): void
     {
         $injector = Injector::getInstance('test-html-app');
@@ -6111,7 +8931,7 @@ class TestModule extends AbstractModule
     public function configure(): void
     {
         $this->bind(DateTimeInterface::class)->toInstance(new DateTimeImmutable('1970-01-01 00:00:00'));
-        $this->bind(Auth::class)->to(FakeAuth::class);    
+        $this->bind(Auth::class)->to(FakeAuth::class);
     }
 }
 ```
@@ -6143,7 +8963,7 @@ public function testBindFake(): void
 
 ```php
 public function testBindMock(): void
-{ 
+{
     $mock = $this->createMock(FooInterface::class);
     // expect that update() will be called once and the parameter will be the string 'something'.
     mock->expects($this->once())
@@ -6183,7 +9003,7 @@ public function testBindSpy(): void
     // Spyログの取り出し
     $spyLog = $injector->getInstance(\Ray\TestDouble\LoggerInterface::class);
     // @var array<int, Log> $addLog
-    $addLog = $spyLog->getLogs(FooInterface, 'add');   
+    $addLog = $spyLog->getLogs(FooInterface, 'add');
     $this->assertSame(1, count($addLog), 'Should have received once');
     // Argument validation from SUT
     $this->assertSame([1, 2], $addLog[0]->arguments);
@@ -6211,6 +9031,234 @@ Reference
 
 * [Stop mocking, start testing](https://nedbatchelder.com/blog/201206/tldw_stop_mocking_start_testing.html)
 * [Mockists Are Dead](https://www.thoughtworks.com/insights/blog/mockists-are-dead-long-live-classicists)
+
+***
+
+# Security <sup style="font-size:0.5em; color:#666; font-weight:normal;">Beta</sup>
+
+Security tools can scan your application for vulnerability assessment. With static analysis, dynamic testing, taint analysis, and AI auditing, architecture-aware tools analyze from multiple angles, detecting vulnerabilities that generic tools miss.
+
+## Installation
+
+Install [bear/security](https://github.com/bearsunday/BEAR.Security).
+
+```bash
+composer require --dev bear/security
+```
+
+## Scanning Tools
+
+| Tool | What it does | When to use |
+|------|--------------|-------------|
+| SAST[^sast] | Static analysis to find dangerous patterns in your code | During development |
+| DAST[^dast] | Dynamic analysis to send attack requests to your app | Before deployment |
+| AI Auditor | AI reviews your code for security issues | Code review |
+| Psalm Plugin | Traces user input to dangerous operations | During development |
+
+[^sast]: Static Application Security Testing
+[^dast]: Dynamic Application Security Testing
+
+## Design Philosophy: Recall-First
+
+Security scanners have traditionally had two approaches: precision-first (report only certain issues) and recall-first (report suspicious patterns), with a trade-off between them.
+
+BEAR.Security adopts a recall-first approach. Missing a vulnerability (False Negative) is critical, but false positives (False Positive) can be reviewed and excluded. With AI agents now able to handle false positive verification, this strategy is more effective than ever.
+
+### Recommended Workflow
+
+```bash
+# 1. Run SAST to detect pattern-based vulnerabilities
+./vendor/bin/bear.security-scan src
+
+# 2. Review results and fix vulnerabilities
+# Add @security-ignore comment to false positives (see example below)
+
+# 3. Run AI Auditor to detect business logic issues
+./vendor/bin/bear-security-audit src
+
+# 4. Review and fix detected issues
+```
+
+Example of suppressing a false positive:
+
+```php
+$path = $this->buildPath($id); // @security-ignore PATH_TRAVERSAL_FILE_OPS: $id is validated integer from router
+```
+
+Once `@security-ignore` is added, the issue is suppressed in subsequent scans.
+
+## SAST
+
+Scans your source code for dangerous patterns. We recommend running this from an AI agent (such as Claude Code) and having the AI verify whether detections are false positives.
+
+```bash
+./vendor/bin/bear.security-scan src
+```
+
+Detects 14 vulnerability types:
+
+| Category | Examples |
+|----------|----------|
+| Injection | SQL injection, Command injection, XSS |
+| Access Control | Path traversal, Open redirect |
+| Cryptography | Weak hash algorithms, Hardcoded secrets |
+| Data Protection | Insecure deserialization, XXE |
+| Session | Session fixation, CSRF |
+| Network | SSRF, Remote file inclusion |
+
+See the [Vulnerability Reference](https://bearsunday.github.io/BEAR.Security/issues/en/) for details on each vulnerability.
+
+## DAST
+
+Sends attack payloads to your running application to test real vulnerabilities:
+
+```bash
+./vendor/bin/bear-security-dast 'MyVendor\MyApp' prod-app /path/to/app
+```
+
+Tests include:
+
+| Test | What it sends |
+|------|---------------|
+| SQL Injection | `' OR '1'='1`, `; DROP TABLE` |
+| XSS | `<script>alert(1)</script>` |
+| Command Injection | `; ls -la`, `\| cat /etc/passwd` |
+| Path Traversal | `../../../etc/passwd` |
+| Security Headers | Checks for missing headers |
+
+## AI Auditor
+
+Uses Claude AI to find security issues that pattern matching cannot detect:
+
+```bash
+# Option 1: API Key
+export ANTHROPIC_API_KEY=sk-ant-...
+./vendor/bin/bear-security-audit src
+
+# Option 2: Claude CLI (Max Plan - no API key required)
+claude auth login
+./vendor/bin/bear-security-audit src
+```
+
+| Issue | Description |
+|-------|-------------|
+| IDOR | Accessing other users' data without authorization check |
+| Mass Assignment | Accepting unvalidated fields in updates |
+| Race Condition | Time-of-check to time-of-use flaws |
+| Business Logic | Application-specific security flaws |
+
+## Psalm Plugin (Taint Analysis)
+
+Taint analysis is a static analysis technique that marks user input as tainted variables and traces how that taint propagates through your code. It reports vulnerabilities when tainted data reaches SQL queries or HTML output without proper sanitization.
+
+### Setup
+
+Add the plugin and stubs to your `psalm.xml`:
+
+```xml
+<?xml version="1.0"?>
+<psalm
+    xmlns="https://getpsalm.org/schema/config"
+    errorLevel="1"
+>
+    <projectFiles>
+        <directory name="src"/>
+    </projectFiles>
+    <stubs>
+        <file name="vendor/bear/security/stubs/AuraSql.phpstub"/>
+        <file name="vendor/bear/security/stubs/PDO.phpstub"/>
+        <file name="vendor/bear/security/stubs/Qiq.phpstub"/>
+    </stubs>
+    <plugins>
+        <pluginClass class="BEAR\Security\Psalm\ResourceTaintPlugin">
+            <targets>
+                <target>Page</target>
+                <target>App</target>
+            </targets>
+        </pluginClass>
+    </plugins>
+</psalm>
+```
+
+The `targets` specify which resources receive external input. Use `Page` when serving web pages with `html` context, `App` when serving APIs with `api` context.
+
+### Stubs
+
+Stubs provide taint annotations for third-party libraries:
+
+| Stub | Purpose |
+|------|---------|
+| `AuraSql.phpstub` | Marks SQL query methods as taint sinks |
+| `PDO.phpstub` | Marks PDO methods as taint sinks |
+| `Qiq.phpstub` | Marks template output as taint sinks |
+
+### Running
+
+Run taint analysis:
+
+```bash
+./vendor/bin/psalm --taint-analysis
+```
+
+Add convenience scripts to `composer.json`:
+
+```json
+{
+    "scripts": {
+        "security": "./vendor/bin/bear.security-scan src",
+        "taint": "./vendor/bin/psalm --taint-analysis 2>&1 | grep -E 'Tainted' || true"
+    },
+    "scripts-descriptions": {
+        "security": "Run SAST security scan",
+        "taint": "Run Psalm taint analysis"
+    }
+}
+```
+
+Then run with:
+
+```bash
+composer security
+composer taint
+```
+
+## GitHub Actions
+
+You can add security scanning to your CI pipeline:
+
+```bash
+cp vendor/bear/security/workflows/security-sast.yml .github/workflows/
+```
+
+This workflow runs on every push and pull request:
+
+| Job | What it does |
+|-----|--------------|
+| SAST Scan | Scans code and uploads results to GitHub Security tab |
+| Psalm Taint | Traces user input flows and uploads results to GitHub Security tab |
+
+Results appear in your repository's **Security > Code scanning** section.
+
+**Recommended**: Run the scan from an AI agent first, add `@security-ignore` to false positives, then enable CI.
+
+## Architecture and Security
+
+BEAR.Sunday's architecture makes security scanning more effective:
+
+- **Clear Entry Points**: Every endpoint is a ResourceObject with `onGet`, `onPost` methods. Scanners can identify all inputs and trace data flow.
+
+- **No Hidden Magic**: Dependencies are explicit through constructor injection. Scanners can analyze the complete code path.
+
+- **Framework-Aware AI**: The AI Auditor understands BEAR.Sunday patterns and can detect business logic flaws, not just generic vulnerabilities.
+
+## Prompt for AI Agents
+
+To set up bear/security with an AI coding assistant, use this prompt:
+
+```
+Follow the setup instructions at:
+https://raw.githubusercontent.com/bearsunday/BEAR.Skills/1.x/.claude/skills/bear-security-setup/SKILL.md
+```
 
 ***
 
@@ -6300,7 +9348,7 @@ All annotations described in this manual will work when converted to attributes.
 Although the cost of loading annotations/attributes for production is minimal due to optimization, you can speed up development by declaring that you will only use attribute readers, as follows
 
 ```php?start_inline
-// tests/bootstap.php 
+// tests/bootstap.php
 
 use Ray\ServiceLocator\ServiceLocator;
 
@@ -6309,7 +9357,7 @@ ServiceLocator::setReader(new AttributeReader());
 
 ```php?start_inline
 // DevModule
- 
+
 $this->install(new AttributeModule());
 ```
 
@@ -6321,178 +9369,171 @@ $this->install(new AttributeModule());
 
 # API Doc
 
-ApiDoc generates API documentation from your application.
+Your application is the documentation.
 
-The auto-generated documentation from your code and JSON schema will reduce your effort and keep your API documentation accurate.
+- **ApiDoc HTML**: Developer documentation
+- **OpenAPI 3.1**: Tool chain integration
+- **JSON Schema**: Information model
+- **ALPS**: Vocabulary semantics for AI understanding
+- **llms.txt**: AI-readable application overview
+
+## Demo
+
+- [HTML](https://bearsunday.github.io/BEAR.ApiDoc/)
+- [OpenAPI](https://bearsunday.github.io/BEAR.ApiDoc/openapi/)
+
+## Installation
+
+```bash
+composer require bear/api-doc --dev
+./vendor/bin/apidoc init
+```
+
+The `init` command generates `apidoc.xml` from your `composer.json`. Edit it to customize.
+
+```xml
+<apidoc>
+    <appName>MyVendor\MyProject</appName>  <!-- Application namespace -->
+    <scheme>app</scheme>                    <!-- app or page -->
+    <docDir>docs/api</docDir>
+    <format>html</format>                   <!-- html, openapi, etc. -->
+</apidoc>
+```
+
+The `format` accepts comma-separated values: `html`, `md`, `openapi`, `llms`.
 
 ## Usage
 
-Install BEAR.ApiDoc.
+Generate documentation from the command line.
 
-    composer require bear/api-doc --dev
-
-Copy the configuration file.
-
-    cp ./vendor/bear/api-doc/apidoc.xml.dist ./apidoc.xml
-
-## Source
-
-ApiDoc generates documentation by retrieving information from phpdoc, method signatures, and JSON schema.
-
-#### PHPDOC
-
-In phpdoc, the following parts are retrieved.
-For information that applies across resources, such as authentication, prepare a separate documentation page and link it with `@link`.
-
-```php
-/**
- * {title}
- *
- * {description}
- *
- * {@link htttp;//example.com/docs/auth 認証}
- */
- class Foo extends ResourceObject
- {
- }
+```bash
+./vendor/bin/apidoc
 ```
 
-```php
-/**
- * {title}
- *
- * {description}
- *
- * @param string $id ユーザーID
- */
- public function onGet(string $id ='kuma'): static
- {
- }
+### OpenAPI HTML Generation
+
+When `openapi` format is specified, `openapi.json` is generated. Use Redocly CLI to convert it to HTML.
+
+```bash
+npm install -g @redocly/cli
+redocly build-docs docs/api/openapi.json -o docs/api/openapi.html
 ```
 
-* If there is no `@param` description in the phpdoc of the method, get the information of the argument from the method signature.
-* The order of priority for information acquisition is phpdoc, JSON schema, and profile.
+### llms.txt
+
+The `llms` format generates `llms.txt` following the [llms.txt specification](https://llmstxt.org/). The output includes API endpoints, resource objects, infrastructure interfaces (Query/Command), SQL statements, and entity definitions.
+
+### Composer Scripts
+
+Add scripts to `composer.json` for convenience.
+
+```json
+{
+    "scripts": {
+        "docs": "./vendor/bin/apidoc"
+    },
+    "scripts-descriptions": {
+        "docs": "Generate API documentation"
+    }
+}
+```
+
+```bash
+composer docs
+```
+
+## GitHub Actions
+
+Push to main branch to automatically generate and publish API documentation to GitHub Pages. The reusable workflow handles HTML generation, OpenAPI conversion with Redocly, and ALPS state diagram creation.
+
+```yaml
+name: API Docs
+on:
+  push:
+    branches: [main]
+
+jobs:
+  docs:
+    uses: bearsunday/BEAR.ApiDoc/.github/workflows/apidoc.yml@v1
+    with:
+      format: 'html,openapi,llms'
+```
+
+Enable GitHub Pages: Settings → Pages → Source: "GitHub Actions"
+
+### Inputs
+
+| Input | Default | Description |
+|-------|---------|-------------|
+| `php-version` | `'8.2'` | PHP version |
+| `format` | `'html,openapi,llms'` | Comma-separated: html, md, openapi, llms |
+| `docs-path` | `'docs'` | Output directory |
+| `publish-to` | `'github-pages'` | `github-pages` or `artifact-only` |
+
+### Output Structure
+
+```text
+docs/
+├── index.html          # API documentation
+├── llms.txt            # AI-readable overview
+├── openapi.json        # OpenAPI spec
+└── schemas/
+    ├── index.html      # Schema list
+    └── *.json          # JSON Schema
+```
 
 ## Configuration
-
-The configuration is written in XML.
-The minimum specification is as follows.
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <apidoc
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:noNamespaceSchemaLocation="https://bearsunday.github.io/BEAR.ApiDoc/apidoc.xsd">
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="https://bearsunday.github.io/BEAR.ApiDoc/apidoc.xsd">
     <appName>MyVendor\MyProject</appName>
     <scheme>app</scheme>
     <docDir>docs</docDir>
     <format>html</format>
+    <alps>alps.json</alps>
 </apidoc>
 ```
 
-### Required Attributes
-
-#### appName
-
-Application namespaces
-
-#### scheme
-
-The name of the schema to use for API documentation. `page` or `app`.
-
-#### docDir
-
-Output directory name.
-
-#### format
-
-The output format, HTML or MD (Mark down).
-
-### Optional attributes
-
-#### title
-
-API title
-
-```xml
-<title>MyBlog API</title>
-```
-
-#### description
-
-API description
-
-```xml
-<description>MyBlog API description</description
-```
-
-#### links
-
-Links. The `href` is the URL of the link, and the `rel` is its content.
-
-```xml
-<links>
-    <link href="https://www.example.com/issue" rel="issue" />
-    <link href="https://www.example.com/help" rel="help" />
-</links>
-```
-
-#### alps
-
-Specifies an "ALPS profile" that defines the terms used by the API.
-
-```xml
-<alps>alps/profile.json</alps>.
-```
+| Option | Required | Description |
+|--------|----------|-------------|
+| `appName` | Yes | Application namespace |
+| `scheme` | Yes | `app` or `page` |
+| `docDir` | Yes | Output directory |
+| `format` | Yes | `html`, `md`, `openapi`, `llms` |
+| `title` | | API title |
+| `alps` | | ALPS profile path |
 
 ## Profile
 
-ApiDoc supports the [ALPS](http://alps.io/) format of the [RFC 6906 Profile](https://tools.ietf.org/html/rfc6906) which gives additional information to the application.
-
-Words used in API request and response keys are called semantic descriptors, and if you create a dictionary of profiles, you don't need to describe the words for each request.
-Centralized definitions of words and phrases prevent notational errors and aid in shared understanding.
-
-The words used in API request and response keys are called semantic descriptors, and creating a dictionary of profiles eliminates the need to explain the words for each request.
-Centralized definitions of words and phrases prevent shaky notation and aid in shared understanding.
-
-The following is an example of defining descriptors `firstName` and `familyName` with `title` and `def` respectively.
-While `title` describes a word and clarifies its meaning, `def` links standard words defined in vocabulary sites such as [Schema.org](https://schema.org/).
-
-ALPS profiles can be written in XML or JSON.
-
-profile.xml
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<alps
-     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-     xsi:noNamespaceSchemaLocation="https://alps-io.github.io/schemas/alps.xsd">
-    <!-- Ontology -->
-    <descriptor id="firstName" title="The person's first name."/>
-    <descriptor id="familyName" def="https://schema.org/familyName"/>
-</alps>
-```
-
-profile.json
+ALPS profile defines your API vocabulary. Centralized definitions prevent inconsistencies and aid shared understanding.
 
 ```json
 {
-  "$schema": "https://alps-io.github.io/schemas/alps.json",
-  "alps": {
-    "descriptor": [
-      {"id": "firstName", "title": "The person's first name."}
-      {"id": "familyName", "def": "https://schema.org/familyName"},
-    ]
-  }
+    "$schema": "https://alps-io.github.io/schemas/alps.json",
+    "alps": {
+        "descriptor": [
+            {"id": "firstName", "title": "The person's first name."},
+            {"id": "familyName", "def": "https://schema.org/familyName"}
+        ]
+    }
 }
 ```
 
-Descriptions of words appearing in ApiDoc take precedence over phpdoc > JsonSchema > ALPS in that order.
+## Application as Documentation
+
+Code is the single source of truth. Documentation generated from your application never diverges from the implementation.
+
+[llms.txt](https://llmstxt.org/) provides AI-readable application overviews. When an AI agent encounters your application, it can quickly grasp the entire structure through this single document—generated directly from your code. Unlike typical API references that list endpoints, llms.txt captures the full information architecture following Dan Klyn's [framework](https://understandinggroup.com/ia-theory/explaining-information-architecture)—Ontology, Taxonomy, and Choreography. Combined with ALPS vocabulary semantics and JSON Schema information models, AI agents can understand not just what operations exist, but the meaning and structure behind them.
 
 ## Reference
 
-* [Demo](https://bearsunday.github.io/BEAR.ApiDoc/)
-* [ALPS](http://alps.io/)
-* [ALPS-ASD](https://github.com/koriym/app-state-diagram)
+- [BEAR.ApiDoc](https://github.com/bearsunday/BEAR.ApiDoc) - API documentation generator
+- [ALPS](https://www.app-state-diagram.com/manuals/1.0/en/) - Application-Level Profile Semantics
+- [JSON Schema](https://json-schema.org/) - Data validation and documentation
+- [Redocly CLI](https://redocly.com/docs/cli/installation/) - OpenAPI to HTML conversion
 
 ***
 
