@@ -35,7 +35,7 @@ use Ray\MediaQuery\Annotation\DbQuery;
 interface TodoAddInterface
 {
     #[DbQuery('todo_add')]
-    public function add(string $id, string $title): void;
+    public function add(string $title): void;
 }
 ```
 
@@ -122,6 +122,8 @@ Values are bound to constructor arguments **by position**, in the order of the c
 
 `Entity|null` is also supported and returns `null` when no row matches.
 
+> **Note**: When the entity has no constructor, Ray.MediaQuery falls back to PDO's `FETCH_CLASS` and maps **column name → property name** (no snake_case conversion). This avoids any dependency on column ordering, which is useful for wide read-only DTOs or PHP 8.4 `readonly class` declarations.
+
 #### Entity list (rowlist)
 
 Declare `array` as the return type to receive multiple rows. Tell the framework which entity to hydrate each row into via a `@return list<Entity>` docblock or the `factory:` parameter on `#[DbQuery]`.
@@ -176,18 +178,21 @@ Reference implementation: [`ArticleAffectedRowsCommandInterface`](https://github
 
 #### InsertedRow (INSERT resolved values and id)
 
-Use `InsertedRow` to recover the values the framework injected on the caller's behalf (UUIDs, timestamps, `DateTime` → SQL strings, `ToScalarInterface` reductions) together with the auto-increment id reported by the driver.
+Use `InsertedRow` to recover the values the framework injected on the caller's behalf (UUIDs, timestamps, `DateTime` → SQL strings, `ToScalarInterface` reductions) together with the auto-increment id reported by the driver. The same SQL id can be reused with a different return type — the framework switches behaviour (execute-only / affected count / inserted id) based on the declared return type alone.
 
 ```php
 use Ray\MediaQuery\Result\InsertedRow;
 
-interface TodoRepositoryInterface
+interface TodoAddInterface
 {
     #[DbQuery('todo_add')]
-    public function add(string $title): InsertedRow;
+    public function add(string $title): void;
+
+    #[DbQuery('todo_add')]
+    public function addReturning(string $title): InsertedRow;
 }
 
-$inserted = $todoRepo->add('Write docs');
+$inserted = $todoAdd->addReturning('Write docs');
 $inserted->values;  // array<string, mixed> — resolved values bound to the driver
 $inserted->id;      // ?string — auto-increment id, null when none was assigned
 ```
@@ -212,7 +217,7 @@ interface PostQueryInterface
 | `$statement` | `PDOStatement`             | The executed statement; inspect `rowCount()`, column metadata, etc. |
 | `$pdo`       | `ExtendedPdoInterface`     | The connection; useful for `lastInsertId()` and follow-up reads.    |
 | `$values`    | `array<string, mixed>`     | Parameter values resolved by `ParamConverter` / `ParamInjector` (UUIDs, timestamps, [value object](#value-objects-vo) scalars). |
-| `$rows`      | `array<mixed>`             | Pre-hydrated rows (entities or assoc arrays).                       |
+| `$rows`      | `array<mixed>`             | Fetched rows on SELECT — hydrated entities when `factory:` is specified, associative arrays otherwise. Always `[]` for DML. |
 
 ```php
 use Ray\MediaQuery\Result\PostQueryContext;
@@ -280,7 +285,7 @@ interface TaskAddInterface
 }
 ```
 
-Values are converted to date-formatted strings during SQL execution or Web API requests.
+Values are converted to date-formatted strings during SQL execution.
 
 ```sql
 INSERT INTO task (title, created_at) VALUES (:title, :createdAt); # 2021-2-14 00:00:00
@@ -303,6 +308,7 @@ When value objects other than `DateTime` are passed, the return value of the `to
 ```php
 interface MemoAddInterface
 {
+    #[DbQuery('memo_add')]
     public function __invoke(string $memo, UserId $userId = null): void;
 }
 ```
@@ -340,16 +346,16 @@ You can paginate SELECT queries with the `#[Pager]` attribute.
 ```php
 use Ray\MediaQuery\Annotation\DbQuery;
 use Ray\MediaQuery\Annotation\Pager;
-use Ray\MediaQuery\Pages;
+use Ray\MediaQuery\PagesInterface;
 
 interface TodoList
 {
     #[DbQuery('todo_list'), Pager(perPage: 10, template: '/{?page}')]
-    public function __invoke(): Pages;
+    public function __invoke(): PagesInterface;
 }
 ```
 
-You can get the count with `count()`, and get page objects with array access by page number. `Pages` is a SQL lazy execution object.
+You can get the count with `count()`, and get page objects with array access by page number. `PagesInterface` is a SQL lazy execution object.
 
 ```php
 $pages = ($todoList)();
@@ -463,6 +469,7 @@ You can implement your own [MediaQueryLoggerInterface](src/MediaQueryLoggerInter
 By implementing `PerformSqlInterface`, you can completely customize the SQL execution layer. Replace the default execution process with your own implementation to achieve advanced logging, performance monitoring, security controls, and more.
 
 ```php
+use Exception;
 use Ray\MediaQuery\PerformSqlInterface;
 
 final class CustomPerformSql implements PerformSqlInterface
