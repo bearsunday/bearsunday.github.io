@@ -19,7 +19,7 @@ permalink: /manuals/1.0/en/database_media.html
 composer require ray/media-query
 ```
 
-> **Note**: Web API functionality has been moved to a separate package [ray/web-query](https://github.com/ray-di/Ray.WebQuery).
+> **Note**: For the same interface-driven approach over Web APIs, see [ray/web-query](https://github.com/ray-di/Ray.WebQuery).
 
 ## Usage
 
