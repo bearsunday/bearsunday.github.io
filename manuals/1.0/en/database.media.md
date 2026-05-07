@@ -90,27 +90,11 @@ SQL execution is mapped to methods, binding the SQL specified by ID with method 
 * Prepare SQL files in the `$sqlDir` directory.
 * SQL files can contain multiple SQL statements. The last SELECT statement becomes the return value.
 
-#### Return type at a glance
+The two basic shapes are **Entity** (single row hydrated to an object) and **Entity list** (rowlist hydrated to an array of objects). Other shapes — raw assoc arrays, custom collections, pagination, DML results — build on these.
 
-The return type you declare on the interface drives what Ray.MediaQuery returns and how it _hydrates_ results — i.e. converts each row of the result set into an entity instance (see [Entity](#entity) below for the conversion rules). The full set of supported shapes:
+#### Entity (single row)
 
-| Use case            | Declared return type                          | What you get                                |
-|---------------------|-----------------------------------------------|---------------------------------------------|
-| Single row (assoc)  | `array` + `#[DbQuery(type: 'row')]`           | One row as an associative array             |
-| Single row (object) | `Entity` / `Entity\|null`                     | One row hydrated to an entity               |
-| Row list (assoc)    | `array`                                       | Rows as associative arrays                  |
-| Row list (object)   | `array` + `@return list<Entity>`              | Rows as hydrated entities                   |
-| Custom collection   | `MyColl` implementing `PostQueryInterface`    | Your own typed wrapper (`IteratorAggregate`, etc.) |
-| Pagination          | `PagesInterface` + `#[Pager]`                 | Pagerfanta-backed pages                     |
-| DML affected rows   | `AffectedRows`                                | `UPDATE` / `DELETE` affected row count      |
-| DML inserted row    | `InsertedRow`                                 | `INSERT` resolved values + `lastInsertId`   |
-| DML execute only    | `void`                                        | Run the statement without a result          |
-
-The sections below describe each row in more detail.
-
-#### Entity
-
-When you specify a return type for a method, SQL execution results are automatically converted (hydrated) to that entity class.
+When you specify an entity class as the return type, the SQL result is automatically converted (_hydrated_) into an instance of that class.
 
 ```php
 interface TodoItemInterface
@@ -155,9 +139,29 @@ final class Invoice
 SELECT id, title, user_name, email_address FROM invoices WHERE id = :id
 ```
 
-#### type: 'row'
+`Entity|null` is also supported and returns `null` when no row matches.
 
-Specify `type: 'row'` to retrieve a single row result as an associative array.
+#### Entity list (rowlist)
+
+Declare `array` as the return type to receive multiple rows. Tell the framework which entity to hydrate each row into via a `@return list<Entity>` docblock or the `factory:` parameter on `#[DbQuery]`.
+
+```php
+interface TodoListInterface
+{
+    /** @return list<Todo> */
+    #[DbQuery('todo_list')]
+    public function list(): array;
+
+    #[DbQuery('todo_list', factory: TodoFactory::class)]
+    public function listByFactory(): array;
+}
+```
+
+Without `@return list<Entity>` or `factory:`, rows are returned as associative arrays — see [type: 'row'](#type-row) below for the single-row equivalent.
+
+#### type: 'row' (raw associative array)
+
+Specify `type: 'row'` to retrieve a single row as an associative array (no hydration).
 
 ```php
 interface TodoItemInterface
@@ -266,6 +270,21 @@ For a real-world reference, the BEAR.Sunday sample app [MyVendor.Cms](https://gi
 - [`ArticleSelection`](https://github.com/bearsunday/MyVendor.Cms/blob/1.x/src/Result/ArticleSelection.php) — `PostQueryInterface` collection with domain methods `published()` / `titles()` / `first()`
 - [`ArticleSelectionQueryInterface`](https://github.com/bearsunday/MyVendor.Cms/blob/1.x/src/Query/ArticleSelectionQueryInterface.php) — declaring the wrapper as the return type with `factory: ArticleFactory::class`
 - [`ArticleAffectedRowsCommandInterface`](https://github.com/bearsunday/MyVendor.Cms/blob/1.x/src/Query/Samples/ArticleAffectedRowsCommandInterface.php) — `AffectedRows` for `UPDATE` / `DELETE`
+
+#### Return type cheat sheet
+
+|             | Single row                          | Rowlist                                              |
+|-------------|-------------------------------------|------------------------------------------------------|
+| Hydrated    | `Entity` / `Entity\|null`           | `array` + `@return list<Entity>` or `factory:`       |
+| Assoc array | `array` + `#[DbQuery(type: 'row')]` | `array` (no docblock / `factory:`)                   |
+
+For richer return types:
+
+- `MyColl` implementing `PostQueryInterface` — custom typed collection wrappers
+- `PagesInterface` + `#[Pager]` — pagination
+- `AffectedRows` — DML affected row count
+- `InsertedRow` — DML insert id + resolved values
+- `void` — DML execute only
 
 ## Parameters
 

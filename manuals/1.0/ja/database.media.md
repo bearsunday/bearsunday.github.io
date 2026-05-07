@@ -90,27 +90,11 @@ SQL実行がメソッドにマップされ、IDで指定されたSQLをメソッ
 * `$sqlDir`ディレクトリにSQLファイルを用意します。
 * SQLファイルには複数のSQL文が記述できます。最後の行のSELECTが返り値になります。
 
-#### 戻り値型の一覧
+基本となる2つの形は、**Entity**（1行をhydrate済みエンティティで）と **Entity リスト**（複数行をエンティティ配列で）です。連想配列・独自コレクション・ページネーション・DML系の戻り値型はその上の応用です。
 
-インターフェイスで宣言する戻り値の型が、Ray.MediaQueryの返却内容と _hydrate_（結果セットの各行をエンティティクラスのインスタンスに変換すること、詳細は後述の[Entity](#entity)節）の方法を決定します。サポートされる全てのパターン:
+#### Entity（1行）
 
-| 用途              | 戻り値型の宣言                                    | 受け取れるもの                              |
-|------------------|--------------------------------------------------|-------------------------------------------|
-| 単行 (assoc)     | `array` + `#[DbQuery(type: 'row')]`              | 1行を連想配列で                            |
-| 単行 (object)    | `Entity` / `Entity\|null`                        | 1行をhydrate済みエンティティで              |
-| 複数 (assoc)     | `array`                                          | 複数行を連想配列の配列で                    |
-| 複数 (object)    | `array` + `@return list<Entity>`                 | 複数行をhydrate済みエンティティで            |
-| 独自コレクション | `MyColl` (`PostQueryInterface` 実装)             | 自前の型付きラッパー（`IteratorAggregate` 等） |
-| ページネーション | `PagesInterface` + `#[Pager]`                    | Pagerfanta ベースのページャ                |
-| DML 影響行数     | `AffectedRows`                                   | `UPDATE` / `DELETE` の影響行数             |
-| DML 採番ID       | `InsertedRow`                                    | `INSERT` の解決済み値 + `lastInsertId`     |
-| DML 結果のみ     | `void`                                           | 実行のみ（戻り値不要）                      |
-
-以下の各節は、上の表の各行の詳細です。
-
-#### Entity
-
-メソッドの戻り値の型を指定すると、SQL実行結果が自動的にそのエンティティクラスに変換（hydrate）されます。
+メソッドの戻り値の型としてエンティティクラスを指定すると、SQL実行結果が自動的にそのインスタンスに変換（_hydrate_）されます。
 
 ```php
 interface TodoItemInterface
@@ -155,9 +139,29 @@ final class Invoice
 SELECT id, title, user_name, email_address FROM invoices WHERE id = :id
 ```
 
-#### type: 'row'
+行が見つからない可能性があるときは `Entity|null` を戻り値型に指定し、その場合は `null` が返されます。
 
-単一行の結果を連想配列で取得する場合は`type: 'row'`を指定します。
+#### Entity リスト（複数行）
+
+戻り値の型を `array` に宣言すると複数行を受け取れます。各行をエンティティに hydrate するには、`@return list<Entity>` の docblock を付けるか、`#[DbQuery]` の `factory:` パラメーターでファクトリを指定します。
+
+```php
+interface TodoListInterface
+{
+    /** @return list<Todo> */
+    #[DbQuery('todo_list')]
+    public function list(): array;
+
+    #[DbQuery('todo_list', factory: TodoFactory::class)]
+    public function listByFactory(): array;
+}
+```
+
+`@return list<Entity>` も `factory:` も付けない場合、各行は連想配列のまま返ります（単行版は次の[type: 'row'](#type-row)を参照）。
+
+#### type: 'row'（連想配列）
+
+単一行の結果を連想配列で取得（hydrateせず）する場合は`type: 'row'`を指定します。
 
 ```php
 interface TodoItemInterface
@@ -266,6 +270,21 @@ interface ArticleRepositoryInterface
 - [`ArticleSelection`](https://github.com/bearsunday/MyVendor.Cms/blob/1.x/src/Result/ArticleSelection.php) — `PostQueryInterface` のコレクションラッパーに `published()` / `titles()` / `first()` のドメインメソッドを実装
 - [`ArticleSelectionQueryInterface`](https://github.com/bearsunday/MyVendor.Cms/blob/1.x/src/Query/ArticleSelectionQueryInterface.php) — `factory: ArticleFactory::class` でラッパーを戻り値型に宣言
 - [`ArticleAffectedRowsCommandInterface`](https://github.com/bearsunday/MyVendor.Cms/blob/1.x/src/Query/Samples/ArticleAffectedRowsCommandInterface.php) — `UPDATE` / `DELETE` で `AffectedRows` を受け取る例
+
+#### 戻り値型 早見表
+
+|              | 1行                                  | 複数行（rowlist）                                    |
+|--------------|--------------------------------------|----------------------------------------------------|
+| エンティティ | `Entity` / `Entity\|null`            | `array` + `@return list<Entity>` または `factory:`  |
+| 連想配列     | `array` + `#[DbQuery(type: 'row')]`  | `array`（docblock / `factory:` なし）              |
+
+応用的な戻り値型:
+
+- `MyColl`（`PostQueryInterface` 実装）— 独自の型付きコレクションラッパー
+- `PagesInterface` + `#[Pager]` — ページネーション
+- `AffectedRows` — DML の影響行数
+- `InsertedRow` — DML の採番ID + 解決済み値
+- `void` — DML の実行のみ
 
 ## パラメーター
 
