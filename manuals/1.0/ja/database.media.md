@@ -173,13 +173,13 @@ interface TodoItemInterface
 
 #### PostQueryInterface（型付き結果クラス）
 
-DBのデータから自分でインスタンスを組み立てたいことがあります。たとえば:
+クエリの結果を、生の配列やスカラーではなく**型付きの値**として受け取りたいことがあります。たとえば:
 
-- `INSERT`後、フレームワークが解決した値（UUIDやタイムスタンプ）と採番IDを**まとめて**受け取りたい
-- `UPDATE` / `DELETE`の影響行数を、ただの `int` ではなく `isAffected()` などのメソッドを持つ型付きの値で受け取りたい
-- SELECTの結果を `array<Article>` ではなく、`published()` / `titles()` のようなドメインメソッドを持ったコレクションでラップしたい
+- `INSERT`後、解決済みの値（UUIDやタイムスタンプ）と採番IDをまとめて受け取りたい
+- `UPDATE` / `DELETE`の影響行数を、ただの `int` ではなく `isAffected()` などのメソッドを持つ値で受け取りたい
+- SELECTの結果を `array<Article>` ではなく `published()` / `titles()` のようなドメインメソッドを持つコレクションでラップしたい
 
-このようなときは、`PostQueryInterface`を実装したクラスを戻り値型に指定します。フレームワークはクエリ実行後の状況を `PostQueryContext`（実行済みステートメント、PDO接続、解決済みパラメーター、SELECTの場合はhydrate済みrows）にまとめて静的ファクトリ `fromContext()` に渡し、そこから先のインスタンス化はクラス側で自由に決められます。DML（Data Manipulation Language — `INSERT` / `UPDATE` / `DELETE`）とSELECTを同じ仕組みでルーティングします。
+これらはすべて `PostQueryInterface` を実装したクラスを戻り値型に指定する共通の仕組みで実現します。最初の2つは `AffectedRows` / `InsertedRow` としてフレームワークに同梱されており、SELECTのコレクションラッパーは自分で実装します。フレームワークはクエリ実行後の状態を `PostQueryContext`（実行済みステートメント、PDO接続、解決済みパラメーター、SELECTの場合はhydrate済みrows）にまとめて静的ファクトリ `fromContext()` に渡し、そこから先のインスタンス化はクラス側で自由に決められます。DML（Data Manipulation Language — `INSERT` / `UPDATE` / `DELETE`）とSELECTを同じ仕組みで扱います。
 
 ```php
 interface PostQueryInterface

@@ -173,13 +173,13 @@ interface TodoItemInterface
 
 #### PostQueryInterface (typed result types)
 
-Sometimes you want to build the result instance yourself from what the query produced. For example:
+Sometimes you want the result of a query as a **typed value** rather than a raw array or scalar. For example:
 
-- After an `INSERT`, receive the values the framework resolved (UUIDs, timestamps) **together with** the generated id.
-- After an `UPDATE` / `DELETE`, get the affected row count as a typed value with helpers like `isAffected()`, not a bare `int`.
-- After a SELECT, wrap rows in a collection that exposes domain methods such as `published()` / `titles()`, instead of returning a plain `array<Article>`.
+- After an `INSERT`, receive the resolved values (UUIDs, timestamps) together with the generated id.
+- After an `UPDATE` / `DELETE`, get the affected row count as a value with helpers like `isAffected()` instead of a bare `int`.
+- Wrap a SELECT result in a collection that exposes domain methods such as `published()` / `titles()` instead of `array<Article>`.
 
-For these cases, declare a class that implements `PostQueryInterface` as the return type. The framework collects the post-execution state into a `PostQueryContext` (executed statement, PDO connection, resolved parameters, and — for SELECT — pre-hydrated rows) and passes it to the static `fromContext()` factory; the class decides how to assemble itself. The same mechanism covers DML (Data Manipulation Language — `INSERT` / `UPDATE` / `DELETE`) and SELECT.
+All of these share one mechanism: declare a class that implements `PostQueryInterface` as the return type. The first two ship with the framework as `AffectedRows` and `InsertedRow`; the SELECT collection wrapper is something you implement yourself. The framework collects the post-execution state into a `PostQueryContext` (executed statement, PDO connection, resolved parameters, and — for SELECT — pre-hydrated rows) and passes it to the static `fromContext()` factory; the class decides how to assemble itself. The same mechanism covers DML (Data Manipulation Language — `INSERT` / `UPDATE` / `DELETE`) and SELECT.
 
 ```php
 interface PostQueryInterface
