@@ -92,7 +92,7 @@ SQL execution is mapped to methods, binding the SQL specified by ID with method 
 
 #### Return type at a glance
 
-The return type you declare on the interface drives what Ray.MediaQuery returns and how it hydrates results. The full set of supported shapes:
+The return type you declare on the interface drives what Ray.MediaQuery returns and how it _hydrates_ results — i.e. converts each row of the result set into an entity instance (see [Entity](#entity) below for the conversion rules). The full set of supported shapes:
 
 | Use case            | Declared return type                          | What you get                                |
 |---------------------|-----------------------------------------------|---------------------------------------------|
