@@ -171,35 +171,9 @@ interface TodoItemInterface
 }
 ```
 
-#### PostQueryInterface (typed result types)
+#### AffectedRows (UPDATE / DELETE row count)
 
-Sometimes you want the result of a query as a **typed value** rather than a raw array or scalar. For example:
-
-- After an `INSERT`, receive the resolved values (UUIDs, timestamps) together with the generated id.
-- After an `UPDATE` / `DELETE`, get the affected row count as a value with helpers like `isAffected()` instead of a bare `int`.
-- Wrap a SELECT result in a collection that exposes domain methods such as `published()` / `titles()` instead of `array<Article>`.
-
-All of these share one mechanism: declare a class that implements `PostQueryInterface` as the return type. The first two ship with the framework as `AffectedRows` and `InsertedRow`; the SELECT collection wrapper is something you implement yourself. The framework collects the post-execution state into a `PostQueryContext` (executed statement, PDO connection, resolved parameters, and — for SELECT — pre-hydrated rows) and passes it to the static `fromContext()` factory; the class decides how to assemble itself. The same mechanism covers DML (Data Manipulation Language — `INSERT` / `UPDATE` / `DELETE`) and SELECT.
-
-```php
-interface PostQueryInterface
-{
-    public static function fromContext(PostQueryContext $context): static;
-}
-```
-
-`PostQueryContext` provides four readonly properties:
-
-| Property     | Type                       | Purpose                                                       |
-|--------------|----------------------------|---------------------------------------------------------------|
-| `$statement` | `PDOStatement`             | The executed statement; inspect `rowCount()`, column metadata, etc. |
-| `$pdo`       | `ExtendedPdoInterface`     | The connection; useful for `lastInsertId()` and follow-up reads.    |
-| `$values`    | `array<string, mixed>`     | Parameter values resolved by `ParamConverter` / `ParamInjector` (UUIDs, timestamps, [value object](#value-objects-vo) scalars). |
-| `$rows`      | `array<mixed>`             | SELECT: pre-hydrated rows (entities or assoc arrays). DML: `[]`.    |
-
-##### AffectedRows (UPDATE / DELETE row count)
-
-Declare `AffectedRows` as the return type to receive the number of rows affected by an `UPDATE` / `DELETE`.
+Declare `AffectedRows` as the return type to receive the affected row count of an `UPDATE` / `DELETE` as a typed value rather than a bare `int`.
 
 ```php
 use Ray\MediaQuery\Result\AffectedRows;
@@ -217,7 +191,9 @@ $affected->isAffected(); // bool — true when count > 0
 
 When a SQL file contains multiple statements, `AffectedRows` reflects the **last executed statement only**.
 
-##### InsertedRow (INSERT resolved values and id)
+Reference implementation: [`ArticleAffectedRowsCommandInterface`](https://github.com/bearsunday/MyVendor.Cms/blob/1.x/src/Query/Samples/ArticleAffectedRowsCommandInterface.php) ([MyVendor.Cms](https://github.com/bearsunday/MyVendor.Cms)).
+
+#### InsertedRow (INSERT resolved values and id)
 
 Use `InsertedRow` to recover the values the framework injected on the caller's behalf (UUIDs, timestamps, `DateTime` → SQL strings, `ToScalarInterface` reductions) together with the auto-increment id reported by the driver.
 
@@ -237,9 +213,25 @@ $inserted->id;      // ?string — auto-increment id, null when none was assigne
 
 `$inserted->id` is normalised to `null` when the driver returns `false` / `''` / `'0'`.
 
-##### Custom typed collection wrappers (SELECT)
+#### PostQueryInterface (custom typed results)
 
-To wrap SELECT results in your own collection type, implement `PostQueryInterface` on the wrapper. `PostQueryContext::$rows` carries the hydrated entities.
+Sometimes you want to wrap a SELECT result in your own collection type — exposing domain methods like `published()` / `titles()` instead of returning a plain `array<Article>`. Declare a class that implements `PostQueryInterface` as the return type, and the framework collects the post-execution state into a `PostQueryContext`, passes it to the static `fromContext()` factory, and lets the class decide how to assemble itself.
+
+```php
+interface PostQueryInterface
+{
+    public static function fromContext(PostQueryContext $context): static;
+}
+```
+
+`PostQueryContext` provides four readonly properties:
+
+| Property     | Type                       | Purpose                                                       |
+|--------------|----------------------------|---------------------------------------------------------------|
+| `$statement` | `PDOStatement`             | The executed statement; inspect `rowCount()`, column metadata, etc. |
+| `$pdo`       | `ExtendedPdoInterface`     | The connection; useful for `lastInsertId()` and follow-up reads.    |
+| `$values`    | `array<string, mixed>`     | Parameter values resolved by `ParamConverter` / `ParamInjector` (UUIDs, timestamps, [value object](#value-objects-vo) scalars). |
+| `$rows`      | `array<mixed>`             | Pre-hydrated rows (entities or assoc arrays).                       |
 
 ```php
 use Ray\MediaQuery\Result\PostQueryContext;
@@ -269,13 +261,12 @@ interface ArticleRepositoryInterface
 }
 ```
 
-Hydration is configured as before via `factory:` or a `@return Articles<Article>` docblock. The wrapper uses **composition** rather than inheritance, so it can hold any internal collection — Laravel `Collection`, Doctrine `ArrayCollection`, or a custom one — without coupling to any specific library.
+Hydration of each row is configured the same way as for an Entity list: via `factory:`. The wrapper uses **composition** rather than inheritance, so it can hold any internal collection — Laravel `Collection`, Doctrine `ArrayCollection`, or a custom one — without coupling to any specific library.
 
-For a real-world reference, the BEAR.Sunday sample app [MyVendor.Cms](https://github.com/bearsunday/MyVendor.Cms) ships these patterns end-to-end:
+Reference implementation ([MyVendor.Cms](https://github.com/bearsunday/MyVendor.Cms)):
 
-- [`ArticleSelection`](https://github.com/bearsunday/MyVendor.Cms/blob/1.x/src/Result/ArticleSelection.php) — `PostQueryInterface` collection with domain methods `published()` / `titles()` / `first()`
+- [`ArticleSelection`](https://github.com/bearsunday/MyVendor.Cms/blob/1.x/src/Result/ArticleSelection.php) — collection with domain methods `published()` / `titles()` / `first()`
 - [`ArticleSelectionQueryInterface`](https://github.com/bearsunday/MyVendor.Cms/blob/1.x/src/Query/ArticleSelectionQueryInterface.php) — declaring the wrapper as the return type with `factory: ArticleFactory::class`
-- [`ArticleAffectedRowsCommandInterface`](https://github.com/bearsunday/MyVendor.Cms/blob/1.x/src/Query/Samples/ArticleAffectedRowsCommandInterface.php) — `AffectedRows` for `UPDATE` / `DELETE`
 
 #### Return type cheat sheet
 
