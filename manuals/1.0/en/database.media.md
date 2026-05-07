@@ -571,22 +571,3 @@ This feature includes the query ID as a comment in the executed SQL, making it e
 SELECT * FROM todo WHERE id = :id
 ```
 
-## PHP 8 Attributes
-
-Ray.MediaQuery 1.0 and later uses PHP 8 [attributes](https://www.php.net/manual/en/language.attributes.overview.php).
-
-```php
-use Ray\MediaQuery\Annotation\DbQuery;
-use Ray\MediaQuery\Annotation\Pager;
-
-interface TodoRepository
-{
-    #[DbQuery('todo_add')]
-    public function add(string $id, string $title): void;
-
-    #[DbQuery('todo_list'), Pager(perPage: 20)]
-    public function list(): Pages;
-}
-```
-
-> **Note**: Doctrine annotation (`@DbQuery`) support has been removed. For migration instructions, see [Ray.MediaQuery MIGRATION.md](https://github.com/ray-di/Ray.MediaQuery/blob/1.x/MIGRATION.md).

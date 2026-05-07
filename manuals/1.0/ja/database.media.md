@@ -571,22 +571,3 @@ protected function configure(): void
 SELECT * FROM todo WHERE id = :id
 ```
 
-## PHP 8 アトリビュート
-
-Ray.MediaQuery 1.0以降は、PHP 8の[アトリビュート](https://www.php.net/manual/ja/language.attributes.overview.php)を使用します。
-
-```php
-use Ray\MediaQuery\Annotation\DbQuery;
-use Ray\MediaQuery\Annotation\Pager;
-
-interface TodoRepository
-{
-    #[DbQuery('todo_add')]
-    public function add(string $id, string $title): void;
-
-    #[DbQuery('todo_list'), Pager(perPage: 20)]
-    public function list(): Pages;
-}
-```
-
-> **Note**: Doctrineアノテーション（`@DbQuery`）のサポートは終了しました。マイグレーション方法は[Ray.MediaQuery MIGRATION.md](https://github.com/ray-di/Ray.MediaQuery/blob/1.x/MIGRATION.md)を参照してください。
