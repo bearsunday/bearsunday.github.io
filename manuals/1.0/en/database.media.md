@@ -157,7 +157,7 @@ interface TodoListInterface
 }
 ```
 
-Without `@return list<Entity>` or `factory:`, rows are returned as associative arrays — see [type: 'row'](#type-row) below for the single-row equivalent.
+Without `@return list<Entity>` or `factory:`, rows are returned as associative arrays — see [type: 'row'](#type-row-raw-associative-array) below for the single-row equivalent.
 
 #### type: 'row' (raw associative array)
 

@@ -157,7 +157,7 @@ interface TodoListInterface
 }
 ```
 
-`@return list<Entity>` も `factory:` も付けない場合、各行は連想配列のまま返ります（単行版は次の[type: 'row'](#type-row)を参照）。
+`@return list<Entity>` も `factory:` も付けない場合、各行は連想配列のまま返ります（単行版は次の[type: 'row'](#type-row連想配列)を参照）。
 
 #### type: 'row'（連想配列）
 
