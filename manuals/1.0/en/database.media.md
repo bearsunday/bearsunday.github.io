@@ -184,7 +184,7 @@ interface PostQueryInterface
 |--------------|----------------------------|---------------------------------------------------------------|
 | `$statement` | `PDOStatement`             | The executed statement; inspect `rowCount()`, column metadata, etc. |
 | `$pdo`       | `ExtendedPdoInterface`     | The connection; useful for `lastInsertId()` and follow-up reads.    |
-| `$values`    | `array<string, mixed>`     | Parameter values resolved by `ParamConverter` / `ParamInjector` (UUIDs, timestamps, value-object scalars). |
+| `$values`    | `array<string, mixed>`     | Parameter values resolved by `ParamConverter` / `ParamInjector` (UUIDs, timestamps, [value object](#value-objects-vo) scalars). |
 | `$rows`      | `array<mixed>`             | SELECT: pre-hydrated rows (entities or assoc arrays). DML: `[]`.    |
 
 ##### AffectedRows (UPDATE / DELETE row count)

@@ -184,7 +184,7 @@ interface PostQueryInterface
 |------------|----------------------------|---------------------------------------------------------------------|
 | `$statement` | `PDOStatement`             | 実行済みステートメント。`rowCount()`やカラムメタデータ等を参照可能。       |
 | `$pdo`       | `ExtendedPdoInterface`     | 接続。`lastInsertId()` や追加読み取りに使う。                          |
-| `$values`    | `array<string, mixed>`     | `ParamConverter` / `ParamInjector` 解決後の値（UUID、タイムスタンプ、value object のスカラー化等）。 |
+| `$values`    | `array<string, mixed>`     | `ParamConverter` / `ParamInjector` 解決後の値（UUID、タイムスタンプ、[バリューオブジェクト](#バリューオブジェクトvo)のスカラー化等）。 |
 | `$rows`      | `array<mixed>`             | SELECT時はhydrate済みの行（エンティティまたは連想配列）。DML時は `[]`。  |
 
 ##### AffectedRows（UPDATE / DELETE の影響行数）
