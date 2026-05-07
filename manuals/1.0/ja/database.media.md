@@ -268,6 +268,8 @@ interface ArticleRepositoryInterface
 - [`ArticleSelection`](https://github.com/bearsunday/MyVendor.Cms/blob/1.x/src/Result/ArticleSelection.php) — `published()` / `titles()` / `first()` のドメインメソッドを持つコレクション
 - [`ArticleSelectionQueryInterface`](https://github.com/bearsunday/MyVendor.Cms/blob/1.x/src/Query/ArticleSelectionQueryInterface.php) — `factory: ArticleFactory::class` でラッパーを戻り値型に宣言
 
+> なお、`AffectedRows` / `InsertedRow` も同じ `PostQueryInterface` の実装です。DML 後に独自の集計や監査ログを伴う結果型が欲しい場合は、同じ仕組みで自作できます。
+
 #### 戻り値型 早見表
 
 |              | 1行                                  | 複数行（rowlist）                                    |

@@ -268,6 +268,8 @@ Reference implementation ([MyVendor.Cms](https://github.com/bearsunday/MyVendor.
 - [`ArticleSelection`](https://github.com/bearsunday/MyVendor.Cms/blob/1.x/src/Result/ArticleSelection.php) — collection with domain methods `published()` / `titles()` / `first()`
 - [`ArticleSelectionQueryInterface`](https://github.com/bearsunday/MyVendor.Cms/blob/1.x/src/Query/ArticleSelectionQueryInterface.php) — declaring the wrapper as the return type with `factory: ArticleFactory::class`
 
+> `AffectedRows` and `InsertedRow` are themselves implementations of `PostQueryInterface`. If you need a custom DML result type — e.g. one that bundles audit logging or aggregate counters — you can build it through the same mechanism.
+
 #### Return type cheat sheet
 
 |             | Single row                          | Rowlist                                              |
