@@ -85,12 +85,12 @@ class Todo
 
 ### DbQuery
 
-SQL実行がメソッドにマップされ、IDで指定されたSQLをメソッドの引数でバインドして実行します。例えばIDが`todo_item`の指定では`todo_item.sql`SQL文に`['id => $id]`をバインドして実行します。
+SQL実行がメソッドにマップされ、IDで指定されたSQLをメソッドの引数でバインドして実行します。例えばIDが`todo_item`の指定では`todo_item.sql`SQL文に`['id' => $id]`をバインドして実行します。
 
 * `$sqlDir`ディレクトリにSQLファイルを用意します。
 * SQLファイルには複数のSQL文が記述できます。最後の行のSELECTが返り値になります。
 
-基本となる2つの形は、**Entity**（1行をhydrate済みエンティティで）と **Entity リスト**（複数行をエンティティ配列で）です。連想配列・独自コレクション・ページネーション・DML系の戻り値型はその上の応用です。
+基本形は **Entity**（1行をhydrate済みエンティティで受け取る）と **Entity リスト**（複数行をエンティティの配列で受け取る）です。連想配列・独自コレクション・ページネーション・DML 系の戻り値型はこれらの応用として段階的に紹介します。
 
 #### Entity（1行）
 
@@ -139,7 +139,7 @@ final class Invoice
 SELECT id, title, user_name, email_address FROM invoices WHERE id = :id
 ```
 
-行が見つからない可能性があるときは `Entity|null` を戻り値型に指定し、その場合は `null` が返されます。
+行が見つからない可能性があるときは戻り値型に `Entity|null` を指定します。該当行がなければ `null` が返ります。
 
 #### Entity リスト（複数行）
 
