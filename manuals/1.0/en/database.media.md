@@ -161,7 +161,7 @@ Without `@return list<Entity>` or `factory:`, rows are returned as associative a
 
 #### type: 'row' (raw associative array)
 
-Specify `type: 'row'` to retrieve a single row as an associative array (no hydration).
+By default, an `array` return type yields multiple rows (`[['total' => 10, ...], ...]`). To receive a single row **directly** as an associative array — without it being wrapped in a list at `$result[0]` — specify `type: 'row'`.
 
 ```php
 interface TodoItemInterface

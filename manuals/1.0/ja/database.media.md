@@ -161,7 +161,7 @@ interface TodoListInterface
 
 #### type: 'row'（連想配列）
 
-単一行の結果を連想配列で取得（hydrateせず）する場合は`type: 'row'`を指定します。
+戻り値の型が `array` のとき、デフォルトでは複数行（`[['total' => 10, ...], ...]`）として返ります。単一行を**そのまま**連想配列で受け取りたい場合は `type: 'row'` を指定します。指定しないと結果は `$result[0]` に入ります。
 
 ```php
 interface TodoItemInterface
