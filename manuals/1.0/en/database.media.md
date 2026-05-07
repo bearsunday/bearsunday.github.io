@@ -188,7 +188,7 @@ interface PostQueryInterface
 }
 ```
 
-`PostQueryContext` exposes the execution as four readonly properties:
+`PostQueryContext` provides four readonly properties:
 
 | Property     | Type                       | Purpose                                                       |
 |--------------|----------------------------|---------------------------------------------------------------|
