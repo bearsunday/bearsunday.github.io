@@ -118,26 +118,7 @@ final class Todo
 }
 ```
 
-##### Automatic snake_case → camelCase conversion
-
-Database column names (snake_case) and property names (camelCase) are automatically converted.
-
-```php
-final class Invoice
-{
-    public function __construct(
-        public readonly string $id,
-        public readonly string $title,
-        public readonly string $userName,      // user_name → userName
-        public readonly string $emailAddress,  // email_address → emailAddress
-    ) {}
-}
-```
-
-```sql
--- invoice.sql
-SELECT id, title, user_name, email_address FROM invoices WHERE id = :id
-```
+Values are bound to constructor arguments **by position**, in the order of the columns in the SELECT clause. Column names (e.g. `user_name`) do not need to match property names (e.g. `$userName`) — just make sure the column order matches the constructor argument order.
 
 `Entity|null` is also supported and returns `null` when no row matches.
 

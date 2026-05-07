@@ -118,26 +118,7 @@ final class Todo
 }
 ```
 
-##### snake_case → camelCase 自動変換
-
-データベースのカラム名（snake_case）とプロパティ名（camelCase）は自動的に変換されます。
-
-```php
-final class Invoice
-{
-    public function __construct(
-        public readonly string $id,
-        public readonly string $title,
-        public readonly string $userName,      // user_name → userName
-        public readonly string $emailAddress,  // email_address → emailAddress
-    ) {}
-}
-```
-
-```sql
--- invoice.sql
-SELECT id, title, user_name, email_address FROM invoices WHERE id = :id
-```
+値はSQLの**列の順序**でコンストラクタ引数に位置バインドされます。カラム名（例: `user_name`）とプロパティ名（例: `$userName`）は一致している必要はありません。SELECT句の列の順番とコンストラクタ引数の順番を合わせてください。
 
 行が見つからない可能性があるときは戻り値型に `Entity|null` を指定します。該当行がなければ `null` が返ります。
 
