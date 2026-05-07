@@ -173,7 +173,13 @@ interface TodoItemInterface
 
 #### PostQueryInterface (typed result types)
 
-Return types that build a result after the query executes are expressed as classes implementing `PostQueryInterface`. The interceptor detects the interface on the return type and calls the static `fromContext()` factory with a `PostQueryContext` describing the execution. The same dispatch covers DML (Data Manipulation Language — `INSERT` / `UPDATE` / `DELETE`) and SELECT.
+Sometimes you want to build the result instance yourself from what the query produced. For example:
+
+- After an `INSERT`, receive the values the framework resolved (UUIDs, timestamps) **together with** the generated id.
+- After an `UPDATE` / `DELETE`, get the affected row count as a typed value with helpers like `isAffected()`, not a bare `int`.
+- After a SELECT, wrap rows in a collection that exposes domain methods such as `published()` / `titles()`, instead of returning a plain `array<Article>`.
+
+For these cases, declare a class that implements `PostQueryInterface` as the return type. The framework collects the post-execution state into a `PostQueryContext` (executed statement, PDO connection, resolved parameters, and — for SELECT — pre-hydrated rows) and passes it to the static `fromContext()` factory; the class decides how to assemble itself. The same mechanism covers DML (Data Manipulation Language — `INSERT` / `UPDATE` / `DELETE`) and SELECT.
 
 ```php
 interface PostQueryInterface

@@ -173,7 +173,13 @@ interface TodoItemInterface
 
 #### PostQueryInterface（型付き結果クラス）
 
-クエリ実行後に結果を組み立てる戻り値型は、`PostQueryInterface`を実装したクラスとして表現します。インターセプターは戻り値型がこのインターフェースを実装していれば、静的ファクトリ`fromContext()`に実行コンテキストを表す`PostQueryContext`を渡して結果を構築します。フレームワークはDML（Data Manipulation Language — `INSERT` / `UPDATE` / `DELETE`）とSELECTを同じ仕組みでルーティングします。
+DBのデータから自分でインスタンスを組み立てたいことがあります。たとえば:
+
+- `INSERT`後、フレームワークが解決した値（UUIDやタイムスタンプ）と採番IDを**まとめて**受け取りたい
+- `UPDATE` / `DELETE`の影響行数を、ただの `int` ではなく `isAffected()` などのメソッドを持つ型付きの値で受け取りたい
+- SELECTの結果を `array<Article>` ではなく、`published()` / `titles()` のようなドメインメソッドを持ったコレクションでラップしたい
+
+このようなときは、`PostQueryInterface`を実装したクラスを戻り値型に指定します。フレームワークはクエリ実行後の状況を `PostQueryContext`（実行済みステートメント、PDO接続、解決済みパラメーター、SELECTの場合はhydrate済みrows）にまとめて静的ファクトリ `fromContext()` に渡し、そこから先のインスタンス化はクラス側で自由に決められます。DML（Data Manipulation Language — `INSERT` / `UPDATE` / `DELETE`）とSELECTを同じ仕組みでルーティングします。
 
 ```php
 interface PostQueryInterface
