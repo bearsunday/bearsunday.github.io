@@ -7,7 +7,26 @@ def convert_to_markdown_filename(base_name)
   base_name.split(/[_-]/).map(&:capitalize).join + '.md'
 end
 
-def resolve_markdown_filename(base_name, source, expected_permalink = nil)
+SKIP_GENERATED_FILES = %w[1page.md onepage.md ai-assistant.md].freeze
+
+def build_permalink_index(source)
+  source.glob("**/*.md").each_with_object({}) do |path, index|
+    next if SKIP_GENERATED_FILES.include?(path.basename.to_s)
+
+    frontmatter = path.read[/\A---\s*\r?\n(.*?)\r?\n---\s*\r?\n/m, 1]
+    next unless frontmatter
+
+    data = YAML.safe_load(frontmatter, aliases: true) || {}
+    permalink = data["permalink"]
+    next unless permalink
+
+    index[permalink] = path.relative_path_from(source).to_s
+  rescue Psych::Exception
+    next
+  end
+end
+
+def resolve_markdown_filename(base_name, source, permalink_index, expected_permalink = nil)
   candidates = [
     "#{base_name}.md",
     "#{base_name.tr('_', '.')}.md",
@@ -19,17 +38,7 @@ def resolve_markdown_filename(base_name, source, expected_permalink = nil)
 
   return nil unless expected_permalink
 
-  source.glob("**/*.md").find do |path|
-    next false if %w[1page.md onepage.md ai-assistant.md].include?(path.basename.to_s)
-
-    frontmatter = path.read[/\A---\s*\r?\n(.*?)\r?\n---\s*\r?\n/m, 1]
-    next false unless frontmatter
-
-    data = YAML.safe_load(frontmatter, aliases: true) || {}
-    data["permalink"] == expected_permalink
-  rescue Psych::Exception
-    false
-  end&.relative_path_from(source)&.to_s
+  permalink_index[expected_permalink]
 end
 
 def extract_order_from_contents(language, source)
@@ -53,6 +62,8 @@ def extract_order_from_contents(language, source)
 
   puts "Found #{permalinks.length} pages in navigation order"
 
+  permalink_index = build_permalink_index(source)
+
   # Convert HTML filenames to markdown filenames
   markdown_files = permalinks.map do |permalink|
     # Remove .html extension
@@ -62,7 +73,7 @@ def extract_order_from_contents(language, source)
     skip_pages = ['ai-assistant', 'index', '1page']
     next nil if skip_pages.include?(base)
 
-    filename = resolve_markdown_filename(base, source, "/manuals/1.0/#{language}/#{permalink}")
+    filename = resolve_markdown_filename(base, source, permalink_index, "/manuals/1.0/#{language}/#{permalink}")
     unless filename
       puts "Warning: Markdown file not found for #{permalink}"
       next nil
@@ -84,6 +95,7 @@ def normalize_generated_markdown(content)
   inside_fence = false
   fence_marker = nil
 
+  # Keep generated one-page Markdown explicit for renderers and LLM tools.
   content.each_line.map do |line|
     stripped = line.strip
 
