@@ -11,4 +11,4 @@ echo "Starting Jekyll server with llms.txt compliance..."
 ruby bin/merge_md_files.rb
 bundle exec jekyll build
 ./bin/copy_markdown_files.sh
-bundle exec jekyll serve --watch
+bundle exec jekyll serve --watch --port 4001
