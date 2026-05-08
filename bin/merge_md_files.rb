@@ -7,14 +7,29 @@ def convert_to_markdown_filename(base_name)
   base_name.split(/[_-]/).map(&:capitalize).join + '.md'
 end
 
-def resolve_markdown_filename(base_name, source)
+def resolve_markdown_filename(base_name, source, expected_permalink = nil)
   candidates = [
     "#{base_name}.md",
     "#{base_name.tr('_', '.')}.md",
     convert_to_markdown_filename(base_name)
   ].uniq
 
-  candidates.find { |candidate| source.join(candidate).file? }
+  matched_candidate = candidates.find { |candidate| source.join(candidate).file? }
+  return matched_candidate if matched_candidate
+
+  return nil unless expected_permalink
+
+  source.glob("**/*.md").find do |path|
+    next false if %w[1page.md onepage.md ai-assistant.md].include?(path.basename.to_s)
+
+    frontmatter = path.read[/\A---\s*\r?\n(.*?)\r?\n---\s*\r?\n/m, 1]
+    next false unless frontmatter
+
+    data = YAML.safe_load(frontmatter, aliases: true) || {}
+    data["permalink"] == expected_permalink
+  rescue Psych::Exception
+    false
+  end&.relative_path_from(source)&.to_s
 end
 
 def extract_order_from_contents(language, source)
@@ -28,7 +43,7 @@ def extract_order_from_contents(language, source)
   contents = File.read(contents_file)
 
   # Extract permalinks from nav items
-  permalinks = contents.scan(/href="\/manuals\/1\.0\/#{language}\/([^"]+\.html)"/).flatten
+  permalinks = contents.scan(/href="\/manuals\/1\.0\/#{language}\/([^\"]+\.html)"/).flatten
 
   # Validate that we found some permalinks
   if permalinks.empty?
@@ -47,7 +62,7 @@ def extract_order_from_contents(language, source)
     skip_pages = ['ai-assistant', 'index', '1page']
     next nil if skip_pages.include?(base)
 
-    filename = resolve_markdown_filename(base, source)
+    filename = resolve_markdown_filename(base, source, "/manuals/1.0/#{language}/#{permalink}")
     unless filename
       puts "Warning: Markdown file not found for #{permalink}"
       next nil
@@ -65,16 +80,46 @@ def strip_frontmatter(content)
   content.sub(/\A---\s*\r?\n.*?\r?\n---\s*\r?\n/m, '')
 end
 
-def normalize_content(content)
-  strip_frontmatter(content).lines.map(&:rstrip).join("\n").strip
+def normalize_generated_markdown(content)
+  inside_fence = false
+  fence_marker = nil
+
+  content.each_line.map do |line|
+    stripped = line.strip
+
+    if stripped.start_with?('```', '~~~')
+      marker = stripped[0, 3]
+      if inside_fence && stripped == fence_marker
+        inside_fence = false
+        fence_marker = nil
+        line
+      elsif !inside_fence
+        inside_fence = true
+        fence_marker = marker
+        stripped == marker ? line.sub(marker, "#{marker}text") : line
+      else
+        line
+      end
+    elsif !inside_fence && stripped == '---'
+      line.sub('---', '***')
+    else
+      line
+    end
+  end.join
 end
 
 def generate_combined_file(language, intro_message)
   source = Pathname.new(__dir__).join("..", "manuals/1.0/#{language}")
   output_file = source.join("1page.md")
+  legacy_output_file = source.join("onepage.md")
 
   puts "Processing #{language} documentation..."
   raise "Source folder does not exist!" unless source.directory?
+
+  if legacy_output_file.exist?
+    FileUtils.rm_f(legacy_output_file)
+    puts "Removed legacy file: #{legacy_output_file}"
+  end
 
   # Determine file order from contents.html or fallback to alphabetical
   file_order = extract_order_from_contents(language, source)
@@ -83,7 +128,7 @@ def generate_combined_file(language, intro_message)
     main_md_files = source.glob("*.md")
                           .map(&:basename)
                           .map(&:to_s)
-                          .reject { |f| %w[1page.md ai-assistant.md].include?(f) }
+                          .reject { |f| %w[1page.md onepage.md ai-assistant.md].include?(f) }
                           .sort
     bp_md_files = source.join("bp").directory? ?
                   source.join("bp").glob("*.md").map(&:basename).map(&:to_s).sort : []
@@ -120,7 +165,7 @@ def generate_combined_file(language, intro_message)
     # Process all files in a single pass
     all_files.each_with_index do |path, idx|
       begin
-        content = normalize_content(path.read)
+        content = normalize_generated_markdown(strip_frontmatter(path.read)).strip
         next if content.empty?
 
         # Add separator between sections (except first)

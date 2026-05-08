@@ -8,17 +8,28 @@ category: Index
     <p>
         BEAR.Sunday is a resource orientated framework with a <strong>REST</strong> centered architecture, implementing <strong>Dependency Injection</strong> and <strong>Aspect Orientated</strong> Programming' at its core.
     </p>
-    <a class="intl btn btn-primary" id="learn" href="/manuals/1.0/en/index.html">
+    <a class="btn btn-primary" id="learn" data-auto-locale-link="manual" href="/manuals/1.0/en/index.html">
         Learn more &raquo;
     </a>
     <script>
-        window.addEventListener('DOMContentLoaded', (event) => {
-            const links = document.getElementsByClassName('intl');
-            const locale = window.navigator.language;
-            if (locale.startsWith('ja')) {
-                for(let i = 0; i < links.length; i++) {
-                    links[i].setAttribute('href', links[i].getAttribute('href').replace('/en/', '/ja/'));
+        window.addEventListener('DOMContentLoaded', () => {
+            const navigatorLanguages = window.navigator.languages;
+            const locales = (navigatorLanguages && navigatorLanguages.length)
+                ? navigatorLanguages
+                : [window.navigator.language ?? ''];
+            const prefersJapanese = locales.some((locale) => locale.toLowerCase().startsWith('ja'));
+
+            if (!prefersJapanese) {
+                return;
+            }
+
+            const links = document.querySelectorAll('[data-auto-locale-link="manual"]');
+            for (const link of links) {
+                const href = link.getAttribute('href');
+                if (href && href.includes('/en/')) {
+                    link.setAttribute('href', href.replace('/en/', '/ja/'));
                 }
             }
-        });    </script>
+        });
+    </script>
 </div>

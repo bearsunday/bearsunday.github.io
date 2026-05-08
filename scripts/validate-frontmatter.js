@@ -68,7 +68,7 @@ function main() {
     if (file.includes('1page.md') || file.includes('onepage.md')) {
       continue;
     }
-    
+
     try {
       validateFrontmatter(file);
     } catch (error) {

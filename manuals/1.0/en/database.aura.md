@@ -491,7 +491,7 @@ Use the following methods to construct a DELETE query. You can also call the met
 
 ### Pagination
 
-[ray/aura-sql-module](https://packagist.org/packages/ray/aura-sql-module) supports pagination (page splitting) in both Ray.Sql raw SQL and Ray.AuraSqlQuery query builder.
+[ray/aura-sql-module](https://packagist.org/packages/ray/aura-sql-module) supports pagination (page splitting) in both Aura.Sql raw SQL and Ray.AuraSqlQuery query builder.
 We create a pager using the `newInstance()` with a uri_template, binding values and the number of items per page. You can access the page by $page[$number].
 
 ### Aura.Sql
