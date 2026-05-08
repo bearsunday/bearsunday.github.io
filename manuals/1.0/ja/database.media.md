@@ -76,9 +76,9 @@ class Todo
         private TodoAddInterface $todoAdd
     ) {}
 
-    public function add(string $id, string $title): void
+    public function add(string $title): void
     {
-        $this->todoAdd->add($id, $title);
+        $this->todoAdd->add($title);
     }
 }
 ```
