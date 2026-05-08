@@ -5629,7 +5629,7 @@ $affected->isAffected(); // bool — true when count > 0
 
 When a SQL file contains multiple statements, `AffectedRows` reflects the **last executed statement only**.
 
-Reference implementation: [`ArticleAffectedRowsCommandInterface`](https://github.com/bearsunday/MyVendor.Cms/blob/1.x/src/Query/Samples/ArticleAffectedRowsCommandInterface.php) ([MyVendor.Cms](https://github.com/bearsunday/MyVendor.Cms)).
+Executable examples: [`TodoAffectedInterface`](https://github.com/ray-di/Ray.MediaQuery/blob/1.1.0/tests/Fake/Queries/TodoAffectedInterface.php) and [`DbQueryAffectedRowsTest`](https://github.com/ray-di/Ray.MediaQuery/blob/1.1.0/tests/DbQueryAffectedRowsTest.php).
 
 #### InsertedRow (INSERT resolved values and id)
 
@@ -5672,7 +5672,7 @@ interface PostQueryInterface
 | `$statement` | `PDOStatement`             | The executed statement; inspect `rowCount()`, column metadata, etc. |
 | `$pdo`       | `ExtendedPdoInterface`     | The connection; useful for `lastInsertId()` and follow-up reads.    |
 | `$values`    | `array<string, mixed>`     | Parameter values resolved by `ParamConverter` / `ParamInjector` (UUIDs, timestamps, [value object](#value-objects-vo) scalars). |
-| `$rows`      | `array<mixed>`             | Fetched rows on SELECT — hydrated entities when `factory:` is specified, associative arrays otherwise. Always `[]` for DML. |
+| `$rows`      | `array<mixed>`             | Fetched rows on SELECT — hydrated entities when `@return Wrapper<Entity>` or `factory:` resolves an entity, associative arrays otherwise. Always `[]` for DML. |
 
 ```php
 use Ray\MediaQuery\Result\PostQueryContext;
@@ -5702,12 +5702,12 @@ interface ArticleRepositoryInterface
 }
 ```
 
-Hydration of each row is configured the same way as for an Entity list: via `factory:`. The wrapper uses **composition** rather than inheritance, so it can hold any internal collection — Laravel `Collection`, Doctrine `ArrayCollection`, or a custom one — without coupling to any specific library.
+Hydration of each row is configured the same way as for an Entity list: via a generic `@return Articles<Entity>` docblock or `factory:`. The wrapper uses **composition** rather than inheritance, so it can hold any internal collection — Laravel `Collection`, Doctrine `ArrayCollection`, or a custom one — without coupling to any specific library.
 
-Reference implementation ([MyVendor.Cms](https://github.com/bearsunday/MyVendor.Cms)):
+Executable examples in Ray.MediaQuery:
 
-- [`ArticleSelection`](https://github.com/bearsunday/MyVendor.Cms/blob/1.x/src/Result/ArticleSelection.php) — collection with domain methods `published()` / `titles()` / `first()`
-- [`ArticleSelectionQueryInterface`](https://github.com/bearsunday/MyVendor.Cms/blob/1.x/src/Query/ArticleSelectionQueryInterface.php) — declaring the wrapper as the return type with `factory: ArticleFactory::class`
+- [`Articles`](https://github.com/ray-di/Ray.MediaQuery/blob/1.1.0/tests/Fake/Result/Articles.php) — collection wrapper around `PostQueryContext::$rows`
+- [`ArticlesInterface`](https://github.com/ray-di/Ray.MediaQuery/blob/1.1.0/tests/Fake/Queries/ArticlesInterface.php) — declaring assoc rows, docblock-hydrated rows, and `factory:` hydrated rows
 
 > `AffectedRows` and `InsertedRow` are themselves implementations of `PostQueryInterface`. If you need a custom DML result type — e.g. one that bundles audit logging or aggregate counters — you can build it through the same mechanism.
 

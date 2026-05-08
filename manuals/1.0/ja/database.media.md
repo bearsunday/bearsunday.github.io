@@ -174,7 +174,7 @@ $affected->isAffected(); // bool — count > 0 のときtrue
 
 SQLファイルに複数のステートメントが含まれる場合、`AffectedRows`は**最後に実行されたステートメントの結果**を表します。
 
-参考実装: [`ArticleAffectedRowsCommandInterface`](https://github.com/bearsunday/MyVendor.Cms/blob/1.x/src/Query/Samples/ArticleAffectedRowsCommandInterface.php)（[MyVendor.Cms](https://github.com/bearsunday/MyVendor.Cms)）
+実行可能な例: [`TodoAffectedInterface`](https://github.com/ray-di/Ray.MediaQuery/blob/1.1.0/tests/Fake/Queries/TodoAffectedInterface.php) と [`DbQueryAffectedRowsTest`](https://github.com/ray-di/Ray.MediaQuery/blob/1.1.0/tests/DbQueryAffectedRowsTest.php)
 
 #### InsertedRow（INSERT の解決済み値とID）
 
@@ -217,7 +217,7 @@ interface PostQueryInterface
 | `$statement` | `PDOStatement`             | 実行済みステートメント。`rowCount()`やカラムメタデータ等を参照可能。       |
 | `$pdo`       | `ExtendedPdoInterface`     | 接続。`lastInsertId()` や追加読み取りに使う。                          |
 | `$values`    | `array<string, mixed>`     | `ParamConverter` / `ParamInjector` 解決後の値（UUID、タイムスタンプ、[バリューオブジェクト](#バリューオブジェクトvo)のスカラー化等）。 |
-| `$rows`      | `array<mixed>`             | SELECT時の取得行。`factory:` 指定時は hydrate 済みエンティティ、未指定時は連想配列。DML 時は常に `[]`。 |
+| `$rows`      | `array<mixed>`             | SELECT時の取得行。`@return Wrapper<Entity>` または `factory:` でエンティティが解決されると hydrate 済みエンティティ、未指定時は連想配列。DML 時は常に `[]`。 |
 
 ```php
 use Ray\MediaQuery\Result\PostQueryContext;
@@ -247,12 +247,12 @@ interface ArticleRepositoryInterface
 }
 ```
 
-各行のhydrationは Entity リストと同じく `factory:` で指示します。継承ではなく**コンポジション**で表現することで、Laravel `Collection`、Doctrine `ArrayCollection`、独自実装などを自由に内部に保持できます。
+各行のhydrationは Entity リストと同じく、generic な `@return Articles<Entity>` docblock または `factory:` で指示します。継承ではなく**コンポジション**で表現することで、Laravel `Collection`、Doctrine `ArrayCollection`、独自実装などを自由に内部に保持できます。
 
-参考実装（[MyVendor.Cms](https://github.com/bearsunday/MyVendor.Cms)）:
+Ray.MediaQuery の実行可能な例:
 
-- [`ArticleSelection`](https://github.com/bearsunday/MyVendor.Cms/blob/1.x/src/Result/ArticleSelection.php) — `published()` / `titles()` / `first()` のドメインメソッドを持つコレクション
-- [`ArticleSelectionQueryInterface`](https://github.com/bearsunday/MyVendor.Cms/blob/1.x/src/Query/ArticleSelectionQueryInterface.php) — `factory: ArticleFactory::class` でラッパーを戻り値型に宣言
+- [`Articles`](https://github.com/ray-di/Ray.MediaQuery/blob/1.1.0/tests/Fake/Result/Articles.php) — `PostQueryContext::$rows` をラップするコレクション
+- [`ArticlesInterface`](https://github.com/ray-di/Ray.MediaQuery/blob/1.1.0/tests/Fake/Queries/ArticlesInterface.php) — 連想配列、docblock による hydrate、`factory:` による hydrate の宣言例
 
 > なお、`AffectedRows` / `InsertedRow` も同じ `PostQueryInterface` の実装です。DML 後に独自の集計や監査ログを伴う結果型が欲しい場合は、同じ仕組みで自作できます。
 
