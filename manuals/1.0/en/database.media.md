@@ -226,8 +226,8 @@ use Ray\MediaQuery\Result\PostQueryInterface;
 /** @implements IteratorAggregate<int, Article> */
 final class Articles implements PostQueryInterface, IteratorAggregate, Countable
 {
-    /** @param list<Article> $items */
-    public function __construct(public readonly array $items) {}
+    /** @param list<Article> $rows */
+    public function __construct(public readonly array $rows) {}
 
     public static function fromContext(PostQueryContext $context): static
     {
@@ -236,8 +236,8 @@ final class Articles implements PostQueryInterface, IteratorAggregate, Countable
         return new static($rows);
     }
 
-    public function getIterator(): ArrayIterator { return new ArrayIterator($this->items); }
-    public function count(): int { return count($this->items); }
+    public function getIterator(): ArrayIterator { return new ArrayIterator($this->rows); }
+    public function count(): int { return count($this->rows); }
 }
 
 interface ArticleRepositoryInterface
@@ -247,7 +247,7 @@ interface ArticleRepositoryInterface
 }
 ```
 
-Hydration of each row is configured the same way as for an Entity list: via a generic `@return Articles<Entity>` docblock or `factory:`. The wrapper uses **composition** rather than inheritance, so it can hold any internal collection — Laravel `Collection`, Doctrine `ArrayCollection`, or a custom one — without coupling to any specific library.
+Hydration of each row is configured the same way as for an Entity list: via a generic `@return YourWrapper<Entity>` docblock or `factory:`. The wrapper uses **composition** rather than inheritance, so it can hold any internal collection — Laravel `Collection`, Doctrine `ArrayCollection`, or a custom one — without coupling to any specific library.
 
 Executable examples in Ray.MediaQuery:
 

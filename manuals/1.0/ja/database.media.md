@@ -226,8 +226,8 @@ use Ray\MediaQuery\Result\PostQueryInterface;
 /** @implements IteratorAggregate<int, Article> */
 final class Articles implements PostQueryInterface, IteratorAggregate, Countable
 {
-    /** @param list<Article> $items */
-    public function __construct(public readonly array $items) {}
+    /** @param list<Article> $rows */
+    public function __construct(public readonly array $rows) {}
 
     public static function fromContext(PostQueryContext $context): static
     {
@@ -236,8 +236,8 @@ final class Articles implements PostQueryInterface, IteratorAggregate, Countable
         return new static($rows);
     }
 
-    public function getIterator(): ArrayIterator { return new ArrayIterator($this->items); }
-    public function count(): int { return count($this->items); }
+    public function getIterator(): ArrayIterator { return new ArrayIterator($this->rows); }
+    public function count(): int { return count($this->rows); }
 }
 
 interface ArticleRepositoryInterface
@@ -247,7 +247,7 @@ interface ArticleRepositoryInterface
 }
 ```
 
-各行のhydrationは Entity リストと同じく、generic な `@return Articles<Entity>` docblock または `factory:` で指示します。継承ではなく**コンポジション**で表現することで、Laravel `Collection`、Doctrine `ArrayCollection`、独自実装などを自由に内部に保持できます。
+各行のhydrationは Entity リストと同じく、generic な `@return YourWrapper<Entity>` docblock または `factory:` で指示します。継承ではなく**コンポジション**で表現することで、Laravel `Collection`、Doctrine `ArrayCollection`、独自実装などを自由に内部に保持できます。
 
 Ray.MediaQuery の実行可能な例:
 
