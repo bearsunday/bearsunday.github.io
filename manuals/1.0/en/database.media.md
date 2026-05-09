@@ -203,6 +203,8 @@ $inserted->id;      // ?string — auto-increment id, null when none was assigne
 
 Sometimes you want to wrap a SELECT result in your own collection type — exposing domain methods like `published()` / `titles()` instead of returning a plain `array<Article>`. Declare a class that implements `PostQueryInterface` as the return type, and the framework collects the post-execution state into a `PostQueryContext`, passes it to the static `fromContext()` factory, and lets the class decide how to assemble itself.
 
+In CQRS terms, this is a query-local projection: a typed read-side view assembled from one `#[DbQuery]` result. The projection belongs to the query result boundary, not to the entity, controller, or service layer.
+
 ```php
 interface PostQueryInterface
 {
