@@ -7,7 +7,7 @@ permalink: /manuals/1.0/en/async.html
 
 # Parallel Resource Execution <sup style="font-size:0.5em; color:#666; font-weight:normal;">Alpha</sup>
 
-BEAR.Async turns the previously sequential fetch of `#[Embed]` resources into transparent parallel execution. Keep your resource code as-is and just choose an execution mode at the application boundary; embedded resources automatically switch to parallel fetching. No changes to existing resource classes are required.
+BEAR.Async turns the previously sequential fetch of `#[Embed]` resources into transparent parallel execution. Without touching your resource code, just add a dedicated entrypoint script for parallel execution and embedded resources automatically switch to parallel fetching.
 
 ## Overview
 
