@@ -11,7 +11,7 @@ BEAR.Asyncはこれまで逐次取得されていた`#[Embed]`埋め込みリソ
 
 ## 概要
 
-標準のBEAR.Sundayでは`#[Embed]`リソースは順次取得されますが、BEAR.Asyncで実行モードを選択すると並列に取得されます。
+標準のBEAR.Sundayでは`#[Embed]`リソースは順次取得されますが、BEAR.Asyncでランタイム環境を選択すると並列に取得されます。
 
 ```text
 [順次実行]                       [並列実行]
@@ -49,9 +49,9 @@ BEAR.Sundayでは「リソース」という境界がこの問題を断ち切り
 composer require bear/async
 ```
 
-## 実行モード
+## ランタイム環境
 
-サーバー環境に応じて適切な実行モードを選択します。
+サーバー構成に応じて適切なランタイム環境を選択します。
 
 | 用途 | エントリポイント | ランタイム設定 |
 |-----|-----|-----|
@@ -60,7 +60,7 @@ composer require bear/async
 
 ### 並列実行（ext-parallel）
 
-PHP-FPM / Apache 上で動作する典型的な Web アプリケーション向けの実行モードです。ext-parallel のスレッドプールで`#[Embed]`を並列実行します。
+PHP-FPM / Apache 上で動作する典型的な Web アプリケーション向けのランタイム環境です。ext-parallel のスレッドプールで`#[Embed]`を並列実行します。
 
 `bin/app.php`の隣に`bin/async.php`を追加します。このエントリポイントはライブラリの`bootstrap.php`に処理を委譲し、通常の`AppModule`の上に ext-parallel ランタイムをオーバーレイします。
 
@@ -96,7 +96,7 @@ exit((require $bootstrap)(
 
 ### Swoole実行（ext-swoole）
 
-すでに Swoole HTTP Server で稼働しており、高い並行性能が求められるアプリケーション向けの実行モードです。
+すでに Swoole HTTP Server で稼働しており、高い並行性能が求められるアプリケーション向けのランタイム環境です。
 
 ext-parallel はワーカーランタイム（別スレッド）で動作するため別エントリポイントで選択しますが、ext-swoole は同一サーバプロセス内で動作するためアプリケーションモジュールとしてインストールします。
 
@@ -118,7 +118,7 @@ Swooleではコルーチンがメモリを共有するため、`PdoPoolEnvModule
 
 ## 使用方法
 
-実行モードを選択すると、既存の`#[Embed]`リソースは自動的に並列実行されます。
+ランタイム環境を選択すると、既存の`#[Embed]`リソースは自動的に並列実行されます。
 
 ```php
 class Dashboard extends ResourceObject
@@ -134,13 +134,13 @@ class Dashboard extends ResourceObject
 }
 ```
 
-開発環境では`bin/app.php`を使用して同期モードでデバッグし、本番環境では`bin/async.php`から起動することで並列実行を有効にできます。`AppModule`は実行形態に依存しないため、同じコードがそのまま両モードで動作します。
+開発環境では`bin/app.php`を使用して同期実行でデバッグし、本番環境では`bin/async.php`から起動することで並列実行を有効にできます。`AppModule`は実行形態に依存しないため、同じコードがそのまま両環境で動作します。
 
 ## 動作要件
 
-ライブラリ自体はPHP 8.2+で動作します。各実行モードはそれぞれ別のランタイムを必要とします。
+ライブラリ自体はPHP 8.2+で動作します。各ランタイム環境は対応するPHP拡張を必要とします。
 
-| モード | 必要なもの | アプリケーション側の変更 |
+| ランタイム環境 | 必要なもの | アプリケーション側の変更 |
 |-----|-----|-----|
 | ext-parallel | ZTS PHP + ext-parallel | `bin/async.php`を追加 |
 | ext-swoole | ext-swoole | `AsyncSwooleModule`をインストール、`bin/swoole.php`を使用 |
