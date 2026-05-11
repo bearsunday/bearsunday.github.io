@@ -73,8 +73,6 @@ bin/async.php → vendor/bear/async/bootstrap.php → AppModule + ランタイ�
 
 declare(strict_types=1);
 
-use BEAR\AppMeta\Meta;
-
 require dirname(__DIR__) . '/vendor/autoload.php';
 
 $bootstrap = dirname(__DIR__) . '/vendor/bear/async/bootstrap.php';
