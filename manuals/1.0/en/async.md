@@ -7,7 +7,7 @@ permalink: /manuals/1.0/en/async.html
 
 # Parallel Resource Execution <sup style="font-size:0.5em; color:#666; font-weight:normal;">Alpha</sup>
 
-BEAR.Async enables transparent parallel execution of `#[Embed]` resources. Embedded resources are fetched in parallel without changing any application code. Resource classes written 10 years ago can benefit from parallel execution just by adding a Module.
+BEAR.Async enables transparent parallel execution of `#[Embed]` resources. Embedded resources are fetched in parallel without changing resource code. Choose an async execution mode at the application boundary: a dedicated `bin/async.php` entrypoint for ext-parallel, or an `AsyncSwooleModule` application module for Swoole.
 
 ## Overview
 
@@ -35,7 +35,7 @@ In BEAR.Sunday, a URI expresses **intent**, not just a location.
 #[Embed(rel: 'profile', src: 'query://self/user_profile{?id}')]
 ```
 
-The `query://self/user_profile` expresses only the intent: "I want the user's profile information." This separation of "What" from "How" allows the same code to work in both sync and parallel execution. Debug with Xdebug in development, then switch Module in production to enable parallel execution.
+The `query://self/user_profile` expresses only the intent: "I want the user's profile information." This separation of "What" from "How" allows the same code to work in both sync and parallel execution. Debug with Xdebug through the normal entrypoint in development, then serve through the async entrypoint or Swoole server in production.
 
 ### Solving the Function Coloring Problem
 
@@ -49,31 +49,51 @@ In BEAR.Sunday, the "resource" boundary cuts through this problem. No async-spec
 composer require bear/async
 ```
 
-## Configuration
+## Execution Modes
 
-Choose the appropriate module based on your server environment.
+Choose the appropriate execution mode based on your server environment.
 
-| Environment | Module | Features |
-|-------------|--------|----------|
-| PHP-FPM / Apache | `AsyncParallelModule` | Uses ext-parallel, requires ZTS PHP |
-| Swoole HTTP Server | `AsyncSwooleModule` | Uses coroutines, requires connection pool |
+| Environment | Runtime requirement | Application boundary |
+|-------------|---------------------|----------------------|
+| PHP-FPM / Apache | ZTS PHP + ext-parallel | Add a dedicated `bin/async.php` entrypoint |
+| Swoole HTTP Server | ext-swoole | Install `AsyncSwooleModule` and serve with `bin/swoole.php` |
 
-### AsyncParallelModule
+### Parallel execution (ext-parallel)
+
+For PHP-FPM or Apache, keep `AppModule` ignorant of the execution form. Add a dedicated entrypoint that overlays the ext-parallel runtime on the normal application injector.
 
 ```php
-use BEAR\Async\Module\AsyncParallelModule;
+<?php // bin/async.php
 
-class AppModule extends AbstractModule
-{
-    protected function configure(): void
-    {
-        $this->install(new AsyncParallelModule(
-            namespace: 'MyVendor\MyApp',
-            context: 'prod-app',
-            appDir: dirname(__DIR__),
-        ));
-    }
-}
+declare(strict_types=1);
+
+require dirname(__DIR__) . '/autoload.php';
+
+$bootstrap = dirname(__DIR__) . '/vendor/bear/async/bootstrap.php';
+$context = getenv('BEAR_CONTEXT') ?: 'prod-hal-app';
+
+exit((require $bootstrap)(
+    $context,
+    'MyVendor\MyApp',
+    dirname(__DIR__),
+    $GLOBALS,
+    $_SERVER,
+));
+```
+
+The library bootstrap installs the parallel runtime as an override. Your resource classes and `AppModule` stay unchanged, and worker runtimes use the same context through the normal injector without installing the parallel override again.
+
+You can pass an optional pool size as the sixth argument.
+
+```php
+exit((require $bootstrap)(
+    $context,
+    'MyVendor\MyApp',
+    dirname(__DIR__),
+    $GLOBALS,
+    $_SERVER,
+    8,
+));
 ```
 
 ### AsyncSwooleModule
@@ -94,9 +114,11 @@ class AppModule extends AbstractModule
 
 Swoole coroutines share memory, so `PdoPoolEnvModule` is required for connection pooling.
 
+The difference is intentional: ext-parallel is selected by a separate entrypoint because worker runtimes must bootstrap the normal application without the parallel override. Swoole runs as a single server process with coroutines, so the coroutine runtime can be installed as an application module.
+
 ## Usage
 
-Once the module is installed, existing `#[Embed]` resources are automatically executed in parallel.
+When the application is served through the async execution mode, existing `#[Embed]` resources are automatically executed in parallel.
 
 ```php
 class Dashboard extends ResourceObject
@@ -112,7 +134,7 @@ class Dashboard extends ResourceObject
 }
 ```
 
-By not installing the async module in development and only enabling it in production, you can debug in sync mode and run parallel in production.
+Use the normal entrypoint during development for sync-mode debugging, then use `bin/async.php` or the Swoole server entrypoint in production for parallel execution.
 
 ## BEAR.Projection Integration
 
