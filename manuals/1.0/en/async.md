@@ -7,7 +7,7 @@ permalink: /manuals/1.0/en/async.html
 
 # Parallel Resource Execution <sup style="font-size:0.5em; color:#666; font-weight:normal;">Alpha</sup>
 
-BEAR.Async enables transparent parallel execution of `#[Embed]` resources. It preserves your resource code and lets you choose an async execution mode at the application boundary — no async/await, no Promise, no yield, no rewrites. Resource classes written 10 years ago can benefit from parallel execution unchanged.
+BEAR.Async enables transparent parallel execution of `#[Embed]` resources. It preserves your resource code and lets you choose an async execution mode at the application boundary. Existing resource classes run in parallel unchanged — no rewrites required.
 
 ## Overview
 
