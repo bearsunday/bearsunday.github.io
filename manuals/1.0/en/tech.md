@@ -104,9 +104,9 @@ In Swoole configurations, persistent workers reduce bootstrapping to a single in
 
 In BEAR.Sunday, a URI expresses "intent" rather than being merely a communication protocol or locator. `app://self/user` expresses only the intent "I want user information"—whether it comes from MySQL or Redis is hidden from the application.
 
-This complete separation of "What" from "How" enables multiple resources embedded with `#[Embed]` to be fetched in parallel without changing any application code. Resource classes written 10 years ago can benefit from parallel execution just by adding a Module.
+This complete separation of "What" from "How" enables multiple resources embedded with `#[Embed]` to be fetched in parallel without changing resource code. Resource classes written 10 years ago can benefit from parallel execution by selecting an async execution mode at the application boundary.
 
-Three tiers of solutions are available based on server environment constraints: ext-parallel (thread pool), Swoole (coroutines), and mysqli (DB queries only). Whichever you choose, application code requires no changes. Develop and debug with standard PHP, then switch to parallel execution in production with just a configuration change.
+Three tiers of solutions are available based on server environment constraints: ext-parallel (thread pool), Swoole (coroutines), and mysqli (DB queries only). Whichever you choose, resource code requires no changes. Develop and debug with the normal PHP entrypoint, then switch to parallel execution in production through the async entrypoint or Swoole server.
 
 ## Developer Experience
 
