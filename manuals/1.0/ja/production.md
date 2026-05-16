@@ -7,18 +7,18 @@ permalink: /manuals/1.0/ja/production.html
 
 # プロダクション
 
-BEAR.Sunday既定の`prod`束縛に対して、アプリケーションがそれぞれの[デプロイ環境](https://en.wikipedia.org/wiki/Deployment_environment)に応じたモジュールをカスタマイズして束縛を行います。
+BEAR.Sundayの既定の`prod`束縛をベースに、アプリケーション側で各[デプロイ環境](https://en.wikipedia.org/wiki/Deployment_environment)に応じたモジュールを追加・上書きしてカスタマイズします。
 
 ## 既定のProdModule
 
-既定の`prod`束縛では以下のインターフェイスの束縛がされています。
+既定の`prod`束縛では、以下のインターフェイスが束縛されています。
 
 * エラーページ生成ファクトリー
 * PSRロガーインターフェース
 * ローカルキャッシュ
 * 分散キャッシュ
 
-詳細はBEAR.Packageの[ProdModule.php](https://github.com/bearsunday/BEAR.Package/blob/1.x/src/Context/ProdModule.php)参照。
+詳細はBEAR.Packageの[ProdModule.php](https://github.com/bearsunday/BEAR.Package/blob/1.x/src/Context/ProdModule.php)を参照してください。
 
 ## アプリケーションのProdModule
 
@@ -52,15 +52,15 @@ class ProdModule extends AbstractModule
 
 ## キャッシュ
 
-キャッシュはローカルキャッシュと、複数のWebサーバー間でシェアをする分散キャッシュの2種類があります。どちらのキャッシュもデフォルトは[PhpFileCache](https://www.doctrine-project.org/projects/doctrine-cache/en/1.10/index.html#phpfilecache)です。
+キャッシュには、ローカルキャッシュと複数のWebサーバー間で共有する分散キャッシュの2種類があります。どちらのキャッシュもデフォルトは[PhpFileCache](https://www.doctrine-project.org/projects/doctrine-cache/en/1.10/index.html#phpfilecache)です。
 
 ### ローカルキャッシュ
 
-ローカルキャッシュはdeploy後に変更のないアノテーション等のキャッシュ例に使われ、分散キャッシュはリソース状態の保存に使われます。
+ローカルキャッシュはデプロイ後に変更されないアノテーションなどのキャッシュに使われ、分散キャッシュはリソース状態の保存に使われます。
 
 ### 分散キャッシュ
 
-2つ以上のWebサーバーでサービスを行うためには分散キャッシュの構成が必要です。代表的な[memcached](http://php.net/manual/ja/book.memcached.php)、[Redis](https://redis.io)のキャッシュエンジンのそれぞれのモジュールが用意されています。
+2つ以上のWebサーバーでサービスを提供するには分散キャッシュの構成が必要です。代表的なキャッシュエンジンである[memcached](https://www.php.net/manual/ja/book.memcached.php)や[Redis](https://redis.io)向けのモジュールが用意されています。
 
 ### Memcached
 ```php

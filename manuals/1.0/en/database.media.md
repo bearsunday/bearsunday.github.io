@@ -19,7 +19,7 @@ permalink: /manuals/1.0/en/database_media.html
 composer require ray/media-query
 ```
 
-> **Note**: Web API functionality has been moved to a separate package [ray/web-query](https://github.com/ray-di/Ray.WebQuery).
+> **Note**: For the same interface-driven approach over Web APIs, see [ray/web-query](https://github.com/ray-di/Ray.WebQuery).
 
 ## Usage
 
@@ -35,7 +35,7 @@ use Ray\MediaQuery\Annotation\DbQuery;
 interface TodoAddInterface
 {
     #[DbQuery('todo_add')]
-    public function add(string $id, string $title): void;
+    public function add(string $title): void;
 }
 ```
 
@@ -76,23 +76,25 @@ class Todo
         private TodoAddInterface $todoAdd
     ) {}
 
-    public function add(string $id, string $title): void
+    public function add(string $title): void
     {
-        $this->todoAdd->add($id, $title);
+        $this->todoAdd->add($title);
     }
 }
 ```
 
 ### DbQuery
 
-SQL execution is mapped to methods, binding the SQL specified by ID with method arguments for execution. For example, with ID `todo_item`, it executes `todo_item.sql` SQL statement bound with `['id => $id]`.
+SQL execution is mapped to methods, binding the SQL specified by ID with method arguments for execution. For example, with ID `todo_item`, it executes `todo_item.sql` SQL statement bound with `['id' => $id]`.
 
 * Prepare SQL files in the `$sqlDir` directory.
 * SQL files can contain multiple SQL statements. The last SELECT statement becomes the return value.
 
-#### Entity
+The two basic shapes are **Entity** (single row hydrated to an object) and **Entity list** (rowlist hydrated to an array of objects). Other shapes — raw assoc arrays, custom collections, pagination, DML results — build on these.
 
-When you specify a return type for a method, SQL execution results are automatically converted (hydrated) to that entity class.
+#### Entity (single row)
+
+When you specify an entity class as the return type, the SQL result is automatically converted (_hydrated_) into an instance of that class.
 
 ```php
 interface TodoItemInterface
@@ -102,7 +104,7 @@ interface TodoItemInterface
 }
 ```
 
-**Constructor Property Promotion (Recommended)**
+##### Constructor Property Promotion (Recommended)
 
 Using constructor property promotion creates type-safe and immutable entities.
 
@@ -116,30 +118,33 @@ final class Todo
 }
 ```
 
-**Automatic snake_case → camelCase Conversion**
+Values are bound to constructor arguments **by position**, in the order of the columns in the SELECT clause. Column names (e.g. `user_name`) do not need to match property names (e.g. `$userName`) — just make sure the column order matches the constructor argument order.
 
-Database column names (snake_case) and property names (camelCase) are automatically converted.
+`Entity|null` is also supported and returns `null` when no row matches.
+
+> **Note**: When the entity has no constructor, Ray.MediaQuery falls back to PDO's `FETCH_CLASS` and maps **column name → property name** (no snake_case conversion). This avoids any dependency on column ordering, which is useful for wide read-only DTOs or PHP 8.4 `readonly class` declarations.
+
+#### Entity list (rowlist)
+
+Declare `array` as the return type to receive multiple rows. Tell the framework which entity to hydrate each row into via a `@return list<Entity>` docblock or the `factory:` parameter on `#[DbQuery]`.
 
 ```php
-final class Invoice
+interface TodoListInterface
 {
-    public function __construct(
-        public readonly string $id,
-        public readonly string $title,
-        public readonly string $userName,      // user_name → userName
-        public readonly string $emailAddress,  // email_address → emailAddress
-    ) {}
+    /** @return list<Todo> */
+    #[DbQuery('todo_list')]
+    public function list(): array;
+
+    #[DbQuery('todo_list', factory: TodoFactory::class)]
+    public function listByFactory(): array;
 }
 ```
 
-```sql
--- invoice.sql
-SELECT id, title, user_name, email_address FROM invoices WHERE id = :id
-```
+Without `@return list<Entity>` or `factory:`, rows are returned as associative arrays — see [type: 'row'](#type-row-raw-associative-array) below for the single-row equivalent.
 
-#### type: 'row'
+#### type: 'row' (raw associative array)
 
-Specify `type: 'row'` to retrieve a single row result as an associative array.
+By default, an `array` return type yields a rowlist (`[['id' => '1', 'title' => 'run'], ...]`). To receive a single row — for example an aggregate result such as `['total' => 10, 'active' => 5]` — **directly** as an associative array, specify `type: 'row'`. Without it, that row is returned at `$result[0]`.
 
 ```php
 interface TodoItemInterface
@@ -148,6 +153,123 @@ interface TodoItemInterface
     public function getStats(string $id): array;  // ['total' => 10, 'active' => 5]
 }
 ```
+
+#### AffectedRows (UPDATE / DELETE row count)
+
+Declare `AffectedRows` as the return type to receive the affected row count of an `UPDATE` / `DELETE` as a typed value rather than a bare `int`.
+
+```php
+use Ray\MediaQuery\Result\AffectedRows;
+
+interface TodoRepositoryInterface
+{
+    #[DbQuery('todo_delete')]
+    public function delete(string $id): AffectedRows;
+}
+
+$affected = $todoRepo->delete($id);
+$affected->count;        // int — number of affected rows
+$affected->isAffected(); // bool — true when count > 0
+```
+
+When a SQL file contains multiple statements, `AffectedRows` reflects the **last executed statement only**.
+
+Executable examples: [`TodoAffectedInterface`](https://github.com/ray-di/Ray.MediaQuery/blob/1.1.0/tests/Fake/Queries/TodoAffectedInterface.php) and [`DbQueryAffectedRowsTest`](https://github.com/ray-di/Ray.MediaQuery/blob/1.1.0/tests/DbQueryAffectedRowsTest.php).
+
+#### InsertedRow (INSERT resolved values and id)
+
+Use `InsertedRow` to recover the values the framework injected on the caller's behalf (UUIDs, timestamps, `DateTime` → SQL strings, `ToScalarInterface` reductions) together with the auto-increment id reported by the driver. The same SQL id can be reused with a different return type — the framework switches behaviour (execute-only / affected count / inserted id) based on the declared return type alone.
+
+```php
+use Ray\MediaQuery\Result\InsertedRow;
+
+interface TodoAddInterface
+{
+    #[DbQuery('todo_add')]
+    public function add(string $title): void;
+
+    #[DbQuery('todo_add')]
+    public function addReturning(string $title): InsertedRow;
+}
+
+$inserted = $todoAdd->addReturning('Write docs');
+$inserted->values;  // array<string, mixed> — resolved values bound to the driver
+$inserted->id;      // ?string — auto-increment id, null when none was assigned
+```
+
+`$inserted->id` is normalised to `null` when the driver returns `false` / `''` / `'0'`.
+
+#### PostQueryInterface (custom typed results)
+
+Sometimes you want to wrap a SELECT result in your own collection type — exposing domain methods like `published()` / `titles()` instead of returning a plain `array<Article>`. Declare a class that implements `PostQueryInterface` as the return type, and the framework collects the post-execution state into a `PostQueryContext`, passes it to the static `fromContext()` factory, and lets the class decide how to assemble itself.
+
+```php
+interface PostQueryInterface
+{
+    public static function fromContext(PostQueryContext $context): static;
+}
+```
+
+`PostQueryContext` provides four readonly properties:
+
+| Property     | Type                       | Purpose                                                       |
+|--------------|----------------------------|---------------------------------------------------------------|
+| `$statement` | `PDOStatement`             | The executed statement; inspect `rowCount()`, column metadata, etc. |
+| `$pdo`       | `ExtendedPdoInterface`     | The connection; useful for `lastInsertId()` and follow-up reads.    |
+| `$values`    | `array<string, mixed>`     | Parameter values resolved by `ParamConverter` / `ParamInjector` (UUIDs, timestamps, [value object](#value-objects-vo) scalars). |
+| `$rows`      | `array<mixed>`             | Fetched rows on SELECT — hydrated entities when `@return Wrapper<Entity>` or `factory:` resolves an entity, associative arrays otherwise. Always `[]` for DML. |
+
+```php
+use Ray\MediaQuery\Result\PostQueryContext;
+use Ray\MediaQuery\Result\PostQueryInterface;
+
+/** @implements IteratorAggregate<int, Article> */
+final class Articles implements PostQueryInterface, IteratorAggregate, Countable
+{
+    /** @param list<Article> $rows */
+    public function __construct(public readonly array $rows) {}
+
+    public static function fromContext(PostQueryContext $context): static
+    {
+        /** @var list<Article> $rows */
+        $rows = $context->rows;
+        return new static($rows);
+    }
+
+    public function getIterator(): ArrayIterator { return new ArrayIterator($this->rows); }
+    public function count(): int { return count($this->rows); }
+}
+
+interface ArticleRepositoryInterface
+{
+    #[DbQuery('article_list', factory: ArticleFactory::class)]
+    public function list(): Articles;
+}
+```
+
+Hydration of each row is configured the same way as for an Entity list: via a generic `@return YourWrapper<Entity>` docblock or `factory:`. The wrapper uses **composition** rather than inheritance, so it can hold any internal collection — Laravel `Collection`, Doctrine `ArrayCollection`, or a custom one — without coupling to any specific library.
+
+Executable examples in Ray.MediaQuery:
+
+- [`Articles`](https://github.com/ray-di/Ray.MediaQuery/blob/1.1.0/tests/Fake/Result/Articles.php) — collection wrapper around `PostQueryContext::$rows`
+- [`ArticlesInterface`](https://github.com/ray-di/Ray.MediaQuery/blob/1.1.0/tests/Fake/Queries/ArticlesInterface.php) — declaring assoc rows, docblock-hydrated rows, and `factory:` hydrated rows
+
+> `AffectedRows` and `InsertedRow` are themselves implementations of `PostQueryInterface`. If you need a custom DML result type — e.g. one that bundles audit logging or aggregate counters — you can build it through the same mechanism.
+
+#### Return type cheat sheet
+
+|             | Single row                          | Rowlist                                              |
+|-------------|-------------------------------------|------------------------------------------------------|
+| Hydrated    | `Entity` / <code>Entity&#124;null</code> | `array` + `@return list<Entity>` or `factory:`       |
+| Assoc array | `array` + `#[DbQuery(type: 'row')]` | `array` (no docblock / `factory:`)                   |
+
+For richer return types:
+
+- `MyColl` implementing `PostQueryInterface` — custom typed collection wrappers
+- `PagesInterface` + `#[Pager]` — pagination
+- `AffectedRows` — DML affected row count
+- `InsertedRow` — DML insert id + resolved values
+- `void` — DML execute only
 
 ## Parameters
 
@@ -163,7 +285,7 @@ interface TaskAddInterface
 }
 ```
 
-Values are converted to date-formatted strings during SQL execution or Web API requests.
+Values are converted to date-formatted strings during SQL execution.
 
 ```sql
 INSERT INTO task (title, created_at) VALUES (:title, :createdAt); # 2021-2-14 00:00:00
@@ -186,6 +308,7 @@ When value objects other than `DateTime` are passed, the return value of the `to
 ```php
 interface MemoAddInterface
 {
+    #[DbQuery('memo_add')]
     public function __invoke(string $memo, UserId $userId = null): void;
 }
 ```
@@ -223,16 +346,16 @@ You can paginate SELECT queries with the `#[Pager]` attribute.
 ```php
 use Ray\MediaQuery\Annotation\DbQuery;
 use Ray\MediaQuery\Annotation\Pager;
-use Ray\MediaQuery\Pages;
+use Ray\MediaQuery\PagesInterface;
 
 interface TodoList
 {
     #[DbQuery('todo_list'), Pager(perPage: 10, template: '/{?page}')]
-    public function __invoke(): Pages;
+    public function __invoke(): PagesInterface;
 }
 ```
 
-You can get the count with `count()`, and get page objects with array access by page number. `Pages` is a SQL lazy execution object.
+You can get the count with `count()`, and get page objects with array access by page number. `PagesInterface` is a SQL lazy execution object.
 
 ```php
 $pages = ($todoList)();
@@ -346,6 +469,7 @@ You can implement your own [MediaQueryLoggerInterface](src/MediaQueryLoggerInter
 By implementing `PerformSqlInterface`, you can completely customize the SQL execution layer. Replace the default execution process with your own implementation to achieve advanced logging, performance monitoring, security controls, and more.
 
 ```php
+use Exception;
 use Ray\MediaQuery\PerformSqlInterface;
 
 final class CustomPerformSql implements PerformSqlInterface
@@ -427,23 +551,3 @@ This feature includes the query ID as a comment in the executed SQL, making it e
 -- App: todo_item.sql
 SELECT * FROM todo WHERE id = :id
 ```
-
-## PHP 8 Attributes
-
-Ray.MediaQuery 1.0 and later uses PHP 8 [attributes](https://www.php.net/manual/en/language.attributes.overview.php).
-
-```php
-use Ray\MediaQuery\Annotation\DbQuery;
-use Ray\MediaQuery\Annotation\Pager;
-
-interface TodoRepository
-{
-    #[DbQuery('todo_add')]
-    public function add(string $id, string $title): void;
-
-    #[DbQuery('todo_list'), Pager(perPage: 20)]
-    public function list(): Pages;
-}
-```
-
-> **Note**: Doctrine annotation (`@DbQuery`) support has been removed. For migration instructions, see [Ray.MediaQuery MIGRATION.md](https://github.com/ray-di/Ray.MediaQuery/blob/1.x/MIGRATION.md).

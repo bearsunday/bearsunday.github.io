@@ -282,7 +282,7 @@ class AppModule extends AbstractAppModule
              ->toInstance($paths);
 
         // オプション
-        // @see http://twig.sensiolabs.org/doc/api.html#environment-options
+        // @see https://twig.symfony.com/doc/2.x/api.html#environment-options
         $options = [
             'debug' => false,
             'cache' => $appDir . '/tmp'

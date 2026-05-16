@@ -3,12 +3,45 @@ require 'yaml'
 require 'pathname'
 
 def convert_to_markdown_filename(base_name)
-  # Manual source files are stored with the same kebab-case basename as their
-  # permalink, for example async.html -> async.md.
-  base_name + '.md'
+  # Legacy kebab-case to CamelCase converter.
+  base_name.split(/[_-]/).map(&:capitalize).join + '.md'
 end
 
-def extract_order_from_contents(language)
+SKIP_GENERATED_FILES = %w[1page.md onepage.md ai-assistant.md].freeze
+
+def build_permalink_index(source)
+  source.glob("**/*.md").each_with_object({}) do |path, index|
+    next if SKIP_GENERATED_FILES.include?(path.basename.to_s)
+
+    frontmatter = path.read[/\A---\s*\r?\n(.*?)\r?\n---\s*\r?\n/m, 1]
+    next unless frontmatter
+
+    data = YAML.safe_load(frontmatter, aliases: true) || {}
+    permalink = data["permalink"]
+    next unless permalink
+
+    index[permalink] = path.relative_path_from(source).to_s
+  rescue Psych::Exception
+    next
+  end
+end
+
+def resolve_markdown_filename(base_name, source, permalink_index, expected_permalink = nil)
+  candidates = [
+    "#{base_name}.md",
+    "#{base_name.tr('_', '.')}.md",
+    convert_to_markdown_filename(base_name)
+  ].uniq
+
+  matched_candidate = candidates.find { |candidate| source.join(candidate).file? }
+  return matched_candidate if matched_candidate
+
+  return nil unless expected_permalink
+
+  permalink_index[expected_permalink]
+end
+
+def extract_order_from_contents(language, source)
   # Read contents.html to get the proper order
   contents_file = File.expand_path("../_includes/manuals/1.0/#{language}/contents.html", __dir__)
   unless File.exist?(contents_file)
@@ -19,7 +52,7 @@ def extract_order_from_contents(language)
   contents = File.read(contents_file)
 
   # Extract permalinks from nav items
-  permalinks = contents.scan(/href="\/manuals\/1\.0\/#{language}\/([^"]+\.html)"/).flatten
+  permalinks = contents.scan(/href="\/manuals\/1\.0\/#{language}\/([^\"]+\.html)"/).flatten
 
   # Validate that we found some permalinks
   if permalinks.empty?
@@ -28,6 +61,8 @@ def extract_order_from_contents(language)
   end
 
   puts "Found #{permalinks.length} pages in navigation order"
+
+  permalink_index = build_permalink_index(source)
 
   # Convert HTML filenames to markdown filenames
   markdown_files = permalinks.map do |permalink|
@@ -38,8 +73,13 @@ def extract_order_from_contents(language)
     skip_pages = ['ai-assistant', 'index', '1page']
     next nil if skip_pages.include?(base)
 
-    # Convert kebab-case to CamelCase
-    convert_to_markdown_filename(base)
+    filename = resolve_markdown_filename(base, source, permalink_index, "/manuals/1.0/#{language}/#{permalink}")
+    unless filename
+      puts "Warning: Markdown file not found for #{permalink}"
+      next nil
+    end
+
+    filename
   end.compact
 
   markdown_files
@@ -51,25 +91,56 @@ def strip_frontmatter(content)
   content.sub(/\A---\s*\r?\n.*?\r?\n---\s*\r?\n/m, '')
 end
 
-def strip_trailing_whitespace(content)
-  content.lines.map(&:rstrip).join("\n")
+def normalize_generated_markdown(content)
+  inside_fence = false
+  fence_marker = nil
+
+  # Keep generated one-page Markdown explicit for renderers and LLM tools.
+  content.each_line.map do |line|
+    stripped = line.strip
+
+    if stripped.start_with?('```', '~~~')
+      marker = stripped[0, 3]
+      if inside_fence && stripped == fence_marker
+        inside_fence = false
+        fence_marker = nil
+        line
+      elsif !inside_fence
+        inside_fence = true
+        fence_marker = marker
+        stripped == marker ? line.sub(marker, "#{marker}text") : line
+      else
+        line
+      end
+    elsif !inside_fence && stripped == '---'
+      line.sub('---', '***')
+    else
+      line
+    end
+  end.join
 end
 
 def generate_combined_file(language, intro_message)
   source = Pathname.new(__dir__).join("..", "manuals/1.0/#{language}")
-  output_file = source.join("onepage.md")
+  output_file = source.join("1page.md")
+  legacy_output_file = source.join("onepage.md")
 
   puts "Processing #{language} documentation..."
   raise "Source folder does not exist!" unless source.directory?
 
+  if legacy_output_file.exist?
+    FileUtils.rm_f(legacy_output_file)
+    puts "Removed legacy file: #{legacy_output_file}"
+  end
+
   # Determine file order from contents.html or fallback to alphabetical
-  file_order = extract_order_from_contents(language)
+  file_order = extract_order_from_contents(language, source)
   if file_order.nil? || file_order.empty?
     puts "Warning: Could not extract order from contents.html, using alphabetical order"
     main_md_files = source.glob("*.md")
                           .map(&:basename)
                           .map(&:to_s)
-                          .reject { |f| %w[1page.md ai-assistant.md].include?(f) }
+                          .reject { |f| %w[1page.md onepage.md ai-assistant.md].include?(f) }
                           .sort
     bp_md_files = source.join("bp").directory? ?
                   source.join("bp").glob("*.md").map(&:basename).map(&:to_s).sort : []
@@ -106,7 +177,7 @@ def generate_combined_file(language, intro_message)
     # Process all files in a single pass
     all_files.each_with_index do |path, idx|
       begin
-        content = strip_trailing_whitespace(strip_frontmatter(path.read)).strip
+        content = normalize_generated_markdown(strip_frontmatter(path.read)).strip
         next if content.empty?
 
         # Add separator between sections (except first)

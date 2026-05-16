@@ -62,7 +62,7 @@ source <(malt env)
 
 ### Configuration Files
 
-```
+```text
 malt.json          # malt configuration
 malt/
   conf/
@@ -246,17 +246,20 @@ brew install shivammathur/extensions/apcu@8.4     # Homebrew
 sudo apt install php8.4-apcu                      # Ubuntu
 ```
 
-**Important**: Xdebug and XHProf impact performance, so avoid enabling them permanently in php.ini. Instead, enable them only when needed using the `-d` option.
+**Important**: Xdebug and XHProf impact performance, so avoid leaving them enabled all the time. When you configure them, Xdebug uses `zend_extension=xdebug.so`, while XHProf uses `extension=xhprof.so`; enable them from the CLI only when needed.
 
 ```bash
 # Enable Xdebug only when debugging
 php -dzend_extension=xdebug.so -S 127.0.0.1:8080 -t public
 
 # Enable XHProf only when profiling
-php -dzend_extension=xhprof.so script.php
+php -dextension=xhprof.so script.php
 
-# Disable extensions when running Composer (for speed)
-php -dzend_extension= /usr/local/bin/composer install
+# Disable Xdebug when running Composer (recommended)
+XDEBUG_MODE=off composer install
+
+# Or override the PHP ini setting
+php -dxdebug.mode=off /usr/local/bin/composer install
 ```
 
 ---
@@ -285,8 +288,8 @@ DB_USER=root
 DB_PASS=
 DB_DSN=mysql:host=127.0.0.1;port=3306;dbname=myapp
 
-# SQLite (for switching)
-DB_DSN=sqlite:var/db.sqlite3
+# SQLite (switching example)
+# DB_DSN=sqlite:var/db.sqlite3
 
 # Redis
 REDIS_HOST=127.0.0.1:6379
@@ -387,7 +390,7 @@ malt start
 
 ### .gitignore for Team Development
 
-```
+```gitignore
 malt/logs/
 malt/data/
 malt/tmp/

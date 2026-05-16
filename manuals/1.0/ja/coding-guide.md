@@ -105,11 +105,11 @@ BEAR.SundayはHTMLのWebフォームで`POST`リクエストの時に`X-HTTP-Met
 
 グローバルな値をリソースやアプリケーションのクラスで参照することは推奨されません。(Modulesでのみ使用します)
 
-* [スーパーグローバル](http://php.net/manual/ja/language.variables.superglobals.php)の値を参照しない
-* [define](http://php.net/manual/ja/function.define.php)は使用しない
+* [スーパーグローバル](https://www.php.net/manual/ja/language.variables.superglobals.php)の値を参照しない
+* [define](https://www.php.net/manual/ja/function.define.php)は使用しない
 * 設定値を保持する`Config`クラスを作成しない
 * グローバルなオブジェクトコンテナ（サービスロケータ）を使用しない
-* [date](http://php.net/manual/ja/function.date.php)関数や[DateTime](http://php.net/manual/ja/class.datetime.php)クラスで現在時刻を直接取得することは推奨されません[^now]。外部から時刻をインジェクトします。
+* [date](https://www.php.net/manual/ja/function.date.php)関数や[DateTime](https://www.php.net/manual/ja/class.datetime.php)クラスで現在時刻を直接取得することは推奨されません[^now]。外部から時刻をインジェクトします。
 * スタティックメソッドなどのグローバルなメソッドコールも推奨されません。
 * アプリケーションコードが必要とする値は設定ファイルなどから取得するのではなく、全てインジェクトします。[^inject-all]
 
@@ -118,7 +118,7 @@ BEAR.SundayはHTMLのWebフォームで`POST`リクエストの時に`X-HTTP-Met
 
 ## クラスとオブジェクト
 
-* [トレイト](http://php.net/manual/ja/language.oop5.traits.php)は推奨されません。[^no-trait]
+* [トレイト](https://www.php.net/manual/ja/language.oop5.traits.php)は推奨されません。[^no-trait]
 * 親クラスのメソッドを子クラスが使うことは推奨されません。共通する機能は継承やtraitで共有ではなくクラスにしてインジェクトして使います。[継承より合成](https://en.wikipedia.org/wiki/Composition_over_inheritance)します。
 
 [^no-trait]: `ResourceInject`などのインジェクション用トレイトはインジェクションのボイラープレートコードを削減するために存在しましたが、PHP8で追加された[コンストラクタの引数をプロパティへ昇格させる機能](https://www.php.net/manual/ja/language.oop5.decon.php#language.oop5.decon.constructor.promotion)により意味を失いました。コンストラクタインジェクションを使いましょう。
@@ -137,16 +137,16 @@ BEAR.SundayはHTMLのWebフォームで`POST`リクエストの時に`X-HTTP-Met
 * メソッド内の依存をインターセプターがインジェクトしないようにします。メソッド実装時にしか決定できない値は`@Assisted`インジェクションで引数にインジェクトします。
 * 複数のインターセプターがある場合にその実行順に可能な限り依存しないようにします。
 * 無条件に全メソッドに適用するインターセプターであれば`bootstrap.php`での記述を考慮してください。
-* 横断的関心事と、本質的関心事を分けるために使われるものです。特定のメソッドのhackのためにインターセプトするような使い方は推奨されません。
+* 横断的関心事と、本質的関心事を分けるために使われるものです。特定のメソッドのハックのためにインターセプトするような使い方は推奨されません。
 
 ## スクリプトコマンド
 
-* `composer setup`コマンドでアプリケーションのセットアップが完了することが推奨されます。このスクリプトではデータベースの初期化、必要ライブラリの確認が含まれます。`.env`の設定などマニュアルな操作が必要な場合はその手順が画面表示されることが推奨されます。
+* `composer setup`コマンドでアプリケーションのセットアップが完了することが推奨されます。このスクリプトには、データベースの初期化や必要ライブラリの確認が含まれます。`.env`の設定など手動操作が必要な場合は、その手順を画面に表示することが推奨されます。
 
 ## 環境
 
 * Webだけでしか動作しないアプリケーションは推奨されません。テスト可能にするためにコンソールでも動作するようにします。
-* `.env`ファイルをプロジェクトリポジトリに含まない事が推奨されます。
+* `.env`ファイルをプロジェクトリポジトリに含まないことが推奨されます。
 * `.env`の代わりにスキーマを記述する[Koriym.EnvJson](https://github.com/koriym/Koriym.EnvJson)の利用を検討してください。
 
 ## テスト
