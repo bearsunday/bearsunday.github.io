@@ -140,10 +140,10 @@ class AppModule extends AbstractModule
 ```
 
 Swooleではコルーチンがメモリを共有するため、`PdoPoolEnvModule`による接続プールが必要です。
-read-heavy な embed グラフでは、HTTP の並行数だけでなく内部の embed 並列度も
-考慮して pool を設定します。キューイングを避けたい場合は
-`PDO_POOL_SIZE >= embed_count * request_concurrency` を出発点にし、
-DB へのバックプレッシャーを意図する場合は小さめの pool を選びます。
+読み取り中心の embed グラフでは、外から来る HTTP リクエスト数だけでなく、
+1リクエスト内で同時に実行される embed 数も含めて pool size を見積もります。
+キュー待ちを避けるなら `PDO_POOL_SIZE >= embed_count * request_concurrency` を
+目安にし、DB に流す同時接続数を抑えたい場合は、あえて小さめの pool にします。
 
 `PooledPdoProvider` と `PooledExtendedPdoProvider` は coroutine-local です。
 1つの coroutine 内では両 provider が同じ PDO インスタンスを共有し、
