@@ -7,11 +7,11 @@ permalink: /manuals/1.0/en/async.html
 
 # Parallel Resource Execution <sup style="font-size:0.5em; color:#666; font-weight:normal;">Alpha</sup>
 
-BEAR.Async enables transparent parallel execution of `#[Embed]` resources. Embedded resources are fetched in parallel without changing any application code. Resource classes written 10 years ago can benefit from parallel execution just by adding a Module.
+BEAR.Async turns the previously sequential fetch of `#[Embed]` resources into transparent parallel execution. Without touching your resource code, just add a dedicated entrypoint script for parallel execution and embedded resources automatically switch to parallel fetching.
 
 ## Overview
 
-In standard BEAR.Sunday, `#[Embed]` resources are fetched sequentially. With BEAR.Async, they are fetched in parallel.
+In standard BEAR.Sunday, `#[Embed]` resources are fetched sequentially. With BEAR.Async and an execution mode selected, they are fetched in parallel.
 
 ```text
 [Sequential]                     [Parallel]
@@ -35,7 +35,7 @@ In BEAR.Sunday, a URI expresses **intent**, not just a location.
 #[Embed(rel: 'profile', src: 'query://self/user_profile{?id}')]
 ```
 
-The `query://self/user_profile` expresses only the intent: "I want the user's profile information." This separation of "What" from "How" allows the same code to work in both sync and parallel execution. Debug with Xdebug in development, then switch Module in production to enable parallel execution.
+The `query://self/user_profile` expresses only the intent: "I want the user's profile information." This separation of "What" from "How" allows the same code to work in both sync and parallel execution. Debug with Xdebug in development, then start from `bin/async.php` in production to enable parallel execution.
 
 ### Solving the Function Coloring Problem
 
@@ -49,34 +49,81 @@ In BEAR.Sunday, the "resource" boundary cuts through this problem. No async-spec
 composer require bear/async
 ```
 
-## Configuration
+BEAR.Async uses the same request abstraction as BEAR.Resource. When resources
+are rendered as HAL/JSON, embedded async requests are still recognized by the
+renderer, batched, and flushed during serialization. Render-time embeds keep
+their parallelism instead of falling back to one-by-one resolution.
 
-Choose the appropriate module based on your server environment.
+## Execution Modes
 
-| Environment | Module | Features |
-|-------------|--------|----------|
-| PHP-FPM / Apache | `AsyncParallelModule` | Uses ext-parallel, requires ZTS PHP |
-| Swoole HTTP Server | `AsyncSwooleModule` | Uses coroutines, requires connection pool |
+Choose the appropriate execution mode based on your server environment.
 
-### AsyncParallelModule
+| Use Case | Entrypoint | Runtime setup |
+|---|---|---|
+| PHP-FPM / Apache with embedded resources | `bin/async.php` | library `bootstrap.php` overlay |
+| Swoole HTTP Server | `bin/swoole.php` | install `AsyncSwooleModule` in `AppModule` |
 
-```php
-use BEAR\Async\Module\AsyncParallelModule;
+### Parallel execution (ext-parallel)
 
-class AppModule extends AbstractModule
-{
-    protected function configure(): void
-    {
-        $this->install(new AsyncParallelModule(
-            namespace: 'MyVendor\MyApp',
-            context: 'prod-app',
-            appDir: dirname(__DIR__),
-        ));
-    }
-}
+The recommended mode for typical PHP-FPM / Apache web applications with embedded resources. It runs `#[Embed]` in parallel using an ext-parallel thread pool.
+
+Add `bin/async.php` next to `bin/app.php`. The entrypoint hands off to the library `bootstrap.php`, which overlays the ext-parallel runtime on the normal `AppModule`:
+
+```text
+bin/async.php → vendor/bear/async/bootstrap.php → AppModule + runtime overlay
 ```
 
-### AsyncSwooleModule
+```php
+<?php // bin/async.php
+
+declare(strict_types=1);
+
+require dirname(__DIR__) . '/autoload.php';
+
+$bootstrap = dirname(__DIR__) . '/vendor/bear/async/bootstrap.php';
+if (! file_exists($bootstrap)) {
+    throw new LogicException('"bear/async" is not installed.');
+}
+
+$defaultContext = PHP_SAPI === 'cli' ? 'cli-hal-api-app' : 'hal-api-app';
+$context = getenv('APP_CONTEXT') ?: $defaultContext;
+
+exit((require $bootstrap)(
+    $context,
+    'MyVendor\MyApp',
+    dirname(__DIR__),
+    $GLOBALS,
+    $_SERVER,
+));
+```
+
+Do not install the parallel runtime in `AppModule` directly — the bootstrap is the only supported install path. The same `AppModule` works under `bin/app.php` (sync) and `bin/async.php` (parallel) unchanged.
+
+To override the worker pool size (default = CPU cores), pass it as the
+optional 6th argument:
+
+```php
+exit((require $bootstrap)($context, 'MyVendor\MyApp', dirname(__DIR__), $GLOBALS, $_SERVER, 8));
+```
+
+#### ext-parallel constraints
+
+Worker runtimes are separate threads with their own Zend memory. Embedded
+resources executed in parallel should be read-only, idempotent GET resources
+with no ordering dependency. Each worker has its own DI container, so
+request-local mutable state and "same instance" assumptions do not cross the
+thread boundary.
+
+Arguments and return values crossing the thread boundary must be copyable:
+scalar values, `null`, or nested arrays of those values. Objects, closures,
+and resources fail fast. Keep interceptors used inside parallel embed graphs
+idempotent, and avoid mutating request-local shared state there.
+
+### Swoole execution (ext-swoole)
+
+For applications already running on Swoole HTTP Server with high concurrency requirements.
+
+ext-parallel uses worker runtimes (separate threads), so it is selected by a separate entrypoint. ext-swoole runs inside one server process, so it is installed as an application module.
 
 ```php
 use BEAR\Async\Module\AsyncSwooleModule;
@@ -93,10 +140,29 @@ class AppModule extends AbstractModule
 ```
 
 Swoole coroutines share memory, so `PdoPoolEnvModule` is required for connection pooling.
+For read-heavy embed graphs, size the pool for the internal parallelism as
+well as HTTP concurrency. A practical starting point is
+`PDO_POOL_SIZE >= embed_count * request_concurrency` when you want to avoid
+queueing; use a smaller pool intentionally when you want database backpressure.
+
+`PooledPdoProvider` and `PooledExtendedPdoProvider` are coroutine-local. Within
+one coroutine, both providers share a single PDO instance and return it to the
+pool once via `Coroutine::defer()`. Embedded requests are represented
+internally as `DeferredRequest` objects, so constructing the embed graph does
+not reserve PDO pool connections before each embedded resource is actually
+invoked.
+
+Swoole's `PDOProxy` wrapping is handled internally. If the wrapped PDO cannot
+be extracted, BEAR.Async raises a domain-specific PDO proxy extraction
+exception instead of leaking a reflection failure.
+
+Swoole coroutines and active Xdebug are not a safe combination. Run Swoole
+entrypoints without Xdebug loaded, or set `XDEBUG_MODE=off` for local
+verification.
 
 ## Usage
 
-Once the module is installed, existing `#[Embed]` resources are automatically executed in parallel.
+Once an execution mode is selected, existing `#[Embed]` resources are automatically executed in parallel.
 
 ```php
 class Dashboard extends ResourceObject
@@ -112,7 +178,71 @@ class Dashboard extends ResourceObject
 }
 ```
 
-By not installing the async module in development and only enabling it in production, you can debug in sync mode and run parallel in production.
+By using `bin/app.php` in development and `bin/async.php` in production, you can debug in sync mode and run parallel in production. `AppModule` is unaware of the execution form, so the same code runs unchanged in both modes.
+
+### HAL/JSON serialization
+
+When a resource is rendered as HAL/JSON, embedded async requests remain
+asynchronous. BEAR.Async requests extend the same request abstraction used by
+BEAR.Resource, so the HAL renderer can recognize them, batch them, and flush
+the batch during serialization.
+
+## When to Choose Parallel
+
+For a read-only resource graph that embeds multiple independent GET resources,
+parallel execution should be the first candidate when the runtime extension is
+available and the downstream database or API capacity is sized for the extra
+concurrency. This is where BEAR.Async is strongest: application code declares
+the resource graph with `#[Embed]`; the Linker implementation decides whether
+the graph is resolved sequentially, with ext-parallel workers, or with Swoole
+coroutines.
+
+### Preconditions
+
+- Embedded resources are read-only GET resources with no ordering dependency.
+- `ext-parallel` or `ext-swoole` is available in the target runtime.
+- Downstream capacity is sized for internal embed parallelism, not only for
+  incoming HTTP request concurrency.
+- ext-parallel steady-state performance requires a resident process that keeps
+  the `parallel\Runtime` pool warm, such as PHP-FPM workers or a benchmark HTTP
+  harness. One-shot CLI runs include runtime startup cost and should be read as
+  cold-start behavior.
+
+### Adapter guide
+
+| Situation | Recommended adapter |
+|---|---|
+| Swoole HTTP server is acceptable and high throughput is needed | Swoole adapter |
+| PHP-FPM / Apache process model should remain and workers stay warm | ext-parallel adapter |
+| Extension support is unavailable or portability is the priority | Sync adapter |
+
+### Cases with little or no gain
+
+- The downstream database or API cannot absorb the added concurrency because
+  of pool limits, saturation, or rate limits.
+- Each embedded resource is already extremely fast; fixed runtime overhead can
+  dominate in that case.
+- Embedded resources have real ordering dependencies or share mutable
+  request-local state.
+- One-shot CLI and cron-style jobs can still use BEAR.Async, but they measure
+  cold-start behavior rather than warmed per-request latency.
+
+## Demo and Benchmarks
+
+The BEAR.Async repository includes a Docker-based demo and benchmark scripts
+for Sync, ext-parallel, and Swoole. See the
+[demo guide](https://github.com/bearsunday/BEAR.Async/tree/1.x/demo) and
+[benchmark results](https://github.com/bearsunday/BEAR.Async/blob/1.x/docs/benchmark-results.md)
+for details.
+
+## Requirements
+
+Each execution mode adds its own runtime requirement:
+
+| Mode | Requires | Application change |
+|---|---|---|
+| ext-parallel | ZTS PHP + ext-parallel | add `bin/async.php` |
+| ext-swoole | ext-swoole | install `AsyncSwooleModule`, use `bin/swoole.php` |
 
 ## BEAR.Projection Integration
 
@@ -224,5 +354,7 @@ class MyService
 ## References
 
 - [BEAR.Async](https://github.com/bearsunday/BEAR.Async)
+- [BEAR.Async Demo Guide](https://github.com/bearsunday/BEAR.Async/tree/1.x/demo)
+- [BEAR.Async Benchmark Results](https://github.com/bearsunday/BEAR.Async/blob/1.x/docs/benchmark-results.md)
 - [BEAR.Projection](https://github.com/bearsunday/BEAR.Projection)
 - [Parallel Execution Architecture](https://bearsunday.github.io/BEAR.Async/parallel-execution-architecture.html)
