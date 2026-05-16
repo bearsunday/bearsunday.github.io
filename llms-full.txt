@@ -7678,31 +7678,11 @@ coroutines.
 
 ## Demo and Benchmarks
 
-The BEAR.Async repository includes a Docker-based demo that starts MySQL,
-seeds a dashboard resource graph with 8 independent SQL-backed GET embeds,
-and provides Sync, ext-parallel, and Swoole entrypoints.
-
-```bash
-cd demo
-docker compose up -d --wait parallel
-docker compose exec parallel composer app -- get 'app://self/dashboard?user_id=1'
-docker compose exec parallel composer async -- get 'app://self/dashboard?user_id=1'
-```
-
-The demo separates cold one-shot CLI measurements from steady-state HTTP
-measurements with `wrk`:
-
-```bash
-docker compose exec parallel composer parallel-benchmark
-docker compose exec parallel composer steady-state-parallel
-docker compose up -d --wait swoole
-docker compose exec swoole composer swoole-benchmark
-docker compose exec swoole composer steady-state-swoole
-```
-
-Cold one-shot CLI numbers include startup work such as DI lookup and, for
-ext-parallel, one-time `parallel\Runtime` spawn. Use the steady-state HTTP
-benchmark when evaluating warmed per-request performance.
+The BEAR.Async repository includes a Docker-based demo and benchmark scripts
+for Sync, ext-parallel, and Swoole. See the
+[demo guide](https://github.com/bearsunday/BEAR.Async/tree/1.x/demo) and
+[benchmark results](https://github.com/bearsunday/BEAR.Async/blob/1.x/docs/benchmark-results.md)
+for details.
 
 ## Requirements
 

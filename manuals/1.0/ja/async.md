@@ -219,31 +219,11 @@ request 抽象を継承するため、HAL renderer がそれらを認識し、ba
 
 ## Demo と Benchmark
 
-BEAR.Async リポジトリには Docker ベースの demo があります。MySQL を起動し、
-8つの独立した SQL-backed GET embed を持つ dashboard リソースグラフを seed し、
-Sync、ext-parallel、Swoole の各 entrypoint を確認できます。
-
-```bash
-cd demo
-docker compose up -d --wait parallel
-docker compose exec parallel composer app -- get 'app://self/dashboard?user_id=1'
-docker compose exec parallel composer async -- get 'app://self/dashboard?user_id=1'
-```
-
-demo は cold one-shot CLI ベンチと、`wrk` による steady-state HTTP ベンチを
-分けています。
-
-```bash
-docker compose exec parallel composer parallel-benchmark
-docker compose exec parallel composer steady-state-parallel
-docker compose up -d --wait swoole
-docker compose exec swoole composer swoole-benchmark
-docker compose exec swoole composer steady-state-swoole
-```
-
-cold one-shot CLI は DI lookup や ext-parallel の一度きりの
-`parallel\Runtime` spawn を含みます。warmed per-request 性能を評価する場合は
-steady-state HTTP ベンチを使ってください。
+BEAR.Async リポジトリには、Sync、ext-parallel、Swoole を確認できる
+Docker ベースの demo と benchmark script があります。詳細は
+[demo guide](https://github.com/bearsunday/BEAR.Async/tree/1.x/demo) と
+[benchmark results](https://github.com/bearsunday/BEAR.Async/blob/1.x/docs/benchmark-results.md)
+を参照してください。
 
 ## 動作要件
 
