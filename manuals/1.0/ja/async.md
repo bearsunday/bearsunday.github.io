@@ -52,6 +52,10 @@ composer require bear/async
 BEAR.Async 0.3.0 以降を推奨します。HAL/JSONシリアライズ時にも
 async embed が正しく解決されるように、`bear/resource` 1.32+ に依存します。
 
+0.3.0 では、HAL/JSON 出力をシリアライズしている最中の async embed も
+batch 化されます。JSON シリアライズ時に埋め込みリクエストを1つずつ逐次解決せず、
+render 時にも並列性を保ちます。
+
 ## ランタイム環境
 
 サーバー構成に応じて適切なランタイム環境を選択します。
@@ -143,6 +147,16 @@ read-heavy な embed グラフでは、HTTP の並行数だけでなく内部の
 `PDO_POOL_SIZE >= embed_count * request_concurrency` を出発点にし、
 DB へのバックプレッシャーを意図する場合は小さめの pool を選びます。
 
+BEAR.Async 0.3.0 以降では、`PooledPdoProvider` と
+`PooledExtendedPdoProvider` は coroutine-local です。1つの coroutine 内では
+両 provider が同じ PDO インスタンスを共有し、`Coroutine::defer()` で
+pool に1回だけ返却します。埋め込みリクエストは内部的に `DeferredRequest`
+として表現されるため、embed グラフを構築しただけでは PDO pool connection を
+予約せず、各埋め込みリソースが実際に呼び出されるまで取得を遅延します。
+
+Swoole の `PDOProxy` ラップは内部で処理されます。ラップされた PDO を取り出せない場合は、
+reflection failure をそのまま漏らさず、PDO proxy extraction 用のドメイン例外として扱います。
+
 Swoole のコルーチンと有効な Xdebug の組み合わせは安全ではありません。
 Swoole エントリポイントは Xdebug をロードしない PHP で実行するか、
 ローカル確認では `XDEBUG_MODE=off` を設定してください。
@@ -166,6 +180,14 @@ class Dashboard extends ResourceObject
 ```
 
 開発環境では`bin/app.php`を使用して同期実行でデバッグし、本番環境では`bin/async.php`から起動することで並列実行を有効にできます。`AppModule`は実行形態に依存しないため、同じコードがそのまま両環境で動作します。
+
+### HAL/JSON シリアライズ
+
+リソースを HAL/JSON として render する場合も、埋め込み async request は
+非同期のまま扱われます。BEAR.Async の request は BEAR.Resource と同じ
+request 抽象を継承するため、HAL renderer がそれらを認識し、batch 化し、
+シリアライズ中にまとめて flush できます。このため BEAR.Async 0.3.0 は
+`bear/resource` 1.32+ を必要とします。
 
 ## いつ parallel を選ぶか
 

@@ -53,6 +53,10 @@ BEAR.Async 0.3.0 or later is recommended. It depends on `bear/resource`
 1.32+ so async embeds are also resolved correctly during HAL/JSON
 serialization.
 
+In 0.3.0, async embeds are also batched while HAL/JSON output is being
+serialized. This keeps embedded async requests parallel at render time instead
+of resolving them one by one during JSON serialization.
+
 ## Execution Modes
 
 Choose the appropriate execution mode based on your server environment.
@@ -144,6 +148,17 @@ well as HTTP concurrency. A practical starting point is
 `PDO_POOL_SIZE >= embed_count * request_concurrency` when you want to avoid
 queueing; use a smaller pool intentionally when you want database backpressure.
 
+Since BEAR.Async 0.3.0, `PooledPdoProvider` and
+`PooledExtendedPdoProvider` are coroutine-local. Within one coroutine, both
+providers share a single PDO instance and return it to the pool once via
+`Coroutine::defer()`. Embedded requests are represented internally as
+`DeferredRequest` objects, so constructing the embed graph does not reserve PDO
+pool connections before each embedded resource is actually invoked.
+
+Swoole's `PDOProxy` wrapping is handled internally. If the wrapped PDO cannot
+be extracted, BEAR.Async raises a domain-specific PDO proxy extraction
+exception instead of leaking a reflection failure.
+
 Swoole coroutines and active Xdebug are not a safe combination. Run Swoole
 entrypoints without Xdebug loaded, or set `XDEBUG_MODE=off` for local
 verification.
@@ -167,6 +182,14 @@ class Dashboard extends ResourceObject
 ```
 
 By using `bin/app.php` in development and `bin/async.php` in production, you can debug in sync mode and run parallel in production. `AppModule` is unaware of the execution form, so the same code runs unchanged in both modes.
+
+### HAL/JSON serialization
+
+When a resource is rendered as HAL/JSON, embedded async requests remain
+asynchronous. BEAR.Async requests now extend the same request abstraction used
+by BEAR.Resource, so the HAL renderer can recognize them, batch them, and flush
+the batch during serialization. This is why BEAR.Async 0.3.0 requires
+`bear/resource` 1.32+.
 
 ## When to Choose Parallel
 
