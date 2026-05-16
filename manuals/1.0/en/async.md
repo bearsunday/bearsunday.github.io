@@ -237,7 +237,7 @@ for details.
 
 ## Requirements
 
-PHP 8.2+ for the library itself. Each execution mode adds its own runtime requirement:
+Each execution mode adds its own runtime requirement:
 
 | Mode | Requires | Application change |
 |---|---|---|
