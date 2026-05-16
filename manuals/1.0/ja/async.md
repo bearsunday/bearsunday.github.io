@@ -49,12 +49,10 @@ BEAR.Sundayでは「リソース」という境界がこの問題を断ち切り
 composer require bear/async
 ```
 
-BEAR.Async 0.3.0 以降を推奨します。HAL/JSONシリアライズ時にも
-async embed が正しく解決されるように、`bear/resource` 1.32+ に依存します。
-
-0.3.0 では、HAL/JSON 出力をシリアライズしている最中の async embed も
-batch 化されます。JSON シリアライズ時に埋め込みリクエストを1つずつ逐次解決せず、
-render 時にも並列性を保ちます。
+BEAR.Async は BEAR.Resource と同じ request 抽象を使います。リソースを
+HAL/JSON として render する場合も、埋め込み async request は renderer に
+認識され、batch 化されてシリアライズ中にまとめて flush されます。render 時に
+埋め込みリクエストを1つずつ逐次解決せず、並列性を保ちます。
 
 ## ランタイム環境
 
@@ -147,12 +145,12 @@ read-heavy な embed グラフでは、HTTP の並行数だけでなく内部の
 `PDO_POOL_SIZE >= embed_count * request_concurrency` を出発点にし、
 DB へのバックプレッシャーを意図する場合は小さめの pool を選びます。
 
-BEAR.Async 0.3.0 以降では、`PooledPdoProvider` と
-`PooledExtendedPdoProvider` は coroutine-local です。1つの coroutine 内では
-両 provider が同じ PDO インスタンスを共有し、`Coroutine::defer()` で
-pool に1回だけ返却します。埋め込みリクエストは内部的に `DeferredRequest`
-として表現されるため、embed グラフを構築しただけでは PDO pool connection を
-予約せず、各埋め込みリソースが実際に呼び出されるまで取得を遅延します。
+`PooledPdoProvider` と `PooledExtendedPdoProvider` は coroutine-local です。
+1つの coroutine 内では両 provider が同じ PDO インスタンスを共有し、
+`Coroutine::defer()` で pool に1回だけ返却します。埋め込みリクエストは
+内部的に `DeferredRequest` として表現されるため、embed グラフを構築した
+だけでは PDO pool connection を予約せず、各埋め込みリソースが実際に
+呼び出されるまで取得を遅延します。
 
 Swoole の `PDOProxy` ラップは内部で処理されます。ラップされた PDO を取り出せない場合は、
 reflection failure をそのまま漏らさず、PDO proxy extraction 用のドメイン例外として扱います。
@@ -186,8 +184,7 @@ class Dashboard extends ResourceObject
 リソースを HAL/JSON として render する場合も、埋め込み async request は
 非同期のまま扱われます。BEAR.Async の request は BEAR.Resource と同じ
 request 抽象を継承するため、HAL renderer がそれらを認識し、batch 化し、
-シリアライズ中にまとめて flush できます。このため BEAR.Async 0.3.0 は
-`bear/resource` 1.32+ を必要とします。
+シリアライズ中にまとめて flush できます。
 
 ## いつ parallel を選ぶか
 
