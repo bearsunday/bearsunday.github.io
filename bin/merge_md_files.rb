@@ -3,9 +3,9 @@ require 'yaml'
 require 'pathname'
 
 def convert_to_markdown_filename(base_name)
-  # Generic kebab-case to CamelCase converter
-  # This handles both underscore and hyphen separators
-  base_name.split(/[_-]/).map(&:capitalize).join + '.md'
+  # Manual source files are stored with the same kebab-case basename as their
+  # permalink, for example async.html -> async.md.
+  base_name + '.md'
 end
 
 def extract_order_from_contents(language)
@@ -51,9 +51,13 @@ def strip_frontmatter(content)
   content.sub(/\A---\s*\r?\n.*?\r?\n---\s*\r?\n/m, '')
 end
 
+def strip_trailing_whitespace(content)
+  content.lines.map(&:rstrip).join("\n")
+end
+
 def generate_combined_file(language, intro_message)
   source = Pathname.new(__dir__).join("..", "manuals/1.0/#{language}")
-  output_file = source.join("1page.md")
+  output_file = source.join("onepage.md")
 
   puts "Processing #{language} documentation..."
   raise "Source folder does not exist!" unless source.directory?
@@ -102,7 +106,7 @@ def generate_combined_file(language, intro_message)
     # Process all files in a single pass
     all_files.each_with_index do |path, idx|
       begin
-        content = strip_frontmatter(path.read).strip
+        content = strip_trailing_whitespace(strip_frontmatter(path.read)).strip
         next if content.empty?
 
         # Add separator between sections (except first)

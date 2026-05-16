@@ -49,6 +49,10 @@ In BEAR.Sunday, the "resource" boundary cuts through this problem. No async-spec
 composer require bear/async
 ```
 
+BEAR.Async 0.3.0 or later is recommended. It depends on `bear/resource`
+1.32+ so async embeds are also resolved correctly during HAL/JSON
+serialization.
+
 ## Execution Modes
 
 Choose the appropriate execution mode based on your server environment.
@@ -73,26 +77,46 @@ bin/async.php → vendor/bear/async/bootstrap.php → AppModule + runtime overla
 
 declare(strict_types=1);
 
-require dirname(__DIR__) . '/vendor/autoload.php';
+require dirname(__DIR__) . '/autoload.php';
 
 $bootstrap = dirname(__DIR__) . '/vendor/bear/async/bootstrap.php';
+if (! file_exists($bootstrap)) {
+    throw new LogicException('"bear/async" is not installed.');
+}
+
+$defaultContext = PHP_SAPI === 'cli' ? 'cli-hal-api-app' : 'hal-api-app';
+$context = getenv('APP_CONTEXT') ?: $defaultContext;
 
 exit((require $bootstrap)(
-    name: 'MyVendor\MyApp',
-    context: $_GET['_context'] ?? 'prod-hal-app',
-    appDir: dirname(__DIR__),
-    globals: [
-        'GET'    => $_GET,
-        'POST'   => $_POST,
-        'COOKIE' => $_COOKIE,
-    ],
-    server: $_SERVER,
+    $context,
+    'MyVendor\MyApp',
+    dirname(__DIR__),
+    $GLOBALS,
+    $_SERVER,
 ));
 ```
 
 Do not install the parallel runtime in `AppModule` directly — the bootstrap is the only supported install path. The same `AppModule` works under `bin/app.php` (sync) and `bin/async.php` (parallel) unchanged.
 
-To override the worker pool size (default = CPU cores), pass it as the optional 6th argument.
+To override the worker pool size (default = CPU cores), pass it as the
+optional 6th argument:
+
+```php
+exit((require $bootstrap)($context, 'MyVendor\MyApp', dirname(__DIR__), $GLOBALS, $_SERVER, 8));
+```
+
+#### ext-parallel constraints
+
+Worker runtimes are separate threads with their own Zend memory. Embedded
+resources executed in parallel should be read-only, idempotent GET resources
+with no ordering dependency. Each worker has its own DI container, so
+request-local mutable state and "same instance" assumptions do not cross the
+thread boundary.
+
+Arguments and return values crossing the thread boundary must be copyable:
+scalar values, `null`, or nested arrays of those values. Objects, closures,
+and resources fail fast. Keep interceptors used inside parallel embed graphs
+idempotent, and avoid mutating request-local shared state there.
 
 ### Swoole execution (ext-swoole)
 
@@ -115,6 +139,14 @@ class AppModule extends AbstractModule
 ```
 
 Swoole coroutines share memory, so `PdoPoolEnvModule` is required for connection pooling.
+For read-heavy embed graphs, size the pool for the internal parallelism as
+well as HTTP concurrency. A practical starting point is
+`PDO_POOL_SIZE >= embed_count * request_concurrency` when you want to avoid
+queueing; use a smaller pool intentionally when you want database backpressure.
+
+Swoole coroutines and active Xdebug are not a safe combination. Run Swoole
+entrypoints without Xdebug loaded, or set `XDEBUG_MODE=off` for local
+verification.
 
 ## Usage
 
@@ -135,6 +167,74 @@ class Dashboard extends ResourceObject
 ```
 
 By using `bin/app.php` in development and `bin/async.php` in production, you can debug in sync mode and run parallel in production. `AppModule` is unaware of the execution form, so the same code runs unchanged in both modes.
+
+## When to Choose Parallel
+
+For a read-only resource graph that embeds multiple independent GET resources,
+parallel execution should be the first candidate when the runtime extension is
+available and the downstream database or API capacity is sized for the extra
+concurrency. This is where BEAR.Async is strongest: application code declares
+the resource graph with `#[Embed]`; the Linker implementation decides whether
+the graph is resolved sequentially, with ext-parallel workers, or with Swoole
+coroutines.
+
+### Preconditions
+
+- Embedded resources are read-only GET resources with no ordering dependency.
+- `ext-parallel` or `ext-swoole` is available in the target runtime.
+- Downstream capacity is sized for internal embed parallelism, not only for
+  incoming HTTP request concurrency.
+- ext-parallel steady-state performance requires a resident process that keeps
+  the `parallel\Runtime` pool warm, such as PHP-FPM workers or a benchmark HTTP
+  harness. One-shot CLI runs include runtime startup cost and should be read as
+  cold-start behavior.
+
+### Adapter guide
+
+| Situation | Recommended adapter |
+|---|---|
+| Swoole HTTP server is acceptable and high throughput is needed | Swoole adapter |
+| PHP-FPM / Apache process model should remain and workers stay warm | ext-parallel adapter |
+| Extension support is unavailable or portability is the priority | Sync adapter |
+
+### Cases with little or no gain
+
+- The downstream database or API cannot absorb the added concurrency because
+  of pool limits, saturation, or rate limits.
+- Each embedded resource is already extremely fast; fixed runtime overhead can
+  dominate in that case.
+- Embedded resources have real ordering dependencies or share mutable
+  request-local state.
+- One-shot CLI and cron-style jobs can still use BEAR.Async, but they measure
+  cold-start behavior rather than warmed per-request latency.
+
+## Demo and Benchmarks
+
+The BEAR.Async repository includes a Docker-based demo that starts MySQL,
+seeds a dashboard resource graph with 8 independent SQL-backed GET embeds,
+and provides Sync, ext-parallel, and Swoole entrypoints.
+
+```bash
+cd demo
+docker compose up -d --wait parallel
+docker compose exec parallel composer app -- get 'app://self/dashboard?user_id=1'
+docker compose exec parallel composer async -- get 'app://self/dashboard?user_id=1'
+```
+
+The demo separates cold one-shot CLI measurements from steady-state HTTP
+measurements with `wrk`:
+
+```bash
+docker compose exec parallel composer parallel-benchmark
+docker compose exec parallel composer steady-state-parallel
+docker compose up -d --wait swoole
+docker compose exec swoole composer swoole-benchmark
+docker compose exec swoole composer steady-state-swoole
+```
+
+Cold one-shot CLI numbers include startup work such as DI lookup and, for
+ext-parallel, one-time `parallel\Runtime` spawn. Use the steady-state HTTP
+benchmark when evaluating warmed per-request performance.
 
 ## Requirements
 
@@ -215,9 +315,9 @@ class User extends ResourceObject
 Parallel SQL query execution using mysqli's native async support is also provided.
 
 ```php
-use BEAR\Async\Module\MysqliBatchEnvModule;
+use BEAR\Async\Module\MysqliEnvModule;
 
-$this->install(new MysqliBatchEnvModule('MYSQL_HOST', 'MYSQL_USER', 'MYSQL_PASS', 'MYSQL_DB'));
+$this->install(new MysqliEnvModule('MYSQL_HOST', 'MYSQL_USER', 'MYSQL_PASS', 'MYSQL_DB'));
 ```
 
 ```php
@@ -243,5 +343,7 @@ class MyService
 ## References
 
 - [BEAR.Async](https://github.com/bearsunday/BEAR.Async)
+- [BEAR.Async Demo Guide](https://github.com/bearsunday/BEAR.Async/tree/1.x/demo)
+- [BEAR.Async Benchmark Results](https://github.com/bearsunday/BEAR.Async/blob/1.x/docs/benchmark-results.md)
 - [BEAR.Projection](https://github.com/bearsunday/BEAR.Projection)
 - [Parallel Execution Architecture](https://bearsunday.github.io/BEAR.Async/parallel-execution-architecture.html)

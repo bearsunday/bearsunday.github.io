@@ -166,13 +166,17 @@ BEAR.Sunday adopts a donut caching strategy and uses ESI (Edge Side Includes) to
 
 In this way, BEAR.Sunday and Fastly's integration of ROA-based caching strategy not only realizes advanced distributed caching but also enhances application performance and fault tolerance.
 
-### Accelerated Startup
+### Runtime Optimization
 
-In the original world of DI, users avoid dealing directly with the injector (DI container) as much as possible. Instead, they generate a single root object at the application's entry point to start the application. In BEAR.Sunday's DI, there is virtually no DI container manipulation even at configuration time. The root object is huge but is a single variable, so it is reused beyond requests, realizing an optimized bootstrap to the limit.
+BEAR.Sunday is designed to minimize framework overhead regardless of server configuration.
+
+DI resolution is completed at compile time, with no container lookups at runtime. The entire application is generated as a single root object variable and reused across requests. In php-fpm configurations, the pre-compiled dependency graph and opcache enable fast bootstrapping.
+
+In Swoole configurations, persistent workers reduce bootstrapping to a single initial boot. Coroutine-context-based request isolation enables safe concurrent processing without reliance on superglobals. Combined with the transparent parallel execution described next, I/O wait time is further minimized.
 
 ### Transparent Parallel Execution
 
-In BEAR.Sunday, a URI expresses "intent" rather than being merely a communication protocol or locator. `query://self/user_profile` expresses only the intent "I want the user's profile information"—whether it comes from MySQL or Redis is hidden from the application.
+In BEAR.Sunday, a URI expresses "intent" rather than being merely a communication protocol or locator. `app://self/user` expresses only the intent "I want user information"—whether it comes from MySQL or Redis is hidden from the application.
 
 This complete separation of "What" from "How" enables multiple resources embedded with `#[Embed]` to be fetched in parallel without changing any application code. Resource classes written 10 years ago can benefit from parallel execution just by adding a Module.
 
@@ -258,8 +262,6 @@ BEAR.Sunday is designed with an emphasis on maintaining backward compatibility i
 
 BEAR.Sunday not only adopts semantic versioning but also does not perform major version upgrades that involve breaking changes. It prevents new feature additions or changes to existing features from affecting existing code. Code that has become old and unused is given the attribute "deprecated" but is never deleted and does not affect the behavior of existing code. Instead, new features are added, and evolution continues.
 
-Here's the English translation of the revised text:
-
 ### Acyclic Dependencies Principle (ADP)
 
 The Acyclic Dependencies Principle states that dependencies should be unidirectional and non-circular. The BEAR.Sunday framework adheres to this principle and is composed of a series of packages with a hierarchical structure where larger framework packages depend on smaller framework packages. Each level does not need to be aware of the existence of other levels that encompass it, and the dependencies are unidirectional and do not form cycles. For example, Ray.Aop is not even aware of the existence of Ray.Di, and Ray.Di is not aware of the existence of BEAR.Sunday.
@@ -301,7 +303,7 @@ This declarative architecture enables multi-layered security scanning combining 
 
 ### Value for Users
 
-* High performance: BEAR.Sunday's optimized fast startup and CDN-centric caching strategy brings users a fast and responsive experience.
+* High performance: BEAR.Sunday's runtime optimization and CDN-centric caching strategy brings users a fast and responsive experience.
 * Reliability and availability: BEAR.Sunday's CDN-centric caching strategy minimizes single points of failure (SPOF), allowing users to enjoy stable services.
 * Ease of use: BEAR.Sunday's excellent connectivity makes it easy to collaborate with other languages and systems.
 
@@ -311,6 +313,8 @@ This declarative architecture enables multi-layered security scanning combining 
 * Reduced maintenance costs: BEAR.Sunday's approach to maintaining backward compatibility increases technical continuity and minimizes the time and cost of change response.
 * High extensibility: With technologies like DI (Dependency Injection) and AOP (Aspect Oriented Programming) that change behavior while minimizing code changes, BEAR.Sunday allows applications to be easily extended in line with business growth and changes.
 * Excellent User Experience (UX): BEAR.Sunday provides high performance and high availability, increasing user satisfaction, enhancing customer loyalty, expanding the customer base, and contributing to business success.
+
+### Summary
 
 Excellent constraints do not change. The constraints brought by BEAR.Sunday provide specific value to developers, users, and businesses respectively.
 
@@ -735,6 +739,8 @@ $this->bind($interface)->toConstructor($class, $named);
 More info can be found at Ray.Di [README](https://github.com/ray-di/Ray.Di/blob/2.x/README.md)
 
 ### Binding Priority
+
+See also: [Ray.Di Bindings](https://ray-di.github.io/manuals/1.0/en/bindings.html)
 
 #### Within a Single Module
 
@@ -7442,7 +7448,876 @@ The demo is available at [MyVendor.Stream](https://github.com/bearsunday/MyVendo
 ---
 *[This document](https://github.com/bearsunday/bearsunday.github.io/blob/master/manuals/1.0/en/stream.md) needs to be proofread by native speaker.*
 
-- [Swoole](/manuals/1.0/en/swoole.md): Async server with Swoole
+
+
+# Parallel Resource Execution <sup style="font-size:0.5em; color:#666; font-weight:normal;">Alpha</sup>
+
+BEAR.Async turns the previously sequential fetch of `#[Embed]` resources into transparent parallel execution. Without touching your resource code, just add a dedicated entrypoint script for parallel execution and embedded resources automatically switch to parallel fetching.
+
+## Overview
+
+In standard BEAR.Sunday, `#[Embed]` resources are fetched sequentially. With BEAR.Async and an execution mode selected, they are fetched in parallel.
+
+```text
+[Sequential]                     [Parallel]
+Request                          Request
+    │                                │
+    ├── Embed 1 ──── 50ms            ├── Embed 1 ──┬── 50ms
+    ├── Embed 2 ──── 50ms            ├── Embed 2 ──┤
+    ├── Embed 3 ──── 50ms            ├── Embed 3 ──┤
+    └── Embed 4 ──── 50ms            └── Embed 4 ──┘
+    │                                │
+Response (200ms)                 Response (50ms)
+```
+
+## Design Philosophy
+
+### URL as Intent
+
+In BEAR.Sunday, a URI expresses **intent**, not just a location.
+
+```php
+#[Embed(rel: 'profile', src: 'query://self/user_profile{?id}')]
+```
+
+The `query://self/user_profile` expresses only the intent: "I want the user's profile information." This separation of "What" from "How" allows the same code to work in both sync and parallel execution. Debug with Xdebug in development, then start from `bin/async.php` in production to enable parallel execution.
+
+### Solving the Function Coloring Problem
+
+Async programming has the "Function Coloring" problem—functions calling async functions must themselves be async, causing "async contamination" throughout the codebase.
+
+In BEAR.Sunday, the "resource" boundary cuts through this problem. No async-specific code is required—resource classes don't need to know how they were invoked.
+
+## Installation
+
+```bash
+composer require bear/async
+```
+
+BEAR.Async 0.3.0 or later is recommended. It depends on `bear/resource`
+1.32+ so async embeds are also resolved correctly during HAL/JSON
+serialization.
+
+## Execution Modes
+
+Choose the appropriate execution mode based on your server environment.
+
+| Use Case | Entrypoint | Runtime setup |
+|---|---|---|
+| PHP-FPM / Apache with embedded resources | `bin/async.php` | library `bootstrap.php` overlay |
+| Swoole HTTP Server | `bin/swoole.php` | install `AsyncSwooleModule` in `AppModule` |
+
+### Parallel execution (ext-parallel)
+
+The recommended mode for typical PHP-FPM / Apache web applications with embedded resources. It runs `#[Embed]` in parallel using an ext-parallel thread pool.
+
+Add `bin/async.php` next to `bin/app.php`. The entrypoint hands off to the library `bootstrap.php`, which overlays the ext-parallel runtime on the normal `AppModule`:
+
+```text
+bin/async.php → vendor/bear/async/bootstrap.php → AppModule + runtime overlay
+```
+
+```php
+<?php // bin/async.php
+
+declare(strict_types=1);
+
+require dirname(__DIR__) . '/autoload.php';
+
+$bootstrap = dirname(__DIR__) . '/vendor/bear/async/bootstrap.php';
+if (! file_exists($bootstrap)) {
+    throw new LogicException('"bear/async" is not installed.');
+}
+
+$defaultContext = PHP_SAPI === 'cli' ? 'cli-hal-api-app' : 'hal-api-app';
+$context = getenv('APP_CONTEXT') ?: $defaultContext;
+
+exit((require $bootstrap)(
+    $context,
+    'MyVendor\MyApp',
+    dirname(__DIR__),
+    $GLOBALS,
+    $_SERVER,
+));
+```
+
+Do not install the parallel runtime in `AppModule` directly — the bootstrap is the only supported install path. The same `AppModule` works under `bin/app.php` (sync) and `bin/async.php` (parallel) unchanged.
+
+To override the worker pool size (default = CPU cores), pass it as the
+optional 6th argument:
+
+```php
+exit((require $bootstrap)($context, 'MyVendor\MyApp', dirname(__DIR__), $GLOBALS, $_SERVER, 8));
+```
+
+#### ext-parallel constraints
+
+Worker runtimes are separate threads with their own Zend memory. Embedded
+resources executed in parallel should be read-only, idempotent GET resources
+with no ordering dependency. Each worker has its own DI container, so
+request-local mutable state and "same instance" assumptions do not cross the
+thread boundary.
+
+Arguments and return values crossing the thread boundary must be copyable:
+scalar values, `null`, or nested arrays of those values. Objects, closures,
+and resources fail fast. Keep interceptors used inside parallel embed graphs
+idempotent, and avoid mutating request-local shared state there.
+
+### Swoole execution (ext-swoole)
+
+For applications already running on Swoole HTTP Server with high concurrency requirements.
+
+ext-parallel uses worker runtimes (separate threads), so it is selected by a separate entrypoint. ext-swoole runs inside one server process, so it is installed as an application module.
+
+```php
+use BEAR\Async\Module\AsyncSwooleModule;
+use BEAR\Async\Module\PdoPoolEnvModule;
+
+class AppModule extends AbstractModule
+{
+    protected function configure(): void
+    {
+        $this->install(new AsyncSwooleModule());
+        $this->install(new PdoPoolEnvModule('PDO_DSN', 'PDO_USER', 'PDO_PASSWORD'));
+    }
+}
+```
+
+Swoole coroutines share memory, so `PdoPoolEnvModule` is required for connection pooling.
+For read-heavy embed graphs, size the pool for the internal parallelism as
+well as HTTP concurrency. A practical starting point is
+`PDO_POOL_SIZE >= embed_count * request_concurrency` when you want to avoid
+queueing; use a smaller pool intentionally when you want database backpressure.
+
+Swoole coroutines and active Xdebug are not a safe combination. Run Swoole
+entrypoints without Xdebug loaded, or set `XDEBUG_MODE=off` for local
+verification.
+
+## Usage
+
+Once an execution mode is selected, existing `#[Embed]` resources are automatically executed in parallel.
+
+```php
+class Dashboard extends ResourceObject
+{
+    #[Embed(rel: 'user', src: '/user{?id}')]
+    #[Embed(rel: 'notifications', src: '/notifications{?user_id}')]
+    #[Embed(rel: 'stats', src: '/stats{?user_id}')]
+    public function onGet(string $id): static
+    {
+        $this->body['id'] = $id;
+        return $this;
+    }
+}
+```
+
+By using `bin/app.php` in development and `bin/async.php` in production, you can debug in sync mode and run parallel in production. `AppModule` is unaware of the execution form, so the same code runs unchanged in both modes.
+
+## When to Choose Parallel
+
+For a read-only resource graph that embeds multiple independent GET resources,
+parallel execution should be the first candidate when the runtime extension is
+available and the downstream database or API capacity is sized for the extra
+concurrency. This is where BEAR.Async is strongest: application code declares
+the resource graph with `#[Embed]`; the Linker implementation decides whether
+the graph is resolved sequentially, with ext-parallel workers, or with Swoole
+coroutines.
+
+### Preconditions
+
+- Embedded resources are read-only GET resources with no ordering dependency.
+- `ext-parallel` or `ext-swoole` is available in the target runtime.
+- Downstream capacity is sized for internal embed parallelism, not only for
+  incoming HTTP request concurrency.
+- ext-parallel steady-state performance requires a resident process that keeps
+  the `parallel\Runtime` pool warm, such as PHP-FPM workers or a benchmark HTTP
+  harness. One-shot CLI runs include runtime startup cost and should be read as
+  cold-start behavior.
+
+### Adapter guide
+
+| Situation | Recommended adapter |
+|---|---|
+| Swoole HTTP server is acceptable and high throughput is needed | Swoole adapter |
+| PHP-FPM / Apache process model should remain and workers stay warm | ext-parallel adapter |
+| Extension support is unavailable or portability is the priority | Sync adapter |
+
+### Cases with little or no gain
+
+- The downstream database or API cannot absorb the added concurrency because
+  of pool limits, saturation, or rate limits.
+- Each embedded resource is already extremely fast; fixed runtime overhead can
+  dominate in that case.
+- Embedded resources have real ordering dependencies or share mutable
+  request-local state.
+- One-shot CLI and cron-style jobs can still use BEAR.Async, but they measure
+  cold-start behavior rather than warmed per-request latency.
+
+## Demo and Benchmarks
+
+The BEAR.Async repository includes a Docker-based demo that starts MySQL,
+seeds a dashboard resource graph with 8 independent SQL-backed GET embeds,
+and provides Sync, ext-parallel, and Swoole entrypoints.
+
+```bash
+cd demo
+docker compose up -d --wait parallel
+docker compose exec parallel composer app -- get 'app://self/dashboard?user_id=1'
+docker compose exec parallel composer async -- get 'app://self/dashboard?user_id=1'
+```
+
+The demo separates cold one-shot CLI measurements from steady-state HTTP
+measurements with `wrk`:
+
+```bash
+docker compose exec parallel composer parallel-benchmark
+docker compose exec parallel composer steady-state-parallel
+docker compose up -d --wait swoole
+docker compose exec swoole composer swoole-benchmark
+docker compose exec swoole composer steady-state-swoole
+```
+
+Cold one-shot CLI numbers include startup work such as DI lookup and, for
+ext-parallel, one-time `parallel\Runtime` spawn. Use the steady-state HTTP
+benchmark when evaluating warmed per-request performance.
+
+## Requirements
+
+PHP 8.2+ for the library itself. Each execution mode adds its own runtime requirement:
+
+| Mode | Requires | Application change |
+|---|---|---|
+| ext-parallel | ZTS PHP + ext-parallel | add `bin/async.php` |
+| ext-swoole | ext-swoole | install `AsyncSwooleModule`, use `bin/swoole.php` |
+
+## BEAR.Projection Integration
+
+[BEAR.Projection](https://github.com/bearsunday/BEAR.Projection) transforms SQL query results into typed Projection objects and exposes them as resources via the `query://` scheme. Combined with `#[Embed]`, multiple SQL queries execute in parallel.
+
+Projection classes are defined as immutable value objects.
+
+```php
+final class UserProfile
+{
+    public function __construct(
+        public readonly string $id,
+        public readonly string $name,
+        public readonly int $age,
+        public readonly string $avatarUrl,
+    ) {}
+}
+```
+
+Factory classes transform raw SQL data into Projections. Dependencies can be injected via DI, enabling business logic like age calculation or URL resolution.
+
+```php
+final class UserProfileFactory
+{
+    public function __construct(
+        private readonly AgeCalculator $ageCalculator,
+        private readonly ImageUrlResolver $imageResolver,
+    ) {}
+
+    public function __invoke(
+        string $id,
+        string $name,
+        string $birthDate,
+        string $avatarPath,
+    ): UserProfile {
+        return new UserProfile(
+            id: $id,
+            name: $name,
+            age: $this->ageCalculator->fromBirthDate($birthDate),
+            avatarUrl: $this->imageResolver->resolve($avatarPath),
+        );
+    }
+}
+```
+
+SQL files return columns corresponding to Factory parameter names.
+
+```sql
+-- var/sql/query/user_profile.sql
+SELECT id, name, birth_date, avatar_path FROM users WHERE id = :id
+```
+
+When used with `#[Embed]`, multiple Projections execute in parallel.
+
+```php
+class User extends ResourceObject
+{
+    #[Embed(rel: 'profile', src: 'query://self/user_profile{?id}')]
+    #[Embed(rel: 'orders', src: 'query://self/user_orders{?id}')]
+    public function onGet(string $id): static
+    {
+        return $this;
+    }
+}
+```
+
+## SQL Batch Execution
+
+Parallel SQL query execution using mysqli's native async support is also provided.
+
+```php
+use BEAR\Async\Module\MysqliEnvModule;
+
+$this->install(new MysqliEnvModule('MYSQL_HOST', 'MYSQL_USER', 'MYSQL_PASS', 'MYSQL_DB'));
+```
+
+```php
+use BEAR\Async\SqlBatch;
+use BEAR\Async\SqlBatchExecutorInterface;
+
+class MyService
+{
+    public function __construct(
+        private SqlBatchExecutorInterface $executor,
+    ) {}
+
+    public function getData(int $userId): array
+    {
+        return (new SqlBatch($this->executor, [
+            'user' => ['SELECT * FROM users WHERE id = ?', [$userId]],
+            'posts' => ['SELECT * FROM posts WHERE user_id = ?', [$userId]],
+        ]))();
+    }
+}
+```
+
+## References
+
+- [BEAR.Async](https://github.com/bearsunday/BEAR.Async)
+- [BEAR.Async Demo Guide](https://github.com/bearsunday/BEAR.Async/tree/1.x/demo)
+- [BEAR.Async Benchmark Results](https://github.com/bearsunday/BEAR.Async/blob/1.x/docs/benchmark-results.md)
+- [BEAR.Projection](https://github.com/bearsunday/BEAR.Projection)
+- [Parallel Execution Architecture](https://bearsunday.github.io/BEAR.Async/parallel-execution-architecture.html)
+
+
+
+# High-Performance Servers
+
+BEAR.Sunday applications can run on high-performance PHP servers that eliminate per-request bootstrap overhead. This guide covers three server options: Swoole, RoadRunner, and FrankenPHP.
+
+## Overview
+
+In traditional PHP-FPM, each request bootstraps the entire application:
+
+```text
+Request -> Boot Framework -> Route -> Execute -> Response -> Shutdown
+Request -> Boot Framework -> Route -> Execute -> Response -> Shutdown
+Request -> Boot Framework -> Route -> Execute -> Response -> Shutdown
+```
+
+With persistent worker mode, the application boots once:
+
+```text
+Boot Framework (once)
+    |
+Request -> Route -> Execute -> Response
+Request -> Route -> Execute -> Response
+Request -> Route -> Execute -> Response
+```
+
+This eliminates boot overhead, resulting in significantly lower latency and higher throughput.
+
+BEAR.Sunday's stateless resource design and immutable architecture are well-suited for persistent worker environments, enabling seamless transition to worker mode without global state issues.
+
+## Server Comparison
+
+| Feature | Swoole | RoadRunner | FrankenPHP |
+|---------|--------|------------|------------|
+| Language | C + PHP | Go + PHP | Go + PHP |
+| Worker Mode | Yes | Yes | Yes |
+| HTTP/2 | Yes | Yes | Yes |
+| HTTP/3 | No | No | Yes |
+| WebSocket | Native | Native | Via Caddy |
+| Coroutines | Yes | No | No |
+| Hot Reload | Manual | Yes | Yes |
+| Memory Limit | Shared | Per worker | Per worker |
+
+## Quick Start with Docker
+
+The [bear-sunday-servers](https://github.com/bearsunday/bear-sunday-servers) repository provides ready-to-use Docker configurations for all three servers.
+
+```bash
+git clone https://github.com/bearsunday/bear-sunday-servers.git
+cd bear-sunday-servers
+
+# Swoole (port 8081)
+cd swoole && docker compose up -d && curl http://localhost:8081/
+
+# RoadRunner (port 8082)
+cd roadrunner && docker compose up -d && curl http://localhost:8082/
+
+# FrankenPHP (port 8080)
+cd frankenphp && docker compose up -d && curl http://localhost:8080/
+```
+
+---
+
+## Swoole
+
+[Swoole](https://www.swoole.com/) is a coroutine-based PHP extension providing event-driven asynchronous I/O.
+
+### Features
+
+- **Event-Driven**: Asynchronous I/O handling
+- **Coroutines**: Concurrent request processing without threads
+- **Request Isolation**: Coroutine-context request isolation
+- **High Performance**: Eliminates per-request boot overhead
+- **Memory Efficient**: Shared memory between workers
+
+### Install
+
+#### Swoole Extension (ext-swoole ^6.1)
+
+```bash
+pecl install swoole
+```
+
+Or compile from source:
+
+```bash
+git clone https://github.com/swoole/swoole-src.git && \
+cd swoole-src && \
+phpize && \
+./configure && \
+make && make install
+```
+
+Add `extension=swoole.so` to your `php.ini`.
+
+#### BEAR.Swoole Package
+
+```bash
+composer require bear/swoole
+```
+
+### Bootstrap Script
+
+Create `bin/swoole.php`:
+
+```php
+<?php
+
+declare(strict_types=1);
+
+require dirname(__DIR__) . '/autoload.php';
+
+$bootstrap = dirname(__DIR__) . '/vendor/bear/swoole/bootstrap.php';
+
+$context = getenv('BEAR_CONTEXT') ?: 'prod-hal-app';
+$ip = getenv('SWOOLE_IP') ?: '0.0.0.0';
+$port = (int) (getenv('SWOOLE_PORT') ?: 8080);
+
+exit((require $bootstrap)(
+    $context,
+    'MyVendor\MyProject',
+    $ip,
+    $port
+));
+```
+
+### Run
+
+```bash
+php bin/swoole.php
+```
+
+```text
+Swoole http server is started at http://127.0.0.1:8080
+```
+
+### Environment Variables
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `BEAR_CONTEXT` | prod-hal-app | BEAR.Sunday context |
+| `SWOOLE_IP` | 0.0.0.0 | Server bind address |
+| `SWOOLE_PORT` | 8080 | Server port |
+
+### Architecture
+
+```text
+Master Process
+    |
+    +-- Manager Process
+           |
+           +-- Worker 1 (coroutines)
+           +-- Worker 2 (coroutines)
+           +-- Worker N (coroutines)
+```
+
+Each worker can handle multiple concurrent requests using coroutines.
+
+### Development Notes
+
+Xdebug is not fully compatible with Swoole's coroutines. For debugging:
+- Use `var_dump()` / `error_log()` for simple debugging
+- Or disable Swoole and use PHP's built-in server with Xdebug
+
+Swoole does not support automatic hot reload. Restart after code changes:
+
+```bash
+# With Docker
+docker compose restart
+
+# Without Docker
+pkill -f swoole.php && php bin/swoole.php
+```
+
+### Parallel Execution
+
+Swoole server involves two independent concerns:
+
+- **Server**: How to run the application (this page)
+- **Parallel Execution**: How to execute embedded resources concurrently
+
+With BEAR.Async, `#[Embed]` resources are automatically executed in parallel using Swoole coroutines. See [Parallel Resource Execution](async.html) for details.
+
+---
+
+## RoadRunner
+
+[RoadRunner](https://roadrunner.dev/) is a high-performance Go application server with PSR-7 PHP workers.
+
+### Features
+
+- **Go Application Server**: High-performance process manager
+- **PSR-7 Workers**: Standard HTTP message interface
+- **Built-in Metrics**: Prometheus-compatible endpoint
+- **Hot Reload**: Automatic worker restart on file changes
+
+### Install
+
+#### RoadRunner Binary
+
+Download from [releases](https://github.com/roadrunner-server/roadrunner/releases) or use Docker.
+
+#### PHP Dependencies
+
+```bash
+composer require spiral/roadrunner-http nyholm/psr7
+```
+
+### Configuration
+
+Create `.rr.yaml`:
+
+```yaml
+version: "3"
+
+server:
+  command: "php bin/worker.php"
+  relay: pipes
+
+http:
+  address: "0.0.0.0:8082"
+  pool:
+    num_workers: 4
+    max_jobs: 1000
+    allocate_timeout: 60s
+    destroy_timeout: 60s
+
+logs:
+  mode: production
+  level: info
+  output: stdout
+
+status:
+  address: "0.0.0.0:2112"
+```
+
+### Worker Script
+
+Create `bin/worker.php`:
+
+```php
+<?php
+
+declare(strict_types=1);
+
+use BEAR\Resource\ResourceObject;
+use BEAR\Sunday\Extension\Application\AppInterface;
+use MyVendor\MyProject\Injector;
+use MyVendor\MyProject\Module\App;
+use Nyholm\Psr7\Factory\Psr17Factory;
+use Psr\Http\Message\ServerRequestInterface;
+use Spiral\RoadRunner\Http\PSR7Worker;
+use Spiral\RoadRunner\Worker;
+
+require dirname(__DIR__) . '/autoload.php';
+
+// Get configuration from environment
+$context = getenv('BEAR_CONTEXT') ?: 'prod-hal-app';
+$maxRequests = (int) (getenv('MAX_REQUESTS') ?: 1000);
+
+// Boot application once (outside the request loop)
+$app = Injector::getInstance($context)->getInstance(AppInterface::class);
+assert($app instanceof App);
+
+// Create RoadRunner worker
+$worker = Worker::create();
+$factory = new Psr17Factory();
+$psr7Worker = new PSR7Worker($worker, $factory, $factory, $factory);
+
+$requestCount = 0;
+
+while ($psrRequest = $psr7Worker->waitRequest()) {
+    try {
+        if (! $psrRequest instanceof ServerRequestInterface) {
+            break;
+        }
+
+        // Convert PSR-7 request to $_SERVER format
+        $server = createServerVars($psrRequest);
+        $globals = createGlobals($psrRequest);
+
+        // Route and execute request
+        $request = $app->router->match($globals, $server);
+        $response = $app->resource->{$request->method}->uri($request->path)($request->query);
+        assert($response instanceof ResourceObject);
+
+        // Convert ResourceObject to PSR-7 Response
+        $psrResponse = $factory->createResponse($response->code);
+        foreach ($response->headers as $name => $value) {
+            $psrResponse = $psrResponse->withHeader($name, $value);
+        }
+        $psrResponse = $psrResponse->withBody($factory->createStream((string) $response));
+
+        $psr7Worker->respond($psrResponse);
+    } catch (Throwable $e) {
+        $psr7Worker->respond($factory->createResponse(500)->withBody(
+            $factory->createStream($e->getMessage())
+        ));
+    }
+
+    gc_collect_cycles();
+    $requestCount++;
+
+    if ($maxRequests > 0 && $requestCount >= $maxRequests) {
+        break;
+    }
+}
+
+function createServerVars(ServerRequestInterface $request): array
+{
+    $uri = $request->getUri();
+    $server = $request->getServerParams();
+
+    $server['REQUEST_METHOD'] = $request->getMethod();
+    $server['REQUEST_URI'] = $uri->getPath() . ($uri->getQuery() ? '?' . $uri->getQuery() : '');
+    $server['QUERY_STRING'] = $uri->getQuery();
+    $server['HTTP_HOST'] = $uri->getHost();
+
+    foreach ($request->getHeaders() as $name => $values) {
+        $key = 'HTTP_' . strtoupper(str_replace('-', '_', $name));
+        $server[$key] = implode(', ', $values);
+    }
+
+    return $server;
+}
+
+function createGlobals(ServerRequestInterface $request): array
+{
+    return [
+        '_GET' => $request->getQueryParams(),
+        '_POST' => (array) $request->getParsedBody(),
+        '_COOKIE' => $request->getCookieParams(),
+        '_FILES' => $request->getUploadedFiles(),
+        '_SERVER' => createServerVars($request),
+    ];
+}
+```
+
+### Run
+
+```bash
+./rr serve -c .rr.yaml
+```
+
+### Environment Variables
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `BEAR_CONTEXT` | prod-hal-app | BEAR.Sunday context |
+| `MAX_REQUESTS` | 1000 | Requests before worker restart |
+
+### Architecture
+
+```text
+RoadRunner (Go)
+    |
+    +-- PHP Worker 1 (persistent)
+    +-- PHP Worker 2 (persistent)
+    +-- PHP Worker N (persistent)
+```
+
+Each worker boots BEAR.Sunday once and handles requests via pipes.
+
+### Metrics
+
+Prometheus metrics available at `http://localhost:2112/metrics`.
+
+---
+
+## FrankenPHP
+
+[FrankenPHP](https://frankenphp.dev/) is a modern PHP application server built on Caddy with worker mode support.
+
+### Features
+
+- **Worker Mode**: Eliminates application boot cost per request
+- **HTTP/2 & HTTP/3**: Automatic HTTPS with Caddy
+- **Production Ready**: OPcache JIT, multi-stage builds
+- **Development Ready**: Xdebug, hot reload
+
+### Install
+
+FrankenPHP is typically used via Docker. For standalone installation, see [FrankenPHP documentation](https://frankenphp.dev/docs/).
+
+### Worker Script
+
+Create `bin/worker.php`:
+
+```php
+<?php
+
+declare(strict_types=1);
+
+use BEAR\Resource\ResourceObject;
+use BEAR\Sunday\Extension\Application\AppInterface;
+use MyVendor\MyProject\Injector;
+use MyVendor\MyProject\Module\App;
+
+require dirname(__DIR__) . '/autoload.php';
+
+// Get configuration from environment
+$context = getenv('BEAR_CONTEXT') ?: 'prod-hal-app';
+$maxRequests = (int) (getenv('MAX_REQUESTS') ?: 1000);
+
+// Boot application once (outside the request loop)
+$app = Injector::getInstance($context)->getInstance(AppInterface::class);
+assert($app instanceof App);
+
+$requestCount = 0;
+
+// FrankenPHP worker loop
+// Superglobals ($_GET, $_POST, $_SERVER) are automatically reset
+do {
+    $running = frankenphp_handle_request(static function () use ($app): void {
+        try {
+            // Check HTTP cache
+            if ($app->httpCache->isNotModified($_SERVER)) {
+                $app->httpCache->transfer();
+                return;
+            }
+
+            // Route and execute request
+            $request = $app->router->match($GLOBALS, $_SERVER);
+            $response = $app->resource->{$request->method}->uri($request->path)($request->query);
+            assert($response instanceof ResourceObject);
+            $response->transfer($app->responder, $_SERVER);
+        } catch (Throwable $e) {
+            $app->throwableHandler->handle($e, $request ?? null)->transfer();
+        }
+
+        gc_collect_cycles();
+    });
+
+    $requestCount++;
+
+    if ($maxRequests > 0 && $requestCount >= $maxRequests) {
+        break;
+    }
+} while ($running);
+```
+
+### Caddyfile Configuration
+
+```caddyfile
+{
+    admin off
+
+    frankenphp {
+        worker /app/bin/worker.php {
+            num {$FRANKENPHP_NUM_WORKERS:4}
+        }
+    }
+}
+
+{$SERVER_NAME::8080} {
+    root * /app/public
+
+    encode zstd br gzip
+
+    respond /health 200
+
+    php_server
+
+    log {
+        output stdout
+        format console
+    }
+}
+```
+
+### Run with Docker
+
+```bash
+docker run -v $PWD:/app -p 8080:8080 dunglas/frankenphp
+```
+
+### Environment Variables
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `BEAR_CONTEXT` | prod-hal-app | BEAR.Sunday context |
+| `MAX_REQUESTS` | 1000 | Requests before worker restart |
+| `SERVER_NAME` | :8080 | Listen address |
+| `FRANKENPHP_NUM_WORKERS` | 4 | Number of worker processes |
+
+### Memory Management
+
+- Workers automatically restart after `MAX_REQUESTS` to prevent memory leaks
+- `gc_collect_cycles()` runs after each request
+- Set `MAX_REQUESTS=0` for unlimited requests (development only)
+
+---
+
+## Production Deployment
+
+For production deployments, each server directory in [bear-sunday-servers](https://github.com/bearsunday/bear-sunday-servers) includes:
+
+- `Dockerfile` - Optimized production build
+- `docker-compose.prod.yml` - Production configuration
+- Health check endpoints
+- OPcache optimization
+
+Example production deployment:
+
+```bash
+cd swoole  # or roadrunner, frankenphp
+docker compose -f docker-compose.prod.yml up -d
+```
+
+## Benchmarking
+
+See [BEAR.HelloworldBenchmark](https://github.com/bearsunday/BEAR.HelloworldBenchmark) for benchmark comparisons.
+
+## Related
+
+- [Parallel Resource Execution](async.html) - Parallel execution of `#[Embed]` resources with BEAR.Async
+
+## References
+
+- [Swoole](https://www.swoole.com/) - [Documentation](https://wiki.swoole.com/)
+- [RoadRunner](https://roadrunner.dev/) - [Documentation](https://roadrunner.dev/docs)
+- [FrankenPHP](https://frankenphp.dev/) - [Documentation](https://frankenphp.dev/docs/)
+- [BEAR.Swoole](https://github.com/bearsunday/BEAR.Swoole)
+- [bear-sunday-servers](https://github.com/bearsunday/bear-sunday-servers)
+
 
 # Command Line Interface (CLI)
 
