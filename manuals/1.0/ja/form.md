@@ -17,18 +17,18 @@ composerで`ray/web-form-module`をインストールします：
 composer require ray/web-form-module
 ```
 
-アプリケーションモジュール`src/Module/AppModule.php`で`AuraInputModule`をインストールします：
+アプリケーションモジュール`src/Module/AppModule.php`で`WebFormModule`をインストールします：
 
 ```php
 use BEAR\Package\AbstractAppModule;
-use Ray\WebFormModule\AuraInputModule;
+use Ray\WebFormModule\WebFormModule;
 
 class AppModule extends AbstractAppModule
 {
     protected function configure()
     {
         // ...
-        $this->install(new AuraInputModule());
+        $this->install(new WebFormModule());
     }
 }
 ```
@@ -205,14 +205,14 @@ public function onPost(): static
 
 ```php
 use Ray\Di\AbstractModule;
-use Ray\WebFormModule\AuraInputModule;
+use Ray\WebFormModule\WebFormModule;
 use Ray\WebFormModule\FormVndErrorModule;
 
 class FooModule extends AbstractModule
 {
     protected function configure()
     {
-        $this->install(new AuraInputModule());
+        $this->install(new WebFormModule());
         $this->override(new FormVndErrorModule());
     }
 }

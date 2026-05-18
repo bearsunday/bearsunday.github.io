@@ -17,18 +17,18 @@ Install `ray/web-form-module` with composer:
 composer require ray/web-form-module
 ```
 
-Install `AuraInputModule` in your application module at `src/Module/AppModule.php`:
+Install `WebFormModule` in your application module at `src/Module/AppModule.php`:
 
 ```php
 use BEAR\Package\AbstractAppModule;
-use Ray\WebFormModule\AuraInputModule;
+use Ray\WebFormModule\WebFormModule;
 
 class AppModule extends AbstractAppModule
 {
     protected function configure()
     {
         // ...
-        $this->install(new AuraInputModule());
+        $this->install(new WebFormModule());
     }
 }
 ```
@@ -204,14 +204,14 @@ Install `Ray\WebFormModule\FormVndErrorModule` to make `#[FormValidation]` metho
 
 ```php
 use Ray\Di\AbstractModule;
-use Ray\WebFormModule\AuraInputModule;
+use Ray\WebFormModule\WebFormModule;
 use Ray\WebFormModule\FormVndErrorModule;
 
 class FooModule extends AbstractModule
 {
     protected function configure()
     {
-        $this->install(new AuraInputModule());
+        $this->install(new WebFormModule());
         $this->override(new FormVndErrorModule());
     }
 }
