@@ -7,11 +7,11 @@ permalink: /manuals/1.0/ja/async.html
 
 # 並列リソース実行 <sup style="font-size:0.5em; color:#666; font-weight:normal;">Alpha</sup>
 
-BEAR.Asyncは`#[Embed]`リソースの透過的な並列実行を可能にします。アプリケーションコードを変更することなく、埋め込みリソースを並列に取得します。10年前に書かれたリソースクラスも、Moduleを追加するだけで並列実行の恩恵を受けられます。
+BEAR.Asyncはこれまで逐次取得されていた`#[Embed]`埋め込みリソースを透過的に並列実行します。リソースのコードに手を入れることなく、並列実行用の起動スクリプトを用意するだけで、埋め込みリソースは自動的に並列取得に切り替わります。
 
 ## 概要
 
-標準のBEAR.Sundayでは`#[Embed]`リソースは順次取得されますが、BEAR.Asyncを使用すると並列に取得されます。
+標準のBEAR.Sundayでは`#[Embed]`リソースは順次取得されますが、BEAR.Asyncでランタイム環境を選択すると並列に取得されます。
 
 ```text
 [順次実行]                       [並列実行]
@@ -25,23 +25,15 @@ Request                          Request
 Response (200ms)                 Response (50ms)
 ```
 
-## 設計思想
+## なぜコード変更なしで動くのか
 
-### URLは意図である
+BEAR.Sundayでは、情報がリソースとして URI で**構造化**されています。`#[Embed]`はそのリソースの実行結果ではなく、リソースリクエストそのものを埋め込み、リソース間の関係を宣言します。実行戦略 — 逐次・ext-parallelワーカー・Swooleコルーチン — を選ぶのは Linker の役割で、リソースクラスは自分が同期で呼ばれたか並列で呼ばれたかを知る必要がありません。
 
-BEAR.Sundayにおいて、URIは単なる場所ではなく**意図**を表現します。
+通常モードではレンダリング時にこれらのリクエストが1つずつ逐次解決されますが、並列実行モードでは、最初の埋め込みリクエストが解決される時点で残りの埋め込みリクエストもまとめて並列に実行されます。BEAR.Asyncの非同期リクエストはBEAR.Resourceの通常リクエストと同じ型として扱えるため、HALレンダラなど周辺の仕組みはこの差を意識せずシリアライズに統合できます。
 
-```php
-#[Embed(rel: 'profile', src: 'query://self/user_profile{?id}')]
-```
+非同期プログラミングでしばしば言われる「関数の色」問題 — 非同期関数を呼ぶ関数は自身も非同期でなければならず、コード全体が非同期に汚染される問題 — も、リソースという境界がこれを遮断します。同期と並列でコードは同じ、変わるのは実行戦略だけです。
 
-この`query://self/user_profile`は「ユーザーのプロファイル情報が欲しい」という意図だけを示しています。この「What（何を）」と「How（どう）」の分離により、同じコードが同期実行でも並列実行でも動作します。開発時は通常のPHPとしてXdebugでデバッグし、本番ではModuleを切り替えるだけで並列実行を有効化できます。
-
-### 関数の色問題の解決
-
-非同期プログラミングには「関数の色」問題があります。非同期関数を呼ぶ関数は自身も非同期でなければならず、コード全体が「非同期に汚染」されていきます。
-
-BEAR.Sundayでは「リソース」という境界がこの問題を断ち切ります。非同期のためのコード記述は一切不要で、リソースクラスは自分がどう呼び出されたかを知る必要がありません。
+これはBEAR.Async固有ではなく、BEAR.Sunday全体の性質です。MVCフレームワークが「どう実行するか」を手続きで書く箇所を、BEAR.Sundayはリソース間の関係を宣言として表します。宣言は実行戦略から独立しているため、戦略の差し替えはコードに影響しません。
 
 ## インストール
 
@@ -49,34 +41,66 @@ BEAR.Sundayでは「リソース」という境界がこの問題を断ち切り
 composer require bear/async
 ```
 
-## 設定
+## ランタイム環境
 
-サーバー環境に応じて適切なモジュールを選択します。
+サーバー構成に応じて適切なランタイム環境を選択します。
 
-| 環境 | モジュール | 特徴 |
-|-----|----------|------|
-| PHP-FPM / Apache | `AsyncParallelModule` | ext-parallel使用、ZTS PHP必要 |
-| Swoole HTTPサーバー | `AsyncSwooleModule` | コルーチン使用、接続プール必要 |
+| 用途 | エントリポイント | ランタイム設定 |
+|-----|-----|-----|
+| PHP-FPM / Apache（埋め込みリソースあり） | `bin/async.php` | ライブラリの`bootstrap.php`が`AppModule`に並列ランタイムを重ねる |
+| Swoole HTTPサーバー | `bin/swoole.php` | `AsyncSwooleModule`を`AppModule`にインストール |
 
-### AsyncParallelModule
+### 並列実行（ext-parallel）
 
-```php
-use BEAR\Async\Module\AsyncParallelModule;
+PHP-FPM / Apache上で動作する一般的なWebアプリケーション向けのランタイム環境です。ext-parallelのスレッドプールを使って`#[Embed]`を並列実行します。
 
-class AppModule extends AbstractModule
-{
-    protected function configure(): void
-    {
-        $this->install(new AsyncParallelModule(
-            namespace: 'MyVendor\MyApp',
-            context: 'prod-app',
-            appDir: dirname(__DIR__),
-        ));
-    }
-}
+`bin/app.php`の隣に`bin/async.php`を追加します。このエントリポイントはライブラリの`bootstrap.php`に処理を委譲し、通常の`AppModule`の上にext-parallelランタイムを重ねます。
+
+```text
+bin/async.php → vendor/bear/async/bootstrap.php → AppModule + 並列ランタイム
 ```
 
-### AsyncSwooleModule
+```php
+<?php // bin/async.php
+
+declare(strict_types=1);
+
+require dirname(__DIR__) . '/autoload.php';
+
+$bootstrap = dirname(__DIR__) . '/vendor/bear/async/bootstrap.php';
+if (! file_exists($bootstrap)) {
+    throw new LogicException('"bear/async" is not installed.');
+}
+
+$defaultContext = PHP_SAPI === 'cli' ? 'cli-hal-api-app' : 'hal-api-app';
+$context = getenv('APP_CONTEXT') ?: $defaultContext;
+
+exit((require $bootstrap)(
+    $context,
+    'MyVendor\MyApp',
+    dirname(__DIR__),
+    $GLOBALS,
+    $_SERVER,
+));
+```
+
+ワーカープールのサイズ（デフォルトはCPUコア数）を変更したい場合は、第6引数として明示的に指定します。
+
+```php
+exit((require $bootstrap)($context, 'MyVendor\MyApp', dirname(__DIR__), $GLOBALS, $_SERVER, 8));
+```
+
+#### ext-parallelの制約
+
+ワーカーは別スレッドで動作し、それぞれ独立したZendメモリ空間を持ちます。並列実行する埋め込みリソースは、順序に依存しない読み取り専用（冪等なGET）リソースにしてください。各ワーカーは独自のDIコンテナを持つため、リクエストローカルな可変状態や「同一インスタンスである」という前提はスレッド境界を越えて引き継がれません。
+
+スレッド境界をまたぐ引数と戻り値はコピー可能でなければなりません。具体的にはスカラー値・`null`・それらをネストした配列です。オブジェクトやクロージャ、リソースを渡した場合は即座にエラーになります。並列実行される埋め込みリソースに適用するインターセプターは冪等に保ち、リクエストローカルな共有状態を書き換えないでください。
+
+### Swoole実行（ext-swoole）
+
+すでにSwoole HTTPサーバー上で稼働しており、高い並行性能を求めるアプリケーション向けのランタイム環境です。
+
+ext-parallelはワーカー（別スレッド）で動作するため別エントリポイントから選択しますが、ext-swooleは同一サーバープロセス内で動作するため、アプリケーションモジュールとしてインストールします。
 
 ```php
 use BEAR\Async\Module\AsyncSwooleModule;
@@ -92,11 +116,17 @@ class AppModule extends AbstractModule
 }
 ```
 
-Swooleではコルーチンがメモリを共有するため、`PdoPoolEnvModule`による接続プールが必要です。
+Swooleではコルーチン同士がメモリを共有するため、`PdoPoolEnvModule`による接続プールが必要です。読み取り中心で埋め込みリソースを多用する構成では、外部から到達するHTTPリクエスト数だけでなく、1リクエスト内で同時に実行される埋め込みの数も加味してプールサイズを見積もります。キュー待ちを避けたい場合は `PDO_POOL_SIZE >= embed_count * request_concurrency` を目安にし、DBへの同時接続数を抑えたい場合はあえて小さめに設定します。
+
+> **技術ノート（プール接続の取得方式）:** プールからの接続取得はコルーチン単位で管理されます。同じコルーチン内で`PDO`と`ExtendedPdo`の両方が注入された場合でも、両者は同一の接続を共有し、コルーチン終了時に`Coroutine::defer()`で一度だけプールへ返却されます。これにより、1つの処理が意図せず2本の接続を握ることを防ぎます。さらに`#[Embed]`で埋め込まれたリクエストは遅延評価されるため、埋め込みリソースを`#[Embed]`で宣言した時点ではプールから接続を確保せず、各リクエストが実際に実行される時点まで取得を遅らせます。
+>
+> **技術ノート（PDOProxyの扱い）:** Swooleはコルーチン対応のために`PDO`を独自に`PDOProxy`でラップしますが、BEAR.Asyncはこのラップを内部で吸収して通常の`PDO`として扱えるようにします。何らかの理由で元の`PDO`を取り出せない場合は、リフレクション失敗をそのまま伝播させず、PDOプロキシ抽出専用のドメイン例外として扱います。
+
+Swooleのコルーチンと有効化されたXdebugを併用すると安全に動作しません。Swoole用のエントリポイントはXdebugを読み込まないPHPで実行するか、ローカル確認時には`XDEBUG_MODE=off`を設定してください。
 
 ## 使用方法
 
-モジュールをインストールすると、既存の`#[Embed]`リソースは自動的に並列実行されます。
+ランタイム環境を選択すると、既存の`#[Embed]`リソースは自動的に並列実行されます。
 
 ```php
 class Dashboard extends ResourceObject
@@ -112,72 +142,20 @@ class Dashboard extends ResourceObject
 }
 ```
 
-開発環境では非同期モジュールをインストールせず、本番環境でのみ有効にすることで、同期モードでのデバッグと本番での並列実行を使い分けられます。
+開発環境では`bin/app.php`で同期実行してデバッグし、本番環境では`bin/async.php`から起動して並列実行に切り替えます。
 
-## BEAR.Projectionとの連携
+## デモとベンチマーク
 
-[BEAR.Projection](https://github.com/bearsunday/BEAR.Projection)は、SQLクエリ結果を型付きのProjectionオブジェクトに変換し、`query://`スキームでリソースとして公開します。`#[Embed]`と組み合わせることで、複数のSQLクエリが並列実行されます。
+BEAR.AsyncリポジトリにはSync・ext-parallel・Swooleの動作を比較できる、Dockerベースのデモとベンチマークスクリプトが含まれています。詳細は[デモガイド](https://github.com/bearsunday/BEAR.Async/tree/1.x/demo)と[ベンチマーク結果](https://github.com/bearsunday/BEAR.Async/blob/1.x/docs/benchmark-results.md)を参照してください。
 
-Projectionクラスはイミュータブルな値オブジェクトとして定義します。
+## 動作要件
 
-```php
-final class UserProfile
-{
-    public function __construct(
-        public readonly string $id,
-        public readonly string $name,
-        public readonly int $age,
-        public readonly string $avatarUrl,
-    ) {}
-}
-```
+各ランタイム環境は対応するPHP拡張を必要とします。
 
-Factoryクラスでは、SQLの生データをProjectionに変換します。DIで依存を注入できるため、年齢計算やURL解決などのビジネスロジックを適用できます。
-
-```php
-final class UserProfileFactory
-{
-    public function __construct(
-        private readonly AgeCalculator $ageCalculator,
-        private readonly ImageUrlResolver $imageResolver,
-    ) {}
-
-    public function __invoke(
-        string $id,
-        string $name,
-        string $birthDate,
-        string $avatarPath,
-    ): UserProfile {
-        return new UserProfile(
-            id: $id,
-            name: $name,
-            age: $this->ageCalculator->fromBirthDate($birthDate),
-            avatarUrl: $this->imageResolver->resolve($avatarPath),
-        );
-    }
-}
-```
-
-SQLファイルはFactoryのパラメータ名に対応するカラムを返します。
-
-```sql
--- var/sql/query/user_profile.sql
-SELECT id, name, birth_date, avatar_path FROM users WHERE id = :id
-```
-
-これらを`#[Embed]`で利用すると、複数のProjectionが並列実行されます。
-
-```php
-class User extends ResourceObject
-{
-    #[Embed(rel: 'profile', src: 'query://self/user_profile{?id}')]
-    #[Embed(rel: 'orders', src: 'query://self/user_orders{?id}')]
-    public function onGet(string $id): static
-    {
-        return $this;
-    }
-}
-```
+| ランタイム環境 | 必要なもの | アプリケーション側の変更 |
+|-----|-----|-----|
+| ext-parallel | ZTS PHP + ext-parallel | `bin/async.php`を追加 |
+| ext-swoole | ext-swoole | `AsyncSwooleModule`をインストール、`bin/swoole.php`を使用 |
 
 ## SQLバッチ実行
 
@@ -224,5 +202,7 @@ class MyService
 ## 参考リンク
 
 - [BEAR.Async](https://github.com/bearsunday/BEAR.Async)
+- [BEAR.Async デモガイド](https://github.com/bearsunday/BEAR.Async/tree/1.x/demo)
+- [BEAR.Async ベンチマーク結果](https://github.com/bearsunday/BEAR.Async/blob/1.x/docs/benchmark-results.md)
 - [BEAR.Projection](https://github.com/bearsunday/BEAR.Projection)
 - [並列実行アーキテクチャ](https://bearsunday.github.io/BEAR.Async/parallel-execution-architecture.html)
