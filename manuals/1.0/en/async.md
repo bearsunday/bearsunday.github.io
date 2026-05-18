@@ -25,16 +25,6 @@ Request                          Request
 Response (200ms)                 Response (50ms)
 ```
 
-## Why no code change is needed
-
-In BEAR.Sunday, information is **structured** as resources identified by URIs. `#[Embed]` does not embed the result of a resource — it embeds the resource request itself and declares a relationship between resources. Choosing the execution strategy — sequential, ext-parallel workers, or Swoole coroutines — is the Linker's job; resource classes do not need to know whether they were called synchronously or in parallel.
-
-In the default mode these requests are resolved one by one at rendering time. In parallel mode, the moment the first embedded request is resolved, the remaining embedded requests are executed together in parallel. BEAR.Async asynchronous requests share the same type as ordinary BEAR.Resource requests, so the HAL renderer and other surrounding machinery can integrate them into serialization without being aware of the difference.
-
-The "function coloring" problem often raised in async programming — a function calling an async function must itself be async, contaminating the whole codebase — is cut off at the resource boundary. The code is the same under sync and parallel execution; only the execution strategy changes.
-
-This is not specific to BEAR.Async; it is a property of BEAR.Sunday as a whole. Where MVC frameworks write *how to execute* procedurally, BEAR.Sunday expresses *relationships between resources* declaratively. Because the declaration is independent of the execution strategy, swapping strategies has no effect on the code.
-
 ## Installation
 
 ```bash
@@ -143,6 +133,16 @@ class Dashboard extends ResourceObject
 ```
 
 In development, run synchronously via `bin/app.php` for debugging; in production, switch to parallel execution by starting from `bin/async.php`.
+
+## Why no code change is needed
+
+In BEAR.Sunday, information is **structured** as resources identified by URIs. `#[Embed]` does not embed the result of a resource — it embeds the resource request itself and declares a relationship between resources. Choosing the execution strategy — sequential, ext-parallel workers, or Swoole coroutines — is the Linker's job; resource classes do not need to know whether they were called synchronously or in parallel.
+
+In the default mode these requests are resolved one by one at rendering time. In parallel mode, the moment the first embedded request is resolved, the remaining embedded requests are executed together in parallel. BEAR.Async asynchronous requests share the same type as ordinary BEAR.Resource requests, so the HAL renderer and other surrounding machinery can integrate them into serialization without being aware of the difference.
+
+The "function coloring" problem often raised in async programming — a function calling an async function must itself be async, contaminating the whole codebase — is cut off at the resource boundary. The code is the same under sync and parallel execution; only the execution strategy changes.
+
+This is not specific to BEAR.Async; it is a property of BEAR.Sunday as a whole. Where MVC frameworks write *how to execute* procedurally, BEAR.Sunday expresses *relationships between resources* declaratively. Because the declaration is independent of the execution strategy, swapping strategies has no effect on the code.
 
 ## Demo and benchmarks
 
