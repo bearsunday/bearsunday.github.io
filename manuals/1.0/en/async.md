@@ -119,7 +119,7 @@ class AppModule extends AbstractModule
 In Swoole, coroutines share memory, so a connection pool via `PdoPoolEnvModule` is required. In read-heavy setups that make heavy use of embedded resources, the pool size should account not only for the number of incoming HTTP requests but also for the number of embeds executed concurrently within one request. To avoid queueing, use `PDO_POOL_SIZE >= embed_count * request_concurrency` as a starting point; intentionally use a smaller pool when you want to cap concurrent connections to the database.
 
 > **Technical note (pool connection acquisition):** Connection acquisition from the pool is managed per coroutine. Even when both `PDO` and `ExtendedPdo` are injected within the same coroutine, they share a single connection and that connection is returned to the pool exactly once via `Coroutine::defer()` when the coroutine ends. This prevents a single piece of work from unintentionally holding two connections. Furthermore, requests embedded via `#[Embed]` are lazily evaluated, so the pool is not touched at the point the embed is declared with `#[Embed]`; connection acquisition is deferred until each request is actually executed.
-
+>
 > **Technical note (PDOProxy handling):** Swoole wraps `PDO` in its own `PDOProxy` for coroutine support, but BEAR.Async absorbs this wrapping internally so the value can be treated as a regular `PDO`. If the original `PDO` cannot be extracted for some reason, the reflection failure is not propagated as-is; instead it is surfaced as a domain-specific PDO proxy extraction exception.
 
 Swoole coroutines and an active Xdebug do not run safely together. Run Swoole entrypoints with a PHP that does not load Xdebug, or set `XDEBUG_MODE=off` for local verification.
