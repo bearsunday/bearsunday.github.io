@@ -18,7 +18,7 @@ Install `ray/web-form-module` via composer to add form using Aura.Input
 composer require ray/web-form-module
 ```
 
-Install `AuraInputModule` in our application module `src/Module/AppModule.php`
+Install `WebFormModule` in our application module `src/Module/AppModule.php`
 
 ```php
 use BEAR\Package\AbstractAppModule;
@@ -29,7 +29,7 @@ class AppModule extends AbstractAppModule
     protected function configure()
     {
         // ...
-        $this->install(new AuraInputModule);
+        $this->install(new WebFormModule);
     }
 }
 ```
@@ -137,6 +137,20 @@ class MyForm extends AbstractForm
     use SetAntiCsrfTrait;
 ```
 
+CSRF verification is opt-in: it runs only on methods annotated with the `#[CsrfProtection]` attribute. Methods without the attribute perform no CSRF check even when the form has an `AntiCsrf` object set.
+
+```php
+use Ray\WebFormModule\Annotation\CsrfProtection;
+use Ray\WebFormModule\Annotation\FormValidation;
+
+#[FormValidation(form: 'contactForm')]
+#[CsrfProtection]
+public function onPost($name, $age)
+{
+    // executed only when the CSRF token is valid
+}
+```
+
 In order to increase the security level, add a custom CSRF class that contains the user authentication to the form class.
 Please refer to the [Applying CSRF Protections](https://github.com/auraphp/Aura.Input#applying-csrf-protections) of Aura.Input for more information.
 
@@ -186,7 +200,7 @@ class FooModule extends AbstractModule
 {
     protected function configure()
     {
-        $this->install(new AuraInputModule);
+        $this->install(new WebFormModule);
         $this->override(new FormVndErrorModule);
     }
 }
