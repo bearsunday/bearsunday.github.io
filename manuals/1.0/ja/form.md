@@ -217,18 +217,7 @@ class FooModule extends AbstractModule
 
 ## 0.x からの移行
 
-1.0 では Doctrine Annotations から PHP 8 Attributes に移行し、型宣言が強化されました。主な書き換えは次のとおりです：
-
-| Before (0.x) | After (1.0) |
-| --- | --- |
-| `@FormValidation(form="f", onFailure="badRequest")` | `#[FormValidation(form: 'f', onFailure: 'badRequest')]` |
-| `@FormValidation(form="f", antiCsrf=true)` | `#[FormValidation(form: 'f')]` + `#[CsrfProtection]` |
-| `@InputValidation(form="f")` | `#[InputValidation(form: 'f')]` |
-| `@VndError(message="...", logref="...")` | `#[VndError(message: '...', logref: '...')]` |
-| `new AuraInputInterceptor($injector, $reader)` | `new AuraInputInterceptor($injector)`（`Reader`引数なし） |
-| `public function input($input)` / `error($input)` | `public function input(string $input): string` / `error(string $input): string` |
-
-詳しい破壊的変更の一覧は[CHANGELOG](https://github.com/ray-di/Ray.WebFormModule/blob/1.x/CHANGELOG.md)を参照してください。Claude Code 用の自動移行スキル `migrate-to-1.0` も同リポジトリに同梱されています。
+1.0 では Doctrine Annotations から PHP 8 Attributes へ移行し、CSRF 保護が `#[CsrfProtection]` による opt-in に変わるなどの破壊的変更があります。移行手順は[Ray.WebFormModule README](https://github.com/ray-di/Ray.WebFormModule#migration-from-0x)と[CHANGELOG](https://github.com/ray-di/Ray.WebFormModule/blob/1.x/CHANGELOG.md)を参照してください。
 
 ## デモ
 

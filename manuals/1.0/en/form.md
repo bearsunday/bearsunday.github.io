@@ -216,18 +216,7 @@ class FooModule extends AbstractModule
 
 ## Migration from 0.x
 
-Version 1.0 drops Doctrine Annotations in favour of native PHP 8 Attributes and tightens type declarations. The most common rewrites:
-
-| Before (0.x) | After (1.0) |
-| --- | --- |
-| `@FormValidation(form="f", onFailure="badRequest")` | `#[FormValidation(form: 'f', onFailure: 'badRequest')]` |
-| `@FormValidation(form="f", antiCsrf=true)` | `#[FormValidation(form: 'f')]` + `#[CsrfProtection]` |
-| `@InputValidation(form="f")` | `#[InputValidation(form: 'f')]` |
-| `@VndError(message="...", logref="...")` | `#[VndError(message: '...', logref: '...')]` |
-| `new AuraInputInterceptor($injector, $reader)` | `new AuraInputInterceptor($injector)` (no `Reader` argument) |
-| `public function input($input)` / `error($input)` | `public function input(string $input): string` / `error(string $input): string` |
-
-See the [CHANGELOG](https://github.com/ray-di/Ray.WebFormModule/blob/1.x/CHANGELOG.md) for the full list of breaking changes. A Claude Code skill `migrate-to-1.0` is shipped in the same repository to automate these rewrites.
+Version 1.0 drops Doctrine Annotations in favour of native PHP 8 Attributes and turns CSRF protection into opt-in via `#[CsrfProtection]`, among other breaking changes. See the [Ray.WebFormModule README](https://github.com/ray-di/Ray.WebFormModule#migration-from-0x) and the [CHANGELOG](https://github.com/ray-di/Ray.WebFormModule/blob/1.x/CHANGELOG.md) for the upgrade steps.
 
 ## Demo
 
