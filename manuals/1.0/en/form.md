@@ -45,7 +45,7 @@ class MyForm extends AbstractForm
 {
     use SetAntiCsrfTrait;
 
-    public function init(): void
+    public function init()
     {
         // register input fields
         $this->setField('name', 'text')
@@ -70,30 +70,29 @@ The associative array of method arguments is validated. To change the input, imp
 A method annotated with `#[FormValidation]` is validated before execution against the form object referenced by the `form` property. When validation fails, the method whose name is suffixed with `ValidationFailed` is invoked instead:
 
 ```php
-use Ray\Di\Di\Inject;
+use BEAR\Resource\ResourceObject;
 use Ray\Di\Di\Named;
 use Ray\WebFormModule\Annotation\FormValidation;
 use Ray\WebFormModule\FormInterface;
 
-class MyController
+class MyPage extends ResourceObject
 {
-    protected FormInterface $contactForm;
-
-    #[Inject]
-    public function setForm(#[Named('contact_form')] FormInterface $form): void
-    {
-        $this->contactForm = $form;
+    public function __construct(
+        #[Named('contact_form')] private FormInterface $contactForm,
+    ) {
     }
 
     #[FormValidation(form: 'contactForm')]
-    public function onPost(string $name, int $age): ResourceObject
+    public function onPost(string $name, int $age): static
     {
         // validation success
+        return $this;
     }
 
-    public function onPostValidationFailed(string $name, int $age): ResourceObject
+    public function onPostValidationFailed(string $name, int $age): static
     {
         // validation failure
+        return $this;
     }
 }
 ```
@@ -102,8 +101,9 @@ Use the `form` property of `#[FormValidation]` to point to a different form prop
 
 ```php
 #[FormValidation(form: 'contactForm', onFailure: 'badRequestAction')]
-public function onPost(string $name, int $age): ResourceObject
+public function onPost(string $name, int $age): static
 {
+    return $this;
 }
 ```
 
@@ -136,6 +136,7 @@ echo $form;  // render the entire form HTML
 CSRF protection is **opt-in**. A form that uses `SetAntiCsrfTrait` is wired with an `AntiCsrfInterface`, but the token is only verified on methods annotated with `#[CsrfProtection]`. Methods without `#[CsrfProtection]` perform no CSRF check even if the form has an `AntiCsrf` object set.
 
 ```php
+use BEAR\Resource\ResourceObject;
 use Ray\WebFormModule\AbstractForm;
 use Ray\WebFormModule\Annotation\CsrfProtection;
 use Ray\WebFormModule\Annotation\FormValidation;
@@ -146,13 +147,14 @@ class MyForm extends AbstractForm
     use SetAntiCsrfTrait;
 }
 
-class MyController
+class MyPage extends ResourceObject
 {
     #[FormValidation(form: 'contactForm')]
     #[CsrfProtection]
-    public function onPost(string $name, int $age): ResourceObject
+    public function onPost(string $name, int $age): static
     {
         // executed only when the CSRF token is valid
+        return $this;
     }
 }
 ```
@@ -190,8 +192,9 @@ Use the `#[VndError]` attribute to enrich the `vnd.error+json` payload:
     path: '/path/to/error',
     href: ['_self' => '/path/to/error', 'help' => '/path/to/help']
 )]
-public function onPost(): ResourceObject
+public function onPost(): static
 {
+    return $this;
 }
 ```
 

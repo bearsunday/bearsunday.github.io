@@ -45,7 +45,7 @@ class MyForm extends AbstractForm
 {
     use SetAntiCsrfTrait;
 
-    public function init(): void
+    public function init()
     {
         // フォームフィールドの登録
         $this->setField('name', 'text')
@@ -70,30 +70,29 @@ class MyForm extends AbstractForm
 `#[FormValidation]`アトリビュートを付けたメソッドは、実行前に`form`プロパティのフォームオブジェクトでバリデーションされます。バリデーションが失敗すると、メソッド名に`ValidationFailed`サフィックスを付けたメソッドが呼び出されます：
 
 ```php
-use Ray\Di\Di\Inject;
+use BEAR\Resource\ResourceObject;
 use Ray\Di\Di\Named;
 use Ray\WebFormModule\Annotation\FormValidation;
 use Ray\WebFormModule\FormInterface;
 
-class MyController
+class MyPage extends ResourceObject
 {
-    protected FormInterface $contactForm;
-
-    #[Inject]
-    public function setForm(#[Named('contact_form')] FormInterface $form): void
-    {
-        $this->contactForm = $form;
+    public function __construct(
+        #[Named('contact_form')] private FormInterface $contactForm,
+    ) {
     }
 
     #[FormValidation(form: 'contactForm')]
-    public function onPost(string $name, int $age): ResourceObject
+    public function onPost(string $name, int $age): static
     {
         // バリデーション成功時の処理
+        return $this;
     }
 
-    public function onPostValidationFailed(string $name, int $age): ResourceObject
+    public function onPostValidationFailed(string $name, int $age): static
     {
         // バリデーション失敗時の処理
+        return $this;
     }
 }
 ```
@@ -102,8 +101,9 @@ class MyController
 
 ```php
 #[FormValidation(form: 'contactForm', onFailure: 'badRequestAction')]
-public function onPost(string $name, int $age): ResourceObject
+public function onPost(string $name, int $age): static
 {
+    return $this;
 }
 ```
 
@@ -136,6 +136,7 @@ echo $form;  // フォーム全体のHTMLを描画
 CSRF(クロスサイトリクエストフォージェリ)保護はopt-inです。フォームに`SetAntiCsrfTrait`を使うと`AntiCsrfInterface`が組み込まれますが、トークンの検証は`#[CsrfProtection]`アトリビュートを付けたメソッドでのみ実行されます。アトリビュートが無いメソッドでは、フォームが`AntiCsrf`オブジェクトを持っていてもCSRF検証は行われません。
 
 ```php
+use BEAR\Resource\ResourceObject;
 use Ray\WebFormModule\AbstractForm;
 use Ray\WebFormModule\Annotation\CsrfProtection;
 use Ray\WebFormModule\Annotation\FormValidation;
@@ -146,13 +147,14 @@ class MyForm extends AbstractForm
     use SetAntiCsrfTrait;
 }
 
-class MyController
+class MyPage extends ResourceObject
 {
     #[FormValidation(form: 'contactForm')]
     #[CsrfProtection]
-    public function onPost(string $name, int $age): ResourceObject
+    public function onPost(string $name, int $age): static
     {
         // CSRFトークンが正しい場合のみ実行される
+        return $this;
     }
 }
 ```
@@ -191,8 +193,9 @@ echo $e->error;
     path: '/path/to/error',
     href: ['_self' => '/path/to/error', 'help' => '/path/to/help']
 )]
-public function onPost(): ResourceObject
+public function onPost(): static
 {
+    return $this;
 }
 ```
 
