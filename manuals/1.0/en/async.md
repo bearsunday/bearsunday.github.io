@@ -11,7 +11,7 @@ BEAR.Async turns the previously sequential fetch of `#[Embed]` resources into tr
 
 ## Overview
 
-In standard BEAR.Sunday, `#[Embed]` resources are fetched sequentially. With BEAR.Async and an execution mode selected, they are fetched in parallel.
+In standard BEAR.Sunday, `#[Embed]` resources are fetched sequentially. With BEAR.Async and a runtime selected, they are fetched in parallel.
 
 ```text
 [Sequential]                     [Parallel]
@@ -25,23 +25,15 @@ Request                          Request
 Response (200ms)                 Response (50ms)
 ```
 
-## Design Philosophy
+## Why no code change is needed
 
-### URL as Intent
+In BEAR.Sunday, information is **structured** as resources identified by URIs. `#[Embed]` does not embed the result of a resource — it embeds the resource request itself and declares a relationship between resources. Choosing the execution strategy — sequential, ext-parallel workers, or Swoole coroutines — is the Linker's job; resource classes do not need to know whether they were called synchronously or in parallel.
 
-In BEAR.Sunday, a URI expresses **intent**, not just a location.
+In the default mode these requests are resolved one by one at rendering time. In parallel mode, the moment the first embedded request is resolved, the remaining embedded requests are executed together in parallel. BEAR.Async asynchronous requests share the same type as ordinary BEAR.Resource requests, so the HAL renderer and other surrounding machinery can integrate them into serialization without being aware of the difference.
 
-```php
-#[Embed(rel: 'profile', src: 'query://self/user_profile{?id}')]
-```
+The "function coloring" problem often raised in async programming — a function calling an async function must itself be async, contaminating the whole codebase — is cut off at the resource boundary. The code is the same under sync and parallel execution; only the execution strategy changes.
 
-The `query://self/user_profile` expresses only the intent: "I want the user's profile information." This separation of "What" from "How" allows the same code to work in both sync and parallel execution. Debug with Xdebug in development, then start from `bin/async.php` in production to enable parallel execution.
-
-### Solving the Function Coloring Problem
-
-Async programming has the "Function Coloring" problem—functions calling async functions must themselves be async, causing "async contamination" throughout the codebase.
-
-In BEAR.Sunday, the "resource" boundary cuts through this problem. No async-specific code is required—resource classes don't need to know how they were invoked.
+This is not specific to BEAR.Async; it is a property of BEAR.Sunday as a whole. Where MVC frameworks write *how to execute* procedurally, BEAR.Sunday expresses *relationships between resources* declaratively. Because the declaration is independent of the execution strategy, swapping strategies has no effect on the code.
 
 ## Installation
 
@@ -49,28 +41,23 @@ In BEAR.Sunday, the "resource" boundary cuts through this problem. No async-spec
 composer require bear/async
 ```
 
-BEAR.Async uses the same request abstraction as BEAR.Resource. When resources
-are rendered as HAL/JSON, embedded async requests are still recognized by the
-renderer, batched, and flushed during serialization. Render-time embeds keep
-their parallelism instead of falling back to one-by-one resolution.
+## Runtime environments
 
-## Execution Modes
+Choose a runtime that matches your server setup.
 
-Choose the appropriate execution mode based on your server environment.
-
-| Use Case | Entrypoint | Runtime setup |
+| Use case | Entrypoint | Runtime setup |
 |---|---|---|
-| PHP-FPM / Apache with embedded resources | `bin/async.php` | library `bootstrap.php` overlay |
+| PHP-FPM / Apache (with embedded resources) | `bin/async.php` | the library `bootstrap.php` overlays the parallel runtime on `AppModule` |
 | Swoole HTTP Server | `bin/swoole.php` | install `AsyncSwooleModule` in `AppModule` |
 
 ### Parallel execution (ext-parallel)
 
-The recommended mode for typical PHP-FPM / Apache web applications with embedded resources. It runs `#[Embed]` in parallel using an ext-parallel thread pool.
+A runtime for typical web applications running on PHP-FPM / Apache. It executes `#[Embed]` in parallel using an ext-parallel thread pool.
 
-Add `bin/async.php` next to `bin/app.php`. The entrypoint hands off to the library `bootstrap.php`, which overlays the ext-parallel runtime on the normal `AppModule`:
+Add `bin/async.php` next to `bin/app.php`. This entrypoint delegates to the library `bootstrap.php`, which overlays the ext-parallel runtime on top of the normal `AppModule`.
 
 ```text
-bin/async.php → vendor/bear/async/bootstrap.php → AppModule + runtime overlay
+bin/async.php → vendor/bear/async/bootstrap.php → AppModule + parallel runtime
 ```
 
 ```php
@@ -97,10 +84,7 @@ exit((require $bootstrap)(
 ));
 ```
 
-Do not install the parallel runtime in `AppModule` directly — the bootstrap is the only supported install path. The same `AppModule` works under `bin/app.php` (sync) and `bin/async.php` (parallel) unchanged.
-
-To override the worker pool size (default = CPU cores), pass it as the
-optional 6th argument:
+To change the worker pool size (defaults to the number of CPU cores), pass it explicitly as the 6th argument.
 
 ```php
 exit((require $bootstrap)($context, 'MyVendor\MyApp', dirname(__DIR__), $GLOBALS, $_SERVER, 8));
@@ -108,22 +92,15 @@ exit((require $bootstrap)($context, 'MyVendor\MyApp', dirname(__DIR__), $GLOBALS
 
 #### ext-parallel constraints
 
-Worker runtimes are separate threads with their own Zend memory. Embedded
-resources executed in parallel should be read-only, idempotent GET resources
-with no ordering dependency. Each worker has its own DI container, so
-request-local mutable state and "same instance" assumptions do not cross the
-thread boundary.
+Workers run on separate threads, each with an independent Zend memory space. Embedded resources executed in parallel should be read-only (idempotent GET) resources with no ordering dependency. Because each worker holds its own DI container, request-local mutable state and "same instance" assumptions do not carry across thread boundaries.
 
-Arguments and return values crossing the thread boundary must be copyable:
-scalar values, `null`, or nested arrays of those values. Objects, closures,
-and resources fail fast. Keep interceptors used inside parallel embed graphs
-idempotent, and avoid mutating request-local shared state there.
+Arguments and return values that cross the thread boundary must be copyable: scalar values, `null`, and nested arrays of those. Passing objects, closures, or resources fails immediately. Keep any interceptors applied to embedded resources executed in parallel idempotent, and do not mutate request-local shared state.
 
 ### Swoole execution (ext-swoole)
 
-For applications already running on Swoole HTTP Server with high concurrency requirements.
+A runtime for applications already running on a Swoole HTTP server and aiming for high concurrency.
 
-ext-parallel uses worker runtimes (separate threads), so it is selected by a separate entrypoint. ext-swoole runs inside one server process, so it is installed as an application module.
+Because ext-parallel runs in workers (separate threads), it is selected via a separate entrypoint. ext-swoole, on the other hand, runs inside the same server process, so it is installed as an application module.
 
 ```php
 use BEAR\Async\Module\AsyncSwooleModule;
@@ -139,30 +116,17 @@ class AppModule extends AbstractModule
 }
 ```
 
-Swoole coroutines share memory, so `PdoPoolEnvModule` is required for connection pooling.
-For read-heavy embed graphs, size the pool for the internal parallelism as
-well as HTTP concurrency. A practical starting point is
-`PDO_POOL_SIZE >= embed_count * request_concurrency` when you want to avoid
-queueing; use a smaller pool intentionally when you want database backpressure.
+In Swoole, coroutines share memory, so a connection pool via `PdoPoolEnvModule` is required. In read-heavy setups that make heavy use of embedded resources, the pool size should account not only for the number of incoming HTTP requests but also for the number of embeds executed concurrently within one request. To avoid queueing, use `PDO_POOL_SIZE >= embed_count * request_concurrency` as a starting point; intentionally use a smaller pool when you want to cap concurrent connections to the database.
 
-`PooledPdoProvider` and `PooledExtendedPdoProvider` are coroutine-local. Within
-one coroutine, both providers share a single PDO instance and return it to the
-pool once via `Coroutine::defer()`. Embedded requests are represented
-internally as `DeferredRequest` objects, so constructing the embed graph does
-not reserve PDO pool connections before each embedded resource is actually
-invoked.
+> **Technical note (pool connection acquisition):** Connection acquisition from the pool is managed per coroutine. Even when both `PDO` and `ExtendedPdo` are injected within the same coroutine, they share a single connection and that connection is returned to the pool exactly once via `Coroutine::defer()` when the coroutine ends. This prevents a single piece of work from unintentionally holding two connections. Furthermore, requests embedded via `#[Embed]` are lazily evaluated, so the pool is not touched at the point the embed is declared with `#[Embed]`; connection acquisition is deferred until each request is actually executed.
 
-Swoole's `PDOProxy` wrapping is handled internally. If the wrapped PDO cannot
-be extracted, BEAR.Async raises a domain-specific PDO proxy extraction
-exception instead of leaking a reflection failure.
+> **Technical note (PDOProxy handling):** Swoole wraps `PDO` in its own `PDOProxy` for coroutine support, but BEAR.Async absorbs this wrapping internally so the value can be treated as a regular `PDO`. If the original `PDO` cannot be extracted for some reason, the reflection failure is not propagated as-is; instead it is surfaced as a domain-specific PDO proxy extraction exception.
 
-Swoole coroutines and active Xdebug are not a safe combination. Run Swoole
-entrypoints without Xdebug loaded, or set `XDEBUG_MODE=off` for local
-verification.
+Swoole coroutines and an active Xdebug do not run safely together. Run Swoole entrypoints with a PHP that does not load Xdebug, or set `XDEBUG_MODE=off` for local verification.
 
 ## Usage
 
-Once an execution mode is selected, existing `#[Embed]` resources are automatically executed in parallel.
+Once a runtime is selected, existing `#[Embed]` resources are automatically executed in parallel.
 
 ```php
 class Dashboard extends ResourceObject
@@ -178,138 +142,22 @@ class Dashboard extends ResourceObject
 }
 ```
 
-By using `bin/app.php` in development and `bin/async.php` in production, you can debug in sync mode and run parallel in production. `AppModule` is unaware of the execution form, so the same code runs unchanged in both modes.
+In development, run synchronously via `bin/app.php` for debugging; in production, switch to parallel execution by starting from `bin/async.php`.
 
-### HAL/JSON serialization
+## Demo and benchmarks
 
-When a resource is rendered as HAL/JSON, embedded async requests remain
-asynchronous. BEAR.Async requests extend the same request abstraction used by
-BEAR.Resource, so the HAL renderer can recognize them, batch them, and flush
-the batch during serialization.
-
-## When to Choose Parallel
-
-For a read-only resource graph that embeds multiple independent GET resources,
-parallel execution should be the first candidate when the runtime extension is
-available and the downstream database or API capacity is sized for the extra
-concurrency. This is where BEAR.Async is strongest: application code declares
-the resource graph with `#[Embed]`; the Linker implementation decides whether
-the graph is resolved sequentially, with ext-parallel workers, or with Swoole
-coroutines.
-
-### Preconditions
-
-- Embedded resources are read-only GET resources with no ordering dependency.
-- `ext-parallel` or `ext-swoole` is available in the target runtime.
-- Downstream capacity is sized for internal embed parallelism, not only for
-  incoming HTTP request concurrency.
-- ext-parallel steady-state performance requires a resident process that keeps
-  the `parallel\Runtime` pool warm, such as PHP-FPM workers or a benchmark HTTP
-  harness. One-shot CLI runs include runtime startup cost and should be read as
-  cold-start behavior.
-
-### Adapter guide
-
-| Situation | Recommended adapter |
-|---|---|
-| Swoole HTTP server is acceptable and high throughput is needed | Swoole adapter |
-| PHP-FPM / Apache process model should remain and workers stay warm | ext-parallel adapter |
-| Extension support is unavailable or portability is the priority | Sync adapter |
-
-### Cases with little or no gain
-
-- The downstream database or API cannot absorb the added concurrency because
-  of pool limits, saturation, or rate limits.
-- Each embedded resource is already extremely fast; fixed runtime overhead can
-  dominate in that case.
-- Embedded resources have real ordering dependencies or share mutable
-  request-local state.
-- One-shot CLI and cron-style jobs can still use BEAR.Async, but they measure
-  cold-start behavior rather than warmed per-request latency.
-
-## Demo and Benchmarks
-
-The BEAR.Async repository includes a Docker-based demo and benchmark scripts
-for Sync, ext-parallel, and Swoole. See the
-[demo guide](https://github.com/bearsunday/BEAR.Async/tree/1.x/demo) and
-[benchmark results](https://github.com/bearsunday/BEAR.Async/blob/1.x/docs/benchmark-results.md)
-for details.
+The BEAR.Async repository includes a Docker-based demo and benchmark scripts that compare Sync, ext-parallel, and Swoole behavior. See the [demo guide](https://github.com/bearsunday/BEAR.Async/tree/1.x/demo) and [benchmark results](https://github.com/bearsunday/BEAR.Async/blob/1.x/docs/benchmark-results.md) for details.
 
 ## Requirements
 
-Each execution mode adds its own runtime requirement:
+Each runtime requires the corresponding PHP extension.
 
-| Mode | Requires | Application change |
+| Runtime | Requires | Application-side change |
 |---|---|---|
 | ext-parallel | ZTS PHP + ext-parallel | add `bin/async.php` |
 | ext-swoole | ext-swoole | install `AsyncSwooleModule`, use `bin/swoole.php` |
 
-## BEAR.Projection Integration
-
-[BEAR.Projection](https://github.com/bearsunday/BEAR.Projection) transforms SQL query results into typed Projection objects and exposes them as resources via the `query://` scheme. Combined with `#[Embed]`, multiple SQL queries execute in parallel.
-
-Projection classes are defined as immutable value objects.
-
-```php
-final class UserProfile
-{
-    public function __construct(
-        public readonly string $id,
-        public readonly string $name,
-        public readonly int $age,
-        public readonly string $avatarUrl,
-    ) {}
-}
-```
-
-Factory classes transform raw SQL data into Projections. Dependencies can be injected via DI, enabling business logic like age calculation or URL resolution.
-
-```php
-final class UserProfileFactory
-{
-    public function __construct(
-        private readonly AgeCalculator $ageCalculator,
-        private readonly ImageUrlResolver $imageResolver,
-    ) {}
-
-    public function __invoke(
-        string $id,
-        string $name,
-        string $birthDate,
-        string $avatarPath,
-    ): UserProfile {
-        return new UserProfile(
-            id: $id,
-            name: $name,
-            age: $this->ageCalculator->fromBirthDate($birthDate),
-            avatarUrl: $this->imageResolver->resolve($avatarPath),
-        );
-    }
-}
-```
-
-SQL files return columns corresponding to Factory parameter names.
-
-```sql
--- var/sql/query/user_profile.sql
-SELECT id, name, birth_date, avatar_path FROM users WHERE id = :id
-```
-
-When used with `#[Embed]`, multiple Projections execute in parallel.
-
-```php
-class User extends ResourceObject
-{
-    #[Embed(rel: 'profile', src: 'query://self/user_profile{?id}')]
-    #[Embed(rel: 'orders', src: 'query://self/user_orders{?id}')]
-    public function onGet(string $id): static
-    {
-        return $this;
-    }
-}
-```
-
-## SQL Batch Execution
+## SQL batch execution
 
 Parallel SQL query execution using mysqli's native async support is also provided.
 
