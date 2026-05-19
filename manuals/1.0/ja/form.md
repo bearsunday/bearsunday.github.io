@@ -133,7 +133,12 @@ echo $form;  // フォーム全体のHTMLを描画
 
 ## CSRF
 
-CSRF(クロスサイトリクエストフォージェリ)保護はopt-inです。フォームに`SetAntiCsrfTrait`を使うと`AntiCsrfInterface`が組み込まれますが、トークンの検証は`#[CsrfProtection]`アトリビュートを付けたメソッドでのみ実行されます。アトリビュートが無いメソッドでは、フォームが`AntiCsrf`オブジェクトを持っていてもCSRF検証は行われません。
+CSRF(クロスサイトリクエストフォージェリ)保護は**opt-in**で、独立した2つの経路のいずれかで有効化できます。
+
+- **フォーム単位**: フォームに`use SetAntiCsrfTrait;`を追加します。DIで`AntiCsrfInterface`が注入され、`postConstruct()`でトークンフィールドが追加され、`apply()`の呼び出しごとにトークンが検証されます。
+- **アクション単位**: バリデーション対象のメソッドに`#[CsrfProtection]`を付与します。`AuraInputInterceptor`が`apply()`実行前に`AntiCsrfInterface`をフォームへ注入します。
+
+どちらの経路でも、トークン不一致時には`AbstractForm::apply()`が`CsrfViolationException`をthrowします。どちらも使わない場合はCSRF検証は行われません。
 
 ```php
 use BEAR\Resource\ResourceObject;
