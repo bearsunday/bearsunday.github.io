@@ -54,7 +54,7 @@ class MyForm extends AbstractForm
              ]);
 
         $this->filter->validate('name')->is('alnum');
-        $this->filter->useFieldMessage('name', 'Name must be alphabetic only.');
+        $this->filter->useFieldMessage('name', 'Name must be alphanumeric only.');
     }
 
     public function submit()
