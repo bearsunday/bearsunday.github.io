@@ -157,52 +157,79 @@ BEAR.AsyncリポジトリにはSync・ext-parallel・Swooleの動作を比較で
 | ext-parallel | ZTS PHP + ext-parallel | `bin/async.php`を追加 |
 | ext-swoole | ext-swoole | `AsyncSwooleModule`をインストール、`bin/swoole.php`を使用 |
 
-## SQLバッチ実行
+## SQLリソースの並列化（BDR + `#[Embed]`）
 
-mysqliのネイティブ非同期サポートを使用した並列SQLクエリ実行も提供します。
+1ページで複数のSQLを発行したい場合、SQLごとにResourceObjectを分け、上位リソースから`#[Embed]`で束ねます。AsyncLinkerが`#[Embed]`をランタイムに応じて並列実行するので、利用側はリソースを組み合わせるだけで並列化されます。
 
-```php
-use BEAR\Async\Module\MysqliEnvModule;
+Ray.MediaQueryの[BDRパターン](https://github.com/ray-di/Ray.MediaQuery/blob/1.x/BDR_PATTERN.md)（`#[DbQuery]`インターフェース + ファクトリ + 不変ドメインオブジェクト）と組み合わせると、SQLは`var/sql/*.sql`にまとまり、リソース側はドメインオブジェクトを扱うだけになります。
 
-$this->install(new MysqliEnvModule(
-    'MYSQLI_HOST',
-    'MYSQLI_USER',
-    'MYSQLI_PASSWORD',
-    'MYSQLI_DATABASE',
-));
+レシピ依存（BEAR.Asyncには同梱されません）:
+
+```bash
+composer require ray/media-query
 ```
 
 ```php
-use BEAR\Async\SqlBatch;
-use BEAR\Async\SqlBatchExecutorInterface;
+use BEAR\Resource\Annotation\Embed;
+use BEAR\Resource\ResourceObject;
+use Ray\MediaQuery\Annotation\DbQuery;
 
-class MyService
+// ドメインオブジェクト — 不変スナップショット
+final class UserAccount
 {
     public function __construct(
-        private SqlBatchExecutorInterface $executor,
-    ) {}
+        public readonly int $id,
+        public readonly string $name,
+    ) {
+    }
+}
 
-    public function getData(int $userId): array
+// リポジトリ — SQLは var/sql/user.sql に置く
+// UserFactoryで行をUserAccountにハイドレートする（ファクトリの詳細はBDR_PATTERN.md参照）
+interface UserRepositoryInterface
+{
+    #[DbQuery('user', factory: UserFactory::class)]
+    public function getUser(int $id): UserAccount;
+}
+
+// リソース — SQL 1つにつき1リソース
+class User extends ResourceObject
+{
+    public function __construct(private UserRepositoryInterface $repo)
     {
-        $results = (new SqlBatch($this->executor, [
-            'user' => ['SELECT * FROM users WHERE id = :id', ['id' => $userId]],
-            'posts' => ['SELECT * FROM posts WHERE user_id = :user_id', ['user_id' => $userId]],
-            'comments' => ['SELECT * FROM comments WHERE user_id = :user_id', ['user_id' => $userId]],
-        ]))();
+    }
 
-        return [
-            'user' => $results['user'][0] ?? null,
-            'posts' => $results['posts'],
-            'comments' => $results['comments'],
-        ];
+    public function onGet(int $id): static
+    {
+        $this->body = ['user' => $this->repo->getUser($id)];
+
+        return $this;
+    }
+}
+
+// 集約リソース — `#[Embed]` がAsyncLinkerで自動的に並列化される
+class UserDashboard extends ResourceObject
+{
+    #[Embed(rel: 'user',     src: 'app://self/user{?id}')]
+    #[Embed(rel: 'posts',    src: 'app://self/user/posts{?id}')]
+    #[Embed(rel: 'comments', src: 'app://self/user/comments{?id}')]
+    public function onGet(int $id): static
+    {
+        return $this;
     }
 }
 ```
+
+- SQLは`var/sql/*.sql`に置く（Ray.MediaQueryの規約）
+- ドメインオブジェクトは不変スナップショット。呼び出し側で `$results['user'][0] ?? null` のような配列のお作法は不要
+- AsyncLinkerが3つのEmbedをext-parallel（PHP-FPM / Apache）またはSwooleコルーチンで並列実行
+- ext-parallel/Swooleなしでも、同じコードがリクエストごとに同期実行される（PHP-FPMはリクエスト＝プロセスなので機能としては問題なし）
+- Swooleで動かす場合は`PdoPoolEnvModule`をインストールし、各コルーチンがプールからPDO接続を借りるようにする
 
 ## 参考リンク
 
 - [BEAR.Async](https://github.com/bearsunday/BEAR.Async)
 - [BEAR.Async デモガイド](https://github.com/bearsunday/BEAR.Async/tree/1.x/demo)
 - [BEAR.Async ベンチマーク結果](https://github.com/bearsunday/BEAR.Async/blob/1.x/docs/benchmark-results.md)
-- [BEAR.Projection](https://github.com/bearsunday/BEAR.Projection)
+- [Ray.MediaQuery BDRパターン](https://github.com/ray-di/Ray.MediaQuery/blob/1.x/BDR_PATTERN.md)
 - [並列実行アーキテクチャ](https://bearsunday.github.io/BEAR.Async/parallel-execution-architecture.html)

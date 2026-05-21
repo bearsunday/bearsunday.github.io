@@ -127,12 +127,17 @@ You can also render individual inputs and errors.
 
 ```php
 echo $form->input('name'); // <input id="name" type="text" name="name" size="20" maxlength="20" />
-echo $form->error('name'); // "Name must be alphabetic only." or blank.
+echo $form->error('name'); // "Name must be alphanumeric only." or blank.
 ```
 
 ## CSRF Protections
 
-CSRF protection is **opt-in**. A form that uses `SetAntiCsrfTrait` is wired with an `AntiCsrfInterface`, but the token is only verified when the validated method is annotated with `#[CsrfProtection]`. Methods without `#[CsrfProtection]` perform no CSRF check even if the form supports it.
+CSRF protection is **opt-in** and can be enabled through either of two independent paths:
+
+- **Per-form**: add `use SetAntiCsrfTrait;` to the form. `AntiCsrfInterface` is injected at construction time, the token field is added in `postConstruct()`, and every `apply()` call verifies the token.
+- **Per-action**: annotate the validated method with `#[CsrfProtection]`. `AuraInputInterceptor` then injects `AntiCsrfInterface` into the form before `apply()` runs.
+
+Either path causes `AbstractForm::apply()` to throw `CsrfViolationException` on token mismatch. Without either path, no CSRF check is performed.
 
 ```php
 use Ray\WebFormModule\AbstractForm;
@@ -220,7 +225,7 @@ echo $e->error;
 //    "path": "/path/to/error",
 //    "validation_messages": {
 //        "name": [
-//            "Name must be alphabetic only."
+//            "Name must be alphanumeric only."
 //        ]
 //    }
 //}

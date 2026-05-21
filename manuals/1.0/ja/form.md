@@ -127,12 +127,17 @@ echo $form;
 
 ```php
 echo $form->input('name'); // <input id="name" type="text" name="name" size="20" maxlength="20" />
-echo $form->error('name'); // "Name must be alphabetic only." または空文字
+echo $form->error('name'); // "Name must be alphanumeric only." または空文字
 ```
 
 ## CSRF Protections
 
-CSRF対策は **opt-in** です。`SetAntiCsrfTrait`を使うフォームには`AntiCsrfInterface`が注入されますが、トークン検証はバリデーション対象メソッドに`#[CsrfProtection]`が付いている場合だけ行われます。`#[CsrfProtection]`がないメソッドでは、フォームがCSRFに対応していてもCSRFチェックは実行されません。
+CSRF(クロスサイトリクエストフォージェリ)保護は**opt-in**で、独立した2つの経路のいずれかで有効化できます。
+
+- **フォーム単位**: フォームに`use SetAntiCsrfTrait;`を追加します。DIで`AntiCsrfInterface`が注入され、`postConstruct()`でトークンフィールドが追加され、`apply()`の呼び出しごとにトークンが検証されます。
+- **アクション単位**: バリデーション対象のメソッドに`#[CsrfProtection]`を付与します。`AuraInputInterceptor`が`apply()`実行前に`AntiCsrfInterface`をフォームへ注入します。
+
+どちらの経路でも、トークン不一致時には`AbstractForm::apply()`が`CsrfViolationException`をthrowします。どちらも使わない場合はCSRF検証は行われません。
 
 ```php
 use Ray\WebFormModule\AbstractForm;
@@ -220,7 +225,7 @@ echo $e->error;
 //    "path": "/path/to/error",
 //    "validation_messages": {
 //        "name": [
-//            "Name must be alphabetic only."
+//            "Name must be alphanumeric only."
 //        ]
 //    }
 //}
