@@ -43,10 +43,15 @@ jobs:
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@v5
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
 
       - name: Run custom scripts
         run: |
           ruby bin/merge_md_files.rb
+          php bin/gen_llms.php
 
       - name: Build with Jekyll
         # Outputs to the './_site' directory by default

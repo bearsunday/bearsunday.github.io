@@ -7,35 +7,36 @@ permalink: /manuals/1.0/en/form.html
 
 # Form
 
-Web form handling powered by [Aura.Input](https://github.com/auraphp/Aura.Input) and [Aura.Filter](https://github.com/auraphp/Aura.Filter) aggregates related functionality into a single class, making it easy to test and modify. A single form class can serve both rendering and validation.
+Ray.WebFormModule provides aspect-oriented web form validation powered by [Aura.Input](https://github.com/auraphp/Aura.Input) and [Ray.Di](https://github.com/ray-di/Ray.Di). Form fields, validation rules, submitted values, and rendering helpers are collected in a single form class so the form is easy to test and change.
 
-## Install
+## Installation
 
-Install `ray/web-form-module` with composer:
+Install `ray/web-form-module` with Composer.
 
 ```bash
 composer require ray/web-form-module
 ```
 
-Install `WebFormModule` in your application module at `src/Module/AppModule.php`:
+Install `WebFormModule` in your application module.
 
 ```php
-use BEAR\Package\AbstractAppModule;
+use Ray\Di\AbstractModule;
 use Ray\WebFormModule\WebFormModule;
 
-class AppModule extends AbstractAppModule
+class AppModule extends AbstractModule
 {
     protected function configure()
     {
-        // ...
         $this->install(new WebFormModule());
     }
 }
 ```
 
+The legacy `Ray\WebFormModule\AuraInputModule` class remains available as a thin subclass of `WebFormModule` for backward compatibility. New code should use `WebFormModule`.
+
 ## Form Class
 
-Create a **form class** that defines input elements and validation rules, then bind it to a method with the `#[FormValidation]` attribute. The method only runs when validation succeeds.
+A self-initializing form class defines fields and validation rules in `init()`. If the form implements `submit()`, the returned values are used as submitted data. See [Aura.Input self-initializing forms](https://github.com/auraphp/Aura.Input/blob/1.x/README.md#self-initializing-forms) for the underlying form API.
 
 ```php
 use Ray\WebFormModule\AbstractForm;
@@ -47,96 +48,93 @@ class MyForm extends AbstractForm
 
     public function init()
     {
-        // register input fields
         $this->setField('name', 'text')
-             ->setAttribs(['id' => 'name']);
+             ->setAttribs([
+                 'id' => 'name'
+             ]);
 
-        // set validation rules and user-defined error messages
         $this->filter->validate('name')->is('alnum');
         $this->filter->useFieldMessage('name', 'Name must be alphabetic only.');
+    }
+
+    public function submit()
+    {
+        return $_POST;
+    }
+
+    public function __toString()
+    {
+        $form = $this->form();
+        $form .= $this->helper->tag('div', ['class' => 'form-group']);
+        $form .= $this->helper->tag('label', ['for' => 'name']);
+        $form .= 'Name:';
+        $form .= $this->helper->tag('/label') . PHP_EOL;
+        $form .= $this->input('name');
+        $form .= $this->error('name');
+        $form .= $this->helper->tag('/div') . PHP_EOL;
+        $form .= $this->input('submit');
+        $form .= $this->helper->tag('/form');
+
+        return $form;
     }
 }
 ```
 
-Register input elements inside `init()` and apply validation and sanitization rules. See:
+## Controller
 
-- [Rules To Validate Fields](https://github.com/auraphp/Aura.Filter/blob/2.x/docs/validate.md)
-- [Rules To Sanitize Fields](https://github.com/auraphp/Aura.Filter/blob/2.x/docs/sanitize.md)
-
-The associative array of method arguments is validated. To change the input, implement `SubmitInterface::submit()` and return the values to use.
-
-## #[FormValidation] Attribute
-
-A method annotated with `#[FormValidation]` is validated before execution against the form object referenced by the `form` property. When validation fails, the method whose name is suffixed with `ValidationFailed` is invoked instead:
+Annotate methods that require form validation with `#[FormValidation]`. The `form` argument names the form property on the controller, and `onFailure` names the method called when validation fails.
 
 ```php
-use BEAR\Resource\ResourceObject;
+use Ray\Di\Di\Inject;
 use Ray\Di\Di\Named;
 use Ray\WebFormModule\Annotation\FormValidation;
 use Ray\WebFormModule\FormInterface;
 
-class MyPage extends ResourceObject
+class MyController
 {
-    public function __construct(
-        #[Named('contact_form')] private FormInterface $contactForm,
-    ) {
+    /** @var FormInterface */
+    protected $contactForm;
+
+    #[Inject]
+    public function setForm(#[Named("contact_form")] FormInterface $form)
+    {
+        $this->contactForm = $form;
     }
 
-    #[FormValidation(form: 'contactForm')]
-    public function onPost(string $name, int $age): static
+    #[FormValidation(form: "contactForm", onFailure: "badRequestAction")]
+    public function createAction()
     {
         // validation success
-        return $this;
+        // More detail for vnd.error+json can be added with #[VndError].
     }
 
-    public function onPostValidationFailed(string $name, int $age): static
+    public function badRequestAction()
     {
-        // validation failure
-        return $this;
+        // validation failed
     }
 }
 ```
-
-Use the `form` property of `#[FormValidation]` to point to a different form property, and `onFailure` to specify a custom failure-handler method name:
-
-```php
-#[FormValidation(form: 'contactForm', onFailure: 'badRequestAction')]
-public function onPost(string $name, int $age): static
-{
-    return $this;
-}
-```
-
-The submitted arguments are forwarded to the failure-handler method.
 
 ## View
 
-Pass the element name to render the `input` markup or to fetch the error message:
+When the form provides string rendering, echoing the form renders the complete HTML.
 
 ```php
-$form->input('name');  // e.g. <input id="name" type="text" name="name" size="20" maxlength="20" />
-$form->error('name');  // e.g. "Name must be alphabetic only."
+echo $form;
 ```
 
-The same works in Twig templates:
-
-```twig
-{% raw %}{{ form.input('name') }}
-{{ form.error('name') }}{% endraw %}
-```
-
-If the form class implements `ToStringInterface`, the whole form can be rendered by casting it to string:
+You can also render individual inputs and errors.
 
 ```php
-echo $form;  // render the entire form HTML
+echo $form->input('name'); // <input id="name" type="text" name="name" size="20" maxlength="20" />
+echo $form->error('name'); // "Name must be alphabetic only." or blank.
 ```
 
 ## CSRF Protections
 
-CSRF protection is **opt-in**. A form that uses `SetAntiCsrfTrait` is wired with an `AntiCsrfInterface`, but the token is only verified on methods annotated with `#[CsrfProtection]`. Methods without `#[CsrfProtection]` perform no CSRF check even if the form has an `AntiCsrf` object set.
+CSRF protection is **opt-in**. A form that uses `SetAntiCsrfTrait` is wired with an `AntiCsrfInterface`, but the token is only verified when the validated method is annotated with `#[CsrfProtection]`. Methods without `#[CsrfProtection]` perform no CSRF check even if the form supports it.
 
 ```php
-use BEAR\Resource\ResourceObject;
 use Ray\WebFormModule\AbstractForm;
 use Ray\WebFormModule\Annotation\CsrfProtection;
 use Ray\WebFormModule\Annotation\FormValidation;
@@ -147,67 +145,62 @@ class MyForm extends AbstractForm
     use SetAntiCsrfTrait;
 }
 
-class MyPage extends ResourceObject
+class MyController
 {
-    #[FormValidation(form: 'contactForm')]
+    #[FormValidation(form: "contactForm")]
     #[CsrfProtection]
-    public function onPost(string $name, int $age): static
+    public function createAction()
     {
-        // executed only when the CSRF token is valid
-        return $this;
     }
 }
 ```
 
-To raise the security level, provide a custom CSRF class that incorporates user authentication and set it on the form. See [Applying CSRF Protections](https://github.com/auraphp/Aura.Input#applying-csrf-protections) in Aura.Input for details.
+You can provide a custom `AntiCsrf` class. See [Applying CSRF Protections](https://github.com/auraphp/Aura.Input#applying-csrf-protections) in Aura.Input for details.
 
-## #[InputValidation]
+## Migration From 0.x
 
-If a method is annotated with `#[InputValidation]` instead of `#[FormValidation]`, a `Ray\WebFormModule\Exception\ValidationException` is thrown when validation fails. No HTML representation is used, which is convenient for Web APIs.
+Version 1.0 drops Doctrine Annotations in favor of native PHP 8 attributes and tightens type declarations. The most common rewrites are:
 
-`echo`ing the `error` property of the caught exception outputs an [application/vnd.error+json](https://github.com/blongden/vnd.error) representation:
+| Before (0.x)                                                       | After (1.0)                                             |
+|--------------------------------------------------------------------|---------------------------------------------------------|
+| `@FormValidation(form="f", onFailure="badRequest")`                | `#[FormValidation(form: 'f', onFailure: 'badRequest')]` |
+| `@FormValidation(form="f", antiCsrf=true)`                         | `#[FormValidation(form: 'f')]` + `#[CsrfProtection]`    |
+| `@InputValidation(form="f")`                                       | `#[InputValidation(form: 'f')]`                         |
+| `@VndError(message="...", logref="...")`                           | `#[VndError(message: '...', logref: '...')]`            |
+| `new AuraInputInterceptor($injector, $reader)`                     | `new AuraInputInterceptor($injector)`                   |
+| `public function input($input)` / `public function error($input)`  | `input(string $input): string` / `error(string $input): string` |
+
+See [CHANGELOG.md](https://github.com/ray-di/Ray.WebFormModule/blob/1.x/CHANGELOG.md) for the full list of breaking changes.
+
+### Automated Migration With Claude Code
+
+Ray.WebFormModule ships a Claude Code skill at [`.claude/skills/migrate-to-1.0/SKILL.md`](https://github.com/ray-di/Ray.WebFormModule/blob/1.x/.claude/skills/migrate-to-1.0/SKILL.md) that walks an AI assistant through the rewrites above: annotations to attributes, `antiCsrf=true` split into `#[CsrfProtection]`, `Reader` argument removal, and `FormInterface` signature updates. Copy that directory into your consuming project's `.claude/skills/` and invoke it with `/migrate-to-1.0`.
+
+## Validation Exception
+
+`#[InputValidation]` throws `Ray\WebFormModule\Exception\ValidationException` when validation fails. This is useful for API applications where the HTML representation is not used.
 
 ```php
-http_response_code(400);
-echo $e->error;
+use Ray\WebFormModule\Annotation\InputValidation;
 
-// {
-//     "message": "Validation failed",
-//     "path": "/path/to/error",
-//     "validation_messages": {
-//         "name": [
-//             "Name must be alphabetic only."
-//         ]
-//     }
-// }
-```
-
-Use the `#[VndError]` attribute to enrich the `vnd.error+json` payload:
-
-```php
-#[FormValidation(form: 'contactForm')]
-#[VndError(
-    message: 'foo validation failed',
-    logref: 'a1000',
-    path: '/path/to/error',
-    href: ['_self' => '/path/to/error', 'help' => '/path/to/help']
-)]
-public function onPost(): static
+class Foo
 {
-    return $this;
+    #[InputValidation(form: "form1")]
+    public function createAction($name)
+    {
+        // ...
+    }
 }
 ```
 
-## FormVndErrorModule
-
-Install `Ray\WebFormModule\FormVndErrorModule` to make `#[FormValidation]` methods throw the same exception as `#[InputValidation]` methods. Page resources can then be reused as API endpoints:
+Installing `Ray\WebFormModule\FormVndErrorModule` makes methods annotated with `#[FormValidation]` throw the same validation exception on failure.
 
 ```php
 use Ray\Di\AbstractModule;
-use Ray\WebFormModule\WebFormModule;
 use Ray\WebFormModule\FormVndErrorModule;
+use Ray\WebFormModule\WebFormModule;
 
-class FooModule extends AbstractModule
+class FakeVndErrorModule extends AbstractModule
 {
     protected function configure()
     {
@@ -217,10 +210,36 @@ class FooModule extends AbstractModule
 }
 ```
 
-## Migration from 0.x
+Echo the caught exception's `error` property to get an [application/vnd.error+json](https://tools.ietf.org/html/rfc6906) representation.
 
-Version 1.0 drops Doctrine Annotations in favour of native PHP 8 Attributes and turns CSRF protection into opt-in via `#[CsrfProtection]`, among other breaking changes. See the [Ray.WebFormModule README](https://github.com/ray-di/Ray.WebFormModule#migration-from-0x) and the [CHANGELOG](https://github.com/ray-di/Ray.WebFormModule/blob/1.x/CHANGELOG.md) for the upgrade steps.
+```php
+echo $e->error;
+
+//{
+//    "message": "Validation failed",
+//    "path": "/path/to/error",
+//    "validation_messages": {
+//        "name": [
+//            "Name must be alphabetic only."
+//        ]
+//    }
+//}
+```
+
+Add more detail to `vnd.error+json` with the `#[VndError]` attribute.
+
+```php
+#[FormValidation(form: "contactForm")]
+#[VndError(message: "foo validation failed", logref: "a1000", path: "/path/to/error", href: ["_self" => "/path/to/error", "help" => "/path/to/help"])]
+public function createAction()
+{
+}
+```
 
 ## Demo
 
-Try the demo app [MyVendor.ContactForm](https://github.com/bearsunday/MyVendor.ContactForm) to see how a confirmation form and multiple forms on a single page work.
+Run the demo application from the Ray.WebFormModule repository.
+
+```bash
+php -S docs/demo/1.csrf/web.php
+```
