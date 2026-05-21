@@ -224,7 +224,7 @@ class UserDashboard extends ResourceObject
 - ドメインオブジェクトは不変スナップショット。呼び出し側で `$results['user'][0] ?? null` のような配列のお作法は不要
 - AsyncLinkerが3つのEmbedをext-parallel（PHP-FPM / Apache）またはSwooleコルーチンで並列実行
 - ext-parallel/Swooleなしでも、同じコードがリクエストごとに同期実行される（PHP-FPMはリクエスト＝プロセスなので機能としては問題なし）
-- Swooleで動かす場合は`PdoPoolModule`をインストールし、各コルーチンがプールからPDO接続を借りるようにする
+- Swooleで動かす場合は`PdoPoolEnvModule`をインストールし、各コルーチンがプールからPDO接続を借りるようにする
 
 ## 参考リンク
 

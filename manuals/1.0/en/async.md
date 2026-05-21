@@ -224,7 +224,7 @@ class UserDashboard extends ResourceObject
 - Domain objects are immutable snapshots; no `$results['user'][0] ?? null` plumbing at the call site
 - AsyncLinker runs the three embeds in parallel via ext-parallel (PHP-FPM / Apache) or Swoole coroutines
 - Without ext-parallel and without Swoole the same code runs synchronously per request, which is fine for PHP-FPM (each request is its own process)
-- For Swoole, install `PdoPoolModule` so each coroutine borrows a pooled PDO connection
+- For Swoole, install `PdoPoolEnvModule` so each coroutine borrows a pooled PDO connection
 
 ## References
 
