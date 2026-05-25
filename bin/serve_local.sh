@@ -9,6 +9,7 @@ set -euo pipefail
 # Generate combined manuals and copy markdown files for llms.txt compliance after initial build
 echo "Starting Jekyll server with llms.txt compliance..."
 ruby bin/merge_md_files.rb
+php bin/gen_llms.php
 bundle exec jekyll build
 ./bin/copy_markdown_files.sh
 bundle exec jekyll serve --watch --port 4001
