@@ -32,6 +32,7 @@
 ## Optional
 
 - [Setup](/manuals/1.0/en/setup.md): Detailed environment setup guide
+- [PhpStorm + Xdebug](/manuals/1.0/en/phpstorm-xdebug.md): Debug BEAR.Skeleton Docker applications with PhpStorm and Xdebug
 - [Tutorial](/manuals/1.0/en/tutorial.md): Step-by-step hands-on tutorial
 - [Tutorial 2](/manuals/1.0/en/tutorial2.md): Advanced tutorial with database
 - [Tutorial 3](/manuals/1.0/en/tutorial3.md): CLI application tutorial
