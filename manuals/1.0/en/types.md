@@ -8,7 +8,7 @@ permalink: /manuals/1.0/en/types.html
 
 PHPDoc types let static analysis tools understand array structures, generics, string constraints, type guards, and security-related data flow that cannot be fully expressed with native PHP type declarations.
 
-This page was checked on 2026-05-30 against the Psalm 5 documentation and PHPStan 2.2 documentation. PHPDoc, Psalm, and PHPStan do not support exactly the same syntax, so this page separates broadly portable types from Psalm-specific and PHPStan-specific features.
+This page was checked on 2026-05-30 against the Psalm 6 documentation and PHPStan 2.2 documentation. PHPDoc, Psalm, and PHPStan do not support exactly the same syntax, so this page separates broadly portable types from Psalm-specific and PHPStan-specific features.
 
 ## How to Read This Page
 
@@ -138,7 +138,7 @@ PHPStan also supports `associative-array` as a basic type.
 /** @return non-empty-list<User> */
 ```
 
-Psalm 5 and PHPStan also support list shapes.
+Psalm 6 and PHPStan also support list shapes.
 
 ```php
 /** @return list{string, int} */
@@ -162,7 +162,7 @@ Array shapes describe different value types for known keys.
 function userProfile(): array;
 ```
 
-Psalm 5 and PHPStan 2.2 can describe unsealed/open shapes that allow extra keys.
+Psalm 6 and PHPStan 2.2 can describe unsealed/open shapes that allow extra keys.
 
 ```php
 /** @param array{verbose: bool, ...} $options */
@@ -558,7 +558,7 @@ These tags are development aids for checking Psalm's inferred types.
 | `int-range` / `int<min, max>` | Psalm uses `int-range`; PHPStan uses `int<min, max>`. |
 | `@psalm-type` / `@phpstan-type` | Tool-specific. Define both when both analyzers need the alias. |
 | `properties-of` | Psalm utility type. Use another expression for PHPStan. |
-| Unsealed shapes | Important in Psalm 5 and PHPStan 2.2. PHPStan's stricter sealed behavior is gradual. |
+| Unsealed shapes | Important in Psalm 6 and PHPStan 2.2. PHPStan's stricter sealed behavior is gradual. |
 | `literal-string` | Useful for security-sensitive strings such as SQL and template fragments. |
 | `array<string, T>` | PHP may cast decimal string keys to `int`. Consider PHPStan 2.2's `non-decimal-int-string`. |
 

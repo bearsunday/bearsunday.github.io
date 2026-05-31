@@ -8,7 +8,7 @@ permalink: /manuals/1.0/ja/types.html
 
 PHPDocの型は、PHPのネイティブ型だけでは表現しきれない配列構造、ジェネリクス、文字列制約、型ガード、セキュリティ解析のための情報を静的解析ツールに伝えるために使います。
 
-このページは2026-05-30時点のPsalm 5系ドキュメント、PHPStan 2.2系ドキュメントを基準に、共通して使いやすい型、Psalm固有の型、PHPStan固有の型を分けて整理しています。PHPDoc標準、Psalm、PHPStanの対応範囲は完全には一致しないため、公開APIやライブラリではできるだけ共通構文を使い、必要な場合だけツール固有タグを使います。
+このページは2026-05-30時点のPsalm 6系ドキュメント、PHPStan 2.2系ドキュメントを基準に、共通して使いやすい型、Psalm固有の型、PHPStan固有の型を分けて整理しています。PHPDoc標準、Psalm、PHPStanの対応範囲は完全には一致しないため、公開APIやライブラリではできるだけ共通構文を使い、必要な場合だけツール固有タグを使います。
 
 ## 使い分け
 
@@ -139,7 +139,7 @@ PHPStanでは`associative-array`も基本型として使えます。
 /** @return non-empty-list<User> */
 ```
 
-Psalm 5とPHPStanはlist shapeも扱えます。
+Psalm 6とPHPStanはlist shapeも扱えます。
 
 ```php
 /** @return list{string, int} */
@@ -163,7 +163,7 @@ Array shapeはキーごとに異なる型を表します。
 function userProfile(): array;
 ```
 
-Psalm 5とPHPStan 2.2では、追加キーを許すunsealed/open shapeを表せます。
+Psalm 6とPHPStan 2.2では、追加キーを許すunsealed/open shapeを表せます。
 
 ```php
 /** @param array{verbose: bool, ...} $options */
@@ -559,7 +559,7 @@ $value = 'BEAR';
 | `int-range` / `int<min, max>` | Psalmは`int-range`、PHPStanは`int<min, max>`を使います。 |
 | `@psalm-type` / `@phpstan-type` | ツール固有です。両方使う場合は同じ意味で二重定義します。 |
 | `properties-of` | Psalm utility typeです。PHPStan向けには別表現を検討します。 |
-| unsealed shape | Psalm 5とPHPStan 2.2で重要です。PHPStanの厳密化は段階的に有効化されます。 |
+| unsealed shape | Psalm 6とPHPStan 2.2で重要です。PHPStanの厳密化は段階的に有効化されます。 |
 | `literal-string` | セキュリティ上有用ですが、通常の`string`とは別物です。SQLやテンプレート断片で使います。 |
 | `array<string, T>` | PHPの配列キー変換により、整数文字列キーが`int`になることがあります。PHPStan 2.2の`non-decimal-int-string`を検討します。 |
 

@@ -8,7 +8,7 @@ permalink: /manuals/1.0/en/types-utility.html
 
 Utility types are type operators that derive keys, values, property maps, or indexed value types from existing types. For the broader PHPDoc type reference, see [PHPDoc Types](types.html).
 
-This page is based on the current Psalm 5 and PHPStan 2.2 documentation. Some types, such as `properties-of` and `class-string-map`, are Psalm-specific, so check the analyzer you use before adopting them.
+This page is based on the current Psalm 6 and PHPStan 2.2 documentation. Some types, such as `properties-of` and `class-string-map`, are Psalm-specific, so check the analyzer you use before adopting them.
 
 ## key-of<T>
 
