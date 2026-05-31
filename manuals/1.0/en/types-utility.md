@@ -6,363 +6,215 @@ permalink: /manuals/1.0/en/types-utility.html
 ---
 # PHPDoc Utility Types
 
-Utility types are used to manipulate existing types or dynamically generate new types. Using these types enables more flexible and expressive type definitions.
+Utility types are type operators that derive keys, values, property maps, or indexed value types from existing types. For the broader PHPDoc type reference, see [PHPDoc Types](types.html).
 
-## Table of Contents
-
-1. [key-of<T>](#key-oft)
-2. [value-of<T>](#value-oft)
-3. [properties-of<T>](#properties-oft)
-4. [class-string-map<T of Foo, T>](#class-string-mapt-of-foo-t)
-5. [T[K]](#tk)
-6. [Type aliases](#type-aliases)
-7. [Variable templates](#variable-templates)
+This page is based on the current Psalm 5 and PHPStan 2.2 documentation. Some types, such as `properties-of` and `class-string-map`, are Psalm-specific, so check the analyzer you use before adopting them.
 
 ## key-of<T>
 
-`key-of<T>` represents the type of all possible keys of type `T`.
+`key-of<T>` extracts the key type from an array type, array shape, or constant array.
+
+```php
+final class User
+{
+    public const FIELDS = [
+        'id' => 1,
+        'name' => 2,
+        'email' => 3,
+    ];
+}
+
+/**
+ * @param key-of<User::FIELDS> $field
+ */
+function selectField(string $field): void {}
+
+selectField('name'); // OK
+selectField('age');  // static analysis error
+```
+
+When combined with templates, constrain `T` to an array type.
 
 ```php
 /**
  * @template T of array
  * @param T $data
- * @param key-of<T> $key
- * @return mixed
+ * @return list<key-of<T>>
  */
-function getValueByKey(array $data, $key) {
-    return $data[$key];
+function keys(array $data): array
+{
+    return array_keys($data);
 }
-
-// Usage example
-$userData = ['id' => 1, 'name' => 'John'];
-$name = getValueByKey($userData, 'name'); // OK
-$age = getValueByKey($userData, 'age'); // Psalm will warn
 ```
 
 ## value-of<T>
 
-`value-of<T>` represents the type of all possible values of type `T`.
+`value-of<T>` extracts the value type. PHPStan also supports `value-of<BackedEnum>`.
 
 ```php
-/**
- * @template T of array
- * @param T $data
- * @return value-of<T>
- */
-function getRandomValue(array $data) {
-    return $data[array_rand($data)];
+enum Suit: string
+{
+    case Hearts = 'H';
+    case Spades = 'S';
 }
 
-// Usage example
-$numbers = [1, 2, 3, 4, 5];
-$randomNumber = getRandomValue($numbers); // int type
+/**
+ * @param value-of<Suit> $suit
+ */
+function chooseSuit(string $suit): void {}
 ```
 
-## properties-of<T>
-
-`properties-of<T>` represents the type of all properties of type `T`.
+With constant arrays, it extracts literal value types.
 
 ```php
-class User {
-    public int $id;
-    public string $name;
-    public ?string $email;
-}
-
 /**
- * @param User $user
- * @param key-of<properties-of<User>> $property
- * @return value-of<properties-of<User>>
+ * @param value-of<User::FIELDS> $fieldId
  */
-function getUserProperty(User $user, string $property) {
-    return $user->$property;
-}
-
-// Usage example
-$user = new User();
-$name = getUserProperty($user, 'name'); // string type
-$id = getUserProperty($user, 'id'); // int type
-$unknown = getUserProperty($user, 'unknown'); // Psalm will warn
-```
-
-## class-string-map<T of Foo, T>
-
-`class-string-map` represents an array with class names as keys and their instances as values.
-
-```php
-interface Repository {}
-class UserRepository implements Repository {}
-class ProductRepository implements Repository {}
-
-/**
- * @template T of Repository
- * @param class-string-map<T, T> $repositories
- * @param class-string<T> $className
- * @return T
- */
-function getRepository(array $repositories, string $className) {
-    return $repositories[$className];
-}
-
-// Usage example
-$repositories = [
-    UserRepository::class => new UserRepository(),
-    ProductRepository::class => new ProductRepository(),
-];
-
-$userRepo = getRepository($repositories, UserRepository::class); // UserRepository type
+function byFieldId(int $fieldId): void {}
 ```
 
 ## T[K]
 
-`T[K]` represents indexed access to type `T` with key `K`.
+`T[K]` represents the value type of array type `T` at key `K`. It preserves the relationship between a key and its value in array shapes and configuration arrays.
 
 ```php
 /**
- * @template T of array
+ * @template T of array<string, mixed>
  * @template K of key-of<T>
  * @param T $data
  * @param K $key
  * @return T[K]
  */
-function getTypedValue(array $data, $key) {
+function get(array $data, string $key): mixed
+{
     return $data[$key];
 }
 
-// Usage example
 $config = [
-    'database' => ['host' => 'localhost', 'port' => 3306],
-    'cache' => ['driver' => 'redis', 'ttl' => 3600]
+    'debug' => true,
+    'name' => 'BEAR.Sunday',
 ];
 
-$dbConfig = getTypedValue($config, 'database'); // array{host: string, port: int}
-$host = getTypedValue($config['database'], 'host'); // string
+$debug = get($config, 'debug'); // bool
+$name = get($config, 'name');   // string
 ```
 
-## Type aliases
+## properties-of<T> (Psalm)
 
-Type aliases allow you to create reusable type definitions.
+`properties-of<T>` represents a class' properties as an array-shape-like map of property names to property types.
 
 ```php
-/**
- * @psalm-type UserId = positive-int
- * @psalm-type UserData = array{id: UserId, name: string, email: string}
- * @psalm-type UserCollection = array<UserId, UserData>
- */
+final class Profile
+{
+    public int $id;
+    public string $name;
+    protected string $token;
+}
 
-class UserService {
-    /**
-     * @param UserData $userData
-     * @return UserId
-     */
-    public function createUser(array $userData): int {
-        // Implementation
-        return $userData['id'];
-    }
-    
-    /**
-     * @param UserCollection $users
-     * @param UserId $id
-     * @return UserData|null
-     */
-    public function findUser(array $users, int $id): ?array {
-        return $users[$id] ?? null;
-    }
+/**
+ * @param Profile $profile
+ * @param key-of<public-properties-of<Profile>> $property
+ * @return value-of<public-properties-of<Profile>>
+ */
+function publicProperty(Profile $profile, string $property): mixed
+{
+    return $profile->$property;
 }
 ```
 
-## Variable templates
+Psalm provides these variants:
 
-Variable templates allow for more dynamic type definitions.
+| Type | Scope |
+|------|-------|
+| `properties-of<T>` | All properties |
+| `public-properties-of<T>` | Public properties |
+| `protected-properties-of<T>` | Protected properties |
+| `private-properties-of<T>` | Private properties |
 
-```php
-/**
- * @template T
- * @template K of key-of<T>
- * @param T $data
- * @param K ...$keys
- * @return array<K, T[K]>
- */
-function pick(array $data, ...$keys): array {
-    $result = [];
-    foreach ($keys as $key) {
-        if (array_key_exists($key, $data)) {
-            $result[$key] = $data[$key];
-        }
-    }
-    return $result;
-}
+## class-string-map<T of Foo, T> (Psalm)
 
-// Usage example
-$user = [
-    'id' => 1,
-    'name' => 'John',
-    'email' => 'john@example.com',
-    'password' => 'secret'
-];
-
-$publicData = pick($user, 'id', 'name', 'email'); 
-// array{id: int, name: string, email: string}
-```
-
-## Advanced Utility Type Examples
-
-### Conditional Types
+`class-string-map<T of Foo, T>` describes an array whose keys are class-name strings and whose values are instances of the corresponding classes.
 
 ```php
-/**
- * @template T
- * @psalm-type NonEmpty<T> = T is array ? non-empty-array<T> : T
- */
+interface Handler {}
+
+final class CreateHandler implements Handler {}
+final class DeleteHandler implements Handler {}
 
 /**
- * @template T of array
- * @param T $data
- * @return NonEmpty<T>
- * @throws InvalidArgumentException
+ * @template T of Handler
+ * @param class-string-map<T, T> $handlers
+ * @param class-string<T> $class
+ * @return T
  */
-function ensureNonEmpty(array $data): array {
-    if (empty($data)) {
-        throw new InvalidArgumentException('Array cannot be empty');
-    }
-    return $data;
+function handler(array $handlers, string $class): Handler
+{
+    return $handlers[$class];
 }
 ```
 
-### Recursive Types
+This is useful for containers, factories, and registries.
 
-```php
-/**
- * @psalm-type JsonValue = scalar|null|JsonArray|JsonObject
- * @psalm-type JsonArray = array<JsonValue>
- * @psalm-type JsonObject = array<string, JsonValue>
- */
+## template-type and new (PHPStan)
 
-class JsonParser {
-    /**
-     * @param string $json
-     * @return JsonValue
-     */
-    public function parse(string $json) {
-        return json_decode($json, true);
-    }
-}
-```
-
-### Mapped Types
+PHPStan supports `template-type` to extract a template type from an object argument, and `new` to represent the object type created from a `class-string<T>`.
 
 ```php
 /**
  * @template T of object
- * @psalm-type Partial<T> = array<key-of<properties-of<T>>, value-of<properties-of<T>>|null>
+ * @param class-string<T> $class
+ * @return new<T>
  */
-
-class UserUpdateService {
-    /**
-     * @param User $user
-     * @param Partial<User> $updates
-     * @return User
-     */
-    public function updateUser(User $user, array $updates): User {
-        foreach ($updates as $property => $value) {
-            if ($value !== null && property_exists($user, $property)) {
-                $user->$property = $value;
-            }
-        }
-        return $user;
-    }
-}
-
-// Usage
-$user = new User();
-$updates = ['name' => 'Jane', 'email' => null]; // Partial<User>
-$updatedUser = $service->updateUser($user, $updates);
-```
-
-## Best Practices
-
-### 1. Use Descriptive Type Names
-
-```php
-// Good
-/**
- * @psalm-type DatabaseConfig = array{host: string, port: positive-int, database: string}
- */
-
-// Avoid
-/**
- * @psalm-type Config = array{host: string, port: positive-int, database: string}
- */
-```
-
-### 2. Combine Utility Types for Complex Scenarios
-
-```php
-/**
- * @template T of object
- * @template K of key-of<properties-of<T>>
- * @param T $object
- * @param K $property
- * @return properties-of<T>[K]
- */
-function getProperty(object $object, string $property) {
-    return $object->$property;
+function create(string $class): object
+{
+    return new $class();
 }
 ```
 
-### 3. Document Complex Type Relationships
+`new<T>` is useful when a factory or container returns an instance related to a class-name string.
+
+## Combining with Type Aliases
+
+Complex utility types are easier to read when named with type aliases.
 
 ```php
 /**
- * Repository pattern with typed collections
- * 
- * @template TEntity of object
- * @template TId of scalar
- * @psalm-type EntityCollection<TEntity, TId> = array<TId, TEntity>
- * @psalm-type EntitySpec<TEntity> = array<key-of<properties-of<TEntity>>, mixed>
+ * @psalm-type UserProfile = array{
+ *   id: positive-int,
+ *   name: non-empty-string,
+ *   roles: list<non-empty-string>
+ * }
  */
-interface Repository {
-    /**
-     * @param TId $id
-     * @return TEntity|null
-     */
-    public function find($id): ?object;
-    
-    /**
-     * @param EntitySpec<TEntity> $criteria
-     * @return EntityCollection<TEntity, TId>
-     */
-    public function findBy(array $criteria): array;
+final class UserTypes {}
+
+/**
+ * @psalm-import-type UserProfile from UserTypes
+ * @param UserProfile $profile
+ * @param key-of<UserProfile> $property
+ * @return value-of<UserProfile>
+ */
+function profileValue(array $profile, string $property): mixed
+{
+    return $profile[$property];
 }
 ```
 
-## Integration with Static Analysis Tools
+For PHPStan, use `@phpstan-type` and `@phpstan-import-type`.
 
-These utility types work best with static analysis tools like Psalm and PHPStan:
+## Compatibility Notes
 
-### Psalm Configuration
+| Type | Psalm | PHPStan | Notes |
+|------|-------|---------|-------|
+| `key-of<T>` | Supported | Supported | Useful with arrays, array shapes, and constant arrays |
+| `value-of<T>` | Supported | Supported | PHPStan also supports backed enums |
+| `T[K]` | Supported | Supported | Offset access |
+| `properties-of<T>` | Supported | Not supported | Psalm utility type |
+| `class-string-map<T of Foo, T>` | Supported | Not supported | Psalm utility type |
+| `template-type` | Not supported | Supported | PHPStan utility type |
+| `new<T>` | Not supported | Supported | PHPStan utility type |
 
-```xml
-<!-- psalm.xml -->
-<psalm>
-    <projectFiles>
-        <directory name="src" />
-    </projectFiles>
-    <plugins>
-        <pluginClass class="Psalm\Plugin\DocblockTypeProvider" />
-    </plugins>
-</psalm>
-```
+## References
 
-### PHPStan Configuration
-
-```neon
-# phpstan.neon
-parameters:
-    level: 8
-    paths:
-        - src
-    treatPhpDocTypesAsCertain: false
-```
-
-Utility types provide powerful abstractions for type-safe PHP development, enabling more robust code with better IDE support and static analysis capabilities.
+* [Psalm - Utility types](https://psalm.dev/docs/annotating_code/type_syntax/utility_types/)
+* [Psalm - Array types](https://psalm.dev/docs/annotating_code/type_syntax/array_types/)
+* [PHPStan - PHPDoc Types](https://phpstan.org/writing-php-code/phpdoc-types)
