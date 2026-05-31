@@ -8,7 +8,7 @@ permalink: /manuals/1.0/ja/types-utility.html
 
 ユーティリティ型は、既存の型からキー、値、プロパティ、インデックス先の型などを取り出すための型演算子です。PHPDoc型全体の整理は[PHPDocタイプ](types.html)を参照してください。
 
-このページはPsalm 6系とPHPStan 2.2系の現行ドキュメントを基準にしています。`properties-of`や`class-string-map`のようにPsalm固有のものもあるため、利用する静的解析ツールを確認して使います。
+`properties-of`や`class-string-map`のようにPsalm固有のものもあるため、利用する静的解析ツールを確認して使います。
 
 ## key-of<T>
 

@@ -8,7 +8,7 @@ permalink: /manuals/1.0/en/types.html
 
 PHPDoc types let static analysis tools understand array structures, generics, string constraints, type guards, and security-related data flow that cannot be fully expressed with native PHP type declarations.
 
-This page was checked on 2026-05-30 against the Psalm 6 documentation and PHPStan 2.2 documentation. PHPDoc, Psalm, and PHPStan do not support exactly the same syntax, so this page separates broadly portable types from Psalm-specific and PHPStan-specific features.
+This page separates broadly portable types from Psalm-specific and PHPStan-specific features. PHPDoc, Psalm, and PHPStan do not support exactly the same syntax, so public APIs should prefer shared syntax and use tool-specific tags only when needed.
 
 ## How to Read This Page
 
@@ -17,7 +17,7 @@ This page was checked on 2026-05-30 against the Psalm 6 documentation and PHPSta
 | Common PHPDoc | Basic types understood by IDEs, phpDocumentor, Psalm, and PHPStan |
 | Psalm/PHPStan common | Advanced types that are practical in both major analyzers |
 | Psalm-specific | `@psalm-*` tags, Psalm utility types, taint analysis |
-| PHPStan-specific | `@phpstan-*` tags, PHPStan type aliases, PHPStan 2.x additions |
+| PHPStan-specific | `@phpstan-*` tags, PHPStan type aliases, PHPStan-specific additions |
 
 ## Basic Types
 
@@ -81,7 +81,7 @@ PHPStan uses `int<0, 100>`, `int<min, 100>`, and `int<50, max>`.
 /** @param enum-string<Suit> $enum */
 ```
 
-PHPStan also supports `non-falsy-string` / `truthy-string`, `non-empty-uppercase-string`, `non-empty-literal-string`, and `interface-string<T>`. PHPStan 2.2 adds `decimal-int-string` and `non-decimal-int-string` for safer string array keys. PHP converts string keys like `'123'` to integer keys, so strict `array<string, mixed>` APIs may need the safer type.
+PHPStan also supports `non-falsy-string` / `truthy-string`, `non-empty-uppercase-string`, `non-empty-literal-string`, and `interface-string<T>`. It also has `decimal-int-string` and `non-decimal-int-string` for safer string array keys. PHP converts string keys like `'123'` to integer keys, so strict `array<string, mixed>` APIs may need the safer type.
 
 ```php
 /** @param non-empty-uppercase-string $upper */
@@ -138,7 +138,7 @@ PHPStan also supports `associative-array` as a basic type.
 /** @return non-empty-list<User> */
 ```
 
-Psalm 6 and PHPStan also support list shapes.
+Psalm and PHPStan also support list shapes.
 
 ```php
 /** @return list{string, int} */
@@ -162,7 +162,7 @@ Array shapes describe different value types for known keys.
 function userProfile(): array;
 ```
 
-Psalm 6 and PHPStan 2.2 can describe unsealed/open shapes that allow extra keys.
+Psalm and PHPStan can describe unsealed/open shapes that allow extra keys.
 
 ```php
 /** @param array{verbose: bool, ...} $options */
@@ -170,7 +170,7 @@ Psalm 6 and PHPStan 2.2 can describe unsealed/open shapes that allow extra keys.
 /** @return list{string, int, ...<bool>} */
 ```
 
-PHPStan 2.2 makes sealed array shape behavior stricter. If extra keys are intended, document that intent with an unsealed shape.
+PHPStan treats sealed array shapes strictly. If extra keys are intended, document that intent with an unsealed shape.
 
 ## Composite Types
 
@@ -558,9 +558,9 @@ These tags are development aids for checking Psalm's inferred types.
 | `int-range` / `int<min, max>` | Psalm uses `int-range`; PHPStan uses `int<min, max>`. |
 | `@psalm-type` / `@phpstan-type` | Tool-specific. Define both when both analyzers need the alias. |
 | `properties-of` | Psalm utility type. Use another expression for PHPStan. |
-| Unsealed shapes | Important in Psalm 6 and PHPStan 2.2. PHPStan's stricter sealed behavior is gradual. |
+| Unsealed shapes | Use them when extra keys are intentional. |
 | `literal-string` | Useful for security-sensitive strings such as SQL and template fragments. |
-| `array<string, T>` | PHP may cast decimal string keys to `int`. Consider PHPStan 2.2's `non-decimal-int-string`. |
+| `array<string, T>` | PHP may cast decimal string keys to `int`. Consider PHPStan's `non-decimal-int-string`. |
 
 ## References
 
@@ -571,4 +571,4 @@ These tags are development aids for checking Psalm's inferred types.
 * [Psalm - Taint annotations](https://psalm.dev/docs/security_analysis/annotations/)
 * [PHPStan - PHPDoc Types](https://phpstan.org/writing-php-code/phpdoc-types)
 * [PHPStan - PHPDocs Basics](https://phpstan.org/writing-php-code/phpdocs-basics)
-* [PHPStan 2.2: Unsealed Array Shapes, Safer Array Keys, and More](https://phpstan.org/blog/phpstan-2-2-unsealed-array-shapes-safer-array-keys)
+* [PHPStan - Unsealed Array Shapes, Safer Array Keys, and More](https://phpstan.org/blog/phpstan-2-2-unsealed-array-shapes-safer-array-keys)
