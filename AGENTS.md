@@ -17,7 +17,7 @@ This is the documentation website for BEAR.Sunday, a resource-oriented PHP frame
 
 ### Local Development
 ```bash
-# Install dependencies (requires Ruby 3.2.3)
+# Install dependencies (CI uses Ruby 3.2.2; local development recommends Ruby 3.2.3)
 gem install jekyll bundler
 bundle install
 
@@ -43,7 +43,7 @@ bundle exec jekyll build
 - `bin/serve_local.sh`: Local development server with Jekyll watch mode
 - `bin/serve_docker.sh`: Docker-based development
 - `bin/merge_md_files.rb`: Generates combined documentation files (`1page.md`) from individual markdown files
-- `bin/copy_markdown_files.sh`: Copies markdown files to `_site` for llms.txt compliance (removes Jekyll frontmatter)
+- `bin/copy_markdown_files.sh`: Post-build local helper that copies markdown files to `_site/manuals/` and removes Jekyll frontmatter for llms.txt compliance
 
 ## File Structure
 
@@ -51,7 +51,7 @@ bundle exec jekyll build
 - `_includes/manuals/1.0/{en,ja}/contents.html`: Navigation structure that determines page order
 - `_layouts/`: Jekyll templates for different page types
 - `_config.yml`: Jekyll configuration with llms.txt specific settings
-- `_site/`: Generated static site (includes both HTML and cleaned markdown files)
+- `_site/`: Generated static site. Markdown copies live under `_site/manuals/`; they are frontmatter-stripped when `bin/copy_markdown_files.sh` runs.
 
 ## Styling Conventions
 
@@ -72,17 +72,17 @@ The site uses a sophisticated system for managing documentation:
 1. Individual markdown files in `manuals/1.0/{en,ja}/`
 2. Navigation order determined by `_includes/manuals/1.0/{language}/contents.html`
 3. Combined documentation generated via `merge_md_files.rb`
-4. LLMs.txt compliance through frontmatter-stripped copies in `_site/manuals/`
+4. LLMs.txt compliance through markdown copies in `_site/manuals/`: `_plugins/copy_markdown.rb` copies source markdown during Jekyll output, and `bin/copy_markdown_files.sh` is the local post-build helper that removes frontmatter for llms.txt-compatible copies.
 
 ## Jekyll Configuration
 
 - Uses Kramdown markdown processor with Rouge syntax highlighting
-- Custom plugin (`_plugins/copy_markdown.rb`) ensures markdown files are copied to `_site/`
+- Custom plugin (`_plugins/copy_markdown.rb`) copies markdown files to `_site/manuals/`; it does not strip frontmatter.
 - Special include/keep_files configuration for llms.txt standard compliance
 - Navigation structure embedded in HTML files rather than configuration
 
 ## Deployment
 
 - **GitHub Actions**: `.github/workflows/jekyll.yml` handles automatic deployment
-- **Ruby Version**: 3.2.2 in CI, 3.2.3 locally (Jekyll compatibility requirement)
+- **Ruby Version**: CI uses 3.2.2; local development recommends 3.2.3 for Jekyll compatibility.
 - **Custom Build Steps**: Runs `merge_md_files.rb` before Jekyll build in CI
