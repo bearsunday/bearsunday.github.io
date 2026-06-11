@@ -90,6 +90,45 @@ final class User
 
 `#[Input]`属性を使って、`Ray.InputQuery`ライブラリによる型安全な入力オブジェクトの生成を利用できます。
 
+BEAR.ResourceのリクエストパラメーターをInput DTOにまとめると、ResourceメソッドはHTTP入力を受け取りレスポンスを組み立てる責務に集中できます。入力の型、デフォルト値、`trim()`などの正規化、形式チェックなどの検証は入力オブジェクト側に集約でき、同じDTOをQueryやMediaQueryなどへ渡しやすくなります。
+
+```php
+use InvalidArgumentException;
+use Ray\InputQuery\Attribute\Input;
+
+final class SearchInput
+{
+    public readonly string $keyword;
+
+    public function __construct(
+        #[Input] string $keyword,
+        #[Input] public readonly int $page = 1
+    ) {
+        $this->keyword = trim($keyword);
+
+        if ($this->keyword === '') {
+            throw new InvalidArgumentException('keyword is required');
+        }
+
+        if ($this->page < 1) {
+            throw new InvalidArgumentException('page must be greater than 0');
+        }
+    }
+}
+
+class Search extends ResourceObject
+{
+    public function onGet(#[Input] SearchInput $input): static
+    {
+        // Query / MediaQueryへ同じInput DTOを渡せます
+        $this->body = $this->searchQuery->get($input);
+        return $this;
+    }
+}
+```
+
+> Note: 入力値が1つだけの場合でも、`NameInput`のようなDTOにすることで、`trim()`や形式チェックをコンストラクタに閉じ込められます。DTO化は複数パラメーターをまとめるためだけのものではありません。
+
 ```php
 use Ray\InputQuery\Attribute\Input;
 
