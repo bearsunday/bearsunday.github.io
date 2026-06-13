@@ -107,7 +107,8 @@ jobs:
           # wget -p does not fetch assets referenced only from inline-style url()
           # (e.g. /bear-logo.png), so copy the public assets in explicitly...
           cp -r public/. snapshot/ 2>/dev/null || true
-          # ...and point the hero background's bear-logo at an absolute /learn/ path.
+          # ...and point the bear-logo hero AND the favicons/header logo at absolute
+          # /learn/ paths.
           #
           # The hero uses inline style backgroundImage:url('/bear-logo.png'). React
           # serializes the quotes as &#x27; entities, which wget -k cannot parse as a CSS
@@ -117,7 +118,14 @@ jobs:
           # works at any depth. Normalize the bare path (clean url() + RSC payload) first,
           # then collapse every url() variant -- quoted, entity-encoded, and the mangled
           # localhost token -- to url(/learn/bear-logo.png).
-          find snapshot -name '*.html' -print0 | xargs -0 sed -i "s#/bear-logo.png#/learn/bear-logo.png#g;s#url([^)]*bear-logo[^)]*)#url(/learn/bear-logo.png)#g;s#url(http://localhost:4399/[^)]*)#url(/learn/bear-logo.png)#g"
+          #
+          # The favicons and header logo (favicon-48.png, favicon.ico/.svg, icon.png) also
+          # 404 during the crawl (the trailingSlash redirect appends a slash to assets), so
+          # wget leaves them as http://localhost:4399/...; the final rule rewrites any
+          # remaining localhost ref to /learn/. It runs LAST, after the bear-logo rules have
+          # already collapsed the mangled hero url() -- otherwise it would turn that into a
+          # broken url(/learn/ja/rest/&) instead of url(/learn/bear-logo.png).
+          find snapshot -name '*.html' -print0 | xargs -0 sed -i "s#/bear-logo.png#/learn/bear-logo.png#g;s#url([^)]*bear-logo[^)]*)#url(/learn/bear-logo.png)#g;s#url(http://localhost:4399/[^)]*)#url(/learn/bear-logo.png)#g;s#http://localhost:4399/#/learn/#g"
           test -f snapshot/index.html
           test -f snapshot/ja/index.html
           test -f snapshot/ja/rest/index.html
