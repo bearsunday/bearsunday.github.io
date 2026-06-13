@@ -9,6 +9,8 @@ name: Deploy site (Jekyll + Learn)
 on:
   push:
     branches: [master] # adjust if your default branch differs
+  pull_request:
+    branches: [master]
   workflow_dispatch:
 
 permissions:
@@ -33,6 +35,11 @@ jobs:
         with:
           source: ./
           destination: ./_site
+
+      # Fix _site ownership: jekyll-build-pages runs as root, which makes _site
+      # unwritable by the normal runner user in subsequent steps.
+      - name: Fix _site ownership
+        run: sudo chown -R "$USER:$USER" _site
 
       # 2) Check out and build the Learn site (separate repo) to static HTML.
       - name: Checkout Learn site
