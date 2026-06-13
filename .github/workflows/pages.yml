@@ -110,9 +110,12 @@ jobs:
           # /bear-logo.png and /favicon.svg rules below relativize.
           find snapshot -name '*.html' -print0 | xargs -0 sed -i "s#url(http://localhost:4399/[^)]*)#url('bear-logo.png')#g;s#/bear-logo.png#bear-logo.png#g;s#/favicon.svg#favicon.svg#g"
           test -f snapshot/index.html
-          test -f snapshot/rest.html
-          test -f snapshot/tech.html
-          test -f snapshot/alps.html
+          test -f snapshot/ja/rest.html
+          test -f snapshot/ja/tech.html
+          test -f snapshot/ja/alps.html
+          test -f snapshot/en/rest.html
+          test -f snapshot/en/tech.html
+          test -f snapshot/en/alps.html
           test -f snapshot/bear-logo.png
 
       - name: Place Learn under /learn/
