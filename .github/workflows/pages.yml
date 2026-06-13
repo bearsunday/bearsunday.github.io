@@ -9,6 +9,8 @@ name: Deploy site (Jekyll + Learn)
 on:
   push:
     branches: [master] # adjust if your default branch differs
+  pull_request:
+    branches: [master]
   workflow_dispatch:
 
 permissions:
