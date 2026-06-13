@@ -109,18 +109,12 @@ jobs:
           # filename only survives untouched inside the (JSON) RSC payload, which the two
           # /bear-logo.png and /favicon.svg rules below relativize.
           find snapshot -name '*.html' -print0 | xargs -0 sed -i "s#url(http://localhost:4399/[^)]*)#url('bear-logo.png')#g;s#/bear-logo.png#bear-logo.png#g;s#/favicon.svg#favicon.svg#g"
-          # Restructure .html files into directory index.html so /ja/ works naturally
-          for f in snapshot/ja.html snapshot/en.html snapshot/ja/*.html snapshot/en/*.html; do
-            if [ -f "$f" ]; then
-              dir="${f%.html}"
-              mkdir -p "$dir"
-              mv "$f" "$dir/index.html"
-            fi
-          done
           test -f snapshot/index.html
+          test -f snapshot/ja/index.html
           test -f snapshot/ja/rest/index.html
           test -f snapshot/ja/tech/index.html
           test -f snapshot/ja/alps/index.html
+          test -f snapshot/en/index.html
           test -f snapshot/en/rest/index.html
           test -f snapshot/en/tech/index.html
           test -f snapshot/en/alps/index.html
