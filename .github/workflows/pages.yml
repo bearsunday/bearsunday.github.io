@@ -99,7 +99,16 @@ jobs:
           # (e.g. /bear-logo.png), so copy the public assets in explicitly...
           cp -r public/. snapshot/ 2>/dev/null || true
           # ...and rewrite absolute root asset refs so they resolve under /learn/.
-          find snapshot -name '*.html' -print0 | xargs -0 sed -i "s#/bear-logo.png#bear-logo.png#g;s#/favicon.svg#favicon.svg#g"
+          #
+          # The hero background uses an inline style: backgroundImage:url('/bear-logo.png').
+          # React serializes the quotes as HTML entities -> url(&#x27;/bear-logo.png&#x27;),
+          # which wget -k (--convert-links) cannot parse as a CSS url(): it rewrites the
+          # whole token to the crawl base, leaving url(http://localhost:4399/&) and DROPPING
+          # the bear-logo.png filename. That broken localhost URL is why the hero bear never
+          # painted. So rewrite that mangled token back to the relative asset first; the
+          # filename only survives untouched inside the (JSON) RSC payload, which the two
+          # /bear-logo.png and /favicon.svg rules below relativize.
+          find snapshot -name '*.html' -print0 | xargs -0 sed -i "s#url(http://localhost:4399/[^)]*)#url('bear-logo.png')#g;s#/bear-logo.png#bear-logo.png#g;s#/favicon.svg#favicon.svg#g"
           test -f snapshot/index.html
           test -f snapshot/rest.html
           test -f snapshot/tech.html
