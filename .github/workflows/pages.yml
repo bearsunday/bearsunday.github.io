@@ -1,58 +1,83 @@
-# Place this file at .github/workflows/pages.yml in the bearsunday.github.io repo.
-# It builds the Jekyll site (jumbotron + /manuals) and publishes the Learn site
-# (bearsunday/site-bear-sunday) as static HTML under /learn/, then deploys to Pages.
+# Place this at .github/workflows/ in the bearsunday.github.io repo, REPLACING the
+# existing "Deploy Jekyll site to Pages" workflow. This is that same workflow with:
+#   - the Jekyll build + artifact upload re-enabled (they were commented out), and
+#   - the Learn site (bearsunday/site-bear-sunday) built to static HTML under /learn/.
 #
-# Before first use: Settings -> Pages -> Build and deployment -> Source: GitHub Actions.
+# Use Settings -> Pages -> Build and deployment -> Source: GitHub Actions.
+# Do NOT run a second Pages-deploy workflow alongside this one: both would race on
+# the "pages" concurrency group and the github-pages environment.
 
-name: Deploy site (Jekyll + Learn)
+name: Deploy Jekyll site to Pages
 
 on:
   push:
-    branches: [master] # adjust if your default branch differs
-  pull_request:
-    branches: [master]
+    branches: ["master"]
   workflow_dispatch:
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
 concurrency:
-  group: pages
+  group: "pages"
   cancel-in-progress: false
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: read
     steps:
-      - name: Checkout site (Jekyll)
+      - name: Checkout
         uses: actions/checkout@v4
-
-      # 1) Build the Jekyll site exactly as GitHub Pages does today.
-      - name: Build Jekyll
-        uses: actions/jekyll-build-pages@v1
         with:
-          source: ./
-          destination: ./_site
+          persist-credentials: false
 
-      # Fix _site ownership: jekyll-build-pages runs as root, which makes _site
-      # unwritable by the normal runner user in subsequent steps.
-      - name: Fix _site ownership
-        run: sudo chown -R "$USER:$USER" _site
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2.2'
+          bundler-cache: false # Disable automatic bundler cache to control gem versions
+          cache-version: 2 # Increment this number if you need to re-download cached gems
 
-      # 2) Check out and build the Learn site (separate repo) to static HTML.
+      - name: Install dependencies with specific Rouge version
+        run: |
+          bundle install
+          echo "Installed Rouge version:"
+          bundle list | grep rouge || true
+
+      - name: Setup Pages
+        id: pages
+        uses: actions/configure-pages@v5
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+
+      - name: Run custom scripts
+        run: |
+          ruby bin/merge_md_files.rb
+          php bin/gen_llms.php
+
+      # Re-enabled (previously commented out): build Jekyll into ./_site.
+      - name: Build with Jekyll
+        run: bundle exec jekyll build --baseurl "${{ steps.pages.outputs.base_path }}"
+        env:
+          JEKYLL_ENV: production
+
+      # --- Learn site (bearsunday/site-bear-sunday) -> /learn/ ---
       - name: Checkout Learn site
         uses: actions/checkout@v4
         with:
           repository: bearsunday/site-bear-sunday
           ref: master # the Learn site's default branch
           path: learn-src
+          persist-credentials: false
 
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: "22"
+          node-version: '22'
 
       - name: Build Learn site (static snapshot)
         working-directory: learn-src
@@ -65,33 +90,39 @@ jobs:
             curl -sf http://localhost:4399/ >/dev/null && break
             sleep 1
           done
+          # Crawl to static HTML. wget exits 8 if any optional asset 404s; that is
+          # not fatal for a static snapshot, and steps run under `set -e`.
           mkdir -p snapshot
           ( cd snapshot && wget -nv -r -l 3 -p -k -E -nH -e robots=off http://localhost:4399/ ) || true
           kill "$server_pid" 2>/dev/null || true
+          # wget -p does not fetch assets referenced only from inline-style url()
+          # (e.g. /bear-logo.png), so copy the public assets in explicitly...
+          cp -r public/. snapshot/ 2>/dev/null || true
+          # ...and rewrite absolute root asset refs so they resolve under /learn/.
+          find snapshot -name '*.html' -print0 | xargs -0 sed -i "s#/bear-logo.png#bear-logo.png#g;s#/favicon.svg#favicon.svg#g"
           test -f snapshot/index.html
           test -f snapshot/rest.html
           test -f snapshot/tech.html
           test -f snapshot/alps.html
+          test -f snapshot/bear-logo.png
 
-      - name: Merge Learn site into Jekyll output
+      - name: Place Learn under /learn/
         run: |
           mkdir -p _site/learn
           cp -r learn-src/snapshot/. _site/learn/
 
-      - name: Upload Pages artifact
+      - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
-        with:
-          path: ./_site
 
   deploy:
-    needs: build
-    runs-on: ubuntu-latest
     permissions:
       pages: write
       id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-22.04
+    needs: build
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
