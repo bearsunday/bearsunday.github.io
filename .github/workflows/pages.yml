@@ -66,9 +66,22 @@ jobs:
           test -f snapshot/tech.html
           test -f snapshot/alps.html
 
+      - name: Merge Learn site into Jekyll output
+        run: |
+          mkdir -p _site/learn
+          cp -r learn-src/snapshot/. _site/learn/
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./_site
+
   deploy:
     needs: build
     runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
