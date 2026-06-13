@@ -1,0 +1,84 @@
+# Place this file at .github/workflows/pages.yml in the bearsunday.github.io repo.
+# It builds the Jekyll site (jumbotron + /manuals) and publishes the Learn site
+# (bearsunday/site-bear-sunday) as static HTML under /learn/, then deploys to Pages.
+#
+# Before first use: Settings -> Pages -> Build and deployment -> Source: GitHub Actions.
+
+name: Deploy site (Jekyll + Learn)
+
+on:
+  push:
+    branches: [master] # adjust if your default branch differs
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout site (Jekyll)
+        uses: actions/checkout@v4
+
+      # 1) Build the Jekyll site exactly as GitHub Pages does today.
+      - name: Build Jekyll
+        uses: actions/jekyll-build-pages@v1
+        with:
+          source: ./
+          destination: ./_site
+
+      # 2) Check out and build the Learn site (separate repo) to static HTML.
+      - name: Checkout Learn site
+        uses: actions/checkout@v4
+        with:
+          repository: bearsunday/site-bear-sunday
+          ref: master # the Learn site's default branch
+          path: learn-src
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Build Learn site (static snapshot)
+        working-directory: learn-src
+        run: |
+          npm ci
+          npm run build
+          PORT=4399 npm run start &
+          for i in $(seq 1 60); do
+            curl -sf http://localhost:4399/ >/dev/null && break
+            sleep 1
+          done
+          mkdir -p snapshot
+          ( cd snapshot && wget -q -r -l 3 -p -k -E -nH -e robots=off http://localhost:4399/ )
+          kill %1 2>/dev/null || true
+          test -f snapshot/index.html
+
+      - name: Place Learn under /learn/
+        run: |
+          mkdir -p _site/learn
+          cp -r learn-src/snapshot/. _site/learn/
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./_site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
