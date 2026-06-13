@@ -92,8 +92,17 @@ jobs:
           done
           # Crawl to static HTML. wget exits 8 if any optional asset 404s; that is
           # not fatal for a static snapshot, and steps run under `set -e`.
+          #
+          # The Learn app renders bare links (href="/ja", href="/ja/rest") while the
+          # vinext server runs with trailingSlash:true, so each bare link 308-redirects
+          # to its "/.../" form. By default wget names the local file after the ORIGINAL
+          # (pre-redirect) URL -> "ja"/"ja.html", which never produces the directory
+          # "index.html" layout GitHub Pages needs. --trust-server-names makes wget name
+          # the file after the redirect TARGET ("/ja/" -> ja/index.html, "/ja/rest/" ->
+          # ja/rest/index.html), giving the natural directory structure with no -E and no
+          # post-download restructuring.
           mkdir -p snapshot
-          ( cd snapshot && wget -nv -r -l 3 -p -k -E -nH -e robots=off http://localhost:4399/ ) || true
+          ( cd snapshot && wget -nv -r -l 3 -p -k -nH --trust-server-names -e robots=off http://localhost:4399/ ) || true
           kill "$server_pid" 2>/dev/null || true
           # wget -p does not fetch assets referenced only from inline-style url()
           # (e.g. /bear-logo.png), so copy the public assets in explicitly...
