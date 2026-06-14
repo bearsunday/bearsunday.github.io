@@ -89,6 +89,45 @@ Namespaces are arbitrary. Input classes can implement methods to aggregate or va
 
 Use the `#[Input]` attribute to leverage type-safe input object generation from the `Ray.InputQuery` library.
 
+By grouping BEAR.Resource request parameters into an Input DTO, the Resource method can stay focused on receiving HTTP input and building the response. Types, default values, normalization such as `trim()`, and validation such as format checks can be centralized in the input object. The same DTO is also easy to pass on to Query or MediaQuery.
+
+```php
+use InvalidArgumentException;
+use Ray\InputQuery\Attribute\Input;
+
+final class SearchInput
+{
+    public readonly string $keyword;
+
+    public function __construct(
+        #[Input] string $keyword,
+        #[Input] public readonly int $page = 1
+    ) {
+        $this->keyword = trim($keyword);
+
+        if ($this->keyword === '') {
+            throw new InvalidArgumentException('keyword is required');
+        }
+
+        if ($this->page < 1) {
+            throw new InvalidArgumentException('page must be greater than 0');
+        }
+    }
+}
+
+class Search extends ResourceObject
+{
+    public function onGet(#[Input] SearchInput $input): static
+    {
+        // The same Input DTO can be passed to Query / MediaQuery
+        $this->body = $this->searchQuery->get($input);
+        return $this;
+    }
+}
+```
+
+> Note: Even for a single input value, a DTO such as `NameInput` can keep `trim()` and format checks inside the constructor. DTOs are not only for grouping multiple parameters.
+
 ```php
 use Ray\InputQuery\Attribute\Input;
 

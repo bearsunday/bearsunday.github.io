@@ -3,15 +3,21 @@ layout: index
 title: BEAR.Sunday
 category: Index
 ---
+<!-- Replaces the root index.html of bearsunday.github.io. -->
+<!-- [Learn] -> the Learn site (/learn/), [Manual] -> the manual (/manuals/). -->
 <div class="jumbotron">
     <img src="./images/BEAR-logo.png">
     <p>
         BEAR.Sunday is a resource orientated framework with a <strong>REST</strong> centered architecture, implementing <strong>Dependency Injection</strong> and <strong>Aspect Orientated</strong> Programming' at its core.
     </p>
-    <a class="btn btn-primary" id="learn" data-auto-locale-link="manual" href="/manuals/1.0/en/index.html">
-        Learn more &raquo;
+    <a class="btn btn-primary" id="learn" data-auto-locale-link="learn" href="/learn/en/">
+        Learn &raquo;
+    </a>
+    <a class="btn btn-secondary" id="manual" data-auto-locale-link="manual" href="/manuals/1.0/en/index.html">
+        Manual
     </a>
     <script>
+        // Keep the Learn and Manual links locale-aware (switch /en/ -> /ja/ for Japanese browsers).
         window.addEventListener('DOMContentLoaded', () => {
             const navigatorLanguages = window.navigator.languages;
             const locales = (navigatorLanguages && navigatorLanguages.length)
@@ -23,7 +29,7 @@ category: Index
                 return;
             }
 
-            const links = document.querySelectorAll('[data-auto-locale-link="manual"]');
+            const links = document.querySelectorAll('[data-auto-locale-link]');
             for (const link of links) {
                 const href = link.getAttribute('href');
                 if (href && href.includes('/en/')) {

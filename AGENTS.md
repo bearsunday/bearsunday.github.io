@@ -1,88 +1,65 @@
-# AGENTS.md
+# Repository Guidelines
 
-This file provides guidance to Codex (Codex.ai/code) when working with code in this repository.
+## Project Structure & Module Organization
 
-## Project Overview
+This is the documentation website for **BEAR.Sunday**, a resource-oriented PHP framework. The site is built with **Jekyll 4.4** and hosted on GitHub Pages.
 
-This is the documentation website for BEAR.Sunday, a resource-oriented PHP framework. The site is built with Jekyll and hosted on GitHub Pages at https://bearsunday.github.io/.
-
-## Architecture
-
-- **Jekyll Site**: Static site generator for documentation
-- **Bilingual Documentation**: English (`manuals/1.0/en/`) and Japanese (`manuals/1.0/ja/`) versions
-- **LLMs.txt Compliance**: Special handling for AI/LLM accessibility via custom scripts
-- **GitHub Actions**: Automated deployment to GitHub Pages
-
-## Development Commands
-
-### Local Development
-```bash
-# Install dependencies (CI uses Ruby 3.2.2; local development recommends Ruby 3.2.3)
-gem install jekyll bundler
-bundle install
-
-# Serve locally with live reload
-./bin/serve_local.sh
-
-# Serve with Docker
-./bin/serve_docker.sh
+```
+.
+├── _config.yml              # Jekyll configuration
+├── _layouts/                # Page templates (docs-en.html, docs-ja.html, index.html)
+├── _includes/manuals/       # Navigation (contents.html per language) and shared partials
+├── _plugins/                # Custom Jekyll plugin (copy_markdown.rb)
+├── manuals/1.0/
+│   ├── en/                  # English documentation (markdown)
+│   └── ja/                  # Japanese documentation (markdown)
+├── bin/                     # Build and serve scripts
+├── scripts/                 # Validation tools
+├── css/, js/, images/       # Static assets
+├── Dockerfile & docker-compose.yml
+└── .github/workflows/       # CI/CD (pages.yml)
 ```
 
-### Build Process
-```bash
-# Build site
-bundle exec jekyll build
+Each manual page requires Jekyll frontmatter with `layout`, `title`, `category`, and `permalink`.
 
-# Build with custom scripts (production)
-ruby bin/merge_md_files.rb
-bundle exec jekyll build
-```
+## Build, Test, and Development Commands
 
-## Key Scripts
+| Command | Description |
+|---|---|
+| `./bin/serve_local.sh` | Full local dev: merges docs, generates LLMs.txt, builds site, then serves with watch mode on port 4001 |
+| `./bin/serve_docker.sh` | Serve via Docker Compose on port 4001 |
+| `bundle exec jekyll build` | Build the static site into `_site/` |
+| `ruby bin/merge_md_files.rb` | Generate combined `1page.md` per language from navigation order |
+| `php bin/gen_llms.php` | Generate `llms.txt` / `llms-full.txt` for AI accessibility |
+| `./bin/copy_markdown_files.sh` | Strip frontmatter and copy raw markdown into `_site/` |
+| `node scripts/validate-frontmatter.js` | Validate frontmatter on all manual pages |
 
-- `bin/serve_local.sh`: Local development server with Jekyll watch mode
-- `bin/serve_docker.sh`: Docker-based development
-- `bin/merge_md_files.rb`: Generates combined documentation files (`1page.md`) from individual markdown files
-- `bin/copy_markdown_files.sh`: Post-build local helper that copies markdown files to `_site/manuals/` and removes Jekyll frontmatter for llms.txt compliance
+Requires **Ruby 3.2.x** (Jekyll compatibility), PHP 8.x for `gen_llms.php`, and Node.js for the frontmatter validator.
 
-## File Structure
+## Coding Style & Naming Conventions
 
-- `manuals/1.0/{en,ja}/`: Main documentation in markdown format
-- `_includes/manuals/1.0/{en,ja}/contents.html`: Navigation structure that determines page order
-- `_layouts/`: Jekyll templates for different page types
-- `_config.yml`: Jekyll configuration with llms.txt specific settings
-- `_site/`: Generated static site. Markdown copies live under `_site/manuals/`; they are frontmatter-stripped when `bin/copy_markdown_files.sh` runs.
+- **Markdown files**: kebab-case filenames (e.g., `content-negotiation.md`). Each file starts with YAML frontmatter delimited by `---`.
+- **Permalink pattern**: `/manuals/1.0/{language}/{basename}.html` (e.g., `/manuals/1.0/en/resource.html`).
+- **Navigation**: page order is defined in `_includes/manuals/1.0/{language}/contents.html`, not in config. When adding a new page, add a link entry to the appropriate `contents.html`.
+- **Beta features**: use `<sup style="font-size:0.5em; color:#666; font-weight:normal;">Beta</sup>` in headings.
 
-## Styling Conventions
+## Testing Guidelines
 
-### Beta Label
+No automated test suite for the site itself. Before committing:
 
-For features in beta status, use this inline style:
+1. Run `node scripts/validate-frontmatter.js` to ensure all manual pages have valid frontmatter.
+2. Run `./bin/serve_local.sh` and spot-check the rendered pages locally.
+3. Verify generated files (`1page.md`, LLMs.txt) are not committed — they are build artifacts.
 
-```html
-# Title <sup style="font-size:0.5em; color:#666; font-weight:normal;">Beta</sup>
-```
+## Commit & Pull Request Guidelines
 
-Example: `manuals/1.0/ja/security.md`
+- **Commit messages**: use imperative mood, short summary line. Conventional commit prefixes (`fix:`, `docs:`) are used occasionally but not strictly enforced. Example: `Add Input DTO guidance to resource parameter docs`, `Fix PDO pool module references`.
+- **Merge commits**: standard GitHub merge style — `Merge pull request #XXX from {branch}`.
+- **Pull requests**: target the `master` branch. Link related issues. For documentation changes, include a brief description of what was changed and why.
+- **Deployment**: CI runs on push to `master` via `.github/workflows/pages.yml`. Do not create a second Pages workflow — they share a concurrency group (`pages`) and will race.
 
-## Documentation Management
+## Architecture Notes
 
-The site uses a sophisticated system for managing documentation:
-
-1. Individual markdown files in `manuals/1.0/{en,ja}/`
-2. Navigation order determined by `_includes/manuals/1.0/{language}/contents.html`
-3. Combined documentation generated via `merge_md_files.rb`
-4. LLMs.txt compliance through markdown copies in `_site/manuals/`: `_plugins/copy_markdown.rb` copies source markdown during Jekyll output, and `bin/copy_markdown_files.sh` is the local post-build helper that removes frontmatter for llms.txt-compatible copies.
-
-## Jekyll Configuration
-
-- Uses Kramdown markdown processor with Rouge syntax highlighting
-- Custom plugin (`_plugins/copy_markdown.rb`) copies markdown files to `_site/manuals/`; it does not strip frontmatter.
-- Special include/keep_files configuration for llms.txt standard compliance
-- Navigation structure embedded in HTML files rather than configuration
-
-## Deployment
-
-- **GitHub Actions**: `.github/workflows/jekyll.yml` handles automatic deployment
-- **Ruby Version**: CI uses 3.2.2; local development recommends 3.2.3 for Jekyll compatibility.
-- **Custom Build Steps**: Runs `merge_md_files.rb` before Jekyll build in CI
+- **/learn/ path**: the marketing site is built from a separate repo (`bearsunday/site-bear-sunday`) and bundled under `/learn/`. The canonical CI workflow lives in that repo at `deploy/bearsunday.github.io/pages.yml` — keep both copies in sync.
+- **CI build order**: merge docs → gen LLMs.txt → Jekyll build → build Learn site (static snapshot via wget) → upload Pages artifact.
+- **Deploy source**: production deploys from `bearsunday/bearsunday.github.io` (`upstream`) `master`. Personal forks do not trigger deploys.

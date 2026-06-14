@@ -83,6 +83,21 @@ The site uses a sophisticated system for managing documentation:
 
 ## Deployment
 
-- **GitHub Actions**: `.github/workflows/jekyll.yml` handles automatic deployment
+- **GitHub Actions**: `.github/workflows/pages.yml` handles automatic deployment (single Pages workflow; do not add a second Pages-deploy workflow — both would race on the `pages` concurrency group)
 - **Ruby Version**: 3.2.2 in CI, 3.2.3 locally (Jekyll compatibility requirement)
-- **Custom Build Steps**: Runs `merge_md_files.rb` before Jekyll build in CI
+- **Custom Build Steps**: Runs `merge_md_files.rb` + `gen_llms.php` before Jekyll build in CI
+- **Production source**: the live site deploys from `bearsunday/bearsunday.github.io` (`upstream`) `master`. A personal fork (e.g. `koriym/…`, often the local `origin`) does NOT drive the production deploy — push there and nothing redeploys.
+
+## Learn Site (`/learn/`)
+
+The marketing "Learn" site lives in a separate repo (`bearsunday/site-bear-sunday`, a Vite + RSC app; fully static, no `"use client"`) and is bundled under `/learn/` by the same `pages.yml` workflow. The canonical copy of that workflow is `site-bear-sunday/deploy/bearsunday.github.io/pages.yml` — **keep both in sync** when editing the Learn build step. The build crawls the running app with `wget` into a static snapshot, copies `public/` assets, then `sed`-rewrites absolute root paths to resolve under `/learn/`.
+
+### Pitfall: `wget -k` mangles inline-style `url()` (recurrence prevention)
+
+**Symptom:** an asset 200s at `/learn/<file>` but does not render (e.g. the hero `bear-logo.png` background was invisible while `/learn/bear-logo.png` returned 200).
+
+**Cause:** the source uses an inline style — `style={{ backgroundImage: "url('/bear-logo.png')" }}`. React serializes the quotes as HTML entities, so SSR emits `url(&#x27;/bear-logo.png&#x27;)`. `wget -k` (`--convert-links`) cannot parse that as a CSS `url()` and rewrites the **whole token** to the crawl base, producing `url(http://localhost:4399/&)` — the filename is dropped. The later `sed s#/bear-logo.png#…#` then never matches the rendered `<div>` (the path only survives untouched inside the JSON RSC payload). The result is an unreachable `localhost` URL, so the image never paints. This is a snapshot-time corruption, **not** a hydration/cache issue.
+
+**Guardrails:**
+- The `pages.yml` `sed` includes `s#url(http://localhost:4399/[^)]*)#url('bear-logo.png')#g` to restore that one mangled token. Do **not** remove it.
+- Any **new** inline-style `url(...)` asset in the Learn app will hit the same bug. Prefer fixing it at the source (unquoted `url(/path)`, which `wget -k` relativizes cleanly) or extend the `sed`, and verify in a real browser (headless Chrome screenshot) that the asset actually paints — not just that it returns 200.
