@@ -163,7 +163,7 @@ Array shapeはキーごとに異なる型を表します。
 function userProfile(): array;
 ```
 
-PsalmとPHPStanでは、追加キーを許すunsealed/open shapeを表せます。
+Psalmは`array{..., ...}`でopen shapeを表し、PHPStanは`...<K, V>`（や`...<T>`のようなvariadic list shape）で型付きunsealed shapeを表せます。
 
 ```php
 /** @param array{verbose: bool, ...} $options */
