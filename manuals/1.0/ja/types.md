@@ -6,1101 +6,570 @@ permalink: /manuals/1.0/ja/types.html
 ---
 # PHPDocタイプ
 
-PHPは動的型付け言語ですが、psalmやphpstanといった静的解析ツールとPHPDocを使用することで、高度な型概念を表現し、静的解析時の型チェックの恩恵を受けることができます。このリファレンスでは、PHPDocで使用可能な型や関連する他の概念について説明します。
+PHPDocの型は、PHPのネイティブ型だけでは表現しきれない配列構造、ジェネリクス、文字列制約、型ガード、セキュリティ解析のための情報を静的解析ツールに伝えるために使います。
 
-## 目次
+このページでは、共通して使いやすい型、Psalm固有の型、PHPStan固有の型を分けて整理しています。PHPDoc標準、Psalm、PHPStanの対応範囲は完全には一致しないため、公開APIやライブラリではできるだけ共通構文を使い、必要な場合だけツール固有タグを使います。
 
-1. [アトミック型](#アトミック型)
-   - [スカラー型](#スカラー型)
-   - [オブジェクト型](#オブジェクト型)
-   - [配列型](#配列型)
-   - [Callable型](#callable型)
-   - [値型](#値型)
-   - [特殊型](#特殊型)
-2. [複合型](#複合型)
-   - [ユニオン型](#ユニオン型)
-   - [交差型](#交差型)
-3. [高度な型システム](#高度な型システム)
-   - [ジェネリック型](#ジェネリック型)
-   - [テンプレート型](#テンプレート型)
-   - [条件付き型](#条件付き型)
-   - [型エイリアス](#型エイリアス)
-   - [型の制約](#型の制約)
-   - [共変性と反変性](#共変性と反変性)
-4. [型の演算子（ユーティリティ型）](#型の演算子)
-  - [キー取得型と値取得型（key-of と value-of）](#キー取得型と値取得型)
-  - [プロパティ取得型（properties-of）](#プロパティ取得型)
-  - [クラス名マッピング型（class-string-map<T of Foo, T>）](#クラス名マッピング型)
-  - [インデックスアクセス型（T[K]）](#インデックスアクセス型)
-5. [関数型プログラミングの概念](#関数型プログラミングの概念)
-   - [純粋関数](#純粋関数)
-   - [不変オブジェクト](#不変オブジェクト)
-   - [副作用の注釈](#副作用の注釈)
-   - [高階関数](#高階関数)
-6. [アサート注釈](#アサート注釈)
-7. [セキュリティ注釈](#セキュリティ注釈)
-8. [例：デザインパターンでの型の使用](#例：デザインパターンでの型の使用)
+## 使い分け
 
----
+| 区分 | 用途 |
+|------|------|
+| 共通PHPDoc | IDE、phpDocumentor、Psalm、PHPStanで広く理解される基本型 |
+| Psalm/PHPStan共通 | 両方の静的解析ツールで実用的に使える高度な型 |
+| Psalm固有 | `@psalm-*`タグ、Psalm utility types、taint analysis |
+| PHPStan固有 | `@phpstan-*`タグ、PHPStanの型エイリアス、PHPStan固有の追加型 |
 
-## アトミック型
+## 基本型
 
-これ以上分割できない基本的な型です。
-
-### スカラー型
+### スカラー型と特殊型
 
 ```php
-/** @param int $i */
-/** @param float $f */
-/** @param string $str */
-/** @param lowercase-string $lowercaseStr */
-/** @param non-empty-string $nonEmptyStr */
-/** @param non-empty-lowercase-string $nonEmptyLowercaseStr */
-/** @param class-string $class */
-/** @param class-string<AbstractFoo> $fooClass */
-/** @param callable-string $callable */
-/** @param numeric-string $num */ 
-/** @param bool $isSet */
-/** @param array-key $key */
-/** @param numeric $num */
-/** @param scalar $a */
-/** @param positive-int $positiveInt */
-/** @param negative-int $negativeInt */
-/** @param int-range<0, 100> $percentage */
-/** @param int-mask<1, 2, 4> $flags */
-/** @param int-mask-of<MyClass::CLASS_CONSTANT_*> $classFlags */
-/** @param trait-string $trait */
-/** @param enum-string $enum */
-/** @param literal-string $literalStr */
-/** @param literal-int $literalInt */
+/** @param int $id */
+/** @param positive-int $count */
+/** @param non-negative-int $offset */
+/** @param non-zero-int $delta */
+/** @param float $amount */
+/** @param string $name */
+/** @param non-empty-string $label */
+/** @param bool $enabled */
+/** @return null */
+/** @return true */
+/** @return false */
+/** @return mixed */
+/** @return never */
+/** @return void */
 ```
 
-[複合型](#複合型)や[高度な型システム](#高度な型システム)でこれらの型を組み合わせて使用できます。
+`mixed`は明示的に任意の型を受け入れることを表します。PHPStanでは暗黙の`mixed`と明示的な`mixed`が区別されます。
+
+`never`は、例外送出や`exit`などで正常に戻らない関数を表します。PHPStanでは`noreturn`、`never-return`、`never-returns`、`no-return`も同義として扱われます。
+
+### 数値範囲
+
+```php
+/** @param positive-int $id */
+/** @param negative-int $delta */
+/** @param non-positive-int $max */
+/** @param non-negative-int $offset */
+/** @param int-mask<1, 2, 4> $flags */
+/** @param int-mask-of<Foo::INT_*> $flags */
+```
+
+Psalmでは範囲整数に`int-range<0, 100>`を使います。
+
+```php
+/** @param int-range<0, 100> $percentage */
+```
+
+PHPStanでは範囲整数に`int<0, 100>`、`int<min, 100>`、`int<50, max>`を使います。
+
+```php
+/** @param int<0, 100> $percentage */
+```
+
+### 文字列型
+
+```php
+/** @param numeric-string $number */
+/** @param lowercase-string $lower */
+/** @param non-empty-lowercase-string $lower */
+/** @param literal-string $sql */
+/** @param callable-string $callable */
+/** @param class-string $class */
+/** @param class-string<User> $userClass */
+/** @param trait-string $trait */
+/** @param enum-string<Suit> $enum */
+```
+
+PHPStanには、さらに`uppercase-string`、`non-falsy-string` / `truthy-string`、`non-empty-uppercase-string`、`non-empty-literal-string`、`interface-string<T>`があります。配列キーとして安全な文字列を扱うための`decimal-int-string`と`non-decimal-int-string`もあります。PHPの配列では`'123'`のような文字列キーが整数キーに変換されるため、`array<string, mixed>`を厳密に扱う場面では注意が必要です。
+
+```php
+/** @param uppercase-string $upper */
+/** @param non-empty-uppercase-string $upper */
+/** @param non-falsy-string $truthy */
+/** @param non-empty-literal-string $fragment */
+/** @param interface-string<ServiceInterface> $service */
+/** @param decimal-int-string $key */
+/** @param non-decimal-int-string $safeStringKey */
+```
 
 ### オブジェクト型
 
 ```php
-/** @param object $obj */
-/** @param stdClass $std */
-/** @param Foo\Bar $fooBar */
-/** @param object{foo: string, bar?: int} $objWithProperties */
-/** @return ArrayObject<int, string> */
-/** @param Collection<User> $users */
-/** @return Generator<int, string, mixed, void> */
+/** @param object $object */
+/** @param \DateTimeInterface $date */
+/** @return static */
+/** @return $this */
+/** @return object{foo: int, bar?: string} */
+/** @return object{foo: int, bar?: string}&\stdClass */
 ```
 
-オブジェクト型は[ジェネリック型](#ジェネリック型)と組み合わせて使用することができます。
+`object{...}`はobject shapeです。PHPStanではobject shapeのプロパティは読み取り専用として扱われ、`\stdClass`などと交差させることで書き込み可能な形を表せます。
 
-### 配列型
+## 配列とリスト
 
-#### ジェネリック配列
+### 汎用配列
 
 ```php
-/** @return array<TKey, TValue> */
-/** @return array<int, Foo> */
-/** @return array<string, int|string> */
-/** @return non-empty-array<string, int> */
+/** @return array<string, int> */
+/** @return array<int, User> */
+/** @return non-empty-array<string, User> */
+/** @return iterable<int, User> */
 ```
 
-ジェネリック配列は[ジェネリック型](#ジェネリック型)の概念を使用しています。
-
-#### オブジェクト風配列
+`Type[]`は`array<array-key, Type>`相当の古い表記です。新しいコードでは、キー型を明示できる`array<TKey, TValue>`を優先します。
 
 ```php
-/** @return array{0: string, 1: string, foo: stdClass, 28: false} */
-/** @return array{foo: string, bar: int} */
-/** @return array{optional?: string, bar: int} */
+/** @param User[] $users */
+/** @param array<int, User> $users */
 ```
 
-#### リスト
+PHPStanでは`associative-array`も基本型として使えます。
 
 ```php
-/** @param list<string> $stringList */
-/** @param non-empty-list<int> $nonEmptyIntList */
+/** @return associative-array */
 ```
 
-#### PHPDoc配列（レガシー表記）
+### リスト
+
+`list<T>`は0から始まる連続した整数キーの配列です。
 
 ```php
-/** @param string[] $strings */
-/** @param int[][] $nestedInts */
+/** @param list<string> $names */
+/** @return non-empty-list<User> */
 ```
 
-### Callable型
+PsalmとPHPStanはlist shapeも扱えます。
 
 ```php
-/** @return callable(Type1, OptionalType2=, SpreadType3...): ReturnType */
-/** @return Closure(bool):int */
-/** @param callable(int): string $callback */
+/** @return list{string, int} */
 ```
 
-Callable型は[高階関数](#高階関数)で特に重要です。
+PHPStanでは`non-empty-list{string, int}`のように、non-empty指定とshape構文を組み合わせることもできます。
 
-### 値型
+### Array shape
+
+Array shapeはキーごとに異なる型を表します。
 
 ```php
-/** @return null */
-/** @return true */
-/** @return false */
-/** @return 42 */
-/** @return 3.14 */
-/** @return "specific string" */
-/** @param Foo\Bar::MY_SCALAR_CONST $const */
-/** @param A::class|B::class $classNames */
+/**
+ * @return array{
+ *   id: positive-int,
+ *   name: non-empty-string,
+ *   email?: non-empty-string,
+ *   roles: list<non-empty-string>
+ * }
+ */
+function userProfile(): array;
 ```
 
-### 特殊型
+Psalmは`array{..., ...}`でopen shapeを表し、PHPStanは`...<K, V>`（や`...<T>`のようなvariadic list shape）で型付きunsealed shapeを表せます。
 
 ```php
-/** @return void */
-/** @return never */
-/** @return empty */
-/** @return mixed */
-/** @return resource */
-/** @return closed-resource */
-/** @return iterable<TKey, TValue> */
+/** @param array{verbose: bool, ...} $options */
+/** @param array{foo: int, ...<string, int>} $data */
+/** @return list{string, int, ...<bool>} */
 ```
+
+PHPStanではsealed array shapeの扱いが厳密です。extra keysを許す意図がある場合は、unsealed shapeを明示します。
 
 ## 複合型
 
-複数の[アトミック型](#アトミック型)を組み合わせて作成される型です。
-
-### ユニオン型
+### Union、Intersection、括弧
 
 ```php
 /** @param int|string $id */
-/** @return string|null */
-/** @var array<string|int> $mixedArray */
-/** @return 'success'|'error'|'pending' */
-```
-
-### 交差型
-
-```php
+/** @return User|null */
 /** @param Countable&Traversable $collection */
-/** @param Renderable&Serializable $object */
+/** @param (A&B)|C $value */
 ```
 
-交差型は[デザインパターン](#デザインパターンでの型の使用)の実装で役立つことがあります。
+### 値型と定数型
 
-## 高度な型システム
+```php
+/** @return 'success'|'error'|'pending' */
+/** @return 200|400|500 */
+/** @param Foo::STATUS_* $status */
+/** @param Foo::* $constant */
+```
 
-より複雑で柔軟な型表現を可能にする高度な機能です。
+## Callable
 
-### ジェネリック型
+```php
+/** @param callable(int, string): bool $callback */
+/** @param callable(string &$value): void $normalizer */
+/** @param callable(float ...$values): int|null $aggregate */
+/** @param Closure(User): string $formatter */
+/** @param pure-callable(User): string $formatter */
+/** @param pure-Closure(User): string $formatter */
+```
+
+PHPStanでは`@param-closure-this`でクロージャ内の`$this`を指定できます。
+
+```php
+/**
+ * @param Closure(): void $callback
+ * @param-closure-this User $callback
+ */
+function withUser(Closure $callback): void;
+```
+
+## ジェネリクス
+
+### 関数テンプレート
 
 ```php
 /**
  * @template T
- * @param array<T> $items
+ * @param list<T> $items
  * @param callable(T): bool $predicate
- * @return array<T>
+ * @return list<T>
  */
-function filter(array $items, callable $predicate): array {
-    return array_filter($items, $predicate);
-}
+function filter(array $items, callable $predicate): array;
 ```
 
-ジェネリック型は[高階関数](#高階関数)と組み合わせて使用されることが多いです。
-
-### テンプレート型
+### クラステンプレート
 
 ```php
 /**
- * @template T of object
- * @param class-string<T> $className
- * @return T
+ * @template TKey of array-key
+ * @template TValue
+ * @implements IteratorAggregate<TKey, TValue>
  */
-function create(string $className)
+final class Collection implements IteratorAggregate
 {
-    return new $className();
+    /** @var array<TKey, TValue> */
+    private array $items = [];
+
+    /** @return Traversable<TKey, TValue> */
+    public function getIterator(): Traversable
+    {
+        yield from $this->items;
+    }
 }
 ```
 
-テンプレート型は[型の制約](#型の制約)と組み合わせて使用できます。
+PsalmとPHPStanは`@template-covariant`と`@template-contravariant`を扱えます。PHPStanは利用箇所側の`Collection<covariant Animal>`、`Collection<contravariant Dog>`や、型引数を読み書き制限付きで任意にする`Collection<*>`も扱います。
 
-### 条件付き型
+## 条件付き型
 
 ```php
 /**
- * @template T
- * @param T $value
- * @return (T is string ? int : string)
+ * @template T of int|array<int>
+ * @param T $id
+ * @return (T is int ? User : list<User>)
  */
-function processValue($value) {
-    return is_string($value) ? strlen($value) : strval($value);
-}
+function fetch(int|array $id): User|array;
 ```
 
-条件付き型は[ユニオン型](#ユニオン型)と組み合わせて使用されることがあります。
-
-### 型エイリアス
+PHPStanでは否定条件も扱えます。
 
 ```php
 /**
- * @psalm-type UserId = positive-int
- * @psalm-type UserData = array{id: UserId, name: string, email: string}
+ * @return ($value is not null ? string : never)
  */
-
-/**
- * @param UserData $userData
- * @return UserId
- */
-function createUser(array $userData): int {
-    // ユーザー作成ロジック
-    return $userData['id'];
-}
+function stringify(mixed $value): string;
 ```
 
-型エイリアスは複雑な型定義を簡略化するのに役立ちます。
+## 型演算子
 
-### 型の制約
-
-型パラメータに制約を加えることで、より具体的な型の要件を指定できます。
+### key-of / value-of
 
 ```php
 /**
- * @template T of \DateTimeInterface
- * @param T $date
- * @return T
+ * @param key-of<User::FIELDS> $field
+ * @return value-of<User::FIELDS>
  */
-function cloneDate($date) {
-    return clone $date;
-}
-
-// 使用例
-$dateTime = new DateTime();
-$clonedDateTime = cloneDate($dateTime);
+function fieldValue(string $field): string|int;
 ```
 
-この例では、`T`は`\DateTimeInterface`を実装したクラスに制限されています。
-
-### 共変性と反変性
-
-ジェネリック型を扱う際には、[共変性（covariance）と反変性（contravariance)](https://www.php.net/manual/ja/language.oop5.variance.php)の概念が重要になります。
+`value-of<BackedEnum>`はPHPStanでBackedEnumの値型を取り出す用途にも使えます。
 
 ```php
-/**
- * @template-covariant T
- */
-interface Producer {
-    /** @return T */
-    public function produce();
-}
-
-/**
- * @template-contravariant T
- */
-interface Consumer {
-    /** @param T $item */
-    public function consume($item);
-}
-
-// 使用例
-/** @var Producer<Dog> $dogProducer */
-/** @var Consumer<Animal> $animalConsumer */
+/** @param value-of<Suit> $suit */
+function selectSuit(string $suit): void;
 ```
 
-共変性は、より派生した型（サブタイプ）を使用できることを意味し、反変性はより基本的な型（スーパータイプ）を使用できることを意味します。
-
-## 型の演算子
-
-型の演算子を使用して、既存の型から新しい型を生成できます。psalmではユーティリティ型と呼んでいます。
-
-
-### キー取得型と値取得型
-
-- `key-of` は、指定された配列またはオブジェクトのすべてのキーの型を取得し、`value-of` はその値の型を取得します。
+### Offset access
 
 ```php
 /**
- * @param key-of<UserData> $key
- * @return value-of<UserData>
- */
-function getUserData(string $key) {
-    $userData = ['id' => 1, 'name' => 'John', 'email' => 'john@example.com'];
-    return $userData[$key] ?? null;
-}
-
-/**
- * @return ArrayIterator<key-of<UserData>, value-of<UserData>>
- */
-function getUserDataIterator() {
-    $userData = ['id' => 1, 'name' => 'John', 'email' => 'john@example.com'];
-    return new ArrayIterator($userData);
-}
-```
-
-### プロパティ取得型
-
-`properties-of` は、クラスのすべてのプロパティの型を表します。これは、クラスのプロパティを動的に扱う場合に有用です。
-
-```php
-class User {
-    public int $id;
-    public string $name;
-    public ?string $email;
-}
-
-/**
- * @param User $user
- * @param key-of<properties-of<User>> $property
- * @return value-of<properties-of<User>>
- */
-function getUserProperty(User $user, string $property) {
-    return $user->$property;
-}
-
-// 使用例
-$user = new User();
-$propertyValue = getUserProperty($user, 'name'); // $propertyValue は string 型
-```
-
-`properties-of` には以下のバリアントがあります：
-
-- `public-properties-of<T>`: 公開プロパティのみを対象とします。
-- `protected-properties-of<T>`: 保護されたプロパティのみを対象とします。
-- `private-properties-of<T>`: プライベートプロパティのみを対象とします。
-
-これらのバリアントを使用することで、特定のアクセス修飾子を持つプロパティのみを扱うことができます。
-
-### クラス名マッピング型
-
-`class-string-map` は、クラス名をキーとし、そのインスタンスを値とする配列を表します。これは、依存性注入コンテナやファクトリーパターンの実装に役立ちます。
-
-```php
-/**
- * @template T of object
- * @param class-string-map<T, T> $map
- * @param class-string<T> $className
- * @return T
- */
-function getInstance(array $map, string $className) {
-    return $map[$className] ?? new $className();
-}
-
-// 使用例
-$container = [
-    UserRepository::class => new UserRepository(),
-    ProductRepository::class => new ProductRepository(),
-];
-
-$userRepo = getInstance($container, UserRepository::class);
-```
-
-### インデックスアクセス型
-
-インデックスアクセス型（`T[K]`）は、型 `T` のインデックス `K` の要素を表します。これは、配列やオブジェクトのプロパティにアクセスする際の型を正確に表現するのに役立ちます。
-
-```php
-/**
- * @template T of array
+ * @template T of array<string, mixed>
  * @template K of key-of<T>
  * @param T $data
  * @param K $key
  * @return T[K]
  */
-function getArrayValue(array $data, $key) {
+function get(array $data, string $key): mixed
+{
     return $data[$key];
 }
-
-// 使用例
-$config = ['debug' => true, 'version' => '1.0.0'];
-$debugMode = getArrayValue($config, 'debug'); // $debugMode は bool 型
 ```
 
-これらのユーティリティ型はpsalm固有のもので[高度な型システム](#高度な型システム)の一部として考えることができます。
+### Psalm utility types
 
-## 関数型プログラミングの概念
-
-PHPDocは、関数型プログラミングの影響を受けた重要な概念をサポートしています。これらの概念を使用することで、コードの予測可能性と信頼性を向上させることができます。
-
-### 純粋関数
-
-純粋関数は、副作用がなく、同じ入力に対して常に同じ出力を返す関数です。
+Psalmは`properties-of<T>`、`public-properties-of<T>`、`protected-properties-of<T>`、`private-properties-of<T>`、`class-string-map<T of Foo, T>`、変数テンプレートなどのutility typesを提供します。詳細は[PHPDoc ユーティリティ型](types-utility.html)を参照してください。
 
 ```php
 /**
- * @pure
+ * @template T of object
+ * @param class-string-map<T, T> $instances
+ * @param class-string<T> $class
+ * @return T
  */
-function add(int $a, int $b): int 
+function instance(array $instances, string $class): object
 {
-    return $a + $b;
+    return $instances[$class];
 }
 ```
 
-関数の副作用がないこと、そして関数の結果が入力のみに依存することを明示できます。
+### PHPStan utility types
 
-### 不変オブジェクト
-
-不変オブジェクトは、作成後に状態が変更されないオブジェクトです。
+PHPStanは`template-type`で渡されたオブジェクトからtemplate型を取得し、`new`で`class-string<T>`からオブジェクト型を作れます。
 
 ```php
 /**
- * @immutable
- * - すべてのプロパティは実質的に`readonly`として扱われます。
- * - すべてのメソッドは暗黙的に`@psalm-mutation-free`として扱われます。
+ * @template T of object
+ * @param class-string<T> $class
+ * @return new<T>
  */
-class Point {
+function create(string $class): object
+{
+    return new $class();
+}
+```
+
+## 型エイリアス
+
+### Psalmの型エイリアス
+
+```php
+/**
+ * @psalm-type UserId = positive-int
+ * @psalm-type UserData = array{id: UserId, name: non-empty-string}
+ */
+final class UserTypes {}
+
+/**
+ * @psalm-import-type UserData from UserTypes
+ * @param UserData $user
+ */
+function saveUser(array $user): void {}
+```
+
+### PHPStanの型エイリアス
+
+```php
+/**
+ * @phpstan-type UserId positive-int
+ * @phpstan-type UserData array{id: UserId, name: non-empty-string}
+ */
+final class UserTypes {}
+
+/**
+ * @phpstan-import-type UserData from UserTypes
+ * @param UserData $user
+ */
+function saveUser(array $user): void {}
+```
+
+PHPStanは`phpstan.neon`の`typeAliases`でグローバル型エイリアスも定義できます。
+
+```neon
+parameters:
+    typeAliases:
+        UserId: positive-int
+        UserData: 'array{id: UserId, name: non-empty-string}'
+```
+
+## Assert / type guard
+
+### PsalmのAssert
+
+```php
+/**
+ * @psalm-assert non-empty-string $value
+ */
+function assertNonEmptyString(mixed $value): void
+{
+    if (! is_string($value) || $value === '') {
+        throw new InvalidArgumentException();
+    }
+}
+
+/**
+ * @psalm-assert-if-true User $value
+ */
+function isUser(mixed $value): bool
+{
+    return $value instanceof User;
+}
+```
+
+Psalmは`@psalm-if-this-is`と`@psalm-this-out`で、メソッド呼び出し後の`$this`の型も表せます。
+
+### PHPStanのAssert
+
+```php
+/**
+ * @phpstan-assert non-empty-string $value
+ */
+function assertNonEmptyString(mixed $value): void;
+
+/**
+ * @phpstan-assert-if-true User $value
+ */
+function isUser(mixed $value): bool;
+```
+
+PHPStanは`@phpstan-self-out`と`@phpstan-this-out`で、メソッド呼び出し後の現在オブジェクトの型を変化させられます。
+
+```php
+/**
+ * @template TValue
+ */
+final class Bag
+{
+    /**
+     * @template TItem
+     * @param TItem $item
+     * @phpstan-self-out self<TValue|TItem>
+     */
+    public function add(mixed $item): void {}
+}
+```
+
+## 参照渡しの出力型
+
+PsalmとPHPStanは`@param-out`で、参照渡しパラメータの呼び出し後の型を表せます。Psalm固有タグとして`@psalm-param-out`も使えます。
+
+```php
+/**
+ * @param-out non-empty-string $value
+ */
+function fillDefault(?string &$value): void
+{
+    $value ??= 'default';
+}
+```
+
+## 不変性と副作用
+
+Psalmでは副作用や不変性を明示できます。
+
+```php
+/**
+ * @psalm-immutable
+ */
+final class Point
+{
     public function __construct(
-        private float $x, 
-        private float $y
+        public float $x,
+        public float $y
     ) {}
 
-    public function withX(float $x): static 
+    /** @psalm-mutation-free */
+    public function move(float $x, float $y): self
     {
-        return new self($x, $this->y);
-    }
-
-    public function withY(float $y): static
-    {
-        return new self($this->x, $y);
+        return new self($this->x + $x, $this->y + $y);
     }
 }
 ```
 
-#### @psalm-mutation-free
+主なタグ:
 
-このアノテーションは、メソッドがクラスの内部状態も外部の状態も変更しないことを示します。`@immutable`クラスのメソッドは暗黙的にこの性質を持ちますが、非イミュータブルクラスの特定のメソッドに対しても使用できます。
+| タグ | 意味 |
+|------|------|
+| `@psalm-pure` | 入力だけに依存する純粋関数 |
+| `@psalm-impure` | 副作用がある関数 |
+| `@psalm-mutation-free` | 自身も外部状態も変更しないメソッド |
+| `@psalm-external-mutation-free` | 外部状態を変更しないメソッド |
+| `@psalm-immutable` | 不変クラス |
+| `@psalm-readonly` / `@readonly` | 読み取り専用プロパティ |
+| `@psalm-allow-private-mutation` | private文脈だけで変更可能 |
 
-```php
-class Calculator {
-    private float $lastResult = 0;
+PHPStanでは`@phpstan-pure`と`@phpstan-impure`が使えます。読み取り専用でprivate変更を許す場合は`@phpstan-allow-private-mutation`や`@phpstan-readonly-allow-private-mutation`を使います。
 
-    /**
-     * @psalm-mutation-free
-     */
-    public function add(float $a, float $b): float {
-        return $a + $b;
-    }
+## セキュリティ解析
 
-    public function addAndStore(float $a, float $b): float {
-        $this->lastResult = $a + $b; // これは@psalm-mutation-freeでは許可されません
-        return $this->lastResult;
-    }
-}
-```
-
-#### @psalm-external-mutation-free
-
-このアノテーションは、メソッドがクラスの外部の状態を変更しないことを示します。内部状態の変更は許可されます。
-
-```php
-class Logger {
-    private array $logs = [];
-
-    /**
-     * @psalm-external-mutation-free
-     */
-    public function log(string $message): void {
-        $this->logs[] = $message; // クラス内部の状態変更は許可されます
-    }
-
-    public function writeToFile(string $filename): void {
-        file_put_contents($filename, implode("\n", $this->logs)); // これは外部状態を変更するため、@psalm-external-mutation-freeでは使用できません
-    }
-}
-```
-
-#### 不変性アノテーションの使用ガイドライン
-
-1. クラス全体が不変である場合は `@immutable` を使用します。
-2. 特定のメソッドが状態を変更しない場合は `@psalm-mutation-free` を使用します。
-3. メソッドが外部の状態は変更しないが、内部状態を変更する可能性がある場合は `@psalm-external-mutation-free` を使用します。
-
-不変性を適切に表現することで、並行処理での安全性向上、副作用の減少、コードの理解しやすさの向上など、多くの利点を得ることができます。
-
-### 副作用の注釈
-
-関数が副作用を持つ場合、それを明示的に注釈することで、その関数の使用に注意を促すことができます。
-
-```php
-/**
- * @side-effect This function writes to the database
- */
-function logMessage(string $message): void {
-    // データベースにメッセージを書き込む処理
-}
-```
-
-### 高階関数
-
-高階関数は、関数を引数として受け取るか、関数を返す関数です。PHPDocを使用して、高階関数の型を正確に表現できます。
-
-```php
-/**
- * @param callable(int): bool $predicate
- * @param list<int>           $numbers
- * @return list<int>
- */
-function filter(callable $predicate, array $numbers): array {
-    return array_filter($numbers, $predicate);
-}
-```
-
-高階関数は[Callable型](#callable型)と密接に関連しています。
-
-## アサート注釈
-
-アサート注釈は、静的解析ツールに対して特定の条件が満たされていることを伝えるために使用されます。
-
-```php
-/**
- * @psalm-assert string $value
- * @psalm-assert-if-true string $value
- * @psalm-assert-if-false null $value
- */
-function isString($value): bool {
-    return is_string($value);
-}
-
-/**
- * @psalm-assert !null $value
- */
-function assertNotNull($value): void {
-    if ($value === null) {
-        throw new \InvalidArgumentException('Value must not be null');
-    }
-}
-
-/**
- * @psalm-assert-if-true positive-int $number
- */
-function isPositiveInteger($number): bool {
-    return is_int($number) && $number > 0;
-}
-```
-
-これらのアサート注釈は、以下のように使用されます：
-
-- `@psalm-assert`: 関数が正常に終了した場合（例外をスローせずに）、アサーションが真であることを示します。
-- `@psalm-assert-if-true`: 関数が `true` を返した場合、アサーションが真であることを示します。
-- `@psalm-assert-if-false`: 関数が `false` を返した場合、アサーションが真であることを示します。
-
-アサート注釈は[型の制約](#型の制約)と組み合わせて使用されることがあります。
-
-## セキュリティ注釈
-
-セキュリティ注釈は、コード内のセキュリティに関連する重要な部分を明示し、潜在的な脆弱性を追跡するために使用されます。主に以下の3つの注釈があります：
-
-1. `@psalm-taint-source`: 信頼できない入力源を示します。
-2. `@psalm-taint-sink`: セキュリティ上重要な操作が行われる場所を示します。
-3. `@psalm-taint-escape`: データが安全にエスケープまたはサニタイズされた場所を示します。
-
-以下は、これらの注釈の使用例です：
+Psalmのtaint analysisでは、入力源、危険な出力先、escape処理、flowをPHPDocで表現できます。
 
 ```php
 /**
  * @psalm-taint-source input
  */
-function getUserInput(): string {
-    return $_GET['user_input'] ?? '';
+function userInput(): string
+{
+    return $_GET['q'] ?? '';
 }
 
 /**
- * @psalm-taint-sink sql
+ * @psalm-taint-sink sql $query
  */
-function executeQuery(string $query): void {
-    // SQLクエリを実行
-}
+function query(string $query): void {}
 
 /**
  * @psalm-taint-escape sql
  */
-function escapeForSql(string $input): string {
-    return addslashes($input);
+function escapeSql(string $value): string
+{
+    return addslashes($value);
 }
-
-// 使用例
-$userInput = getUserInput();
-$safeSqlInput = escapeForSql($userInput);
-executeQuery("SELECT * FROM users WHERE name = '$safeSqlInput'");
 ```
 
-これらの注釈を使用することで、静的解析ツールは信頼できない入力の流れを追跡し、潜在的なセキュリティ問題（SQLインジェクションなど）を検出できます。
+主なタグ:
 
-## 例：デザインパターンでの型の使用
+| タグ | 用途 |
+|------|------|
+| `@psalm-taint-source <type>` | 信頼できない入力源 |
+| `@psalm-taint-sink <type> <param>` | 危険な出力先 |
+| `@psalm-taint-escape <type>` | taintを除去する処理 |
+| `@psalm-taint-unescape <type>` | escape済みデータを再びtaint扱いにする |
+| `@psalm-taint-specialize` | 関数やクラスでtaintを特殊化する |
+| `@psalm-flow (...) -> return` | 明示的なtaint flow |
 
-型システムを活用して、一般的なデザインパターンをより型安全に実装できます。
-
-#### ビルダーパターン
+## デバッグと検証用タグ
 
 ```php
-/**
- * @template T
- */
-interface BuilderInterface {
-    /**
-     * @return T
-     */
-    public function build();
-}
+/** @psalm-trace $value */
+$value = userInput();
 
-/**
- * @template T
- * @template-implements BuilderInterface<T>
- */
-abstract class AbstractBuilder implements BuilderInterface {
-    /** @var array<string, mixed> */
-    protected $data = [];
+/** @psalm-check-type $value = non-empty-string */
+$value = 'BEAR';
 
-    /** @param mixed $value */
-    public function set(string $name, $value): static {
-        $this->data[$name] = $value;
-        return $this;
-    }
-}
-
-/**
- * @extends AbstractBuilder<User>
- */
-class UserBuilder extends AbstractBuilder {
-    public function build(): User {
-        return new User($this->data);
-    }
-}
-
-// 使用例
-$user = (new UserBuilder())
-    ->set('name', 'John Doe')
-    ->set('email', 'john@example.com')
-    ->build();
+/** @psalm-check-type-exact $value = 'BEAR' */
+$value = 'BEAR';
 ```
 
-#### リポジトリパターン
+これらはドキュメント用というより、Psalmの推論結果を確認するための開発支援タグです。
 
-```php
-/**
- * @template T
- */
-interface RepositoryInterface {
-    /**
-     * @param int $id
-     * @return T|null
-     */
-    public function find(int $id);
+## BEAR.Sundayでの推奨
 
-    /**
-     * @param T $entity
-     */
-    public function save($entity): void;
-}
+1. ネイティブ型で表せるものはPHPの型宣言に書きます。
+2. 配列の要素型、array shape、list、ジェネリクス、型エイリアスはPHPDocに書きます。
+3. 公開APIではPsalm/PHPStan両方で理解しやすい構文を優先します。
+4. Psalm固有の解析には`@psalm-*`、PHPStan固有の解析には`@phpstan-*`を使い、意図的に分けます。
+5. shapeが大きくなりすぎる場合は、array shapeよりDTO、Value Object、Entityを検討します。
+6. SQL、HTML、ファイルパス、コマンドなどのセキュリティ境界では、`literal-string`、taint annotation、専用のSemantic Typeを組み合わせます。
 
-/**
- * @implements RepositoryInterface<User>
- */
-class UserRepository implements RepositoryInterface {
-    public function find(int $id): ?User {
-        // データベースからユーザーを取得するロジック
-    }
+## 互換注意点
 
-    public function save(User $user): void {
-        // ユーザーをデータベースに保存するロジック
-    }
-}
-```
-## まとめ
-
-PHPDocの型システムを深く理解して適切に使用することで、コードの自己文書化、静的解析による早期のバグ検出、IDEによる強力なコード補完と支援、コードの意図と構造の明確化、セキュリティリスクの軽減などの利点が得られ、より堅牢で保守性の高いPHPコードを書くことができます。以下は利用可能な型を網羅した例です。
-
-```php
-<?php
-
-namespace App\Comprehensive\Types;
-
-/**
- * アトミック型、スカラー型、ユニオン型、交差型、ジェネリック型を網羅するクラス
- * 
- * @psalm-type UserId = int
- * @psalm-type HtmlContent = string
- * @psalm-type PositiveFloat = float&positive
- * @psalm-type Numeric = int|float
- * @psalm-type QueryResult = array<string, mixed>
- */
-class TypeExamples {
-    /**
-     * @param UserId|non-empty-string $id
-     * @return HtmlContent
-     */
-    public function getUserContent(int|string $id): string {
-        return "<p>User ID: {$id}</p>";
-    }
-
-    /**
-     * @param PositiveFloat $amount
-     * @return bool
-     */
-    public function processPositiveAmount(float $amount): bool {
-        return $amount > 0;
-    }
-}
-
-/**
- * イミュータブルクラス、関数型プログラミング、純粋関数の例
- * 
- * @immutable
- */
-class ImmutableUser {
-    /** @var non-empty-string */
-    private string $name;
-
-    /** @var positive-int */
-    private int $age;
-
-    /**
-     * @param non-empty-string $name
-     * @param positive-int $age
-     */
-    public function __construct(string $name, int $age) {
-        $this->name = $name;
-        $this->age = $age;
-    }
-
-    /**
-     * @psalm-pure
-     * @return ImmutableUser
-     */
-    public function withAdditionalYears(int $additionalYears): self {
-        return new self($this->name, $this->age + $additionalYears);
-    }
-}
-
-/**
- * テンプレート型、ジェネリック型、条件付き型、共変性と反変性の例
- * 
- * @template T
- * @template-covariant U
- */
-class StorageContainer {
-    /** @var array<T, U> */
-    private array $items = [];
-
-    /**
-     * @param T $key
-     * @param U $value
-     */
-    public function add(mixed $key, mixed $value): void {
-        $this->items[$key] = $value;
-    }
-
-    /**
-     * @param T $key
-     * @return U|null
-     */
-    public function get(mixed $key): mixed {
-        return $this->items[$key] ?? null;
-    }
-    
-    /**
-     * @template V
-     * @param T $key
-     * @return (T is string ? string : U|null)
-     */
-    public function get(mixed $key): mixed {
-        return is_string($key) ? "default_string_value" : ($this->items[$key] ?? null);
-    }
-}
-
-/**
- * 型の制約、ユーティリティ型、関数型プログラミング、アサート注釈の例
- * 
- * @template T of array-key
- */
-class UtilityExamples {
-    /**
-     * @template T of array-key
-     * @psalm-param array<T, mixed> $array
-     * @psalm-return list<T>
-     * @psalm-assert array<string, mixed> $array
-     */
-    public function getKeys(array $array): array {
-        return array_keys($array);
-    }
-
-    /**
-     * @template T of object
-     * @psalm-param class-string-map<T, array-key> $classes
-     * @psalm-return list<T>
-     */
-    public function mapClasses(array $classes): array {
-        return array_map(fn(string $className): object => new $className(), array_keys($classes));
-    }
-}
-
-/**
- * 高階関数、型エイリアス、インデックスアクセス型の例
- * 
- * @template T
- * @psalm-type Predicate = callable(T): bool
- */
-class FunctionalExamples {
-    /**
-     * @param list<T> $items
-     * @param Predicate<T> $predicate
-     * @return list<T>
-     */
-    public function filter(array $items, callable $predicate): array {
-        return array_filter($items, $predicate);
-    }
-
-    /**
-     * @param array<string, T> $map
-     * @param key-of<$map> $key
-     * @return T|null
-     */
-    public function getValue(array $map, string $key): mixed {
-        return $map[$key] ?? null;
-    }
-}
-
-/**
- * セキュリティ注釈、型制約、インデックスアクセス型、プロパティ取得型、キー取得型、値取得型の例
- * 
- * @template T
- */
-class SecureAccess {
-    /**
-     * @psalm-type UserProfile = array{
-     *   id: int,
-     *   name: non-empty-string,
-     *   email: non-empty-string,
-     *   roles: list<non-empty-string>
-     * }
-     * @psalm-param UserProfile $profile
-     * @psalm-param key-of<UserProfile> $property
-     * @return value-of<UserProfile>
-     * @psalm-taint-escape system
-     */
-    public function getUserProperty(array $profile, string $property): mixed {
-        return $profile[$property];
-    }
-}
-
-/**
- * 非常に複雑な構造の型やセキュリティ・注釈、純粋関数の実装例
- * 
- * @template T of object
- * @template-covariant U of array-key
- * @psalm-type ErrorResponse = array{error: non-empty-string, code: positive-int}
- */
-class ComplexExample {
-    /** @var array<U, T> */
-    private array $registry = [];
-
-    /**
-     * @param U $key
-     * @param T $value
-     */
-    public function register(mixed $key, object $value): void {
-        $this->registry[$key] = $value;
-    }
-
-    /**
-     * @param U $key
-     * @return T|null
-     * @psalm-pure
-     * @psalm-assert-if-true ErrorResponse $this->registry[$key]
-     */
-    public function getRegistered(mixed $key): ?object {
-        return $this->registry[$key] ?? null;
-    }
-}
-
-<?php
-
-namespace App\Additional\Types;
-
-/**
- * テンプレート型の制約とcontravariantの例
- * 
- * @template-contravariant T of \Throwable
- */
-interface ErrorHandlerInterface {
-    /**
-     * @param T $error
-     * @return void
-     */
-    public function handle(\Throwable $error): void;
-}
-
-/**
- * より具体的な型への実装例
- * 
- * @implements ErrorHandlerInterface<\RuntimeException>
- */
-class RuntimeErrorHandler implements ErrorHandlerInterface {
-    public function handle(\Throwable $error): void {
-        // RuntimeExceptionの処理
-    }
-}
-
-/**
- * 複雑な型の組み合わせと条件分岐の例
- * 
- * @psalm-type JsonPrimitive = string|int|float|bool|null
- * @psalm-type JsonArray = array<array-key, JsonValue>
- * @psalm-type JsonObject = array<string, JsonValue>
- * @psalm-type JsonValue = JsonPrimitive|JsonArray|JsonObject
- */
-class JsonProcessor {
-    /**
-     * @param JsonValue $value
-     * @return (JsonValue is JsonObject ? array<string, mixed> : (JsonValue is JsonArray ? list<mixed> : scalar|null))
-     */
-    public function process(mixed $value): mixed {
-        if (is_array($value)) {
-            return array_keys($value) === range(0, count($value) - 1) 
-                ? array_values($value)
-                : $value;
-        }
-        return $value;
-    }
-}
-
-/**
- * より高度なタプル型とレコード型の例
- */
-class AdvancedTypes {
-    /**
-     * @return array{0: int, 1: string, 2: bool}
-     */
-    public function getTuple(): array {
-        return [42, "hello", true];
-    }
-
-    /**
-     * @param array{id: int, name: string, meta: array{created: string, modified?: string}} $record
-     * @return void
-     */
-    public function processRecord(array $record): void {
-        // レコード型の処理
-    }
-
-    /**
-     * @template T of object
-     * @param class-string<T> $className
-     * @param array<string, mixed> $properties
-     * @return T
-     */
-    public function createInstance(string $className, array $properties): object {
-        $instance = new $className();
-        foreach ($properties as $key => $value) {
-            $instance->$key = $value;
-        }
-        return $instance;
-    }
-}
-
-/**
- * カスタム型ガードとアサーションの例
- */
-class TypeGuards {
-    /**
-     * @psalm-assert-if-true non-empty-string $value
-     */
-    public function isNonEmptyString(mixed $value): bool {
-        return is_string($value) && $value !== '';
-    }
-
-    /**
-     * @template T of object
-     * @param mixed $value
-     * @param class-string<T> $className
-     * @psalm-assert-if-true T $value
-     */
-    public function isInstanceOf(mixed $value, string $className): bool {
-        return $value instanceof $className;
-    }
-}
-
-/**
- * PHPUnit用のテスト関連の型アノテーションの例
- */
-class TestTypes {
-    /**
-     * @param class-string<\Exception> $expectedClass
-     * @param callable(): mixed $callback
-     */
-    public function expectException(string $expectedClass, callable $callback): void {
-        try {
-            $callback();
-            $this->fail('Exception was not thrown');
-        } catch (\Exception $e) {
-            $this->assertInstanceOf($expectedClass, $e);
-        }
-    }
-
-    /**
-     * @template T
-     * @param T $expected
-     * @param T $actual
-     * @param non-empty-string $message
-     */
-    public function assertEquals(mixed $expected, mixed $actual, string $message = ''): void {
-        // 型安全な比較ロジック
-    }
-}
-
-/**
- * コレクション型とイテレータの高度な例
- * 
- * @template-covariant TKey of array-key
- * @template-covariant TValue
- * @template-implements \IteratorAggregate<TKey, TValue>
- */
-class TypedCollection implements \IteratorAggregate {
-    /** @var array<TKey, TValue> */
-    private array $items = [];
-
-    /**
-     * @return \Traversable<TKey, TValue>
-     */
-    public function getIterator(): \Traversable {
-        yield from $this->items;
-    }
-
-    /**
-     * @param TValue $item
-     * @return void
-     */
-    public function add(mixed $item): void {
-        $this->items[] = $item;
-    }
-
-    /**
-     * @template TCallback
-     * @param callable(TValue): TCallback $callback
-     * @return TypedCollection<TKey, TCallback>
-     */
-    public function map(callable $callback): self {
-        $result = new self();
-        foreach ($this->items as $key => $value) {
-            $result->items[$key] = $callback($value);
-        }
-        return $result;
-    }
-}
-
-/**
- * 条件付きメソッドの例
- */
-interface ConditionalInterface {
-    /**
-     * @template T
-     * @param T $value
-     * @return (T is numeric ? float : string)
-     */
-    public function process(mixed $value): mixed;
-}
-
-```
+| 項目 | 注意 |
+|------|------|
+| `int-range` / `int<min, max>` | Psalmは`int-range`、PHPStanは`int<min, max>`を使います。 |
+| `@psalm-type` / `@phpstan-type` | ツール固有です。両方使う場合は同じ意味で二重定義します。 |
+| `properties-of` | Psalm utility typeです。PHPStan向けには別表現を検討します。 |
+| unsealed shape | extra keysを許す意図がある場合に明示します。 |
+| `literal-string` | セキュリティ上有用ですが、通常の`string`とは別物です。SQLやテンプレート断片で使います。 |
+| `array<string, T>` | PHPの配列キー変換により、整数文字列キーが`int`になることがあります。PHPStanの`non-decimal-int-string`を検討します。 |
 
 ## リファレンス
 
-PHPDoc型を最大限に活用するためには、PsalmやPHPStanといった静的解析ツールが必要です。詳細については、以下のリソースを参照してください：
-
-- [Psalm - Typing in Psalm](https://koriym.github.io/psalm-ja/annotating_code/typing_in_psalm.html)
-  - [Templating](https://koriym.github.io/psalm-ja/annotating_code/templated_annotations.html)
-  - [Assertions](https://koriym.github.io/psalm-ja/annotating_code/adding_assertions.html)
-  - [Security Analysis](https://koriym.github.io/psalm-ja/security_analysis.html)
-- [PHPStan - PHPDoc Types](https://phpstan.org/writing-php-code/phpdoc-types.html)
+* [Psalm - Atomic types](https://psalm.dev/docs/annotating_code/type_syntax/atomic_types/)
+* [Psalm - Array types](https://psalm.dev/docs/annotating_code/type_syntax/array_types/)
+* [Psalm - Utility types](https://psalm.dev/docs/annotating_code/type_syntax/utility_types/)
+* [Psalm - Supported annotations](https://psalm.dev/docs/annotating_code/supported_annotations/)
+* [Psalm - Taint annotations](https://psalm.dev/docs/security_analysis/annotations/)
+* [PHPStan - PHPDoc Types](https://phpstan.org/writing-php-code/phpdoc-types)
+* [PHPStan - PHPDocs Basics](https://phpstan.org/writing-php-code/phpdocs-basics)
+* [PHPStan - Unsealed Array Shapes, Safer Array Keys, and More](https://phpstan.org/blog/phpstan-2-2-unsealed-array-shapes-safer-array-keys)
