@@ -171,3 +171,48 @@ JSONスキーマの作成には以下のツールが便利です：
 
 - [JSON Schema Generator](https://jsonschema.net/#/editor)
 - [Understanding JSON Schema](https://spacetelescope.github.io/understanding-json-schema/)
+
+## 例外ハンドリング
+
+JSONスキーマバリデーションが失敗すると、BEAR.Resource (1.33.0+) は問題が**リクエスト**（クライアントエラー）にあるか**レスポンス**（サーバーのバグ）にあるかを示す型付き例外をスローします。
+
+| 例外 | HTTP | 意味 |
+|------|------|------|
+| `JsonSchemaRequestException` | 400 | 入力パラメータがスキーマ検証に失敗 |
+| `JsonSchemaResponseException` | 500 | レスポンスボディがスキーマ検証に失敗 |
+
+どちらも `JsonSchemaException` を継承しているため、個別にキャッチすることも、まとめてキャッチすることもできます。
+
+### 構造化エラーへのアクセス
+
+`$e->getErrors()` は `JsonSchemaErrors` コレクションを返します。
+
+```php
+use BEAR\Resource\Exception\JsonSchemaRequestException;
+use BEAR\Resource\Exception\JsonSchemaResponseException;
+
+try {
+    $response = $resource->post('app://self/user', $params);
+} catch (JsonSchemaRequestException $e) {
+    $errors = $e->getErrors();        // JsonSchemaErrors
+    $errors->count();                 // バリデーション違反の件数
+    $errors->first();                 // 最初の JsonSchemaError または null
+
+    // 各エラーを反復処理
+    foreach ($errors as $error) {
+        echo $error->property;        // 例: "email"
+        echo $error->message;         // 人間が読めるメッセージ
+    }
+
+    // フィールド別にグループ化 — APIエラーレスポンス構築に便利
+    $byField = $errors->byProperty(); // array<string, list<JsonSchemaError>>
+
+    // テンプレートで一括フォーマット
+    $text = $errors->format('{property}: {message}\n');
+} catch (JsonSchemaResponseException $e) {
+    // リソースが自身の宣言したスキーマに合わないデータを返した
+    // サーバー側のバグとして扱う
+    error_log((string) $e);
+}
+```
+

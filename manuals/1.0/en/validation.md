@@ -172,6 +172,50 @@ To apply schema validation to the representation of the resource object (the ren
  * [Understanding JSON Schema](https://spacetelescope.github.io/understanding-json-schema/)
  * [JSON Schema Generator](https://jsonschema.net/#/editor)
 
+## Exception Handling
+
+When JSON Schema validation fails, BEAR.Resource (1.33.0+) throws a typed exception that tells you whether the problem was in the **request** (client error) or the **response** (server bug):
+
+| Exception | HTTP | Meaning |
+|-----------|------|---------|
+| `JsonSchemaRequestException` | 400 | Input params failed schema validation |
+| `JsonSchemaResponseException` | 500 | Response body failed schema validation |
+
+Both extend `JsonSchemaException`, so you can catch either specifically or together.
+
+### Accessing Structured Errors
+
+`$e->getErrors()` returns a `JsonSchemaErrors` collection:
+
+```php
+use BEAR\Resource\Exception\JsonSchemaRequestException;
+use BEAR\Resource\Exception\JsonSchemaResponseException;
+
+try {
+    $response = $resource->post('app://self/user', $params);
+} catch (JsonSchemaRequestException $e) {
+    $errors = $e->getErrors();        // JsonSchemaErrors
+    $errors->count();                 // number of violations
+    $errors->first();                 // first JsonSchemaError or null
+
+    // Iterate over each error
+    foreach ($errors as $error) {
+        echo $error->property;        // e.g. "email"
+        echo $error->message;         // human-readable message
+    }
+
+    // Group by field — useful for building API error responses
+    $byField = $errors->byProperty(); // array<string, list<JsonSchemaError>>
+
+    // Bulk format with a template
+    $text = $errors->format('{property}: {message}\n');
+} catch (JsonSchemaResponseException $e) {
+    // This is a server-side bug: the resource returned data that
+    // does not match its own declared schema.
+    error_log((string) $e);
+}
+```
+
 ## #[Valid] attribute
 
 The `#[Valid]` attribute is a validation for input.
