@@ -216,6 +216,19 @@ try {
 }
 ```
 
+### Default Framework Behaviour
+
+BEAR.Sunday's default `ThrowableHandler` (1.x) already maps `JsonSchemaRequestException` to a 400 `application/vnd.error+json` response. No extra setup is needed for API (JSON) contexts.
+
+### JSON vs HTML Contexts
+
+The appropriate response format depends on context:
+
+- **API / JSON context** — return a JSON error body (e.g. `{"code": 400, "message": "..."}`)  
+- **HTML context** — render an HTML error page for browser users
+
+Production apps typically override the default handler for each context. See [BEAR.Examples](https://github.com/bearsunday/BEAR.Examples) for a reference implementation using `AppThrowableHandler` (JSON) and `HtmlThrowableHandler` (HTML), backed by a shared `ExceptionStatusMapper`.
+
 ## #[Valid] attribute
 
 The `#[Valid]` attribute is a validation for input.

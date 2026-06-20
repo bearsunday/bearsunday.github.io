@@ -216,3 +216,16 @@ try {
 }
 ```
 
+### フレームワークのデフォルト動作
+
+BEAR.Sunday 1.x のデフォルト `ThrowableHandler` は `JsonSchemaRequestException` を 400 の `application/vnd.error+json` レスポンスにマッピングします。API（JSON）コンテキストでは追加設定は不要です。
+
+### JSON vs HTML コンテキスト
+
+適切なレスポンス形式はコンテキストによって異なります。
+
+- **API / JSON コンテキスト** — JSON エラーボディ（例: `{"code": 400, "message": "..."}`)を返す
+- **HTML コンテキスト** — ブラウザユーザー向けに HTML エラーページをレンダリングする
+
+本番アプリケーションでは、通常、各コンテキストに応じてデフォルトハンドラーをオーバーライドします。`AppThrowableHandler`（JSON）と `HtmlThrowableHandler`（HTML）を共有の `ExceptionStatusMapper` で使い分けるリファレンス実装は [BEAR.Examples](https://github.com/bearsunday/BEAR.Examples) を参照してください。
+
