@@ -54,3 +54,4 @@
 - [Attribute](/manuals/1.0/en/attribute.md): PHP 8 attributes
 - [API Doc](/manuals/1.0/en/apidoc.md): API documentation generation
 - [Examples](/manuals/1.0/en/examples.md): Sample applications
+- [BEAR.Examples CMS Source Index (Japanese)](/manuals/1.0/ja/bear-examples-cms-source-index.md): AI/human source index mapping implementation intents to the future `BEAR.Examples/cms` CMS example files
