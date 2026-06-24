@@ -19,7 +19,7 @@ permalink: /manuals/1.0/ja/database_media.html
 composer require ray/media-query
 ```
 
-> **Note**: Web APIを同様にインターフェイスから扱うには [ray/web-query](https://github.com/ray-di/Ray.WebQuery) を参照してください。
+> **Note**: Web API も同様にインターフェイスから扱えます。HTTP リクエストを `#[WebQuery]` でインターフェイスのメソッドにマッピングする [ray/web-query](https://github.com/ray-di/Ray.WebQuery)（`composer require ray/web-query`）を利用してください。
 
 ## 利用方法
 

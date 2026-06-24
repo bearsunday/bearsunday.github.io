@@ -19,7 +19,7 @@ permalink: /manuals/1.0/en/database_media.html
 composer require ray/media-query
 ```
 
-> **Note**: For the same interface-driven approach over Web APIs, see [ray/web-query](https://github.com/ray-di/Ray.WebQuery).
+> **Note**: Web APIs can be handled the same way from an interface. Use [ray/web-query](https://github.com/ray-di/Ray.WebQuery) (`composer require ray/web-query`), which maps HTTP requests to interface methods with `#[WebQuery]`.
 
 ## Usage
 
