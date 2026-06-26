@@ -183,7 +183,7 @@ $posts = $request(['id' => 1]);
 
 ```php
 $this->body = [
-    'lazy' => $this->resource->get->uri('app://self/posts')->withQuery(['id' => 3])->request()
+    'lazy' => $this->resource->get->uri('app://self/posts')->withQuery(['id' => 3])
 ];
 ```
 

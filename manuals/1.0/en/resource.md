@@ -174,7 +174,7 @@ $posts = $this->resource->get('app://self/posts', ['id' => 1]);
 The above is an `eager` request that makes the request immediately, but it is also possible to generate a request and delay execution instead of the request result.
 
 ```php
-$request = $this->resource->get('app://self/posts'); // callable
+$request = $this->resource->get->uri('app://self/posts'); // callable
 $posts = $request(['id' => 1]);
 ```
 
@@ -182,7 +182,7 @@ When this request is embedded in a template or resource, it is evaluated lazily.
 
 ```php
 $this->body = [
-    'lazy' => $this->resource->get('app://self/posts')->withQuery(['id' => 3])->request();
+    'lazy' => $this->resource->get->uri('app://self/posts')->withQuery(['id' => 3])
 ];
 ```
 
