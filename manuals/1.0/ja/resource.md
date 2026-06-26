@@ -175,7 +175,7 @@ $posts = $this->resource->uri('app://self/posts')(['id' => 1]);
 これまでの例はリクエストをすぐに行う`eager`リクエストですが、リクエスト結果ではなくリクエストを生成し、実行を遅延することもできます。
 
 ```php
-$request = $this->resource->get('app://self/posts'); // callable
+$request = $this->resource->get->uri('app://self/posts'); // callable
 $posts = $request(['id' => 1]);
 ```
 
@@ -183,7 +183,7 @@ $posts = $request(['id' => 1]);
 
 ```php
 $this->body = [
-    'lazy' => $this->resource->get('app://self/posts')->withQuery(['id' => 3])->request()
+    'lazy' => $this->resource->get->uri('app://self/posts')->withQuery(['id' => 3])->request()
 ];
 ```
 
