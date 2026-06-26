@@ -174,17 +174,19 @@ $posts = $this->resource->get('app://self/posts', ['id' => 1]);
 The above is an `eager` request that makes the request immediately, but it is also possible to generate a request and delay execution instead of the request result.
 
 ```php
-$request = $this->resource->get('app://self/posts'); // callable
-$posts = $request(['id' => 1]);
+$request = $this->resource->get->uri('app://self/posts')->withQuery(['id' => 1]); // callable
+$posts = $request();
 ```
 
 When this request is embedded in a template or resource, it is evaluated lazily. That is, when it is not evaluated, the request is not made and has no execution cost.
 
 ```php
 $this->body = [
-    'lazy' => $this->resource->get('app://self/posts')->withQuery(['id' => 3])->request();
+    'lazy' => $this->resource->get->uri('app://self/posts')->withQuery(['id' => 3])
 ];
 ```
+
+The `#[Embed]` attribute provides a declarative way to achieve the same lazy embedding. See [Resource Link](resource_link.html) for details.
 
 ## Cache
 

@@ -175,17 +175,19 @@ $posts = $this->resource->uri('app://self/posts')(['id' => 1]);
 これまでの例はリクエストをすぐに行う`eager`リクエストですが、リクエスト結果ではなくリクエストを生成し、実行を遅延することもできます。
 
 ```php
-$request = $this->resource->get('app://self/posts'); // callable
-$posts = $request(['id' => 1]);
+$request = $this->resource->get->uri('app://self/posts')->withQuery(['id' => 1]); // callable
+$posts = $request();
 ```
 
 このリクエストをテンプレートやリソースに埋め込むと、遅延評価されます。つまり評価されない時はリクエストは行われず、実行コストがかかりません。
 
 ```php
 $this->body = [
-    'lazy' => $this->resource->get('app://self/posts')->withQuery(['id' => 3])->request()
+    'lazy' => $this->resource->get->uri('app://self/posts')->withQuery(['id' => 3])
 ];
 ```
+
+`#[Embed]`アトリビュートを使うと、同じ遅延埋め込みを宣言的に記述できます。詳しくは[リソースリンク](resource_link.html)をご覧ください。
 
 ## キャッシュ
 
