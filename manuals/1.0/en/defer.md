@@ -24,6 +24,15 @@ Request                                  Request
 Response ──▶ client                       └── send notification (heavy work)
 ```
 
+## When the response is returned early
+
+Returning the response immediately and running the heavy work behind it depends on the runtime (SAPI):
+
+- **PHP-FPM / LiteSpeed** — the connection is released and the client gets its response right away
+- **Apache mod_php** — best-effort; an early return is not guaranteed, so run under PHP-FPM or LiteSpeed if you need it
+
+The `#[Defer]` code is the same on every SAPI; switching environments switches the behavior automatically.
+
 ## Installation
 
 ```bash
@@ -43,7 +52,7 @@ protected function configure(): void
 
 ## Usage
 
-### 1. Declare what to defer
+### Declare what to defer
 
 Annotate the accepting resource with `#[Defer]`, listing the `#[Link]` rels to defer. Each rel's `href` is resolved against the resource body after the method runs, so there are no hardcoded URIs.
 
@@ -75,7 +84,7 @@ class Article extends ResourceObject
 
 The method contains no code that invokes the follow-up work. `#[Defer]` is a *declaration* that references `#[Link]`; the framework triggers the follow-up. The transition stays hypermedia-driven and surfaces in ALPS as a deferred transition.
 
-### 2. The follow-up resources are ordinary resources
+### The follow-up resources are ordinary resources
 
 They don't know they are deferred — any resource can be the target.
 
