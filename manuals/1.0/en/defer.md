@@ -14,14 +14,24 @@ The resource only declares *what* to defer. *When* and *where* it runs is decide
 ## Overview
 
 ```text
-[normal execution]                       [deferred execution]
-Request                                  Request
-    │                                        │
-    ├── save (light work)                    ├── save (light work)
-    ├── update index (heavy work)            └── Response 202 ──▶ client
-    ├── send notification (heavy work)       │   (runs after transfer)
-    │                                        ├── update index (heavy work)
-Response ──▶ client                       └── send notification (heavy work)
+[normal execution] everything runs before the response
+Request
+│
+├── save (light work)
+├── update index (heavy work)
+├── send notification (heavy work)
+│
+└── Response ──▶ client
+
+[deferred execution] response returns first, heavy work runs after transfer
+Request
+│
+├── save (light work)
+├── Response 202 ──▶ client
+│
+│   (the rest runs after transfer)
+├── update index (heavy work)
+└── send notification (heavy work)
 ```
 
 ## When the response is returned early
