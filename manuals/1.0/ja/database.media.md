@@ -355,16 +355,18 @@ interface TodoList
 }
 ```
 
-`count()`で件数が取得でき、ページ番号で配列アクセスをするとページオブジェクトが取得できます。`PagesInterface`はSQL遅延実行オブジェクトです。
+`count()`で件数、`getNbPages()`で総ページ数が取得でき、ページ番号で配列アクセスをするとページオブジェクトが取得できます。`PagesInterface`はSQL遅延実行オブジェクトです。
 
 ```php
 $pages = ($todoList)();
-$cnt = count($pages);    // count()をした時にカウントSQLが生成されクエリーが行われます。
-$page = $pages[2];       // 配列アクセスをした時にそのページのDBクエリーが行われます。
+$cnt = count($pages);           // count()をした時にカウントSQLが生成されクエリーが行われます。
+$nbPages = $pages->getNbPages(); // 総ページ数（ceil(count / perPage)の計算が不要です）
+$page = $pages[2];              // 配列アクセスをした時にそのページのDBクエリーが行われます。
 
 // $page->data           // sliced data
 // $page->current;       // 現在のページ番号
 // $page->total          // 総件数
+// $page->nbPages        // 総ページ数
 // $page->hasNext        // 次ページの有無
 // $page->hasPrevious    // 前ページの有無
 // $page->maxPerPage;    // 1ページあたりの最大件数

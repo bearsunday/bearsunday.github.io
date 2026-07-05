@@ -355,16 +355,18 @@ interface TodoList
 }
 ```
 
-You can get the count with `count()`, and get page objects with array access by page number. `PagesInterface` is a SQL lazy execution object.
+You can get the count with `count()`, the number of pages with `getNbPages()`, and get page objects with array access by page number. `PagesInterface` is a SQL lazy execution object.
 
 ```php
 $pages = ($todoList)();
-$cnt = count($pages);    // Count SQL is generated and queried when count() is called
-$page = $pages[2];       // DB query for that page is executed when array access is made
+$cnt = count($pages);           // Count SQL is generated and queried when count() is called
+$nbPages = $pages->getNbPages(); // total number of pages (no need to compute ceil(count / perPage))
+$page = $pages[2];              // DB query for that page is executed when array access is made
 
 // $page->data           // sliced data
 // $page->current;       // current page number
 // $page->total          // total count
+// $page->nbPages        // total number of pages
 // $page->hasNext        // whether next page exists
 // $page->hasPrevious    // whether previous page exists
 // $page->maxPerPage;    // maximum items per page
