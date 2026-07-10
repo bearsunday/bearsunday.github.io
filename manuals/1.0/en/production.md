@@ -163,37 +163,49 @@ Refer to the [existing implementation ProdLogger](https://github.com/bearsunday/
 
 ### Compilation Recommended
 
-When setting up, you can **warm up** the project using the `vendor/bin/bear.compile` script.
-The compile script creates all static cache files such as dynamically created files for DI/AOP and annotations in advance, and outputs an optimized autoload.php file and preload.php.
+When setting up, you can **warm up** the project: create static cache files for DI/AOP and annotations in advance, and write optimized `autoload.php` and `preload.php`.
+
+The recommended entry is `Compiler::fromInjector()` with the same application `Injector` used at runtime (BEAR.Package 1.21+; skeleton ships `bin/compile.php`).
+
+```php
+// bin/compile.php
+use BEAR\Package\Compiler;
+use MyVendor\MyProject\Injector;
+
+$context = $argv[1] ?? 'prod-app';
+
+exit(Compiler::fromInjector(Injector::getInstance($context), $context)());
+```
+
+```json
+"scripts": {
+    "compile": "php bin/compile.php prod-app"
+}
+```
 
 * If you compile, the possibility of DI errors at runtime is extremely low because injection is performed in all classes.
 * The contents included in `.env` are incorporated into the PHP file, so `.env` can be deleted after compilation.
 
-When compiling multiple contexts (ex. api-app, html-app) in one application, such as when performing content negotiation, it is necessary to evacuate the files.
+When compiling multiple contexts (e.g. api-app and html-app for content negotiation), call `bin/compile.php` per context and evacuate shared root artifacts such as `autoload.php` when needed.
 
+```bash
+php bin/compile.php prod-hal-api-app
+mv autoload.php api.autoload.php
+php bin/compile.php prod-html-app
 ```
-mv autoload.php api.autoload.php  
-```
-
-Edit `composer.json` to change the content of `composer compile`.
 
 DI scripts are written under `{tmpDir}/di` (default `tmpDir` is `var/tmp/{context}`). The defaults are fine for most deployments.
+
+`vendor/bin/bear.compile` is deprecated. Migration: [BEAR.Package#482](https://github.com/bearsunday/BEAR.Package/issues/482).
 
 #### Changing writable paths {: #writable-paths }
 
 Optional. Use only when temporary files or logs should live outside the project tree—for example a read-only app root (some serverless or container layouts), or when build-time and runtime writable paths differ. Ordinary VPS or shared hosting does not need this.
 
-Pass resolved paths to the `Meta` constructor (interpreting environment variables is an application concern):
+Pass resolved paths to the `Meta` constructor (interpreting environment variables is an application concern). With `Compiler::fromInjector()`, compile uses the same Meta.
 
 ```php
 new Meta($name, $context, $appDir, '/var/tmp/my-app', '/var/log/my-app');
-```
-
-To compile against the same paths, use `Compiler::fromInjector()` with the application `Injector` (`bear.compile` remains available as before):
-
-```php
-// example bin/compile.php
-exit(Compiler::fromInjector(Injector::getInstance($context), $context)());
 ```
 
 ### autoload.php

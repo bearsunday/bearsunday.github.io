@@ -158,34 +158,47 @@ final class MyProdLoggerModule extends AbstractModule
 
 ### コンパイル
 
-推奨セットアップを行う際に`vendor/bin/bear.compile`スクリプトを使ってプロジェクトを**ウォームアップ**することができます。コンパイルスクリプトはDI/AOP用の動的に作成されるファイルやアノテーションなどの静的なキャッシュファイルを全て事前に作成し、最適化されたautoload.phpファイルとpreload.phpを出力します。
+セットアップ時にプロジェクトを**ウォームアップ**できます。DI/AOP 用の動的ファイルやアノテーションなどの静的キャッシュを事前に作成し、最適化された `autoload.php` と `preload.php` を出力します。
 
-* コンパイルをすれば全てのクラスでインジェクションを行うのでランタイムでDIのエラーが出る可能性が極めて低くなります。
-* `.env`には含まれた内容はPHPファイルに取り込まれるのでコンパイル後に`.env`を消去可能です。コンテントネゴシエーションを行う場合など（例：api-app, html-app）1つのアプリケーションで複数コンテキストのコンパイルを行うときにはファイルの退避が必要です。
+推奨は、ランタイムと同じアプリ `Injector` を使う `Compiler::fromInjector()` です（BEAR.Package 1.21+。スケルトンは `bin/compile.php`）。
 
-```bash
-mv autoload.php api.autoload.php
+```php
+// bin/compile.php
+use BEAR\Package\Compiler;
+use MyVendor\MyProject\Injector;
+
+$context = $argv[1] ?? 'prod-app';
+
+exit(Compiler::fromInjector(Injector::getInstance($context), $context)());
 ```
 
-`composer.json`を編集して`composer compile`の内容を変更します。
+```json
+"scripts": {
+    "compile": "php bin/compile.php prod-app"
+}
+```
+
+* コンパイルをすれば全てのクラスでインジェクションを行うのでランタイムでDIのエラーが出る可能性が極めて低くなります。
+* `.env`に含まれた内容はPHPファイルに取り込まれるのでコンパイル後に`.env`を消去可能です。コンテントネゴシエーションを行う場合など（例：api-app, html-app）1つのアプリケーションで複数コンテキストのコンパイルを行うときには、コンテキストごとに `bin/compile.php` を呼び、必要なら `autoload.php` などの退避が必要です。
+
+```bash
+php bin/compile.php prod-hal-api-app
+mv autoload.php api.autoload.php
+php bin/compile.php prod-html-app
+```
 
 DI スクリプトの出力先は `{tmpDir}/di` です（既定の `tmpDir` は `var/tmp/{context}`）。ほとんどのデプロイではこの既定のままで問題ありません。
+
+`vendor/bin/bear.compile` は非推奨です。移行手順は [BEAR.Package#482](https://github.com/bearsunday/BEAR.Package/issues/482) を参照してください。
 
 #### 書き込み先を変える場合 {: #writable-paths }
 
 プロジェクトツリー外に一時ファイルやログを置きたいときだけ使います（任意）。例としては、アプリ本体が読み取り専用のホスト（一部の serverless / コンテナ構成）や、ビルド時と実行時で書き込みパスが分かれる場合です。通常の VPS や共有ホストでは不要です。
 
-`Meta` のコンストラクタに解決済みのパスを渡せます（環境変数の解釈はアプリ側の都合です）。
+`Meta` のコンストラクタに解決済みのパスを渡せます（環境変数の解釈はアプリ側の都合です）。`Compiler::fromInjector()` ならコンパイルも同じ Meta を使います。
 
 ```php
 new Meta($name, $context, $appDir, '/var/tmp/my-app', '/var/log/my-app');
-```
-
-コンパイルも同じパスにしたい場合は、アプリの `Injector` が組み立てた Meta をそのまま使う `Compiler::fromInjector()` があります（`bear.compile` は従来どおり使えます）。
-
-```php
-// bin/compile.php の例
-exit(Compiler::fromInjector(Injector::getInstance($context), $context)());
 ```
 
 ### autoload.php
