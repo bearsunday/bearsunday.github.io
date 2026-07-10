@@ -179,11 +179,12 @@ exit(Compiler::fromInjector(Injector::getInstance($context), $context)());
 ```
 
 * コンパイルをすれば全てのクラスでインジェクションを行うのでランタイムでDIのエラーが出る可能性が極めて低くなります。
-* `.env`に含まれた内容はPHPファイルに取り込まれるのでコンパイル後に`.env`を消去可能です。コンテントネゴシエーションを行う場合など（例：api-app, html-app）1つのアプリケーションで複数コンテキストのコンパイルを行うときには、コンテキストごとに `bin/compile.php` を呼び、必要なら `autoload.php` などの退避が必要です。
+* `.env`に含まれた内容はPHPファイルに取り込まれるのでコンパイル後に`.env`を消去可能です。コンテントネゴシエーションを行う場合など（例：api-app, html-app）1つのアプリケーションで複数コンテキストのコンパイルを行うときには、コンテキストごとに `bin/compile.php` を呼び、プロジェクト直下に出る `autoload.php` / `preload.php` を退避します（後続コンパイルで上書きされないようにします）。
 
 ```bash
 php bin/compile.php prod-hal-api-app
 mv autoload.php api.autoload.php
+mv preload.php api.preload.php
 php bin/compile.php prod-html-app
 ```
 

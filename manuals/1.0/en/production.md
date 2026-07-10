@@ -186,11 +186,12 @@ exit(Compiler::fromInjector(Injector::getInstance($context), $context)());
 * If you compile, the possibility of DI errors at runtime is extremely low because injection is performed in all classes.
 * The contents included in `.env` are incorporated into the PHP file, so `.env` can be deleted after compilation.
 
-When compiling multiple contexts (e.g. api-app and html-app for content negotiation), call `bin/compile.php` per context and evacuate shared root artifacts such as `autoload.php` when needed.
+When compiling multiple contexts (e.g. api-app and html-app for content negotiation), call `bin/compile.php` per context and evacuate project-root `autoload.php` / `preload.php` so a later compile does not overwrite them.
 
 ```bash
 php bin/compile.php prod-hal-api-app
 mv autoload.php api.autoload.php
+mv preload.php api.preload.php
 php bin/compile.php prod-html-app
 ```
 
