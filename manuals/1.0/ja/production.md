@@ -185,7 +185,7 @@ new Meta($name, $context, $appDir, '/var/tmp/my-app', '/var/log/my-app');
 
 ```php
 // bin/compile.php の例
-exit(Compiler::fromInjector(Injector::getInstance($context), $context)->run());
+exit(Compiler::fromInjector(Injector::getInstance($context), $context)());
 ```
 
 ### autoload.php

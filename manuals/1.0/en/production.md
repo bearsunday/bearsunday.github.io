@@ -193,7 +193,7 @@ To compile against the same paths, use `Compiler::fromInjector()` with the appli
 
 ```php
 // example bin/compile.php
-exit(Compiler::fromInjector(Injector::getInstance($context), $context)->run());
+exit(Compiler::fromInjector(Injector::getInstance($context), $context)());
 ```
 
 ### autoload.php
