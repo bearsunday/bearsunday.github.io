@@ -169,6 +169,25 @@ mv autoload.php api.autoload.php
 
 `composer.json`を編集して`composer compile`の内容を変更します。
 
+DI スクリプトの出力先は `{tmpDir}/di` です（既定の `tmpDir` は `var/tmp/{context}`）。ほとんどのデプロイではこの既定のままで問題ありません。
+
+#### 書き込み先を変える場合 {: #writable-paths }
+
+プロジェクトツリー外に一時ファイルやログを置きたいときだけ使います（任意）。例としては、アプリ本体が読み取り専用のホスト（一部の serverless / コンテナ構成）や、ビルド時と実行時で書き込みパスが分かれる場合です。通常の VPS や共有ホストでは不要です。
+
+`Meta` のコンストラクタに解決済みのパスを渡せます（環境変数の解釈はアプリ側の都合です）。
+
+```php
+new Meta($name, $context, $appDir, '/var/tmp/my-app', '/var/log/my-app');
+```
+
+コンパイルも同じパスにしたい場合は、アプリの `Injector` が組み立てた Meta をそのまま使う `Compiler::fromInjector()` があります（`bear.compile` は従来どおり使えます）。
+
+```php
+// bin/compile.php の例
+exit(Compiler::fromInjector(Injector::getInstance($context), $context)());
+```
+
 ### autoload.php
 
 `{project_path}/autoload.php`に最適化されたautoload.phpファイルが出力されます。`composer dump-autoload --optimize`で出力される`vendor/autoload.php`よりずっと高速です。

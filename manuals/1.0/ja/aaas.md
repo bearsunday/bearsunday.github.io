@@ -119,9 +119,13 @@ use BEAR\Package\Bootstrap;
 
 require __DIR__ . '/vendor/autoload.php';
 
-$meta = new Meta('MyVendor\Ticket', 'app');
-$meta->tmpDir = __DIR__ . '/ticket/tmp';
-$meta->logDir = __DIR__ . '/ticket/log';
+$meta = new Meta(
+    'MyVendor\Ticket',
+    'app',
+    '',
+    __DIR__ . '/ticket/tmp',
+    __DIR__ . '/ticket/log',
+);
 $ticket = (new Bootstrap)->newApp($meta, 'app');
 ```
 

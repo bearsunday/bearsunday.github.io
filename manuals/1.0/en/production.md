@@ -177,6 +177,25 @@ mv autoload.php api.autoload.php
 
 Edit `composer.json` to change the content of `composer compile`.
 
+DI scripts are written under `{tmpDir}/di` (default `tmpDir` is `var/tmp/{context}`). The defaults are fine for most deployments.
+
+#### Changing writable paths {: #writable-paths }
+
+Optional. Use only when temporary files or logs should live outside the project tree—for example a read-only app root (some serverless or container layouts), or when build-time and runtime writable paths differ. Ordinary VPS or shared hosting does not need this.
+
+Pass resolved paths to the `Meta` constructor (interpreting environment variables is an application concern):
+
+```php
+new Meta($name, $context, $appDir, '/var/tmp/my-app', '/var/log/my-app');
+```
+
+To compile against the same paths, use `Compiler::fromInjector()` with the application `Injector` (`bear.compile` remains available as before):
+
+```php
+// example bin/compile.php
+exit(Compiler::fromInjector(Injector::getInstance($context), $context)());
+```
+
 ### autoload.php
 
 An optimized autoload.php file is output to `{project_path}/autoload.php`.
