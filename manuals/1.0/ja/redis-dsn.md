@@ -2,7 +2,7 @@
 layout: docs-ja
 title: Redis キャッシュアダプター
 category: Manual
-permalink: /manuals/1.0/ja/186.redis-dsn.html
+permalink: /manuals/1.0/ja/redis-dsn.html
 ---
 # Redis キャッシュアダプター
 
