@@ -13,9 +13,9 @@ The Redis adapter stores values in memory using one (or more) Redis server insta
 Unlike the APCu adapter, and similarly to the Memcached adapter, it is not limited to the current server's shared memory; you can store contents independent of your PHP environment. The ability to use a cluster of servers to provide redundancy and/or fail-over is also available.
 
 > Note:
-> Requirements: At least one Redis server must be installed and running to use this adapter. Additionally, this adapter requires a compatible extension or library that implements `\Redis`, `\RedisArray`, `RedisCluster`, `\Relay\Relay`, or `\Predis`.
+> Requirements: At least one Redis server must be installed and running to use this adapter. Additionally, this adapter requires a compatible extension or library that implements `\Redis`, `\RedisArray`, `RedisCluster`, `\Relay\Relay`, `\Relay\Cluster`, or `\Predis`.
 
-This adapter expects a `Redis`, `RedisArray`, `RedisCluster`, `Relay`, or `Predis` instance to be passed as the first parameter. A namespace and default cache lifetime can optionally be passed as the second and third parameters:
+This adapter expects a `Redis`, `RedisArray`, `RedisCluster`, `Relay`, `Relay\Cluster`, or `Predis` instance to be passed as the first parameter. A namespace and default cache lifetime can optionally be passed as the second and third parameters:
 
 ## Configure the Connection
 
@@ -38,7 +38,7 @@ A DSN can specify either an IP/host (and an optional port) or a socket path, as 
 
 Below are common examples of valid DSNs showing a combination of available values:
 
-```php
+```text
 
 // host "my.server.com" and port "6379"
 'redis://my.server.com:6379'
@@ -64,7 +64,7 @@ Below are common examples of valid DSNs showing a combination of available value
 
 Redis Sentinel, which provides high availability for Redis, is supported when using the PHP Redis extension v5.2+ or the Predis library. Use the `redis_sentinel` parameter to set the name of your service group:
 
-```php
+```text
 'redis:?host[redis1:26379]&host[redis2:26379]&host[redis3:26379]&redis_sentinel=mymaster'
 
 // providing credentials
