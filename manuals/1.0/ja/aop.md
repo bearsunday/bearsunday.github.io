@@ -6,14 +6,13 @@ permalink: /manuals/1.0/ja/aop.html
 ---
 # AOP
 
-アスペクト指向プログラミングは、**横断的関心事**の問題を解決します。対象メソッドの前後に、任意の処理をインターセプターで織り込むことができます。
-対象となるメソッドはビジネスロジックなどの本質的関心事のみに関心を払い、インターセプターはログや検証などの横断的関心事に関心を払います。
+ログ、認証、トランザクション、キャッシュ。こうした処理は特定のクラスに収まらず、アプリケーション全体に横断して現れます。アスペクト指向プログラミング（AOP）はこの**横断的関心事**をメソッド本体から分離します。対象メソッドはビジネスロジックなどの本質的関心事だけを記述し、横断的処理は**インターセプター**としてメソッドの前後に織り込みます。呼び出し側のコードは何も変わりません。
 
-BEAR.Sundayは[AOP Alliance](http://aopalliance.sourceforge.net/)に準拠したアスペクト指向プログラミングをサポートします。
+BEAR.SundayのAOPは[Ray.Aop](https://github.com/ray-di/Ray.Aop)によるもので、Javaの[AOP Alliance](http://aopalliance.sourceforge.net/)に準拠しています。
 
 ## インターセプター
 
-インターセプターの`invoke`メソッドでは`$invocation`メソッド実行オブジェクトを受け取り、メソッドの前後に処理を加えます。これはインターセプト元メソッドを実行するためのオブジェクトです。前後にログやトランザクションなどの横断的処理を記述します。
+インターセプターは`invoke`メソッドで`MethodInvocation`（メソッド実行オブジェクト）を受け取ります。`proceed()`が元のメソッドを実行するので、その前後に横断的処理を記述します。
 
 ```php
 use Ray\Aop\MethodInterceptor;
@@ -37,9 +36,11 @@ class MyInterceptor implements MethodInterceptor
 }
 ```
 
+元のメソッド実行を完全に手中にできるのがポイントです。`proceed()`を呼ばずに値を返せばメソッド実行そのものを省略でき（キャッシュヒット時など）、`try/catch`で囲めば例外を横断的に処理でき、戻り値を加工することもできます。インターセプター自身もインジェクターが生成するので、コンストラクタで依存を受け取れます。
+
 ## 束縛
 
-[モジュール](module.html)で対象となるクラスとメソッドを`Matcher`で"検索"して、マッチするメソッドにインターセプターを束縛します。
+どのメソッドに織り込むかは、対象メソッドの側には書きません。[モジュール](module.html)で対象となるクラスとメソッドを`Matcher`で"検索"し、マッチしたメソッドにインターセプターを束縛します。
 
 ```php
 $this->bindInterceptor(
@@ -50,46 +51,49 @@ $this->bindInterceptor(
 
 $this->bindInterceptor(
     $this->matcher->subclassesOf(AdminPage::class),  // AdminPageの継承または実装クラスの
-    $this->matcher->annotatedWith(Auth::class),      // @Authアノテーションがアノテートされているメソッドには
+    $this->matcher->annotatedWith(Auth::class),      // #[Auth]アトリビュートが付与されたメソッドには
     [AdminAuthentication::class]                     // AdminAuthenticationインターセプターを束縛
 );
 ```
 
-`Matcher`では以下のような指定も可能です：
+2つ目の例では、対象メソッドの側に残るのは`#[Auth]`という宣言だけです。「認証が必要」という意図はメソッドに、その実装と適用範囲はモジュールに、と役割が分かれます（アトリビュートについては[アトリビュート](attribute.html)を参照）。
+
+束縛をモジュールに集約する形には、それゆえのご利益があります。第一に、横断的処理がどこに適用されるかが束縛の宣言として一覧でき、コードを探し回る必要がないこと。第二に、束縛はコンテキストごとに切り替えられること。プロダクションでだけキャッシュを織り込み、開発でだけ実行時間ログを織り込む、といった構成がアプリケーションコードの変更なしに実現します。織り込みは実行のたびにリフレクションで行うのではなく、コード生成によって行われるため、実行時のオーバーヘッドは最小限です。
+
+`Matcher`には以下の指定が可能です。
 
 * [Matcher::any](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/MatcherInterface.php#L16) - 無制限
-* [Matcher::annotatedWith](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/MatcherInterface.php#L23) - アノテーション
+* [Matcher::annotatedWith](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/MatcherInterface.php#L23) - アトリビュート/アノテーション
 * [Matcher::subclassesOf](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/MatcherInterface.php#L30) - 継承または実装されたクラス
 * [Matcher::startsWith](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/MatcherInterface.php#L37) - 名前の始めの文字列
 * [Matcher::logicalOr](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/MatcherInterface.php#L44) - OR条件
 * [Matcher::logicalAnd](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/MatcherInterface.php#L51) - AND条件
 * [Matcher::logicalNot](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/MatcherInterface.php#L58) - NOT条件
 
-インターセプターに渡される`MethodInvocation`では、対象のメソッド実行に関連するオブジェクトやメソッド、引数にアクセスすることができます。
+## MethodInvocation
+
+インターセプターに渡される`MethodInvocation`からは、対象メソッドの実行に関わるオブジェクト・メソッド・引数にアクセスできます。
 
 * [MethodInvocation::proceed](https://github.com/ray-di/Ray.Aop/blob/2.x/src/Joinpoint.php) - 対象メソッド実行
 * [MethodInvocation::getMethod](https://github.com/ray-di/Ray.Aop/blob/2.x/src/MethodInvocation.php) - 対象メソッドリフレクションの取得
 * [MethodInvocation::getThis](https://github.com/ray-di/Ray.Aop/blob/2.x/src/Joinpoint.php) - 対象オブジェクトの取得
 * [MethodInvocation::getArguments](https://github.com/ray-di/Ray.Aop/blob/2.x/src/Invocation.php) - 呼び出し引数配列の取得
 
-リフレクションのメソッドでアノテーションを取得することができます。
+取得したリフレクションからは、対象に付与されたアトリビュート/アノテーションを読み取れます。`#[Auth('admin')]`のようにアトリビュートへ渡した値を、インターセプターの動作パラメータとして使えます。
 
 ```php
 $method = $invocation->getMethod();
 $class = $invocation->getMethod()->getDeclaringClass();
 ```
 
-* `$method->getAnnotations()`    - メソッドアノテーションの取得
+* `$method->getAnnotations()`    - メソッドアトリビュートの取得
 * `$method->getAnnotation($name)`
-* `$class->getAnnotations()`     - クラスアノテーションの取得
+* `$class->getAnnotations()`     - クラスアトリビュートの取得
 * `$class->getAnnotation($name)`
 
 ## カスタムマッチャー
 
-独自のカスタムマッチャーを作成するには、`AbstractMatcher`の`matchesClass`と`matchesMethod`を実装したクラスを作成します。
-
-`contains`マッチャーを作成するには、2つのメソッドを持つクラスを提供する必要があります。
-1つはクラスのマッチを行う`matchesClass`メソッド、もう1つはメソッドのマッチを行う`matchesMethod`メソッドです。いずれもマッチしたかどうかをboolで返します。
+用意されたマッチャーで足りなければ、`AbstractMatcher`を継承して`matchesClass`と`matchesMethod`の2つを実装します。いずれもマッチしたかどうかをboolで返します。名前に特定の文字列が含まれるかを調べる`contains`マッチャーの例です。
 
 ```php
 use Ray\Aop\AbstractMatcher;
@@ -104,9 +108,9 @@ class ContainsMatcher extends AbstractMatcher
      */
     public function matchesClass(\ReflectionClass $class, array $arguments) : bool
     {
-        list($contains) = $arguments;
+        [$contains] = $arguments;
 
-        return (strpos($class->name, $contains) !== false);
+        return str_contains($class->name, $contains);
     }
 
     /**
@@ -114,14 +118,14 @@ class ContainsMatcher extends AbstractMatcher
      */
     public function matchesMethod(\ReflectionMethod $method, array $arguments) : bool
     {
-        list($contains) = $arguments;
+        [$contains] = $arguments;
 
-        return (strpos($method->name, $contains) !== false);
+        return str_contains($method->name, $contains);
     }
 }
 ```
 
-モジュール
+組み込みマッチャーと同じように`bindInterceptor()`に渡せます。
 
 ```php
 class AppModule extends AbstractAppModule
