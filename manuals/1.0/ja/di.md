@@ -42,10 +42,10 @@ $this->bind(UserRepositoryInterface::class)->to(UserRepository::class);
 
 * **リンク束縛** `to()` — インターフェイスに実装クラスを対応させる、最も基本の束縛
 * **プロバイダー束縛** `toProvider()` — 生成にロジックが必要なとき、ファクトリーを束縛
-* **インスタンス束縛** `toInstance()` — 接続文字列などコンパイルタイムに確定する値を直接束縛
+* **インスタンス束縛** `toInstance()` — 生成済みの値やインスタンスを直接束縛（接続文字列・設定値・作成済みオブジェクトなど）
 * **名前付き束縛** `annotatedWith()` — 同じ型の依存を名前で区別
 
-構文の一覧は[モジュール](module.html)を、それぞれの詳細は[Ray.Diマニュアル](https://ray-di.github.io/manuals/1.0/ja/index.html)を参照してください。メソッド横断の関心事（ログ、認証、トランザクションなど）は束縛の一種として[AOP](aop.html)で扱います。
+構文の一覧は[モジュール](module.html)を、それぞれの詳細は[Ray.Diマニュアル](https://ray-di.github.io/manuals/1.0/ja/index.html)を参照してください。メソッド横断の関心事（ログ、認証、トランザクションなど）は、依存の束縛とは別に、[AOP](aop.html)（`bindInterceptor()`によるメソッドインターセプション）で扱います。
 
 ## コンテキストでグラフが変わる
 
