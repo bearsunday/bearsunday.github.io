@@ -100,11 +100,13 @@ class Index extends ResourceObject
     // $_GET['id']が$idに
     public function onGet(int $id): static
     {
+        return $this;
     }
 
     // $_POST['name']が$nameに
     public function onPost(string $name): static
     {
+        return $this;
     }
 }
 ```
