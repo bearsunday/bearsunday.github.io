@@ -201,7 +201,7 @@ DI scripts are written under `{appDir}/var/tmp/{context}/di`. They are a build o
 
 `vendor/bin/bear.compile` is deprecated. Migration: [BEAR.Package#482](https://github.com/bearsunday/BEAR.Package/issues/482).
 
-#### Read-only deployments (serverless, immutable containers) {: #writable-paths }
+#### Read-only deployments (serverless, immutable containers) {#writable-paths}
 
 Optional. Use it when the application tree is read-only at runtime and one directory is the only writable location: serverless platforms such as Vercel or AWS Lambda, or a container started with `docker run --read-only` / `readOnlyRootFilesystem: true`. Ordinary VPS and shared hosting do not need it.
 

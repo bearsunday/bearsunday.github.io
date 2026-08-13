@@ -194,7 +194,7 @@ DI スクリプトの出力先は `{appDir}/var/tmp/{context}/di` です。こ�
 
 `vendor/bin/bear.compile` は非推奨です。移行手順は [BEAR.Package#482](https://github.com/bearsunday/BEAR.Package/issues/482) を参照してください。
 
-#### 読み取り専用デプロイ（サーバーレス / イミュータブルコンテナ） {: #writable-paths }
+#### 読み取り専用デプロイ（サーバーレス / イミュータブルコンテナ） {#writable-paths}
 
 任意です。実行時にアプリのツリーが読み取り専用で、書き込めるのが 1 つのディレクトリだけの環境で使います。Vercel や AWS Lambda などのサーバーレス、`docker run --read-only` や `readOnlyRootFilesystem: true` で起動したコンテナが該当します。通常の VPS や共有ホストでは不要です。
 
