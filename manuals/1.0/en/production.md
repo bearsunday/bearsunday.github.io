@@ -165,17 +165,19 @@ Refer to the [existing implementation ProdLogger](https://github.com/bearsunday/
 
 When setting up, you can **warm up** the project: create static cache files for DI/AOP and annotations in advance, and write optimized `autoload.php` and `preload.php`.
 
-The recommended entry is `Compiler::fromInjector()` with the same application `Injector` used at runtime (BEAR.Package 1.21+; skeleton ships `bin/compile.php`).
+A build script names the application; it does not boot it (BEAR.Package 1.22+; the skeleton ships `bin/compile.php`).
 
 ```php
 // bin/compile.php
 use BEAR\Package\Compiler;
-use MyVendor\MyProject\Injector;
 
 $context = $argv[1] ?? 'prod-app';
+$writeDir = $argv[2] ?? null;
 
-exit(Compiler::fromInjector(Injector::getInstance($context), $context)());
+exit((new Compiler('MyVendor\MyProject', $context, dirname(__DIR__), $writeDir))());
 ```
+
+`Compiler::fromInjector($injector, $context, $writeDir)` is for a caller that already holds an injector - a command inside a running application. It reads one thing from it, the application's `Meta`, and compiles in a child process so classes already in memory cannot narrow the recording. In a build script it would build a container only to throw it away, and on a cold tree that container compiles itself first.
 
 ```json
 "scripts": {
@@ -203,7 +205,7 @@ DI scripts are written under `{appDir}/var/tmp/{context}/di`. They are a build o
 
 Optional. Use it when the application tree is read-only at runtime and one directory is the only writable location: serverless platforms such as Vercel or AWS Lambda, or a container started with `docker run --read-only` / `readOnlyRootFilesystem: true`. Ordinary VPS and shared hosting do not need it.
 
-Hand that directory to the boot, and to the build. It has to be an absolute path, and the two sides have to agree: the paths are compiled into the DI scripts. Both are enforced - a relative path throws `InvalidWriteDirException`, and a compile whose write directory differs from its injector's throws `WriteDirMismatchException`.
+Hand that directory to the boot, and to the build. It has to be an absolute path, and the two sides have to agree: the paths are compiled into the DI scripts. Both are enforced - a relative path throws `InvalidWriteDirException`, and a compile whose write directory differs from the injector it was handed throws `WriteDirMismatchException`.
 
 ```diff
  // public/index.php
@@ -211,10 +213,10 @@ Hand that directory to the boot, and to the build. It has to be an absolute path
 +exit((new Bootstrap())('prod-app', $GLOBALS, $_SERVER, getenv('APP_WRITE_DIR') ?: null));
 
  // bin/compile.php               php bin/compile.php prod-app /tmp
--exit(Compiler::fromInjector(Injector::getInstance($context), $context)());
+-exit((new Compiler('MyVendor\MyProject', $context, dirname(__DIR__)))());
 +$writeDir = $argv[2] ?? null;
 +
-+exit(Compiler::fromInjector(Injector::getInstance($context, $writeDir), $context, $writeDir)());
++exit((new Compiler('MyVendor\MyProject', $context, dirname(__DIR__), $writeDir))());
 
  // src/Bootstrap.php
 -    public function __invoke(string $context, array $globals, array $server): int
@@ -224,15 +226,24 @@ Hand that directory to the boot, and to the build. It has to be an absolute path
 +        $app = Injector::getInstance($context, $writeDir)->getInstance(AppInterface::class);
 
  // src/Injector.php
--    public static function getInstance(string $context): InjectorInterface
+-use BEAR\Package\Injector\PackageInjector;
++use BEAR\Package\Injector as PackageInjector;
+
+-    public static function getInstance(string $context, string|null $tmpDir = null, string|null $logDir = null): InjectorInterface
+-    {
+-        $meta = new Meta(__NAMESPACE__, $context, dirname(__DIR__), $tmpDir, $logDir);
+-        $cacheNamespace = str_replace('/', '_', $meta->appDir) . $context;
+-        $cache = (new LocalCacheProvider($meta->tmpDir . '/injector', $cacheNamespace))->get();
+-
+-        return PackageInjector::getInstance($meta, $context, $cache);
+-    }
 +    public static function getInstance(string $context, string|null $writeDir = null): InjectorInterface
-     {
--        return PackageInjector::getInstance(__NAMESPACE__, $context, dirname(__DIR__));
++    {
 +        return PackageInjector::getInstance(__NAMESPACE__, $context, dirname(__DIR__), null, $writeDir);
-     }
++    }
 ```
 
-Development entry points pass nothing and keep the default paths. Reading environment variables is the entry point's business, not the framework's.
+`BEAR\Package\Injector` builds the `Meta` and the injector cache pool from the write directory, so the skeleton's own `Meta` / `LocalCacheProvider` lines go away. Development entry points pass nothing and keep the default paths. Reading environment variables is the entry point's business, not the framework's.
 
 With `/tmp` as the write directory:
 

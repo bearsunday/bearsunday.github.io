@@ -160,17 +160,19 @@ final class MyProdLoggerModule extends AbstractModule
 
 セットアップ時にプロジェクトを**ウォームアップ**できます。DI/AOP 用の動的ファイルやアノテーションなどの静的キャッシュを事前に作成し、最適化された `autoload.php` と `preload.php` を出力します。
 
-推奨は、ランタイムと同じアプリ `Injector` を使う `Compiler::fromInjector()` です（BEAR.Package 1.21+。スケルトンは `bin/compile.php`）。
+ビルドスクリプトはアプリケーションを**名乗るだけ**で、起動はしません（BEAR.Package 1.22+。スケルトンは `bin/compile.php`）。
 
 ```php
 // bin/compile.php
 use BEAR\Package\Compiler;
-use MyVendor\MyProject\Injector;
 
 $context = $argv[1] ?? 'prod-app';
+$writeDir = $argv[2] ?? null;
 
-exit(Compiler::fromInjector(Injector::getInstance($context), $context)());
+exit((new Compiler('MyVendor\MyProject', $context, dirname(__DIR__), $writeDir))());
 ```
+
+`Compiler::fromInjector($injector, $context, $writeDir)` は、すでに injector を持っている呼び出し元（動作中のアプリ内のコマンドなど）のためのものです。injector から読むのはアプリの `Meta` 1 つだけで、メモリ上のクラスが記録を狭めないよう子プロセスでコンパイルします。ビルドスクリプトで使うと、捨てるためのコンテナを組むことになり、scripts が無い初回はそのコンテナ自身が先にコンパイルを走らせます。
 
 ```json
 "scripts": {
@@ -196,7 +198,7 @@ DI スクリプトの出力先は `{appDir}/var/tmp/{context}/di` です。こ�
 
 任意です。実行時にアプリのツリーが読み取り専用で、書き込めるのが 1 つのディレクトリだけの環境で使います。Vercel や AWS Lambda などのサーバーレス、`docker run --read-only` や `readOnlyRootFilesystem: true` で起動したコンテナが該当します。通常の VPS や共有ホストでは不要です。
 
-そのディレクトリを boot と build の両方に渡します。絶対パスであること、そして両者が一致していることが必要です（パスは DI スクリプトに焼き込まれるため）。どちらも強制されます — 相対パスは `InvalidWriteDirException`、injector と compile の書き込み先が違う場合は `WriteDirMismatchException` になります。
+そのディレクトリを boot と build の両方に渡します。絶対パスであること、そして両者が一致していることが必要です（パスは DI スクリプトに焼き込まれるため）。どちらも強制されます — 相対パスは `InvalidWriteDirException`、渡された injector と compile の書き込み先が違う場合は `WriteDirMismatchException` になります。
 
 ```diff
  // public/index.php
@@ -204,10 +206,10 @@ DI スクリプトの出力先は `{appDir}/var/tmp/{context}/di` です。こ�
 +exit((new Bootstrap())('prod-app', $GLOBALS, $_SERVER, getenv('APP_WRITE_DIR') ?: null));
 
  // bin/compile.php               php bin/compile.php prod-app /tmp
--exit(Compiler::fromInjector(Injector::getInstance($context), $context)());
+-exit((new Compiler('MyVendor\MyProject', $context, dirname(__DIR__)))());
 +$writeDir = $argv[2] ?? null;
 +
-+exit(Compiler::fromInjector(Injector::getInstance($context, $writeDir), $context, $writeDir)());
++exit((new Compiler('MyVendor\MyProject', $context, dirname(__DIR__), $writeDir))());
 
  // src/Bootstrap.php
 -    public function __invoke(string $context, array $globals, array $server): int
@@ -217,15 +219,24 @@ DI スクリプトの出力先は `{appDir}/var/tmp/{context}/di` です。こ�
 +        $app = Injector::getInstance($context, $writeDir)->getInstance(AppInterface::class);
 
  // src/Injector.php
--    public static function getInstance(string $context): InjectorInterface
+-use BEAR\Package\Injector\PackageInjector;
++use BEAR\Package\Injector as PackageInjector;
+
+-    public static function getInstance(string $context, string|null $tmpDir = null, string|null $logDir = null): InjectorInterface
+-    {
+-        $meta = new Meta(__NAMESPACE__, $context, dirname(__DIR__), $tmpDir, $logDir);
+-        $cacheNamespace = str_replace('/', '_', $meta->appDir) . $context;
+-        $cache = (new LocalCacheProvider($meta->tmpDir . '/injector', $cacheNamespace))->get();
+-
+-        return PackageInjector::getInstance($meta, $context, $cache);
+-    }
 +    public static function getInstance(string $context, string|null $writeDir = null): InjectorInterface
-     {
--        return PackageInjector::getInstance(__NAMESPACE__, $context, dirname(__DIR__));
++    {
 +        return PackageInjector::getInstance(__NAMESPACE__, $context, dirname(__DIR__), null, $writeDir);
-     }
++    }
 ```
 
-開発用のエントリは何も渡さず既定のパスを使います。環境変数を読むのはエントリの仕事で、フレームワークの仕事ではありません。
+`Meta` と injector のキャッシュプールは書き込み先から `BEAR\Package\Injector` が組むので、スケルトン側の `Meta` / `LocalCacheProvider` の行はなくなります。開発用のエントリは何も渡さず既定のパスを使います。環境変数を読むのはエントリの仕事で、フレームワークの仕事ではありません。
 
 書き込み先を `/tmp` にした場合:
 
