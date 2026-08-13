@@ -188,19 +188,58 @@ mv preload.php api.preload.php
 php bin/compile.php prod-html-app
 ```
 
-DI スクリプトの出力先は `{tmpDir}/di` です（既定の `tmpDir` は `var/tmp/{context}`）。ほとんどのデプロイではこの既定のままで問題ありません。
+DI スクリプトの出力先は `{appDir}/var/tmp/{context}/di` です。これはビルド成果物で、デプロイ成果物に同梱され実行時は読むだけです。
 
 `vendor/bin/bear.compile` は非推奨です。移行手順は [BEAR.Package#482](https://github.com/bearsunday/BEAR.Package/issues/482) を参照してください。
 
-#### 書き込み先を変える場合 {: #writable-paths }
+#### 読み取り専用デプロイ（サーバーレス / イミュータブルコンテナ） {: #writable-paths }
 
-プロジェクトツリー外に一時ファイルやログを置きたいときだけ使います（任意）。例としては、アプリ本体が読み取り専用のホスト（一部の serverless / コンテナ構成）や、ビルド時と実行時で書き込みパスが分かれる場合です。通常の VPS や共有ホストでは不要です。
+任意です。実行時にアプリのツリーが読み取り専用で、書き込めるのが 1 つのディレクトリだけの環境で使います。Vercel や AWS Lambda などのサーバーレス、`docker run --read-only` や `readOnlyRootFilesystem: true` で起動したコンテナが該当します。通常の VPS や共有ホストでは不要です。
 
-`Meta` のコンストラクタに解決済みのパスを渡せます（環境変数の解釈はアプリ側の都合です）。`Compiler::fromInjector()` ならコンパイルも同じ Meta を使います。
+そのディレクトリを boot と build の両方に渡します。絶対パスであること、そして両者が一致していることが必要です（パスは DI スクリプトに焼き込まれるため）。どちらも強制されます — 相対パスは `InvalidWriteDirException`、injector と compile の書き込み先が違う場合は `WriteDirMismatchException` になります。
 
-```php
-new Meta($name, $context, $appDir, '/var/tmp/my-app', '/var/log/my-app');
+```diff
+ // public/index.php
+-exit((new Bootstrap())('prod-app', $GLOBALS, $_SERVER));
++exit((new Bootstrap())('prod-app', $GLOBALS, $_SERVER, getenv('APP_WRITE_DIR') ?: null));
+
+ // bin/compile.php               php bin/compile.php prod-app /tmp
+-exit(Compiler::fromInjector(Injector::getInstance($context), $context)());
++$writeDir = $argv[2] ?? null;
++
++exit(Compiler::fromInjector(Injector::getInstance($context, $writeDir), $context, $writeDir)());
+
+ // src/Bootstrap.php
+-    public function __invoke(string $context, array $globals, array $server): int
++    public function __invoke(string $context, array $globals, array $server, string|null $writeDir = null): int
+     {
+-        $app = Injector::getInstance($context)->getInstance(AppInterface::class);
++        $app = Injector::getInstance($context, $writeDir)->getInstance(AppInterface::class);
+
+ // src/Injector.php
+-    public static function getInstance(string $context): InjectorInterface
++    public static function getInstance(string $context, string|null $writeDir = null): InjectorInterface
+     {
+-        return PackageInjector::getInstance(__NAMESPACE__, $context, dirname(__DIR__));
++        return PackageInjector::getInstance(__NAMESPACE__, $context, dirname(__DIR__), null, $writeDir);
+     }
 ```
+
+開発用のエントリは何も渡さず既定のパスを使います。環境変数を読むのはエントリの仕事で、フレームワークの仕事ではありません。
+
+書き込み先を `/tmp` にした場合:
+
+```text
+{appDir}/var/tmp/{context}/di                   コンパイル済み DI スクリプト（成果物内）
+/tmp/MyVendor/MyProject/{context}/tmp           クエリリポジトリのキャッシュ、serialize した injector
+/tmp/MyVendor/MyProject/{context}/log
+```
+
+パスにアプリ名と context が入るのは、デプロイがそのどちらも知らないからです。ローカルキャッシュのキーはリソース URI なので、2 つのアプリや 2 つの context が同じディレクトリを共有すると互いのエントリで応答してしまいます。コンパイル済みスクリプトは `appDir` 配下に残ります。新しいインスタンスの `/tmp` は空なので、書き込み先に追従させると cold start ごとに再コンパイルになるためです（リソース 5 個のアプリで 0.38 秒、成果物から読めば 0.018 秒）。
+
+build と違う書き込み先で boot した場合は、古いパスを使うのではなく再コンパイルに落ちます。成果物が読み取り専用なら例外で止まり、書き込み可能なら `Compiled DI scripts on demand` の notice が出ます。
+
+BEAR.Package 1.22 以降が必要です。背景: [BEAR.Package#491](https://github.com/bearsunday/BEAR.Package/pull/491)
 
 ### autoload.php
 

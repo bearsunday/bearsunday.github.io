@@ -195,19 +195,58 @@ mv preload.php api.preload.php
 php bin/compile.php prod-html-app
 ```
 
-DI scripts are written under `{tmpDir}/di` (default `tmpDir` is `var/tmp/{context}`). The defaults are fine for most deployments.
+DI scripts are written under `{appDir}/var/tmp/{context}/di`. They are a build output: the deployment artifact carries them and runtime only reads them.
 
 `vendor/bin/bear.compile` is deprecated. Migration: [BEAR.Package#482](https://github.com/bearsunday/BEAR.Package/issues/482).
 
-#### Changing writable paths {: #writable-paths }
+#### Read-only deployments (serverless, immutable containers) {: #writable-paths }
 
-Optional. Use only when temporary files or logs should live outside the project tree—for example a read-only app root (some serverless or container layouts), or when build-time and runtime writable paths differ. Ordinary VPS or shared hosting does not need this.
+Optional. Use it when the application tree is read-only at runtime and one directory is the only writable location: serverless platforms such as Vercel or AWS Lambda, or a container started with `docker run --read-only` / `readOnlyRootFilesystem: true`. Ordinary VPS and shared hosting do not need it.
 
-Pass resolved paths to the `Meta` constructor (interpreting environment variables is an application concern). With `Compiler::fromInjector()`, compile uses the same Meta.
+Hand that directory to the boot, and to the build. It has to be an absolute path, and the two sides have to agree: the paths are compiled into the DI scripts. Both are enforced - a relative path throws `InvalidWriteDirException`, and a compile whose write directory differs from its injector's throws `WriteDirMismatchException`.
 
-```php
-new Meta($name, $context, $appDir, '/var/tmp/my-app', '/var/log/my-app');
+```diff
+ // public/index.php
+-exit((new Bootstrap())('prod-app', $GLOBALS, $_SERVER));
++exit((new Bootstrap())('prod-app', $GLOBALS, $_SERVER, getenv('APP_WRITE_DIR') ?: null));
+
+ // bin/compile.php               php bin/compile.php prod-app /tmp
+-exit(Compiler::fromInjector(Injector::getInstance($context), $context)());
++$writeDir = $argv[2] ?? null;
++
++exit(Compiler::fromInjector(Injector::getInstance($context, $writeDir), $context, $writeDir)());
+
+ // src/Bootstrap.php
+-    public function __invoke(string $context, array $globals, array $server): int
++    public function __invoke(string $context, array $globals, array $server, string|null $writeDir = null): int
+     {
+-        $app = Injector::getInstance($context)->getInstance(AppInterface::class);
++        $app = Injector::getInstance($context, $writeDir)->getInstance(AppInterface::class);
+
+ // src/Injector.php
+-    public static function getInstance(string $context): InjectorInterface
++    public static function getInstance(string $context, string|null $writeDir = null): InjectorInterface
+     {
+-        return PackageInjector::getInstance(__NAMESPACE__, $context, dirname(__DIR__));
++        return PackageInjector::getInstance(__NAMESPACE__, $context, dirname(__DIR__), null, $writeDir);
+     }
 ```
+
+Development entry points pass nothing and keep the default paths. Reading environment variables is the entry point's business, not the framework's.
+
+With `/tmp` as the write directory:
+
+```text
+{appDir}/var/tmp/{context}/di                   compiled DI scripts, in the artifact
+/tmp/MyVendor/MyProject/{context}/tmp           query repository cache, serialized injector
+/tmp/MyVendor/MyProject/{context}/log
+```
+
+The application and the context are in the path because a deploy knows neither, and local cache keys are resource URIs: two applications or two contexts in one directory would answer with each other's entries. Compiled scripts stay under `appDir` - a new instance starts with an empty `/tmp`, so following the write directory would compile again on every cold start (0.38s against 0.018s on a five-resource application).
+
+Boot with a different write directory than the build used and the boot recompiles instead of using the old paths: loudly if the artifact is read-only, with a `Compiled DI scripts on demand` notice otherwise.
+
+Requires BEAR.Package 1.22+. Background: [BEAR.Package#491](https://github.com/bearsunday/BEAR.Package/pull/491).
 
 ### autoload.php
 
