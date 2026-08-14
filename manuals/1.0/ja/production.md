@@ -175,7 +175,7 @@ $writeDir = $argv[2] ?? null;
 exit((new Compiler('MyVendor\MyProject', $context, dirname(__DIR__), $writeDir))());
 ```
 
-`Compiler::fromInjector($injector, $context, $writeDir)` は、すでに injector を持っている呼び出し元（動作中のアプリ内のコマンドなど）のためのものです。injector から読むのはアプリの `Meta` 1 つだけで、メモリ上のクラスが記録を狭めないよう子プロセスでコンパイルします。ビルドスクリプトで使うと、捨てるためのコンテナを組むことになり、scripts が無い初回はそのコンテナ自身が先にコンパイルを走らせます。
+`Compiler::fromInjector($injector, $context, $writeDir)` は、すでに injector を持っている呼び出し元（動作中のアプリ内のコマンドなど）のためのものです。ビルドスクリプトでは使いません。
 
 ```json
 "scripts": {
@@ -199,7 +199,7 @@ DI スクリプトの出力先は `{appDir}/var/tmp/{context}/di` です。こ�
 
 #### 読み取り専用デプロイ（サーバーレス / イミュータブルコンテナ） {#writable-paths}
 
-任意です。実行時にアプリのツリーが読み取り専用で、書き込めるのが 1 つのディレクトリだけの環境で使います。Vercel や AWS Lambda などのサーバーレス、`docker run --read-only` や `readOnlyRootFilesystem: true` で起動したコンテナが該当します。通常の VPS や共有ホストでは不要です。
+サーバーレスやイミュータブルコンテナでは、書き込めるディレクトリが制限されていることがあります。Vercel や AWS Lambda、`docker run --read-only` や `readOnlyRootFilesystem: true` で起動したコンテナでは、アプリのツリーは読み取り専用で、書き込めるのは `/tmp` など 1 つのディレクトリだけです。通常の VPS や共有ホストでは関係ありません。
 
 そのディレクトリを boot と build の両方に渡します。絶対パスであること、そして両者が一致していることが必要です（パスは DI スクリプトに焼き込まれるため）。どちらも強制されます — 相対パスは `InvalidWriteDirException`、渡された injector と compile の書き込み先が違う場合は `WriteDirMismatchException` になります。
 

@@ -180,7 +180,7 @@ $writeDir = $argv[2] ?? null;
 exit((new Compiler('MyVendor\MyProject', $context, dirname(__DIR__), $writeDir))());
 ```
 
-`Compiler::fromInjector($injector, $context, $writeDir)` is for a caller that already holds an injector - a command inside a running application. It reads one thing from it, the application's `Meta`, and compiles in a child process so classes already in memory cannot narrow the recording. In a build script it would build a container only to throw it away, and on a cold tree that container compiles itself first.
+`Compiler::fromInjector($injector, $context, $writeDir)` is for a caller that already holds an injector - a command inside a running application. A build script does not use it.
 
 ```json
 "scripts": {
@@ -206,7 +206,7 @@ DI scripts are written under `{appDir}/var/tmp/{context}/di`. They are a build o
 
 #### Read-only deployments (serverless, immutable containers) {#writable-paths}
 
-Optional. Use it when the application tree is read-only at runtime and one directory is the only writable location: serverless platforms such as Vercel or AWS Lambda, or a container started with `docker run --read-only` / `readOnlyRootFilesystem: true`. Ordinary VPS and shared hosting do not need it.
+Serverless platforms and immutable containers restrict where an application may write. On Vercel or AWS Lambda, or in a container started with `docker run --read-only` / `readOnlyRootFilesystem: true`, the application tree is read-only and one directory - `/tmp`, typically - is the only writable location. Ordinary VPS and shared hosting are unaffected.
 
 Hand that directory to the boot, and to the build. It has to be an absolute path, and the two sides have to agree: the paths are compiled into the DI scripts. Both are enforced - a relative path throws `InvalidWriteDirException`, and a compile whose write directory differs from the injector it was handed throws `WriteDirMismatchException`.
 
