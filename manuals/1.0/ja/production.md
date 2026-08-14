@@ -160,37 +160,59 @@ final class MyProdLoggerModule extends AbstractModule
 
 セットアップ時にプロジェクトを**ウォームアップ**できます。DI/AOP 用の動的ファイルやアノテーションなどの静的キャッシュを事前に作成し、最適化された `autoload.php` と `preload.php` を出力します。
 
-ビルドスクリプトはアプリケーションを**名乗るだけ**で、起動はしません（BEAR.Package 1.22以降。スケルトンは`bin/compile.php`）。
+出発点となるスクリプトがBEAR.Package 1.23以降に同梱されています。無い場合は一度だけコピーします（BEAR.Skeletonには同梱済みです）。
+
+```bash
+cp vendor/bear/package/bin/compile.php bin/
+```
 
 ```php
 <?php
-// bin/compile.php
-use BEAR\Package\Compiler;
+// bin/compile.php — あなたのスクリプトです。自由に編集してください
+use BEAR\Package\Console;
 
 require dirname(__DIR__) . '/vendor/autoload.php';
 
-$context = $argv[1] ?? 'prod-app';
-$writeDir = $argv[2] ?? null;
+ini_set('memory_limit', '-1');
 
-exit((new Compiler('MyVendor\MyProject', $context, dirname(__DIR__), $writeDir))());
+$appDir = dirname(__DIR__);
+$console = new Console($appDir, getenv('APP_WRITE_DIR') ?: null);
+$context = 'prod-app';
+
+exit($console->compile($context));
 ```
 
-`Compiler::fromInjector($injector, $context, $writeDir)`は、すでにinjectorを持っている呼び出し元（動作中のアプリケーション内のコマンドなど）のためのものです。ビルドスクリプトでは使いません。
+スクリプトが書くのは context と環境変数の読み取りだけで、アプリケーションについては何も書きません。アプリケーション名はオートローダーから決まります（`Module/AppModule.php`を持つ名前空間のうち、ソースがアプリケーション直下にあるもの）。`.compile.php`のビルド用スタブはCompiler自身が読み込みます。`$console->phar($context)`はコンパイル結果を1つのアーカイブにします → [Phar](phar.html)
+
+`Compiler::fromInjector($injector, $context, $writeDir)`は、すでにinjectorを持っている呼び出し元（動作中のアプリケーション内のコマンド、あるいは`Injector`クラスを独自に拡張しているアプリケーション）のためのものです。
 
 ```json
 "scripts": {
-    "compile": "php bin/compile.php prod-app"
+    "compile": "php bin/compile.php"
 }
 ```
 
 * コンパイルをすれば全てのクラスでインジェクションを行うのでランタイムでDIのエラーが出る可能性が極めて低くなります。
-* `.env`に含まれた内容はPHPファイルに取り込まれるのでコンパイル後に`.env`を消去可能です。コンテントネゴシエーションを行う場合など（例：api-app, html-app）1つのアプリケーションで複数コンテキストのコンパイルを行うときには、コンテキストごとに `bin/compile.php` を呼び、プロジェクト直下に出る `autoload.php` / `preload.php` を退避します（後続コンパイルで上書きされないようにします）。
+* `.env`に含まれた内容はPHPファイルに取り込まれるのでコンパイル後に`.env`を消去可能です。
 
-```bash
-php bin/compile.php prod-hal-api-app
-mv autoload.php api.autoload.php
-mv preload.php api.preload.php
-php bin/compile.php prod-html-app
+コンテントネゴシエーションを行う場合など（例：api-app, html-app）1つのアプリケーションで複数コンテキストをコンパイルするときは、スクリプト内のループにします。`autoload.php`と`preload.php`は固定パスに書かれ、次のコンパイルで消えるので、その都度 rename します。
+
+```php
+// bin/compile.php
+$appDir = dirname(__DIR__);
+$console = new Console($appDir, getenv('APP_WRITE_DIR') ?: null);
+
+foreach (['prod-hal-api-app', 'prod-html-app'] as $context) {
+    $code = $console->compile($context);
+    if ($code !== 0) {
+        exit($code);
+    }
+
+    rename($appDir . '/preload.php', $appDir . '/' . $context . '.preload.php');
+    rename($appDir . '/autoload.php', $appDir . '/' . $context . '.autoload.php');
+}
+
+exit(0);
 ```
 
 DIスクリプトの出力先は`{appDir}/var/tmp/{context}/di`です。これはビルド成果物で、成果物に同梱されていれば実行時はコンパイルせず読むだけです。
@@ -213,11 +235,8 @@ DIスクリプトの出力先は`{appDir}/var/tmp/{context}/di`です。これ�
 -exit((new Bootstrap())('prod-app', $GLOBALS, $_SERVER));
 +exit((new Bootstrap())('prod-app', $GLOBALS, $_SERVER, getenv('APP_WRITE_DIR') ?: null));
 
- // bin/compile.php               php bin/compile.php prod-app /tmp
--exit((new Compiler('MyVendor\MyProject', $context, dirname(__DIR__)))());
-+$writeDir = $argv[2] ?? null;
-+
-+exit((new Compiler('MyVendor\MyProject', $context, dirname(__DIR__), $writeDir))());
+ // bin/compile.php               APP_WRITE_DIR=/tmp php bin/compile.php prod-app
+ (変更なし: コピーしたスクリプトがAPP_WRITE_DIRを読みます)
 
  // src/Bootstrap.php
 -    public function __invoke(string $context, array $globals, array $server): int
@@ -244,16 +263,16 @@ DIスクリプトの出力先は`{appDir}/var/tmp/{context}/di`です。これ�
 -    }
 +    public static function getInstance(string $context, string|null $writeDir = null): InjectorInterface
 +    {
-+        return PackageInjector::getInstance(__NAMESPACE__, $context, dirname(__DIR__), null, $writeDir);
++        return PackageInjector::getInstance(__NAMESPACE__, $context, dirname(__DIR__), writeDir: $writeDir);
 +    }
 ```
 
-`Meta`とinjectorのキャッシュプールは書き込み先から`BEAR\Package\Injector`が組むので、スケルトン側の`Meta`/`LocalCacheProvider`の行はなくなります。開発用のエントリは何も渡さず既定のパスを使います。環境変数を読むのはエントリの仕事で、フレームワークの仕事ではありません。
+`Meta`とinjectorのキャッシュプールは書き込み先から`BEAR\Package\Injector`が組むので、スケルトン側の`Meta`/`LocalCacheProvider`の行はなくなります。開発用のエントリは何も渡さず既定のパスを使います。
 
-書き込み先はビルドには引数で、実行時には環境変数で渡します。
+書き込み先の源は`APP_WRITE_DIR`の1つです。ビルドも実行時も同じ変数を読みます。`AppModule`はコンパイル中に動くので、`AppModule`が読む値とビルドが使う値は同じでなければなりません。
 
 ```text
-build     php bin/compile.php prod-app /tmp
+build     APP_WRITE_DIR=/tmp php bin/compile.php prod-app
 runtime   APP_WRITE_DIR=/tmp
           php-fpm   env[APP_WRITE_DIR] = /tmp
           docker    --env APP_WRITE_DIR=/tmp
@@ -272,6 +291,8 @@ runtime   APP_WRITE_DIR=/tmp
 コンパイル済みDIスクリプトは`appDir`配下に残り、デプロイ成果物に同梱されます。新しいインスタンスの`/tmp`は空なので、DIスクリプトまで書き込み先に移すとコールドスタートのたびに再コンパイルになります（リソース5個のアプリケーションで、再コンパイルが0.38秒、成果物からの読み込みが0.018秒）。
 
 ビルドと違う書き込み先で起動した場合は、古いパスを使わずに再コンパイルされます。成果物が読み取り専用なら例外で止まり、書き込み可能なら`Compiled DI scripts on demand`のnoticeが出ます。
+
+自身に書き込まない1ファイルの成果物にするには[Phar](phar.html)を参照してください。
 
 BEAR.Package 1.22以降が必要です。背景: [BEAR.Package#491](https://github.com/bearsunday/BEAR.Package/pull/491)
 

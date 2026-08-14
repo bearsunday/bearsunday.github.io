@@ -165,39 +165,59 @@ Refer to the [existing implementation ProdLogger](https://github.com/bearsunday/
 
 When setting up, you can **warm up** the project: create static cache files for DI/AOP and annotations in advance, and write optimized `autoload.php` and `preload.php`.
 
-A build script names the application; it does not boot it (BEAR.Package 1.22+; the skeleton ships `bin/compile.php`).
+A starting point ships with BEAR.Package 1.23+; copy it into your application once (BEAR.Skeleton carries it already):
+
+```bash
+cp vendor/bear/package/bin/compile.php bin/
+```
 
 ```php
 <?php
-// bin/compile.php
-use BEAR\Package\Compiler;
+// bin/compile.php — yours to edit
+use BEAR\Package\Console;
 
 require dirname(__DIR__) . '/vendor/autoload.php';
 
-$context = $argv[1] ?? 'prod-app';
-$writeDir = $argv[2] ?? null;
+ini_set('memory_limit', '-1');
 
-exit((new Compiler('MyVendor\MyProject', $context, dirname(__DIR__), $writeDir))());
+$appDir = dirname(__DIR__);
+$console = new Console($appDir, getenv('APP_WRITE_DIR') ?: null);
+$context = 'prod-app';
+
+exit($console->compile($context));
 ```
 
-`Compiler::fromInjector($injector, $context, $writeDir)` is for a caller that already holds an injector - a command inside a running application. A build script does not use it.
+The script names the context and reads the environment; it says nothing about the application. The name comes from the autoloader - the namespace whose `Module/AppModule.php` sits under the application root - and the Compiler loads `.compile.php` build stubs itself. `$console->phar($context)` packs the compiled result into one archive: [Phar](phar.html).
+
+`Compiler::fromInjector($injector, $context, $writeDir)` is for a caller that already holds an injector - a command inside a running application, or an application whose own `Injector` class is customized.
 
 ```json
 "scripts": {
-    "compile": "php bin/compile.php prod-app"
+    "compile": "php bin/compile.php"
 }
 ```
 
 * If you compile, the possibility of DI errors at runtime is extremely low because injection is performed in all classes.
 * The contents included in `.env` are incorporated into the PHP file, so `.env` can be deleted after compilation.
 
-When compiling multiple contexts (e.g. api-app and html-app for content negotiation), call `bin/compile.php` per context and evacuate project-root `autoload.php` / `preload.php` so a later compile does not overwrite them.
+Compiling multiple contexts (e.g. api-app and html-app for content negotiation) is a loop in the script. `autoload.php` and `preload.php` are written to fixed paths and the next compile removes them, so rename them as you go:
 
-```bash
-php bin/compile.php prod-hal-api-app
-mv autoload.php api.autoload.php
-mv preload.php api.preload.php
-php bin/compile.php prod-html-app
+```php
+// bin/compile.php
+$appDir = dirname(__DIR__);
+$console = new Console($appDir, getenv('APP_WRITE_DIR') ?: null);
+
+foreach (['prod-hal-api-app', 'prod-html-app'] as $context) {
+    $code = $console->compile($context);
+    if ($code !== 0) {
+        exit($code);
+    }
+
+    rename($appDir . '/preload.php', $appDir . '/' . $context . '.preload.php');
+    rename($appDir . '/autoload.php', $appDir . '/' . $context . '.autoload.php');
+}
+
+exit(0);
 ```
 
 DI scripts are written under `{appDir}/var/tmp/{context}/di`. They are a build output: when the artifact carries them, runtime reads them instead of compiling.
@@ -220,11 +240,8 @@ Tell the application which directory it may write to. Pass the same directory to
 -exit((new Bootstrap())('prod-app', $GLOBALS, $_SERVER));
 +exit((new Bootstrap())('prod-app', $GLOBALS, $_SERVER, getenv('APP_WRITE_DIR') ?: null));
 
- // bin/compile.php               php bin/compile.php prod-app /tmp
--exit((new Compiler('MyVendor\MyProject', $context, dirname(__DIR__)))());
-+$writeDir = $argv[2] ?? null;
-+
-+exit((new Compiler('MyVendor\MyProject', $context, dirname(__DIR__), $writeDir))());
+ // bin/compile.php               APP_WRITE_DIR=/tmp php bin/compile.php prod-app
+ (nothing to change: the copied script reads APP_WRITE_DIR)
 
  // src/Bootstrap.php
 -    public function __invoke(string $context, array $globals, array $server): int
@@ -251,16 +268,16 @@ Tell the application which directory it may write to. Pass the same directory to
 -    }
 +    public static function getInstance(string $context, string|null $writeDir = null): InjectorInterface
 +    {
-+        return PackageInjector::getInstance(__NAMESPACE__, $context, dirname(__DIR__), null, $writeDir);
++        return PackageInjector::getInstance(__NAMESPACE__, $context, dirname(__DIR__), writeDir: $writeDir);
 +    }
 ```
 
-`BEAR\Package\Injector` builds the `Meta` and the injector cache pool from the write directory, so the skeleton's own `Meta` / `LocalCacheProvider` lines go away. Development entry points pass nothing and keep the default paths. Reading environment variables is the entry point's business, not the framework's.
+`BEAR\Package\Injector` builds the `Meta` and the injector cache pool from the write directory, so the skeleton's own `Meta` / `LocalCacheProvider` lines go away. Development entry points pass nothing and keep the default paths.
 
-The build takes the directory as an argument, the runtime as an environment variable:
+`APP_WRITE_DIR` is the one source, for the build and for the runtime — `AppModule` runs during the compile, so what it reads must be what the build uses:
 
 ```text
-build     php bin/compile.php prod-app /tmp
+build     APP_WRITE_DIR=/tmp php bin/compile.php prod-app
 runtime   APP_WRITE_DIR=/tmp
           php-fpm   env[APP_WRITE_DIR] = /tmp
           docker    --env APP_WRITE_DIR=/tmp
@@ -279,6 +296,8 @@ The application and the context are in the path because local cache keys are res
 Compiled DI scripts stay under `appDir` and ship inside the artifact. A new instance starts with an empty `/tmp`, so following the write directory would compile again on every cold start - 0.38s against 0.018s on a five-resource application.
 
 If the boot is given a different write directory than the build used, the DI scripts are compiled again instead of read from the old paths: the compile fails if the artifact is read-only, and emits a `Compiled DI scripts on demand` notice if it is writable.
+
+A single-file artifact that never writes into itself is [Phar](phar.html).
 
 Requires BEAR.Package 1.22+. Background: [BEAR.Package#491](https://github.com/bearsunday/BEAR.Package/pull/491).
 
