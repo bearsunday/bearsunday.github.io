@@ -163,8 +163,11 @@ final class MyProdLoggerModule extends AbstractModule
 ビルドスクリプトはアプリケーションを**名乗るだけ**で、起動はしません（BEAR.Package 1.22+。スケルトンは `bin/compile.php`）。
 
 ```php
+<?php
 // bin/compile.php
 use BEAR\Package\Compiler;
+
+require dirname(__DIR__) . '/vendor/autoload.php';
 
 $context = $argv[1] ?? 'prod-app';
 $writeDir = $argv[2] ?? null;
@@ -190,7 +193,7 @@ mv preload.php api.preload.php
 php bin/compile.php prod-html-app
 ```
 
-DI スクリプトの出力先は `{appDir}/var/tmp/{context}/di` です。これはビルド成果物で、デプロイ成果物に同梱され実行時は読むだけです。
+DI スクリプトの出力先は `{appDir}/var/tmp/{context}/di` です。これはビルド成果物で、成果物に同梱されていれば実行時はコンパイルせず読むだけです。
 
 `vendor/bin/bear.compile` は非推奨です。移行手順は [BEAR.Package#482](https://github.com/bearsunday/BEAR.Package/issues/482) を参照してください。
 
@@ -241,6 +244,15 @@ DI スクリプトの出力先は `{appDir}/var/tmp/{context}/di` です。こ�
 ```
 
 `Meta` と injector のキャッシュプールは書き込み先から `BEAR\Package\Injector` が組むので、スケルトン側の `Meta` / `LocalCacheProvider` の行はなくなります。開発用のエントリは何も渡さず既定のパスを使います。環境変数を読むのはエントリの仕事で、フレームワークの仕事ではありません。
+
+build にはディレクトリを引数で、実行時には環境変数で渡します。
+
+```text
+build     php bin/compile.php prod-app /tmp
+runtime   APP_WRITE_DIR=/tmp
+          php-fpm   env[APP_WRITE_DIR] = /tmp
+          docker    --env APP_WRITE_DIR=/tmp
+```
 
 書き込み先を `/tmp` にした場合:
 

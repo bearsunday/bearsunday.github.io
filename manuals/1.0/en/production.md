@@ -168,8 +168,11 @@ When setting up, you can **warm up** the project: create static cache files for 
 A build script names the application; it does not boot it (BEAR.Package 1.22+; the skeleton ships `bin/compile.php`).
 
 ```php
+<?php
 // bin/compile.php
 use BEAR\Package\Compiler;
+
+require dirname(__DIR__) . '/vendor/autoload.php';
 
 $context = $argv[1] ?? 'prod-app';
 $writeDir = $argv[2] ?? null;
@@ -197,7 +200,7 @@ mv preload.php api.preload.php
 php bin/compile.php prod-html-app
 ```
 
-DI scripts are written under `{appDir}/var/tmp/{context}/di`. They are a build output: the deployment artifact carries them and runtime only reads them.
+DI scripts are written under `{appDir}/var/tmp/{context}/di`. They are a build output: when the artifact carries them, runtime reads them instead of compiling.
 
 `vendor/bin/bear.compile` is deprecated. Migration: [BEAR.Package#482](https://github.com/bearsunday/BEAR.Package/issues/482).
 
@@ -248,6 +251,15 @@ Hand that directory to the boot, and to the build. It has to be an absolute path
 ```
 
 `BEAR\Package\Injector` builds the `Meta` and the injector cache pool from the write directory, so the skeleton's own `Meta` / `LocalCacheProvider` lines go away. Development entry points pass nothing and keep the default paths. Reading environment variables is the entry point's business, not the framework's.
+
+The build takes the directory as an argument, the runtime as an environment variable:
+
+```text
+build     php bin/compile.php prod-app /tmp
+runtime   APP_WRITE_DIR=/tmp
+          php-fpm   env[APP_WRITE_DIR] = /tmp
+          docker    --env APP_WRITE_DIR=/tmp
+```
 
 With `/tmp` as the write directory:
 
