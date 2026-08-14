@@ -160,7 +160,7 @@ final class MyProdLoggerModule extends AbstractModule
 
 セットアップ時にプロジェクトを**ウォームアップ**できます。DI/AOP 用の動的ファイルやアノテーションなどの静的キャッシュを事前に作成し、最適化された `autoload.php` と `preload.php` を出力します。
 
-ビルドスクリプトはアプリケーションを**名乗るだけ**で、起動はしません（BEAR.Package 1.22+。スケルトンは `bin/compile.php`）。
+ビルドスクリプトはアプリケーションを**名乗るだけ**で、起動はしません（BEAR.Package 1.22以降。スケルトンは`bin/compile.php`）。
 
 ```php
 <?php
@@ -175,7 +175,7 @@ $writeDir = $argv[2] ?? null;
 exit((new Compiler('MyVendor\MyProject', $context, dirname(__DIR__), $writeDir))());
 ```
 
-`Compiler::fromInjector($injector, $context, $writeDir)` は、すでに injector を持っている呼び出し元（動作中のアプリ内のコマンドなど）のためのものです。ビルドスクリプトでは使いません。
+`Compiler::fromInjector($injector, $context, $writeDir)`は、すでにinjectorを持っている呼び出し元（動作中のアプリケーション内のコマンドなど）のためのものです。ビルドスクリプトでは使いません。
 
 ```json
 "scripts": {
@@ -193,15 +193,20 @@ mv preload.php api.preload.php
 php bin/compile.php prod-html-app
 ```
 
-DI スクリプトの出力先は `{appDir}/var/tmp/{context}/di` です。これはビルド成果物で、成果物に同梱されていれば実行時はコンパイルせず読むだけです。
+DIスクリプトの出力先は`{appDir}/var/tmp/{context}/di`です。これはビルド成果物で、成果物に同梱されていれば実行時はコンパイルせず読むだけです。
 
 `vendor/bin/bear.compile` は非推奨です。移行手順は [BEAR.Package#482](https://github.com/bearsunday/BEAR.Package/issues/482) を参照してください。
 
-#### 読み取り専用デプロイ（サーバーレス / イミュータブルコンテナ） {#writable-paths}
+#### 読み取り専用デプロイ（サーバーレス、イミュータブルコンテナ） {#writable-paths}
 
-サーバーレスやイミュータブルコンテナでは、書き込めるディレクトリが制限されていることがあります。Vercel や AWS Lambda、`docker run --read-only` や `readOnlyRootFilesystem: true` で起動したコンテナでは、アプリのツリーは読み取り専用で、書き込めるのは `/tmp` など 1 つのディレクトリだけです。通常の VPS や共有ホストでは関係ありません。
+サーバーレスやイミュータブルコンテナでは書き込めるディレクトリが制限されることがあります。VercelやAWS Lambda、`docker run --read-only`や`readOnlyRootFilesystem: true`で起動したコンテナでは、プロジェクトのディレクトリは読み取り専用で、書き込めるのは`/tmp`など1つのディレクトリだけです。通常のVPSや共有ホストでは不要です。
 
-そのディレクトリを boot と build の両方に渡します。絶対パスであること、そして両者が一致していることが必要です（パスは DI スクリプトに焼き込まれるため）。どちらも強制されます — 相対パスは `InvalidWriteDirException`、渡された injector と compile の書き込み先が違う場合は `WriteDirMismatchException` になります。
+この場合は書き込めるディレクトリをアプリケーションに渡します。ビルド時と起動時の両方に渡し、次の2つを守ります。
+
+* 絶対パスを渡します。相対パスを渡すと`InvalidWriteDirException`が投げられます。
+* ビルドと起動で同じパスを渡します。パスはDIスクリプトに焼き込まれるため、渡されたinjectorとコンパイルの書き込み先が違う場合は`WriteDirMismatchException`が投げられます。
+
+`$writeDir`は`Bootstrap::__invoke()`、`Injector::getInstance()`、`new Compiler()`の末尾の省略可能な引数です。エントリポイントを次のように変更します。
 
 ```diff
  // public/index.php
@@ -243,9 +248,9 @@ DI スクリプトの出力先は `{appDir}/var/tmp/{context}/di` です。こ�
 +    }
 ```
 
-`Meta` と injector のキャッシュプールは書き込み先から `BEAR\Package\Injector` が組むので、スケルトン側の `Meta` / `LocalCacheProvider` の行はなくなります。開発用のエントリは何も渡さず既定のパスを使います。環境変数を読むのはエントリの仕事で、フレームワークの仕事ではありません。
+`Meta`とinjectorのキャッシュプールは書き込み先から`BEAR\Package\Injector`が組むので、スケルトン側の`Meta`/`LocalCacheProvider`の行はなくなります。開発用のエントリは何も渡さず既定のパスを使います。環境変数を読むのはエントリの仕事で、フレームワークの仕事ではありません。
 
-build にはディレクトリを引数で、実行時には環境変数で渡します。
+書き込み先はビルドには引数で、実行時には環境変数で渡します。
 
 ```text
 build     php bin/compile.php prod-app /tmp
@@ -254,19 +259,21 @@ runtime   APP_WRITE_DIR=/tmp
           docker    --env APP_WRITE_DIR=/tmp
 ```
 
-書き込み先を `/tmp` にした場合:
+書き込み先を`/tmp`にした場合の配置は次のとおりです。
 
 ```text
-{appDir}/var/tmp/{context}/di                   コンパイル済み DI スクリプト（成果物内）
-/tmp/MyVendor/MyProject/{context}/tmp           クエリリポジトリのキャッシュ、serialize した injector
+{appDir}/var/tmp/{context}/di                   コンパイル済みDIスクリプト（成果物内）
+/tmp/MyVendor/MyProject/{context}/tmp           クエリリポジトリのキャッシュ、serializeしたinjector
 /tmp/MyVendor/MyProject/{context}/log
 ```
 
-パスにアプリ名と context が入るのは、デプロイがそのどちらも知らないからです。ローカルキャッシュのキーはリソース URI なので、2 つのアプリや 2 つの context が同じディレクトリを共有すると互いのエントリで応答してしまいます。コンパイル済みスクリプトは `appDir` 配下に残ります。新しいインスタンスの `/tmp` は空なので、書き込み先に追従させると cold start ごとに再コンパイルになるためです（リソース 5 個のアプリで 0.38 秒、成果物から読めば 0.018 秒）。
+パスにアプリケーション名とcontextが入るのは、ローカルキャッシュのキーがリソースURIだからです。区切りがないまま2つのアプリケーションや2つのcontextが同じディレクトリを共有すると、互いのキャッシュエントリで応答してしまいます。
 
-build と違う書き込み先で boot した場合は、古いパスを使うのではなく再コンパイルに落ちます。成果物が読み取り専用なら例外で止まり、書き込み可能なら `Compiled DI scripts on demand` の notice が出ます。
+コンパイル済みDIスクリプトは`appDir`配下に残り、デプロイ成果物に同梱されます。新しいインスタンスの`/tmp`は空なので、DIスクリプトまで書き込み先に移すとコールドスタートのたびに再コンパイルになります（リソース5個のアプリケーションで、再コンパイルが0.38秒、成果物からの読み込みが0.018秒）。
 
-BEAR.Package 1.22 以降が必要です。背景: [BEAR.Package#491](https://github.com/bearsunday/BEAR.Package/pull/491)
+ビルドと違う書き込み先で起動した場合は、古いパスを使わずに再コンパイルされます。成果物が読み取り専用なら例外で止まり、書き込み可能なら`Compiled DI scripts on demand`のnoticeが出ます。
+
+BEAR.Package 1.22以降が必要です。背景: [BEAR.Package#491](https://github.com/bearsunday/BEAR.Package/pull/491)
 
 ### autoload.php
 

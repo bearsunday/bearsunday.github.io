@@ -206,9 +206,14 @@ DI scripts are written under `{appDir}/var/tmp/{context}/di`. They are a build o
 
 #### Read-only deployments (serverless, immutable containers) {#writable-paths}
 
-Serverless platforms and immutable containers restrict where an application may write. On Vercel or AWS Lambda, or in a container started with `docker run --read-only` / `readOnlyRootFilesystem: true`, the application tree is read-only and one directory - `/tmp`, typically - is the only writable location. Ordinary VPS and shared hosting are unaffected.
+Serverless platforms and immutable containers restrict where an application may write. On Vercel or AWS Lambda, or in a container started with `docker run --read-only` / `readOnlyRootFilesystem: true`, the project directory is read-only and one directory - `/tmp`, typically - is the only writable location. Ordinary VPS and shared hosting are unaffected.
 
-Hand that directory to the boot, and to the build. It has to be an absolute path, and the two sides have to agree: the paths are compiled into the DI scripts. Both are enforced - a relative path throws `InvalidWriteDirException`, and a compile whose write directory differs from the injector it was handed throws `WriteDirMismatchException`.
+Tell the application which directory it may write to. Pass the same directory to both the build and the boot, and keep to two rules:
+
+* Pass an absolute path. A relative path throws `InvalidWriteDirException`.
+* Pass the same path to the build and the boot. The paths are compiled into the DI scripts, so a compile whose write directory differs from the injector it was handed throws `WriteDirMismatchException`.
+
+`$writeDir` is the optional last argument on `Bootstrap::__invoke()`, `Injector::getInstance()` and `new Compiler()`. Change the entry points like this:
 
 ```diff
  // public/index.php
@@ -261,7 +266,7 @@ runtime   APP_WRITE_DIR=/tmp
           docker    --env APP_WRITE_DIR=/tmp
 ```
 
-With `/tmp` as the write directory:
+With `/tmp` as the write directory, the layout is:
 
 ```text
 {appDir}/var/tmp/{context}/di                   compiled DI scripts, in the artifact
@@ -269,9 +274,11 @@ With `/tmp` as the write directory:
 /tmp/MyVendor/MyProject/{context}/log
 ```
 
-The application and the context are in the path because a deploy knows neither, and local cache keys are resource URIs: two applications or two contexts in one directory would answer with each other's entries. Compiled scripts stay under `appDir` - a new instance starts with an empty `/tmp`, so following the write directory would compile again on every cold start (0.38s against 0.018s on a five-resource application).
+The application and the context are in the path because local cache keys are resource URIs: two applications or two contexts sharing one directory would answer with each other's entries.
 
-Boot with a different write directory than the build used and the boot recompiles instead of using the old paths: loudly if the artifact is read-only, with a `Compiled DI scripts on demand` notice otherwise.
+Compiled DI scripts stay under `appDir` and ship inside the artifact. A new instance starts with an empty `/tmp`, so following the write directory would compile again on every cold start - 0.38s against 0.018s on a five-resource application.
+
+If the boot is given a different write directory than the build used, the DI scripts are compiled again instead of read from the old paths: the compile fails if the artifact is read-only, and emits a `Compiled DI scripts on demand` notice if it is writable.
 
 Requires BEAR.Package 1.22+. Background: [BEAR.Package#491](https://github.com/bearsunday/BEAR.Package/pull/491).
 
