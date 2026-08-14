@@ -165,17 +165,22 @@ Refer to the [existing implementation ProdLogger](https://github.com/bearsunday/
 
 When setting up, you can **warm up** the project: create static cache files for DI/AOP and annotations in advance, and write optimized `autoload.php` and `preload.php`.
 
-The recommended entry is `Compiler::fromInjector()` with the same application `Injector` used at runtime (BEAR.Package 1.21+; skeleton ships `bin/compile.php`).
+A build script names the application; it does not boot it (BEAR.Package 1.22+; the skeleton ships `bin/compile.php`).
 
 ```php
+<?php
 // bin/compile.php
 use BEAR\Package\Compiler;
-use MyVendor\MyProject\Injector;
+
+require dirname(__DIR__) . '/vendor/autoload.php';
 
 $context = $argv[1] ?? 'prod-app';
+$writeDir = $argv[2] ?? null;
 
-exit(Compiler::fromInjector(Injector::getInstance($context), $context)());
+exit((new Compiler('MyVendor\MyProject', $context, dirname(__DIR__), $writeDir))());
 ```
+
+`Compiler::fromInjector($injector, $context, $writeDir)` is for a caller that already holds an injector - a command inside a running application. A build script does not use it.
 
 ```json
 "scripts": {
@@ -195,19 +200,87 @@ mv preload.php api.preload.php
 php bin/compile.php prod-html-app
 ```
 
-DI scripts are written under `{tmpDir}/di` (default `tmpDir` is `var/tmp/{context}`). The defaults are fine for most deployments.
+DI scripts are written under `{appDir}/var/tmp/{context}/di`. They are a build output: when the artifact carries them, runtime reads them instead of compiling.
 
 `vendor/bin/bear.compile` is deprecated. Migration: [BEAR.Package#482](https://github.com/bearsunday/BEAR.Package/issues/482).
 
-#### Changing writable paths {: #writable-paths }
+#### Read-only deployments (serverless, immutable containers) {#writable-paths}
 
-Optional. Use only when temporary files or logs should live outside the project tree—for example a read-only app root (some serverless or container layouts), or when build-time and runtime writable paths differ. Ordinary VPS or shared hosting does not need this.
+Serverless platforms and immutable containers restrict where an application may write. On Vercel or AWS Lambda, or in a container started with `docker run --read-only` / `readOnlyRootFilesystem: true`, the project directory is read-only and one directory - `/tmp`, typically - is the only writable location. Ordinary VPS and shared hosting are unaffected.
 
-Pass resolved paths to the `Meta` constructor (interpreting environment variables is an application concern). With `Compiler::fromInjector()`, compile uses the same Meta.
+Tell the application which directory it may write to. Pass the same directory to both the build and the boot, and keep to two rules:
 
-```php
-new Meta($name, $context, $appDir, '/var/tmp/my-app', '/var/log/my-app');
+* Pass an absolute path. A relative path throws `InvalidWriteDirException`.
+* Pass the same path to the build and the boot. The paths are compiled into the DI scripts, so a compile whose write directory differs from the injector it was handed throws `WriteDirMismatchException`.
+
+`$writeDir` is the optional last argument on `Bootstrap::__invoke()`, `Injector::getInstance()` and `new Compiler()`. Change the entry points like this:
+
+```diff
+ // public/index.php
+-exit((new Bootstrap())('prod-app', $GLOBALS, $_SERVER));
++exit((new Bootstrap())('prod-app', $GLOBALS, $_SERVER, getenv('APP_WRITE_DIR') ?: null));
+
+ // bin/compile.php               php bin/compile.php prod-app /tmp
+-exit((new Compiler('MyVendor\MyProject', $context, dirname(__DIR__)))());
++$writeDir = $argv[2] ?? null;
++
++exit((new Compiler('MyVendor\MyProject', $context, dirname(__DIR__), $writeDir))());
+
+ // src/Bootstrap.php
+-    public function __invoke(string $context, array $globals, array $server): int
++    public function __invoke(
++        string $context, array $globals, array $server, string|null $writeDir = null
++    ): int
+     {
+-        $app = Injector::getInstance($context)->getInstance(AppInterface::class);
++        $app = Injector::getInstance($context, $writeDir)->getInstance(AppInterface::class);
+
+ // src/Injector.php
+-use BEAR\Package\Injector\PackageInjector;
++use BEAR\Package\Injector as PackageInjector;
+
+-    public static function getInstance(
+-        string $context, string|null $tmpDir = null, string|null $logDir = null
+-    ): InjectorInterface
+-    {
+-        $meta = new Meta(__NAMESPACE__, $context, dirname(__DIR__), $tmpDir, $logDir);
+-        $cacheNamespace = str_replace('/', '_', $meta->appDir) . $context;
+-        $cache = (new LocalCacheProvider($meta->tmpDir . '/injector', $cacheNamespace))->get();
+-
+-        return PackageInjector::getInstance($meta, $context, $cache);
+-    }
++    public static function getInstance(string $context, string|null $writeDir = null): InjectorInterface
++    {
++        return PackageInjector::getInstance(__NAMESPACE__, $context, dirname(__DIR__), null, $writeDir);
++    }
 ```
+
+`BEAR\Package\Injector` builds the `Meta` and the injector cache pool from the write directory, so the skeleton's own `Meta` / `LocalCacheProvider` lines go away. Development entry points pass nothing and keep the default paths. Reading environment variables is the entry point's business, not the framework's.
+
+The build takes the directory as an argument, the runtime as an environment variable:
+
+```text
+build     php bin/compile.php prod-app /tmp
+runtime   APP_WRITE_DIR=/tmp
+          php-fpm   env[APP_WRITE_DIR] = /tmp
+          docker    --env APP_WRITE_DIR=/tmp
+```
+
+With `/tmp` as the write directory, the layout is:
+
+```text
+{appDir}/var/tmp/{context}/di                   compiled DI scripts, in the artifact
+/tmp/MyVendor/MyProject/{context}/tmp           query repository cache, serialized injector
+/tmp/MyVendor/MyProject/{context}/log
+```
+
+The application and the context are in the path because local cache keys are resource URIs: two applications or two contexts sharing one directory would answer with each other's entries.
+
+Compiled DI scripts stay under `appDir` and ship inside the artifact. A new instance starts with an empty `/tmp`, so following the write directory would compile again on every cold start - 0.38s against 0.018s on a five-resource application.
+
+If the boot is given a different write directory than the build used, the DI scripts are compiled again instead of read from the old paths: the compile fails if the artifact is read-only, and emits a `Compiled DI scripts on demand` notice if it is writable.
+
+Requires BEAR.Package 1.22+. Background: [BEAR.Package#491](https://github.com/bearsunday/BEAR.Package/pull/491).
 
 ### autoload.php
 
