@@ -220,7 +220,9 @@ Hand that directory to the boot, and to the build. It has to be an absolute path
 
  // src/Bootstrap.php
 -    public function __invoke(string $context, array $globals, array $server): int
-+    public function __invoke(string $context, array $globals, array $server, string|null $writeDir = null): int
++    public function __invoke(
++        string $context, array $globals, array $server, string|null $writeDir = null
++    ): int
      {
 -        $app = Injector::getInstance($context)->getInstance(AppInterface::class);
 +        $app = Injector::getInstance($context, $writeDir)->getInstance(AppInterface::class);
@@ -229,7 +231,9 @@ Hand that directory to the boot, and to the build. It has to be an absolute path
 -use BEAR\Package\Injector\PackageInjector;
 +use BEAR\Package\Injector as PackageInjector;
 
--    public static function getInstance(string $context, string|null $tmpDir = null, string|null $logDir = null): InjectorInterface
+-    public static function getInstance(
+-        string $context, string|null $tmpDir = null, string|null $logDir = null
+-    ): InjectorInterface
 -    {
 -        $meta = new Meta(__NAMESPACE__, $context, dirname(__DIR__), $tmpDir, $logDir);
 -        $cacheNamespace = str_replace('/', '_', $meta->appDir) . $context;
