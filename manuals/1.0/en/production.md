@@ -161,33 +161,29 @@ Refer to the [existing implementation ProdLogger](https://github.com/bearsunday/
 
 * It is recommended to incorporate compilation into CI as the compiler outputs exit code 1 when it finds dependency issues and 0 when compilation succeeds.
 
+<a id="compilation"></a>
 ### Compilation Recommended
 
 When setting up, you can **warm up** the project: create static cache files for DI/AOP and annotations in advance, and write optimized `autoload.php` and `preload.php`.
 
-A starting point ships with BEAR.Package 1.23+; copy it into your application once (BEAR.Skeleton carries it already):
-
-```bash
-cp vendor/bear/package/bin/compile.php bin/
-```
+A build script names the application; it does not boot it (BEAR.Package 1.22+). When you already have the runtime injector, `Compiler::fromInjector($injector, $context)` compiles that one instead — the form BEAR.Skeleton's `bin/compile.php` uses.
 
 ```php
 <?php
-// bin/compile.php — yours to edit
-use BEAR\Package\Console;
+// bin/compile.php
+use BEAR\Package\Compiler;
 
 require dirname(__DIR__) . '/vendor/autoload.php';
 
 ini_set('memory_limit', '-1');
 
-$appDir = dirname(__DIR__);
-$console = new Console($appDir, getenv('APP_WRITE_DIR') ?: null);
 $context = 'prod-app';
+$writeDir = getenv('APP_WRITE_DIR') ?: null;
 
-exit($console->compile($context));
+exit((new Compiler('MyVendor\MyProject', $context, dirname(__DIR__), $writeDir))());
 ```
 
-The script names the context and reads the environment; it says nothing about the application. The name comes from the autoloader - the namespace whose `Module/AppModule.php` sits under the application root - and the Compiler loads `.compile.php` build stubs itself. `$console->phar($context)` packs the compiled result into one archive: [Phar](phar.html).
+The script names the application, the context and the write directory, and it does not boot the application. `.compile.php` build stubs are loaded by the Compiler itself. `Compiler::phar()` packs the compiled result into one archive: [Phar](phar.html).
 
 `Compiler::fromInjector($injector, $context, $writeDir)` is for a caller that already holds an injector - a command inside a running application, or an application whose own `Injector` class is customized.
 
@@ -205,10 +201,10 @@ Compiling multiple contexts (e.g. api-app and html-app for content negotiation) 
 ```php
 // bin/compile.php
 $appDir = dirname(__DIR__);
-$console = new Console($appDir, getenv('APP_WRITE_DIR') ?: null);
+$writeDir = getenv('APP_WRITE_DIR') ?: null;
 
 foreach (['prod-hal-api-app', 'prod-html-app'] as $context) {
-    $code = $console->compile($context);
+    $code = (new Compiler('MyVendor\MyProject', $context, $appDir, $writeDir))();
     if ($code !== 0) {
         exit($code);
     }
@@ -230,18 +226,21 @@ Serverless platforms and immutable containers restrict where an application may 
 
 Tell the application which directory it may write to. Pass the same directory to both the build and the boot, and keep to two rules:
 
-* Pass an absolute path. A relative path throws `InvalidWriteDirException`.
+* Pass an absolute path. A relative path throws `WriteDirNotAbsoluteException` where the `Meta` is built.
 * Pass the same path to the build and the boot. The paths are compiled into the DI scripts, so a compile whose write directory differs from the injector it was handed throws `WriteDirMismatchException`.
 
-`$writeDir` is the optional last argument on `Bootstrap::__invoke()`, `Injector::getInstance()` and `new Compiler()`. Change the entry points like this:
+`$writeDir` is the optional last argument on `Bootstrap::__invoke()`, `Injector::getInstance()`, `Injector::getOverrideInstance()` and `new Compiler()`. Change the entry points like this:
 
 ```diff
  // public/index.php
 -exit((new Bootstrap())('prod-app', $GLOBALS, $_SERVER));
 +exit((new Bootstrap())('prod-app', $GLOBALS, $_SERVER, getenv('APP_WRITE_DIR') ?: null));
 
- // bin/compile.php               APP_WRITE_DIR=/tmp php bin/compile.php prod-app
- (nothing to change: the copied script reads APP_WRITE_DIR)
+ // bin/compile.php               APP_WRITE_DIR=/tmp php bin/compile.php
+-exit((new Compiler('MyVendor\MyProject', $context, dirname(__DIR__)))());
++$writeDir = getenv('APP_WRITE_DIR') ?: null;
++
++exit((new Compiler('MyVendor\MyProject', $context, dirname(__DIR__), $writeDir))());
 
  // src/Bootstrap.php
 -    public function __invoke(string $context, array $globals, array $server): int
@@ -277,7 +276,7 @@ Tell the application which directory it may write to. Pass the same directory to
 `APP_WRITE_DIR` is the one source, for the build and for the runtime — `AppModule` runs during the compile, so what it reads must be what the build uses:
 
 ```text
-build     APP_WRITE_DIR=/tmp php bin/compile.php prod-app
+build     APP_WRITE_DIR=/tmp php bin/compile.php
 runtime   APP_WRITE_DIR=/tmp
           php-fpm   env[APP_WRITE_DIR] = /tmp
           docker    --env APP_WRITE_DIR=/tmp
@@ -295,7 +294,7 @@ The application and the context are in the path because local cache keys are res
 
 Compiled DI scripts stay under `appDir` and ship inside the artifact. A new instance starts with an empty `/tmp`, so following the write directory would compile again on every cold start - 0.38s against 0.018s on a five-resource application.
 
-If the boot is given a different write directory than the build used, the DI scripts are compiled again instead of read from the old paths: the compile fails if the artifact is read-only, and emits a `Compiled DI scripts on demand` notice if it is writable.
+If the boot is given a different write directory than the build used, the DI scripts are compiled again instead of read from the old paths: a read-only artifact stops with `CompiledForAnotherWriteDirException`, naming both directories, and a writable one emits a `Compiled DI scripts on demand` notice.
 
 A single-file artifact that never writes into itself is [Phar](phar.html).
 

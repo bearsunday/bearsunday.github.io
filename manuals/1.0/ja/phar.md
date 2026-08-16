@@ -18,29 +18,27 @@ BEAR.Package 1.23以降が必要です。
 
 ## Pharにする
 
-コンパイルはアプリケーション自身の`bin/compile.php`で行います。無い場合は一度だけコピーします（BEAR.Skeletonには同梱されています）。
-
-```bash
-cp vendor/bear/package/bin/compile.php bin/
-```
+ビルドスクリプトはコンパイルし、続けてアーカイブ化します。どちらもコンパイラのメソッドです。
 
 ```php
 <?php
 // bin/compile.php
-use BEAR\Package\Console;
+use BEAR\Package\Compiler;
 
 require dirname(__DIR__) . '/vendor/autoload.php';
 
 ini_set('memory_limit', '-1');
 
-$console = new Console(dirname(__DIR__), getenv('APP_WRITE_DIR') ?: null);
 $context = 'prod-hal-app';
+$writeDir = getenv('APP_WRITE_DIR') ?: null;
 
-$code = $console->compile($context);
-exit($code === 0 ? $console->phar($context) : $code);
+$compiler = new Compiler('MyVendor\MyProject', $context, dirname(__DIR__), $writeDir);
+$code = $compiler();
+
+exit($code === 0 ? $compiler->phar() : $code);
 ```
 
-このスクリプトはあなたのものです。書くのは、アプリケーションが起動する context（`public/index.php`と同じ語）と、環境変数を読むことだけです。残りは書く必要がありません。アプリケーション名はオートローダーから決まり（`Module/AppModule.php`を持つ名前空間のうち、ソースがアプリケーション直下にあるもの）、何を収めるかはフレームワークの仕事です: `src/`、`public/`、`vendor/`、コンパイルマーカーを含むDIスクリプトが入り、ログ、キャッシュ、`.env`、`autoload.php`、`preload.php`、`tests/`は入りません。`phar.readonly`は子プロセスで処理されるので、iniフラグを覚える必要もありません。
+このスクリプトが名乗るのは、アプリケーション名、起動する context（`public/index.php`と同じもの）、そして環境変数から読む書き込み先です。残りは書く必要がありません。何を収めるかはフレームワークの仕事です: `src/`、`public/`、`vendor/`、コンパイルマーカーを含むDIスクリプトが入り、ログ、キャッシュ、`.env`、`autoload.php`、`preload.php`、`tests/`は入りません。マーカーは`.bear-compile.json`で、`phar()`はこれを見て判断します（`app`、`context`、`tmpDir`、`writeDir`、`time`）。`phar.readonly`は子プロセスで処理されるので、iniフラグを覚える必要もありません。
 
 ```bash
 APP_WRITE_DIR=/tmp php bin/compile.php
@@ -48,11 +46,11 @@ APP_WRITE_DIR=/tmp php bin/compile.php
 
 ```text
 Compiled: 16 resource classes
-Phar: var/build/prod-hal-app.phar (7.5MB, 2100 files)
-Boot: APP_WRITE_DIR=/tmp php var/build/prod-hal-app.phar
+Phar: /app/var/build/prod-hal-app.phar (7.5MB, 2100 files)
+Writes: /tmp
 ```
 
-`compile()`と`phar()`は別の段階なので、CIでコンパイルとアーカイブ化を別ジョブに分けられます。`phar()`はディスク上のものを詰めるだけで、コンパイルされていない context や、別の書き込み先向けにコンパイルされたものは拒否します。複数 context のコンパイルはスクリプト内のループです。`preload.php`と`autoload.php`は固定パスに書かれるので、[プロダクション](production.html#compilation)のように context ごとに rename します。
+`__invoke()`と`phar()`は別の段階なので、CIでコンパイルとアーカイブ化を別ジョブに分けられます。`phar()`はディスク上のものを詰めるだけで、コンパイルされていない context や、別の書き込み先向けにコンパイルされたものは拒否します。出力先は`{appDir}/var/build/{context}.phar`で、別のエントリと別の出力先がその2つの引数です。複数 context のコンパイルはスクリプト内のループです。`preload.php`と`autoload.php`は固定パスに書かれるので、[プロダクション](production.html#compilation-recommended)のように context ごとに rename します。
 
 ## 動かす
 
@@ -69,12 +67,12 @@ php-fpmが実行するのはアーカイブではなくファイルなので、�
 // index.php （prod-hal-app.pharと同じディレクトリ）
 require 'phar://' . __DIR__ . '/prod-hal-app.phar/vendor/autoload.php';
 
-exit((new MyVendor\MyProject\Bootstrap())('prod-hal-api-app', $GLOBALS, $_SERVER, getenv('APP_WRITE_DIR') ?: null));
+exit((new MyVendor\MyProject\Bootstrap())('prod-hal-app', $GLOBALS, $_SERVER, getenv('APP_WRITE_DIR') ?: null));
 ```
 
 ## 守ること2つ
 
-**書き込み先は1つで、ビルドと起動で同じ絶対パスにします。** コンパイル済みスクリプトはコンパイル時のパスを持つので、アーカイブは1つの書き込み先のために作られます。その1箇所が`APP_WRITE_DIR`です。ビルドも起動も`AppModule`もこれを読みます。`AppModule`が書き込み先を使って設定したものは、スクリプトに焼き込まれます。
+**書き込み先は1つで、ビルドと起動で同じ絶対パスにします。** コンパイル済みスクリプトはコンパイル時のパスを持つので、アーカイブは1つの書き込み先のために作られます。その1箇所が`APP_WRITE_DIR`です。ビルドが読み、起動が読みます。インポートしたアプリケーションにはコンテナが渡すので、他のどこにも書きません。
 
 **`$appMeta->appDir`から実行時のパスを組むバインディングは書きません。** コンパイル済みスクリプトはビルド時の`Meta`を持つため、注入される`appDir`は`phar://…`ではなくビルド時のディレクトリです（`tmpDir`と`logDir`は書き込み先なので正しい値です）。実行時にファイルを読むもの（テンプレートのディレクトリ、データファイルなど）は`__DIR__`を基点にします。`__DIR__`はアーカイブの中を指します。
 
@@ -87,6 +85,7 @@ $this->install(new ImportAppModule([
     new ImportApp('greeting', 'ImportVendor\Greeting', 'prod-app')
 ]));
 ```
+
 コンパイルはアプリケーションを起動し、その起動がインポートしたアプリケーションをそれぞれのツリーにコンパイルします（ビルドのログに出る`Compiled DI scripts on demand`がそれです）。DIスクリプトは自動でアーカイブに入ります。インポートしたアプリケーションのディレクトリは起動時に解決されるので、アーカイブの移動に追従します。
 
 ## ビルドが止まるとき
@@ -96,6 +95,7 @@ $this->install(new ImportAppModule([
 | エラー | 意味 |
 |---|---|
 | `PharNotCompiledException` | その context がコンパイルされていない。`phar()`はディスク上のものを詰めます |
+| `PharImportsUnreadableException` | コンパイル済みコンテナのimport宣言がこのバージョンでは読めない形式。アーカイブ化するバージョンで再コンパイルします |
 | `PharWritesInsideArchiveException` | ホストまたはインポートしたアプリケーションが、ツリーの中に書く設定でコンパイルされている。`APP_WRITE_DIR`を設定してコンパイルします |
 | `PharWriteDirMismatchException` | インポートしたアプリケーションが、ホストの書き込み先の下ではない場所に書く。ホストがこの書き込み先を得る前にコンパイルされています |
 | `PharImportOutsideTreeException` | インポートしたアプリケーションが、アーカイブにするツリーの外にある |

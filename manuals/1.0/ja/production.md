@@ -156,33 +156,29 @@ final class MyProdLoggerModule extends AbstractModule
 #### クラウドにディプロイする時には
 * コンパイルが成功すると0、依存関係の問題を見つけるとコンパイラはexitコード1を出力します。それを利用してCIにコンパイルを組み込むことを推奨します。
 
-### コンパイル
+<a id="compilation"></a>
+### コンパイル {#compilation-recommended}
 
 セットアップ時にプロジェクトを**ウォームアップ**できます。DI/AOP 用の動的ファイルやアノテーションなどの静的キャッシュを事前に作成し、最適化された `autoload.php` と `preload.php` を出力します。
 
-出発点となるスクリプトがBEAR.Package 1.23以降に同梱されています。無い場合は一度だけコピーします（BEAR.Skeletonには同梱済みです）。
-
-```bash
-cp vendor/bear/package/bin/compile.php bin/
-```
+ビルドスクリプトはアプリケーションを**名乗るだけ**で、起動はしません（BEAR.Package 1.22以降）。実行時のインジェクタが既に手元にあるなら`Compiler::fromInjector($injector, $context)`がそれをコンパイルします。BEAR.Skeletonが同梱する`bin/compile.php`はこの形です。
 
 ```php
 <?php
-// bin/compile.php — あなたのスクリプトです。自由に編集してください
-use BEAR\Package\Console;
+// bin/compile.php
+use BEAR\Package\Compiler;
 
 require dirname(__DIR__) . '/vendor/autoload.php';
 
 ini_set('memory_limit', '-1');
 
-$appDir = dirname(__DIR__);
-$console = new Console($appDir, getenv('APP_WRITE_DIR') ?: null);
 $context = 'prod-app';
+$writeDir = getenv('APP_WRITE_DIR') ?: null;
 
-exit($console->compile($context));
+exit((new Compiler('MyVendor\MyProject', $context, dirname(__DIR__), $writeDir))());
 ```
 
-スクリプトが書くのは context と環境変数の読み取りだけで、アプリケーションについては何も書きません。アプリケーション名はオートローダーから決まります（`Module/AppModule.php`を持つ名前空間のうち、ソースがアプリケーション直下にあるもの）。`.compile.php`のビルド用スタブはCompiler自身が読み込みます。`$console->phar($context)`はコンパイル結果を1つのアーカイブにします → [Phar](phar.html)
+スクリプトが名乗るのはアプリケーション名、context、書き込み先で、アプリケーションは起動しません。`.compile.php`のビルド用スタブはCompiler自身が読み込みます。`Compiler::phar()`はコンパイル結果を1つのアーカイブにします → [Phar](phar.html)
 
 `Compiler::fromInjector($injector, $context, $writeDir)`は、すでにinjectorを持っている呼び出し元（動作中のアプリケーション内のコマンド、あるいは`Injector`クラスを独自に拡張しているアプリケーション）のためのものです。
 
@@ -200,10 +196,10 @@ exit($console->compile($context));
 ```php
 // bin/compile.php
 $appDir = dirname(__DIR__);
-$console = new Console($appDir, getenv('APP_WRITE_DIR') ?: null);
+$writeDir = getenv('APP_WRITE_DIR') ?: null;
 
 foreach (['prod-hal-api-app', 'prod-html-app'] as $context) {
-    $code = $console->compile($context);
+    $code = (new Compiler('MyVendor\MyProject', $context, $appDir, $writeDir))();
     if ($code !== 0) {
         exit($code);
     }
@@ -225,18 +221,21 @@ DIスクリプトの出力先は`{appDir}/var/tmp/{context}/di`です。これ�
 
 この場合は書き込めるディレクトリをアプリケーションに渡します。ビルド時と起動時の両方に渡し、次の2つを守ります。
 
-* 絶対パスを渡します。相対パスを渡すと`InvalidWriteDirException`が投げられます。
+* 絶対パスを渡します。相対パスを渡すと`Meta`を組む時点で`WriteDirNotAbsoluteException`が投げられます。
 * ビルドと起動で同じパスを渡します。パスはDIスクリプトに焼き込まれるため、渡されたinjectorとコンパイルの書き込み先が違う場合は`WriteDirMismatchException`が投げられます。
 
-`$writeDir`は`Bootstrap::__invoke()`、`Injector::getInstance()`、`new Compiler()`の末尾の省略可能な引数です。エントリポイントを次のように変更します。
+`$writeDir`は`Bootstrap::__invoke()`、`Injector::getInstance()`、`Injector::getOverrideInstance()`、`new Compiler()`の末尾の省略可能な引数です。エントリポイントを次のように変更します。
 
 ```diff
  // public/index.php
 -exit((new Bootstrap())('prod-app', $GLOBALS, $_SERVER));
 +exit((new Bootstrap())('prod-app', $GLOBALS, $_SERVER, getenv('APP_WRITE_DIR') ?: null));
 
- // bin/compile.php               APP_WRITE_DIR=/tmp php bin/compile.php prod-app
- (変更なし: コピーしたスクリプトがAPP_WRITE_DIRを読みます)
+ // bin/compile.php               APP_WRITE_DIR=/tmp php bin/compile.php
+-exit((new Compiler('MyVendor\MyProject', $context, dirname(__DIR__)))());
++$writeDir = getenv('APP_WRITE_DIR') ?: null;
++
++exit((new Compiler('MyVendor\MyProject', $context, dirname(__DIR__), $writeDir))());
 
  // src/Bootstrap.php
 -    public function __invoke(string $context, array $globals, array $server): int
@@ -272,7 +271,7 @@ DIスクリプトの出力先は`{appDir}/var/tmp/{context}/di`です。これ�
 書き込み先の源は`APP_WRITE_DIR`の1つです。ビルドも実行時も同じ変数を読みます。`AppModule`はコンパイル中に動くので、`AppModule`が読む値とビルドが使う値は同じでなければなりません。
 
 ```text
-build     APP_WRITE_DIR=/tmp php bin/compile.php prod-app
+build     APP_WRITE_DIR=/tmp php bin/compile.php
 runtime   APP_WRITE_DIR=/tmp
           php-fpm   env[APP_WRITE_DIR] = /tmp
           docker    --env APP_WRITE_DIR=/tmp
@@ -290,7 +289,7 @@ runtime   APP_WRITE_DIR=/tmp
 
 コンパイル済みDIスクリプトは`appDir`配下に残り、デプロイ成果物に同梱されます。新しいインスタンスの`/tmp`は空なので、DIスクリプトまで書き込み先に移すとコールドスタートのたびに再コンパイルになります（リソース5個のアプリケーションで、再コンパイルが0.38秒、成果物からの読み込みが0.018秒）。
 
-ビルドと違う書き込み先で起動した場合は、古いパスを使わずに再コンパイルされます。成果物が読み取り専用なら例外で止まり、書き込み可能なら`Compiled DI scripts on demand`のnoticeが出ます。
+ビルドと違う書き込み先で起動した場合は、古いパスを使わずに再コンパイルされます。成果物が読み取り専用なら両方のパスを名指しする`CompiledForAnotherWriteDirException`で止まり、書き込み可能なら`Compiled DI scripts on demand`のnoticeが出ます。
 
 自身に書き込まない1ファイルの成果物にするには[Phar](phar.html)を参照してください。
 
