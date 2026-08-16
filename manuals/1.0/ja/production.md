@@ -161,7 +161,7 @@ final class MyProdLoggerModule extends AbstractModule
 
 セットアップ時にプロジェクトを**ウォームアップ**できます。DI/AOP 用の動的ファイルやアノテーションなどの静的キャッシュを事前に作成し、最適化された `autoload.php` と `preload.php` を出力します。
 
-ビルドスクリプトはアプリケーションを**名乗るだけ**で、起動はしません（BEAR.Package 1.22以降）。実行時のインジェクタが既に手元にあるなら`Compiler::fromInjector($injector, $context)`がそれをコンパイルします。BEAR.Skeletonが同梱する`bin/compile.php`はこの形です。
+ビルドスクリプトはアプリケーションを**名乗るだけ**で、起動はしません（BEAR.Package 1.22以降）。
 
 ```php
 <?php
@@ -180,7 +180,7 @@ exit((new Compiler('MyVendor\MyProject', $context, dirname(__DIR__), $writeDir))
 
 スクリプトが名乗るのはアプリケーション名、context、書き込み先で、アプリケーションは起動しません。`.compile.php`のビルド用スタブはCompiler自身が読み込みます。`Compiler::phar()`はコンパイル結果を1つのアーカイブにします → [Phar](phar.html)
 
-`Compiler::fromInjector($injector, $context, $writeDir)`は、すでにinjectorを持っている呼び出し元（動作中のアプリケーション内のコマンド、あるいは`Injector`クラスを独自に拡張しているアプリケーション）のためのものです。
+`Compiler::fromInjector($injector, $context, $writeDir)`は、すでにinjectorを持っている呼び出し元（動作中のアプリケーション内のコマンド、あるいは`Injector`クラスを独自に拡張しているアプリケーション。BEAR.Skeletonが同梱する`bin/compile.php`がこの形です）のためのものです。
 
 ```json
 "scripts": {

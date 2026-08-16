@@ -166,7 +166,7 @@ Refer to the [existing implementation ProdLogger](https://github.com/bearsunday/
 
 When setting up, you can **warm up** the project: create static cache files for DI/AOP and annotations in advance, and write optimized `autoload.php` and `preload.php`.
 
-A build script names the application; it does not boot it (BEAR.Package 1.22+). When you already have the runtime injector, `Compiler::fromInjector($injector, $context)` compiles that one instead — the form BEAR.Skeleton's `bin/compile.php` uses.
+A build script names the application; it does not boot it (BEAR.Package 1.22+).
 
 ```php
 <?php
@@ -185,7 +185,7 @@ exit((new Compiler('MyVendor\MyProject', $context, dirname(__DIR__), $writeDir))
 
 The script names the application, the context and the write directory, and it does not boot the application. `.compile.php` build stubs are loaded by the Compiler itself. `Compiler::phar()` packs the compiled result into one archive: [Phar](phar.html).
 
-`Compiler::fromInjector($injector, $context, $writeDir)` is for a caller that already holds an injector - a command inside a running application, or an application whose own `Injector` class is customized.
+`Compiler::fromInjector($injector, $context, $writeDir)` is for a caller that already holds an injector - a command inside a running application, or an application whose own `Injector` class is customized, as BEAR.Skeleton's `bin/compile.php` is.
 
 ```json
 "scripts": {
