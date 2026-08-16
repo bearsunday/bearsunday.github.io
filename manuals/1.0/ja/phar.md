@@ -80,16 +80,14 @@ exit((new MyVendor\MyProject\Bootstrap())('prod-hal-api-app', $GLOBALS, $_SERVER
 
 ## インポートしたアプリケーション
 
-アーカイブの中の[インポートしたアプリケーション](import.html)は別のアプリケーションです。`Meta`もコンパイル済みスクリプトも書き込み先も、それぞれのものを持ちます。同じ書き込み先を渡します。
+アーカイブの中の[インポートしたアプリケーション](import.html)は別のアプリケーションです。`Meta`もコンパイル済みスクリプトも書き込み先も、それぞれのものを持ちます。変更は要りません。ホストに渡した書き込み先はコンテナが渡します。
 
-```diff
- $this->install(new ImportAppModule([
--    new ImportApp('greeting', 'ImportVendor\Greeting', 'prod-app')
-+    new ImportApp('greeting', 'ImportVendor\Greeting', 'prod-app', getenv('APP_WRITE_DIR') ?: null)
- ]));
+```php
+$this->install(new ImportAppModule([
+    new ImportApp('greeting', 'ImportVendor\Greeting', 'prod-app')
+]));
 ```
-
-変更はこれだけです。コンパイルはアプリケーションを起動し、その起動がインポートしたアプリケーションをそれぞれのツリーにコンパイルします（ビルドのログに出る`Compiled DI scripts on demand`がそれです）。DIスクリプトは自動でアーカイブに入ります。インポートしたアプリケーションのディレクトリは起動時に解決されるので、アーカイブの移動に追従します。
+コンパイルはアプリケーションを起動し、その起動がインポートしたアプリケーションをそれぞれのツリーにコンパイルします（ビルドのログに出る`Compiled DI scripts on demand`がそれです）。DIスクリプトは自動でアーカイブに入ります。インポートしたアプリケーションのディレクトリは起動時に解決されるので、アーカイブの移動に追従します。
 
 ## ビルドが止まるとき
 
@@ -98,11 +96,14 @@ exit((new MyVendor\MyProject\Bootstrap())('prod-hal-api-app', $GLOBALS, $_SERVER
 | エラー | 意味 |
 |---|---|
 | `PharNotCompiledException` | その context がコンパイルされていない。`phar()`はディスク上のものを詰めます |
-| `PharWritesInsideArchiveException` | ホストまたはインポートしたアプリケーションが、ツリーの中に書く設定でコンパイルされている。`APP_WRITE_DIR`を設定してコンパイルします（インポートしたアプリケーションは`AppModule`でも読みます） |
-| `PharWriteDirMismatchException` | インポートしたアプリケーションが、宣言から導かれるのと違うディレクトリ向けにコンパイルされている。ビルドと`AppModule`が別の`APP_WRITE_DIR`を読んでいます |
+| `PharWritesInsideArchiveException` | ホストまたはインポートしたアプリケーションが、ツリーの中に書く設定でコンパイルされている。`APP_WRITE_DIR`を設定してコンパイルします |
+| `PharWriteDirMismatchException` | インポートしたアプリケーションが、ホストの書き込み先の下ではない場所に書く。ホストがこの書き込み先を得る前にコンパイルされています |
 | `PharImportOutsideTreeException` | インポートしたアプリケーションが、アーカイブにするツリーの外にある |
 | `PharEntryNotFoundException` | `public/index.php`がない。別のエントリは`Compiler::phar()`に渡します |
+| `PharEntryNotPackedException` | エントリは存在するが同梱されない。アプリケーションルートの直置きファイルは入りません |
+| `PharStaleOutputException` | 出力先に前回のアーカイブが残っていて、削除できなかった |
+| `PharSymlinkedDirectoryException` | ツリー内のディレクトリが symlink で、`Phar`が詰められない |
 
-起動時に`APP_WRITE_DIR`なしでアーカイブを開始すると`WriteDirRequiredException`で、ビルドと違う`APP_WRITE_DIR`で開始すると両方のパスを名指しする`PharWriteDirMismatchException`で止まります。
+起動時に`APP_WRITE_DIR`なしでアーカイブを開始すると`WriteDirRequiredException`で、ビルドと違う`APP_WRITE_DIR`で開始すると両方のパスを名指しする`CompiledForAnotherWriteDirException`で止まります。
 
 背景: [BEAR.Package#426](https://github.com/bearsunday/BEAR.Package/issues/426)

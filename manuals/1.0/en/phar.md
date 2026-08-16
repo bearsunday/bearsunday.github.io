@@ -74,22 +74,21 @@ exit((new MyVendor\MyProject\Bootstrap())('prod-hal-api-app', $GLOBALS, $_SERVER
 
 ## Two rules
 
-**One write directory, the same absolute path at the build and at the boot.** The compiled scripts hold the paths they were compiled with, so an archive is built for one write directory. `APP_WRITE_DIR` is that one place: the build reads it, the boot reads it, and `AppModule` reads it — what `AppModule` configures with it is compiled into the scripts.
+**One write directory, the same absolute path at the build and at the boot.** The compiled scripts hold the paths they were compiled with, so an archive is built for one write directory. `APP_WRITE_DIR` is that one place: the build reads it and the boot reads it. Imported applications receive it from the container, so nothing else names it.
 
 **No binding that derives a runtime path from `$appMeta->appDir`.** The compiled scripts carry the `Meta` of the build, so the injected `appDir` is the build directory, not `phar://…`; `tmpDir` and `logDir` are the write directory and are correct. Anything that reads a file at runtime — a template directory, a data file — takes its path from `__DIR__`, which resolves inside the archive.
 
 ## Imported applications
 
-An [imported application](import.html) in the archive is a second application: its own `Meta`, its own compiled scripts, its own write directory. Hand it the same one:
+An [imported application](import.html) in the archive is a second application: its own `Meta`, its own compiled scripts, its own write directory. It needs no change at all - the container hands it the write directory the host was given:
 
-```diff
- $this->install(new ImportAppModule([
--    new ImportApp('greeting', 'ImportVendor\Greeting', 'prod-app')
-+    new ImportApp('greeting', 'ImportVendor\Greeting', 'prod-app', getenv('APP_WRITE_DIR') ?: null)
- ]));
+```php
+$this->install(new ImportAppModule([
+    new ImportApp('greeting', 'ImportVendor\Greeting', 'prod-app')
+]));
 ```
 
-That is the whole change. The compile boots the application, that boot compiles each imported application into its own tree (`Compiled DI scripts on demand` in the build log is that), and the pack ships their DI scripts automatically. An imported application resolves its own directory at boot, so it follows the archive.
+The compile boots the application, that boot compiles each imported application into its own tree (`Compiled DI scripts on demand` in the build log is that), and the pack ships their DI scripts automatically. An imported application resolves its own directory at boot, so it follows the archive.
 
 ## When the build stops
 
@@ -98,11 +97,14 @@ Everything that used to fail at the deploy fails at the build, with the path in 
 | Error | Meaning |
 |---|---|
 | `PharNotCompiledException` | The context was never compiled: `phar()` packs what is on disk |
-| `PharWritesInsideArchiveException` | An application — the host or an import — was compiled to write into the tree. Compile with `APP_WRITE_DIR` set; an imported application reads it in its `AppModule` too |
-| `PharWriteDirMismatchException` | An import was compiled for a directory its declaration does not derive: the build and the `AppModule` read different `APP_WRITE_DIR`s |
+| `PharWritesInsideArchiveException` | An application — the host or an import — was compiled to write into the tree. Compile with `APP_WRITE_DIR` set |
+| `PharWriteDirMismatchException` | An import writes somewhere other than under the host's write directory: it was compiled before the host was given this one |
 | `PharImportOutsideTreeException` | An imported application lies outside the tree being packed and cannot ship in it |
 | `PharEntryNotFoundException` | No `public/index.php`; pass another entry to `Compiler::phar()` |
+| `PharEntryNotPackedException` | The entry exists but does not ship: nothing loose at the application root does |
+| `PharStaleOutputException` | An archive of a previous build survived at the output path and could not be removed |
+| `PharSymlinkedDirectoryException` | A directory in the tree is a symlink, which `Phar` cannot pack |
 
-At boot, an archive started without `APP_WRITE_DIR` stops with `WriteDirRequiredException`, and one started with a different `APP_WRITE_DIR` than the build stops with `PharWriteDirMismatchException`, naming both directories.
+At boot, an archive started without `APP_WRITE_DIR` stops with `WriteDirRequiredException`, and one started with a different `APP_WRITE_DIR` than the build stops with `CompiledForAnotherWriteDirException`, naming both directories.
 
 Background: [BEAR.Package#426](https://github.com/bearsunday/BEAR.Package/issues/426).
