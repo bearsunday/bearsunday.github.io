@@ -156,9 +156,13 @@ final class MyProdLoggerModule extends AbstractModule
 #### クラウドにディプロイする時には
 * コンパイルが成功すると0、依存関係の問題を見つけるとコンパイラはexitコード1を出力します。それを利用してCIにコンパイルを組み込むことを推奨します。
 
-### コンパイル
+### コンパイル {: #compilation }
 
 セットアップ時にプロジェクトを**ウォームアップ**できます。DI/AOP 用の動的ファイルやアノテーションなどの静的キャッシュを事前に作成し、最適化された `autoload.php` と `preload.php` を出力します。
+
+**原則: できればデプロイ先でコンパイルする**（warmup / health check のタイミング）。パスや環境変数など実環境の実値がそのまま反映されるので、値は正しく焼き込まれ、書き込み先の変更も不要です。
+
+**例外: 事前コンパイルが要る環境**（サーバーレス、read-only なアプリルート、`/tmp` などパス固定）。実サービスに触れない場所でコンパイルするため、[書き込み先の変更](#writable-paths)・AOT スクリプトの再利用・（触れないサービスを通す）`.compile.php` を併用し、**ランタイムで変わる値（接続先・トークン等）は焼き込まずランタイム解決**にします。
 
 ビルドスクリプトはアプリケーションを**名乗るだけ**で、起動はしません（BEAR.Package 1.22以降。スケルトンは`bin/compile.php`）。
 
@@ -168,6 +172,10 @@ final class MyProdLoggerModule extends AbstractModule
 use BEAR\Package\Compiler;
 
 require dirname(__DIR__) . '/vendor/autoload.php';
+
+// Load build-time-only stubs (null objects / fake env) if present.
+$dotCompile = dirname(__DIR__) . '/.compile.php';
+is_file($dotCompile) && require $dotCompile;
 
 $context = $argv[1] ?? 'prod-app';
 $writeDir = $argv[2] ?? null;
@@ -192,6 +200,8 @@ mv autoload.php api.autoload.php
 mv preload.php api.preload.php
 php bin/compile.php prod-html-app
 ```
+
+[`opcache.preload`](https://www.php.net/manual/ja/opcache.preloading.php) は PHP プロセス単位の設定です。複数コンテキストを preload する場合は**それぞれ別プロセス（php-fpm プール等）**になり、プロセスごとに退避した preload を指します（例：api 用プールは `opcache.preload=/path/to/api.preload.php`）。上の例で html 側を既定名のままにしているのは、そのプロセスが既定の `preload.php` を指すからです。
 
 DIスクリプトの出力先は`{appDir}/var/tmp/{context}/di`です。これはビルド成果物で、成果物に同梱されていれば実行時はコンパイルせず読むだけです。
 
@@ -277,9 +287,9 @@ BEAR.Package 1.22以降が必要です。背景: [BEAR.Package#491](https://gith
 
 ### autoload.php
 
-`{project_path}/autoload.php`に最適化されたautoload.phpファイルが出力されます。`composer dump-autoload --optimize`で出力される`vendor/autoload.php`よりずっと高速です。
+`{project_path}/autoload.php` に最適化された autoload ファイルが出力されます。`composer dump-autoload --optimize` の `vendor/autoload.php` より軽く、**preload を使わない構成**でリクエストごとの autoload コストを下げます。
 
-注意：`preload.php`を利用する場合、ほとんどの利用クラスが読み込まれた状態で起動するのでコンパイルされた`autoload.php`は不要です。composerが生成する`vendor/autoload.php`をご利用ください。
+注意：`preload.php` を使う場合は利用クラスの大半が起動時に読み込まれるので、この `autoload.php` はほぼ不要です（composer の `vendor/autoload.php` で十分）。つまり `autoload.php` は **preload を使えない環境向けのフォールバック**という位置づけです。
 
 ### preload.php
 
@@ -297,7 +307,9 @@ Note: パフォーマンスベンチマークは[benchmark](https://github.com/b
 
 ### .compile.php
 
-実環境ではないと生成ができないクラス（例えば認証が成功しないとインジェクトが完了しないResourceObject）がある場合には、コンパイル時にのみ読み込まれるダミークラス読み込みをルートの`.compile.php`に記述することによってコンパイルをすることができます。
+実環境ではないと生成ができないクラス（例えば認証が成功しないとインジェクトが完了しないResourceObject）がある場合には、コンパイル時にのみ読み込まれるダミークラス読み込みをルートの`.compile.php`に記述することによってコンパイルをすることができます。**目的は「コンパイル時に構築を通す」ことなので、中身は Null オブジェクト（何もしない実装）が基本**です。これは事前コンパイル（実サービスに触れない）だけでなく、**認証などリクエスト時の状態が要るために、デプロイ先でコンパイルしても構築できない**リソースにも当てはまります。値の偽装（`$_SERVER['X'] = 'fake'` など）は最小限にとどめ、ランタイムで本物が要る値には使わないでください（焼き込まれます）。
+
+**注意（BEAR.Package 1.21+）**: `Compiler::fromInjector()` はルートの `.compile.php` を自動では読み込みません（非推奨の `bear.compile` は自動でした）。上の `bin/compile.php` のように、アプリ側で明示的に `require` してください。
 
 .compile.php
 
@@ -315,7 +327,7 @@ class AuthProvider
 ```php
 <?php
 require __DIR__ . '/tests/Null/AuthProvider.php'; // 常に生成可能なNullオブジェクト
-$_SERVER[__REQUIRED_KEY__] = 'fake'; // 特定の環境変数がないとエラーになる場合
+$_SERVER['YOUR_REQUIRED_ENV'] = 'fake'; // 特定の環境変数がないとエラーになる場合
 ```
 
 こうする事で例外を避けてコンパイルを行うことができます。他にもSymfonyのキャッシュコンポーネントはコンストラクタでキャッシュエンジンに接続を行うので、コンパイル時にはこのようにダミーのアダプターを読み込むようにしておくと良いでしょう。
