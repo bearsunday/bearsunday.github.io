@@ -38,7 +38,7 @@ $code = $compiler();
 exit($code === 0 ? $compiler->phar() : $code);
 ```
 
-このスクリプトが名乗るのは、アプリケーション名、起動する context（`public/index.php`と同じもの）、そして環境変数から読む書き込み先です。残りは書く必要がありません。何を収めるかはフレームワークの仕事です: `src/`、`public/`、`vendor/`、コンパイルマーカーを含むDIスクリプトが入り、ログ、キャッシュ、`.env`、`autoload.php`、`preload.php`、`tests/`は入りません。マーカーは`.bear-compile.json`で、`phar()`はこれを見て判断します（`app`、`context`、`tmpDir`、`writeDir`、`time`）。`phar.readonly`は子プロセスで処理されるので、iniフラグを覚える必要もありません。
+このスクリプトが名乗るのは、アプリケーション名、起動する context（`public/index.php`と同じもの）、そして環境変数から読む書き込み先です。残りは書く必要がありません。何を収めるかはフレームワークの仕事です: `src/`、`public/`、`vendor/`、コンパイルマーカーを含むDIスクリプトが入り、ログ、キャッシュ、`.env`、`autoload.php`、`preload.php`、`tests/`は入りません。マーカーは`.bear-compile.json`で、`phar()`はこれを見て判断します（`app`、`context`、`tmpDir`、`writeDir`、`time`）。`.env`ファイル自体は入りませんが、その値はDIスクリプトに焼き込まれ、そのスクリプトは同梱されます。アーカイブは秘密情報として扱ってください。`phar.readonly`は子プロセスで処理されるので、iniフラグを覚える必要もありません。
 
 ```bash
 APP_WRITE_DIR=/tmp php bin/compile.php

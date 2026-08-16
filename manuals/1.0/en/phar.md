@@ -38,7 +38,7 @@ $code = $compiler();
 exit($code === 0 ? $compiler->phar() : $code);
 ```
 
-The script names the application, the context it boots — the same one `public/index.php` uses — and reads the write directory from the environment. The rest it does not have to say, because packing is the framework's business: `src/`, `public/`, `vendor/` and the DI scripts with their compile marker go in; logs, caches, `.env`, `autoload.php`, `preload.php` and `tests/` stay out. The marker is `.bear-compile.json`, and it is what `phar()` reads to decide: `app`, `context`, `tmpDir`, `writeDir`, `time`. `phar.readonly` is handled in a child process, so there is no ini flag to remember.
+The script names the application, the context it boots — the same one `public/index.php` uses — and reads the write directory from the environment. The rest it does not have to say, because packing is the framework's business: `src/`, `public/`, `vendor/` and the DI scripts with their compile marker go in; logs, caches, `.env`, `autoload.php`, `preload.php` and `tests/` stay out. The marker is `.bear-compile.json`, and it is what `phar()` reads to decide: `app`, `context`, `tmpDir`, `writeDir`, `time`. The `.env` file stays out, but the values it held are compiled into the DI scripts, and those ship: treat the archive as a secret. `phar.readonly` is handled in a child process, so there is no ini flag to remember.
 
 ```bash
 APP_WRITE_DIR=/tmp php bin/compile.php
