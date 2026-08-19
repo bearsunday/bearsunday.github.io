@@ -188,8 +188,6 @@ exit((new Compiler('MyVendor\MyProject', $context, dirname(__DIR__), $writeDir))
 
 スクリプトが名乗るのはアプリケーション名、context、書き込み先で、アプリケーションは起動しません。`.compile.php`のビルド用スタブはCompiler自身が読み込みます。`Compiler::phar()`はコンパイル結果を1つのアーカイブにします（BEAR.Package 1.23以降）→ [Phar](phar.html)
 
-`Compiler::fromInjector($injector, $context, $writeDir)`は、すでにinjectorを持っている呼び出し元（動作中のアプリケーション内のコマンド、あるいは`Injector`クラスを独自に拡張しているアプリケーション。BEAR.Skeletonが同梱する`bin/compile.php`がこの形です）のためのものです。
-
 ```json
 "scripts": {
     "compile": "php bin/compile.php"
@@ -332,7 +330,7 @@ Note: パフォーマンスベンチマークは[benchmark](https://github.com/b
 
 実環境ではないと生成ができないクラス（例えば認証が成功しないとインジェクトが完了しないResourceObject）がある場合には、コンパイル時にのみ読み込まれるダミークラス読み込みをルートの`.compile.php`に記述することによってコンパイルをすることができます。**目的は「コンパイル時に構築を通す」ことなので、中身は Null オブジェクト（何もしない実装）が基本**です。これは事前コンパイル（実サービスに触れない）だけでなく、**認証などリクエスト時の状態が要るために、デプロイ先でコンパイルしても構築できない**リソースにも当てはまります。値の偽装（`$_SERVER['X'] = 'fake'` など）は最小限にとどめ、ランタイムで本物が要る値には使わないでください（焼き込まれます）。
 
-**注意（BEAR.Package 1.21+）**: `Compiler::fromInjector()` はルートの `.compile.php` を自動では読み込みません（非推奨の `bear.compile` は自動でした）。上の `bin/compile.php` のように、アプリ側で明示的に `require` してください。
+**注意**: `.compile.php` はCompiler自身が、コンテナを組む前に読み込みます。非推奨の `vendor/bin/bear.compile` も読み込んでいました。アプリ側で何かする必要はありません。
 
 .compile.php
 

@@ -193,8 +193,6 @@ exit((new Compiler('MyVendor\MyProject', $context, dirname(__DIR__), $writeDir))
 
 The script names the application, the context and the write directory, and it does not boot the application. `.compile.php` build stubs are loaded by the Compiler itself. `Compiler::phar()` packs the compiled result into one archive (BEAR.Package 1.23+): [Phar](phar.html).
 
-`Compiler::fromInjector($injector, $context, $writeDir)` is for a caller that already holds an injector - a command inside a running application, or an application whose own `Injector` class is customized, as BEAR.Skeleton's `bin/compile.php` is.
-
 ```json
 "scripts": {
     "compile": "php bin/compile.php"
@@ -338,7 +336,7 @@ Note: Please refer to the [benchmark](https://github.com/bearsunday/BEAR.Hellowo
 
 When there are classes that cannot be generated in a non-production environment (for example, a ResourceObject that requires successful authentication to complete injection), you can compile them by describing dummy class loading in the root `.compile.php` file, which is only loaded during compilation. **Its purpose is to let construction succeed at compile time, so its contents should be null objects (do-nothing implementations).** This applies not only to ahead-of-time builds (real services unreachable) but also to resources that need per-request state such as authentication, which is absent during compilation even when you compile on the deploy target. Keep value fakes (`$_SERVER['X'] = 'fake'`, etc.) to the minimum needed to pass construction, and never use them for values that must be real at runtime (they get baked in).
 
-**Note (BEAR.Package 1.21+):** `Compiler::fromInjector()` does not load `.compile.php` automatically (the deprecated `bear.compile` did). Load it from your `bin/compile.php` as shown above.
+**Note:** the compiler loads `.compile.php` itself, before it builds the container. The deprecated `vendor/bin/bear.compile` did too; nothing else has to.
 
 .compile.php
 
