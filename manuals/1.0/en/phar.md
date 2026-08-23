@@ -50,7 +50,36 @@ Phar: /app/app.phar (7.5MB, 2100 files)
 Not packed: tests
 ```
 
-`__invoke()` and `phar()` are separate steps, so a build pipeline can compile in one job and pack in another. `phar()` packs what is on disk and refuses a context that was never compiled, or one compiled to write inside the tree. It writes `{appDir}/app.phar`, beside the `autoload.php` and `preload.php` the compile wrote; another entry is its one argument. Compiling several contexts is a loop in your script, and all three outputs are fixed paths, so move them between contexts as [Production](production.html#compilation-recommended) shows.
+`__invoke()` and `phar()` are separate steps, so a build pipeline can compile in one job and pack in another. `phar()` packs what is on disk and refuses a context that was never compiled, or one compiled to write inside the tree. It writes `{appDir}/app.phar`, beside the `autoload.php` and `preload.php` the compile wrote; another entry is its one argument.
+
+All three are fixed paths, so several contexts are a loop that packs each one before it compiles the next, and moves the archive aside:
+
+```php
+// bin/compile.php
+$appDir = dirname(__DIR__);
+$writeDir = getenv('APP_WRITE_DIR') ?: null;
+
+foreach (['prod-hal-api-app', 'prod-html-app'] as $context) {
+    $compiler = new Compiler('MyVendor\MyProject', $context, $appDir, $writeDir);
+    $code = $compiler();
+    if ($code !== 0) {
+        exit($code);
+    }
+
+    $code = $compiler->phar();
+    if ($code !== 0) {
+        exit($code);
+    }
+
+    if (! rename($appDir . '/app.phar', $appDir . '/' . $context . '.phar')) {
+        exit(1);
+    }
+}
+
+exit(0);
+```
+
+Not the `preload.php` rename [Production](production.html#compilation-recommended) shows: that one is for a deployment without an archive, where the preloads have to sit side by side on disk. Each archive carries its own at `phar://…/{context}.phar/preload.php`, and one renamed before the pack leaves the archive with none — silently, because an application that uses no preload is a legitimate build.
 
 ## Run
 

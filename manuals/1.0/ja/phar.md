@@ -50,7 +50,36 @@ Phar: /app/app.phar (7.5MB, 2100 files)
 Not packed: tests
 ```
 
-`__invoke()`と`phar()`は別の段階なので、CIでコンパイルとアーカイブ化を別ジョブに分けられます。`phar()`はディスク上のものを詰めるだけで、コンパイルされていない context や、ツリーの中に書くようコンパイルされたものは拒否します。出力先は`{appDir}/app.phar`で、コンパイルが書いた`autoload.php`と`preload.php`の隣です。引数は別のエントリを渡す1つだけです。複数 context のコンパイルはスクリプト内のループで、3つの出力はどれも固定パスなので、[プロダクション](production.html#compilation-recommended)のように context ごとに移します。
+`__invoke()`と`phar()`は別の段階なので、CIでコンパイルとアーカイブ化を別ジョブに分けられます。`phar()`はディスク上のものを詰めるだけで、コンパイルされていない context や、ツリーの中に書くようコンパイルされたものは拒否します。出力先は`{appDir}/app.phar`で、コンパイルが書いた`autoload.php`と`preload.php`の隣です。引数は別のエントリを渡す1つだけです。
+
+3つの出力はどれも固定パスです。複数 context のときは、次をコンパイルする前にパックしてアーカイブを退避するループにします。
+
+```php
+// bin/compile.php
+$appDir = dirname(__DIR__);
+$writeDir = getenv('APP_WRITE_DIR') ?: null;
+
+foreach (['prod-hal-api-app', 'prod-html-app'] as $context) {
+    $compiler = new Compiler('MyVendor\MyProject', $context, $appDir, $writeDir);
+    $code = $compiler();
+    if ($code !== 0) {
+        exit($code);
+    }
+
+    $code = $compiler->phar();
+    if ($code !== 0) {
+        exit($code);
+    }
+
+    if (! rename($appDir . '/app.phar', $appDir . '/' . $context . '.phar')) {
+        exit(1);
+    }
+}
+
+exit(0);
+```
+
+[プロダクション](production.html#compilation-recommended)の`preload.php`のrenameはここではしません。あれはアーカイブにしないデプロイのためのもので、preloadがディスク上に並んでいる必要があるからです。アーカイブはそれぞれ自分のpreloadを`phar://…/{context}.phar/preload.php`に持ちます。パックの前にrenameすると、アーカイブはpreloadなしになります。しかも黙ってそうなります。preloadを使わないビルドも正当なので、何も止めません。
 
 ## 動かす
 

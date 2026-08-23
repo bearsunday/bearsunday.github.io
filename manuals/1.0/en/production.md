@@ -191,7 +191,7 @@ $writeDir = getenv('APP_WRITE_DIR') ?: null;
 exit((new Compiler('MyVendor\MyProject', $context, dirname(__DIR__), $writeDir))());
 ```
 
-The script names the application, the context and the write directory, and it does not boot the application. `.compile.php` build stubs are loaded by the Compiler itself. `Compiler::phar()` packs the compiled result into one archive (BEAR.Package 1.23+): [Phar](phar.html).
+The script names the application, the context and the write directory, and it does not boot the application. `.compile.php` build stubs are loaded by the Compiler itself. `Compiler::phar()` packs the compiled result into one archive (BEAR.Package 1.24+): [Phar](phar.html).
 
 ```json
 "scripts": {
@@ -226,6 +226,8 @@ exit(0);
 ```
 
 [`opcache.preload`](https://www.php.net/manual/en/opcache.preloading.php) is a per-process setting, so preloading multiple contexts means **separate PHP processes** (e.g. php-fpm pools), each pointing at its evacuated preload (e.g. the api pool: `opcache.preload=/path/to/api.preload.php`). In the example the html side keeps the default name because its process points at the default `preload.php`.
+
+Packing each context into an archive is a loop of its own, and it does not rename the preload: [Phar](phar.html).
 
 DI scripts are written under `{appDir}/var/build/{context}/di`. The build directory holds what a compile produced and nothing a request writes, so it can ship read-only: when the artifact carries it, runtime reads the scripts instead of compiling.
 
