@@ -38,7 +38,7 @@ $code = $compiler();
 exit($code === 0 ? $compiler->phar() : $code);
 ```
 
-このスクリプトが名乗るのは、アプリケーション名、起動する context（`public/index.php`と同じもの）、そして環境変数から読む書き込み先です。残りは書く必要がありません。何を収めるかはフレームワークの仕事です: アーカイブに入るのは名前の決まったトップレベルのディレクトリだけで、`src`、`public`、`bin`、`vendor`、`var`、そしてインポートしたアプリケーションの置かれた場所です。`var/`のうち入るのはこのビルドの`var/build/{context}`だけで、そこにはコンパイルマーカーを含むDIスクリプトと、[compile step](production.html#compile-steps)が書いたものが入ります。`var/log`と`var/tmp`は入りません。`.env`、`autoload.php`、`preload.php`、`tests/`も同じです。残ったディレクトリは`Not packed:`として表示されます。マーカーは`.bear-compile.json`で、`phar()`はこれを見て判断します（`app`、`context`、`tmpDir`、`time`）。`.env`ファイル自体は入りませんが、その値はDIスクリプトに焼き込まれ、そのスクリプトは同梱されます。アーカイブは秘密情報として扱ってください。`phar.readonly`は子プロセスで処理されるので、iniフラグを覚える必要もありません。
+このスクリプトが名乗るのは、アプリケーション名、起動する context（`public/index.php`と同じもの）、そして環境変数から読む書き込み先です。残りは書く必要がありません。何を収めるかはフレームワークの仕事です: アーカイブに入るのは名前の決まったトップレベルのディレクトリだけで、`src`、`public`、`bin`、`vendor`、`var`、そしてインポートしたアプリケーションの置かれた場所です。`var/`のうち入るのはこのビルドの`var/build/{context}`だけで、そこにはコンパイルマーカーを含むDIスクリプトと、[compile step](production.html#compile-steps)が書いたものが入ります。`var/log`と`var/tmp`は入りません。`.env`、`autoload.php`、`tests/`も同じです。ルート直下のファイルで入るのは`preload.php`だけです。残ったディレクトリは`Not packed:`として表示されます。マーカーは`.bear-compile.json`で、`phar()`はこれを見て判断します（`app`、`context`、`tmpDir`、`time`）。`.env`ファイル自体は入りませんが、その値はDIスクリプトに焼き込まれ、そのスクリプトは同梱されます。アーカイブは秘密情報として扱ってください。`phar.readonly`は子プロセスで処理されるので、iniフラグを覚える必要もありません。
 
 ```bash
 APP_WRITE_DIR=/tmp php bin/compile.php
@@ -69,6 +69,14 @@ require 'phar://' . __DIR__ . '/app.phar/vendor/autoload.php';
 
 exit((new MyVendor\MyProject\Bootstrap())('prod-hal-app', $GLOBALS, $_SERVER, getenv('APP_WRITE_DIR') ?: null));
 ```
+
+`preload.php`はアーカイブに入るので、`opcache.preload`はアーカイブの中を指します。
+
+```ini
+opcache.preload=phar:///path/to/app.phar/preload.php
+```
+
+`autoload.php`は入りません。preloadを使うなら[することが残らない](production.html#autoloadphp)からです。同じ`preload.php`をアーカイブの隣に置くと、起動時に`Failed opening required '…/vendor/autoload.php'`で止まります。requireは置かれたディレクトリからの相対で書かれていて、アーカイブの外にそのディレクトリの`vendor/`はありません。preloadはコンパイルごとに1つ、固定パスに書かれます。最後にコンパイルした context をパックしてください。別の context が残したものはパックが拒否します。
 
 ## 移動できる
 
@@ -106,11 +114,12 @@ $this->install(new ImportAppModule([
 | エラー | 意味 |
 |---|---|
 | `PharNotCompiledException` | その context がコンパイルされていない。`phar()`はディスク上のものを詰めます |
+| `PharPreloadForAnotherBuildException` | アプリケーションルートの`preload.php`が別の context のもの。最後にコンパイルした context をパックします |
 | `PharImportsUnreadableException` | コンパイル済みコンテナのimport宣言がこのバージョンでは読めない形式。アーカイブ化するバージョンで再コンパイルします |
 | `PharWritesInsideArchiveException` | ホストまたはインポートしたアプリケーションが、ツリーの中に書く設定でコンパイルされている。`APP_WRITE_DIR`を設定してコンパイルします |
 | `PharImportOutsideTreeException` | インポートしたアプリケーションが、アーカイブにするツリーの外にある |
 | `PharEntryNotFoundException` | `public/index.php`がない。別のエントリは`Compiler::phar()`に渡します |
-| `PharEntryNotPackedException` | エントリは存在するが同梱されない。アプリケーションルートの直置きファイルは入りません |
+| `PharEntryNotPackedException` | エントリは存在するが同梱されない。アプリケーションルートの直置きファイルで入るのは`preload.php`だけです |
 | `PharStaleOutputException` | 出力先に前回のアーカイブが残っていて、削除できなかった |
 | `PharSymlinkedDirectoryException` | ツリー内のディレクトリが symlink で、`Phar`が詰められない |
 

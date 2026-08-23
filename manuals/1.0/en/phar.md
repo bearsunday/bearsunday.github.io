@@ -38,7 +38,7 @@ $code = $compiler();
 exit($code === 0 ? $compiler->phar() : $code);
 ```
 
-The script names the application, the context it boots — the same one `public/index.php` uses — and reads the write directory from the environment. The rest it does not have to say, because packing is the framework's business: the archive carries named top-level directories only — `src`, `public`, `bin`, `vendor`, `var`, and wherever an imported application sits — and of `var/` only this build: `var/build/{context}`, which holds the DI scripts with their compile marker and whatever [compile steps](production.html#compile-steps) wrote. `var/log` and `var/tmp` stay out, as do `.env`, `autoload.php`, `preload.php` and `tests/`; the directories left behind are printed as `Not packed:`. The marker is `.bear-compile.json`, and it is what `phar()` reads to decide: `app`, `context`, `tmpDir`, `time`. The `.env` file stays out, but the values it held are compiled into the DI scripts, and those ship: treat the archive as a secret. `phar.readonly` is handled in a child process, so there is no ini flag to remember.
+The script names the application, the context it boots — the same one `public/index.php` uses — and reads the write directory from the environment. The rest it does not have to say, because packing is the framework's business: the archive carries named top-level directories only — `src`, `public`, `bin`, `vendor`, `var`, and wherever an imported application sits — and of `var/` only this build: `var/build/{context}`, which holds the DI scripts with their compile marker and whatever [compile steps](production.html#compile-steps) wrote. `var/log` and `var/tmp` stay out, as do `.env`, `autoload.php` and `tests/`; of the files at the root only `preload.php` ships; the directories left behind are printed as `Not packed:`. The marker is `.bear-compile.json`, and it is what `phar()` reads to decide: `app`, `context`, `tmpDir`, `time`. The `.env` file stays out, but the values it held are compiled into the DI scripts, and those ship: treat the archive as a secret. `phar.readonly` is handled in a child process, so there is no ini flag to remember.
 
 ```bash
 APP_WRITE_DIR=/tmp php bin/compile.php
@@ -69,6 +69,14 @@ require 'phar://' . __DIR__ . '/app.phar/vendor/autoload.php';
 
 exit((new MyVendor\MyProject\Bootstrap())('prod-hal-app', $GLOBALS, $_SERVER, getenv('APP_WRITE_DIR') ?: null));
 ```
+
+`preload.php` ships in the archive, so `opcache.preload` names it there:
+
+```ini
+opcache.preload=phar:///path/to/app.phar/preload.php
+```
+
+`autoload.php` does not ship: a preload leaves it [nothing to do](production.html#autoloadphp). The same preload placed beside the archive instead stops the server at startup with `Failed opening required '…/vendor/autoload.php'` — its requires are written relative to the directory it sits in, and outside the archive that directory holds no `vendor/`. One preload is written per compile, at a fixed path, so pack the context you compiled last; the pack refuses one another context left behind.
 
 ## It moves
 
@@ -106,11 +114,12 @@ Everything that used to fail at the deploy fails at the build, with the path in 
 | Error | Meaning |
 |---|---|
 | `PharNotCompiledException` | The context was never compiled: `phar()` packs what is on disk |
+| `PharPreloadForAnotherBuildException` | The `preload.php` at the application root was written by another context: pack the context you compiled last |
 | `PharImportsUnreadableException` | The compiled container declares its imports in a form this version cannot read: recompile with the version that packs |
 | `PharWritesInsideArchiveException` | An application — the host or an import — was compiled to write into the tree. Compile with `APP_WRITE_DIR` set |
 | `PharImportOutsideTreeException` | An imported application lies outside the tree being packed and cannot ship in it |
 | `PharEntryNotFoundException` | No `public/index.php`; pass another entry to `Compiler::phar()` |
-| `PharEntryNotPackedException` | The entry exists but does not ship: nothing loose at the application root does |
+| `PharEntryNotPackedException` | The entry exists but does not ship: of the files loose at the application root only `preload.php` does |
 | `PharStaleOutputException` | An archive of a previous build survived at the output path and could not be removed |
 | `PharSymlinkedDirectoryException` | A directory in the tree is a symlink, which `Phar` cannot pack |
 
