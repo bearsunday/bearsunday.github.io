@@ -10,11 +10,11 @@ permalink: /manuals/1.0/en/phar.html
 A [phar](https://www.php.net/manual/en/intro.phar.php) is the application as one file: the code, `vendor/`, and the compiled DI scripts in a single archive. The boot reads the archive and writes nothing into it — a deploy is a copy of one file, a rollback is the file before it.
 
 ```text
-prod-app.phar                             the application, vendor/, compiled DI scripts
-/tmp/MyVendor/MyProject/prod-app          everything the runtime writes
+app.phar                                  the application, vendor/, compiled DI scripts
+/tmp/MyVendor/MyProject/prod-hal-app      everything the runtime writes
 ```
 
-Requires BEAR.Package 1.23+.
+Requires BEAR.Package 1.24+.
 
 ## Make your application a phar
 
@@ -38,7 +38,7 @@ $code = $compiler();
 exit($code === 0 ? $compiler->phar() : $code);
 ```
 
-The script names the application, the context it boots — the same one `public/index.php` uses — and reads the write directory from the environment. The rest it does not have to say, because packing is the framework's business: `src/`, `public/`, `vendor/` and the DI scripts with their compile marker go in; logs, caches, `.env`, `autoload.php`, `preload.php` and `tests/` stay out. The marker is `.bear-compile.json`, and it is what `phar()` reads to decide: `app`, `context`, `tmpDir`, `writeDir`, `time`. The `.env` file stays out, but the values it held are compiled into the DI scripts, and those ship: treat the archive as a secret. `phar.readonly` is handled in a child process, so there is no ini flag to remember.
+The script names the application, the context it boots — the same one `public/index.php` uses — and reads the write directory from the environment. The rest it does not have to say, because packing is the framework's business: the archive carries named top-level directories only — `src`, `public`, `bin`, `vendor`, `var`, and wherever an imported application sits — and of `var/` only this build: `var/build/{context}`, which holds the DI scripts with their compile marker and whatever [compile steps](production.html#compile-steps) wrote. `var/log` and `var/tmp` stay out, as do `.env`, `autoload.php`, `preload.php` and `tests/`; the directories left behind are printed as `Not packed:`. The marker is `.bear-compile.json`, and it is what `phar()` reads to decide: `app`, `context`, `tmpDir`, `time`. The `.env` file stays out, but the values it held are compiled into the DI scripts, and those ship: treat the archive as a secret. `phar.readonly` is handled in a child process, so there is no ini flag to remember.
 
 ```bash
 APP_WRITE_DIR=/tmp php bin/compile.php
@@ -46,29 +46,40 @@ APP_WRITE_DIR=/tmp php bin/compile.php
 
 ```text
 Compiled: 16 resource classes
-Phar: /app/var/build/prod-hal-app.phar (7.5MB, 2100 files)
-Writes: /tmp
+Phar: /app/app.phar (7.5MB, 2100 files)
+Not packed: tests
 ```
 
-`__invoke()` and `phar()` are separate steps, so a build pipeline can compile in one job and pack in another. `phar()` packs what is on disk and refuses a context that was never compiled, or one compiled for another write directory. It writes `{appDir}/var/build/{context}.phar`; another entry or another output are its two arguments. Compiling several contexts is a loop in your script; `preload.php` and `autoload.php` are written to fixed paths, so rename them between contexts as [Production](production.html#compilation-recommended) shows.
+`__invoke()` and `phar()` are separate steps, so a build pipeline can compile in one job and pack in another. `phar()` packs what is on disk and refuses a context that was never compiled, or one compiled to write inside the tree. It writes `{appDir}/app.phar`, beside the `autoload.php` and `preload.php` the compile wrote; another entry is its one argument. Compiling several contexts is a loop in your script, and all three outputs are fixed paths, so move them between contexts as [Production](production.html#compilation-recommended) shows.
 
 ## Run
 
 ```bash
-APP_WRITE_DIR=/tmp php var/build/prod-hal-app.phar get '/index?name=BEAR'
+APP_WRITE_DIR=/tmp php app.phar get '/index?name=BEAR'
 ```
 
-The stub runs `public/index.php` from inside the archive, so `dirname(__DIR__)` in `src/Injector.php` is `phar:///path/prod-hal-app.phar`. The entry points are the ones [read-only deployments](production.html#writable-paths) shows; nothing else changes.
+The stub runs `public/index.php` from inside the archive, so `dirname(__DIR__)` in `src/Injector.php` is `phar:///path/app.phar`. The entry points are the ones [read-only deployments](production.html#writable-paths) shows; nothing else changes.
 
 php-fpm runs a file, not an archive, so the entry point sits next to it and loads the autoloader from inside:
 
 ```php
 <?php
-// index.php, in the same directory as prod-hal-app.phar
-require 'phar://' . __DIR__ . '/prod-hal-app.phar/vendor/autoload.php';
+// index.php, in the same directory as app.phar
+require 'phar://' . __DIR__ . '/app.phar/vendor/autoload.php';
 
 exit((new MyVendor\MyProject\Bootstrap())('prod-hal-app', $GLOBALS, $_SERVER, getenv('APP_WRITE_DIR') ?: null));
 ```
+
+## It moves
+
+The archive is the build. Copy it anywhere — another directory, another machine — and boot it there: nothing outside it is read, so the tree it was packed from can be deleted.
+
+```bash
+cp app.phar /srv/releases/2026-08-23.phar
+APP_WRITE_DIR=/tmp php /srv/releases/2026-08-23.phar get '/index?name=BEAR'
+```
+
+What it holds to is the write directory, not a location. That is the one thing a boot has to match, and an archive says so when it does not: [When the build stops](#when-the-build-stops).
 
 ## Two rules
 
@@ -97,7 +108,6 @@ Everything that used to fail at the deploy fails at the build, with the path in 
 | `PharNotCompiledException` | The context was never compiled: `phar()` packs what is on disk |
 | `PharImportsUnreadableException` | The compiled container declares its imports in a form this version cannot read: recompile with the version that packs |
 | `PharWritesInsideArchiveException` | An application — the host or an import — was compiled to write into the tree. Compile with `APP_WRITE_DIR` set |
-| `PharWriteDirMismatchException` | An import writes somewhere other than under the host's write directory: it was compiled before the host was given this one |
 | `PharImportOutsideTreeException` | An imported application lies outside the tree being packed and cannot ship in it |
 | `PharEntryNotFoundException` | No `public/index.php`; pass another entry to `Compiler::phar()` |
 | `PharEntryNotPackedException` | The entry exists but does not ship: nothing loose at the application root does |

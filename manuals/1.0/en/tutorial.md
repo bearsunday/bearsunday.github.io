@@ -841,7 +841,7 @@ require dirname(__DIR__) . '/autoload.php';
 exit((new Bootstrap())('prod-hal-app', $GLOBALS, $_SERVER));
 ```
 
-PHP code that generates instances according to the context is created. Check the `var/tmp/{context}/di` folder of the application.
+PHP code that generates instances according to the context is created. Check the `var/build/{context}/di` folder of the application.
 You don't usually need to see these files, but you can check how the objects are created.
 
 ## REST API

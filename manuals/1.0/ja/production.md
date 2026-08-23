@@ -222,9 +222,23 @@ exit(0);
 
 [`opcache.preload`](https://www.php.net/manual/ja/opcache.preloading.php) は PHP プロセス単位の設定です。複数コンテキストを preload する場合は**それぞれ別プロセス（php-fpm プール等）**になり、プロセスごとに退避した preload を指します（例：api 用プールは `opcache.preload=/path/to/api.preload.php`）。上の例で html 側を既定名のままにしているのは、そのプロセスが既定の `preload.php` を指すからです。
 
-DIスクリプトの出力先は`{appDir}/var/tmp/{context}/di`です。これはビルド成果物で、成果物に同梱されていれば実行時はコンパイルせず読むだけです。
+DIスクリプトの出力先は`{appDir}/var/build/{context}/di`です。ビルドディレクトリにはコンパイルが作ったものだけが入り、リクエストが書くものは入りません。だから読み取り専用で配れます。成果物に同梱されていれば実行時はコンパイルせず読むだけです。
 
 `vendor/bin/bear.compile` は非推奨です。移行手順は [BEAR.Package#482](https://github.com/bearsunday/BEAR.Package/issues/482) を参照してください。
+
+#### compile step {#compile-steps}
+
+モジュールは compile step（`BEAR\Sunday\Compile\CompileStepInterface`）をバインドでき、コンパイルがそれを実行します。step にはビルドディレクトリの下に自分専用の空のディレクトリが渡されます。名前はバインディングのキーで、書いたものは成果物に同梱されます。
+
+```text
+{appDir}/var/build/{context}/di        コンパイル済みDIスクリプト
+{appDir}/var/build/{context}/qiq       Qiqがコンパイルしたテンプレート
+{appDir}/var/build/{context}/twig      Twigのキャッシュ
+```
+
+テンプレートエンジンがこれを使います。最初のリクエストでコンパイルするものは残っておらず、そのためにアプリケーションルート配下を書き込み可能にする必要もありません。step が失敗するとコンパイルマーカーが残らないので、テンプレートの無いビルドを配信するのではなく、次の起動が再びコンパイルします。
+
+bear/sunday 1.9以降が必要です。背景: [BEAR.Package#501](https://github.com/bearsunday/BEAR.Package/pull/501)
 
 #### 読み取り専用デプロイ（サーバーレス、イミュータブルコンテナ） {#writable-paths}
 
@@ -233,7 +247,7 @@ DIスクリプトの出力先は`{appDir}/var/tmp/{context}/di`です。これ�
 この場合は書き込めるディレクトリをアプリケーションに渡します。ビルド時と起動時の両方に渡し、次の2つを守ります。
 
 * 絶対パスを渡します。相対パスを渡すと`Meta`を組む時点で`WriteDirNotAbsoluteException`が投げられます。
-* ビルドと起動で同じパスを渡します。パスはDIスクリプトに焼き込まれるため、渡されたinjectorとコンパイルの書き込み先が違う場合は`WriteDirMismatchException`が投げられます。
+* ビルドと起動で同じパスを渡します。パスはDIスクリプトに焼き込まれるため、違うパスで起動すると、書き込めるなら再コンパイルになり、書き込めないなら`CompiledForAnotherWriteDirException`で止まります。
 
 `$writeDir`は`Bootstrap::__invoke()`、`Injector::getInstance()`、`Injector::getOverrideInstance()`、`new Compiler()`の末尾の省略可能な引数です。エントリポイントを次のように変更します。
 
@@ -291,7 +305,7 @@ runtime   APP_WRITE_DIR=/tmp
 書き込み先を`/tmp`にした場合の配置は次のとおりです。
 
 ```text
-{appDir}/var/tmp/{context}/di                   コンパイル済みDIスクリプト（成果物内）
+{appDir}/var/build/{context}/di                 コンパイル済みDIスクリプト（成果物内）
 /tmp/MyVendor/MyProject/{context}/tmp           クエリリポジトリのキャッシュ、serializeしたinjector
 /tmp/MyVendor/MyProject/{context}/log
 ```

@@ -227,9 +227,23 @@ exit(0);
 
 [`opcache.preload`](https://www.php.net/manual/en/opcache.preloading.php) is a per-process setting, so preloading multiple contexts means **separate PHP processes** (e.g. php-fpm pools), each pointing at its evacuated preload (e.g. the api pool: `opcache.preload=/path/to/api.preload.php`). In the example the html side keeps the default name because its process points at the default `preload.php`.
 
-DI scripts are written under `{appDir}/var/tmp/{context}/di`. They are a build output: when the artifact carries them, runtime reads them instead of compiling.
+DI scripts are written under `{appDir}/var/build/{context}/di`. The build directory holds what a compile produced and nothing a request writes, so it can ship read-only: when the artifact carries it, runtime reads the scripts instead of compiling.
 
 `vendor/bin/bear.compile` is deprecated. Migration: [BEAR.Package#482](https://github.com/bearsunday/BEAR.Package/issues/482).
+
+#### Compile steps {#compile-steps}
+
+A module can bind a compile step — `BEAR\Sunday\Compile\CompileStepInterface` — and the compile runs it. Each step is handed an empty directory of its own under the build directory, named after its binding key, and what it writes ships with the artifact:
+
+```text
+{appDir}/var/build/{context}/di        compiled DI scripts
+{appDir}/var/build/{context}/qiq       the templates Qiq compiled
+{appDir}/var/build/{context}/twig      Twig's cache
+```
+
+Template engines use this: the first request has nothing left to compile, and nothing under the application root has to be writable for them. A step that fails leaves no compile marker, so the next boot compiles again rather than serve a build whose templates never arrived.
+
+Requires bear/sunday 1.9+. Background: [BEAR.Package#501](https://github.com/bearsunday/BEAR.Package/pull/501).
 
 #### Read-only deployments (serverless, immutable containers) {#writable-paths}
 
@@ -238,7 +252,7 @@ Serverless platforms and immutable containers restrict where an application may 
 Tell the application which directory it may write to. Pass the same directory to both the build and the boot, and keep to two rules:
 
 * Pass an absolute path. A relative path throws `WriteDirNotAbsoluteException` where the `Meta` is built.
-* Pass the same path to the build and the boot. The paths are compiled into the DI scripts, so a compile whose write directory differs from the injector it was handed throws `WriteDirMismatchException`.
+* Pass the same path to the build and the boot. The paths are compiled into the DI scripts, so a boot given another one compiles again where it can write, and stops with `CompiledForAnotherWriteDirException` where it cannot.
 
 `$writeDir` is the optional last argument on `Bootstrap::__invoke()`, `Injector::getInstance()`, `Injector::getOverrideInstance()` and `new Compiler()`. Change the entry points like this:
 
@@ -296,7 +310,7 @@ runtime   APP_WRITE_DIR=/tmp
 With `/tmp` as the write directory, the layout is:
 
 ```text
-{appDir}/var/tmp/{context}/di                   compiled DI scripts, in the artifact
+{appDir}/var/build/{context}/di                 compiled DI scripts, in the artifact
 /tmp/MyVendor/MyProject/{context}/tmp           query repository cache, serialized injector
 /tmp/MyVendor/MyProject/{context}/log
 ```
