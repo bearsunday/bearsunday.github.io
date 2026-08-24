@@ -10,11 +10,57 @@ permalink: /manuals/1.0/ja/phar.html
 [Phar](https://www.php.net/manual/ja/intro.phar.php)はアプリケーションを1ファイルにしたものです。コード、`vendor/`、コンパイル済みDIスクリプトが1つのアーカイブに収まります。起動はアーカイブを読むだけで、アーカイブには何も書き込みません。デプロイは1ファイルのコピーで、ロールバックは1つ前のファイルです。
 
 ```text
-app.phar                                  アプリケーション、vendor/、コンパイル済みDIスクリプト
-/tmp/MyVendor/MyProject/prod-hal-app      実行時に書き込むものすべて
+app.phar                                            アプリケーション、vendor/、コンパイル済みDIスクリプト
+{一時ディレクトリ}/MyVendor/MyProject/prod-hal-app   実行時に書き込むもの（tmpとlog）
 ```
 
 BEAR.Package 1.24以降が必要です。
+
+## 書き込み先
+
+アプリケーションは自身の`ProdModule`で宣言します。
+
+```php
+<?php
+// src/Module/ProdModule.php
+namespace MyVendor\MyProject\Module;
+
+use BEAR\Package\Context\ProdModule as PackageProdModule;
+use BEAR\Package\Module\ReadOnlyAppModule;
+use Ray\Di\AbstractModule;
+
+class ProdModule extends AbstractModule
+{
+    protected function configure(): void
+    {
+        $this->install(new ReadOnlyAppModule());
+        $this->install(new PackageProdModule());
+    }
+}
+```
+
+省略したときは、起動したマシンの一時ディレクトリの下になります。アプリケーション名と context で分かれます。
+
+```text
+{一時ディレクトリ}/MyVendor/MyProject/prod-hal-app/tmp
+{一時ディレクトリ}/MyVendor/MyProject/prod-hal-app/log
+```
+
+アーカイブは書き込み先を持たないので、どのマシンでもそのマシンの答えで起動します。ビルドマシンと合わせるものはありません。
+
+パスを渡すと、その通りに使われます。
+
+```php
+$this->install(new ReadOnlyAppModule('/var/tmp/myapp', '/var/log/myapp'));
+```
+
+渡した値はコンパイル時にコンテナに入ります。このビルドを起動するマシンで使えるパスを渡します。相対パスと空文字は`DeclaredWriteDirException`で拒否されます。
+
+片方だけ渡すこともできます。渡さなかった方は起動時に決まります。
+
+```php
+$this->install(new ReadOnlyAppModule(logDir: '/var/log/myapp'));
+```
 
 ## Pharにする
 
@@ -30,18 +76,17 @@ require dirname(__DIR__) . '/vendor/autoload.php';
 ini_set('memory_limit', '-1');
 
 $context = 'prod-hal-app';
-$writeDir = getenv('APP_WRITE_DIR') ?: null;
 
-$compiler = new Compiler('MyVendor\MyProject', $context, dirname(__DIR__), $writeDir);
+$compiler = new Compiler('MyVendor\MyProject', $context, dirname(__DIR__));
 $code = $compiler();
 
 exit($code === 0 ? $compiler->phar() : $code);
 ```
 
-このスクリプトが名乗るのは、アプリケーション名、起動する context（`public/index.php`と同じもの）、そして環境変数から読む書き込み先です。残りは書く必要がありません。何を収めるかはフレームワークの仕事です: アーカイブに入るのは名前の決まったトップレベルのディレクトリだけで、`src`、`public`、`bin`、`vendor`、`var`、そしてインポートしたアプリケーションの置かれた場所です。`var/`のうち入るのはこのビルドの`var/build/{context}`だけで、そこにはコンパイルマーカーを含むDIスクリプトと、[compile step](production.html#compile-steps)が書いたものが入ります。`var/log`と`var/tmp`は入りません。`.env`、`autoload.php`、`tests/`も同じです。ルート直下のファイルで入るのは`preload.php`だけです。残ったディレクトリは`Not packed:`として表示されます。マーカーは`.bear-compile.json`で、`phar()`はこれを見て判断します（`app`、`context`、`tmpDir`、`time`）。`.env`ファイル自体は入りませんが、その値はDIスクリプトに焼き込まれ、そのスクリプトは同梱されます。アーカイブは秘密情報として扱ってください。`phar.readonly`は子プロセスで処理されるので、iniフラグを覚える必要もありません。
+このスクリプトが名乗るのは、アプリケーション名、起動する context（`public/index.php`と同じもの）、アプリケーションのディレクトリです。残りは書く必要がありません。何を収めるかはフレームワークの仕事です: アーカイブに入るのは名前の決まったトップレベルのディレクトリだけで、`src`、`public`、`bin`、`vendor`、`var`、そしてインポートしたアプリケーションの置かれた場所です。`var/`のうち入るのはこのビルドの`var/build/{context}`だけで、そこにはコンパイルマーカーを含むDIスクリプトと、[compile step](production.html#compile-steps)が書いたものが入ります。`var/log`と`var/tmp`は入りません。`.env`、`autoload.php`、`tests/`も同じです。ルート直下のファイルで入るのは`preload.php`だけです。残ったディレクトリは`Not packed:`として表示されます。マーカーは`.bear-compile.json`で、`phar()`はこれを見て判断します（`app`、`context`、`tmpDir`、`time`）。`.env`ファイル自体は入りませんが、その値はDIスクリプトに焼き込まれ、そのスクリプトは同梱されます。アーカイブは秘密情報として扱ってください。`phar.readonly`は子プロセスで処理されるので、iniフラグを覚える必要もありません。
 
 ```bash
-APP_WRITE_DIR=/tmp php bin/compile.php
+php bin/compile.php
 ```
 
 ```text
@@ -57,10 +102,9 @@ Not packed: tests
 ```php
 // bin/compile.php
 $appDir = dirname(__DIR__);
-$writeDir = getenv('APP_WRITE_DIR') ?: null;
 
 foreach (['prod-hal-api-app', 'prod-html-app'] as $context) {
-    $compiler = new Compiler('MyVendor\MyProject', $context, $appDir, $writeDir);
+    $compiler = new Compiler('MyVendor\MyProject', $context, $appDir);
     $code = $compiler();
     if ($code !== 0) {
         exit($code);
@@ -84,7 +128,7 @@ exit(0);
 ## 動かす
 
 ```bash
-APP_WRITE_DIR=/tmp php app.phar get '/index?name=BEAR'
+php app.phar get '/index?name=BEAR'
 ```
 
 スタブがアーカイブの中の`public/index.php`を実行するので、`src/Injector.php`の`dirname(__DIR__)`は`phar:///path/app.phar`になります。エントリポイントは[読み取り専用デプロイ](production.html#writable-paths)のままで、他に変更はありません。
@@ -96,7 +140,7 @@ php-fpmが実行するのはアーカイブではなくファイルなので、�
 // index.php （app.pharと同じディレクトリ）
 require 'phar://' . __DIR__ . '/app.phar/vendor/autoload.php';
 
-exit((new MyVendor\MyProject\Bootstrap())('prod-hal-app', $GLOBALS, $_SERVER, getenv('APP_WRITE_DIR') ?: null));
+exit((new MyVendor\MyProject\Bootstrap())('prod-hal-app', $GLOBALS, $_SERVER));
 ```
 
 `preload.php`はアーカイブに入るので、`opcache.preload`はアーカイブの中を指します。
@@ -113,20 +157,18 @@ opcache.preload=phar:///path/to/app.phar/preload.php
 
 ```bash
 cp app.phar /srv/releases/2026-08-23.phar
-APP_WRITE_DIR=/tmp php /srv/releases/2026-08-23.phar get '/index?name=BEAR'
+php /srv/releases/2026-08-23.phar get '/index?name=BEAR'
 ```
 
-固定されているのは場所ではなく書き込み先です。起動時に合わせるのはそれだけで、違っていればアーカイブがそう言います → [ビルドが止まるとき](#when-the-build-stops)
+改名しても、別のディレクトリから実行しても同じです。
 
-## 守ること2つ
-
-**書き込み先は1つで、ビルドと起動で同じ絶対パスにします。** コンパイル済みスクリプトはコンパイル時のパスを持つので、アーカイブは1つの書き込み先のために作られます。その1箇所が`APP_WRITE_DIR`です。ビルドが読み、起動が読みます。インポートしたアプリケーションにはコンテナが渡すので、他のどこにも書きません。
+## 守ること
 
 **`$appMeta->appDir`から実行時のパスを組むバインディングは書きません。** コンパイル済みスクリプトはビルド時の`Meta`を持つため、注入される`appDir`は`phar://…`ではなくビルド時のディレクトリです（`tmpDir`と`logDir`は書き込み先なので正しい値です）。実行時にファイルを読むもの（テンプレートのディレクトリ、データファイルなど）は`__DIR__`を基点にします。`__DIR__`はアーカイブの中を指します。
 
 ## インポートしたアプリケーション
 
-アーカイブの中の[インポートしたアプリケーション](import.html)は別のアプリケーションです。`Meta`もコンパイル済みスクリプトも書き込み先も、それぞれのものを持ちます。変更は要りません。ホストに渡した書き込み先はコンテナが渡します。
+アーカイブの中の[インポートしたアプリケーション](import.html)は別のアプリケーションです。`Meta`もコンパイル済みスクリプトも、それぞれのものを持ちます。変更は要りません。
 
 ```php
 $this->install(new ImportAppModule([
@@ -134,7 +176,16 @@ $this->install(new ImportAppModule([
 ]));
 ```
 
-コンパイルはアプリケーションを起動し、その起動がインポートしたアプリケーションをそれぞれのツリーにコンパイルします（ビルドのログに出る`Compiled DI scripts on demand`がそれです）。DIスクリプトは自動でアーカイブに入ります。インポートしたアプリケーションのディレクトリは起動時に解決されるので、アーカイブの移動に追従します。
+コンパイルはアプリケーションを起動し、その起動がインポートしたアプリケーションをそれぞれのツリーにコンパイルします（ビルドのログに出る`Compiled DI scripts on demand`がそれです）。DIスクリプトは自動でアーカイブに入ります。
+
+書き込み先はホストの下になります。
+
+```text
+{ホストのtmp}/ImportVendor/Greeting/prod-app/tmp
+{ホストのlog}/ImportVendor/Greeting/prod-app/log
+```
+
+ホストに渡るのはホストが宣言した規則で、ホストのビルドが解決したディレクトリではありません。だからホストが書き込み先をマシンに任せているとき、インポートしたアプリケーションも起動したマシンの答えを受け取ります。インポートしたアプリケーションが自分の`ProdModule`で宣言していれば、そちらが使われます。
 
 ## ビルドが止まるとき {#when-the-build-stops}
 
@@ -145,13 +196,13 @@ $this->install(new ImportAppModule([
 | `PharNotCompiledException` | その context がコンパイルされていない。`phar()`はディスク上のものを詰めます |
 | `PharPreloadForAnotherBuildException` | アプリケーションルートの`preload.php`が別の context のもの。最後にコンパイルした context をパックします |
 | `PharImportsUnreadableException` | コンパイル済みコンテナのimport宣言がこのバージョンでは読めない形式。アーカイブ化するバージョンで再コンパイルします |
-| `PharWritesInsideArchiveException` | ホストまたはインポートしたアプリケーションが、ツリーの中に書く設定でコンパイルされている。`APP_WRITE_DIR`を設定してコンパイルします |
+| `PharWritesInsideArchiveException` | ホストまたはインポートしたアプリケーションが、ツリーの中に書く設定でコンパイルされている。`ReadOnlyAppModule`をinstallしてコンパイルします |
 | `PharImportOutsideTreeException` | インポートしたアプリケーションが、アーカイブにするツリーの外にある |
 | `PharEntryNotFoundException` | `public/index.php`がない。別のエントリは`Compiler::phar()`に渡します |
 | `PharEntryNotPackedException` | エントリは存在するが同梱されない。アプリケーションルートの直置きファイルで入るのは`preload.php`だけです |
 | `PharStaleOutputException` | 出力先に前回のアーカイブが残っていて、削除できなかった |
 | `PharSymlinkedDirectoryException` | ツリー内のディレクトリが symlink で、`Phar`が詰められない |
 
-起動時に`APP_WRITE_DIR`なしでアーカイブを開始すると`WriteDirRequiredException`で、ビルドと違う`APP_WRITE_DIR`で開始すると両方のパスを名指しする`CompiledForAnotherWriteDirException`で止まります。
+コンパイルされていないアーカイブを起動すると`NotCompiledException`で止まります。アーカイブは書き込めないので、そこでコンパイルすることはできません。
 
 背景: [BEAR.Package#426](https://github.com/bearsunday/BEAR.Package/issues/426)

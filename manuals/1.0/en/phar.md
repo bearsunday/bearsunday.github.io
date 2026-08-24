@@ -10,11 +10,57 @@ permalink: /manuals/1.0/en/phar.html
 A [phar](https://www.php.net/manual/en/intro.phar.php) is the application as one file: the code, `vendor/`, and the compiled DI scripts in a single archive. The boot reads the archive and writes nothing into it — a deploy is a copy of one file, a rollback is the file before it.
 
 ```text
-app.phar                                  the application, vendor/, compiled DI scripts
-/tmp/MyVendor/MyProject/prod-hal-app      everything the runtime writes
+app.phar                                            the application, vendor/, compiled DI scripts
+{temp directory}/MyVendor/MyProject/prod-hal-app     what the runtime writes: tmp and log
 ```
 
 Requires BEAR.Package 1.24+.
+
+## Where the application writes
+
+An application declares it in its own `ProdModule`.
+
+```php
+<?php
+// src/Module/ProdModule.php
+namespace MyVendor\MyProject\Module;
+
+use BEAR\Package\Context\ProdModule as PackageProdModule;
+use BEAR\Package\Module\ReadOnlyAppModule;
+use Ray\Di\AbstractModule;
+
+class ProdModule extends AbstractModule
+{
+    protected function configure(): void
+    {
+        $this->install(new ReadOnlyAppModule());
+        $this->install(new PackageProdModule());
+    }
+}
+```
+
+Omitted, the directories are under the temp directory of the machine that boots, keyed by application name and context.
+
+```text
+{temp directory}/MyVendor/MyProject/prod-hal-app/tmp
+{temp directory}/MyVendor/MyProject/prod-hal-app/log
+```
+
+The archive carries no write directory, so each machine boots with its own answer. There is nothing to match against the build.
+
+A named path is used as given.
+
+```php
+$this->install(new ReadOnlyAppModule('/var/tmp/myapp', '/var/log/myapp'));
+```
+
+A value passed here enters the container when it is compiled. Name a path that the machines booting this build can use. A relative or empty one is refused with `DeclaredWriteDirException`.
+
+Either can be named on its own; the other is answered at boot.
+
+```php
+$this->install(new ReadOnlyAppModule(logDir: '/var/log/myapp'));
+```
 
 ## Make your application a phar
 
@@ -30,18 +76,17 @@ require dirname(__DIR__) . '/vendor/autoload.php';
 ini_set('memory_limit', '-1');
 
 $context = 'prod-hal-app';
-$writeDir = getenv('APP_WRITE_DIR') ?: null;
 
-$compiler = new Compiler('MyVendor\MyProject', $context, dirname(__DIR__), $writeDir);
+$compiler = new Compiler('MyVendor\MyProject', $context, dirname(__DIR__));
 $code = $compiler();
 
 exit($code === 0 ? $compiler->phar() : $code);
 ```
 
-The script names the application, the context it boots — the same one `public/index.php` uses — and reads the write directory from the environment. The rest it does not have to say, because packing is the framework's business: the archive carries named top-level directories only — `src`, `public`, `bin`, `vendor`, `var`, and wherever an imported application sits — and of `var/` only this build: `var/build/{context}`, which holds the DI scripts with their compile marker and whatever [compile steps](production.html#compile-steps) wrote. `var/log` and `var/tmp` stay out, as do `.env`, `autoload.php` and `tests/`; of the files at the root only `preload.php` ships; the directories left behind are printed as `Not packed:`. The marker is `.bear-compile.json`, and it is what `phar()` reads to decide: `app`, `context`, `tmpDir`, `time`. The `.env` file stays out, but the values it held are compiled into the DI scripts, and those ship: treat the archive as a secret. `phar.readonly` is handled in a child process, so there is no ini flag to remember.
+The script names the application, the context it boots — the same one `public/index.php` uses — and the application directory. The rest it does not have to say, because packing is the framework's business: the archive carries named top-level directories only — `src`, `public`, `bin`, `vendor`, `var`, and wherever an imported application sits — and of `var/` only this build: `var/build/{context}`, which holds the DI scripts with their compile marker and whatever [compile steps](production.html#compile-steps) wrote. `var/log` and `var/tmp` stay out, as do `.env`, `autoload.php` and `tests/`; of the files at the root only `preload.php` ships; the directories left behind are printed as `Not packed:`. The marker is `.bear-compile.json`, and it is what `phar()` reads to decide: `app`, `context`, `tmpDir`, `time`. The `.env` file stays out, but the values it held are compiled into the DI scripts, and those ship: treat the archive as a secret. `phar.readonly` is handled in a child process, so there is no ini flag to remember.
 
 ```bash
-APP_WRITE_DIR=/tmp php bin/compile.php
+php bin/compile.php
 ```
 
 ```text
@@ -57,10 +102,9 @@ All three are fixed paths, so several contexts are a loop that packs each one be
 ```php
 // bin/compile.php
 $appDir = dirname(__DIR__);
-$writeDir = getenv('APP_WRITE_DIR') ?: null;
 
 foreach (['prod-hal-api-app', 'prod-html-app'] as $context) {
-    $compiler = new Compiler('MyVendor\MyProject', $context, $appDir, $writeDir);
+    $compiler = new Compiler('MyVendor\MyProject', $context, $appDir);
     $code = $compiler();
     if ($code !== 0) {
         exit($code);
@@ -79,12 +123,12 @@ foreach (['prod-hal-api-app', 'prod-html-app'] as $context) {
 exit(0);
 ```
 
-Not the `preload.php` rename [Production](production.html#compilation-recommended) shows: that one is for a deployment without an archive, where the preloads have to sit side by side on disk. Each archive carries its own at `phar://…/{context}.phar/preload.php`, and one renamed before the pack leaves the archive with none — silently, because an application that uses no preload is a legitimate build.
+The `preload.php` rename that [production](production.html#compilation-recommended) shows has no place here: it serves a deploy that is not an archive, where the preload has to sit on disk beside the code. Each archive carries its own at `phar://…/{context}.phar/preload.php`. Renaming before the pack leaves the archive without one, silently — a build that uses no preload is legitimate, so nothing stops it.
 
 ## Run
 
 ```bash
-APP_WRITE_DIR=/tmp php app.phar get '/index?name=BEAR'
+php app.phar get '/index?name=BEAR'
 ```
 
 The stub runs `public/index.php` from inside the archive, so `dirname(__DIR__)` in `src/Injector.php` is `phar:///path/app.phar`. The entry points are the ones [read-only deployments](production.html#writable-paths) shows; nothing else changes.
@@ -96,7 +140,7 @@ php-fpm runs a file, not an archive, so the entry point sits next to it and load
 // index.php, in the same directory as app.phar
 require 'phar://' . __DIR__ . '/app.phar/vendor/autoload.php';
 
-exit((new MyVendor\MyProject\Bootstrap())('prod-hal-app', $GLOBALS, $_SERVER, getenv('APP_WRITE_DIR') ?: null));
+exit((new MyVendor\MyProject\Bootstrap())('prod-hal-app', $GLOBALS, $_SERVER));
 ```
 
 `preload.php` ships in the archive, so `opcache.preload` names it there:
@@ -113,20 +157,18 @@ The archive is the build. Copy it anywhere — another directory, another machin
 
 ```bash
 cp app.phar /srv/releases/2026-08-23.phar
-APP_WRITE_DIR=/tmp php /srv/releases/2026-08-23.phar get '/index?name=BEAR'
+php /srv/releases/2026-08-23.phar get '/index?name=BEAR'
 ```
 
-What it holds to is the write directory, not a location. That is the one thing a boot has to match, and an archive says so when it does not: [When the build stops](#when-the-build-stops).
+Renaming it, or running it from another directory, is the same.
 
-## Two rules
+## One rule
 
-**One write directory, the same absolute path at the build and at the boot.** The compiled scripts hold the paths they were compiled with, so an archive is built for one write directory. `APP_WRITE_DIR` is that one place: the build reads it and the boot reads it. Imported applications receive it from the container, so nothing else names it.
-
-**No binding that derives a runtime path from `$appMeta->appDir`.** The compiled scripts carry the `Meta` of the build, so the injected `appDir` is the build directory, not `phar://…`; `tmpDir` and `logDir` are the write directory and are correct. Anything that reads a file at runtime — a template directory, a data file — takes its path from `__DIR__`, which resolves inside the archive.
+**No binding that derives a runtime path from `$appMeta->appDir`.** The compiled scripts carry the `Meta` of the build, so the injected `appDir` is the build directory, not `phar://…`; `tmpDir` and `logDir` are the write directories and are correct. Anything that reads a file at runtime — a template directory, a data file — takes its path from `__DIR__`, which resolves inside the archive.
 
 ## Imported applications
 
-An [imported application](import.html) in the archive is a second application: its own `Meta`, its own compiled scripts, its own write directory. It needs no change at all - the container hands it the write directory the host was given:
+An [imported application](import.html) in the archive is a second application: its own `Meta`, its own compiled scripts. It needs no change at all:
 
 ```php
 $this->install(new ImportAppModule([
@@ -134,7 +176,16 @@ $this->install(new ImportAppModule([
 ]));
 ```
 
-The compile boots the application, that boot compiles each imported application into its own tree (`Compiled DI scripts on demand` in the build log is that), and the pack ships their DI scripts automatically. An imported application resolves its own directory at boot, so it follows the archive.
+The compile boots the application, that boot compiles each imported application into its own tree (`Compiled DI scripts on demand` in the build log is that), and the pack ships their DI scripts automatically.
+
+It writes under the host:
+
+```text
+{host tmp}/ImportVendor/Greeting/prod-app/tmp
+{host log}/ImportVendor/Greeting/prod-app/log
+```
+
+What travels is the rule the host declared, not the directory the host's build resolved, so a host that leaves its directories to the machine hands the machine's answer down. An imported application that declares its own in its `ProdModule` keeps those.
 
 ## When the build stops
 
@@ -145,13 +196,13 @@ Everything that used to fail at the deploy fails at the build, with the path in 
 | `PharNotCompiledException` | The context was never compiled: `phar()` packs what is on disk |
 | `PharPreloadForAnotherBuildException` | The `preload.php` at the application root was written by another context: pack the context you compiled last |
 | `PharImportsUnreadableException` | The compiled container declares its imports in a form this version cannot read: recompile with the version that packs |
-| `PharWritesInsideArchiveException` | An application — the host or an import — was compiled to write into the tree. Compile with `APP_WRITE_DIR` set |
+| `PharWritesInsideArchiveException` | An application — the host or an import — was compiled to write into the tree. Install `ReadOnlyAppModule` and compile again |
 | `PharImportOutsideTreeException` | An imported application lies outside the tree being packed and cannot ship in it |
 | `PharEntryNotFoundException` | No `public/index.php`; pass another entry to `Compiler::phar()` |
 | `PharEntryNotPackedException` | The entry exists but does not ship: of the files loose at the application root only `preload.php` does |
 | `PharStaleOutputException` | An archive of a previous build survived at the output path and could not be removed |
 | `PharSymlinkedDirectoryException` | A directory in the tree is a symlink, which `Phar` cannot pack |
 
-At boot, an archive started without `APP_WRITE_DIR` stops with `WriteDirRequiredException`, and one started with a different `APP_WRITE_DIR` than the build stops with `CompiledForAnotherWriteDirException`, naming both directories.
+An archive that was never compiled stops at boot with `NotCompiledException`: an archive cannot be written to, so the build it lacks cannot be made there.
 
 Background: [BEAR.Package#426](https://github.com/bearsunday/BEAR.Package/issues/426).
