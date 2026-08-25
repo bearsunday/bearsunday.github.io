@@ -178,14 +178,20 @@ $this->install(new ImportAppModule([
 
 コンパイルはアプリケーションを起動し、その起動がインポートしたアプリケーションをそれぞれのツリーにコンパイルします（ビルドのログに出る`Compiled DI scripts on demand`がそれです）。DIスクリプトは自動でアーカイブに入ります。
 
-書き込み先はホストの下になります。
+書き込み先は自分で宣言します。ホストのものを継ぎません。
 
-```text
-{ホストのtmp}/ImportVendor/Greeting/prod-app/tmp
-{ホストのlog}/ImportVendor/Greeting/prod-app/log
+```php
+<?php
+// imports/greeting/src/Module/ProdModule.php
+$this->install(new ReadOnlyAppModule());
 ```
 
-ホストに渡るのはホストが宣言した規則で、ホストのビルドが解決したディレクトリではありません。だからホストが書き込み先をマシンに任せているとき、インポートしたアプリケーションも起動したマシンの答えを受け取ります。インポートしたアプリケーションが自分の`ProdModule`で宣言していれば、そちらが使われます。
+```text
+{一時ディレクトリ}/ImportVendor/Greeting/prod-app/tmp
+{一時ディレクトリ}/ImportVendor/Greeting/prod-app/log
+```
+
+宣言がないと自分のツリーに書くことになり、そのツリーはアーカイブの内側なので、パックが`PharWritesInsideArchiveException`でそのアプリケーションを名指して止まります。
 
 ## ビルドが止まるとき {#when-the-build-stops}
 

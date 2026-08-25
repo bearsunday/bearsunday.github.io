@@ -178,14 +178,20 @@ $this->install(new ImportAppModule([
 
 The compile boots the application, that boot compiles each imported application into its own tree (`Compiled DI scripts on demand` in the build log is that), and the pack ships their DI scripts automatically.
 
-It writes under the host:
+It declares where it writes itself; it does not inherit the host's.
 
-```text
-{host tmp}/ImportVendor/Greeting/prod-app/tmp
-{host log}/ImportVendor/Greeting/prod-app/log
+```php
+<?php
+// imports/greeting/src/Module/ProdModule.php
+$this->install(new ReadOnlyAppModule());
 ```
 
-What travels is the rule the host declared, not the directory the host's build resolved, so a host that leaves its directories to the machine hands the machine's answer down. An imported application that declares its own in its `ProdModule` keeps those.
+```text
+{temp directory}/ImportVendor/Greeting/prod-app/tmp
+{temp directory}/ImportVendor/Greeting/prod-app/log
+```
+
+Declaring nothing leaves it writing in its own tree, and that tree is inside the archive, so the pack stops with `PharWritesInsideArchiveException` naming the application.
 
 ## When the build stops
 
