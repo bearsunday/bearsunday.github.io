@@ -268,9 +268,9 @@ class ProdModule extends AbstractModule
 省略したときは、起動したマシンの一時ディレクトリの下になります。アプリケーション名とcontextで分かれます。
 
 ```text
-{appDir}/var/build/{context}/di                        コンパイル済みDIスクリプト（成果物内）
-{一時ディレクトリ}/MyVendor/MyProject/{context}/tmp      クエリリポジトリのキャッシュ
-{一時ディレクトリ}/MyVendor/MyProject/{context}/log
+{appDir}/var/build/{context}/di                          コンパイル済みDIスクリプト（成果物内）
+{一時ディレクトリ}/MyVendor/MyProject/var/tmp/{context}   クエリリポジトリのキャッシュ
+{一時ディレクトリ}/MyVendor/MyProject/var/log/{context}
 ```
 
 パスにアプリケーション名とcontextが入るのは、ローカルキャッシュのキーがリソースURIだからです。区切りがないまま2つのアプリケーションや2つのcontextが同じディレクトリを共有すると、互いのキャッシュエントリで応答してしまいます。

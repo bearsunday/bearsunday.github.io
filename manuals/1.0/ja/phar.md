@@ -11,7 +11,7 @@ permalink: /manuals/1.0/ja/phar.html
 
 ```text
 app.phar                                            アプリケーション、vendor/、コンパイル済みDIスクリプト
-{一時ディレクトリ}/MyVendor/MyProject/prod-hal-app   実行時に書き込むもの（tmpとlog）
+{一時ディレクトリ}/MyVendor/MyProject/var             実行時に書き込むもの（tmpとlog）
 ```
 
 BEAR.Package 1.24以降が必要です。
@@ -39,11 +39,11 @@ class ProdModule extends AbstractModule
 }
 ```
 
-省略したときは、起動したマシンの一時ディレクトリの下になります。アプリケーション名と context で分かれます。
+省略したときは、起動したマシンの一時ディレクトリの下になります。ツリーの中と同じ形が、そのまま移ります。
 
 ```text
-{一時ディレクトリ}/MyVendor/MyProject/prod-hal-app/tmp
-{一時ディレクトリ}/MyVendor/MyProject/prod-hal-app/log
+{一時ディレクトリ}/MyVendor/MyProject/var/tmp/prod-hal-app
+{一時ディレクトリ}/MyVendor/MyProject/var/log/prod-hal-app
 ```
 
 アーカイブは書き込み先を持たないので、どのマシンでもそのマシンの答えで起動します。ビルドマシンと合わせるものはありません。
@@ -187,8 +187,8 @@ $this->install(new ReadOnlyAppModule());
 ```
 
 ```text
-{一時ディレクトリ}/ImportVendor/Greeting/prod-app/tmp
-{一時ディレクトリ}/ImportVendor/Greeting/prod-app/log
+{一時ディレクトリ}/ImportVendor/Greeting/var/tmp/prod-app
+{一時ディレクトリ}/ImportVendor/Greeting/var/log/prod-app
 ```
 
 宣言がないと自分のツリーに書くことになり、そのツリーはアーカイブの内側なので、パックが`PharWritesInsideArchiveException`でそのアプリケーションを名指して止まります。

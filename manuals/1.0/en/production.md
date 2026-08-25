@@ -273,9 +273,9 @@ class ProdModule extends AbstractModule
 Omitted, the directories are under the temp directory of the machine that boots, keyed by application name and context.
 
 ```text
-{appDir}/var/build/{context}/di                          compiled DI scripts, in the artifact
-{temp directory}/MyVendor/MyProject/{context}/tmp        query repository cache
-{temp directory}/MyVendor/MyProject/{context}/log
+{appDir}/var/build/{context}/di                            compiled DI scripts, in the artifact
+{temp directory}/MyVendor/MyProject/var/tmp/{context}      query repository cache
+{temp directory}/MyVendor/MyProject/var/log/{context}
 ```
 
 The application and the context are in the path because local cache keys are resource URIs: two applications or two contexts sharing one directory would answer with each other's entries.

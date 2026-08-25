@@ -11,7 +11,7 @@ A [phar](https://www.php.net/manual/en/intro.phar.php) is the application as one
 
 ```text
 app.phar                                            the application, vendor/, compiled DI scripts
-{temp directory}/MyVendor/MyProject/prod-hal-app     what the runtime writes: tmp and log
+{temp directory}/MyVendor/MyProject/var              what the runtime writes: tmp and log
 ```
 
 Requires BEAR.Package 1.24+.
@@ -39,11 +39,11 @@ class ProdModule extends AbstractModule
 }
 ```
 
-Omitted, the directories are under the temp directory of the machine that boots, keyed by application name and context.
+Omitted, the directories are under the temp directory of the machine that boots: the same shape the application would have used inside its own tree, moved there.
 
 ```text
-{temp directory}/MyVendor/MyProject/prod-hal-app/tmp
-{temp directory}/MyVendor/MyProject/prod-hal-app/log
+{temp directory}/MyVendor/MyProject/var/tmp/prod-hal-app
+{temp directory}/MyVendor/MyProject/var/log/prod-hal-app
 ```
 
 The archive carries no write directory, so each machine boots with its own answer. There is nothing to match against the build.
@@ -187,8 +187,8 @@ $this->install(new ReadOnlyAppModule());
 ```
 
 ```text
-{temp directory}/ImportVendor/Greeting/prod-app/tmp
-{temp directory}/ImportVendor/Greeting/prod-app/log
+{temp directory}/ImportVendor/Greeting/var/tmp/prod-app
+{temp directory}/ImportVendor/Greeting/var/log/prod-app
 ```
 
 Declaring nothing leaves it writing in its own tree, and that tree is inside the archive, so the pack stops with `PharWritesInsideArchiveException` naming the application.
