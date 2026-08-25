@@ -283,7 +283,7 @@ class ProdModule extends AbstractModule
 $this->install(new ReadOnlyAppModule('/tmp/myapp/tmp', '/tmp/myapp/log'));
 ```
 
-渡した値はコンパイル時にコンテナに入ります。このビルドを起動するマシンで使えるパスを渡します。相対パスと空文字は`DeclaredWriteDirException`で拒否されます。
+渡した値はコンパイル時に、そのままコンテナに入ります。このビルドを起動するマシンで使える絶対パスを渡してください。書けるかどうかは、何かが書く時点でファイルシステムが答えます。
 
 片方だけ渡すこともできます。渡さなかった方は起動時に決まります。
 

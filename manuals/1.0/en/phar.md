@@ -54,7 +54,7 @@ A named path is used as given.
 $this->install(new ReadOnlyAppModule('/var/tmp/myapp', '/var/log/myapp'));
 ```
 
-A value passed here enters the container when it is compiled. Name a path that the machines booting this build can use. A relative or empty one is refused with `DeclaredWriteDirException`.
+A value passed here enters the container when it is compiled, as given. Name an absolute path that the machines booting this build can use: whether one can be written to is the filesystem's answer, at the moment something writes.
 
 Either can be named on its own; the other is answered at boot.
 
