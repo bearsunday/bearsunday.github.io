@@ -224,7 +224,7 @@ context ごとにアーカイブにする場合はループが別で、preload�
 
 DIスクリプトの出力先は`{appDir}/var/build/{context}/di`です。ビルドディレクトリにはコンパイルが作ったものだけが入り、リクエストが書くものは入りません。だから読み取り専用で配れます。成果物に同梱されていれば実行時はコンパイルせず読むだけです。
 
-`vendor/bin/bear.compile` は非推奨です。移行手順は [BEAR.Package#482](https://github.com/bearsunday/BEAR.Package/issues/482) を参照してください。
+`vendor/bin/bear.compile` は BEAR.Package 1.24 で削除されました。移行手順は [BEAR.Package#482](https://github.com/bearsunday/BEAR.Package/issues/482) を参照してください。
 
 #### compile step {#compile-steps}
 
@@ -265,15 +265,15 @@ class ProdModule extends AbstractModule
 }
 ```
 
-省略したときは、起動したマシンの一時ディレクトリの下になります。アプリケーション名とcontextで分かれます。
+省略したときは、起動したマシンの一時ディレクトリの下になります。アプリケーション名・アプリケーションディレクトリ・contextで分かれます。
 
 ```text
-{appDir}/var/build/{context}/di                          コンパイル済みDIスクリプト（成果物内）
-{一時ディレクトリ}/MyVendor/MyProject/var/tmp/{context}   クエリリポジトリのキャッシュ
-{一時ディレクトリ}/MyVendor/MyProject/var/log/{context}
+{appDir}/var/build/{context}/di                                        コンパイル済みDIスクリプト（成果物内）
+{一時ディレクトリ}/MyVendor/MyProject/{appDirハッシュ}/var/tmp/{context}   クエリリポジトリのキャッシュ
+{一時ディレクトリ}/MyVendor/MyProject/{appDirハッシュ}/var/log/{context}
 ```
 
-パスにアプリケーション名とcontextが入るのは、ローカルキャッシュのキーがリソースURIだからです。区切りがないまま2つのアプリケーションや2つのcontextが同じディレクトリを共有すると、互いのキャッシュエントリで応答してしまいます。
+パスにアプリケーション名とcontextが入るのは、ローカルキャッシュのキーがリソースURIだからです。区切りがないまま2つのアプリケーションや2つのcontextが同じディレクトリを共有すると、互いのキャッシュエントリで応答してしまいます。appDirハッシュも同じ理由で、同じアプリケーションの別チェックアウトを分けます。
 
 エントリポイントに変更はありません。環境変数も要りません。ビルドと起動で合わせるものがないので、同じ成果物がどのマシンでもそのマシンの答えで起動します。
 
@@ -323,7 +323,7 @@ Note: パフォーマンスベンチマークは[benchmark](https://github.com/b
 
 実環境ではないと生成ができないクラス（例えば認証が成功しないとインジェクトが完了しないResourceObject）がある場合には、コンパイル時にのみ読み込まれるダミークラス読み込みをルートの`.compile.php`に記述することによってコンパイルをすることができます。**目的は「コンパイル時に構築を通す」ことなので、中身は Null オブジェクト（何もしない実装）が基本**です。これは事前コンパイル（実サービスに触れない）だけでなく、**認証などリクエスト時の状態が要るために、デプロイ先でコンパイルしても構築できない**リソースにも当てはまります。値の偽装（`$_SERVER['X'] = 'fake'` など）は最小限にとどめ、ランタイムで本物が要る値には使わないでください（焼き込まれます）。
 
-**注意**: `.compile.php` はCompiler自身が、コンテナを組む前に読み込みます。非推奨の `vendor/bin/bear.compile` も読み込んでいました。アプリ側で何かする必要はありません。
+**注意**: `.compile.php` はCompiler自身が、コンテナを組む前に読み込みます。削除された `vendor/bin/bear.compile` も読み込んでいました。アプリ側で何かする必要はありません。
 
 .compile.php
 

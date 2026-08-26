@@ -229,7 +229,7 @@ Packing each context into an archive is a loop of its own, and it does not renam
 
 DI scripts are written under `{appDir}/var/build/{context}/di`. The build directory holds what a compile produced and nothing a request writes, so it can ship read-only: when the artifact carries it, runtime reads the scripts instead of compiling.
 
-`vendor/bin/bear.compile` is deprecated. Migration: [BEAR.Package#482](https://github.com/bearsunday/BEAR.Package/issues/482).
+`vendor/bin/bear.compile` was removed in BEAR.Package 1.24. Migration: [BEAR.Package#482](https://github.com/bearsunday/BEAR.Package/issues/482).
 
 #### Compile steps {#compile-steps}
 
@@ -270,15 +270,15 @@ class ProdModule extends AbstractModule
 }
 ```
 
-Omitted, the directories are under the temp directory of the machine that boots, keyed by application name and context.
+Omitted, the directories are under the temp directory of the machine that boots, keyed by application name, application directory and context.
 
 ```text
-{appDir}/var/build/{context}/di                            compiled DI scripts, in the artifact
-{temp directory}/MyVendor/MyProject/var/tmp/{context}      query repository cache
-{temp directory}/MyVendor/MyProject/var/log/{context}
+{appDir}/var/build/{context}/di                                        compiled DI scripts, in the artifact
+{temp directory}/MyVendor/MyProject/{appDir hash}/var/tmp/{context}    query repository cache
+{temp directory}/MyVendor/MyProject/{appDir hash}/var/log/{context}
 ```
 
-The application and the context are in the path because local cache keys are resource URIs: two applications or two contexts sharing one directory would answer with each other's entries.
+The application and the context are in the path because local cache keys are resource URIs: two applications or two contexts sharing one directory would answer with each other's entries. The application directory hash keeps two checkouts of one application apart for the same reason.
 
 The entry points do not change, and no environment variable is read. Nothing has to match between the build and the boot, so one artifact boots on any machine with that machine's answer.
 
@@ -329,7 +329,7 @@ Note: Please refer to the [benchmark](https://github.com/bearsunday/BEAR.Hellowo
 
 When there are classes that cannot be generated in a non-production environment (for example, a ResourceObject that requires successful authentication to complete injection), you can compile them by describing dummy class loading in the root `.compile.php` file, which is only loaded during compilation. **Its purpose is to let construction succeed at compile time, so its contents should be null objects (do-nothing implementations).** This applies not only to ahead-of-time builds (real services unreachable) but also to resources that need per-request state such as authentication, which is absent during compilation even when you compile on the deploy target. Keep value fakes (`$_SERVER['X'] = 'fake'`, etc.) to the minimum needed to pass construction, and never use them for values that must be real at runtime (they get baked in).
 
-**Note:** the compiler loads `.compile.php` itself, before it builds the container. The deprecated `vendor/bin/bear.compile` did too; nothing else has to.
+**Note:** the compiler loads `.compile.php` itself, before it builds the container. The removed `vendor/bin/bear.compile` did too; nothing else has to.
 
 .compile.php
 

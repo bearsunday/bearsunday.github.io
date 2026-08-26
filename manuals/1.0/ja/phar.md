@@ -11,7 +11,7 @@ permalink: /manuals/1.0/ja/phar.html
 
 ```text
 app.phar                                            アプリケーション、vendor/、コンパイル済みDIスクリプト
-{一時ディレクトリ}/MyVendor/MyProject/var             実行時に書き込むもの（tmpとlog）
+{一時ディレクトリ}/MyVendor/MyProject/{appDirハッシュ}/var   実行時に書き込むもの（tmpとlog）
 ```
 
 BEAR.Package 1.24以降が必要です。
@@ -39,11 +39,11 @@ class ProdModule extends AbstractModule
 }
 ```
 
-省略したときは、起動したマシンの一時ディレクトリの下になります。ツリーの中と同じ形が、そのまま移ります。
+省略したときは、起動したマシンの一時ディレクトリの下になります。ツリーの中と同じ形が、そのまま移ります。パスにはアプリケーションディレクトリのハッシュが入るので、同じアプリケーションの別チェックアウトがキャッシュを共有することはありません。
 
 ```text
-{一時ディレクトリ}/MyVendor/MyProject/var/tmp/prod-hal-app
-{一時ディレクトリ}/MyVendor/MyProject/var/log/prod-hal-app
+{一時ディレクトリ}/MyVendor/MyProject/{appDirハッシュ}/var/tmp/prod-hal-app
+{一時ディレクトリ}/MyVendor/MyProject/{appDirハッシュ}/var/log/prod-hal-app
 ```
 
 アーカイブは書き込み先を持たないので、どのマシンでもそのマシンの答えで起動します。ビルドマシンと合わせるものはありません。
@@ -83,7 +83,7 @@ $code = $compiler();
 exit($code === 0 ? $compiler->phar() : $code);
 ```
 
-このスクリプトが名乗るのは、アプリケーション名、起動する context（`public/index.php`と同じもの）、アプリケーションのディレクトリです。残りは書く必要がありません。何を収めるかはフレームワークの仕事です: アーカイブに入るのは名前の決まったトップレベルのディレクトリだけで、`src`、`public`、`bin`、`vendor`、`var`、そしてインポートしたアプリケーションの置かれた場所です。`var/`のうち入るのはこのビルドの`var/build/{context}`だけで、そこにはコンパイルマーカーを含むDIスクリプトと、[compile step](production.html#compile-steps)が書いたものが入ります。`var/log`と`var/tmp`は入りません。`.env`、`autoload.php`、`tests/`も同じです。ルート直下のファイルで入るのは`preload.php`だけです。残ったディレクトリは`Not packed:`として表示されます。マーカーは`.bear-compile.json`で、`phar()`はこれを見て判断します（`app`、`context`、`tmpDir`、`time`）。`.env`ファイル自体は入りませんが、その値はDIスクリプトに焼き込まれ、そのスクリプトは同梱されます。アーカイブは秘密情報として扱ってください。`phar.readonly`は子プロセスで処理されるので、iniフラグを覚える必要もありません。
+このスクリプトが名乗るのは、アプリケーション名、起動する context（`public/index.php`と同じもの）、アプリケーションのディレクトリです。残りは書く必要がありません。何を収めるかはフレームワークの仕事です: アーカイブに入るのは名前の決まったトップレベルのディレクトリだけで、`src`、`public`、`bin`、`vendor`、`var`、そしてインポートしたアプリケーションの置かれた場所です。`var/`のうち入るのはこのビルドの`var/build/{context}`だけで、そこにはコンパイルマーカーを含むDIスクリプトと、[compile step](production.html#compile-steps)が書いたものが入ります。`var/log`と`var/tmp`は入りません。`.env`、`autoload.php`、`tests/`も同じです。ルート直下のファイルで入るのは`preload.php`だけです。残ったディレクトリは`Not packed:`として表示されます。マーカーは`.bear-compile.json`（`app`、`context`、`time`）で、`phar()`はこれを見てコンパイル済みのビルドかどうかを判断します。`.env`ファイル自体は入りませんが、その値はDIスクリプトに焼き込まれ、そのスクリプトは同梱されます。アーカイブは秘密情報として扱ってください。`phar.readonly`は子プロセスで処理されるので、iniフラグを覚える必要もありません。
 
 ```bash
 php bin/compile.php
@@ -187,8 +187,8 @@ $this->install(new ReadOnlyAppModule());
 ```
 
 ```text
-{一時ディレクトリ}/ImportVendor/Greeting/var/tmp/prod-app
-{一時ディレクトリ}/ImportVendor/Greeting/var/log/prod-app
+{一時ディレクトリ}/ImportVendor/Greeting/{appDirハッシュ}/var/tmp/prod-app
+{一時ディレクトリ}/ImportVendor/Greeting/{appDirハッシュ}/var/log/prod-app
 ```
 
 宣言がないと自分のツリーに書くことになり、そのツリーはアーカイブの内側なので、パックが`PharWritesInsideArchiveException`でそのアプリケーションを名指して止まります。

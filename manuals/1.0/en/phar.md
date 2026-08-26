@@ -11,7 +11,7 @@ A [phar](https://www.php.net/manual/en/intro.phar.php) is the application as one
 
 ```text
 app.phar                                            the application, vendor/, compiled DI scripts
-{temp directory}/MyVendor/MyProject/var              what the runtime writes: tmp and log
+{temp directory}/MyVendor/MyProject/{appDir hash}/var    what the runtime writes: tmp and log
 ```
 
 Requires BEAR.Package 1.24+.
@@ -39,11 +39,11 @@ class ProdModule extends AbstractModule
 }
 ```
 
-Omitted, the directories are under the temp directory of the machine that boots: the same shape the application would have used inside its own tree, moved there.
+Omitted, the directories are under the temp directory of the machine that boots: the same shape the application would have used inside its own tree, moved there. The path carries a hash of the application directory, so two checkouts of one application never share a cache.
 
 ```text
-{temp directory}/MyVendor/MyProject/var/tmp/prod-hal-app
-{temp directory}/MyVendor/MyProject/var/log/prod-hal-app
+{temp directory}/MyVendor/MyProject/{appDir hash}/var/tmp/prod-hal-app
+{temp directory}/MyVendor/MyProject/{appDir hash}/var/log/prod-hal-app
 ```
 
 The archive carries no write directory, so each machine boots with its own answer. There is nothing to match against the build.
@@ -83,7 +83,7 @@ $code = $compiler();
 exit($code === 0 ? $compiler->phar() : $code);
 ```
 
-The script names the application, the context it boots — the same one `public/index.php` uses — and the application directory. The rest it does not have to say, because packing is the framework's business: the archive carries named top-level directories only — `src`, `public`, `bin`, `vendor`, `var`, and wherever an imported application sits — and of `var/` only this build: `var/build/{context}`, which holds the DI scripts with their compile marker and whatever [compile steps](production.html#compile-steps) wrote. `var/log` and `var/tmp` stay out, as do `.env`, `autoload.php` and `tests/`; of the files at the root only `preload.php` ships; the directories left behind are printed as `Not packed:`. The marker is `.bear-compile.json`, and it is what `phar()` reads to decide: `app`, `context`, `tmpDir`, `time`. The `.env` file stays out, but the values it held are compiled into the DI scripts, and those ship: treat the archive as a secret. `phar.readonly` is handled in a child process, so there is no ini flag to remember.
+The script names the application, the context it boots — the same one `public/index.php` uses — and the application directory. The rest it does not have to say, because packing is the framework's business: the archive carries named top-level directories only — `src`, `public`, `bin`, `vendor`, `var`, and wherever an imported application sits — and of `var/` only this build: `var/build/{context}`, which holds the DI scripts with their compile marker and whatever [compile steps](production.html#compile-steps) wrote. `var/log` and `var/tmp` stay out, as do `.env`, `autoload.php` and `tests/`; of the files at the root only `preload.php` ships; the directories left behind are printed as `Not packed:`. The marker is `.bear-compile.json` (`app`, `context`, `time`), and it is what `phar()` reads to tell a compiled build from an uncompiled tree. The `.env` file stays out, but the values it held are compiled into the DI scripts, and those ship: treat the archive as a secret. `phar.readonly` is handled in a child process, so there is no ini flag to remember.
 
 ```bash
 php bin/compile.php
@@ -187,8 +187,8 @@ $this->install(new ReadOnlyAppModule());
 ```
 
 ```text
-{temp directory}/ImportVendor/Greeting/var/tmp/prod-app
-{temp directory}/ImportVendor/Greeting/var/log/prod-app
+{temp directory}/ImportVendor/Greeting/{appDir hash}/var/tmp/prod-app
+{temp directory}/ImportVendor/Greeting/{appDir hash}/var/log/prod-app
 ```
 
 Declaring nothing leaves it writing in its own tree, and that tree is inside the archive, so the pack stops with `PharWritesInsideArchiveException` naming the application.
