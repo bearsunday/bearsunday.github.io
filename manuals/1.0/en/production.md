@@ -185,16 +185,12 @@ require dirname(__DIR__) . '/vendor/autoload.php';
 
 ini_set('memory_limit', '-1');
 
-// Load build-time-only stubs (null objects / fake env) if present.
-$dotCompile = dirname(__DIR__) . '/.compile.php';
-is_file($dotCompile) && require $dotCompile;
-
 $context = $argv[1] ?? 'prod-app';
 
 exit((new Compiler('MyVendor\MyProject', $context, dirname(__DIR__)))());
 ```
 
-The script names the application, the context and the write directory, and it does not boot the application. `.compile.php` build stubs are loaded by the Compiler itself. `Compiler::phar()` packs the compiled result into one archive (BEAR.Package 1.24+): [Phar](phar.html).
+The script names the application, the context and the application directory, and it does not boot the application. `.compile.php` build stubs are loaded by the Compiler itself. `Compiler::phar()` packs the compiled result into one archive (BEAR.Package 1.24+): [Phar](phar.html).
 
 ```json
 "scripts": {
@@ -227,7 +223,7 @@ foreach (['prod-hal-api-app', 'prod-html-app'] as $context) {
 exit(0);
 ```
 
-[`opcache.preload`](https://www.php.net/manual/en/opcache.preloading.php) is a per-process setting, so preloading multiple contexts means **separate PHP processes** (e.g. php-fpm pools), each pointing at its evacuated preload (e.g. the api pool: `opcache.preload=/path/to/api.preload.php`). In the example the html side keeps the default name because its process points at the default `preload.php`.
+[`opcache.preload`](https://www.php.net/manual/en/opcache.preloading.php) is a per-process setting, so preloading multiple contexts means **separate PHP processes** (e.g. php-fpm pools), each pointing at its evacuated preload (e.g. the api pool: `opcache.preload=/path/to/prod-hal-api-app.preload.php`, the html pool: `/path/to/prod-html-app.preload.php`).
 
 Packing each context into an archive is a loop of its own, and it does not rename the preload: [Phar](phar.html).
 

@@ -180,10 +180,6 @@ require dirname(__DIR__) . '/vendor/autoload.php';
 
 ini_set('memory_limit', '-1');
 
-// Load build-time-only stubs (null objects / fake env) if present.
-$dotCompile = dirname(__DIR__) . '/.compile.php';
-is_file($dotCompile) && require $dotCompile;
-
 $context = $argv[1] ?? 'prod-app';
 
 exit((new Compiler('MyVendor\MyProject', $context, dirname(__DIR__)))());
@@ -222,7 +218,7 @@ foreach (['prod-hal-api-app', 'prod-html-app'] as $context) {
 exit(0);
 ```
 
-[`opcache.preload`](https://www.php.net/manual/ja/opcache.preloading.php) は PHP プロセス単位の設定です。複数コンテキストを preload する場合は**それぞれ別プロセス（php-fpm プール等）**になり、プロセスごとに退避した preload を指します（例：api 用プールは `opcache.preload=/path/to/api.preload.php`）。上の例で html 側を既定名のままにしているのは、そのプロセスが既定の `preload.php` を指すからです。
+[`opcache.preload`](https://www.php.net/manual/ja/opcache.preloading.php) は PHP プロセス単位の設定です。複数コンテキストを preload する場合は**それぞれ別プロセス（php-fpm プール等）**になり、プロセスごとに退避した preload を指します（例：api 用プールは `opcache.preload=/path/to/prod-hal-api-app.preload.php`、html 用プールは `/path/to/prod-html-app.preload.php`）。
 
 context ごとにアーカイブにする場合はループが別で、preloadのrenameもしません → [Phar](phar.html)
 
