@@ -103,7 +103,7 @@ class AppModule extends AbstractAppModule
 Delete cached DI files to activate new router.
 
 ```
-rm -rf var/tmp/*
+rm -rf var/build/*
 ```
 
 ### Router Script

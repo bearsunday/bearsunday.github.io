@@ -144,6 +144,10 @@ final class MyProdLoggerModule extends AbstractModule
 
 [LoggerInterface](https://github.com/bearsunday/BEAR.Resource/blob/1.x/src/LoggerInterface.php)の`__invoke`メソッドでリソースのURIとリソース状態が`ResourceObject`オブジェクトとして渡されるのでその内容で必要な部分をログします。作成には[既存の実装 ProdLogger](https://github.com/bearsunday/BEAR.Resource/blob/1.x/src/ProdLogger.php)を参考にしてください。
 
+### エラーログ
+
+捕捉されなかったエラーはレスポンスに`logref` IDを付与し、整形された例外を`Psr\Log\LoggerInterface`にバインドされたロガーへ送ります（独自のロガーをバインドしていなければPHPの`error_log`）。既定では`var/log/{context}`に`logref.{id}.log`ファイルも書かれ、`last.logref.log`が最新のものを指します。`ProdModule`は代わりに`NullLogRefWriter`をバインドするため、プロダクションではファイルを書きません。エラーごとのファイルを残すには、アプリケーションの`ProdModule`で`LogRefWriterInterface`を`FileLogRefWriter`にバインドします。
+
 ## デプロイ
 
 ### ⚠️ 上書き更新を避ける

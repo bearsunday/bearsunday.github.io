@@ -56,7 +56,7 @@ Web public folder.
 
 `log` and `tmp` need write permission. By default they are `var/tmp/{context}` and `var/log/{context}`.
 
-To place them outside the project tree, pass paths to the `Meta` constructor ([Production](production.html#writable-paths)).
+To place them outside the project tree, declare them with `ReadOnlyAppModule` ([Production](production.html#writable-paths)).
 
 ## Framework Package
 

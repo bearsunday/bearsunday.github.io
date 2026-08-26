@@ -147,6 +147,10 @@ final class MyProdLoggerModule extends AbstractModule
 The `__invoke` method of [LoggerInterface](https://github.com/bearsunday/BEAR.Resource/blob/1.x/src/LoggerInterface.php) passes the resource URI and resource state as a `ResourceObject` object, so log the necessary parts based on its contents.
 Refer to the [existing implementation ProdLogger](https://github.com/bearsunday/BEAR.Resource/blob/1.x/src/ProdLogger.php) for creation.
 
+### Error logs
+
+An uncaught error responds with a `logref` ID, and the rendered exception goes to the logger bound to `Psr\Log\LoggerInterface` — with no logger of your own bound, that is PHP's `error_log`. By default a `logref.{id}.log` file is also written under `var/log/{context}`, with `last.logref.log` linking to the newest one. `ProdModule` binds `NullLogRefWriter` instead, so production writes no file; to keep the per-error files, bind `LogRefWriterInterface` to `FileLogRefWriter` in your `ProdModule`.
+
 ## Deployment
 
 ### ⚠️ Avoid Overwriting Updates

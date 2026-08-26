@@ -96,7 +96,7 @@ require_once dirname(__DIR__) . '/vendor/autoload.php';
 (new Dotenv())->load(dirname(__DIR__));
 
 chdir(dirname(__DIR__));
-passthru('rm -rf var/tmp/*');
+passthru('rm -rf var/tmp/* var/build/*');
 passthru('chmod 775 var/tmp');
 passthru('chmod 775 var/log');
 // db

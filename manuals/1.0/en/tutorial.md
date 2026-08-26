@@ -799,7 +799,7 @@ Content-Type: text/html; charset=utf-8
 ```
 
 If html is not displayed at this time, there may be an error in the template engine.
-In that case, check the error in the log file (`var/log/cli-html-app/last.log ref.log`).
+In that case, check the error in the log file (`var/log/cli-html-app/last.logref.log`).
 
 Next, to provide web services, also change `public/index.php`.
 
