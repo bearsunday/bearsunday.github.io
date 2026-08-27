@@ -131,7 +131,7 @@ The `preload.php` rename that [production](production.html#compilation-recommend
 php app.phar get '/index?name=BEAR'
 ```
 
-The stub runs `public/index.php` from inside the archive, so `dirname(__DIR__)` in `src/Injector.php` is `phar:///path/app.phar`. The entry points are the ones [read-only deployments](production.html#writable-paths) shows; nothing else changes.
+The stub runs `public/index.php` from inside the archive, so `dirname(__DIR__)` in `src/Injector.php` is `phar:///path/app.phar`. The entry points are the ones [Read-only deployment](production.html#writable-paths) shows; nothing else changes.
 
 php-fpm runs a file, not an archive, so the entry point sits next to it and loads the autoloader from inside:
 

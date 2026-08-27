@@ -142,7 +142,7 @@ There are two deployment strategies.
 
 ### Full ahead-of-time compilation (recommended) {#aot-compile}
 
-[Compile](#compilation-recommended) at build time and ship the compiled artifact. Its traits: cold-start speed (boot only reads the artifact), scale (every added instance boots from the same artifact), and safety (a DI configuration error stops the build with exit code 1 and never reaches production).
+[Compile](#compilation-recommended) at build time and ship the compiled artifact. Its traits: cold-start speed (boot only reads the artifact), scale (every added instance boots from the same artifact), and safety (a DI configuration error stops the build with exit code 1 and never reaches production). Boot writes nothing into the artifact, so the tree ships read-only ([Read-only deployment](#writable-paths)).
 
 The artifact has two representative shapes. With a container pipeline, a [Docker multi-stage build](#docker-multi-stage) pins the compile to the image build. Without one, [Phar](phar.html) is this shape as a single file: a deploy is a copy of one file, a rollback is the file before it, and the pack — not CI discipline — enforces the artifact's identity and safety.
 
@@ -303,7 +303,7 @@ When you compile, a "dot file" is output, so you can convert it to an image file
 dot -T svg module.dot > module.svg
 ```
 
-### Read-only deployments (serverless, immutable containers) {#writable-paths}
+### Read-only deployment (serverless, immutable containers) {#writable-paths}
 
 Serverless platforms and immutable containers restrict where an application may write. On Vercel or AWS Lambda, or in a container started with `docker run --read-only` / `readOnlyRootFilesystem: true`, the project directory is read-only and one directory - `/tmp`, typically - is the only writable location. Ordinary VPS and shared hosting are unaffected.
 

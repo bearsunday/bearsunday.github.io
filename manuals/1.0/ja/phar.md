@@ -131,7 +131,7 @@ exit(0);
 php app.phar get '/index?name=BEAR'
 ```
 
-スタブがアーカイブの中の`public/index.php`を実行するので、`src/Injector.php`の`dirname(__DIR__)`は`phar:///path/app.phar`になります。エントリポイントは[読み取り専用デプロイ](production.html#writable-paths)のままで、他に変更はありません。
+スタブがアーカイブの中の`public/index.php`を実行するので、`src/Injector.php`の`dirname(__DIR__)`は`phar:///path/app.phar`になります。エントリポイントは[Read-only deployment](production.html#writable-paths)のままで、他に変更はありません。
 
 php-fpmが実行するのはアーカイブではなくファイルなので、エントリポイントはアーカイブの隣に置き、オートローダーを中から読みます。
 

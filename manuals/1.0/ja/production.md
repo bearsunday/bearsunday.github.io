@@ -143,7 +143,7 @@ final class MyProdLoggerModule extends AbstractModule
 
 ### 完全な事前コンパイル（推奨） {#aot-compile}
 
-ビルドで[コンパイル](#compilation-recommended)し、コンパイル済みの成果物を配布します。特徴はコールドスタートの速さ（起動は成果物を読むだけ）、スケール（増えるインスタンスはすべて同じ成果物から起動）、安全性（DIの構成エラーはビルドのexitコード1で止まり、本番に届きません）です。
+ビルドで[コンパイル](#compilation-recommended)し、コンパイル済みの成果物を配布します。特徴はコールドスタートの速さ（起動は成果物を読むだけ）、スケール（増えるインスタンスはすべて同じ成果物から起動）、安全性（DIの構成エラーはビルドのexitコード1で止まり、本番に届きません）です。起動は成果物に何も書き込まないので、ツリーを読み取り専用のまま配れます（[Read-only deployment](#writable-paths)）。
 
 成果物の代表的な形は2つです。コンテナパイプラインがあるなら[Dockerマルチステージビルド](#docker-multi-stage)で、コンパイルをイメージのビルドに固定します。パイプラインのない環境では[Phar](phar.html)がこの形を1ファイルで実現します。デプロイは1ファイルのコピーで、ロールバックは1つ前のファイルです。成果物の同一性と安全性を、CIの規律ではなくパックが強制します。
 
@@ -303,7 +303,7 @@ opcache.preload_user=www-data
 dot -T svg module.dot > module.svg
 ```
 
-### 読み取り専用デプロイ（サーバーレス、イミュータブルコンテナ） {#writable-paths}
+### Read-only deployment（サーバーレス、イミュータブルコンテナ） {#writable-paths}
 
 サーバーレスやイミュータブルコンテナでは書き込めるディレクトリが制限されることがあります。VercelやAWS Lambda、`docker run --read-only`や`readOnlyRootFilesystem: true`で起動したコンテナでは、プロジェクトのディレクトリは読み取り専用で、書き込めるのは`/tmp`など1つのディレクトリだけです。通常のVPSや共有ホストでは不要です。
 
