@@ -121,7 +121,7 @@ $this->install(new StorageExpiryModule($short, $medium, $long));
 $this->install(new CacheVersionModule($cacheVersion));
 ```
 
-ディプロイの度にリソースキャッシュを破棄するためには`$cacheVersion`に時刻や乱数の値を割り当てると変更が不要で便利です。
+デプロイの度にリソースキャッシュを破棄するためには`$cacheVersion`に時刻や乱数の値を割り当てると変更が不要で便利です。
 
 ## ログ
 
@@ -144,25 +144,30 @@ final class MyProdLoggerModule extends AbstractModule
 
 [LoggerInterface](https://github.com/bearsunday/BEAR.Resource/blob/1.x/src/LoggerInterface.php)の`__invoke`メソッドでリソースのURIとリソース状態が`ResourceObject`オブジェクトとして渡されるのでその内容で必要な部分をログします。作成には[既存の実装 ProdLogger](https://github.com/bearsunday/BEAR.Resource/blob/1.x/src/ProdLogger.php)を参考にしてください。
 
+### エラーログ
+
+捕捉されなかったエラーはレスポンスに`logref` IDを付与し、整形された例外を`Psr\Log\LoggerInterface`にバインドされたロガーへ送ります（独自のロガーをバインドしていなければPHPの`error_log`）。既定では`var/log/{context}`に`logref.{id}.log`ファイルも書かれ、`last.logref.log`が最新のものを指します。`ProdModule`は代わりに`NullLogRefWriter`をバインドするため、プロダクションではファイルを書きません。エラーごとのファイルを残すには、アプリケーションの`ProdModule`で`LogRefWriterInterface`を`FileLogRefWriter`にバインドします。
+
 ## デプロイ
 
 ### ⚠️ 上書き更新を避ける
 
-#### サーバーにディプロイする場合
+#### サーバーにデプロイする場合
 
 * 駆動中のプロジェクトフォルダを`rsync`などで上書きするのはキャッシュやオンデマンドで生成されるファイルの不一致や、高負荷のサイトではキャパシティを超えるリスクがあります。安全のために別のディレクトリでセットアップを行い、そのセットアップが成功すれば切り替えるようにします。
 * [Deployer](http://deployer.org/)の[BEAR.Sundayレシピ](https://github.com/bearsunday/deploy)を利用することができます。
 
-#### クラウドにディプロイする時には
+#### クラウドにデプロイする時には
 * コンパイルが成功すると0、依存関係の問題を見つけるとコンパイラはexitコード1を出力します。それを利用してCIにコンパイルを組み込むことを推奨します。
 
-### コンパイル {: #compilation }
+<a id="compilation"></a>
+### コンパイル {#compilation-recommended}
 
 セットアップ時にプロジェクトを**ウォームアップ**できます。DI/AOP 用の動的ファイルやアノテーションなどの静的キャッシュを事前に作成し、最適化された `autoload.php` と `preload.php` を出力します。
 
-**原則: できればデプロイ先でコンパイルする**（warmup / health check のタイミング）。パスや環境変数など実環境の実値がそのまま反映されるので、値は正しく焼き込まれ、書き込み先の変更も不要です。
+**原則: できればデプロイ先でコンパイルする**（warmup / health check のタイミング）。パスや環境変数など実環境の実値がそのまま反映されるので、値は正しく焼き込まれます。
 
-**例外: 事前コンパイルが要る環境**（サーバーレス、read-only なアプリルート、`/tmp` などパス固定）。実サービスに触れない場所でコンパイルするため、[書き込み先の変更](#writable-paths)・AOT スクリプトの再利用・（触れないサービスを通す）`.compile.php` を併用し、**ランタイムで変わる値（接続先・トークン等）は焼き込まずランタイム解決**にします。
+**例外: 事前コンパイルが要る環境**（サーバーレス、read-only なアプリルート、`/tmp` などパス固定）。実サービスに触れない場所でコンパイルするため、[書き込み先の宣言](#writable-paths)・AOT スクリプトの再利用・（触れないサービスを通す）`.compile.php` を併用し、**ランタイムで変わる値（接続先・トークン等）は焼き込まずランタイム解決**にします。
 
 ビルドスクリプトはアプリケーションを**名乗るだけ**で、起動はしません（BEAR.Package 1.22以降。スケルトンは`bin/compile.php`）。
 
@@ -173,117 +178,152 @@ use BEAR\Package\Compiler;
 
 require dirname(__DIR__) . '/vendor/autoload.php';
 
-// Load build-time-only stubs (null objects / fake env) if present.
-$dotCompile = dirname(__DIR__) . '/.compile.php';
-is_file($dotCompile) && require $dotCompile;
+ini_set('memory_limit', '-1');
 
 $context = $argv[1] ?? 'prod-app';
-$writeDir = $argv[2] ?? null;
 
-exit((new Compiler('MyVendor\MyProject', $context, dirname(__DIR__), $writeDir))());
+exit((new Compiler('MyVendor\MyProject', $context, dirname(__DIR__)))());
 ```
 
-`Compiler::fromInjector($injector, $context, $writeDir)`は、すでにinjectorを持っている呼び出し元（動作中のアプリケーション内のコマンドなど）のためのものです。ビルドスクリプトでは使いません。
+スクリプトが名乗るのはアプリケーション名、context、アプリケーションのディレクトリで、アプリケーションは起動しません。`.compile.php`のビルド用スタブはCompiler自身が読み込みます。`Compiler::phar()`はコンパイル結果を1つのアーカイブにします（BEAR.Package 1.24以降）→ [Phar](phar.html)
 
 ```json
 "scripts": {
-    "compile": "php bin/compile.php prod-app"
+    "compile": "php bin/compile.php"
 }
 ```
 
 * コンパイルをすれば全てのクラスでインジェクションを行うのでランタイムでDIのエラーが出る可能性が極めて低くなります。
-* `.env`に含まれた内容はPHPファイルに取り込まれるのでコンパイル後に`.env`を消去可能です。コンテントネゴシエーションを行う場合など（例：api-app, html-app）1つのアプリケーションで複数コンテキストのコンパイルを行うときには、コンテキストごとに `bin/compile.php` を呼び、プロジェクト直下に出る `autoload.php` / `preload.php` を退避します（後続コンパイルで上書きされないようにします）。
+* `.env`に含まれた内容はPHPファイルに取り込まれるのでコンパイル後に`.env`を消去可能です。
 
-```bash
-php bin/compile.php prod-hal-api-app
-mv autoload.php api.autoload.php
-mv preload.php api.preload.php
-php bin/compile.php prod-html-app
+コンテントネゴシエーションを行う場合など（例：api-app, html-app）1つのアプリケーションで複数コンテキストをコンパイルするときは、スクリプト内のループにします。`autoload.php`と`preload.php`は固定パスに書かれ、次のコンパイルで消えるので、その都度 rename します。
+
+```php
+// bin/compile.php
+$appDir = dirname(__DIR__);
+
+foreach (['prod-hal-api-app', 'prod-html-app'] as $context) {
+    $code = (new Compiler('MyVendor\MyProject', $context, $appDir))();
+    if ($code !== 0) {
+        exit($code);
+    }
+
+    foreach (['preload.php', 'autoload.php'] as $written) {
+        if (! rename($appDir . '/' . $written, $appDir . '/' . $context . '.' . $written)) {
+            exit(1);
+        }
+    }
+}
+
+exit(0);
 ```
 
-[`opcache.preload`](https://www.php.net/manual/ja/opcache.preloading.php) は PHP プロセス単位の設定です。複数コンテキストを preload する場合は**それぞれ別プロセス（php-fpm プール等）**になり、プロセスごとに退避した preload を指します（例：api 用プールは `opcache.preload=/path/to/api.preload.php`）。上の例で html 側を既定名のままにしているのは、そのプロセスが既定の `preload.php` を指すからです。
+[`opcache.preload`](https://www.php.net/manual/ja/opcache.preloading.php) は PHP プロセス単位の設定です。複数コンテキストを preload する場合は**それぞれ別プロセス（php-fpm プール等）**になり、プロセスごとに退避した preload を指します（例：api 用プールは `opcache.preload=/path/to/prod-hal-api-app.preload.php`、html 用プールは `/path/to/prod-html-app.preload.php`）。
 
-DIスクリプトの出力先は`{appDir}/var/tmp/{context}/di`です。これはビルド成果物で、成果物に同梱されていれば実行時はコンパイルせず読むだけです。
+context ごとにアーカイブにする場合はループが別で、preloadのrenameもしません → [Phar](phar.html)
 
-`vendor/bin/bear.compile` は非推奨です。移行手順は [BEAR.Package#482](https://github.com/bearsunday/BEAR.Package/issues/482) を参照してください。
+DIスクリプトの出力先は`{appDir}/var/build/{context}/di`です。ビルドディレクトリにはコンパイルが作ったものだけが入り、リクエストが書くものは入りません。だから読み取り専用で配れます。成果物に同梱されていれば実行時はコンパイルせず読むだけです。
+
+`vendor/bin/bear.compile` は BEAR.Package 1.24 で削除されました。移行手順は [BEAR.Package#482](https://github.com/bearsunday/BEAR.Package/issues/482) を参照してください。
+
+#### compile step {#compile-steps}
+
+モジュールは compile step（`BEAR\Sunday\Compile\CompileStepInterface`）をバインドでき、コンパイルがそれを実行します。step にはビルドディレクトリの下に自分専用の空のディレクトリが渡されます。名前はバインディングのキーで、書いたものは成果物に同梱されます。
+
+```text
+{appDir}/var/build/{context}/di        コンパイル済みDIスクリプト
+{appDir}/var/build/{context}/qiq       Qiqがコンパイルしたテンプレート
+{appDir}/var/build/{context}/twig      Twigのキャッシュ
+```
+
+テンプレートエンジンがこれを使います。最初のリクエストでコンパイルするものは残っておらず、そのためにアプリケーションルート配下を書き込み可能にする必要もありません。step が失敗するとコンパイルマーカーが残らないので、テンプレートの無いビルドを配信するのではなく、次の起動が再びコンパイルします。
+
+bear/sunday 1.9以降が必要です。背景: [BEAR.Package#501](https://github.com/bearsunday/BEAR.Package/pull/501)
 
 #### 読み取り専用デプロイ（サーバーレス、イミュータブルコンテナ） {#writable-paths}
 
 サーバーレスやイミュータブルコンテナでは書き込めるディレクトリが制限されることがあります。VercelやAWS Lambda、`docker run --read-only`や`readOnlyRootFilesystem: true`で起動したコンテナでは、プロジェクトのディレクトリは読み取り専用で、書き込めるのは`/tmp`など1つのディレクトリだけです。通常のVPSや共有ホストでは不要です。
 
-この場合は書き込めるディレクトリをアプリケーションに渡します。ビルド時と起動時の両方に渡し、次の2つを守ります。
+アプリケーションは自身の`ProdModule`で書き込み先を宣言します。
 
-* 絶対パスを渡します。相対パスを渡すと`InvalidWriteDirException`が投げられます。
-* ビルドと起動で同じパスを渡します。パスはDIスクリプトに焼き込まれるため、渡されたinjectorとコンパイルの書き込み先が違う場合は`WriteDirMismatchException`が投げられます。
+```php
+<?php
+// src/Module/ProdModule.php
+namespace MyVendor\MyProject\Module;
 
-`$writeDir`は`Bootstrap::__invoke()`、`Injector::getInstance()`、`new Compiler()`の末尾の省略可能な引数です。エントリポイントを次のように変更します。
+use BEAR\Package\Context\ProdModule as PackageProdModule;
+use BEAR\Package\Module\ReadOnlyAppModule;
+use Ray\Di\AbstractModule;
 
-```diff
- // public/index.php
--exit((new Bootstrap())('prod-app', $GLOBALS, $_SERVER));
-+exit((new Bootstrap())('prod-app', $GLOBALS, $_SERVER, getenv('APP_WRITE_DIR') ?: null));
-
- // bin/compile.php               php bin/compile.php prod-app /tmp
--exit((new Compiler('MyVendor\MyProject', $context, dirname(__DIR__)))());
-+$writeDir = $argv[2] ?? null;
-+
-+exit((new Compiler('MyVendor\MyProject', $context, dirname(__DIR__), $writeDir))());
-
- // src/Bootstrap.php
--    public function __invoke(string $context, array $globals, array $server): int
-+    public function __invoke(
-+        string $context, array $globals, array $server, string|null $writeDir = null
-+    ): int
-     {
--        $app = Injector::getInstance($context)->getInstance(AppInterface::class);
-+        $app = Injector::getInstance($context, $writeDir)->getInstance(AppInterface::class);
-
- // src/Injector.php
--use BEAR\Package\Injector\PackageInjector;
-+use BEAR\Package\Injector as PackageInjector;
-
--    public static function getInstance(
--        string $context, string|null $tmpDir = null, string|null $logDir = null
--    ): InjectorInterface
--    {
--        $meta = new Meta(__NAMESPACE__, $context, dirname(__DIR__), $tmpDir, $logDir);
--        $cacheNamespace = str_replace('/', '_', $meta->appDir) . $context;
--        $cache = (new LocalCacheProvider($meta->tmpDir . '/injector', $cacheNamespace))->get();
--
--        return PackageInjector::getInstance($meta, $context, $cache);
--    }
-+    public static function getInstance(string $context, string|null $writeDir = null): InjectorInterface
-+    {
-+        return PackageInjector::getInstance(__NAMESPACE__, $context, dirname(__DIR__), null, $writeDir);
-+    }
+class ProdModule extends AbstractModule
+{
+    protected function configure(): void
+    {
+        $this->install(new ReadOnlyAppModule());
+        $this->install(new PackageProdModule());
+    }
+}
 ```
 
-`Meta`とinjectorのキャッシュプールは書き込み先から`BEAR\Package\Injector`が組むので、スケルトン側の`Meta`/`LocalCacheProvider`の行はなくなります。開発用のエントリは何も渡さず既定のパスを使います。環境変数を読むのはエントリの仕事で、フレームワークの仕事ではありません。
-
-書き込み先はビルドには引数で、実行時には環境変数で渡します。
+省略したときは、起動したマシンの一時ディレクトリ（[`sys_get_temp_dir()`](https://www.php.net/sys_get_temp_dir)）の下になります。アプリケーション名・アプリケーションディレクトリ・contextで分かれます。
 
 ```text
-build     php bin/compile.php prod-app /tmp
-runtime   APP_WRITE_DIR=/tmp
-          php-fpm   env[APP_WRITE_DIR] = /tmp
-          docker    --env APP_WRITE_DIR=/tmp
+{appDir}/var/build/{context}/di                                        コンパイル済みDIスクリプト（成果物内）
+{一時ディレクトリ}/MyVendor/MyProject/{appDirハッシュ}/var/tmp/{context}   クエリリポジトリのキャッシュ
+{一時ディレクトリ}/MyVendor/MyProject/{appDirハッシュ}/var/log/{context}
 ```
 
-書き込み先を`/tmp`にした場合の配置は次のとおりです。
+一時ディレクトリの場所はphp.iniの[`sys_temp_dir`](https://www.php.net/manual/ja/ini.core.php#ini.sys-temp-dir)で決まります。起動時に渡すこともできます。
 
-```text
-{appDir}/var/tmp/{context}/di                   コンパイル済みDIスクリプト（成果物内）
-/tmp/MyVendor/MyProject/{context}/tmp           クエリリポジトリのキャッシュ、serializeしたinjector
-/tmp/MyVendor/MyProject/{context}/log
+```bash
+php -d sys_temp_dir=/mnt/tmp public/index.php
 ```
 
-パスにアプリケーション名とcontextが入るのは、ローカルキャッシュのキーがリソースURIだからです。区切りがないまま2つのアプリケーションや2つのcontextが同じディレクトリを共有すると、互いのキャッシュエントリで応答してしまいます。
+パスにアプリケーション名とcontextが入るのは、ローカルキャッシュのキーがリソースURIだからです。区切りがないまま2つのアプリケーションや2つのcontextが同じディレクトリを共有すると、互いのキャッシュエントリで応答してしまいます。appDirハッシュも同じ理由で、同じアプリケーションの別チェックアウトを分けます。
 
-コンパイル済みDIスクリプトは`appDir`配下に残り、デプロイ成果物に同梱されます。新しいインスタンスの`/tmp`は空なので、DIスクリプトまで書き込み先に移すとコールドスタートのたびに再コンパイルになります（リソース5個のアプリケーションで、再コンパイルが0.38秒、成果物からの読み込みが0.018秒）。
+エントリポイントに変更はありません。環境変数も要りません。ビルドと起動で合わせるものがないので、同じ成果物がどのマシンでもそのマシンの答えで起動します。
 
-ビルドと違う書き込み先で起動した場合は、古いパスを使わずに再コンパイルされます。成果物が読み取り専用なら例外で止まり、書き込み可能なら`Compiled DI scripts on demand`のnoticeが出ます。
+パスを渡すと、その通りに使われます。
 
-BEAR.Package 1.22以降が必要です。背景: [BEAR.Package#491](https://github.com/bearsunday/BEAR.Package/pull/491)
+```php
+$this->install(new ReadOnlyAppModule('/tmp/myapp/tmp', '/tmp/myapp/log'));
+```
+
+渡した値はコンパイル時に、そのままコンテナに入ります。このビルドを起動するマシンで使える絶対パスを渡してください。書けるかどうかは、何かが書く時点でファイルシステムが答えます。
+
+片方だけ渡すこともできます。渡さなかった方は起動時に決まります。
+
+```php
+$this->install(new ReadOnlyAppModule(logDir: '/var/log/myapp'));
+```
+
+コンパイル済みDIスクリプトは`appDir`配下に残り、デプロイ成果物に同梱されます。新しいインスタンスの一時ディレクトリは空なので、DIスクリプトまでそこに移すとコールドスタートのたびに再コンパイルになります（リソース5個のアプリケーションで、再コンパイルが0.38秒、成果物からの読み込みが0.018秒）。
+
+コンパイルされていない成果物を起動すると`NotCompiledException`で止まります。書き込めるツリーなら、その場でコンパイルして`Compiled DI scripts on demand`のnoticeが出ます。
+
+自身に書き込まない1ファイルの成果物にするには[Phar](phar.html)を参照してください。
+
+BEAR.Package 1.24以降が必要です。背景: [BEAR.Package#491](https://github.com/bearsunday/BEAR.Package/pull/491)
+
+#### Dockerマルチステージビルド {#docker-multi-stage}
+
+コンパイルはビルドの仕事です。Dockerの[マルチステージビルド](https://docs.docker.com/build/building/multi-stage/)を使うと、コンパイルをイメージのビルドに固定できます。
+
+```dockerfile
+FROM php:8.3-cli AS build
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+WORKDIR /app
+COPY . .
+RUN composer install --no-dev --prefer-dist --no-progress
+RUN php bin/compile.php prod-app
+
+FROM php:8.3-apache
+COPY --from=build /app /var/www/app
+```
+
+起動するイメージにはコンパイル済みのDIスクリプトが入っていて、起動時にすることが残っていません。コールドスタートは成果物を読むだけになり（上記の実測で0.38秒→0.018秒）、スケールアウトで増えるインスタンスはすべて同じ成果物から起動するので、どのコンテナも同じ答えを返します。実行ステージを`docker run --read-only`で起動するなら[書き込み先の宣言](#writable-paths)と合わせます。
+
+これは[コンパイル](#compilation-recommended)の「例外: 事前コンパイルが要る環境」にあたります。接続先やトークンなどランタイムで変わる値は焼き込まず、ランタイム解決にします。
 
 ### autoload.php
 
@@ -309,7 +349,7 @@ Note: パフォーマンスベンチマークは[benchmark](https://github.com/b
 
 実環境ではないと生成ができないクラス（例えば認証が成功しないとインジェクトが完了しないResourceObject）がある場合には、コンパイル時にのみ読み込まれるダミークラス読み込みをルートの`.compile.php`に記述することによってコンパイルをすることができます。**目的は「コンパイル時に構築を通す」ことなので、中身は Null オブジェクト（何もしない実装）が基本**です。これは事前コンパイル（実サービスに触れない）だけでなく、**認証などリクエスト時の状態が要るために、デプロイ先でコンパイルしても構築できない**リソースにも当てはまります。値の偽装（`$_SERVER['X'] = 'fake'` など）は最小限にとどめ、ランタイムで本物が要る値には使わないでください（焼き込まれます）。
 
-**注意（BEAR.Package 1.21+）**: `Compiler::fromInjector()` はルートの `.compile.php` を自動では読み込みません（非推奨の `bear.compile` は自動でした）。上の `bin/compile.php` のように、アプリ側で明示的に `require` してください。
+**注意**: `.compile.php` はCompiler自身が、コンテナを組む前に読み込みます。削除された `vendor/bin/bear.compile` も読み込んでいました。アプリ側で何かする必要はありません。
 
 .compile.php
 

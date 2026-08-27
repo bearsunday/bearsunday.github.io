@@ -15,6 +15,11 @@ repository: bearsunday/bearsunday.github.io
 include:
   - "manuals"
 
+# Exclude sample apps and their vendor dirs (composer install can create
+# broken symlinks, e.g. bear/devtools' xhprof_html, that crash Jekyll's reader)
+exclude:
+  - "MyVendor.Ticket"
+
 # Exclude from processing but include as static files
 keep_files:
   - "manuals"

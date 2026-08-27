@@ -99,7 +99,7 @@ class AppModule extends AbstractAppModule
 キャッシュされているDIファイルを消去します。
 
 ```bash
-rm -rf var/tmp/*
+rm -rf var/build/*
 ```
 
 ### ルータースクリプト

@@ -52,7 +52,7 @@ Web公開フォルダです。
 `log`、`tmp`フォルダは書き込み可能にします。既定ではコンテキストごとに `var/tmp/{context}` と `var/log/{context}` が使われます。`var/www`はWebドキュメントの公開エリアです。
 `conf`など可変のファイルを設置します。
 
-書き込み先をプロジェクト外にしたい場合だけ、`Meta` のコンストラクタでパスを上書きできます（[プロダクション](production.html#writable-paths)）。
+書き込み先をプロジェクト外にしたい場合だけ、`ReadOnlyAppModule` で宣言します（[プロダクション](production.html#writable-paths)）。
 
 ## 実行シーケンス
 

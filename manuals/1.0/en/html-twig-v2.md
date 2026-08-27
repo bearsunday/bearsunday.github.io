@@ -260,11 +260,29 @@ class HtmlModule extends AbstractModule
 
 If **there is** a mobile site template `Index.mobile.twig` that will replace `Index.html.twig`, it will be used in preference.
 
+## ProdModule
+
+In production, install a module in ProdModule to compile the templates at build time:
+
+```php
+class ProdModule extends AbstractModule
+{
+    protected function configure()
+    {
+        $this->install(new TwigProdModule);
+    }
+}
+```
+
+The [compile](production.html#compile-steps) writes the templates into `var/build/{context}/twig`, and production serves them from there, read-only. Booting before compiling stops with `Exception\TemplateNotCompiled`.
+
+Requires Madapaja.TwigModule 2.8+ and BEAR.Package 1.24+.
+
 ## Custom Settings
 
 If you would like to change options depending on the context or add a template path, configuration values are bound to `@TwigPaths`and `@TwigOptions` annotations.
 
-Note: Since caches are always created in the `var/tmp` folder, there is no particular need for special settings for production.
+Note: Without `TwigProdModule`, caches are created in the `var/tmp` folder. An application that binds `TwigOptions` itself keeps managing its own cache.
 
 ```php
 namespace MyVendor\MyPackage\Module;
