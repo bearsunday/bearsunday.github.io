@@ -138,26 +138,25 @@ An uncaught error responds with a `logref` ID, and the rendered exception goes t
 
 ## Deployment
 
-### ⚠️ Avoid Overwriting Updates
+There are two deployment strategies.
 
-#### When deploying to a server
+### Full ahead-of-time compilation (recommended) {#aot-compile}
 
-* Overwriting a running project folder with `rsync` or similar poses a risk of inconsistency with caches and on-demand generated files, and can exceed capacity on high-load sites.
-  Set up in a separate directory for safety and switch if the setup is successful.
-* You can use the [BEAR.Sunday recipe](https://github.com/bearsunday/deploy) of [Deployer](http://deployer.org/).
+[Compile](#compilation-recommended) at build time and ship the compiled artifact. Nothing is left to do at boot: a cold start only reads the artifact, and every instance that scale-out adds boots from the same one. [Docker multi-stage build](#docker-multi-stage) and [Phar](phar.html) are this shape.
 
-#### When deploying to the cloud
+* The compiler exits 1 when it finds a dependency problem, 0 on success — gate CI with it
+* Values that change at runtime (hosts, tokens) are not baked in; resolve them at runtime
+* Stub the services the build environment cannot reach with [`.compile.php`](#compile-php)
+* On a read-only runtime, combine with [declared write locations](#writable-paths)
 
-* It is recommended to incorporate compilation into CI as the compiler outputs exit code 1 when it finds dependency issues and 0 when compilation succeeds.
+### On-demand compilation at health check {#health-check-compile}
+
+Ship uncompiled and compile on the deploy target: run `composer compile` at warm-up / health-check time, or leave it to the first boot — on a writable tree an uncompiled artifact compiles in place with a `Compiled DI scripts on demand` notice. Real environment values — paths, environment variables — bake in as they are. Unpack each release into a fresh directory and route traffic only after the health check passes. Every instance compiles for itself, so artifact identity is weaker than with ahead-of-time compilation.
 
 <a id="compilation"></a>
 ### Compilation {#compilation-recommended}
 
-When setting up, you can **warm up** the project: create static cache files for DI/AOP and annotations in advance, and write optimized `autoload.php` and `preload.php`.
-
-**Principle: compile on the deploy target when you can** (at warm-up / health-check time). Real environment values — paths, environment variables — are reflected as-is, so values bake in correctly.
-
-**Exception: environments that need ahead-of-time compilation** (serverless, a read-only app root, or a fixed path such as `/tmp`). Because you compile where the real services are unreachable, combine [declaring where the application writes](#writable-paths), AOT script reuse, and [`.compile.php`](#compile-php) (to stub the unreachable services), and **do not bake values that vary at runtime (hosts, tokens) — resolve them at runtime.**
+Compilation creates the static caches — DI/AOP dynamic files, annotations — in advance, and writes optimized `autoload.php` and `preload.php`.
 
 A build script names the application; it does not boot it (BEAR.Package 1.22+; the skeleton ships `bin/compile.php`).
 
@@ -385,4 +384,4 @@ COPY --from=build /app /var/www/app
 
 The image that boots carries the compiled DI scripts, with nothing left to do at boot. A cold start only reads the artifact — 0.38s down to 0.018s in the measurement above — and every instance that scale-out adds boots from the same artifact, so every container gives the same answer. To start the runtime stage with `docker run --read-only`, combine with [declared write locations](#writable-paths).
 
-This is the "environments that need ahead-of-time compilation" exception of [Compilation](#compilation-recommended): values that change at runtime — endpoints, tokens — are not baked in, but resolved at runtime.
+This is the shape of [full ahead-of-time compilation](#aot-compile): values that change at runtime — endpoints, tokens — are not baked in, but resolved at runtime.
