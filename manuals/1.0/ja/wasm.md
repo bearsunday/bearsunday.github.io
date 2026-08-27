@@ -28,7 +28,7 @@ BEAR.Package 1.24以降が必要です。`ProdModule`に書く`ReadOnlyAppModule
 composer compile          # bin/compile.php が prod-html-app をコンパイルして app.phar にパック
 ```
 
-HTMLで答えるために、`HtmlModule`が`RenderInterface`を`HtmlRenderer`に束縛します。
+HTMLで答えるために、`HtmlModule`が`QiqModule`をインストールします。テンプレートは`var/qiq/template`に置きます。`ProdModule`に入れる`QiqProdModule`はコンパイルステップを登録するので、テンプレートはビルドで`var/build/{context}/qiq`にコンパイルされ、アーカイブがそれを運びます。起動してからテンプレートをコンパイルすることはありません。
 
 wasmの中でパックはできません。`Compiler::phar()`は`phar.readonly=0`の子プロセスを使い、wasmにプロセスはないからです。wasmがするのは、出来上がったアーカイブの起動だけです。
 
@@ -77,4 +77,4 @@ MySQLは動きません。ブラウザのwasmにはraw TCPソケットがなく�
 
 ## デモ
 
-[koriym/wasm-todo](https://github.com/koriym/wasm-todo)は、リソース2つ（`Todos`/`Todo`）、`HtmlRenderer`、`TodoRepository`、service worker、ビルドスクリプトの構成です。GitHub Actionsがpharをビルドし、esbuildでバンドルし、GitHub Pagesが配信します。
+[koriym/wasm-todo](https://github.com/koriym/wasm-todo)は、リソース4つ（`Todos`/`Todo`と、遷移の`todo/toggle`/`todo/delete`）、Qiqのテンプレート、`TodoRepository`、service worker、ビルドスクリプトの構成です。ページリソースが実装するのは`onGet`と`onPost`だけで、状態を変える遷移はそれぞれリソースになっています。だからフォームはPOSTだけで足ります。GitHub Actionsがpharをビルドし、esbuildでバンドルし、GitHub Pagesが配信します。

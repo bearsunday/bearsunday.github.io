@@ -28,7 +28,7 @@ The archive is built on the build machine, as with [Phar](phar.html).
 composer compile          # bin/compile.php compiles prod-html-app and packs app.phar
 ```
 
-To answer in HTML, `HtmlModule` binds `RenderInterface` to `HtmlRenderer`.
+To answer in HTML, `HtmlModule` installs `QiqModule` over `var/qiq/template`. `QiqProdModule` in `ProdModule` registers a compile step, so the build compiles the templates into `var/build/{context}/qiq` and the archive carries them. No template is compiled after boot.
 
 Packing cannot happen inside wasm: `Compiler::phar()` uses a subprocess with `phar.readonly=0`, and wasm has no processes. What wasm does is boot the finished archive.
 
@@ -77,4 +77,4 @@ MySQL does not run. Browser wasm has no raw TCP sockets, so neither `mysqli` nor
 
 ## Demo
 
-[koriym/wasm-todo](https://github.com/koriym/wasm-todo) is two resources (`Todos`/`Todo`), an `HtmlRenderer`, a `TodoRepository`, a service worker and a build script. GitHub Actions builds the phar, esbuild bundles it, and GitHub Pages serves it.
+[koriym/wasm-todo](https://github.com/koriym/wasm-todo) is four resources (`Todos`/`Todo`, plus `todo/toggle`/`todo/delete` for the transitions), Qiq templates, a `TodoRepository`, a service worker and a build script. The page resources implement `onGet` and `onPost` only, and a transition that changes state is a resource of its own, so a form never needs more than POST. GitHub Actions builds the phar, esbuild bundles it, and GitHub Pages serves it.
