@@ -71,9 +71,9 @@ GitHub Pages serves under a subpath such as `https://{user}.github.io/{repo}/`. 
 
 On the wasm virtual filesystem, `/persist` is the mount synced to IndexedDB: a SQLite database placed there survives reloads. In the demo, `TodoRepository` writes `/persist/todo.db`.
 
-## What does not run
+## Wasm limits
 
-MySQL. Browser wasm has no raw TCP sockets, so neither `mysqli` nor `pdo_mysql` can connect. Storage is SQLite — or PGlite, or Cloudflare D1.
+MySQL does not run. Browser wasm has no raw TCP sockets, so neither `mysqli` nor `pdo_mysql` can connect. Storage is SQLite — or PGlite, or Cloudflare D1.
 
 ## Demo
 

@@ -71,7 +71,7 @@ GitHub Pagesは`https://{user}.github.io/{repo}/`のようにサブパスで配�
 
 wasmの仮想ファイルシステムのうち、`/persist`はIndexedDBに同期されるマウントです。ここに置いたSQLiteはリロードしても残ります。デモでは`TodoRepository`が`/persist/todo.db`に書きます。
 
-## 動かないもの
+## wasmの制限
 
 MySQLは動きません。ブラウザのwasmにはraw TCPソケットがなく、`mysqli`も`pdo_mysql`も接続できません。ストレージはSQLiteか、PGlite、Cloudflare D1です。
 
