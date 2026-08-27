@@ -7,7 +7,7 @@ permalink: /manuals/1.0/ja/wasm.html
 
 # Wasm
 
-[Phar](phar.html)にしたアプリケーションは、ブラウザの中でも動きます。service workerがWebAssemblyにコンパイルされたPHP（php-cgi-wasm）を起動し、fetchを`app.phar`に渡します。PHPランタイムもアプリケーションサーバーも要りません。要るのは静的配信だけです。
+[Phar](phar.html)にしたアプリケーションは、ブラウザの中でも動きます。service workerがWebAssemblyにコンパイルされたPHP（php-cgi-wasm）を起動し、ブラウザのリクエストをすべて`app.phar`に渡します。サーバーにPHPランタイムもアプリケーションサーバーも要りません。静的ファイルを置ける場所さえあれば動きます。
 
 ```text
 ブラウザ ──fetch──> service worker ──> php-cgi-wasm ──> app.phar (BEAR.Sunday)
@@ -69,11 +69,11 @@ GitHub Pagesは`https://{user}.github.io/{repo}/`のようにサブパスで配�
 
 ## 永続化
 
-wasmの仮想ファイルシステムのうち、`/persist`はIndexedDBに同期されるマウントです。ここに置いたSQLiteはリロードしても残ります。デモでは`TodoRepository`が`/persist/todo.db`に書きます。
+wasmの仮想ファイルシステムのうち、`/persist`はIndexedDBに同期されるマウントです。ここに置いたSQLiteのデータベースはリロードしても残ります。デモでは`TodoRepository`が`/persist/todo.db`に書きます。
 
 ## wasmの制限
 
-MySQLは動きません。ブラウザのwasmにはraw TCPソケットがなく、`mysqli`も`pdo_mysql`も接続できません。ストレージはブラウザの中で動くSQLiteかPGlite、あるいはfetchで届くCloudflare D1です。制限はTCPであって、HTTPではありません。
+MySQLは動きません。ブラウザのwasmにはraw TCPソケットがなく、`mysqli`も`pdo_mysql`も接続できません。ストレージはブラウザの中で動くSQLiteかPGlite、あるいはリモートのCloudflare D1です。制限はTCPであって、HTTPではありません。
 
 ## デモ
 

@@ -7,7 +7,7 @@ permalink: /manuals/1.0/en/wasm.html
 
 # Wasm
 
-A [Phar](phar.html) application also runs in the browser. A service worker boots PHP compiled to WebAssembly (php-cgi-wasm) and hands every fetch to `app.phar`. No PHP runtime, no application server — static file hosting is all it takes.
+A [Phar](phar.html) application also runs in the browser. A service worker boots PHP compiled to WebAssembly (php-cgi-wasm) and hands every request to `app.phar`. No PHP runtime, no application server — static file hosting is all it takes.
 
 ```text
 browser ──fetch──> service worker ──> php-cgi-wasm ──> app.phar (BEAR.Sunday)
@@ -73,7 +73,7 @@ On the wasm virtual filesystem, `/persist` is the mount synced to IndexedDB: a S
 
 ## Wasm limits
 
-MySQL does not run. Browser wasm has no raw TCP sockets, so neither `mysqli` nor `pdo_mysql` can connect. Storage is SQLite or PGlite, both running in the browser, or Cloudflare D1, which arrives over fetch. The limit is TCP, not HTTP.
+MySQL does not run. Browser wasm has no raw TCP sockets, so neither `mysqli` nor `pdo_mysql` can connect. Storage is SQLite or PGlite, both running in the browser, or a remote Cloudflare D1. The limit is TCP, not HTTP.
 
 ## Demo
 
