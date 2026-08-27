@@ -279,7 +279,7 @@ class RedisAdapter extends OriginAdapter implements Serializable
 
 #### autoload.php {#autoloadphp}
 
-`{project_path}/autoload.php` に最適化された autoload ファイルが出力されます。`composer dump-autoload --optimize` の `vendor/autoload.php` より軽く、**preload を使わない構成**でリクエストごとの autoload コストを下げます。
+`{project_path}/autoload.php`に最適化されたautoloadファイルが出力されます。中身は、コンパイルで実際に使われたクラスファイルを並べた`require`のリストで、残りはcomposerのオートローダーに委ねます。アプリケーションが使うクラスにはオートローダーの解決そのものが起きません。`composer dump-autoload --optimize`はクラスマップの検索を速くしますが、クラスごとのオートローダー呼び出しは残ります。この`autoload.php`はそれを消すので、**preloadを使わない構成**でリクエストごとのautoloadコストを下げます。
 
 注意：`preload.php` を使う場合は利用クラスの大半が起動時に読み込まれるので、この `autoload.php` はほぼ不要です（composer の `vendor/autoload.php` で十分）。つまり `autoload.php` は **preload を使えない環境向けのフォールバック**という位置づけです。
 
