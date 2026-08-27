@@ -7,11 +7,11 @@ permalink: /manuals/1.0/en/wasm.html
 
 # Wasm
 
-Run a [Phar](phar.html) application in the browser. No server, no PHP runtime installed — a single `app.phar` boots inside WebAssembly, served by a service worker.
+Run a [Phar](phar.html) application in the browser. No PHP runtime, no application server — static file hosting is all it takes. A single `app.phar` boots inside WebAssembly, served by a service worker.
 
 ```text
 browser ──fetch──> service worker ──> php-cgi-wasm ──> app.phar (BEAR.Sunday)
-                    (wasm/sw.js)                        └─ pdo_sqlite
+                    (wasm/sw.js)       └─ pdo_sqlite
 ```
 
 Demo: [koriym/wasm-todo](https://github.com/koriym/wasm-todo) / [live page](https://koriym.github.io/wasm-todo/)
@@ -22,7 +22,7 @@ Demo: [koriym/wasm-todo](https://github.com/koriym/wasm-todo) / [live page](http
 - Resources render HTML; `_links` become `<a>` and `<form>`.
 - State persists in SQLite (`pdo_sqlite`), backed by the browser's IndexedDB.
 
-The point is not the todo app. It is that a PHP developer can ship a working web app as one file, with no JavaScript to write and no server to run.
+The point is not the todo app. It is that a PHP developer can ship a working web app as one file, with no application JavaScript to write and no server to operate.
 
 ## Requirements
 

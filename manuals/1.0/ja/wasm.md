@@ -7,11 +7,11 @@ permalink: /manuals/1.0/ja/wasm.html
 
 # Wasm
 
-[Phar](phar.html)にしたアプリケーションを、ブラウザの中で動かします。サーバーもPHPランタイムも要りません。1つの`app.phar`がWebAssemblyの中で起動し、service workerがHTTPを処理します。
+[Phar](phar.html)にしたアプリケーションを、ブラウザの中で動かします。PHPランタイムもアプリケーションサーバーも要りません。要るのは静的配信だけです。1つの`app.phar`がWebAssemblyの中で起動し、service workerがHTTPを処理します。
 
 ```text
 ブラウザ ──fetch──> service worker ──> php-cgi-wasm ──> app.phar (BEAR.Sunday)
-                     (wasm/sw.js)                        └─ pdo_sqlite
+                     (wasm/sw.js)       └─ pdo_sqlite
 ```
 
 デモ: [koriym/wasm-todo](https://github.com/koriym/wasm-todo) / [公開ページ](https://koriym.github.io/wasm-todo/)
@@ -22,7 +22,7 @@ permalink: /manuals/1.0/ja/wasm.html
 - リソースがHTMLを返し、`_links`が`<a>`と`<form>`になる
 - SQLite（`pdo_sqlite`）で状態を永続化する。ブラウザのIndexedDBが裏にある
 
-価値はtodoアプリではありません。PHP開発者が、JavaScriptを書かずに、サーバーを立てずに、動くWebアプリを1ファイルで配れることです。
+価値はtodoアプリではありません。PHP開発者が、アプリケーションのJavaScriptを書かずに、サーバーを運用せずに、動くWebアプリを1ファイルで配れることです。
 
 ## 必要なもの
 
