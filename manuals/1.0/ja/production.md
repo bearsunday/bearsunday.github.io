@@ -55,7 +55,6 @@ class ProdModule extends AbstractModule
 * [キャッシュバージョン](#cache-version) — リソースのスキーマ変更時にキャッシュを破棄
 * [リソース実行ログ](#logging)
 * [エラーログのファイル出力](#error-log)
-* [エラーログサーバー](#error-log-server) — 4xxのノイズを送らないロガー束縛
 * [書き込み先の宣言](#writable-paths) — サーバーレスや読み取り専用コンテナで必要
 
 ## キャッシュ {#cache}
@@ -136,37 +135,7 @@ final class MyProdLoggerModule extends AbstractModule
 
 ### エラーログ {#error-log}
 
-捕捉されなかった例外は`Psr\Log\LoggerInterface`にバインドされたロガーへ送られます（独自のロガーをバインドしていなければPHPの`error_log`）。ログレベルはエラーページと同じ基準で決まります。クライアント起因（`BadRequestException`系、4xx）はdebug、サーバー障害（5xx）はerrorです。
-
-サーバー障害はレスポンスに`logref` IDを付与し、同じIDがログにも記録されます。既定では`var/log/{context}`に`logref.{id}.log`ファイルも書かれ、`last.logref.log`が最新のものを指します。`ProdModule`は代わりに`NullLogRefWriter`をバインドするため、プロダクションではファイルを書きません。エラーごとのファイルを残すには`LogRefWriterInterface`を`FileLogRefWriter`にバインドします。ファイルはリクエストを処理したサーバーに書かれます。
-
-### エラーログサーバー {#error-log-server}
-
-Sentryのようなエラーログサーバーを使う場合は、errorレベル以上だけを送るハンドラを持つロガーを`LoggerInterface`に束縛します。4xxはdebugでログされるため、404や405のスキャンノイズは届きません。
-
-```php
-$this->bind(LoggerInterface::class)->toProvider(AppLoggerProvider::class)->in(Scope::SINGLETON);
-```
-
-プロバイダーでMonologを組み、エラーログサーバーのハンドラだけ閾値を`Level::Error`にします。接続先のDSNはランタイムで解決します（[コンパイル](#compilation-recommended)で焼き込まない）。
-
-### ドメイン例外 {#domain-exceptions}
-
-アプリケーション独自の例外もこの基準で分類されます。クライアント起因の例外は`BadRequestException`を継承し、HTTPコードをコンストラクタで指定します。それだけで、エラーページのステータスコード・ログレベル・エラーログサーバーに送られるかどうかが決まります。
-
-```php
-use BEAR\Resource\Exception\BadRequestException;
-
-final class CartExpired extends BadRequestException
-{
-    public function __construct(string $cartId)
-    {
-        parent::__construct($cartId, 410);
-    }
-}
-```
-
-410 Goneのページが返り、ログはdebugです。`BadRequestException`を継承しない例外はサーバー障害として扱われます（`RuntimeException`系は503、その他は500。ログはerror）。
+捕捉されなかったエラーはレスポンスに`logref` IDを付与し、整形された例外を`Psr\Log\LoggerInterface`にバインドされたロガーへ送ります（独自のロガーをバインドしていなければPHPの`error_log`）。既定では`var/log/{context}`に`logref.{id}.log`ファイルも書かれ、`last.logref.log`が最新のものを指します。`ProdModule`は代わりに`NullLogRefWriter`をバインドするため、プロダクションではファイルを書きません。エラーごとのファイルを残すには、アプリケーションの`ProdModule`で`LogRefWriterInterface`を`FileLogRefWriter`にバインドします。
 
 ## デプロイ
 

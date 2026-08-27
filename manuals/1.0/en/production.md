@@ -54,7 +54,6 @@ What you add to this module, depending on the deployment environment, is the res
 * [Cache version](#cache-version) — discard the cache when the resource schema changes
 * [Resource execution log](#logging)
 * [Per-error log files](#error-log)
-* [Error log servers](#error-log-server) — a logger binding that keeps 4xx noise away
 * [Declaring where the application writes](#writable-paths) — required on serverless and read-only containers
 
 ## Cache {#cache}
@@ -135,37 +134,7 @@ The `__invoke` method of [LoggerInterface](https://github.com/bearsunday/BEAR.Re
 
 ### Error Logs {#error-log}
 
-An uncaught exception goes to the logger bound to `Psr\Log\LoggerInterface` — with no logger of your own bound, that is PHP's `error_log`. The log level follows the same criteria as the error page: client-caused (the `BadRequestException` family, 4xx) logs at debug, server faults (5xx) at error.
-
-A server fault responds with a `logref` ID, and the same ID is recorded in the log. By default a `logref.{id}.log` file is also written under `var/log/{context}`, with `last.logref.log` linking to the newest one. `ProdModule` binds `NullLogRefWriter` instead, so production writes no file; to keep the per-error files, bind `LogRefWriterInterface` to `FileLogRefWriter`. The file is written on the server that handled the request.
-
-### Error log servers {#error-log-server}
-
-To use an error log server such as Sentry, bind a logger to `LoggerInterface` whose server handler sends only error and above. 4xx logs at debug, so 404/405 scan noise does not arrive.
-
-```php
-$this->bind(LoggerInterface::class)->toProvider(AppLoggerProvider::class)->in(Scope::SINGLETON);
-```
-
-Build Monolog in the provider and give only the error-log-server handler a `Level::Error` threshold. Resolve the DSN at runtime — do not bake it in at [compile time](#compilation-recommended).
-
-### Domain exceptions {#domain-exceptions}
-
-The same criteria classify the application's own exceptions. A client-caused exception extends `BadRequestException` and specifies its HTTP code in the constructor. That alone decides the error page status code, the log level, and whether the exception is sent to the error log server.
-
-```php
-use BEAR\Resource\Exception\BadRequestException;
-
-final class CartExpired extends BadRequestException
-{
-    public function __construct(string $cartId)
-    {
-        parent::__construct($cartId, 410);
-    }
-}
-```
-
-A 410 Gone page returns and the log is debug. An exception that does not extend `BadRequestException` is treated as a server fault (`RuntimeException` family: 503, everything else: 500 — logged at error).
+An uncaught error responds with a `logref` ID, and the rendered exception goes to the logger bound to `Psr\Log\LoggerInterface` — with no logger of your own bound, that is PHP's `error_log`. By default a `logref.{id}.log` file is also written under `var/log/{context}`, with `last.logref.log` linking to the newest one. `ProdModule` binds `NullLogRefWriter` instead, so production writes no file; to keep the per-error files, bind `LogRefWriterInterface` to `FileLogRefWriter` in your `ProdModule`.
 
 ## Deployment
 
