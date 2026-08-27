@@ -7,54 +7,34 @@ permalink: /manuals/1.0/en/wasm.html
 
 # Wasm
 
-Run a [Phar](phar.html) application in the browser. No PHP runtime, no application server — static file hosting is all it takes. A single `app.phar` boots inside WebAssembly, served by a service worker.
+A [Phar](phar.html) application also runs in the browser. A service worker boots PHP compiled to WebAssembly (php-cgi-wasm) and hands every fetch to `app.phar`. No PHP runtime, no application server — static file hosting is all it takes.
 
 ```text
 browser ──fetch──> service worker ──> php-cgi-wasm ──> app.phar (BEAR.Sunday)
                     (wasm/sw.js)       └─ pdo_sqlite
 ```
 
-Demo: [koriym/wasm-todo](https://github.com/koriym/wasm-todo) / [live page](https://koriym.github.io/wasm-todo/)
+Resources return HTML, and `_links` become `<a>` and `<form>`. State goes to SQLite (`pdo_sqlite`), held by the browser's IndexedDB. Everything written is PHP: there is no application JavaScript.
 
-## What it does
+A working demo is [koriym/wasm-todo](https://github.com/koriym/wasm-todo) ([live page](https://koriym.github.io/wasm-todo/)).
 
-- A compiled `app.phar` boots in the browser and serves HTTP.
-- Resources render HTML; `_links` become `<a>` and `<form>`.
-- State persists in SQLite (`pdo_sqlite`), backed by the browser's IndexedDB.
-
-The point is not the todo app. It is that a PHP developer can ship a working web app as one file, with no application JavaScript to write and no server to operate.
-
-## Requirements
-
-- BEAR.Package 1.24+ (uses `ReadOnlyAppModule`, as [Phar](phar.html) does)
-- PHP 8.5 (to build the phar)
-- Node.js (to bundle the service worker)
+Requires BEAR.Package 1.24+. The `ReadOnlyAppModule` in `ProdModule` is the one [Phar](phar.html) shows.
 
 ## Build
 
+The archive is built on the build machine, as with [Phar](phar.html).
+
 ```bash
-composer install
-composer compile          # bin/compile.php produces app.phar
+composer compile          # bin/compile.php compiles prod-html-app and packs app.phar
 ```
 
-`bin/compile.php` compiles for the `prod-html-app` context and packs `app.phar`. The `HtmlModule` binds `RenderInterface` to `HtmlRenderer` to return HTML.
+To answer in HTML, `HtmlModule` binds `RenderInterface` to `HtmlRenderer`.
+
+Packing cannot happen inside wasm: `Compiler::phar()` uses a subprocess with `phar.readonly=0`, and wasm has no processes. What wasm does is boot the finished archive.
 
 ## Run
 
-```bash
-cd wasm
-npm install
-npm run build             # bundles sw.js and collects assets into dist/
-npx serve dist            # any static server
-```
-
-`index.html` registers the service worker, which mounts `app.phar` into the wasm virtual filesystem as `/index.php` and routes every request through PHP.
-
-## How it works
-
-### Service worker
-
-`wasm/sw.js` starts `PhpCgiWorker` (php-cgi-wasm). `handleFetchEvent` passes requests to PHP and returns the response. No Node server is needed.
+`index.html` registers the service worker. The worker places `app.phar` on the wasm virtual filesystem and routes every request through PHP.
 
 ```javascript
 import { PhpCgiWebBase } from 'php-cgi-wasm/PhpCgiWebBase.mjs';
@@ -70,20 +50,29 @@ const php = new PhpCgiWebBase(
 self.addEventListener('fetch', event => php.handleFetchEvent(event));
 ```
 
-### Subpath
+The `phar` and `sqlite` extensions are not in php-cgi-wasm's default build; `php-wasm-phar` and `php-wasm-sqlite` hand them to `sharedLibs`.
 
-GitHub Pages serves under a subpath such as `https://koriym.github.io/wasm-todo/`. The worker derives its `basePath` from its own URL, and the entry point strips `BASE_PATH` before routing. Resources return relative links, so links stay correct under any subpath.
+Node.js does the bundling, and the result goes on any static server.
 
-### Persistence
+```bash
+cd wasm
+npm install
+npm run build             # bundles sw.js and collects assets into dist/
+npx serve dist            # any static server
+```
 
-`TodoRepository` writes to `/persist/todo.db`. `/persist` is the wasm filesystem mount synced to IndexedDB, so state survives reloads.
+## Subpath
 
-## Constraints
+GitHub Pages serves under a subpath such as `https://{user}.github.io/{repo}/`. The worker derives its `basePath` from its own URL, and the entry point strips `BASE_PATH` before routing. Resources return relative links, so links stay correct under any subpath.
 
-- **MySQL does not run.** Browser wasm has no raw TCP sockets, so `mysqli`/`pdo_mysql` are unavailable. SQLite, PGlite, and Cloudflare D1 are the options.
-- **Packing is native-only.** `Compiler::phar()` spawns a subprocess with `phar.readonly=0` (INI_SYSTEM), so wasm can only boot the already-built phar. Packing happens on the build machine.
-- **The `phar` and `sqlite` extensions are separate packages.** They are not in php-cgi-wasm's default build; load them via `php-wasm-phar` and `php-wasm-sqlite` in `sharedLibs`.
+## Persistence
+
+On the wasm virtual filesystem, `/persist` is the mount synced to IndexedDB: a SQLite database placed there survives reloads. In the demo, `TodoRepository` writes `/persist/todo.db`.
+
+## What does not run
+
+MySQL. Browser wasm has no raw TCP sockets, so neither `mysqli` nor `pdo_mysql` can connect. Storage is SQLite — or PGlite, or Cloudflare D1.
 
 ## Demo
 
-[koriym/wasm-todo](https://github.com/koriym/wasm-todo) is the minimal implementation: two resources (`Todos`/`Todo`), an `HtmlRenderer`, a `TodoRepository`, a service worker, and a build script. GitHub Actions builds the phar, bundles it with esbuild, and deploys to GitHub Pages.
+[koriym/wasm-todo](https://github.com/koriym/wasm-todo) is two resources (`Todos`/`Todo`), an `HtmlRenderer`, a `TodoRepository`, a service worker and a build script. GitHub Actions builds the phar, esbuild bundles it, and GitHub Pages serves it.
