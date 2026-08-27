@@ -39,7 +39,7 @@ class ProdModule extends AbstractModule
 }
 ```
 
-Omitted, the directories are under the temp directory of the machine that boots: the same shape the application would have used inside its own tree, moved there. The path carries a hash of the application directory, so two checkouts of one application never share a cache.
+Omitted, the directories are under the temp directory of the machine that boots ([`sys_get_temp_dir()`](https://www.php.net/sys_get_temp_dir)): the same shape the application would have used inside its own tree, moved there. The path carries a hash of the application directory, so two checkouts of one application never share a cache.
 
 ```text
 {temp directory}/MyVendor/MyProject/{appDir hash}/var/tmp/prod-hal-app

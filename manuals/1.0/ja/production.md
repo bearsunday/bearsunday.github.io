@@ -121,7 +121,7 @@ $this->install(new StorageExpiryModule($short, $medium, $long));
 $this->install(new CacheVersionModule($cacheVersion));
 ```
 
-ディプロイの度にリソースキャッシュを破棄するためには`$cacheVersion`に時刻や乱数の値を割り当てると変更が不要で便利です。
+デプロイの度にリソースキャッシュを破棄するためには`$cacheVersion`に時刻や乱数の値を割り当てると変更が不要で便利です。
 
 ## ログ
 
@@ -152,12 +152,12 @@ final class MyProdLoggerModule extends AbstractModule
 
 ### ⚠️ 上書き更新を避ける
 
-#### サーバーにディプロイする場合
+#### サーバーにデプロイする場合
 
 * 駆動中のプロジェクトフォルダを`rsync`などで上書きするのはキャッシュやオンデマンドで生成されるファイルの不一致や、高負荷のサイトではキャパシティを超えるリスクがあります。安全のために別のディレクトリでセットアップを行い、そのセットアップが成功すれば切り替えるようにします。
 * [Deployer](http://deployer.org/)の[BEAR.Sundayレシピ](https://github.com/bearsunday/deploy)を利用することができます。
 
-#### クラウドにディプロイする時には
+#### クラウドにデプロイする時には
 * コンパイルが成功すると0、依存関係の問題を見つけるとコンパイラはexitコード1を出力します。それを利用してCIにコンパイルを組み込むことを推奨します。
 
 <a id="compilation"></a>
@@ -265,12 +265,18 @@ class ProdModule extends AbstractModule
 }
 ```
 
-省略したときは、起動したマシンの一時ディレクトリの下になります。アプリケーション名・アプリケーションディレクトリ・contextで分かれます。
+省略したときは、起動したマシンの一時ディレクトリ（[`sys_get_temp_dir()`](https://www.php.net/sys_get_temp_dir)）の下になります。アプリケーション名・アプリケーションディレクトリ・contextで分かれます。
 
 ```text
 {appDir}/var/build/{context}/di                                        コンパイル済みDIスクリプト（成果物内）
 {一時ディレクトリ}/MyVendor/MyProject/{appDirハッシュ}/var/tmp/{context}   クエリリポジトリのキャッシュ
 {一時ディレクトリ}/MyVendor/MyProject/{appDirハッシュ}/var/log/{context}
+```
+
+一時ディレクトリの場所はphp.iniの[`sys_temp_dir`](https://www.php.net/manual/ja/ini.core.php#ini.sys-temp-dir)で決まります。起動時に渡すこともできます。
+
+```bash
+php -d sys_temp_dir=/mnt/tmp public/index.php
 ```
 
 パスにアプリケーション名とcontextが入るのは、ローカルキャッシュのキーがリソースURIだからです。区切りがないまま2つのアプリケーションや2つのcontextが同じディレクトリを共有すると、互いのキャッシュエントリで応答してしまいます。appDirハッシュも同じ理由で、同じアプリケーションの別チェックアウトを分けます。
@@ -298,6 +304,26 @@ $this->install(new ReadOnlyAppModule(logDir: '/var/log/myapp'));
 自身に書き込まない1ファイルの成果物にするには[Phar](phar.html)を参照してください。
 
 BEAR.Package 1.24以降が必要です。背景: [BEAR.Package#491](https://github.com/bearsunday/BEAR.Package/pull/491)
+
+#### Dockerマルチステージビルド {#docker-multi-stage}
+
+コンパイルはビルドの仕事です。Dockerの[マルチステージビルド](https://docs.docker.com/build/building/multi-stage/)を使うと、コンパイルをイメージのビルドに固定できます。
+
+```dockerfile
+FROM php:8.3-cli AS build
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+WORKDIR /app
+COPY . .
+RUN composer install --no-dev --prefer-dist --no-progress
+RUN php bin/compile.php prod-app
+
+FROM php:8.3-apache
+COPY --from=build /app /var/www/app
+```
+
+起動するイメージにはコンパイル済みのDIスクリプトが入っていて、起動時にすることが残っていません。コールドスタートは成果物を読むだけになり（上記の実測で0.38秒→0.018秒）、スケールアウトで増えるインスタンスはすべて同じ成果物から起動するので、どのコンテナも同じ答えを返します。実行ステージを`docker run --read-only`で起動するなら[書き込み先の宣言](#writable-paths)と合わせます。
+
+これは[コンパイル](#compilation-recommended)の「例外: 事前コンパイルが要る環境」にあたります。接続先やトークンなどランタイムで変わる値は焼き込まず、ランタイム解決にします。
 
 ### autoload.php
 

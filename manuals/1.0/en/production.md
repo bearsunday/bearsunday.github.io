@@ -270,12 +270,18 @@ class ProdModule extends AbstractModule
 }
 ```
 
-Omitted, the directories are under the temp directory of the machine that boots, keyed by application name, application directory and context.
+Omitted, the directories are under the temp directory of the machine that boots ([`sys_get_temp_dir()`](https://www.php.net/sys_get_temp_dir)), keyed by application name, application directory and context.
 
 ```text
 {appDir}/var/build/{context}/di                                        compiled DI scripts, in the artifact
 {temp directory}/MyVendor/MyProject/{appDir hash}/var/tmp/{context}    query repository cache
 {temp directory}/MyVendor/MyProject/{appDir hash}/var/log/{context}
+```
+
+The temp directory is set by the [`sys_temp_dir`](https://www.php.net/manual/en/ini.core.php#ini.sys-temp-dir) php.ini directive, and can be passed at boot:
+
+```bash
+php -d sys_temp_dir=/mnt/tmp public/index.php
 ```
 
 The application and the context are in the path because local cache keys are resource URIs: two applications or two contexts sharing one directory would answer with each other's entries. The application directory hash keeps two checkouts of one application apart for the same reason.
@@ -303,6 +309,26 @@ An artifact that was never compiled stops with `NotCompiledException`. Where the
 A single-file artifact that never writes into itself is [Phar](phar.html).
 
 Requires BEAR.Package 1.24+. Background: [BEAR.Package#491](https://github.com/bearsunday/BEAR.Package/pull/491).
+
+#### Docker multi-stage build {#docker-multi-stage}
+
+Compilation is build work. A Docker [multi-stage build](https://docs.docker.com/build/building/multi-stage/) pins it to the image build.
+
+```dockerfile
+FROM php:8.3-cli AS build
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+WORKDIR /app
+COPY . .
+RUN composer install --no-dev --prefer-dist --no-progress
+RUN php bin/compile.php prod-app
+
+FROM php:8.3-apache
+COPY --from=build /app /var/www/app
+```
+
+The image that boots carries the compiled DI scripts, with nothing left to do at boot. A cold start only reads the artifact — 0.38s down to 0.018s in the measurement above — and every instance that scale-out adds boots from the same artifact, so every container gives the same answer. To start the runtime stage with `docker run --read-only`, combine with [declared write locations](#writable-paths).
+
+This is the "environments that need ahead-of-time compilation" exception of [Compilation](#compilation-recommended): values that change at runtime — endpoints, tokens — are not baked in, but resolved at runtime.
 
 ### autoload.php
 
