@@ -142,16 +142,16 @@ There are two deployment strategies.
 
 ### Full ahead-of-time compilation (recommended) {#aot-compile}
 
-[Compile](#compilation-recommended) at build time and ship the compiled artifact. Nothing is left to do at boot: a cold start only reads the artifact, and every instance that scale-out adds boots from the same one. [Docker multi-stage build](#docker-multi-stage) and [Phar](phar.html) are this shape.
+[Compile](#compilation-recommended) at build time and ship the compiled artifact. Its traits: cold-start speed (boot only reads the artifact), scale (every added instance boots from the same artifact), and safety (a DI configuration error stops the build with exit code 1 and never reaches production). [Docker multi-stage build](#docker-multi-stage) and [Phar](phar.html) are this shape.
 
-* The compiler exits 1 when it finds a dependency problem, 0 on success — gate CI with it
+* Gate CI with the compiler's exit code
 * Values that change at runtime (hosts, tokens) are not baked in; resolve them at runtime
 * Stub the services the build environment cannot reach with [`.compile.php`](#compile-php)
 * On a read-only runtime, combine with [declared write locations](#writable-paths)
 
 ### On-demand compilation at health check {#health-check-compile}
 
-Ship uncompiled and compile on the deploy target: run `composer compile` at warm-up / health-check time, or leave it to the first boot — on a writable tree an uncompiled artifact compiles in place with a `Compiled DI scripts on demand` notice. Real environment values — paths, environment variables — bake in as they are. Unpack each release into a fresh directory and route traffic only after the health check passes. Every instance compiles for itself, so artifact identity is weaker than with ahead-of-time compilation.
+Ship uncompiled and compile on the deploy target. Its trait: real environment values — paths, environment variables — are used as they are. Run `composer compile` at warm-up / health-check time, or leave it to the first boot — on a writable tree an uncompiled artifact compiles in place with a `Compiled DI scripts on demand` notice. Unpack each release into a fresh directory and route traffic only after the health check passes. Every instance compiles for itself, so artifact identity is weaker than with ahead-of-time compilation.
 
 <a id="compilation"></a>
 ### Compilation {#compilation-recommended}
@@ -343,6 +343,8 @@ php -d sys_temp_dir=/mnt/tmp public/index.php
 The application and the context are in the path because local cache keys are resource URIs: two applications or two contexts sharing one directory would answer with each other's entries. The application directory hash keeps two checkouts of one application apart for the same reason.
 
 The entry points do not change, and no environment variable is read. Nothing has to match between the build and the boot, so one artifact boots on any machine with that machine's answer.
+
+There are two ways to decide where the application writes. The default is to stay system-dependent and operate that dependency — `sys_temp_dir` — from the environment. Only where neither php.ini nor a boot option is yours to set, pass an absolute path and bake the fixed value in.
 
 A named path is used as given.
 
