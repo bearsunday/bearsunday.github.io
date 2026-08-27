@@ -16,85 +16,70 @@ BEAR.Sundayの既定の`prod`束縛をベースに、アプリケーション側
 * エラーページ生成ファクトリー
 * PSRロガーインターフェース
 * ローカルキャッシュ
-* 分散キャッシュ
+* リソースキャッシュ（クエリーリポジトリー）
 
-詳細はBEAR.Packageの[ProdModule.php](https://github.com/bearsunday/BEAR.Package/blob/1.x/src/Context/ProdModule.php)を参照してください。
+また、OPTIONSメソッドは無効化されます。詳細はBEAR.Packageの[ProdModule.php](https://github.com/bearsunday/BEAR.Package/blob/1.x/src/Context/ProdModule.php)を参照してください。
 
 ## アプリケーションのProdModule
 
-既定のProdModuleに対してアプリケーションの`ProdModule`を`src/Module/ProdModule.php`に設置してカスタマイズします。特にエラーページと分散キャッシュは重要です。
+既定のProdModuleに対してアプリケーションの`ProdModule`を`src/Module/ProdModule.php`に設置してカスタマイズします。
 
 ```php
 <?php
-namespace MyVendor\Todo\Module;
+
+namespace MyVendor\MyProject\Module;
 
 use BEAR\Package\Context\ProdModule as PackageProdModule;
+use BEAR\Package\Provide\Error\ErrorPageFactoryInterface;
 use BEAR\QueryRepository\CacheVersionModule;
 use BEAR\Resource\Module\OptionsMethodModule;
-use BEAR\Package\AbstractAppModule;
+use Ray\Di\AbstractModule;
 
 class ProdModule extends AbstractModule
 {
-    /**
-     * {@inheritdoc}
-     */
-    protected function configure()
+    protected function configure(): void
     {
-        $this->install(new PackageProdModule);       // デフォルトのprod設定
+        $this->install(new PackageProdModule);       // 既定のprod束縛
         $this->override(new OptionsMethodModule);    // OPTIONSメソッドをプロダクションでも有効に
         $this->install(new CacheVersionModule('1')); // リソースキャッシュのバージョン指定
-        
+
         // 独自のエラーページ
         $this->bind(ErrorPageFactoryInterface::class)->to(MyErrorPageFactory::class);
     }
 }
 ```
 
-## キャッシュ
+デプロイ環境に応じてこのモジュールに足すものが、このページの残りです。
 
-キャッシュには、ローカルキャッシュと複数のWebサーバー間で共有する分散キャッシュの2種類があります。どちらのキャッシュもデフォルトは[PhpFileCache](https://www.doctrine-project.org/projects/doctrine-cache/en/1.10/index.html#phpfilecache)です。
+* [分散キャッシュ](#cache) — 2台以上のWebサーバーで必要
+* [キャッシュバージョン](#cache-version) — リソースのスキーマ変更時にキャッシュを破棄
+* [リソース実行ログ](#logging)
+* [エラーログのファイル出力](#error-log)
+* [書き込み先の宣言](#writable-paths) — サーバーレスや読み取り専用コンテナで必要
+
+## キャッシュ {#cache}
+
+キャッシュには、ローカルキャッシュと複数のWebサーバー間で共有する分散キャッシュの2種類があります。
 
 ### ローカルキャッシュ
 
-ローカルキャッシュはデプロイ後に変更されないアノテーションなどのキャッシュに使われ、分散キャッシュはリソース状態の保存に使われます。
+ローカルキャッシュはアノテーションなど、デプロイ後に変更されないもののキャッシュに使われます。[APCu](https://www.php.net/manual/ja/book.apcu.php)が有効ならAPCuに、なければファイルに書かれます。
 
 ### 分散キャッシュ
 
-2つ以上のWebサーバーでサービスを提供するには分散キャッシュの構成が必要です。代表的なキャッシュエンジンである[memcached](https://www.php.net/manual/ja/book.memcached.php)や[Redis](https://redis.io)向けのモジュールが用意されています。
+リソース状態の保存に使われます。2つ以上のWebサーバーでサービスを提供するには分散キャッシュの構成が必要です。代表的なキャッシュエンジンである[memcached](https://www.php.net/manual/ja/book.memcached.php)や[Redis](https://redis.io)向けのモジュールが用意されています。
 
-### Memcached
+#### Memcached
+
 ```php
-<?php
-namespace BEAR\HelloWorld\Module;
-
-use BEAR\QueryRepository\StorageMemcachedModule;
-use BEAR\Resource\Module\ProdLoggerModule;
-use BEAR\Package\Context\ProdModule as PackageProdModule;
-use BEAR\Package\AbstractAppModule;
-use Ray\Di\Scope;
-
-class ProdModule extends AbstractModule
-{
-    protected function configure()
-    {
-        // memcache
-        // {host}:{port}:{weight},...
-        $memcachedServers = 'mem1.domain.com:11211:33,mem2.domain.com:11211:67';
-        $this->install(new StorageMemcachedModule($memcachedServers));
-        
-        // Prodロガーのインストール
-        $this->install(new ProdLoggerModule);
-        
-        // デフォルトのProdModuleのインストール
-        $this->install(new PackageProdModule);
-    }
-}
+// {host}:{port}:{weight},...
+$memcachedServers = 'mem1.domain.com:11211:33,mem2.domain.com:11211:67';
+$this->install(new StorageMemcachedModule($memcachedServers));
 ```
 
-### Redis
+#### Redis
 
 ```php
-// redis
 $redisServer = 'localhost:6379'; // {host}:{port}
 $this->install(new StorageRedisModule($redisServer));
 ```
@@ -113,7 +98,7 @@ $long = 24 * 3600;
 $this->install(new StorageExpiryModule($short, $medium, $long));
 ```
 
-### キャッシュバージョンの指定
+### キャッシュバージョンの指定 {#cache-version}
 
 リソースのスキーマが変わり、互換性が失われる時にはキャッシュバージョンを変更します。特にTTL時間で消えないCQRS運用の場合に重要です。
 
@@ -123,9 +108,13 @@ $this->install(new CacheVersionModule($cacheVersion));
 
 デプロイの度にリソースキャッシュを破棄するためには`$cacheVersion`に時刻や乱数の値を割り当てると変更が不要で便利です。
 
-## ログ
+## ログ {#logging}
 
 `ProdLoggerModule`はプロダクション用のリソース実行ログモジュールです。インストールするとGET以外のリクエストを`Psr\Log\LoggerInterface`にバインドされているロガーでログします。
+
+```php
+$this->install(new ProdLoggerModule);
+```
 
 特定のリソースや特定の状態でログしたい場合は、カスタムのログを[BEAR\Resource\LoggerInterface](https://github.com/bearsunday/BEAR.Resource/blob/1.x/src/LoggerInterface.php)にバインドします。
 
@@ -144,7 +133,7 @@ final class MyProdLoggerModule extends AbstractModule
 
 [LoggerInterface](https://github.com/bearsunday/BEAR.Resource/blob/1.x/src/LoggerInterface.php)の`__invoke`メソッドでリソースのURIとリソース状態が`ResourceObject`オブジェクトとして渡されるのでその内容で必要な部分をログします。作成には[既存の実装 ProdLogger](https://github.com/bearsunday/BEAR.Resource/blob/1.x/src/ProdLogger.php)を参考にしてください。
 
-### エラーログ
+### エラーログ {#error-log}
 
 捕捉されなかったエラーはレスポンスに`logref` IDを付与し、整形された例外を`Psr\Log\LoggerInterface`にバインドされたロガーへ送ります（独自のロガーをバインドしていなければPHPの`error_log`）。既定では`var/log/{context}`に`logref.{id}.log`ファイルも書かれ、`last.logref.log`が最新のものを指します。`ProdModule`は代わりに`NullLogRefWriter`をバインドするため、プロダクションではファイルを書きません。エラーごとのファイルを残すには、アプリケーションの`ProdModule`で`LogRefWriterInterface`を`FileLogRefWriter`にバインドします。
 
@@ -158,6 +147,7 @@ final class MyProdLoggerModule extends AbstractModule
 * [Deployer](http://deployer.org/)の[BEAR.Sundayレシピ](https://github.com/bearsunday/deploy)を利用することができます。
 
 #### クラウドにデプロイする時には
+
 * コンパイルが成功すると0、依存関係の問題を見つけるとコンパイラはexitコード1を出力します。それを利用してCIにコンパイルを組み込むことを推奨します。
 
 <a id="compilation"></a>
@@ -167,7 +157,7 @@ final class MyProdLoggerModule extends AbstractModule
 
 **原則: できればデプロイ先でコンパイルする**（warmup / health check のタイミング）。パスや環境変数など実環境の実値がそのまま反映されるので、値は正しく焼き込まれます。
 
-**例外: 事前コンパイルが要る環境**（サーバーレス、read-only なアプリルート、`/tmp` などパス固定）。実サービスに触れない場所でコンパイルするため、[書き込み先の宣言](#writable-paths)・AOT スクリプトの再利用・（触れないサービスを通す）`.compile.php` を併用し、**ランタイムで変わる値（接続先・トークン等）は焼き込まずランタイム解決**にします。
+**例外: 事前コンパイルが要る環境**（サーバーレス、read-only なアプリルート、`/tmp` などパス固定）。実サービスに触れない場所でコンパイルするため、[書き込み先の宣言](#writable-paths)・AOT スクリプトの再利用・（触れないサービスを通す）[`.compile.php`](#compile-php)を併用し、**ランタイムで変わる値（接続先・トークン等）は焼き込まずランタイム解決**にします。
 
 ビルドスクリプトはアプリケーションを**名乗るだけ**で、起動はしません（BEAR.Package 1.22以降。スケルトンは`bin/compile.php`）。
 
@@ -196,6 +186,12 @@ exit((new Compiler('MyVendor\MyProject', $context, dirname(__DIR__)))());
 * コンパイルをすれば全てのクラスでインジェクションを行うのでランタイムでDIのエラーが出る可能性が極めて低くなります。
 * `.env`に含まれた内容はPHPファイルに取り込まれるのでコンパイル後に`.env`を消去可能です。
 
+DIスクリプトの出力先は`{appDir}/var/build/{context}/di`です。ビルドディレクトリにはコンパイルが作ったものだけが入り、リクエストが書くものは入りません。だから読み取り専用で配れます。成果物に同梱されていれば実行時はコンパイルせず読むだけです。
+
+`vendor/bin/bear.compile` は BEAR.Package 1.24 で削除されました。移行手順は [BEAR.Package#482](https://github.com/bearsunday/BEAR.Package/issues/482) を参照してください。
+
+#### 複数コンテキストのコンパイル {#multiple-contexts}
+
 コンテントネゴシエーションを行う場合など（例：api-app, html-app）1つのアプリケーションで複数コンテキストをコンパイルするときは、スクリプト内のループにします。`autoload.php`と`preload.php`は固定パスに書かれ、次のコンパイルで消えるので、その都度 rename します。
 
 ```php
@@ -222,10 +218,6 @@ exit(0);
 
 context ごとにアーカイブにする場合はループが別で、preloadのrenameもしません → [Phar](phar.html)
 
-DIスクリプトの出力先は`{appDir}/var/build/{context}/di`です。ビルドディレクトリにはコンパイルが作ったものだけが入り、リクエストが書くものは入りません。だから読み取り専用で配れます。成果物に同梱されていれば実行時はコンパイルせず読むだけです。
-
-`vendor/bin/bear.compile` は BEAR.Package 1.24 で削除されました。移行手順は [BEAR.Package#482](https://github.com/bearsunday/BEAR.Package/issues/482) を参照してください。
-
 #### compile step {#compile-steps}
 
 モジュールは compile step（`BEAR\Sunday\Compile\CompileStepInterface`）をバインドでき、コンパイルがそれを実行します。step にはビルドディレクトリの下に自分専用の空のディレクトリが渡されます。名前はバインディングのキーで、書いたものは成果物に同梱されます。
@@ -240,7 +232,76 @@ DIスクリプトの出力先は`{appDir}/var/build/{context}/di`です。ビル
 
 bear/sunday 1.9以降が必要です。背景: [BEAR.Package#501](https://github.com/bearsunday/BEAR.Package/pull/501)
 
-#### 読み取り専用デプロイ（サーバーレス、イミュータブルコンテナ） {#writable-paths}
+#### .compile.php {#compile-php}
+
+実環境ではないと生成ができないクラス（例えば認証が成功しないとインジェクトが完了しないResourceObject）がある場合には、コンパイル時にのみ読み込まれるダミークラス読み込みをルートの`.compile.php`に記述することによってコンパイルをすることができます。**目的は「コンパイル時に構築を通す」ことなので、中身は Null オブジェクト（何もしない実装）が基本**です。これは事前コンパイル（実サービスに触れない）だけでなく、**認証などリクエスト時の状態が要るために、デプロイ先でコンパイルしても構築できない**リソースにも当てはまります。値の偽装（`$_SERVER['X'] = 'fake'` など）は最小限にとどめ、ランタイムで本物が要る値には使わないでください（焼き込まれます）。
+
+**注意**: `.compile.php` はCompiler自身が、コンテナを組む前に読み込みます。削除された `vendor/bin/bear.compile` も読み込んでいました。アプリ側で何かする必要はありません。
+
+例) 例えばコンストラクタで認証が得られない場合に例外を出してしまうAuthProviderがあったとしたら以下のように空のクラスを作っておいて、.compile.phpに読み込ませます。
+
+/tests/Null/AuthProvider.php
+```php
+<?php
+class AuthProvider 
+{  // newをするだけのdummyなので実装は不要
+}
+```
+
+.compile.php
+```php
+<?php
+require __DIR__ . '/tests/Null/AuthProvider.php'; // 常に生成可能なNullオブジェクト
+$_SERVER['YOUR_REQUIRED_ENV'] = 'fake'; // 特定の環境変数がないとエラーになる場合
+```
+
+こうする事で例外を避けてコンパイルを行うことができます。他にもSymfonyのキャッシュコンポーネントはコンストラクタでキャッシュエンジンに接続を行うので、コンパイル時にはこのようにダミーのアダプターを読み込むようにしておくと良いでしょう。
+
+tests/Null/RedisAdapter.php
+```php
+namespace Ray\PsrCacheModule;
+
+use Ray\Di\ProviderInterface;
+use Serializable;
+use Symfony\Component\Cache\Adapter\RedisAdapter as OriginAdapter;
+use Symfony\Component\Cache\Marshaller\MarshallerInterface;
+
+class RedisAdapter extends OriginAdapter implements Serializable
+{
+    use SerializableTrait;
+
+    public function __construct(ProviderInterface $redisProvider, string $namespace = '', int $defaultLifetime = 0, ?MarshallerInterface $marshaller = null)
+    {
+        // do nothing
+    }
+}
+```
+
+#### autoload.php {#autoloadphp}
+
+`{project_path}/autoload.php` に最適化された autoload ファイルが出力されます。`composer dump-autoload --optimize` の `vendor/autoload.php` より軽く、**preload を使わない構成**でリクエストごとの autoload コストを下げます。
+
+注意：`preload.php` を使う場合は利用クラスの大半が起動時に読み込まれるので、この `autoload.php` はほぼ不要です（composer の `vendor/autoload.php` で十分）。つまり `autoload.php` は **preload を使えない環境向けのフォールバック**という位置づけです。
+
+#### preload.php {#preloadphp}
+
+`{project_path}/preload.php`に最適化されたpreload.phpファイルが出力されます。preloadを有効にするためにはphp.iniで[opcache.preload](https://www.php.net/manual/ja/opcache.configuration.php#ini.opcache.preload)、[opcache.preload_user](https://www.php.net/manual/ja/opcache.configuration.php#ini.opcache.preload-user)を指定する必要があります。
+
+例）
+```ini
+opcache.preload=/path/to/project/preload.php
+opcache.preload_user=www-data
+```
+
+#### module.dot {#module-dot}
+
+コンパイルをすると"dotファイル"が出力されるので[graphviz](https://graphviz.org/)で画像ファイルに変換するか、[GraphvizOnline](https://dreampuf.github.io/GraphvizOnline/)を利用すればオブジェクトグラフを表示することができます。スケルトンの[オブジェクトグラフ](/images/screen/skeleton.svg)もご覧ください。
+
+```bash
+dot -T svg module.dot > module.svg
+```
+
+### 読み取り専用デプロイ（サーバーレス、イミュータブルコンテナ） {#writable-paths}
 
 サーバーレスやイミュータブルコンテナでは書き込めるディレクトリが制限されることがあります。VercelやAWS Lambda、`docker run --read-only`や`readOnlyRootFilesystem: true`で起動したコンテナでは、プロジェクトのディレクトリは読み取り専用で、書き込めるのは`/tmp`など1つのディレクトリだけです。通常のVPSや共有ホストでは不要です。
 
@@ -305,7 +366,7 @@ $this->install(new ReadOnlyAppModule(logDir: '/var/log/myapp'));
 
 BEAR.Package 1.24以降が必要です。背景: [BEAR.Package#491](https://github.com/bearsunday/BEAR.Package/pull/491)
 
-#### Dockerマルチステージビルド {#docker-multi-stage}
+### Dockerマルチステージビルド {#docker-multi-stage}
 
 コンパイルはビルドの仕事です。Dockerの[マルチステージビルド](https://docs.docker.com/build/building/multi-stage/)を使うと、コンパイルをイメージのビルドに固定できます。
 
@@ -324,96 +385,3 @@ COPY --from=build /app /var/www/app
 起動するイメージにはコンパイル済みのDIスクリプトが入っていて、起動時にすることが残っていません。コールドスタートは成果物を読むだけになり（上記の実測で0.38秒→0.018秒）、スケールアウトで増えるインスタンスはすべて同じ成果物から起動するので、どのコンテナも同じ答えを返します。実行ステージを`docker run --read-only`で起動するなら[書き込み先の宣言](#writable-paths)と合わせます。
 
 これは[コンパイル](#compilation-recommended)の「例外: 事前コンパイルが要る環境」にあたります。接続先やトークンなどランタイムで変わる値は焼き込まず、ランタイム解決にします。
-
-### autoload.php
-
-`{project_path}/autoload.php` に最適化された autoload ファイルが出力されます。`composer dump-autoload --optimize` の `vendor/autoload.php` より軽く、**preload を使わない構成**でリクエストごとの autoload コストを下げます。
-
-注意：`preload.php` を使う場合は利用クラスの大半が起動時に読み込まれるので、この `autoload.php` はほぼ不要です（composer の `vendor/autoload.php` で十分）。つまり `autoload.php` は **preload を使えない環境向けのフォールバック**という位置づけです。
-
-### preload.php
-
-`{project_path}/preload.php`に最適化されたpreload.phpファイルが出力されます。preloadを有効にするためにはphp.iniで[opcache.preload](https://www.php.net/manual/ja/opcache.configuration.php#ini.opcache.preload)、[opcache.preload_user](https://www.php.net/manual/ja/opcache.configuration.php#ini.opcache.preload-user)を指定する必要があります。
-
-PHP 7.4でサポートされた機能ですが、`7.4`初期のバージョンでは不安定です。`7.4.4`以上の最新版を使いましょう。
-
-例）
-```ini
-opcache.preload=/path/to/project/preload.php
-opcache.preload_user=www-data
-```
-
-Note: パフォーマンスベンチマークは[benchmark](https://github.com/bearsunday/BEAR.HelloWorldBenchmark/wiki/Intel-Core-i5-3.8-GHz-iMac-(Retina-5K,-27-inch,-2017)---PHP-7.4.4)を参考にしてください。(2020年）
-
-### .compile.php
-
-実環境ではないと生成ができないクラス（例えば認証が成功しないとインジェクトが完了しないResourceObject）がある場合には、コンパイル時にのみ読み込まれるダミークラス読み込みをルートの`.compile.php`に記述することによってコンパイルをすることができます。**目的は「コンパイル時に構築を通す」ことなので、中身は Null オブジェクト（何もしない実装）が基本**です。これは事前コンパイル（実サービスに触れない）だけでなく、**認証などリクエスト時の状態が要るために、デプロイ先でコンパイルしても構築できない**リソースにも当てはまります。値の偽装（`$_SERVER['X'] = 'fake'` など）は最小限にとどめ、ランタイムで本物が要る値には使わないでください（焼き込まれます）。
-
-**注意**: `.compile.php` はCompiler自身が、コンテナを組む前に読み込みます。削除された `vendor/bin/bear.compile` も読み込んでいました。アプリ側で何かする必要はありません。
-
-.compile.php
-
-例) 例えばコンストラクタで認証が得られない場合に例外を出してしまうAuthProviderがあったとしたら以下のように空のクラスを作っておいて、.compile.phpに読み込ませます。
-
-/tests/Null/AuthProvider.php
-```php
-<?php
-class AuthProvider 
-{  // newをするだけのdummyなので実装は不要
-}
-```
-
-.compile.php
-```php
-<?php
-require __DIR__ . '/tests/Null/AuthProvider.php'; // 常に生成可能なNullオブジェクト
-$_SERVER['YOUR_REQUIRED_ENV'] = 'fake'; // 特定の環境変数がないとエラーになる場合
-```
-
-こうする事で例外を避けてコンパイルを行うことができます。他にもSymfonyのキャッシュコンポーネントはコンストラクタでキャッシュエンジンに接続を行うので、コンパイル時にはこのようにダミーのアダプターを読み込むようにしておくと良いでしょう。
-
-tests/Null/RedisAdapter.php
-```php
-namespace Ray\PsrCacheModule;
-
-use Ray\Di\ProviderInterface;
-use Serializable;
-use Symfony\Component\Cache\Adapter\RedisAdapter as OriginAdapter;
-use Symfony\Component\Cache\Marshaller\MarshallerInterface;
-
-class RedisAdapter extends OriginAdapter implements Serializable
-{
-    use SerializableTrait;
-
-    public function __construct(ProviderInterface $redisProvider, string $namespace = '', int $defaultLifetime = 0, ?MarshallerInterface $marshaller = null)
-    {
-        // do nothing
-    }
-}
-```
-
-### module.dot
-
-コンパイルをすると"dotファイル"が出力されるので[graphviz](https://graphviz.org/)で画像ファイルに変換するか、[GraphvizOnline](https://dreampuf.github.io/GraphvizOnline/)を利用すればオブジェクトグラフを表示することができます。スケルトンの[オブジェクトグラフ](/images/screen/skeleton.svg)もご覧ください。
-
-```bash
-dot -T svg module.dot > module.svg
-```
-
-## ブートストラップのパフォーマンスチューニング
-
-[immutable_cache](https://pecl.php.net/package/immutable_cache)は、不変の値を共有メモリにキャッシュするためのPECLパッケージです。APCuをベースにしていますが、PHPのオブジェクトや配列などの不変の値を共有メモリに保存するため、APCuよりも高速です。また、APCuでもimmutable_cacheでも、PECLの[Igbinary](https://www.php.net/manual/ja/book.igbinary.php)をインストールすることでメモリ使用量が減り、さらなる高速化が期待できます。
-
-現在、専用のキャッシュアダプターなどは用意されていません。[ImmutableBootstrap](https://github.com/koriym/BEAR.Hello/commit/507d1ee3ed514686be2d786cdaae1ba8bed63cc4)を参考に、専用のBootstrapを作成し呼び出してください。初期化コストを最小限に抑え、最大のパフォーマンスを得ることができます。
-
-### php.ini
-```ini
-// エクステンション
-extension="apcu.so"
-extension="immutable_cache.so"
-extension="igbinary.so"
-
-// シリアライザーの指定
-apc.serializer=igbinary
-immutable_cache.serializer=igbinary
-```
