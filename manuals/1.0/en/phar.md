@@ -211,6 +211,6 @@ Everything that used to fail at the deploy fails at the build, with the path in 
 
 An archive that was never compiled stops at boot with `NotCompiledException`: an archive cannot be written to, so the build it lacks cannot be made there.
 
-To run this archive in the browser, see [Wasm](wasm.html).
+To run this archive in the browser, see [Wasm](wasm.html). A working demo is [koriym/wasm-todo](https://github.com/koriym/wasm-todo) ([live page](https://koriym.github.io/wasm-todo/)).
 
 Background: [BEAR.Package#426](https://github.com/bearsunday/BEAR.Package/issues/426).
