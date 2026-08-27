@@ -73,7 +73,7 @@ wasmの仮想ファイルシステムのうち、`/persist`はIndexedDBに同期
 
 ## wasmの制限
 
-MySQLは動きません。ブラウザのwasmにはraw TCPソケットがなく、`mysqli`も`pdo_mysql`も接続できません。ストレージはSQLiteか、PGlite、Cloudflare D1です。
+MySQLは動きません。ブラウザのwasmにはraw TCPソケットがなく、`mysqli`も`pdo_mysql`も接続できません。ストレージはブラウザの中で動くSQLiteかPGlite、あるいはfetchで届くCloudflare D1です。制限はTCPであって、HTTPではありません。
 
 ## デモ
 

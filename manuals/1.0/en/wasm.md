@@ -73,7 +73,7 @@ On the wasm virtual filesystem, `/persist` is the mount synced to IndexedDB: a S
 
 ## Wasm limits
 
-MySQL does not run. Browser wasm has no raw TCP sockets, so neither `mysqli` nor `pdo_mysql` can connect. Storage is SQLite — or PGlite, or Cloudflare D1.
+MySQL does not run. Browser wasm has no raw TCP sockets, so neither `mysqli` nor `pdo_mysql` can connect. Storage is SQLite or PGlite, both running in the browser, or Cloudflare D1, which arrives over fetch. The limit is TCP, not HTTP.
 
 ## Demo
 
