@@ -153,7 +153,7 @@ The artifact has two representative shapes. With a container pipeline, a [Docker
 
 ### On-demand compilation at health check {#health-check-compile}
 
-Ship uncompiled and compile on the deploy target. Its trait: real environment values — paths, environment variables — are used as they are. Run `composer compile` at warm-up / health-check time, or leave it to the first boot — on a writable tree an uncompiled artifact compiles in place with a `Compiled DI scripts on demand` notice. Unpack each release into a fresh directory and route traffic only after the health check passes. Every instance compiles for itself, so artifact identity is weaker than with ahead-of-time compilation.
+Ship uncompiled; the first request on the deploy target compiles. Its trait: real environment values — paths, environment variables — are used as they are. When an uncompiled artifact boots on a writable tree, it compiles in place with a `Compiled DI scripts on demand` notice. Unpack each release into a fresh directory and route traffic only after the health check passes: that first request is the health check, so a failed compile shows up before any traffic does. Every instance compiles for itself, so artifact identity is weaker than with ahead-of-time compilation.
 
 <a id="compilation"></a>
 ### Compilation {#compilation-recommended}
