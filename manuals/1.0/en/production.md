@@ -144,7 +144,7 @@ There are two deployment strategies.
 
 [Compile](#compilation-recommended) at build time and ship the compiled artifact. Its traits: cold-start speed (boot only reads the artifact), scale (every added instance boots from the same artifact), and safety (a DI configuration error stops the build with exit code 1 and never reaches production).
 
-The artifact has two shapes. With a container pipeline, a [Docker multi-stage build](#docker-multi-stage) pins the compile to the image build. Without one, [Phar](phar.html) is this shape as a single file: a deploy is a copy of one file, a rollback is the file before it, and the pack — not CI discipline — enforces the artifact's identity and safety. php-fpm runs a file, not an archive, so the entry point sits next to the archive as a stub.
+The artifact has two representative shapes. With a container pipeline, a [Docker multi-stage build](#docker-multi-stage) pins the compile to the image build. Without one, [Phar](phar.html) is this shape as a single file: a deploy is a copy of one file, a rollback is the file before it, and the pack — not CI discipline — enforces the artifact's identity and safety.
 
 * Gate CI with the compiler's exit code
 * Values that change at runtime (hosts, tokens) are not baked in; resolve them at runtime
