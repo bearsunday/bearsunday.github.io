@@ -249,11 +249,29 @@ class HtmlModule extends AbstractModule
 
 `index.html.twig`の代わりに`Index.mobile.twig`が**存在すれば**優先して使用されます。変更の必要なテンプレートだけを用意することができます。
 
+## ProdModule
+
+プロダクションでは、テンプレートをビルド時にコンパイルするモジュールをProdModuleでインストールします：
+
+```php
+class ProdModule extends AbstractModule
+{
+    protected function configure()
+    {
+        $this->install(new TwigProdModule);
+    }
+}
+```
+
+テンプレートは[コンパイル](production.html#compile-steps)が`var/build/{context}/twig`に書き、プロダクションはそこから読み取り専用で配信します。コンパイル前に起動すると`Exception\TemplateNotCompiled`で止まります。
+
+Madapaja.TwigModule 2.8以降とBEAR.Package 1.24以降が必要です。
+
 ## カスタム設定
 
 コンテキストに応じてオプション等を設定したり、テンプレートのパスを追加する場合は`@TwigPaths`と`@TwigOptions`に設定値を束縛します。
 
-注）キャッシュを常に`var/tmp`フォルダに生成するので、特にプロダクション用の設定などは必要ありません。
+注）`TwigProdModule`を使わない場合、キャッシュは`var/tmp`フォルダに生成されます。`TwigOptions`を自分で束縛したアプリケーションは、自分のキャッシュ管理を続けることになります。
 
 ```php
 namespace MyVendor\MyPackage\Module;

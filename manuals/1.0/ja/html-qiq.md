@@ -76,7 +76,7 @@ composer.jsonの`autoload`に`Qiq\Helper`を指定し（例: [composer.json](htt
 
 ## ProdModule
 
-プロダクション用にエラーページをHTMLにし、コンパイラキャッシュを有効にするためのモジュールをProdModuleでインストールします：
+プロダクション用にエラーページをHTMLにし、テンプレートをビルド時にコンパイルするモジュールをProdModuleでインストールします：
 
 ```php
 class ProdModule extends AbstractModule
@@ -84,7 +84,13 @@ class ProdModule extends AbstractModule
     protected function configure()
     {
         $this->install(new QiqErrorModule);
-        $this->install(new QiqProdModule($this->appMeta->appDir . '/var/tmp'));
+        $this->install(new QiqProdModule);
     }
 }
 ```
+
+テンプレートは[コンパイル](production.html#compile-steps)が`var/build/{context}/qiq`に書き、プロダクションはそこから読み取り専用で配信します。コンパイル前に起動すると`TemplateNotCompiledException`で止まります。
+
+キャッシュパスを渡す従来の形（`new QiqProdModule($cachePath)`）はそのまま動き、配信時にそのパスへコンパイルします。deprecatedです。
+
+引数なしの形はBEAR.QiqModule 2.1以降とBEAR.Package 1.24以降が必要です。
