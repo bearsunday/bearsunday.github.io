@@ -14,7 +14,7 @@ permalink: /manuals/1.0/ja/wasm.html
                      (wasm/sw.js)       └─ pdo_sqlite
 ```
 
-リソースはHTMLを返し、`_links`は`<a>`と`<form>`になります。状態はSQLite（`pdo_sqlite`）に書かれ、ブラウザのIndexedDBが保持します。書くのはPHPだけで、アプリケーションのJavaScriptはありません。
+リソースはHTMLを返し、`_links`は`<a>`と`<form>`になります。状態はSQLite（`pdo_sqlite`）に書かれ、ブラウザのIndexedDBが保持します。
 
 動くデモは[koriym/wasm-todo](https://github.com/koriym/wasm-todo)（[公開ページ](https://koriym.github.io/wasm-todo/)）です。
 
@@ -49,6 +49,8 @@ const php = new PhpCgiWebBase(
 
 self.addEventListener('fetch', event => php.handleFetchEvent(event));
 ```
+
+JavaScriptはこれだけです。
 
 `phar`と`sqlite`の拡張はphp-cgi-wasmの既定ビルドに入っていません。`php-wasm-phar`と`php-wasm-sqlite`を`sharedLibs`で渡します。
 

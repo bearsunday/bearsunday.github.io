@@ -14,7 +14,7 @@ browser ──fetch──> service worker ──> php-cgi-wasm ──> app.phar 
                     (wasm/sw.js)       └─ pdo_sqlite
 ```
 
-Resources return HTML, and `_links` become `<a>` and `<form>`. State goes to SQLite (`pdo_sqlite`), held by the browser's IndexedDB. Everything written is PHP: there is no application JavaScript.
+Resources return HTML, and `_links` become `<a>` and `<form>`. State goes to SQLite (`pdo_sqlite`), held by the browser's IndexedDB.
 
 A working demo is [koriym/wasm-todo](https://github.com/koriym/wasm-todo) ([live page](https://koriym.github.io/wasm-todo/)).
 
@@ -49,6 +49,8 @@ const php = new PhpCgiWebBase(
 
 self.addEventListener('fetch', event => php.handleFetchEvent(event));
 ```
+
+This is all the JavaScript there is.
 
 The `phar` and `sqlite` extensions are not in php-cgi-wasm's default build; `php-wasm-phar` and `php-wasm-sqlite` hand them to `sharedLibs`.
 
