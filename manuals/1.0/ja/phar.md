@@ -211,4 +211,6 @@ $this->install(new ReadOnlyAppModule());
 
 コンパイルされていないアーカイブを起動すると`NotCompiledException`で止まります。アーカイブは書き込めないので、そこでコンパイルすることはできません。
 
+このアーカイブをブラウザの中で動かすには[Wasm](wasm.html)を参照してください。
+
 背景: [BEAR.Package#426](https://github.com/bearsunday/BEAR.Package/issues/426)
