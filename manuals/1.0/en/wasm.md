@@ -46,7 +46,12 @@ import sqlite from 'php-wasm-sqlite';
 
 const php = new PhpCgiWebBase(
     Promise.resolve({ default: Php85CgiWorker }),
-    { version: '8.5', sharedLibs: [phar, sqlite], env: { CONTEXT: 'prod-html-app' } }
+    {
+        version: '8.5',
+        sharedLibs: [phar, sqlite],
+        files: [{ parent: '/', name: 'index.php', url: 'app.phar' }],
+        env: { CONTEXT: 'prod-html-app' },
+    }
 );
 
 self.addEventListener('fetch', event => php.handleFetchEvent(event));
