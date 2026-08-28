@@ -36,6 +36,8 @@ Packing cannot happen inside wasm: `Compiler::phar()` uses a subprocess with `ph
 
 `index.html` registers the service worker. The worker places `app.phar` on the wasm virtual filesystem and routes every request through PHP.
 
+Browsers discard service workers. A restarted worker has an empty filesystem. Use the runtime's `files:` preload to place `/index.php` again on every start.
+
 ```javascript
 import { PhpCgiWebBase } from 'php-cgi-wasm/PhpCgiWebBase.mjs';
 import Php85CgiWorker from 'php-cgi-wasm/php8.5-cgi-worker.mjs';

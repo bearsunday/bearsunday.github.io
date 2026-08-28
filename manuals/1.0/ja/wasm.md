@@ -36,6 +36,8 @@ wasmの中でパックはできません。`Compiler::phar()`は`phar.readonly=0
 
 `index.html`がservice workerを登録します。workerは`app.phar`をwasmの仮想ファイルシステムに置き、すべてのリクエストをPHPに渡します。
 
+ブラウザはservice workerを使い捨てます。killされて再起動したときのファイルシステムは空です。ライブラリの`files:`プリロードを使い、起動のたびに`/index.php`に入れ直します。
+
 ```javascript
 import { PhpCgiWebBase } from 'php-cgi-wasm/PhpCgiWebBase.mjs';
 import Php85CgiWorker from 'php-cgi-wasm/php8.5-cgi-worker.mjs';
