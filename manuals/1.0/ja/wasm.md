@@ -65,7 +65,7 @@ npx serve dist            # 任意の静的サーバー
 
 ## サブパス
 
-GitHub Pagesは`https://{user}.github.io/{repo}/`のようにサブパスで配信します。workerは自身のURLから`basePath`を導出し、エントリポイントが`BASE_PATH`を剥がしてからルーティングします。リソースが返すリンクは相対なので、どのサブパスでも正しいままです。
+GitHub Pagesは`https://{user}.github.io/{repo}/`のようにサブパスで配信します。workerは自身のURLから`basePath`を導出し、エントリポイントが`BASE_PATH`を剥がしてからルーティングします。リソースが返すリンクは相対なので、どのサブパスでも正しいままです。303の`Location`も相対で、要求URLを基準に解決されます。だからルートはすべて同じ深さに置きます。静的ホストにはアプリのルートに対応するファイルがないので、`404.html`が同じブートストラップを返し、ディープリンクの初回訪問もworkerに引き継がれます。
 
 ## 永続化
 
@@ -77,4 +77,4 @@ MySQLは動きません。ブラウザのwasmにはraw TCPソケットがなく�
 
 ## デモ
 
-[koriym/wasm-todo](https://github.com/koriym/wasm-todo)は、リソース4つ（`Todos`/`Todo`と、遷移の`todo/toggle`/`todo/delete`）、Qiqのテンプレート、`TodoRepository`、service worker、ビルドスクリプトの構成です。ページリソースが実装するのは`onGet`と`onPost`だけで、状態を変える遷移はそれぞれリソースになっています。だからフォームはPOSTだけで足ります。GitHub Actionsがpharをビルドし、esbuildでバンドルし、GitHub Pagesが配信します。
+[koriym/wasm-todo](https://github.com/koriym/wasm-todo)は、リソース4つ（`Todos`/`Todo`と、遷移の`todo-toggle`/`todo-delete`）、Qiqのテンプレート、`TodoRepository`、service worker、ビルドスクリプトの構成です。ページリソースが実装するのは`onGet`と`onPost`だけで、状態を変える遷移はそれぞれリソースになっています。だからフォームはPOSTだけで足ります。GitHub Actionsがpharをビルドし、esbuildでバンドルし、GitHub Pagesが配信します。

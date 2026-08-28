@@ -65,7 +65,7 @@ npx serve dist            # any static server
 
 ## Subpath
 
-GitHub Pages serves under a subpath such as `https://{user}.github.io/{repo}/`. The worker derives its `basePath` from its own URL, and the entry point strips `BASE_PATH` before routing. Resources return relative links, so links stay correct under any subpath.
+GitHub Pages serves under a subpath such as `https://{user}.github.io/{repo}/`. The worker derives its `basePath` from its own URL, and the entry point strips `BASE_PATH` before routing. Resources return relative links, so links stay correct under any subpath. A 303 `Location` is relative too and resolves against the request URL, so every route sits at the same depth. A static host has no file for an app route, so `404.html` answers with the same bootstrap and the first visit to a deep link is handed to the worker.
 
 ## Persistence
 
@@ -77,4 +77,4 @@ MySQL does not run. Browser wasm has no raw TCP sockets, so neither `mysqli` nor
 
 ## Demo
 
-[koriym/wasm-todo](https://github.com/koriym/wasm-todo) is four resources (`Todos`/`Todo`, plus `todo/toggle`/`todo/delete` for the transitions), Qiq templates, a `TodoRepository`, a service worker and a build script. The page resources implement `onGet` and `onPost` only, and a transition that changes state is a resource of its own, so a form never needs more than POST. GitHub Actions builds the phar, esbuild bundles it, and GitHub Pages serves it.
+[koriym/wasm-todo](https://github.com/koriym/wasm-todo) is four resources (`Todos`/`Todo`, plus `todo-toggle`/`todo-delete` for the transitions), Qiq templates, a `TodoRepository`, a service worker and a build script. The page resources implement `onGet` and `onPost` only, and a transition that changes state is a resource of its own, so a form never needs more than POST. GitHub Actions builds the phar, esbuild bundles it, and GitHub Pages serves it.
