@@ -11,14 +11,14 @@ permalink: /manuals/1.0/en/version.html
 
 [![Continuous Integration](https://github.com/bearsunday/BEAR.SupportedVersions/actions/workflows/continuous-integration.yml/badge.svg)](https://github.com/bearsunday/BEAR.SupportedVersions/actions/workflows/continuous-integration.yml)
 
-BEAR.Sunday supports the following supported PHP versions
+BEAR.Sunday supports PHP versions in line with PHP's official [Supported Versions](https://www.php.net/supported-versions.php). Please refer to the official site for the latest support status.
 
-* `8.1` (Old stable 25 Nov 2021 - 31 Dec 2025)
 * `8.2` (Old stable 8 Dec 2022 - 31 Dec 2026)
 * `8.3` (Old stable 23 Nov 2023 - 31 Dec 2027)
-* `8.4` (Current stable 21 Nov 2024 - 31 Dec 2028)
+* `8.4` (Old stable 21 Nov 2024 - 31 Dec 2028)
+* `8.5` (Current stable 20 Nov 2025 - 31 Dec 2029)
 
-* End of life ([EOL](http://php.net/eol.php))
+* End of life ([EOL](https://www.php.net/eol.php))
 
 * `5.5` (21 Jul 2016)
 * `5.6` (31 Dec 2018)
@@ -28,6 +28,7 @@ BEAR.Sunday supports the following supported PHP versions
 * `7.3` (6 Dec 2021)
 * `7.4` (28 Nov 2022)
 * `8.0` (26 Nov 2023)
+* `8.1` (31 Dec 2025)
 
 The new optional package will be developed based on the current stable PHP. We encourage you to use the current stable PHP for quality, performance and security.
 

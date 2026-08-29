@@ -33,7 +33,7 @@ php bin/page.php get '/todos?id=1' # Webアクセス（pageリソース）
 ```
 
 ```bash
-php -S 127.0.0.1 bin/app.php # PHPサーバー
+php -S 127.0.0.1:8080 bin/app.php # PHPサーバー
 ```
 
 コンテキストが変わるとアプリケーションの振る舞いが変わります。
