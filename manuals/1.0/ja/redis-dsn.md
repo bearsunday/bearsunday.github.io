@@ -38,40 +38,41 @@ DSN は、IP/ホスト（およびオプションのポート）またはソケ�
 
 以下は、利用可能な値の組み合わせを示す一般的な DSN の例です:
 
-```text
+```php
+use Symfony\Component\Cache\Adapter\RedisAdapter;
 
 // ホスト "my.server.com" とポート "6379"
-'redis://my.server.com:6379'
+RedisAdapter::createConnection('redis://my.server.com:6379');
 
 // ホスト "my.server.com"、ポート "6379"、データベースインデックス "20"
-'redis://my.server.com:6379/20'
+RedisAdapter::createConnection('redis://my.server.com:6379/20');
 
 // ホスト "localhost"、認証 "abcdef"、タイムアウト 5 秒
-'redis://abcdef@localhost?timeout=5'
+RedisAdapter::createConnection('redis://abcdef@localhost?timeout=5');
 
 // ソケット "/var/run/redis.sock" と認証 "bad-pass"
-'redis://bad-pass@/var/run/redis.sock'
+RedisAdapter::createConnection('redis://bad-pass@/var/run/redis.sock');
 
 // ホスト "redis1"（Docker コンテナ）、代替 DSN 構文を使用し、データベースインデックス "3" を選択
-'redis:?host[redis1:6379]&dbindex=3'
+RedisAdapter::createConnection('redis:?host[redis1:6379]&dbindex=3');
 
 // 代替 DSN 構文を使用した認証情報の提供
-'redis:default:verysecurepassword@?host[redis1:6379]&dbindex=3'
+RedisAdapter::createConnection('redis:default:verysecurepassword@?host[redis1:6379]&dbindex=3');
 
 // 単一の DSN で複数のサーバーを定義することもできます
-'redis:?host[localhost]&host[localhost:6379]&host[/var/run/redis.sock:]&auth=my-password&redis_cluster=1'
+RedisAdapter::createConnection('redis:?host[localhost]&host[localhost:6379]&host[/var/run/redis.sock:]&auth=my-password&redis_cluster=1');
 ```
 
 Redis の高可用性を提供する Redis Sentinel は、PHP Redis 拡張機能 v5.2+ または Predis ライブラリを使用する場合にサポートされています。サービスグループの名前を設定するには、`redis_sentinel` パラメータを使用します:
 
-```text
-'redis:?host[redis1:26379]&host[redis2:26379]&host[redis3:26379]&redis_sentinel=mymaster'
+```php
+RedisAdapter::createConnection('redis:?host[redis1:26379]&host[redis2:26379]&host[redis3:26379]&redis_sentinel=mymaster');
 
 // 認証情報の提供
-'redis:default:verysecurepassword@?host[redis1:26379]&host[redis2:26379]&host[redis3:26379]&redis_sentinel=mymaster'
+RedisAdapter::createConnection('redis:default:verysecurepassword@?host[redis1:26379]&host[redis2:26379]&host[redis3:26379]&redis_sentinel=mymaster');
 
 // 認証情報の提供とデータベースインデックス "3" の選択
-'redis:default:verysecurepassword@?host[redis1:26379]&host[redis2:26379]&host[redis3:26379]&redis_sentinel=mymaster&dbindex=3'
+RedisAdapter::createConnection('redis:default:verysecurepassword@?host[redis1:26379]&host[redis2:26379]&host[redis3:26379]&redis_sentinel=mymaster&dbindex=3');
 ```
 
 > 注意:

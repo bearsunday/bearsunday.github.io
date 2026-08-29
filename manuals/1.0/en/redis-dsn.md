@@ -38,40 +38,41 @@ A DSN can specify either an IP/host (and an optional port) or a socket path, as 
 
 Below are common examples of valid DSNs showing a combination of available values:
 
-```text
+```php
+use Symfony\Component\Cache\Adapter\RedisAdapter;
 
 // host "my.server.com" and port "6379"
-'redis://my.server.com:6379'
+RedisAdapter::createConnection('redis://my.server.com:6379');
 
 // host "my.server.com", port "6379", and database index "20"
-'redis://my.server.com:6379/20'
+RedisAdapter::createConnection('redis://my.server.com:6379/20');
 
 // host "localhost", auth "abcdef", and a timeout of 5 seconds
-'redis://abcdef@localhost?timeout=5'
+RedisAdapter::createConnection('redis://abcdef@localhost?timeout=5');
 
 // socket "/var/run/redis.sock" and auth "bad-pass"
-'redis://bad-pass@/var/run/redis.sock'
+RedisAdapter::createConnection('redis://bad-pass@/var/run/redis.sock');
 
 // host "redis1" (Docker container), using the alternate DSN syntax and selecting database index "3"
-'redis:?host[redis1:6379]&dbindex=3'
+RedisAdapter::createConnection('redis:?host[redis1:6379]&dbindex=3');
 
 // providing credentials with the alternate DSN syntax
-'redis:default:verysecurepassword@?host[redis1:6379]&dbindex=3'
+RedisAdapter::createConnection('redis:default:verysecurepassword@?host[redis1:6379]&dbindex=3');
 
 // a single DSN can also define multiple servers
-'redis:?host[localhost]&host[localhost:6379]&host[/var/run/redis.sock:]&auth=my-password&redis_cluster=1'
+RedisAdapter::createConnection('redis:?host[localhost]&host[localhost:6379]&host[/var/run/redis.sock:]&auth=my-password&redis_cluster=1');
 ```
 
 Redis Sentinel, which provides high availability for Redis, is supported when using the PHP Redis extension v5.2+ or the Predis library. Use the `redis_sentinel` parameter to set the name of your service group:
 
-```text
-'redis:?host[redis1:26379]&host[redis2:26379]&host[redis3:26379]&redis_sentinel=mymaster'
+```php
+RedisAdapter::createConnection('redis:?host[redis1:26379]&host[redis2:26379]&host[redis3:26379]&redis_sentinel=mymaster');
 
 // providing credentials
-'redis:default:verysecurepassword@?host[redis1:26379]&host[redis2:26379]&host[redis3:26379]&redis_sentinel=mymaster'
+RedisAdapter::createConnection('redis:default:verysecurepassword@?host[redis1:26379]&host[redis2:26379]&host[redis3:26379]&redis_sentinel=mymaster');
 
 // providing credentials and selecting database index "3"
-'redis:default:verysecurepassword@?host[redis1:26379]&host[redis2:26379]&host[redis3:26379]&redis_sentinel=mymaster&dbindex=3'
+RedisAdapter::createConnection('redis:default:verysecurepassword@?host[redis1:26379]&host[redis2:26379]&host[redis3:26379]&redis_sentinel=mymaster&dbindex=3');
 ```
 
 > Note:
