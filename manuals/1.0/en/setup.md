@@ -177,6 +177,10 @@ docker-compose stop
 docker-compose down -v
 ```
 
+### PhpStorm Debugging
+
+The BEAR.Skeleton Docker development environment is prepared for PhpStorm and Xdebug. See [PhpStorm + Xdebug](/manuals/1.0/en/phpstorm-xdebug.html) for interpreter, server, path mapping, and breakpoint setup.
+
 ### Database Connection
 
 ```bash
