@@ -175,6 +175,10 @@ docker-compose stop
 docker-compose down -v
 ```
 
+### PhpStorm デバッグ
+
+BEAR.Skeleton の Docker 開発環境は PhpStorm と Xdebug でデバッグできるように構成されています。interpreter、server、パスマッピング、breakpoint の設定は [PhpStorm と Xdebug](/manuals/1.0/ja/phpstorm-xdebug.html) を参照してください。
+
 ### データベース接続
 
 ```bash
