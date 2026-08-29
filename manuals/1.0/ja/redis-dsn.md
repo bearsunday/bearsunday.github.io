@@ -2,7 +2,7 @@
 layout: docs-ja
 title: Redis キャッシュアダプター
 category: Manual
-permalink: /manuals/1.0/ja/186.redis-dsn.html
+permalink: /manuals/1.0/ja/redis-dsn.html
 ---
 # Redis キャッシュアダプター
 
@@ -13,9 +13,9 @@ Redisアダプターは、1つ（または複数）の Redis サーバーイン�
 APCu アダプターとは異なり、そして Memcached アダプターと同様に、現在のサーバーの共有メモリに制限されません。PHP 環境に依存せずにコンテンツを保存できます。冗長性やフェイルオーバーを提供するサーバークラスターを利用する機能も利用可能です。
 
 > 注意:
-> 要件: このアダプターを使用するには、少なくとも1つの Redis サーバーがインストールされ、実行されている必要があります。さらに、このアダプターには `\Redis`、`\RedisArray`、`RedisCluster`、`\Relay\Relay`、または `\Predis` を実装する互換性のある拡張機能またはライブラリが必要です。
+> 要件: このアダプターを使用するには、少なくとも1つの Redis サーバーがインストールされ、実行されている必要があります。さらに、このアダプターには `\Redis`、`\RedisArray`、`RedisCluster`、`\Relay\Relay`、`\Relay\Cluster`、または `\Predis` を実装する互換性のある拡張機能またはライブラリが必要です。
 
-このアダプターは、最初のパラメータとして `Redis`、`RedisArray`、`RedisCluster`、`Relay`、または `Predis` インスタンスを渡すことを期待します。名前空間とデフォルトのキャッシュ有効期間は、オプションで2番目と3番目のパラメータとして渡すことができます:
+このアダプターは、最初のパラメータとして `Redis`、`RedisArray`、`RedisCluster`、`Relay`、`Relay\Cluster`、または `Predis` インスタンスを渡すことを期待します。名前空間とデフォルトのキャッシュ有効期間は、オプションで2番目と3番目のパラメータとして渡すことができます:
 
 ## 接続の設定
 
@@ -39,39 +39,40 @@ DSN は、IP/ホスト（およびオプションのポート）またはソケ�
 以下は、利用可能な値の組み合わせを示す一般的な DSN の例です:
 
 ```php
+use Symfony\Component\Cache\Adapter\RedisAdapter;
 
 // ホスト "my.server.com" とポート "6379"
-'redis://my.server.com:6379'
+RedisAdapter::createConnection('redis://my.server.com:6379');
 
 // ホスト "my.server.com"、ポート "6379"、データベースインデックス "20"
-'redis://my.server.com:6379/20'
+RedisAdapter::createConnection('redis://my.server.com:6379/20');
 
 // ホスト "localhost"、認証 "abcdef"、タイムアウト 5 秒
-'redis://abcdef@localhost?timeout=5'
+RedisAdapter::createConnection('redis://abcdef@localhost?timeout=5');
 
 // ソケット "/var/run/redis.sock" と認証 "bad-pass"
-'redis://bad-pass@/var/run/redis.sock'
+RedisAdapter::createConnection('redis://bad-pass@/var/run/redis.sock');
 
 // ホスト "redis1"（Docker コンテナ）、代替 DSN 構文を使用し、データベースインデックス "3" を選択
-'redis:?host[redis1:6379]&dbindex=3'
+RedisAdapter::createConnection('redis:?host[redis1:6379]&dbindex=3');
 
 // 代替 DSN 構文を使用した認証情報の提供
-'redis:default:verysecurepassword@?host[redis1:6379]&dbindex=3'
+RedisAdapter::createConnection('redis:default:verysecurepassword@?host[redis1:6379]&dbindex=3');
 
 // 単一の DSN で複数のサーバーを定義することもできます
-'redis:?host[localhost]&host[localhost:6379]&host[/var/run/redis.sock:]&auth=my-password&redis_cluster=1'
+RedisAdapter::createConnection('redis:?host[localhost]&host[localhost:6379]&host[/var/run/redis.sock:]&auth=my-password&redis_cluster=1');
 ```
 
 Redis の高可用性を提供する Redis Sentinel は、PHP Redis 拡張機能 v5.2+ または Predis ライブラリを使用する場合にサポートされています。サービスグループの名前を設定するには、`redis_sentinel` パラメータを使用します:
 
 ```php
-'redis:?host[redis1:26379]&host[redis2:26379]&host[redis3:26379]&redis_sentinel=mymaster'
+RedisAdapter::createConnection('redis:?host[redis1:26379]&host[redis2:26379]&host[redis3:26379]&redis_sentinel=mymaster');
 
 // 認証情報の提供
-'redis:default:verysecurepassword@?host[redis1:26379]&host[redis2:26379]&host[redis3:26379]&redis_sentinel=mymaster'
+RedisAdapter::createConnection('redis:default:verysecurepassword@?host[redis1:26379]&host[redis2:26379]&host[redis3:26379]&redis_sentinel=mymaster');
 
 // 認証情報の提供とデータベースインデックス "3" の選択
-'redis:default:verysecurepassword@?host[redis1:26379]&host[redis2:26379]&host[redis3:26379]&redis_sentinel=mymaster&dbindex=3'
+RedisAdapter::createConnection('redis:default:verysecurepassword@?host[redis1:26379]&host[redis2:26379]&host[redis3:26379]&redis_sentinel=mymaster&dbindex=3');
 ```
 
 > 注意:

@@ -7,20 +7,17 @@ permalink: /manuals/1.0/ja/resource.html
 
 # リソース
 
-BEAR.SundayアプリケーションはRESTfulなリソースの集合です。
+BEAR.SundayアプリケーションはRESTfulなリソースの集合です。アプリケーションが扱う情報や機能のひとつひとつが、Webページと同じようにURIを持つ「リソース」として表されます。
+
+すべてのリソースはGETやPOSTといったHTTPと共通の**統一インターフェイス**でアクセスされます。インターフェイスが統一されているので、同じリソースがWebからも、コンソールからも、他のリソースからのインプロセス呼び出しからも、同じ形で利用できます。アクセス方法ごとに別のコントローラーや入り口を用意する必要はなく、リソースの意味はHTTPの知識だけで理解できます。
 
 ## サービスとしてのオブジェクト
 
-`ResourceObject`はHTTPのメソッドがPHPのメソッドにマップされたリソースの**サービスのためのオブジェクト**（Object-as-a-service）です。ステートレスリクエストから、リソースの状態がリソース表現として生成され、クライアントに転送されます。（[Representational State Transfer](http://ja.wikipedia.org/wiki/REST)）
-
-以下は、ResourceObjectの例です。
+リソースをPHPで表したものが`ResourceObject`です。HTTPのメソッドがPHPのメソッドにマップされた、リソースの**サービスのためのオブジェクト**（Object-as-a-service）です。
 
 ```php
 class Index extends ResourceObject
 {
-    public $code = 200;
-    public $headers = [];
-
     public function onGet(int $a, int $b): static
     {
         $this->body = [
@@ -32,13 +29,17 @@ class Index extends ResourceObject
 }
 ```
 
+リソースクラスはWebのURIと同じような`page://self/index`などのURIを持ち、HTTPのメソッドに準じた`onGet`、`onPost`などのonメソッドを持ちます。onメソッドは与えられたパラメーターから自身のリソース状態（`code`、`headers`、`body`）を決定し、`$this`を返します。ステートレスリクエストから、リソースの状態がリソース表現として生成され、クライアントに転送されます。（[Representational State Transfer](http://ja.wikipedia.org/wiki/REST)）
+
+`code`と`headers`には既定値（`200`と空のヘッダー）があるので、上の例では`body`だけを決定しています。既定値と異なるレスポンスを返す時にだけ上書きします。
+
 ```php
 class Todo extends ResourceObject
 {
     public function onPost(string $id, string $todo): static
     {
-        $this->code = 201; // ステータスコード
-        $this->headers = [ // ヘッダー
+        $this->code = 201; // 既定の200を上書き
+        $this->headers = [
             'Location' => '/todo/new_id'
         ];
 
@@ -47,7 +48,18 @@ class Todo extends ResourceObject
 }
 ```
 
-PHPのリソースクラスはWebのURIと同じような`page://self/index`などのURIを持ち、HTTPのメソッドに準じた`onGet`、`onPost`などのonメソッドを持ちます。onメソッドで与えられたパラメーターから自身のリソース状態`code`、`headers`、`body`を決定し、`$this`を返します。
+## pageリソースとappリソース
+
+リソースは役割によって2つのスキームに分かれます。
+
+| スキーム | 役割 |
+|--------|------|
+| page | 外部に公開されるパブリックなリソース |
+| app | 外部から直接アクセスできないプライベートなリソース |
+
+Webやコンソールなどの外部からリクエストを受け取ったpageリソースは、appリソースをリクエストして自身のリソース状態を決定します。アプリケーションが「何をするか」というドメインの情報や機能はappリソースが、それを「どう見せるか」はpageリソースが受け持ち、関心が分離されます。
+
+この分離のご利益はコンテキストを変える時に現れます。例えばHTMLアプリケーションではpageリソースがHTMLを出力し、appリソースはプライベートのままです。同じアプリケーションをモバイルアプリケーションのバックエンドにする時は、コンテキストの変更でappリソースをAPIとして外部公開しJSONを出力できます。リソースのコードはそのままに、公開範囲と表現だけが変わります。
 
 ## URI
 
@@ -61,57 +73,22 @@ URIはPHPのクラスにマップされています。アプリケーション�
 
 * indexは省略可能です。
 
-### スキーマ
-
-`page`は外部公開するパブリックなリソース、`app`は外部からアクセスのできないプライベートなリソースです。Webやコンソールなどの外部からのリソースリクエストを受け取ったpageリソースは、appリソースをリクエストしてリソース状態を決定します。[^context]
-
-[^context]: コンテキストを変えると、プライベートなappリソースを外部公開することもできます。例えばHTMLアプリケーションでpageリソースがHTMLを出力し（この時appリソースはプライベート）、モバイルアプリケーションではappリソースがAPIとして公開しJSONを出力することができます。
-
 ## メソッド
 
-リソースはHTTPのメソッドに対応した6つのメソッドでアクセスすることができます。[^method]
+リソースはHTTPのメソッドに対応した6つのメソッドでアクセスすることができます。メソッドはCRUDとのマッピングではなく、リソース状態を変えない**安全**なものか、同じリクエストを繰り返しても結果が変わらない**冪等**なものかという特性で区別されます。
 
-[^method]: RESTのメソッドはCRUDとのマッピングではありません。リソース状態を変えない安全なものか、冪等性があるかなどで分けられます。
-
-### GET
-
-特定のリソースの表現をリクエストします。このメソッドはリソースの状態を変更することのない安全なメソッドです。
-
-### POST
-
-POSTメソッドは、リクエストに含まれる表現の処理を要求します。例えば、対象のURIに新しいリソースを追加することや、既存のリソースに表現を追加することなどです。PUTと違ってリクエストには冪等性がなく、連続した複数回の実行は同じ結果になりません。
-
-### PUT
-
-リクエストしたURIでリソースをリクエストのペイロードで置き換えます。対象のリソースが存在しない場合には作成します。
-POSTと違って冪等性があります。
-
-### DELETE
-
-特定のリソースを削除します。冪等性があります。
-
-### PATCH
-
-リソースを部分的に変更します。冪等性は保証されません。[^patch]
+| メソッド | 意味 | [安全性](https://developer.mozilla.org/ja/docs/Glossary/safe) | [冪等性](https://developer.mozilla.org/ja/docs/Glossary/Idempotent) | [キャッシュ](https://developer.mozilla.org/ja/docs/Glossary/cacheable) |
+|-|-|-|-|-|
+| GET | リソースの表現の取得 | あり | あり | 可能 |
+| POST | リクエストに含まれる表現の処理（新しいリソースの追加など） | なし | なし | 不可 |
+| PUT | ペイロードによるリソースの置き換え、なければ作成 | なし | あり | 不可 |
+| PATCH | リソースの部分的な変更 [^patch] | なし | なし | 不可 |
+| DELETE | リソースの削除 | なし | あり | 不可 |
+| OPTIONS | リクエストに必要なパラメーターとレスポンスに関する情報の取得 [^json-schema] | あり | あり | 不可 |
 
 [^patch]: [https://www.rfc-editor.org/rfc/rfc5789](https://www.rfc-editor.org/rfc/rfc5789)
 
-### OPTIONS
-
-リソースのリクエストに必要なパラメーターとレスポンスに関する情報を取得します。GETと同じように安全です。[^json-schema]
-
 [^json-schema]: レスポンスの情報取得にはJsonSchemaの指定が必要です。
-
-#### メソッドの特性一覧
-
-| メソッド | [安全性](https://developer.mozilla.org/ja/docs/Glossary/safe) | [冪等性](https://developer.mozilla.org/ja/docs/Glossary/Idempotent) | [キャッシュ](https://developer.mozilla.org/ja/docs/Glossary/cacheable) |
-|-|-|-|-|
-| GET | あり | あり | 可能 |
-| POST | なし | なし | 不可 |
-| PUT | なし | あり | 不可 |
-| PATCH | なし | なし | 不可 |
-| DELETE | なし | あり | 不可 |
-| OPTIONS | あり | あり | 不可 |
 
 ## パラメーター
 
@@ -123,12 +100,15 @@ class Index extends ResourceObject
     // $_GET['id']が$idに
     public function onGet(int $id): static
     {
+        return $this;
     }
 
     // $_POST['name']が$nameに
     public function onPost(string $name): static
     {
+        return $this;
     }
+}
 ```
 
 その他のメソッドや、Cookieなどの外部変数をパラメーターに渡す方法は[リソースパラメーター](resource_param.html)をご覧ください。
@@ -139,10 +119,10 @@ ResourceObjectのリクエストメソッドではリソースの表現につい
 
 ## クライアント
 
-リソースクライアントを使用して他のリソースをリクエストします。以下のリクエストは`app://self/blog/posts`リソースに`?id=1`というクエリーでリクエストを実行します。
+インジェクトされたリソースクライアントを使って他のリソースをリクエストします。以下のリクエストは`app://self/blog/posts`リソースに`?id=1`というクエリーでリクエストを実行します。
 
 ```php
-use BEAR\Sunday\Inject\ResourceInject;
+use BEAR\Resource\ResourceInterface;
 
 class Index extends ResourceObject
 {
@@ -155,24 +135,19 @@ class Index extends ResourceObject
         $this->body = [
             'posts' => $this->resource->get('app://self/blog/posts', ['id' => 1])
         ];
+
+        return $this;
     }
 }
 ```
 
-この他にも以下の歴史的表記があります。
+このリクエストはすぐに実行される`eager`リクエストです。[^history]
 
-```php
-// PHP 5.x and up
-$posts = $this->resource->get->uri('app://self/posts')->withQuery(['id' => 1])->eager->request();
-// PHP 7.x and up
-$posts = $this->resource->get->uri('app://self/posts')(['id' => 1]);
-// getは省略可
-$posts = $this->resource->uri('app://self/posts')(['id' => 1]);
-```
+[^history]: 以前のバージョンで使われていた`$this->resource->get->uri('app://self/posts')->withQuery(['id' => 1])->eager->request();`（PHP 5.x以降）、`$this->resource->get->uri('app://self/posts')(['id' => 1]);`（PHP 7.x以降）などの歴史的表記も引き続き有効です。
 
 ## 遅延評価
 
-これまでの例はリクエストをすぐに行う`eager`リクエストですが、リクエスト結果ではなくリクエストを生成し、実行を遅延することもできます。
+リクエスト結果ではなくリクエストそのものを生成して、実行を遅延することもできます。
 
 ```php
 $request = $this->resource->get->uri('app://self/posts')->withQuery(['id' => 1]); // callable
