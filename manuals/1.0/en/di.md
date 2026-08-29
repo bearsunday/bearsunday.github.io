@@ -8,7 +8,7 @@ permalink: /manuals/1.0/en/di.html
 
 Dependency injection means an object is given the objects it needs (its dependencies) from the outside, rather than constructing them itself with `new`. Building a dependency requires its own dependencies in turn, so an application ends up as a web of interconnected objects—an object graph. Building this graph by hand is labor-intensive, error-prone, and makes testing difficult. In BEAR.Sunday, the DI framework [Ray.Di](https://ray-di.github.io/manuals/1.0/en/index.html) builds the object graph instead.
 
-## The code you write
+## The class doesn't know the implementation
 
 A class just declares what it needs in its constructor.
 

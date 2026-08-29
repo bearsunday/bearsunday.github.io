@@ -13,7 +13,7 @@ BEAR.SundayアプリケーションはRESTfulなリソースの集合です。�
 
 ## サービスとしてのオブジェクト
 
-リソースをPHPで表したものが`ResourceObject`です。HTTPのメソッドがPHPのメソッドにマップされた、リソースの**サービスのためのオブジェクト**（Object-as-a-service）です。
+リソースをPHPで表したものが`ResourceObject`です。HTTPのメソッドがPHPのメソッドにマップされた、**サービスとしてのオブジェクト**（Object as a service）です。
 
 ```php
 class Index extends ResourceObject
@@ -92,7 +92,7 @@ URIはPHPのクラスにマップされています。アプリケーション�
 
 ## パラメーター
 
-レスポンスメソッドの引数には、変数名に対応したリクエストの値が渡されます。
+リクエストメソッドの引数には、変数名に対応したリクエストの値が渡されます。
 
 ```php
 class Index extends ResourceObject
