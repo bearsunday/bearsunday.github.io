@@ -505,6 +505,7 @@ $page = $pager[2]; // page 2
 // $page->data // sliced data (array|\Traversable)
 // $page->current; (int)
 // $page->total (int)
+// $page->nbPages (int)
 // $page->hasNext (bool)
 // $page->hasPrevious (bool)
 // $page->maxPerPage; (int)
