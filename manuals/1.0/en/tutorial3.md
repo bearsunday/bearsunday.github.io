@@ -378,7 +378,7 @@ brew install your-vendor/greet && greet -n "World" -l ja
 
 BEAR.Sunday resources integrate naturally with modern package systems. By leveraging package managers like Homebrew and the Composer ecosystem, users can utilize tools through unified interfaces without being aware of the execution environment.
 
-BEAR.Sunday's "Because Everything is a Resource" is not just a slogan, but a design philosophy that realizes consistency and maintainability across boundaries. As experienced in this tutorial, resource-oriented architecture creates boundary-free software and brings new horizons to both development and user experiences.
+BEAR.Sunday's "Because Everything is a Resource" is a design philosophy that realizes consistency and maintainability across boundaries. As experienced in this tutorial, resource-oriented architecture creates boundary-free software and brings new horizons to both development and user experiences.
 
 ## Next Steps
 
