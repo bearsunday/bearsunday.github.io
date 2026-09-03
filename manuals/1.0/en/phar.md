@@ -7,7 +7,7 @@ permalink: /manuals/1.0/en/phar.html
 
 # Phar
 
-A [phar](https://www.php.net/manual/en/intro.phar.php) is the application as one file. The code, `vendor/`, and the compiled DI scripts fit in a single archive. The phar file is read-only and immutable. A deploy is a copy of one file. Requires BEAR.Package 1.24 or later.
+A [phar](https://www.php.net/manual/en/intro.phar.php) is the application as one file. The code, `vendor/`, and the compiled DI scripts fit in a single archive. The application writes nothing into the archive. A deploy is a copy of one file. Requires BEAR.Package 1.24 or later.
 
 ```text
 app.phar                                            the application, vendor/, compiled DI scripts
@@ -94,7 +94,7 @@ Not packed: tests
 
 `phar()` creates the archive from the compile result on disk. Its one argument is the entry point path, `public/index.php` by default. A context that was not compiled, or a build compiled without `ReadOnlyAppModule`, stops with an error before the archive is made ([Build errors](#when-the-build-stops)).
 
-`app.phar` is written to a fixed path and overwritten by the next `phar()`. To build several contexts as phars, rename the file after each one.
+`app.phar` is written to a fixed path and overwritten by the next `phar()`. To build a Phar archive for each of several contexts, rename the file after each one.
 
 ## Running
 
@@ -152,7 +152,7 @@ Renaming the file or running it from another directory works the same.
 
 ## Caveat
 
-**Do not build runtime file paths in a module's `configure()`.** In a compiled application, `configure()` runs once at compile time and is not called at runtime. Values computed in `configure()` are recorded in the DI scripts as strings. It makes no difference whether the path came from `$this->appMeta->appDir` or `__DIR__`. Paths of files read at runtime, such as templates and SQL files, are built from `__DIR__` in the class that reads them, or decided at request time by a Provider. `tmpDir` and `logDir` are decided at boot and can be used as they are.
+**Do not build runtime file paths in a module's `configure()`.** In a compiled application, `configure()` runs once at compile time and is not called at runtime. Values computed in `configure()` are recorded in the DI scripts as strings. It makes no difference whether the path came from `$this->appMeta->appDir` or `__DIR__`. Paths of files read at runtime, such as templates and SQL files, are built from `__DIR__` in the class that reads them, or decided at request time by a Provider. `tmpDir` and `logDir` are the write directories `ReadOnlyAppModule` sets, so they can be used as they are.
 
 ## Imported applications
 
