@@ -139,7 +139,7 @@ static-php-cliは`php`と`php-fpm`を作ります。ふつうにインストー�
 
 php-fpmを使う場合は、ホストのphp-fpmで使っている`php-fpm.conf`を`-y`で渡して`./buildroot/bin/php-fpm`を起動します。エントリポイントの置き方も、opcacheと`opcache.preload`の設定も、ホストのPHPと同じです。
 
-`--build-micro`はmicro SAPIのバイナリをビルドし、`micro:combine`でコードと1つの自己展開ファイルに結合します。micro SAPIは1つのスクリプトを実行して終了するだけで、リクエストを処理するFPM相当のものはありません。
+ここで使うのは`--build-micro`ではありません。これはmicro SAPIのバイナリをビルドするもので、`micro:combine`でコードと1つの自己展開ファイルに結合します。micro SAPIは1つのスクリプトを実行して終了するだけで、リクエストを処理するFPM相当のものはありません。
 
 ## 別の場所へのコピー
 
