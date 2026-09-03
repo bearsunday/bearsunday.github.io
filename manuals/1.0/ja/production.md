@@ -145,7 +145,7 @@ final class MyProdLoggerModule extends AbstractModule
 
 ビルドで[コンパイル](#compilation-recommended)し、コンパイル済みの成果物を配布します。特徴はコールドスタートの速さ（起動は成果物を読むだけ）、スケール（増えるインスタンスはすべて同じ成果物から起動）、安全性（DIの構成エラーはビルドのexitコード1で止まり、本番に届きません）です。起動は成果物に何も書き込まないので、ツリーを読み取り専用のまま配れます（[Read-only deployment](#writable-paths)）。
 
-成果物の代表的な形は2つです。コンテナパイプラインがあるなら[Dockerマルチステージビルド](#docker-multi-stage)で、コンパイルをイメージのビルドに固定します。パイプラインのない環境では[Phar](phar.html)がこの形を1ファイルで実現します。デプロイは1ファイルのコピーで、ロールバックは1つ前のファイルです。成果物の同一性と安全性を、CIの規律ではなくパックが強制します。
+成果物の代表的な形は2つです。コンテナパイプラインがあるなら[Dockerマルチステージビルド](#docker-multi-stage)で、コンパイルをイメージのビルドに固定します。パイプラインのない環境では[Phar](phar.html)がこの形を1ファイルで実現します。デプロイは1ファイルのコピーで済みます。成果物の同一性と安全性を、CIの規律ではなくパックが強制します。
 
 * CIではコンパイルの終了コードを合否判定に使います
 * ランタイムで変わる値（接続先・トークン等）は焼き込まず、ランタイム解決にします
@@ -218,7 +218,7 @@ exit(0);
 
 [`opcache.preload`](https://www.php.net/manual/ja/opcache.preloading.php) は PHP プロセス単位の設定です。複数コンテキストを preload する場合は**それぞれ別プロセス（php-fpm プール等）**になり、プロセスごとに退避した preload を指します（例：api 用プールは `opcache.preload=/path/to/prod-hal-api-app.preload.php`、html 用プールは `/path/to/prod-html-app.preload.php`）。
 
-context ごとにアーカイブにする場合はループが別で、preloadのrenameもしません → [Phar](phar.html)
+context ごとに[Phar](phar.html)にする場合、`preload.php`はアーカイブに入るので rename しません。
 
 #### compile step {#compile-steps}
 
