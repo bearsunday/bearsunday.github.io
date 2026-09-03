@@ -153,10 +153,11 @@ opcache.preload=phar:///path/to/app.phar/preload.php
 
 ## ワンバイナリ
 
-[static-php-cli](https://static-php.dev)は共有ライブラリに依存しないPHPバイナリを作ります。`php`と`php-fpm`だけで、ホストに入れるものはなく、ディストリのPHPバージョンに合わせる必要もありません。拡張に`phar`を含めてビルドします。
+[static-php-cli](https://static-php.dev)は共有ライブラリに依存しないPHPバイナリを作ります。`php`と`php-fpm`だけで、ホストに入れるものはなく、ディストリのPHPバージョンに合わせる必要もありません。拡張には`phar`と、アプリケーションが使うものを含めてビルドします。
 
 ```bash
-./spc build phar,pdo_sqlite,mbstring,... --build-cli --build-fpm
+./spc download --for-extensions=phar,opcache -P
+./spc build phar,opcache --build-cli --build-fpm
 ```
 
 アーカイブの動かし方は同じで、ホストの`php`の代わりにこのバイナリを使います。
@@ -165,7 +166,7 @@ opcache.preload=phar:///path/to/app.phar/preload.php
 ./buildroot/bin/php app.phar get '/index?name=BEAR'
 ```
 
-php-fpmでも、アーカイブの隣に置くエントリポイントは変わりません。プールが指すのは`./buildroot/bin/php-fpm`です。opcacheと`opcache.preload`も同じように動きます。このSAPIがアーカイブを開くのは、ふつうのファイルとしてだからです。
+php-fpmでは、プールの設定を渡して`./buildroot/bin/php-fpm`を実行します。アーカイブの隣に置くエントリポイントは変わりません。opcacheと`opcache.preload`も同じように動きます。このSAPIがアーカイブを開くのは、ふつうのファイルとしてだからです。
 
 ## 移動できる
 

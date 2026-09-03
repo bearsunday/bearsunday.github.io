@@ -153,10 +153,11 @@ opcache.preload=phar:///path/to/app.phar/preload.php
 
 ## One binary
 
-[static-php-cli](https://static-php.dev) builds a PHP binary with no shared-library dependencies: `php` and `php-fpm` alone, nothing to install on the host, no matching the distro's PHP version. Build it with `phar` among the extensions:
+[static-php-cli](https://static-php.dev) builds a PHP binary with no shared-library dependencies: `php` and `php-fpm` alone, nothing to install on the host, no matching the distro's PHP version. Build it with `phar` and whatever else the application needs among the extensions:
 
 ```bash
-./spc build phar,pdo_sqlite,mbstring,... --build-cli --build-fpm
+./spc download --for-extensions=phar,opcache -P
+./spc build phar,opcache --build-cli --build-fpm
 ```
 
 Run the archive the same way, with this binary instead of the host's `php`:
@@ -165,7 +166,7 @@ Run the archive the same way, with this binary instead of the host's `php`:
 ./buildroot/bin/php app.phar get '/index?name=BEAR'
 ```
 
-For php-fpm, the entry point beside the archive does not change; point the pool at `./buildroot/bin/php-fpm`. opcache and `opcache.preload` work the same way — this SAPI opens the archive as an ordinary file.
+For php-fpm, run `./buildroot/bin/php-fpm` with your pool config; the entry point beside the archive does not change. opcache and `opcache.preload` work the same way — this SAPI opens the archive as an ordinary file.
 
 ## It moves
 
