@@ -218,7 +218,7 @@ exit(0);
 
 [`opcache.preload`](https://www.php.net/manual/ja/opcache.preloading.php) は PHP プロセス単位の設定です。複数コンテキストを preload する場合は**それぞれ別プロセス（php-fpm プール等）**になり、プロセスごとに退避した preload を指します（例：api 用プールは `opcache.preload=/path/to/prod-hal-api-app.preload.php`、html 用プールは `/path/to/prod-html-app.preload.php`）。
 
-context ごとにアーカイブにする場合はループが別で、preloadのrenameもしません → [Phar](phar.html)
+context ごとに[Phar](phar.html)にする場合、`preload.php`はアーカイブに入るので rename しません。
 
 #### compile step {#compile-steps}
 

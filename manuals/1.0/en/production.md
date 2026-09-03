@@ -217,7 +217,7 @@ exit(0);
 
 [`opcache.preload`](https://www.php.net/manual/en/opcache.preloading.php) is a per-process setting, so preloading multiple contexts means **separate PHP processes** (e.g. php-fpm pools), each pointing at its evacuated preload (e.g. the api pool: `opcache.preload=/path/to/prod-hal-api-app.preload.php`, the html pool: `/path/to/prod-html-app.preload.php`).
 
-Packing each context into an archive is a loop of its own, and it does not rename the preload: [Phar](phar.html).
+When each context is packed into a [Phar](phar.html), `preload.php` goes into the archive and is not renamed.
 
 #### Compile steps {#compile-steps}
 
