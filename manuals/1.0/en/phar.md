@@ -137,7 +137,7 @@ Running is the same. Use this binary instead of the host's `php`.
 ./buildroot/bin/php app.phar get '/index?name=BEAR'
 ```
 
-For php-fpm, start `./buildroot/bin/php-fpm` with the pool configuration file. The entry point placement and the opcache and `opcache.preload` settings are the same as with the host's PHP.
+For php-fpm, start `./buildroot/bin/php-fpm` with the `php-fpm.conf` the host's php-fpm uses, passed with `-y`. The entry point placement and the opcache and `opcache.preload` settings are the same as with the host's PHP.
 
 ## Copying to another location
 

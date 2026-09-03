@@ -137,7 +137,7 @@ opcache.preload=phar:///path/to/app.phar/preload.php
 ./buildroot/bin/php app.phar get '/index?name=BEAR'
 ```
 
-php-fpmを使う場合は、プールの設定ファイルを指定して`./buildroot/bin/php-fpm`を起動します。エントリポイントの置き方も、opcacheと`opcache.preload`の設定も、ホストのPHPと同じです。
+php-fpmを使う場合は、ホストのphp-fpmで使っている`php-fpm.conf`を`-y`で渡して`./buildroot/bin/php-fpm`を起動します。エントリポイントの置き方も、opcacheと`opcache.preload`の設定も、ホストのPHPと同じです。
 
 ## 別の場所へのコピー
 
