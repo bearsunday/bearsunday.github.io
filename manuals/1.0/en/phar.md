@@ -139,7 +139,7 @@ Running is the same. Use this binary instead of the host's `php`.
 
 For php-fpm, start `./buildroot/bin/php-fpm` with the `php-fpm.conf` the host's php-fpm uses, passed with `-y`. The entry point placement and the opcache and `opcache.preload` settings are the same as with the host's PHP.
 
-`--build-micro` and `micro:combine` fuse the binary and the archive into a single self-extracting file. The micro SAPI runs one script and exits — it has no FPM counterpart for serving requests.
+`--build-micro` builds the micro SAPI binary; `micro:combine` fuses it with the code into a single self-extracting file. The micro SAPI runs one script and exits — it has no FPM counterpart for serving requests.
 
 ## Copying to another location
 
