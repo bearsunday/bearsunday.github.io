@@ -122,9 +122,9 @@ opcache.preload=phar:///path/to/app.phar/preload.php
 
 `autoload.php` is not included in the archive. With preload, [autoload.php is no longer needed](production.html#autoloadphp). The `preload.php` the compile wrote cannot be used from beside the archive. Its requires are written relative to its own directory, and there is no `vendor/` outside the archive, so startup fails with `Failed opening required '…/vendor/autoload.php'`. Also, `preload.php` is overwritten at `{appDir}/preload.php` on every compile, so run `phar()` for the context you compiled last. If another context's `preload.php` remains, `PharPreloadForAnotherBuildException` is thrown.
 
-## One binary
+## A binary with PHP built in
 
-[static-php-cli](https://static-php.dev) builds a single PHP binary with no shared-library dependencies. Placing the `php` and `php-fpm` binaries is enough to run. There is no need to install PHP on the host or to match the distribution's PHP version. Include the `phar` extension and the extensions the application uses in the build.
+[static-php-cli](https://static-php.dev) builds the `php` and `php-fpm` interpreter itself, statically linked with no shared-library dependencies. Nothing else changes: no PHP install on the host, no matching the distribution's PHP version. Include the `phar` extension and whatever else the application needs in the build.
 
 ```bash
 ./spc download --for-extensions=phar,opcache -P
@@ -138,6 +138,8 @@ Running is the same. Use this binary instead of the host's `php`.
 ```
 
 For php-fpm, start `./buildroot/bin/php-fpm` with the `php-fpm.conf` the host's php-fpm uses, passed with `-y`. The entry point placement and the opcache and `opcache.preload` settings are the same as with the host's PHP.
+
+`--build-micro` and `micro:combine` fuse the binary and the archive into a single self-extracting file. The micro SAPI runs one script and exits — it has no FPM counterpart for serving requests.
 
 ## Copying to another location
 

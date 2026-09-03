@@ -122,9 +122,9 @@ opcache.preload=phar:///path/to/app.phar/preload.php
 
 `autoload.php`はアーカイブに入りません。preloadを使う場合、[autoload.phpは不要になる](production.html#autoloadphp)からです。コンパイルが書いた`preload.php`をアーカイブの隣に置いて使うことはできません。`preload.php`のrequireは自身のディレクトリからの相対パスで書かれていて、アーカイブの外には`vendor/`がないため、起動時に`Failed opening required '…/vendor/autoload.php'`で失敗します。また`preload.php`はコンパイルごとに`{appDir}/preload.php`に上書きされるので、`phar()`は最後にコンパイルした context に対して実行します。別の context の`preload.php`が残っていると`PharPreloadForAnotherBuildException`になります。
 
-## ワンバイナリ
+## PHPを含んだワンバイナリ
 
-[static-php-cli](https://static-php.dev)を使うと、共有ライブラリに依存しない単一のPHPバイナリを作れます。`php`と`php-fpm`のバイナリを置くだけで動き、ホストにPHPをインストールする必要も、ディストリビューションのPHPバージョンに合わせる必要もありません。ビルド時には`phar`拡張と、アプリケーションが使う拡張を含めます。
+[static-php-cli](https://static-php.dev)は、共有ライブラリに依存しない`php`と`php-fpm`のインタプリタ自体を作ります。ほかは何も変わりません。ホストにPHPをインストールする必要も、ディストリビューションのPHPバージョンに合わせる必要もありません。ビルド時には`phar`拡張と、アプリケーションが使う拡張を含めます。
 
 ```bash
 ./spc download --for-extensions=phar,opcache -P
@@ -138,6 +138,8 @@ opcache.preload=phar:///path/to/app.phar/preload.php
 ```
 
 php-fpmを使う場合は、ホストのphp-fpmで使っている`php-fpm.conf`を`-y`で渡して`./buildroot/bin/php-fpm`を起動します。エントリポイントの置き方も、opcacheと`opcache.preload`の設定も、ホストのPHPと同じです。
+
+`--build-micro`と`micro:combine`は、バイナリとアーカイブを1つの自己展開ファイルに融合します。micro SAPIは1つのスクリプトを実行して終了するだけで、リクエストを処理するFPM相当のものはありません。
 
 ## 別の場所へのコピー
 
