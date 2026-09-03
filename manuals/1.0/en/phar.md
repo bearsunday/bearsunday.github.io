@@ -124,7 +124,7 @@ opcache.preload=phar:///path/to/app.phar/preload.php
 
 ## A binary with PHP built in
 
-[static-php-cli](https://static-php.dev) builds the `php` and `php-fpm` interpreter itself, statically linked with no shared-library dependencies. Nothing else changes: no PHP install on the host, no matching the distribution's PHP version. Include the `phar` extension and whatever else the application needs in the build.
+[static-php-cli](https://static-php.dev) builds `php` and `php-fpm`. They're the same binaries as a normal install — the only difference is no shared-library dependencies. No PHP install on the host, no matching the distribution's PHP version. Include the `phar` extension and whatever else the application needs in the build.
 
 ```bash
 ./spc download --for-extensions=phar,opcache -P

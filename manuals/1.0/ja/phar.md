@@ -124,7 +124,7 @@ opcache.preload=phar:///path/to/app.phar/preload.php
 
 ## PHPを含んだワンバイナリ
 
-[static-php-cli](https://static-php.dev)は、共有ライブラリに依存しない`php`と`php-fpm`のインタプリタ自体を作ります。ほかは何も変わりません。ホストにPHPをインストールする必要も、ディストリビューションのPHPバージョンに合わせる必要もありません。ビルド時には`phar`拡張と、アプリケーションが使う拡張を含めます。
+static-php-cliは`php`と`php-fpm`を作ります。ふつうにインストールするのと同じ実行ファイルで、違うのは共有ライブラリに依存しないことだけです。ホストにPHPをインストールする必要も、ディストリビューションのPHPバージョンに合わせる必要もありません。ビルド時には`phar`拡張と、アプリケーションが使う拡張を含めます。
 
 ```bash
 ./spc download --for-extensions=phar,opcache -P
