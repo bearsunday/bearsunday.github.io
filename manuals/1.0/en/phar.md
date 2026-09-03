@@ -151,7 +151,7 @@ opcache.preload=phar:///path/to/app.phar/preload.php
 
 `autoload.php` does not ship: a preload leaves it [nothing to do](production.html#autoloadphp). The same preload placed beside the archive instead stops the server at startup with `Failed opening required '…/vendor/autoload.php'` — its requires are written relative to the directory it sits in, and outside the archive that directory holds no `vendor/`. One preload is written per compile, at a fixed path, so pack the context you compiled last; the pack refuses one another context left behind.
 
-## No PHP installed
+## One binary
 
 [static-php-cli](https://static-php.dev) builds a PHP binary with no shared-library dependencies: `php` and `php-fpm` alone, nothing to install on the host, no matching the distro's PHP version. Build it with `phar` among the extensions:
 

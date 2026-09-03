@@ -151,7 +151,7 @@ opcache.preload=phar:///path/to/app.phar/preload.php
 
 `autoload.php`は入りません。preloadを使うなら[することが残らない](production.html#autoloadphp)からです。同じ`preload.php`をアーカイブの隣に置くと、起動時に`Failed opening required '…/vendor/autoload.php'`で止まります。requireは置かれたディレクトリからの相対で書かれていて、アーカイブの外にそのディレクトリの`vendor/`はありません。preloadはコンパイルごとに1つ、固定パスに書かれます。最後にコンパイルした context をパックしてください。別の context が残したものはパックが拒否します。
 
-## PHPがなくても動く
+## ワンバイナリ
 
 [static-php-cli](https://static-php.dev)は共有ライブラリに依存しないPHPバイナリを作ります。`php`と`php-fpm`だけで、ホストに入れるものはなく、ディストリのPHPバージョンに合わせる必要もありません。拡張に`phar`を含めてビルドします。
 
