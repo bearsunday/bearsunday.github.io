@@ -151,6 +151,22 @@ opcache.preload=phar:///path/to/app.phar/preload.php
 
 `autoload.php`は入りません。preloadを使うなら[することが残らない](production.html#autoloadphp)からです。同じ`preload.php`をアーカイブの隣に置くと、起動時に`Failed opening required '…/vendor/autoload.php'`で止まります。requireは置かれたディレクトリからの相対で書かれていて、アーカイブの外にそのディレクトリの`vendor/`はありません。preloadはコンパイルごとに1つ、固定パスに書かれます。最後にコンパイルした context をパックしてください。別の context が残したものはパックが拒否します。
 
+## PHPがなくても動く
+
+[static-php-cli](https://static-php.dev)は共有ライブラリに依存しないPHPバイナリを作ります。`php`と`php-fpm`だけで、ホストに入れるものはなく、ディストリのPHPバージョンに合わせる必要もありません。拡張に`phar`を含めてビルドします。
+
+```bash
+./spc build phar,pdo_sqlite,mbstring,... --build-cli --build-fpm
+```
+
+アーカイブの動かし方は同じで、ホストの`php`の代わりにこのバイナリを使います。
+
+```bash
+./buildroot/bin/php app.phar get '/index?name=BEAR'
+```
+
+php-fpmでも、アーカイブの隣に置くエントリポイントは変わりません。プールが指すのは`./buildroot/bin/php-fpm`です。opcacheと`opcache.preload`も同じように動きます。このSAPIがアーカイブを開くのは、ふつうのファイルとしてだからです。
+
 ## 移動できる
 
 アーカイブがビルドそのものです。別のディレクトリでも別のマシンでも、コピーしてそこで起動できます。外のものは何も読まないので、パックした元のツリーは消して構いません。

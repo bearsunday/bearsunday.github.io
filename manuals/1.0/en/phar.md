@@ -151,6 +151,22 @@ opcache.preload=phar:///path/to/app.phar/preload.php
 
 `autoload.php` does not ship: a preload leaves it [nothing to do](production.html#autoloadphp). The same preload placed beside the archive instead stops the server at startup with `Failed opening required '…/vendor/autoload.php'` — its requires are written relative to the directory it sits in, and outside the archive that directory holds no `vendor/`. One preload is written per compile, at a fixed path, so pack the context you compiled last; the pack refuses one another context left behind.
 
+## No PHP installed
+
+[static-php-cli](https://static-php.dev) builds a PHP binary with no shared-library dependencies: `php` and `php-fpm` alone, nothing to install on the host, no matching the distro's PHP version. Build it with `phar` among the extensions:
+
+```bash
+./spc build phar,pdo_sqlite,mbstring,... --build-cli --build-fpm
+```
+
+Run the archive the same way, with this binary instead of the host's `php`:
+
+```bash
+./buildroot/bin/php app.phar get '/index?name=BEAR'
+```
+
+For php-fpm, the entry point beside the archive does not change; point the pool at `./buildroot/bin/php-fpm`. opcache and `opcache.preload` work the same way — this SAPI opens the archive as an ordinary file.
+
 ## It moves
 
 The archive is the build. Copy it anywhere — another directory, another machine — and boot it there: nothing outside it is read, so the tree it was packed from can be deleted.
