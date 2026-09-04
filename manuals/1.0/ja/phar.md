@@ -122,7 +122,7 @@ opcache.preload=phar:///path/to/app.phar/preload.php
 
 `autoload.php`はアーカイブに入りません。preloadを使う場合、[autoload.phpは不要になる](production.html#autoloadphp)からです。コンパイルが書いた`preload.php`をアーカイブの隣に置いて使うことはできません。`preload.php`のrequireは自身のディレクトリからの相対パスで書かれていて、アーカイブの外には`vendor/`がないため、起動時に`Failed opening required '…/vendor/autoload.php'`で失敗します。また`preload.php`はコンパイルごとに`{appDir}/preload.php`に上書きされるので、`phar()`は最後にコンパイルした context に対して実行します。別の context の`preload.php`が残っていると`PharPreloadForAnotherBuildException`になります。
 
-## PHPを含んだワンバイナリ
+## PHPを含んだワンバイナリ {#one-binary}
 
 static-php-cliは`php`と`php-fpm`を作ります。ふつうにインストールするのと同じ実行ファイルで、違うのは共有ライブラリに依存しないことだけです。ホストにPHPをインストールする必要も、ディストリビューションのPHPバージョンに合わせる必要もありません。ビルド時には`phar`拡張と、アプリケーションが使う拡張を含めます。
 
@@ -139,7 +139,17 @@ static-php-cliは`php`と`php-fpm`を作ります。ふつうにインストー�
 
 php-fpmを使う場合は、ホストのphp-fpmで使っている`php-fpm.conf`を`-y`で渡して`./buildroot/bin/php-fpm`を起動します。エントリポイントの置き方も、opcacheと`opcache.preload`の設定も、ホストのPHPと同じです。
 
-ここで使うのは`--build-micro`ではありません。これはmicro SAPIのバイナリをビルドするもので、`micro:combine`でコードと1つの自己展開ファイルに結合します。micro SAPIは1つのスクリプトを実行して終了するだけで、リクエストを処理するFPM相当のものはありません。
+### 1つの実行ファイル（CLI） {#one-executable}
+
+コマンドラインのアプリケーションなら、アーカイブとPHPを1ファイルにできます。`--build-micro`はmicro SAPIを`micro.sfx`としてビルドします。後ろに付け足されたものを実行するPHPです。アーカイブを付け足します。
+
+```bash
+cat micro.sfx app.phar > myapp
+chmod +x myapp
+./myapp get '/index?name=BEAR'
+```
+
+できるのは、PHPとその拡張、アプリケーションとコンパイル済みDIスクリプトを持った1つの実行ファイルです。名前を変えても、同じプラットフォームの別のマシンにコピーしても、どのディレクトリから起動しても動き、書き込むのは[ReadOnlyAppModule](#readonlyappmodule)が決めた場所だけです。micro SAPIは1つのスクリプトを実行して終了するだけで、リクエストを処理するFPM相当のものはありません。Webのエントリポイントはphp-fpmと、その隣のアーカイブのままです。これはコマンドや[BEAR.Cli](cli.html)のツール向けです。PHPバージョンとプラットフォームごとのビルド済み`micro.sfx`は[dl.static-php.dev](https://dl.static-php.dev/static-php-cli/common/)にあります。
 
 ## 別の場所へのコピー
 
