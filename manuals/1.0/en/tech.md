@@ -116,7 +116,7 @@ Two runtimes are available based on server environment constraints: ext-parallel
 
 ### Deferred Resource Execution
 
-Heavy follow-up work can run after the response. The resource answers `202 Accepted` as soon as the request arrives, and index updates or notifications run after the response has reached the client. The resource declares only what to defer; when and where it runs is decided outside the resource. As with parallel execution, the resource's code does not change ([Deferred resource execution](defer.html), Alpha).
+Heavy follow-up work can run after the response. The resource answers `202 Accepted`, and index updates or notifications run after the response has reached the client. Whether the response goes out first depends on the SAPI: under PHP-FPM and LiteSpeed the connection is released at once, under Apache mod_php it is best-effort. The resource declares only what to defer; when and where it runs is decided outside the resource. As with parallel execution, the resource's code does not change ([Deferred resource execution](defer.html), Alpha).
 
 ## Developer Experience
 
@@ -166,7 +166,7 @@ BEAR.Sunday resources can be accessed through various interfaces. In addition to
 
 A resource is also an instrument for an AI agent. [BEAR.ToolUse](ai-assistant.html#beartooluse) generates tool definitions from ResourceObjects, and assembles parameter descriptions and constraints from JSON Schema, PHPDoc and ALPS profiles. The application's actual capabilities become the tools, with no separate set of functions written for the AI.
 
-Which operations an agent may call freely, and which need a person's confirmation, is decided by REST's method semantics: a safe, idempotent GET is free, an operation that changes state is gated with `confirm`, and the transition types in an ALPS profile can narrow which tools are offered at all. No new mechanism was bolted on; URIs, the uniform interface, types, JSON Schema and ALPS had the shape of tool definitions from the start.
+The rationale for which operations an agent may call freely, and which need a person's confirmation, is REST's method semantics. A safe, idempotent GET is called freely; an operation that changes state is marked `#[Tool(confirm: true)]`, and the bound confirmation handler asks a person before it runs. Confirmation is not a substitute for authentication and authorization; it is a person's judgment placed on top of them. No new mechanism was bolted on; URIs, the uniform interface, types, JSON Schema and ALPS had the shape of tool definitions from the start.
 
 ### Stream Output
 
