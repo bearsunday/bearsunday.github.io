@@ -100,13 +100,23 @@ DI resolution is completed at compile time, with no container lookups at runtime
 
 In Swoole configurations, persistent workers reduce bootstrapping to a single initial boot. Coroutine-context-based request isolation enables safe concurrent processing without reliance on superglobals. Combined with the transparent parallel execution described next, I/O wait time is further minimized.
 
+### Read-Only Artifact
+
+Compiling is build work. The object graph is resolved before the deploy, and a DI configuration error stops the build and never reaches production. Boot only reads the artifact and writes nothing into the tree, so the tree ships read-only: on a serverless platform or in an immutable container, where writing is allowed in one place only, the application [declares where it writes](production.html#writable-paths) and runs. A cold start takes the time to read the artifact (on a five-resource application, 0.38s to recompile against 0.018s to read), and every instance that scale-out adds boots from the same artifact and gives the same answer.
+
+The artifact can be one file, a [Phar](phar.html). The code, `vendor/` and the compiled DI scripts fit in a single archive; a deploy is a copy of one file, and a rollback is the file before it. What goes in is the framework's decision, and a build that was never compiled, or that would write into itself, stops before the archive is made. Imported applications ship in the same archive. With a statically built PHP placed beside it, nothing is installed on the host, and a command-line application can be PHP and the archive in one executable. The same archive also [runs in the browser](wasm.html), with no PHP runtime and no application server.
+
 ### Transparent Parallel Execution
 
 In BEAR.Sunday, a URI expresses "intent" rather than being merely a communication protocol or locator. `app://self/user` expresses only the intent "I want user information"—whether it comes from MySQL or Redis is hidden from the application.
 
 This complete separation of "What" from "How" enables multiple resources embedded with `#[Embed]` to be fetched in parallel without changing any application code. Resource classes written 10 years ago can benefit from parallel execution just by adding a Module.
 
-Three tiers of solutions are available based on server environment constraints: ext-parallel (thread pool), Swoole (coroutines), and mysqli (DB queries only). Whichever you choose, application code requires no changes. Develop and debug with standard PHP, then switch to parallel execution in production with just a configuration change.
+Two runtimes are available based on server environment constraints: ext-parallel (thread pool) and Swoole (coroutines). Whichever you choose, application code requires no changes. Develop and debug with standard PHP, then switch to parallel execution in production with just a configuration change. SQL is no different: give each SQL statement its own resource and bundle them from the resource above with `#[Embed]`, and the statements are issued in parallel as the runtime allows. The caller only composes resources.
+
+### Deferred Resource Execution
+
+Heavy follow-up work can run after the response. The resource answers `202 Accepted` as soon as the request arrives, and index updates or notifications run after the response has reached the client. The resource declares only what to defer; when and where it runs is decided outside the resource. As with parallel execution, the resource's code does not change ([Deferred resource execution](defer.html), Alpha).
 
 ## Developer Experience
 
@@ -134,6 +144,10 @@ When using an ALPS profile as the SSOT (Single Source of Truth), you define the 
 
 Utilizing the technical feature of resources rendering themselves, during development, the scope of resources can be indicated on HTML, resource states can be monitored, and PHP code and HTML templates can be edited in an online editor and reflected in real-time.
 
+### Working with AI Agents
+
+AI agents generate and review code along BEAR.Sunday's conventions. [BEAR.Skills](https://github.com/bearsunday/BEAR.Skills) provides tasks such as resource generation, hypermedia links and quality review as Claude Code skills, and [BEAR.Kata](https://github.com/bearsunday/BEAR.Kata) is a collection of implementation patterns for finding which files to look at for a given task. See [AI Assistant](ai-assistant.html) for details.
+
 ## Extensibility and Integration
 
 ### Integration of PHP Interfaces and SQL Execution
@@ -147,6 +161,12 @@ Moreover, direct management of SQL makes debugging easier when errors occur. The
 ### Integration with Other Systems
 
 BEAR.Sunday resources can be accessed through various interfaces. In addition to web interfaces, resources can be accessed directly from the console, allowing the same resources to be used from both web and command-line interfaces without changing the source code. Furthermore, using BEAR.CLI, resources can be distributed as standalone UNIX commands. Multiple BEAR.Sunday applications can also run concurrently within the same PHP runtime, enabling collaboration between independent applications without building microservices.
+
+### Resources as AI Instruments
+
+A resource is also an instrument for an AI agent. [BEAR.ToolUse](ai-assistant.html#beartooluse) generates tool definitions from ResourceObjects, and assembles parameter descriptions and constraints from JSON Schema, PHPDoc and ALPS profiles. The application's actual capabilities become the tools, with no separate set of functions written for the AI.
+
+Which operations an agent may call freely, and which need a person's confirmation, is decided by REST's method semantics: a safe, idempotent GET is free, an operation that changes state is gated with `confirm`, and the transition types in an ALPS profile can narrow which tools are offered at all. No new mechanism was bolted on; URIs, the uniform interface, types, JSON Schema and ALPS had the shape of tool definitions from the start.
 
 ### Stream Output
 
@@ -231,7 +251,7 @@ This declarative architecture enables multi-layered security scanning combining 
 
 * High performance: BEAR.Sunday's runtime optimization and CDN-centric caching strategy brings users a fast and responsive experience.
 * Reliability and availability: BEAR.Sunday's CDN-centric caching strategy minimizes single points of failure (SPOF), allowing users to enjoy stable services.
-* Ease of use: BEAR.Sunday's excellent connectivity makes it easy to collaborate with other languages and systems.
+* Ease of use: BEAR.Sunday's excellent connectivity makes it easy to collaborate with other languages and systems. Resources can be handed to end users as CLI tools, and as one executable with PHP built in.
 
 ### Value for Business
 
