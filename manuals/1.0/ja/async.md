@@ -40,7 +40,7 @@ composer require bear/async
 | PHP-FPM / Apache（埋め込みリソースあり） | `bin/async.php` | ライブラリの`bootstrap.php`が`AppModule`に並列ランタイムを重ねる |
 | Swoole HTTPサーバー | `bin/swoole.php` | `AsyncSwooleModule`を`AppModule`にインストール |
 
-| | ext-parallel | ext-swoole |
+| | ext-parallel | ext-swoole / ext-openswoole |
 |---|---|---|
 | 並行の単位 | スレッドプール（CPUコア数） | コルーチン（数千） |
 | メモリ | ワーカーごとに独立 | プロセス内で共有 |
@@ -124,7 +124,7 @@ class AppModule extends AbstractModule
 
 Swooleサーバーはコンパイル済みインジェクターで動かします。リフレクションで解決する`Injector`は解決中の状態をプロセス全体で共有しているため、provider内でコルーチンが待ちに入る（プールの接続待ちなど）と別のコルーチンが同じ状態に入り込み、循環していない連なりで`CircularDependency`が投げられます。`BEAR\Package\Injector`から起動して本番コンテキストではRay.Compilerの`CompiledInjector`を受け取り、サーバーがリクエストを受け付ける前に`warmup()`を呼んでコルーチンが1つしかないうちにsingletonを作り切ります。手順は[`demo/bin/swoole.php`](https://github.com/bearsunday/BEAR.Async/blob/1.x/demo/bin/swoole.php)に、契約は[Ray.Di: コルーチンサーバー](https://ray-di.github.io/manuals/1.0/ja/performance_boost.html)にあります。
 
-Swooleではコルーチン同士がメモリを共有するため、`PdoPoolEnvModule`による接続プールが必要です。読み取り中心で埋め込みリソースを多用する構成では、外部から到達するHTTPリクエスト数だけでなく、1リクエスト内で同時に実行される埋め込みの数も加味してプールサイズを見積もります。キュー待ちを避けたい場合は `PDO_POOL_SIZE >= embed_count * request_concurrency` を目安にし、DBへの同時接続数を抑えたい場合はあえて小さめに設定します。
+Swooleではコルーチン同士がメモリを共有するため、`PdoPoolEnvModule`による接続プールが必要です。読み取り中心で埋め込みリソースを多用する構成では、外部から到達するHTTPリクエスト数だけでなく、1リクエスト内で同時に実行される埋め込みの数も加味してプールサイズを見積もります。各コルーチンは終了まで接続を1本持ち、親リクエストも埋め込みの実行中は自分の接続を持ったままなので、`PDO_POOL_SIZE >= (1 + embed_count) * request_concurrency` を出発点にし、DBへの同時接続数を抑えたい場合はあえて小さめに設定します。
 
 `PdoPoolModule` / `RedisPoolModule`とそのenv版は`borrowTimeout`（既定5.0秒）を受け取ります。空きのないプールを待つと、いつまでもブロックする代わりに`PoolTimeoutException`で失敗します。貸し出しのたびにまず疎通を確認し（PDOは`SELECT 1`、Redisは`PING`）、死んだ接続は捨てて1回だけ取り直します。取り直した接続も死んでいれば、ドライバのエラーをpreviousに付けた`StalePooledConnectionException`が投げられます。Redis接続もPDOと同じくコルーチンごとにキャッシュされるので、同じコルーチン内で何度注入しても貸し出しは1回です。
 
@@ -198,7 +198,7 @@ BEAR.AsyncリポジトリにはSync・ext-parallel・Swooleの動作を比較で
 | ランタイム環境 | 必要なもの | アプリケーション側の変更 |
 |-----|-----|-----|
 | ext-parallel | ZTS PHP + ext-parallel | `bin/async.php`を追加 |
-| ext-swoole | ext-swoole | `AsyncSwooleModule`をインストール、`bin/swoole.php`を使用 |
+| ext-swoole | ext-swoole または ext-openswoole | `AsyncSwooleModule`をインストール、`bin/swoole.php`を使用 |
 
 ## SQLリソースの並列化（BDR + `#[Embed]`）
 

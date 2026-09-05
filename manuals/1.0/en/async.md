@@ -40,7 +40,7 @@ Choose a runtime that matches your server setup.
 | PHP-FPM / Apache (with embedded resources) | `bin/async.php` | the library `bootstrap.php` overlays the parallel runtime on `AppModule` |
 | Swoole HTTP Server | `bin/swoole.php` | install `AsyncSwooleModule` in `AppModule` |
 
-| | ext-parallel | ext-swoole |
+| | ext-parallel | ext-swoole / ext-openswoole |
 |---|---|---|
 | Concurrency | Thread pool (CPU cores) | Coroutines (thousands) |
 | Memory | Separate per worker | Shared (process-level) |
@@ -124,7 +124,7 @@ Install `AsyncSwooleModule` before `PackageModule`. Ray.Di keeps the first bindi
 
 Run the Swoole server on the compiled injector. The reflective `Injector` shares its resolution state across the whole process; when a coroutine suspends inside a provider (waiting for a pooled connection, say), another coroutine enters that state and fails with a `CircularDependency` whose chain is not circular. Boot through `BEAR\Package\Injector` so production contexts get Ray.Compiler's `CompiledInjector`, and call its `warmup()` before the server accepts requests so every singleton is built while there is still a single coroutine. [`demo/bin/swoole.php`](https://github.com/bearsunday/BEAR.Async/blob/1.x/demo/bin/swoole.php) shows the sequence; see [Ray.Di: Coroutine servers](https://ray-di.github.io/manuals/1.0/en/performance_boost.html) for the contract.
 
-In Swoole, coroutines share memory, so a connection pool via `PdoPoolEnvModule` is required. In read-heavy setups that make heavy use of embedded resources, the pool size should account not only for the number of incoming HTTP requests but also for the number of embeds executed concurrently within one request. To avoid queueing, use `PDO_POOL_SIZE >= embed_count * request_concurrency` as a starting point; intentionally use a smaller pool when you want to cap concurrent connections to the database.
+In Swoole, coroutines share memory, so a connection pool via `PdoPoolEnvModule` is required. In read-heavy setups that make heavy use of embedded resources, the pool size should account not only for the number of incoming HTTP requests but also for the number of embeds executed concurrently within one request. Each coroutine holds one connection until it ends, and the parent request keeps its own while its embeds run, so start from `PDO_POOL_SIZE >= (1 + embed_count) * request_concurrency`; intentionally use a smaller pool when you want to cap concurrent connections to the database.
 
 `PdoPoolModule` / `RedisPoolModule` and their env-driven counterparts take a `borrowTimeout` (default 5.0 s). Waiting on an exhausted pool fails with `PoolTimeoutException` instead of blocking forever. Every checkout is pinged first (`SELECT 1` for PDO, `PING` for Redis); a dead connection is discarded and retried once, and if the retry is also dead `StalePooledConnectionException` is thrown with the driver error as the previous exception. Redis connections are cached per coroutine the same way PDO connections are, so repeated injections within one coroutine reuse one checkout.
 
@@ -198,7 +198,7 @@ Each runtime requires the corresponding PHP extension.
 | Runtime | Requires | Application-side change |
 |---|---|---|
 | ext-parallel | ZTS PHP + ext-parallel | add `bin/async.php` |
-| ext-swoole | ext-swoole | install `AsyncSwooleModule`, use `bin/swoole.php` |
+| ext-swoole | ext-swoole or ext-openswoole | install `AsyncSwooleModule`, use `bin/swoole.php` |
 
 ## SQL resources with BDR + `#[Embed]`
 
