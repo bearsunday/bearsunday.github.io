@@ -136,11 +136,11 @@ class Dashboard extends ResourceObject
 
 ## なぜコード変更なしで動くのか
 
-BEAR.Sundayでは、情報がリソースとして URI で**構造化**されています。`#[Embed]`はそのリソースの実行結果ではなく、リソースリクエストそのものを埋め込み、リソース間の関係を宣言します。実行戦略 — 逐次・ext-parallelワーカー・Swooleコルーチン — を選ぶのは Linker の役割で、リソースクラスは自分が同期で呼ばれたか並列で呼ばれたかを知る必要がありません。
+BEAR.Sundayでは、情報がリソースとして URI で**構造化**されています。`#[Embed]`はそのリソースの実行結果ではなく、リソースリクエストそのものを埋め込み、リソース間の関係を宣言します。どの実行戦略（逐次、ext-parallelワーカー、Swooleコルーチン）を使うかを決めるのは Linker で、リソースクラスは自分が同期で呼ばれたか並列で呼ばれたかを知る必要がありません。
 
 通常モードではレンダリング時にこれらのリクエストが1つずつ逐次解決されますが、並列実行モードでは、最初の埋め込みリクエストが解決される時点で残りの埋め込みリクエストもまとめて並列に実行されます。BEAR.Asyncの非同期リクエストはBEAR.Resourceの通常リクエストと同じ型として扱えるため、HALレンダラなど周辺の仕組みはこの差を意識せずシリアライズに統合できます。
 
-非同期プログラミングでしばしば言われる「関数の色」問題 — 非同期関数を呼ぶ関数は自身も非同期でなければならず、コード全体が非同期に汚染される問題 — も、リソースという境界がこれを遮断します。同期と並列でコードは同じ、変わるのは実行戦略だけです。
+非同期プログラミングには「関数の色」問題があります。非同期関数を呼ぶ関数は自身も非同期でなければならず、非同期がコード全体に広がっていくというものです。BEAR.Sundayではリソースが境界になるため、これが起きません。同期と並列でコードは同じで、変わるのは実行戦略だけです。
 
 これはBEAR.Async固有ではなく、BEAR.Sunday全体の性質です。MVCフレームワークが「どう実行するか」を手続きで書く箇所を、BEAR.Sundayはリソース間の関係を宣言として表します。宣言は実行戦略から独立しているため、戦略の差し替えはコードに影響しません。
 
@@ -174,7 +174,7 @@ use BEAR\Resource\Annotation\Embed;
 use BEAR\Resource\ResourceObject;
 use Ray\MediaQuery\Annotation\DbQuery;
 
-// ドメインオブジェクト — 不変スナップショット
+// ドメインオブジェクト: 不変スナップショット
 final class UserAccount
 {
     public function __construct(
@@ -184,7 +184,7 @@ final class UserAccount
     }
 }
 
-// リポジトリ — SQLは var/sql/user.sql に置く
+// リポジトリ: SQLは var/sql/user.sql に置く
 // UserFactoryで行をUserAccountにハイドレートする（ファクトリの詳細はBDR_PATTERN.md参照）
 interface UserRepositoryInterface
 {
@@ -192,7 +192,7 @@ interface UserRepositoryInterface
     public function getUser(int $id): UserAccount;
 }
 
-// リソース — SQL 1つにつき1リソース
+// リソース: SQL 1つにつき1リソース
 class User extends ResourceObject
 {
     public function __construct(private UserRepositoryInterface $repo)
@@ -207,7 +207,7 @@ class User extends ResourceObject
     }
 }
 
-// 集約リソース — `#[Embed]` がAsyncLinkerで自動的に並列化される
+// 集約リソース: `#[Embed]` がAsyncLinkerで自動的に並列化される
 class UserDashboard extends ResourceObject
 {
     #[Embed(rel: 'user',     src: 'app://self/user{?id}')]
