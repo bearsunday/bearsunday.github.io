@@ -38,7 +38,7 @@ composer require bear/async
 | 用途 | エントリポイント | ランタイム設定 |
 |-----|-----|-----|
 | PHP-FPM / Apache（埋め込みリソースあり） | `bin/async.php` | ライブラリの`bootstrap.php`が`AppModule`に並列ランタイムを重ねる |
-| Swoole HTTPサーバー | `bin/swoole.php` | `AsyncSwooleModule`を`AppModule`にインストール |
+| Swoole HTTPサーバー | `bin/swoole.php` | `swoole`コンテキストモジュールが`AsyncSwooleModule`をインストールする。`AppModule`は変えない |
 
 | | ext-parallel | ext-swoole / ext-openswoole |
 |---|---|---|
@@ -102,25 +102,26 @@ PHP-FPM / Apacheでは`parallel\Runtime`のプールはプロセスの状態と�
 
 すでにSwoole HTTPサーバー上で稼働しており、高い並行性能を求めるアプリケーション向けのランタイム環境です。
 
-ext-parallelはワーカー（別スレッド）で動作するため別エントリポイントから選択しますが、ext-swooleは同一サーバープロセス内で動作するため、アプリケーションモジュールとしてインストールします。
+ext-parallelはワーカースレッドで動くので別エントリポイントで選びます。ext-swooleはサーバープロセスの中で動くので、コンテキスト文字列で選びます。`swoole`コンテキストモジュールを追加し、`prod-swoole-hal-api-app`のようなコンテキストで起動します。`AppModule`はそのままで、開発時は`bin/app.php`と`hal-api-app`で今までどおり逐次実行できます。
 
 ```php
+namespace MyVendor\MyApp\Module;
+
 use BEAR\Async\Module\AsyncSwooleModule;
 use BEAR\Async\Module\PdoPoolEnvModule;
-use BEAR\Package\PackageModule;
+use Ray\Di\AbstractModule;
 
-class AppModule extends AbstractModule
+final class SwooleModule extends AbstractModule
 {
     protected function configure(): void
     {
         $this->install(new AsyncSwooleModule());
-        $this->install(new PackageModule());
         $this->install(new PdoPoolEnvModule('PDO_DSN', 'PDO_USER', 'PDO_PASSWORD'));
     }
 }
 ```
 
-`AsyncSwooleModule`は`PackageModule`より先にインストールします。Ray.Diは最初に登録された束縛を採用するので、順序が逆だとフレームワーク側の逐次実行の`LinkCrawler`と`EmbedInterceptor`が残り、`#[Embed]`は何も告げずに逐次実行になります。
+コンテキストモジュールは`AppModule`を外側から包むので、その束縛はフレームワーク側の逐次実行の`LinkCrawler`と`EmbedInterceptor`より優先されます。代わりに`AsyncSwooleModule`を`AppModule`の中にインストールしないでください。Ray.Diは最初に登録された束縛を採用するため、`PackageModule`の後にインストールすると非同期の束縛は何も告げずに捨てられます。
 
 Swooleサーバーはコンパイル済みインジェクターで動かします。リフレクションで解決する`Injector`は解決中の状態をプロセス全体で共有しているため、provider内でコルーチンが待ちに入る（プールの接続待ちなど）と別のコルーチンが同じ状態に入り込み、循環していない連なりで`CircularDependency`が投げられます。`BEAR\Package\Injector`から起動して本番コンテキストではRay.Compilerの`CompiledInjector`を受け取り、サーバーがリクエストを受け付ける前に`warmup()`を呼んでコルーチンが1つしかないうちにsingletonを作り切ります。手順は[`demo/bin/swoole.php`](https://github.com/bearsunday/BEAR.Async/blob/1.x/demo/bin/swoole.php)に、契約は[Ray.Di: コルーチンサーバー](https://ray-di.github.io/manuals/1.0/ja/performance_boost.html)にあります。
 
@@ -198,7 +199,7 @@ BEAR.AsyncリポジトリにはSync・ext-parallel・Swooleの動作を比較で
 | ランタイム環境 | 必要なもの | アプリケーション側の変更 |
 |-----|-----|-----|
 | ext-parallel | ZTS PHP + ext-parallel | `bin/async.php`を追加 |
-| ext-swoole | ext-swoole または ext-openswoole | `AsyncSwooleModule`をインストール、`bin/swoole.php`を使用 |
+| ext-swoole | ext-swoole または ext-openswoole | `swoole`コンテキストモジュールを追加、`bin/swoole.php`を使用 |
 
 ## SQLリソースの並列化（BDR + `#[Embed]`）
 

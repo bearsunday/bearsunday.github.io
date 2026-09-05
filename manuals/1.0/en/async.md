@@ -38,7 +38,7 @@ Choose a runtime that matches your server setup.
 | Use case | Entrypoint | Runtime setup |
 |---|---|---|
 | PHP-FPM / Apache (with embedded resources) | `bin/async.php` | the library `bootstrap.php` overlays the parallel runtime on `AppModule` |
-| Swoole HTTP Server | `bin/swoole.php` | install `AsyncSwooleModule` in `AppModule` |
+| Swoole HTTP Server | `bin/swoole.php` | a `swoole` context module installs `AsyncSwooleModule`; `AppModule` is unchanged |
 
 | | ext-parallel | ext-swoole / ext-openswoole |
 |---|---|---|
@@ -102,25 +102,26 @@ Arguments and return values that cross the thread boundary must be copyable: sca
 
 A runtime for applications already running on a Swoole HTTP server and aiming for high concurrency.
 
-Because ext-parallel runs in workers (separate threads), it is selected via a separate entrypoint. ext-swoole, on the other hand, runs inside the same server process, so it is installed as an application module.
+ext-parallel runs in worker threads, so it is selected by a separate entrypoint. ext-swoole runs inside the server process, so it is selected by the context string: add a `swoole` context module and boot with a context such as `prod-swoole-hal-api-app`. `AppModule` stays as it is, and `bin/app.php` with `hal-api-app` still runs sequentially for development.
 
 ```php
+namespace MyVendor\MyApp\Module;
+
 use BEAR\Async\Module\AsyncSwooleModule;
 use BEAR\Async\Module\PdoPoolEnvModule;
-use BEAR\Package\PackageModule;
+use Ray\Di\AbstractModule;
 
-class AppModule extends AbstractModule
+final class SwooleModule extends AbstractModule
 {
     protected function configure(): void
     {
         $this->install(new AsyncSwooleModule());
-        $this->install(new PackageModule());
         $this->install(new PdoPoolEnvModule('PDO_DSN', 'PDO_USER', 'PDO_PASSWORD'));
     }
 }
 ```
 
-Install `AsyncSwooleModule` before `PackageModule`. Ray.Di keeps the first binding it sees, so in the reverse order the framework's sequential `LinkCrawler` and `EmbedInterceptor` win and `#[Embed]` silently runs sequentially.
+A context module wraps `AppModule`, so its bindings take precedence over the framework's sequential `LinkCrawler` and `EmbedInterceptor`. Do not install `AsyncSwooleModule` inside `AppModule` instead: Ray.Di keeps the first binding, and installed after `PackageModule` the async bindings are silently dropped.
 
 Run the Swoole server on the compiled injector. The reflective `Injector` shares its resolution state across the whole process; when a coroutine suspends inside a provider (waiting for a pooled connection, say), another coroutine enters that state and fails with a `CircularDependency` whose chain is not circular. Boot through `BEAR\Package\Injector` so production contexts get Ray.Compiler's `CompiledInjector`, and call its `warmup()` before the server accepts requests so every singleton is built while there is still a single coroutine. [`demo/bin/swoole.php`](https://github.com/bearsunday/BEAR.Async/blob/1.x/demo/bin/swoole.php) shows the sequence; see [Ray.Di: Coroutine servers](https://ray-di.github.io/manuals/1.0/en/performance_boost.html) for the contract.
 
@@ -198,7 +199,7 @@ Each runtime requires the corresponding PHP extension.
 | Runtime | Requires | Application-side change |
 |---|---|---|
 | ext-parallel | ZTS PHP + ext-parallel | add `bin/async.php` |
-| ext-swoole | ext-swoole or ext-openswoole | install `AsyncSwooleModule`, use `bin/swoole.php` |
+| ext-swoole | ext-swoole or ext-openswoole | add a `swoole` context module, use `bin/swoole.php` |
 
 ## SQL resources with BDR + `#[Embed]`
 
