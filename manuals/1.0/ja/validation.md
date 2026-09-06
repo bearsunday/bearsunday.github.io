@@ -204,7 +204,7 @@ try {
         echo $error->message;         // 人間が読めるメッセージ
     }
 
-    // フィールド別にグループ化 — APIエラーレスポンス構築に便利
+    // フィールド別にグループ化: APIエラーレスポンス構築に便利
     $byField = $errors->byProperty(); // array<string, list<JsonSchemaError>>
 
     // テンプレートで一括フォーマット
@@ -224,8 +224,8 @@ BEAR.Sunday 1.x のデフォルト `ThrowableHandler` は `JsonSchemaRequestExce
 
 適切なレスポンス形式はコンテキストによって異なります。
 
-- **API / JSON コンテキスト** — JSON エラーボディ（例: `{"code": 400, "message": "..."}`)を返す
-- **HTML コンテキスト** — ブラウザユーザー向けに HTML エラーページをレンダリングする
+- **API / JSON コンテキスト**: JSON エラーボディ（例: `{"code": 400, "message": "..."}`）を返す
+- **HTML コンテキスト**: ブラウザユーザー向けに HTML エラーページをレンダリングする
 
 本番アプリケーションでは、通常、各コンテキストに応じてデフォルトハンドラーをオーバーライドします。`AppThrowableHandler`（JSON）と `HtmlThrowableHandler`（HTML）を共有の `ExceptionStatusMapper` で使い分けるリファレンス実装は [BEAR.Examples](https://github.com/bearsunday/BEAR.Examples) を参照してください。
 

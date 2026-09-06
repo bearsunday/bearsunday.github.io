@@ -168,8 +168,8 @@ interface TodoRepositoryInterface
 }
 
 $affected = $todoRepo->delete($id);
-$affected->count;        // int — 影響を受けた行数
-$affected->isAffected(); // bool — count > 0 のときtrue
+$affected->count;        // int: 影響を受けた行数
+$affected->isAffected(); // bool: count > 0 のときtrue
 ```
 
 SQLファイルに複数のステートメントが含まれる場合、`AffectedRows`は**最後に実行されたステートメントの結果**を表します。
@@ -193,8 +193,8 @@ interface TodoAddInterface
 }
 
 $inserted = $todoAdd->addReturning('ドキュメント作成');
-$inserted->values;  // array<string, mixed> — ドライバーにバインドされた解決済み値
-$inserted->id;      // ?string — auto-increment ID（採番されない場合はnull）
+$inserted->values;  // array<string, mixed>: ドライバーにバインドされた解決済み値
+$inserted->id;      // ?string: auto-increment ID（採番されない場合はnull）
 ```
 
 `$inserted->id`はドライバーが`false` / `''` / `'0'`を返した場合、`null`に正規化されます。
@@ -251,8 +251,8 @@ interface ArticleRepositoryInterface
 
 Ray.MediaQuery の実行可能な例:
 
-- [`Articles`](https://github.com/ray-di/Ray.MediaQuery/blob/1.1.0/tests/Fake/Result/Articles.php) — `PostQueryContext::$rows` をラップするコレクション
-- [`ArticlesInterface`](https://github.com/ray-di/Ray.MediaQuery/blob/1.1.0/tests/Fake/Queries/ArticlesInterface.php) — 連想配列、docblock による hydrate、`factory:` による hydrate の宣言例
+- [`Articles`](https://github.com/ray-di/Ray.MediaQuery/blob/1.1.0/tests/Fake/Result/Articles.php): `PostQueryContext::$rows` をラップするコレクション
+- [`ArticlesInterface`](https://github.com/ray-di/Ray.MediaQuery/blob/1.1.0/tests/Fake/Queries/ArticlesInterface.php): 連想配列、docblock による hydrate、`factory:` による hydrate の宣言例
 
 > なお、`AffectedRows` / `InsertedRow` も同じ `PostQueryInterface` の実装です。DML 後に独自の集計や監査ログを伴う結果型が欲しい場合は、同じ仕組みで自作できます。
 
@@ -265,11 +265,11 @@ Ray.MediaQuery の実行可能な例:
 
 応用的な戻り値型:
 
-- `MyColl`（`PostQueryInterface` 実装）— 独自の型付きコレクションラッパー
-- `PagesInterface` + `#[Pager]` — ページネーション
-- `AffectedRows` — DML の影響行数
-- `InsertedRow` — DML の採番ID + 解決済み値
-- `void` — DML の実行のみ
+- `MyColl`（`PostQueryInterface` 実装）: 独自の型付きコレクションラッパー
+- `PagesInterface` + `#[Pager]`: ページネーション
+- `AffectedRows`: DML の影響行数
+- `InsertedRow`: DML の採番ID + 解決済み値
+- `void`: DML の実行のみ
 
 ## パラメーター
 

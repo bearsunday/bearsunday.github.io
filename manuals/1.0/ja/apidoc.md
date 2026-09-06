@@ -164,7 +164,7 @@ ALPSプロファイルはAPIの語彙を定義します。定義を集中させ�
 
 コードこそが唯一の信頼できる情報源です。アプリケーションから生成されるドキュメントは実装と決して乖離しません。
 
-[llms.txt](https://llmstxt.org/)はAIが読み取れるアプリケーション概要を提供します。AIエージェントがアプリケーションに触れると、コードから直接生成されたこの単一ドキュメントを通じて全体構造を素早く把握できます。エンドポイントを列挙する一般的なAPIリファレンスとは異なり、llms.txtはDan Klynの[情報アーキテクチャフレームワーク](https://understandinggroup.com/ia-theory/explaining-information-architecture)—Ontology、Taxonomy、Choreography—に従って完全な情報アーキテクチャを捉えます。ALPSの語彙意味論とJSON Schemaの情報モデルと組み合わせることで、AIエージェントはオペレーションだけでなく、その背後にある意味と構造を理解できます。
+[llms.txt](https://llmstxt.org/)はAIが読み取れるアプリケーション概要を提供します。AIエージェントがアプリケーションに触れると、コードから直接生成されたこの単一ドキュメントを通じて全体構造を素早く把握できます。エンドポイントを列挙する一般的なAPIリファレンスとは異なり、llms.txtはDan Klynの[情報アーキテクチャフレームワーク](https://understandinggroup.com/ia-theory/explaining-information-architecture)（Ontology、Taxonomy、Choreography）に従って完全な情報アーキテクチャを捉えます。ALPSの語彙意味論とJSON Schemaの情報モデルと組み合わせることで、AIエージェントはオペレーションだけでなく、その背後にある意味と構造を理解できます。
 
 ## リファレンス
 

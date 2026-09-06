@@ -51,9 +51,9 @@ class AppModule extends AbstractAppModule
 }
 ```
 
-* `foo` — インポート先を指すホスト名。URIの`app://foo/`に対応します。
-* `MyVendor\Weekday` — インポートするアプリケーション名（namespace）
-* `prod-app` — インポートするアプリケーションを実行するコンテキスト
+* `foo`: インポート先を指すホスト名。URIの`app://foo/`に対応します。
+* `MyVendor\Weekday`: インポートするアプリケーション名（namespace）
+* `prod-app`: インポートするアプリケーションを実行するコンテキスト
 
 コンテキストをホスト側とは独立して指定できることに注目してください。自身が開発コンテキストで動作していても、インポートしたアプリケーションは`prod-app`の束縛で動作させることができます。アプリケーションごとにDIとAOPの構成が完結しているBEARだからこそ可能な合成です。[^2]
 
