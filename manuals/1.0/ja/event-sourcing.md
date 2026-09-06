@@ -91,7 +91,7 @@ request="POST app://self/orders?order_id=O-1000"
 
 ## イベントとは何か
 
-`Event` が運ぶのは `uri`・`method`・`params`・`timestamp`・`result`、そして決定的な `id`(method、uri、UTC に正規化した timestamp、キーでソートした params の sha256)です。同じログを 2 回抽出すると同じ id が出ます。ストアの冪等性はこの同一性が支えています。
+`Event` が運ぶのは `uri`、`method`、`params`、`timestamp`、`result`、そして決定的な `id`(method、uri、UTC に正規化した timestamp、キーでソートした params の sha256)です。同じログを 2 回抽出すると同じ id が出ます。ストアの冪等性はこの同一性が支えています。
 
 既定で対象になるのは状態を変えるメソッド(`POST`/`PUT`/`PATCH`/`DELETE`)です。ルートの `GET` は opt-in の読み取りポリシーを入れたときだけ対象になります。
 
@@ -119,7 +119,7 @@ $orderEvents = new CallbackFilterIterator(
 
 ## イベントの保存
 
-`EventStoreInterface` は小さな永続化ポート(`append`・`appendAll`・`all`)で、ランタイムフックではありません。append は `Event::$id` ごとに冪等なので、バッチをリトライしても事実は重複しません。テストには `InMemoryEventStore` を、SQL には Ray.MediaQuery 経由の `MediaQueryEventStore` を使います。データベースはアプリケーションが所有します。
+`EventStoreInterface` は小さな永続化ポート(`append`、`appendAll`、`all`)で、ランタイムフックではありません。append は `Event::$id` ごとに冪等なので、バッチをリトライしても事実は重複しません。テストには `InMemoryEventStore` を、SQL には Ray.MediaQuery 経由の `MediaQueryEventStore` を使います。データベースはアプリケーションが所有します。
 
 ```php
 use BEAR\EventSourcing\EventStoreInterface;
