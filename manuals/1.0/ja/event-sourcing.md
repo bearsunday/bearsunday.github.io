@@ -13,7 +13,7 @@ permalink: /manuals/1.0/ja/event-sourcing.html
 Semantic Logger observations -> Events -> optional EventStore
 ```
 
-イベントはどれもリソース操作 — `POST app://self/users` のような `uri` への `method` — なので、同じストリームがそのまま監査履歴になります。何が、いつ、どのリソースに起きたか。
+イベントはどれもリソース操作(`POST app://self/users` のような `uri` への `method`)なので、同じストリームがそのまま監査履歴になります。何が、いつ、どのリソースに起きたか。
 
 ## インストール
 
@@ -25,9 +25,9 @@ composer require bear/event-sourcing
 
 ## 記録と観測
 
-ログとイベントストリームは別の問いに答えます。イベントストリームが記録するのは**再現**できるもの — 境界の書き込みリクエスト、つまり再生が再実行する入力です。ログが観測するのは**起きた**こと — 読み取り・失敗・入れ子のリクエスト・所要時間まで、すべてのノードです。透明性とデバッグはこちらが担います。
+ログとイベントストリームは別の問いに答えます。イベントストリームが記録するのは**再現**できるもの: 境界の書き込みリクエスト、つまり再生が再実行する入力です。ログが観測するのは**起きた**こと: 読み取り・失敗・入れ子のリクエスト・所要時間まで、すべてのノードです。透明性とデバッグはこちらが担います。
 
-だから抽出はルートのエントリだけを取ります。handler の中で `PUT app://self/inventory` を発行する `POST app://self/orders` からは、イベントが 1 つ — POST だけ — 生まれます。再生で POST を再実行すれば handler がもう一度 PUT を発行するので、PUT まで記録してあると再生で二重に適用されてしまう。入れ子の PUT は観測としてログに残ります。
+だから抽出はルートのエントリだけを取ります。handler の中で `PUT app://self/inventory` を発行する `POST app://self/orders` から生まれるイベントは、POST の 1 つだけです。再生で POST を再実行すれば handler がもう一度 PUT を発行するので、PUT まで記録してあると再生で二重に適用されてしまう。入れ子の PUT は観測としてログに残ります。
 
 再実行による再生は、パッケージが前提にする(しかし強制はしない)2 つの条件の上に成り立ちます。
 
@@ -91,7 +91,7 @@ request="POST app://self/orders?order_id=O-1000"
 
 ## イベントとは何か
 
-`Event` が運ぶのは `uri`・`method`・`params`・`timestamp`・`result`、そして決定的な `id` — method、uri、UTC に正規化した timestamp、キーでソートした params の sha256 です。同じログを 2 回抽出すると同じ id が出ます。ストアの冪等性はこの同一性が支えています。
+`Event` が運ぶのは `uri`・`method`・`params`・`timestamp`・`result`、そして決定的な `id`(method、uri、UTC に正規化した timestamp、キーでソートした params の sha256)です。同じログを 2 回抽出すると同じ id が出ます。ストアの冪等性はこの同一性が支えています。
 
 既定で対象になるのは状態を変えるメソッド(`POST`/`PUT`/`PATCH`/`DELETE`)です。ルートの `GET` は opt-in の読み取りポリシーを入れたときだけ対象になります。
 
@@ -166,6 +166,6 @@ $this->bind(SemanticLoggerInterface::class)->annotatedWith(CacheLog::class)->toI
 
 ## デモとスキーマ
 
-すべてのコンテキストが自分の JSON Schema を `schemaUrl` で名乗ります。正典のスキーマは [bearsunday.github.io/BEAR.EventSourcing/schemas](https://bearsunday.github.io/BEAR.EventSourcing/schemas/) で公開されています。リポジトリには実走するウォークスルーが入っていて、`composer observe` が実アプリケーションを端から端まで動かします — 入れ子の書き込み、ボディの外部化、木の描画、抽出、決定的 id、2 つのストア、再生、そして契約が壊れるとデモ自体が落ちるスキーマ検証まで。
+すべてのコンテキストが自分の JSON Schema を `schemaUrl` で名乗ります。正典のスキーマは [bearsunday.github.io/BEAR.EventSourcing/schemas](https://bearsunday.github.io/BEAR.EventSourcing/schemas/) で公開されています。リポジトリには実走するウォークスルーが入っていて、`composer observe` が実アプリケーションを端から端まで動かします。入れ子の書き込み、ボディの外部化、木の描画、抽出、決定的 id、2 つのストア、再生、そして契約が壊れるとデモ自体が落ちるスキーマ検証までを 1 回の実行で通します。
 
 worker ランタイムでの flush の規則、既存の Ray.MediaQuery 設定との `#[SqlDir]` の共有、BEAR.Sunday コンテキスト内での配線は [README](https://github.com/bearsunday/BEAR.EventSourcing) にあります。
