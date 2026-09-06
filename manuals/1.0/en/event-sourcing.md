@@ -13,7 +13,7 @@ permalink: /manuals/1.0/en/event-sourcing.html
 Semantic Logger observations -> Events -> optional EventStore
 ```
 
-Every event is a resource operation — a `method` on a `uri`, like `POST app://self/users` — so the same stream doubles as an audit history: what happened, when, to which resource.
+Every event is a resource operation (a `method` on a `uri`, like `POST app://self/users`), so the same stream doubles as an audit history: what happened, when, to which resource.
 
 ## Installation
 
@@ -25,7 +25,7 @@ The core requires only `koriym/semantic-logger` and `ray/di`. Two features are o
 
 ## Recording and observation
 
-The log and the event stream answer different questions. The event stream records what can be **reproduced**: the boundary write requests, the input a replay re-executes. The log observes what **happened**: every node — reads, failures, nested requests, durations — for transparency and debugging.
+The log and the event stream answer different questions. The event stream records what can be **reproduced**: the boundary write requests, the input a replay re-executes. The log observes what **happened**: every node (reads, failures, nested requests, durations) for transparency and debugging.
 
 Extraction therefore takes root entries only. A `POST app://self/orders` whose handler issues `PUT app://self/inventory` yields one event, the POST. Replaying it re-executes the handler, which issues the PUT again; had the PUT been recorded as well, replay would apply it twice. The nested PUT stays in the log, as observation.
 
@@ -86,7 +86,7 @@ $injector = new Injector(new DevLogModule(
 ));
 ```
 
-Rendered as a tree, an observed request reads as intent in, result out — a resource calling a resource nests as parent and child:
+Rendered as a tree, an observed request reads as intent in, result out. A resource calling a resource nests as parent and child:
 
 ```text
 request="POST app://self/orders?order_id=O-1000"
@@ -97,7 +97,7 @@ request="POST app://self/orders?order_id=O-1000"
 
 ## What is an event
 
-An `Event` carries `uri`, `method`, `params`, `timestamp`, `result`, and a deterministic `id` — a sha256 of method, uri, UTC-normalized timestamp, and key-sorted params. Extracting the same log twice yields the same ids; that identity is what makes stores idempotent.
+An `Event` carries `uri`, `method`, `params`, `timestamp`, `result`, and a deterministic `id` (a sha256 of method, uri, UTC-normalized timestamp, and key-sorted params). Extracting the same log twice yields the same ids; that identity is what makes stores idempotent.
 
 State-changing methods (`POST`/`PUT`/`PATCH`/`DELETE`) qualify by default. A root `GET` qualifies only under the opt-in read policy:
 
@@ -112,7 +112,7 @@ $this->install(new EventSourcingModule(
 
 ## Filtering and replay
 
-`Events` is a countable, iterable collection with no query methods — select with PHP's standard iterators:
+`Events` is a countable, iterable collection with no query methods; select with PHP's standard iterators:
 
 ```php
 use BEAR\EventSourcing\Event;
@@ -131,7 +131,7 @@ The SQL store uses the optional `ray/media-query` and `ray/aura-sql-module`:
 composer require ray/media-query ray/aura-sql-module
 ```
 
-`EventStoreInterface` is a small persistence port (`append`, `appendAll`, `all`), not a runtime hook. Appending is idempotent per `Event::$id`, so retrying a batch never duplicates facts. Use `InMemoryEventStore` for tests; use `MediaQueryEventStore` for SQL through Ray.MediaQuery — the database stays application-owned:
+`EventStoreInterface` is a small persistence port (`append`, `appendAll`, `all`), not a runtime hook. Appending is idempotent per `Event::$id`, so retrying a batch never duplicates facts. Use `InMemoryEventStore` for tests; use `MediaQueryEventStore` for SQL through Ray.MediaQuery, where the database stays application-owned:
 
 ```php
 use BEAR\EventSourcing\EventStoreInterface;
@@ -157,7 +157,7 @@ final class AppModule extends AbstractModule
 }
 ```
 
-Apply `sql/event_store/schema.sql` with your migration tool first; `event_id` is UNIQUE — that constraint is what makes appends idempotent. `appendAll` is not atomic, so wrap a batch in your own transaction when you need all-or-nothing.
+Apply `sql/event_store/schema.sql` with your migration tool first; `event_id` is UNIQUE: that constraint is what makes appends idempotent. `appendAll` is not atomic, so wrap a batch in your own transaction when you need all-or-nothing.
 
 ## One tree with BEAR.QueryRepository
 
@@ -174,10 +174,10 @@ $this->install(new DevLogModule($bodyDir, logger: $logger, module: $appModule));
 $this->bind(SemanticLoggerInterface::class)->annotatedWith(CacheLog::class)->toInstance($logger);
 ```
 
-Extraction stays safe in the merged tree — only `resource_request` entries become events, so cache scopes are never misread as state changes.
+Extraction stays safe in the merged tree: only `resource_request` entries become events, so cache scopes are never misread as state changes.
 
 ## Demo and schemas
 
-Every context names its JSON Schema (`schemaUrl`); the canonical files are published at [bearsunday.github.io/BEAR.EventSourcing/schemas](https://bearsunday.github.io/BEAR.EventSourcing/schemas/). The repository ships a live walkthrough — `composer observe` runs a real application end to end: nested writes, body externalization, tree rendering, extraction, deterministic ids, both stores, replay, and schema validation that fails the demo on a contract break.
+Every context names its JSON Schema (`schemaUrl`); the canonical files are published at [bearsunday.github.io/BEAR.EventSourcing/schemas](https://bearsunday.github.io/BEAR.EventSourcing/schemas/). The repository ships a live walkthrough. `composer observe` runs a real application end to end: nested writes, body externalization, tree rendering, extraction, deterministic ids, both stores, replay, and schema validation that fails the demo on a contract break.
 
 See the [README](https://github.com/bearsunday/BEAR.EventSourcing) for operational notes: worker-runtime flush rules, sharing `#[SqlDir]` with an existing Ray.MediaQuery setup, and wiring inside a BEAR.Sunday context.
