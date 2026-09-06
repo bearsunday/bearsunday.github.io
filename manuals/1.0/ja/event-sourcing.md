@@ -36,6 +36,12 @@ composer require bear/event-sourcing
 
 ## リソース実行の観測
 
+ブリッジには optional の `bear/resource` を入れます。
+
+```bash
+composer require bear/resource
+```
+
 `ResourceObservationModule` は実物の `InvokerInterface` を装飾し、リソース呼び出し 1 回につき open/close のペアを 1 つ書きます。
 
 ```php
@@ -57,12 +63,12 @@ $log = $semanticLogger->flush();
 $events = (new SemanticLogExtractor())->extract($log);
 ```
 
-flush -> 抽出 -> (必要なら)保存 を 1 呼び出しに束ねるのが `EventCollector` です。リクエスト終端の handler から呼びます。
+flush -> 抽出 -> (必要なら)保存 を 1 呼び出しに束ねるのが `EventCollector` です。リクエスト終端の handler から呼びます。第 3 引数に `EventStoreInterface` を渡すと保存まで行います。
 
 ```php
 use BEAR\EventSourcing\EventCollector;
 
-$collect = new EventCollector($logger, $extractor, $store); // store は省略可
+$collect = new EventCollector($logger, $extractor);
 
 $events = $collect(); // リクエストごとに 1 回、境界で
 ```
@@ -118,6 +124,12 @@ $orderEvents = new CallbackFilterIterator(
 ```
 
 ## イベントの保存
+
+SQL ストアには optional の `ray/media-query` と `ray/aura-sql-module` を入れます。
+
+```bash
+composer require ray/media-query ray/aura-sql-module
+```
 
 `EventStoreInterface` は小さな永続化ポート(`append`、`appendAll`、`all`)で、ランタイムフックではありません。append は `Event::$id` ごとに冪等なので、バッチをリトライしても事実は重複しません。テストには `InMemoryEventStore` を、SQL には Ray.MediaQuery 経由の `MediaQueryEventStore` を使います。データベースはアプリケーションが所有します。
 

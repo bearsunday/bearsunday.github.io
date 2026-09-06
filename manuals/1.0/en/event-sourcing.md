@@ -36,6 +36,12 @@ Replay by re-execution rests on two conditions the package assumes but does not 
 
 ## Observing resource execution
 
+The bridge uses the optional `bear/resource`:
+
+```bash
+composer require bear/resource
+```
+
 `ResourceObservationModule` decorates the real `InvokerInterface` and writes one open/close pair per resource invocation:
 
 ```php
@@ -57,12 +63,12 @@ $log = $semanticLogger->flush();
 $events = (new SemanticLogExtractor())->extract($log);
 ```
 
-`EventCollector` packages flush -> extract -> optional append into one call for a request-end handler:
+`EventCollector` packages flush -> extract -> optional append into one call for a request-end handler. Pass an `EventStoreInterface` as the third argument to append as well:
 
 ```php
 use BEAR\EventSourcing\EventCollector;
 
-$collect = new EventCollector($logger, $extractor, $store); // store is optional
+$collect = new EventCollector($logger, $extractor);
 
 $events = $collect(); // once per request, at the boundary
 ```
@@ -118,6 +124,12 @@ $orderEvents = new CallbackFilterIterator(
 ```
 
 ## Storing events
+
+The SQL store uses the optional `ray/media-query` and `ray/aura-sql-module`:
+
+```bash
+composer require ray/media-query ray/aura-sql-module
+```
 
 `EventStoreInterface` is a small persistence port (`append`, `appendAll`, `all`), not a runtime hook. Appending is idempotent per `Event::$id`, so retrying a batch never duplicates facts. Use `InMemoryEventStore` for tests; use `MediaQueryEventStore` for SQL through Ray.MediaQuery — the database stays application-owned:
 
