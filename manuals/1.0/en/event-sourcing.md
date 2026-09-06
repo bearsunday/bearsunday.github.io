@@ -13,7 +13,7 @@ permalink: /manuals/1.0/en/event-sourcing.html
 Semantic Logger observations -> Events -> optional EventStore
 ```
 
-Every event is a resource operation (a `method` on a `uri`, like `POST app://self/users`), so the stream doubles as an audit history of the recorded state changes: which write, when, to which resource. The complete observation history, reads and failures included, is the log's job.
+Every event is a resource operation (a `method` on a `uri`, like `POST app://self/users`), so the stream doubles as an audit history of the recorded state changes: which write occurred, when, and to which resource. The complete observation history, reads and failures included, is the log's job.
 
 ## Installation
 

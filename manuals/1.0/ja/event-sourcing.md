@@ -13,7 +13,7 @@ permalink: /manuals/1.0/ja/event-sourcing.html
 Semantic Logger observations -> Events -> optional EventStore
 ```
 
-イベントはどれもリソース操作(`POST app://self/users` のような `uri` への `method`)なので、ストリームは記録された状態変更の監査履歴になります。どの書き込みが、いつ、どのリソースに。読み取りや失敗まで含めた完全な観測履歴は、ストアではなくログが持ちます。
+イベントはどれもリソース操作(`POST app://self/users` のような `uri` への `method`)なので、ストリームは記録された状態変更の監査履歴になります。どの書き込みが、いつ、どのリソースに起きたか。読み取りや失敗まで含めた完全な観測履歴は、ストアではなくログが持ちます。
 
 ## インストール
 
