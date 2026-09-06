@@ -13,7 +13,7 @@ permalink: /manuals/1.0/ja/event-sourcing.html
 Semantic Logger observations -> Events -> optional EventStore
 ```
 
-イベントはどれもリソース操作(`POST app://self/users` のような `uri` への `method`)なので、同じストリームがそのまま監査履歴になります。何が、いつ、どのリソースに起きたか。
+イベントはどれもリソース操作(`POST app://self/users` のような `uri` への `method`)なので、ストリームは記録された状態変更の監査履歴になります。どの書き込みが、いつ、どのリソースに。読み取りや失敗まで含めた完全な観測履歴は、ストアではなくログが持ちます。
 
 ## インストール
 
@@ -97,7 +97,7 @@ request="POST app://self/orders?order_id=O-1000"
 
 ## イベントとは何か
 
-`Event` が運ぶのは `uri`、`method`、`params`、`timestamp`、`result`、そして決定的な `id`(method、uri、UTC に正規化した timestamp、キーでソートした params の sha256)です。同じログを 2 回抽出すると同じ id が出ます。ストアの冪等性はこの同一性が支えています。
+`Event` が運ぶのは `uri`、`method`、`params`、`timestamp`、`result`、そして決定的な `id`(method、uri、UTC に正規化した timestamp、キーでソートした params の sha256)です。同じログを 2 回抽出すると同じ id が出ます。ストアの冪等性はこの同一性が支えています。`result` は `close.context.body` から取ります。ブリッジの close コンテキストはボディの代わりに `body_ref` ポインタを記録するので、ブリッジのログから抽出したイベントの `result` は `null` です。
 
 既定で対象になるのは状態を変えるメソッド(`POST`/`PUT`/`PATCH`/`DELETE`)です。ルートの `GET` は opt-in の読み取りポリシーを入れたときだけ対象になります。
 
@@ -178,6 +178,6 @@ $this->bind(SemanticLoggerInterface::class)->annotatedWith(CacheLog::class)->toI
 
 ## デモとスキーマ
 
-すべてのコンテキストが自分の JSON Schema を `schemaUrl` で名乗ります。正典のスキーマは [bearsunday.github.io/BEAR.EventSourcing/schemas](https://bearsunday.github.io/BEAR.EventSourcing/schemas/) で公開されています。リポジトリには実走するウォークスルーが入っていて、`composer observe` が実アプリケーションを端から端まで動かします。入れ子の書き込み、ボディの外部化、木の描画、抽出、決定的 id、2 つのストア、再生、そして契約が壊れるとデモ自体が落ちるスキーマ検証までを 1 回の実行で通します。
+すべてのコンテキストが自分の JSON Schema を `schemaUrl` で名乗ります。正典のスキーマは `https://bearsunday.github.io/BEAR.EventSourcing/schemas/` の下に公開されています(例: [resource-request.json](https://bearsunday.github.io/BEAR.EventSourcing/schemas/resource-request.json))。リポジトリには実走するウォークスルーが入っていて、`composer observe` が実アプリケーションを端から端まで動かします。入れ子の書き込み、ボディの外部化、木の描画、抽出、決定的 id、2 つのストア、再生、そして契約が壊れるとデモ自体が落ちるスキーマ検証までを 1 回の実行で通します。
 
 worker ランタイムでの flush の規則、既存の Ray.MediaQuery 設定との `#[SqlDir]` の共有、BEAR.Sunday コンテキスト内での配線は [README](https://github.com/bearsunday/BEAR.EventSourcing) にあります。

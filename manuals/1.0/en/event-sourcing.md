@@ -13,7 +13,7 @@ permalink: /manuals/1.0/en/event-sourcing.html
 Semantic Logger observations -> Events -> optional EventStore
 ```
 
-Every event is a resource operation (a `method` on a `uri`, like `POST app://self/users`), so the same stream doubles as an audit history: what happened, when, to which resource.
+Every event is a resource operation (a `method` on a `uri`, like `POST app://self/users`), so the stream doubles as an audit history of the recorded state changes: which write, when, to which resource. The complete observation history, reads and failures included, is the log's job.
 
 ## Installation
 
@@ -97,7 +97,7 @@ request="POST app://self/orders?order_id=O-1000"
 
 ## What is an event
 
-An `Event` carries `uri`, `method`, `params`, `timestamp`, `result`, and a deterministic `id` (a sha256 of method, uri, UTC-normalized timestamp, and key-sorted params). Extracting the same log twice yields the same ids; that identity is what makes stores idempotent.
+An `Event` carries `uri`, `method`, `params`, `timestamp`, `result`, and a deterministic `id` (a sha256 of method, uri, UTC-normalized timestamp, and key-sorted params). Extracting the same log twice yields the same ids; that identity is what makes stores idempotent. `result` is taken from `close.context.body`; the bridge's own close context records a `body_ref` pointer instead of the body, so events extracted from a bridge log carry a `null` `result`.
 
 State-changing methods (`POST`/`PUT`/`PATCH`/`DELETE`) qualify by default. A root `GET` qualifies only under the opt-in read policy:
 
@@ -178,6 +178,6 @@ Extraction stays safe in the merged tree: only `resource_request` entries become
 
 ## Demo and schemas
 
-Every context names its JSON Schema (`schemaUrl`); the canonical files are published at [bearsunday.github.io/BEAR.EventSourcing/schemas](https://bearsunday.github.io/BEAR.EventSourcing/schemas/). The repository ships a live walkthrough. `composer observe` runs a real application end to end: nested writes, body externalization, tree rendering, extraction, deterministic ids, both stores, replay, and schema validation that fails the demo on a contract break.
+Every context names its JSON Schema (`schemaUrl`); the canonical files are published under `https://bearsunday.github.io/BEAR.EventSourcing/schemas/` (for example [resource-request.json](https://bearsunday.github.io/BEAR.EventSourcing/schemas/resource-request.json)). The repository ships a live walkthrough. `composer observe` runs a real application end to end: nested writes, body externalization, tree rendering, extraction, deterministic ids, both stores, replay, and schema validation that fails the demo on a contract break.
 
 See the [README](https://github.com/bearsunday/BEAR.EventSourcing) for operational notes: worker-runtime flush rules, sharing `#[SqlDir]` with an existing Ray.MediaQuery setup, and wiring inside a BEAR.Sunday context.
