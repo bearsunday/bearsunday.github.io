@@ -400,7 +400,7 @@ class CachedResource extends ResourceObject
 
 ## 可観測性（オブザーバビティ）
 
-BEAR.QueryRepositoryは実際の挙動を記録できます。hit/miss、何をどれだけの期間保存したか、何を無効化したか、CDNのpurgerがpurge要求を成功と報告したかです。CDNのエッジへの実際の伝播ではありません。記録は自由記述のメッセージではなく、型付きでスキーマ検証可能なツリーのログです。記録は既定でオフです。`DevQueryRepositoryLogModule`をインストールすると有効になります。インストールだけではキャッシュの挙動自体は変わりません。
+BEAR.QueryRepositoryは実際の挙動を記録できます。hit/miss、何をどれだけの期間保存したか、何を無効化したか、CDNのpurgerがpurge要求を成功と報告したかです。CDNのエッジへの実際の伝播ではありません。ログは自由記述のメッセージではなく、型付きでスキーマ検証可能なツリーです。記録は既定でオフです。`DevQueryRepositoryLogModule`をインストールすると有効になります。インストールだけではキャッシュの挙動自体は変わりません。
 
 ### 開発時
 
