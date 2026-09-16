@@ -460,7 +460,10 @@ $this->install(new DevQueryRepositoryLogModule(
 ));
 ```
 
-Use `ProdQueryRepositoryLogModule` the same way in production — `override()` in an existing app:
+`ProdQueryRepositoryLogModule` is for forensics, not monitoring: hit rates and capacity belong to
+metrics, which are cheaper and more accurate at that. Turn it on when a cache-correctness
+incident — stale content, a purge that did not land — needs an answer metrics cannot give, on a
+host where one process serves one request. `override()` it in an existing app:
 
 ```php
 use BEAR\QueryRepository\ProdQueryRepositoryLogModule;

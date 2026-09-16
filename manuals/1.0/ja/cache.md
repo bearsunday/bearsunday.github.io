@@ -421,7 +421,7 @@ $this->install(new DevQueryRepositoryLogModule(
 ));
 ```
 
-本番でも`ProdQueryRepositoryLogModule`を同じ考え方で使います——既存アプリでは`override()`:
+`ProdQueryRepositoryLogModule`は監視ではなく事後の因果究明（forensics）のためのものです——ヒット率やキャパシティは metrics の領域で、そちらの方が安価かつ正確です。古いコンテンツが見える、purgeが効かない、といったキャッシュの正しさに関わるインシデントが起き、metricsでは答えが出せないときに、1プロセスが1リクエストを処理するホストで有効化してください。既存アプリでは`override()`を使います:
 
 ```php
 use BEAR\QueryRepository\ProdQueryRepositoryLogModule;
