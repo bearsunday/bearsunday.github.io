@@ -400,7 +400,7 @@ class CachedResource extends ResourceObject
 
 ## 可観測性（オブザーバビティ）
 
-BEAR.QueryRepositoryは、hit/miss、何をどれだけの期間保存したか、何を無効化したか、CDNのpurgerがpurge要求を成功と報告したか（CDNのエッジへの実際の伝播ではありません）といった実際の挙動を、自由記述のメッセージではなく型付きでスキーマ検証可能なツリーのログとして記録できます。記録は既定でオフです。`DevQueryRepositoryLogModule`をインストールすると有効になりますが、インストールだけではキャッシュの挙動自体は変わりません。
+BEAR.QueryRepositoryは実際の挙動を記録できます。hit/miss、何をどれだけの期間保存したか、何を無効化したか、CDNのpurgerがpurge要求を成功と報告したかです。CDNのエッジへの実際の伝播ではありません。記録は自由記述のメッセージではなく、型付きでスキーマ検証可能なツリーのログです。記録は既定でオフです。`DevQueryRepositoryLogModule`をインストールすると有効になります。インストールだけではキャッシュの挙動自体は変わりません。
 
 ### 開発時
 
@@ -425,7 +425,7 @@ $this->install(new DevQueryRepositoryLogModule(
 
 ### 本番時
 
-`ProdQueryRepositoryLogModule`は監視用ではなく、事後の原因調査用です。ヒット率やキャパシティはmetricsの方が安価で正確に扱えます。古いコンテンツが見える、purgeが効かないといった、キャッシュの正しさに関わる問題が起き、metricsでは答えが出せないときに、1プロセスが1リクエストを処理するホストで有効化します。既存アプリでは同じく`override()`を使います：
+`ProdQueryRepositoryLogModule`は監視用ではなく、事後の原因調査用です。ヒット率やキャパシティはメトリクスの方が安価で正確に扱えます。古いコンテンツが見える、purgeが効かないといった問題が起きたとき、メトリクスでは答えが出せない場合に有効化します。1プロセスが1リクエストを処理するホストで使います。既存アプリでは同じく`override()`を使います：
 
 ```php
 use BEAR\QueryRepository\ProdQueryRepositoryLogModule;
