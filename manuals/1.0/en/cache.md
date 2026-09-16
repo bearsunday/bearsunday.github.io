@@ -472,6 +472,7 @@ $this->install(new DevQueryRepositoryLogModule(
 `ProdQueryRepositoryLogModule` is for forensics, not monitoring. Hit rates and capacity belong to
 metrics, which are cheaper and more accurate at that. Turn it on when a cache-correctness
 incident — stale content, a purge that did not land — needs an answer metrics cannot give.
+Override it the same way in an existing app:
 
 ```php
 use BEAR\QueryRepository\ProdQueryRepositoryLogModule;
