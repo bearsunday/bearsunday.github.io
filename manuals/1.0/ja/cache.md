@@ -402,6 +402,8 @@ class CachedResource extends ResourceObject
 
 BEAR.QueryRepositoryは実際の挙動を記録できます。記録されるのは、hit/miss、保存した内容とその期間、無効化した内容、そしてCDNのpurgerがpurge要求を成功と報告したかどうかです。purge要求の成功は、CDNのエッジへの実際の伝播を意味しません。ログは自由記述のメッセージではなく、型付きでスキーマ検証可能なツリーです。記録は既定でオフです。`DevQueryRepositoryLogModule`をインストールすると有効になります。インストールだけではキャッシュの挙動自体は変わりません。
 
+どちらのログモジュールも、1プロセスが1リクエストを処理するホスト（PHP-FPM、CLIスクリプト）を前提とします。RoadRunnerのワーカーやSwooleのコルーチン内など、それが成り立たないと判定できる場合はarmを拒否します。`error_log()`にその旨を出力したうえで、記録オフのまま動作します（[issue #179](https://github.com/bearsunday/BEAR.QueryRepository/issues/179)）。
+
 ### 開発時
 
 既に`QueryRepositoryModule`をインストール済みのアプリでは、`override()`で差し替えます。`install()`では既存の`NullSemanticLogger`のbindingが残り、記録はオフのままです。
@@ -425,7 +427,7 @@ $this->install(new DevQueryRepositoryLogModule(
 
 ### 本番時
 
-`ProdQueryRepositoryLogModule`は監視用ではなく、事後の原因調査用です。ヒット率やキャパシティはメトリクスの方が安価で正確に扱えます。古いコンテンツが見える、purgeが効かないといった問題で、メトリクスから原因が特定できないときに有効化します。1プロセスが1リクエストを処理するホストで使います。既存アプリでは同じく`override()`を使います：
+`ProdQueryRepositoryLogModule`は監視用ではなく、事後の原因調査用です。ヒット率やキャパシティはメトリクスの方が安価で正確に扱えます。古いコンテンツが見える、purgeが効かないといった問題で、メトリクスから原因が特定できないときに有効化します。既存アプリでは同じく`override()`を使います：
 
 ```php
 use BEAR\QueryRepository\ProdQueryRepositoryLogModule;
@@ -436,8 +438,6 @@ $this->override(new ProdQueryRepositoryLogModule(stream: 'php://stdout', sampleR
 mutation（書き込み）と失敗は常に保持されます。poolが書き込みを拒否したり、purgeが失敗したりしても、ほかに記録は残りません。確認できるのはこのログだけです。`sampleRate`は、問題が無かった健全セッションをN件に1件だけ残す割合です。`0`を指定するとサンプリングを無効化し、健全セッションは一切残しません。これと異なる保持ルールにしたい場合は`RetentionPolicyInterface`を自前で実装し、`override()`の後にbindしてください。writerはDI経由でこれを解決するため、アプリ側のbindingが勝ちます。
 
 `cache_hit`、`cache_miss`、`save_value`、`invalidate`、`cdn_headers`など、各エントリは自身のJSON Schemaへのリンクを持ちます。セッションはgrepではなく検証できます。
-
-`ProdQueryRepositoryLogModule`は、1プロセスが1リクエストを処理するホスト（PHP-FPM、CLIスクリプト）を前提とします。RoadRunnerのワーカーやSwooleのコルーチン内など、それが成り立たないと判定できる場合はarmを拒否します。`error_log()`にその旨を出力したうえで、記録オフのまま動作します（[issue #179](https://github.com/bearsunday/BEAR.QueryRepository/issues/179)）。
 
 ### AIエージェント向け
 

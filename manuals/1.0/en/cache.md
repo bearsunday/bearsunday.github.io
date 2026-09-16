@@ -439,6 +439,11 @@ invalidated, and whether the CDN purger reported the purge request as successful
 CDN's edge actually propagated it). Recording is off by default. Installing
 `DevQueryRepositoryLogModule` turns it on; installing it alone does not change cache behavior.
 
+Both log modules require a host where one process serves one request (PHP-FPM, a CLI script).
+Where it can prove otherwise — a RoadRunner worker, or inside a Swoole coroutine — a module
+refuses to arm, says so through `error_log()`, and recording stays off with nothing else changed
+([issue #179](https://github.com/bearsunday/BEAR.QueryRepository/issues/179)).
+
 ### Development
 
 In an app that already installs `QueryRepositoryModule`, override it. `install()` leaves the
@@ -466,8 +471,7 @@ $this->install(new DevQueryRepositoryLogModule(
 
 `ProdQueryRepositoryLogModule` is for forensics, not monitoring. Hit rates and capacity belong to
 metrics, which are cheaper and more accurate at that. Turn it on when a cache-correctness
-incident — stale content, a purge that did not land — needs an answer metrics cannot give, on a
-host where one process serves one request. Override it the same way in an existing app:
+incident — stale content, a purge that did not land — needs an answer metrics cannot give.
 
 ```php
 use BEAR\QueryRepository\ProdQueryRepositoryLogModule;
@@ -483,11 +487,6 @@ resolves it through DI, so the app's binding wins.
 
 Each entry — `cache_hit`, `cache_miss`, `save_value`, `invalidate`, `cdn_headers`, and more —
 links its own JSON Schema, so a session can be validated instead of grepped.
-
-`ProdQueryRepositoryLogModule` requires a host where one process serves one request (PHP-FPM, a
-CLI script). Where it can prove otherwise — a RoadRunner worker, or inside a Swoole coroutine — it
-refuses to arm, says so through `error_log()`, and recording stays off with nothing else changed
-([issue #179](https://github.com/bearsunday/BEAR.QueryRepository/issues/179)).
 
 ### For AI agents
 
