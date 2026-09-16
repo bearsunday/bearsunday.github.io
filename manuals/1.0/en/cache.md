@@ -444,10 +444,19 @@ use BEAR\QueryRepository\DevQueryRepositoryLogModule;
 $this->install(new DevQueryRepositoryLogModule($this->appMeta->logDir . '/query-repository'));
 ```
 
-Use `ProdQueryRepositoryLogModule` in production, with a retention policy and sample rate suited
-to your traffic. Each entry — `cache_hit`, `cache_miss`, `save_value`, `invalidate`,
-`cdn_headers`, and more — links its own JSON Schema, so a session can be validated instead of
-grepped.
+Use `ProdQueryRepositoryLogModule` in production:
+
+```php
+$this->install(new ProdQueryRepositoryLogModule(stream: 'php://stdout', sampleRate: 100));
+```
+
+Mutations and failures are always kept — a write the pool silently refused, or a purge that
+failed, has no other witness. `sampleRate` keeps 1 healthy (nothing went wrong) session in N as a
+baseline; `0` disables sampling and keeps no healthy sessions at all. To keep a different set,
+implement `RetentionPolicyInterface` and bind it after installing the module — the writer
+resolves it through DI, so the app's binding wins. Each entry — `cache_hit`, `cache_miss`,
+`save_value`, `invalidate`, `cdn_headers`, and more — links its own JSON Schema, so a session can
+be validated instead of grepped.
 
 For AI agents, [BEAR.Skills](https://github.com/bearsunday/BEAR.Skills) provides `bear-cache-log`
 (install, read and verify one session) and `bear-cache-gate` (install a persistent oracle that

@@ -408,7 +408,13 @@ use BEAR\QueryRepository\DevQueryRepositoryLogModule;
 $this->install(new DevQueryRepositoryLogModule($this->appMeta->logDir . '/query-repository'));
 ```
 
-本番では`ProdQueryRepositoryLogModule`を使い、トラフィックに応じた retention policy と sample rate を設定してください。`cache_hit`/`cache_miss`/`save_value`/`invalidate`/`cdn_headers`など、各エントリは自身のJSON Schemaへのリンクを持つため、セッションはgrepではなく検証できます。
+本番では`ProdQueryRepositoryLogModule`を使います:
+
+```php
+$this->install(new ProdQueryRepositoryLogModule(stream: 'php://stdout', sampleRate: 100));
+```
+
+mutation（書き込み）と失敗は常に保持されます——poolが黙って書き込みを拒否した、purgeが失敗した、といった事実はこのログにしか残りません。`sampleRate`は「何も問題が無かった」健全セッションをN件に1件だけ基準として残す割合で、`0`を指定するとサンプリングを無効化し健全セッションを一切残しません。これと異なる保持ルールにしたい場合は`RetentionPolicyInterface`を自前で実装し、モジュールのinstall後にbindしてください——writerはDI経由でこれを解決するため、アプリ側のbindingが勝ちます。`cache_hit`/`cache_miss`/`save_value`/`invalidate`/`cdn_headers`など、各エントリは自身のJSON Schemaへのリンクを持つため、セッションはgrepではなく検証できます。
 
 AIエージェント向けには[BEAR.Skills](https://github.com/bearsunday/BEAR.Skills)が`bear-cache-log`（セッションのインストール・読解・検証）と`bear-cache-gate`（フローごとにキャッシュの正しさを証明する常設オラクルの設置）を提供しており、いずれも`/plugin install bear-skills`から入手できます。
 
