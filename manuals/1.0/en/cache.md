@@ -433,14 +433,16 @@ See the [HTTP Cache](https://bearsunday.github.io/manuals/1.0/ja/http-cache.html
 
 ## Observability
 
-BEAR.QueryRepository can record what it actually did — a hit or a miss, what was saved and for
-how long, what was invalidated, and whether the CDN purger reported the purge request as
-successful (not whether the CDN's edge actually propagated it) — as a typed, schema-validated log
-tree instead of free-text messages. Install `DevQueryRepositoryLogModule` to turn it on —
-recording is off by default, and installing it does not change cache behavior itself.
+BEAR.QueryRepository can record what it actually did as a typed, schema-validated log tree
+instead of free-text messages: a hit or a miss, what was saved and for how long, what was
+invalidated, and whether the CDN purger reported the purge request as successful (not whether the
+CDN's edge actually propagated it). Recording is off by default. Installing
+`DevQueryRepositoryLogModule` turns it on; installing it alone does not change cache behavior.
 
-In an app that already installs `QueryRepositoryModule` — the usual case — `override()` it:
-`install()` leaves the existing `NullSemanticLogger` binding in place and recording stays off.
+### Development
+
+In an app that already installs `QueryRepositoryModule`, override it. `install()` leaves the
+existing `NullSemanticLogger` binding in place and recording stays off.
 
 ```php
 use BEAR\QueryRepository\DevQueryRepositoryLogModule;
@@ -460,10 +462,12 @@ $this->install(new DevQueryRepositoryLogModule(
 ));
 ```
 
-`ProdQueryRepositoryLogModule` is for forensics, not monitoring: hit rates and capacity belong to
+### Production
+
+`ProdQueryRepositoryLogModule` is for forensics, not monitoring. Hit rates and capacity belong to
 metrics, which are cheaper and more accurate at that. Turn it on when a cache-correctness
 incident — stale content, a purge that did not land — needs an answer metrics cannot give, on a
-host where one process serves one request. `override()` it in an existing app:
+host where one process serves one request. Override it the same way in an existing app:
 
 ```php
 use BEAR\QueryRepository\ProdQueryRepositoryLogModule;
@@ -471,19 +475,23 @@ use BEAR\QueryRepository\ProdQueryRepositoryLogModule;
 $this->override(new ProdQueryRepositoryLogModule(stream: 'php://stdout', sampleRate: 100));
 ```
 
-Mutations and failures are always kept — a write the pool silently refused, or a purge that
-failed, has no other witness. `sampleRate` keeps 1 healthy (nothing went wrong) session in N as a
-baseline; `0` disables sampling and keeps no healthy sessions at all. To keep a different set,
-implement `RetentionPolicyInterface` and bind it after overriding the module — the writer
-resolves it through DI, so the app's binding wins. Each entry — `cache_hit`, `cache_miss`,
-`save_value`, `invalidate`, `cdn_headers`, and more — links its own JSON Schema, so a session can
-be validated instead of grepped.
+Mutations and failures are always kept, because a write the pool silently refused, or a purge
+that failed, has no other witness. `sampleRate` keeps 1 healthy (nothing went wrong) session in N
+as a baseline; `0` disables sampling and keeps no healthy sessions at all. To keep a different
+set, implement `RetentionPolicyInterface` and bind it after overriding the module — the writer
+resolves it through DI, so the app's binding wins.
 
-This requires a host where one process serves one request (PHP-FPM, a CLI script). Where it can
-prove otherwise — a RoadRunner worker, or inside a Swoole coroutine — it refuses to arm, says so
-through `error_log()`, and recording stays off with nothing else changed ([issue #179](https://github.com/bearsunday/BEAR.QueryRepository/issues/179)).
+Each entry — `cache_hit`, `cache_miss`, `save_value`, `invalidate`, `cdn_headers`, and more —
+links its own JSON Schema, so a session can be validated instead of grepped.
 
-For AI agents, install [BEAR.Skills](https://github.com/bearsunday/BEAR.Skills) first:
+`ProdQueryRepositoryLogModule` requires a host where one process serves one request (PHP-FPM, a
+CLI script). Where it can prove otherwise — a RoadRunner worker, or inside a Swoole coroutine — it
+refuses to arm, says so through `error_log()`, and recording stays off with nothing else changed
+([issue #179](https://github.com/bearsunday/BEAR.QueryRepository/issues/179)).
+
+### For AI agents
+
+Install [BEAR.Skills](https://github.com/bearsunday/BEAR.Skills):
 
 ```
 /plugin marketplace add bearsunday/BEAR.Skills

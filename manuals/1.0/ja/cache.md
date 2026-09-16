@@ -400,9 +400,11 @@ class CachedResource extends ResourceObject
 
 ## 可観測性（オブザーバビティ）
 
-BEAR.QueryRepositoryは、hit/miss・何をどれだけの期間保存したか・何が無効化されたか・CDNのpurgerが「purge要求を成功と報告したか」（CDNのエッジが実際に伝播させたかではない）といった実際の挙動を、自由記述のメッセージではなく型付きでスキーマ検証可能なツリーのログとして記録できます。可観測性を有効にするには`DevQueryRepositoryLogModule`をインストールする必要があります——記録は既定でオフで、インストールしてもキャッシュの挙動そのものは変わりません。
+BEAR.QueryRepositoryは、hit/miss、何をどれだけの期間保存したか、何を無効化したか、CDNのpurgerがpurge要求を成功と報告したか（CDNのエッジへの実際の伝播ではありません）といった実際の挙動を、自由記述のメッセージではなく型付きでスキーマ検証可能なツリーのログとして記録できます。記録は既定でオフです。`DevQueryRepositoryLogModule`をインストールすると有効になりますが、インストールだけではキャッシュの挙動自体は変わりません。
 
-既に`QueryRepositoryModule`をインストール済みのアプリ（通常のケース）では`override()`を使ってください——`install()`だと既存の`NullSemanticLogger`のbindingが残り、記録はオフのままになります。
+### 開発時
+
+既に`QueryRepositoryModule`をインストール済みのアプリでは、`override()`で差し替えます。`install()`では既存の`NullSemanticLogger`のbindingが残り、記録はオフのままです。
 
 ```php
 use BEAR\QueryRepository\DevQueryRepositoryLogModule;
@@ -410,7 +412,7 @@ use BEAR\QueryRepository\DevQueryRepositoryLogModule;
 $this->override(new DevQueryRepositoryLogModule($this->appMeta->logDir . '/query-repository'));
 ```
 
-`QueryRepositoryModule`を他でインストールしていないスタンドアロンの`Injector`では、コアのキャッシュ配線も一緒に渡してください:
+`QueryRepositoryModule`をどこでもインストールしていないスタンドアロンの`Injector`では、コアのキャッシュ配線も一緒に渡します：
 
 ```php
 use BEAR\QueryRepository\QueryRepositoryModule;
@@ -421,7 +423,9 @@ $this->install(new DevQueryRepositoryLogModule(
 ));
 ```
 
-`ProdQueryRepositoryLogModule`は監視ではなく事後の因果究明（forensics）のためのものです——ヒット率やキャパシティは metrics の領域で、そちらの方が安価かつ正確です。古いコンテンツが見える、purgeが効かない、といったキャッシュの正しさに関わるインシデントが起き、metricsでは答えが出せないときに、1プロセスが1リクエストを処理するホストで有効化してください。既存アプリでは`override()`を使います:
+### 本番時
+
+`ProdQueryRepositoryLogModule`は監視用ではなく、事後の原因調査用です。ヒット率やキャパシティはmetricsの方が安価で正確に扱えます。古いコンテンツが見える、purgeが効かないといった、キャッシュの正しさに関わる問題が起き、metricsでは答えが出せないときに、1プロセスが1リクエストを処理するホストで有効化します。既存アプリでは同じく`override()`を使います：
 
 ```php
 use BEAR\QueryRepository\ProdQueryRepositoryLogModule;
@@ -429,20 +433,24 @@ use BEAR\QueryRepository\ProdQueryRepositoryLogModule;
 $this->override(new ProdQueryRepositoryLogModule(stream: 'php://stdout', sampleRate: 100));
 ```
 
-mutation（書き込み）と失敗は常に保持されます——poolが黙って書き込みを拒否した、purgeが失敗した、といった事実はこのログにしか残りません。`sampleRate`は「何も問題が無かった」健全セッションをN件に1件だけ基準として残す割合で、`0`を指定するとサンプリングを無効化し健全セッションを一切残しません。これと異なる保持ルールにしたい場合は`RetentionPolicyInterface`を自前で実装し、`override()`した後にbindしてください——writerはDI経由でこれを解決するため、アプリ側のbindingが勝ちます。`cache_hit`/`cache_miss`/`save_value`/`invalidate`/`cdn_headers`など、各エントリは自身のJSON Schemaへのリンクを持つため、セッションはgrepではなく検証できます。
+mutation（書き込み）と失敗は常に保持されます。poolが黙って書き込みを拒否した、purgeが失敗した、といった事実はこのログにしか残らないためです。`sampleRate`は、問題が無かった健全セッションをN件に1件だけ残す割合です。`0`を指定するとサンプリングを無効化し、健全セッションは一切残しません。これと異なる保持ルールにしたい場合は`RetentionPolicyInterface`を自前で実装し、`override()`の後にbindしてください。writerはDI経由でこれを解決するため、アプリ側のbindingが勝ちます。
 
-これは「1プロセスが1リクエストを処理する」ホスト（PHP-FPM、CLIスクリプト）を前提とします。RoadRunnerのワーカーやSwooleのコルーチン内など、それが成り立たないと判定できる場合はarmを拒否し、`error_log()`にその旨を出力したうえで、他は何も変えずに記録オフのまま動作します（[issue #179](https://github.com/bearsunday/BEAR.QueryRepository/issues/179)）。
+`cache_hit`、`cache_miss`、`save_value`、`invalidate`、`cdn_headers`など、各エントリは自身のJSON Schemaへのリンクを持ちます。セッションはgrepではなく検証できます。
 
-AIエージェント向けには、まず[BEAR.Skills](https://github.com/bearsunday/BEAR.Skills)をインストールします:
+`ProdQueryRepositoryLogModule`は、1プロセスが1リクエストを処理するホスト（PHP-FPM、CLIスクリプト）を前提とします。RoadRunnerのワーカーやSwooleのコルーチン内など、それが成り立たないと判定できる場合はarmを拒否します。`error_log()`にその旨を出力したうえで、記録オフのまま動作します（[issue #179](https://github.com/bearsunday/BEAR.QueryRepository/issues/179)）。
+
+### AIエージェント向け
+
+[BEAR.Skills](https://github.com/bearsunday/BEAR.Skills)をインストールします：
 
 ```
 /plugin marketplace add bearsunday/BEAR.Skills
 /plugin install bear-skills
 ```
 
-`bear-cache-log`（セッションのインストール・読解・検証）と`bear-cache-gate`（フローごとにキャッシュの正しさを証明する常設オラクルの設置）が提供されます。
+`bear-cache-log`（セッションのインストール・読解・検証）と`bear-cache-gate`（フローごとにキャッシュの正しさを証明する常設オラクルの設置）が使えるようになります。
 
-ログの全語彙とその宣言された境界については、[Why the QueryRepository Log Records Everything](https://github.com/bearsunday/BEAR.QueryRepository/blob/1.x/docs/why-the-log-records-everything.ja.md)、[Reading the Log](https://github.com/bearsunday/BEAR.QueryRepository/blob/1.x/docs/reading-the-log.ja.md)、[What the Cache Log Proves — and What It Does Not](https://github.com/bearsunday/BEAR.QueryRepository/blob/1.x/docs/what-the-log-proves.ja.md)を参照してください。
+ログの全語彙と宣言された境界は、[Why the QueryRepository Log Records Everything](https://github.com/bearsunday/BEAR.QueryRepository/blob/1.x/docs/why-the-log-records-everything.ja.md)、[Reading the Log](https://github.com/bearsunday/BEAR.QueryRepository/blob/1.x/docs/reading-the-log.ja.md)、[What the Cache Log Proves — and What It Does Not](https://github.com/bearsunday/BEAR.QueryRepository/blob/1.x/docs/what-the-log-proves.ja.md)を参照してください。
 
 ## 結論
 
