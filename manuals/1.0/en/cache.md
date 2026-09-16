@@ -447,6 +447,8 @@ $this->install(new DevQueryRepositoryLogModule($this->appMeta->logDir . '/query-
 Use `ProdQueryRepositoryLogModule` in production:
 
 ```php
+use BEAR\QueryRepository\ProdQueryRepositoryLogModule;
+
 $this->install(new ProdQueryRepositoryLogModule(stream: 'php://stdout', sampleRate: 100));
 ```
 
@@ -457,6 +459,10 @@ implement `RetentionPolicyInterface` and bind it after installing the module —
 resolves it through DI, so the app's binding wins. Each entry — `cache_hit`, `cache_miss`,
 `save_value`, `invalidate`, `cdn_headers`, and more — links its own JSON Schema, so a session can
 be validated instead of grepped.
+
+This requires a host where one process serves one request (PHP-FPM, a CLI script). Where it can
+prove otherwise — a RoadRunner worker, or inside a Swoole coroutine — it refuses to arm, says so
+through `error_log()`, and recording stays off with nothing else changed ([issue #179](https://github.com/bearsunday/BEAR.QueryRepository/issues/179)).
 
 For AI agents, [BEAR.Skills](https://github.com/bearsunday/BEAR.Skills) provides `bear-cache-log`
 (install, read and verify one session) and `bear-cache-gate` (install a persistent oracle that
