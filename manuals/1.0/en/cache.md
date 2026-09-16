@@ -431,6 +431,33 @@ class CachedResource extends ResourceObject
 
 See the [HTTP Cache](https://bearsunday.github.io/manuals/1.0/ja/http-cache.html) page for more information.
 
+## Observability
+
+BEAR.QueryRepository can record what it actually did — a hit or a miss, what was saved and for
+how long, what was invalidated and whether the CDN purge succeeded — as a typed, schema-validated
+log tree instead of free-text messages. Recording is off by default; installing a log module adds
+it without changing cache behavior.
+
+```php
+use BEAR\QueryRepository\DevQueryRepositoryLogModule;
+
+$this->install(new DevQueryRepositoryLogModule($this->appMeta->logDir . '/query-repository'));
+```
+
+Use `ProdQueryRepositoryLogModule` in production, with a retention policy and sample rate suited
+to your traffic. Each entry — `cache_hit`, `cache_miss`, `save_value`, `invalidate`,
+`cdn_headers`, and more — links its own JSON Schema, so a session can be validated instead of
+grepped.
+
+For AI agents, [BEAR.Skills](https://github.com/bearsunday/BEAR.Skills) provides `bear-cache-log`
+(install, read and verify one session) and `bear-cache-gate` (install a persistent oracle that
+proves cache correctness per flow), both via `/plugin install bear-skills`.
+
+See [Why the QueryRepository Log Records Everything](https://github.com/bearsunday/BEAR.QueryRepository/blob/1.x/docs/why-the-log-records-everything.md),
+[Reading the Log](https://github.com/bearsunday/BEAR.QueryRepository/blob/1.x/docs/reading-the-log.md),
+and [What the Cache Log Proves — and What It Does Not](https://github.com/bearsunday/BEAR.QueryRepository/blob/1.x/docs/what-the-log-proves.md)
+for the full event vocabulary and its declared boundaries.
+
 ## Conclusion
 
 Web content can be of the information (data) type or the computation (process) type. Although the former is essentially static, it is difficult to treat it as completely static content due to the problems of managing content changes and dependencies, so the cache was invalidated by TTL even though no content changes occurred. Sunday's caching framework treats information type content as static as possible, maximizing the power of the cache.

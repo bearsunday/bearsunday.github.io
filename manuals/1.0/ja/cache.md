@@ -398,6 +398,22 @@ class CachedResource extends ResourceObject
 
 その他は[HTTPキャッシュ](https://bearsunday.github.io/manuals/1.0/ja/http-cache.html)ページをご覧ください。
 
+## 可観測性
+
+BEAR.QueryRepositoryは、hit/miss・何をどれだけの期間保存したか・何が無効化されCDNのpurgeが成功したか、といった実際の挙動を、自由記述のメッセージではなく型付きでスキーマ検証可能なログの木として記録できます。記録は既定でオフで、ログモジュールを導入してもキャッシュの挙動そのものは変わりません。
+
+```php
+use BEAR\QueryRepository\DevQueryRepositoryLogModule;
+
+$this->install(new DevQueryRepositoryLogModule($this->appMeta->logDir . '/query-repository'));
+```
+
+本番では`ProdQueryRepositoryLogModule`を使い、トラフィックに応じた retention policy と sample rate を設定してください。`cache_hit`/`cache_miss`/`save_value`/`invalidate`/`cdn_headers`など、各エントリは自身のJSON Schemaへのリンクを持つため、セッションはgrepではなく検証できます。
+
+AIエージェント向けには[BEAR.Skills](https://github.com/bearsunday/BEAR.Skills)が`bear-cache-log`（セッションのインストール・読解・検証）と`bear-cache-gate`（フローごとにキャッシュの正しさを証明する常設オラクルの設置）を提供しており、いずれも`/plugin install bear-skills`から入手できます。
+
+ログの全語彙とその宣言された境界については、[Why the QueryRepository Log Records Everything](https://github.com/bearsunday/BEAR.QueryRepository/blob/1.x/docs/why-the-log-records-everything.ja.md)、[Reading the Log](https://github.com/bearsunday/BEAR.QueryRepository/blob/1.x/docs/reading-the-log.ja.md)、[What the Cache Log Proves — and What It Does Not](https://github.com/bearsunday/BEAR.QueryRepository/blob/1.x/docs/what-the-log-proves.ja.md)を参照してください。
+
 ## 結論
 
 Webのコンテンツには情報（データ）型のものと計算（プロセス）型のものがあります。前者は本質的には静的ですが、コンテンツの変更や依存性の管理の問題で完全に静的コンテンツとして扱うのが難しく、コンテンツの変更が発生していないのにTTLによるキャッシュの無効化が行われていました。
