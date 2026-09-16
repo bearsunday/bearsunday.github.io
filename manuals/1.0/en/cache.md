@@ -435,8 +435,8 @@ See the [HTTP Cache](https://bearsunday.github.io/manuals/1.0/ja/http-cache.html
 
 BEAR.QueryRepository can record what it actually did — a hit or a miss, what was saved and for
 how long, what was invalidated and whether the CDN purge succeeded — as a typed, schema-validated
-log tree instead of free-text messages. Recording is off by default; installing a log module adds
-it without changing cache behavior.
+log tree instead of free-text messages. Install `DevQueryRepositoryLogModule` to turn it on —
+recording is off by default, and installing it does not change cache behavior itself.
 
 ```php
 use BEAR\QueryRepository\DevQueryRepositoryLogModule;

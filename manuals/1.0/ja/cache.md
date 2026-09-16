@@ -398,9 +398,9 @@ class CachedResource extends ResourceObject
 
 その他は[HTTPキャッシュ](https://bearsunday.github.io/manuals/1.0/ja/http-cache.html)ページをご覧ください。
 
-## 可観測性
+## 可観測性（オブザーバビティ）
 
-BEAR.QueryRepositoryは、hit/miss・何をどれだけの期間保存したか・何が無効化されCDNのpurgeが成功したか、といった実際の挙動を、自由記述のメッセージではなく型付きでスキーマ検証可能なログの木として記録できます。記録は既定でオフで、ログモジュールを導入してもキャッシュの挙動そのものは変わりません。
+BEAR.QueryRepositoryは、hit/miss・何をどれだけの期間保存したか・何が無効化されCDNのpurgeが成功したか、といった実際の挙動を、自由記述のメッセージではなく型付きでスキーマ検証可能なツリーのログとして記録できます。可観測性を有効にするには`DevQueryRepositoryLogModule`をインストールする必要があります——記録は既定でオフで、インストールしてもキャッシュの挙動そのものは変わりません。
 
 ```php
 use BEAR\QueryRepository\DevQueryRepositoryLogModule;
