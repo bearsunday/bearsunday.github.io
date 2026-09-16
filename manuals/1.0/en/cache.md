@@ -434,22 +434,38 @@ See the [HTTP Cache](https://bearsunday.github.io/manuals/1.0/ja/http-cache.html
 ## Observability
 
 BEAR.QueryRepository can record what it actually did — a hit or a miss, what was saved and for
-how long, what was invalidated and whether the CDN purge succeeded — as a typed, schema-validated
-log tree instead of free-text messages. Install `DevQueryRepositoryLogModule` to turn it on —
+how long, what was invalidated, and whether the CDN purger reported the purge request as
+successful (not whether the CDN's edge actually propagated it) — as a typed, schema-validated log
+tree instead of free-text messages. Install `DevQueryRepositoryLogModule` to turn it on —
 recording is off by default, and installing it does not change cache behavior itself.
+
+In an app that already installs `QueryRepositoryModule` — the usual case — `override()` it:
+`install()` leaves the existing `NullSemanticLogger` binding in place and recording stays off.
 
 ```php
 use BEAR\QueryRepository\DevQueryRepositoryLogModule;
 
-$this->install(new DevQueryRepositoryLogModule($this->appMeta->logDir . '/query-repository'));
+$this->override(new DevQueryRepositoryLogModule($this->appMeta->logDir . '/query-repository'));
 ```
 
-Use `ProdQueryRepositoryLogModule` in production:
+For a standalone `Injector` with no `QueryRepositoryModule` installed elsewhere, pass one in so
+the core cache bindings come with it:
+
+```php
+use BEAR\QueryRepository\QueryRepositoryModule;
+
+$this->install(new DevQueryRepositoryLogModule(
+    $logDir,
+    module: new QueryRepositoryModule(),
+));
+```
+
+Use `ProdQueryRepositoryLogModule` the same way in production — `override()` in an existing app:
 
 ```php
 use BEAR\QueryRepository\ProdQueryRepositoryLogModule;
 
-$this->install(new ProdQueryRepositoryLogModule(stream: 'php://stdout', sampleRate: 100));
+$this->override(new ProdQueryRepositoryLogModule(stream: 'php://stdout', sampleRate: 100));
 ```
 
 Mutations and failures are always kept — a write the pool silently refused, or a purge that
@@ -464,9 +480,15 @@ This requires a host where one process serves one request (PHP-FPM, a CLI script
 prove otherwise — a RoadRunner worker, or inside a Swoole coroutine — it refuses to arm, says so
 through `error_log()`, and recording stays off with nothing else changed ([issue #179](https://github.com/bearsunday/BEAR.QueryRepository/issues/179)).
 
-For AI agents, [BEAR.Skills](https://github.com/bearsunday/BEAR.Skills) provides `bear-cache-log`
-(install, read and verify one session) and `bear-cache-gate` (install a persistent oracle that
-proves cache correctness per flow), both via `/plugin install bear-skills`.
+For AI agents, install [BEAR.Skills](https://github.com/bearsunday/BEAR.Skills) first:
+
+```
+/plugin marketplace add bearsunday/BEAR.Skills
+/plugin install bear-skills
+```
+
+It provides `bear-cache-log` (install, read and verify one session) and `bear-cache-gate`
+(install a persistent oracle that proves cache correctness per flow).
 
 See [Why the QueryRepository Log Records Everything](https://github.com/bearsunday/BEAR.QueryRepository/blob/1.x/docs/why-the-log-records-everything.md),
 [Reading the Log](https://github.com/bearsunday/BEAR.QueryRepository/blob/1.x/docs/reading-the-log.md),
