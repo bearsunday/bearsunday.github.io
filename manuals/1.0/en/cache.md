@@ -474,7 +474,7 @@ $this->override(new ProdQueryRepositoryLogModule(stream: 'php://stdout', sampleR
 Mutations and failures are always kept — a write the pool silently refused, or a purge that
 failed, has no other witness. `sampleRate` keeps 1 healthy (nothing went wrong) session in N as a
 baseline; `0` disables sampling and keeps no healthy sessions at all. To keep a different set,
-implement `RetentionPolicyInterface` and bind it after installing the module — the writer
+implement `RetentionPolicyInterface` and bind it after overriding the module — the writer
 resolves it through DI, so the app's binding wins. Each entry — `cache_hit`, `cache_miss`,
 `save_value`, `invalidate`, `cdn_headers`, and more — links its own JSON Schema, so a session can
 be validated instead of grepped.

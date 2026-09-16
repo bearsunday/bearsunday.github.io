@@ -429,7 +429,7 @@ use BEAR\QueryRepository\ProdQueryRepositoryLogModule;
 $this->override(new ProdQueryRepositoryLogModule(stream: 'php://stdout', sampleRate: 100));
 ```
 
-mutation（書き込み）と失敗は常に保持されます——poolが黙って書き込みを拒否した、purgeが失敗した、といった事実はこのログにしか残りません。`sampleRate`は「何も問題が無かった」健全セッションをN件に1件だけ基準として残す割合で、`0`を指定するとサンプリングを無効化し健全セッションを一切残しません。これと異なる保持ルールにしたい場合は`RetentionPolicyInterface`を自前で実装し、モジュールのinstall後にbindしてください——writerはDI経由でこれを解決するため、アプリ側のbindingが勝ちます。`cache_hit`/`cache_miss`/`save_value`/`invalidate`/`cdn_headers`など、各エントリは自身のJSON Schemaへのリンクを持つため、セッションはgrepではなく検証できます。
+mutation（書き込み）と失敗は常に保持されます——poolが黙って書き込みを拒否した、purgeが失敗した、といった事実はこのログにしか残りません。`sampleRate`は「何も問題が無かった」健全セッションをN件に1件だけ基準として残す割合で、`0`を指定するとサンプリングを無効化し健全セッションを一切残しません。これと異なる保持ルールにしたい場合は`RetentionPolicyInterface`を自前で実装し、`override()`した後にbindしてください——writerはDI経由でこれを解決するため、アプリ側のbindingが勝ちます。`cache_hit`/`cache_miss`/`save_value`/`invalidate`/`cdn_headers`など、各エントリは自身のJSON Schemaへのリンクを持つため、セッションはgrepではなく検証できます。
 
 これは「1プロセスが1リクエストを処理する」ホスト（PHP-FPM、CLIスクリプト）を前提とします。RoadRunnerのワーカーやSwooleのコルーチン内など、それが成り立たないと判定できる場合はarmを拒否し、`error_log()`にその旨を出力したうえで、他は何も変えずに記録オフのまま動作します（[issue #179](https://github.com/bearsunday/BEAR.QueryRepository/issues/179)）。
 
