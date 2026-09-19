@@ -11,7 +11,7 @@ permalink: /manuals/1.0/ja/database_media.html
 
 * ドメイン層とインフラ層の境界を明確にします。
 * ボイラープレートコードを削減します。
-* 外部メディアの実体には無関係なので、後からストレージを変更することができます。並列開発やスタブ作成が容易です。
+* 外部メディアの実体には無関係なので、後からストレージを変更できます。並列開発やスタブ作成が容易です。
 
 ## インストール
 
@@ -275,7 +275,7 @@ Ray.MediaQuery の実行可能な例:
 
 ### 日付時刻
 
-パラメーターにバリューオブジェクトを渡すことができます。例えば、`DateTimeInterface`オブジェクトをこのように指定できます。
+パラメーターにバリューオブジェクトを渡せます。例えば、`DateTimeInterface`オブジェクトをこのように指定できます。
 
 ```php
 interface TaskAddInterface
@@ -417,7 +417,7 @@ $sqlQuery->exec('memo_add', [
 
 ### Ray.InputQueryとの連携
 
-BEAR.ResourceでRay.InputQueryを利用している場合、InputクラスをMediaQueryのパラメーターとして直接渡すことができます。
+BEAR.ResourceでRay.InputQueryを利用している場合、InputクラスをMediaQueryのパラメーターとして直接渡せます。
 
 ```php
 use Ray\InputQuery\Attribute\Input;
@@ -527,7 +527,7 @@ protected function configure(): void
 
 ## SQLテンプレート
 
-SQLの実行時にクエリーIDを含むカスタムログを出力して、スローログ分析時にどのクエリーが実行されたかを特定しやすくすることができます。
+SQLの実行時にクエリーIDを含むカスタムログを出力して、スローログ分析時にどのクエリーが実行されたかを特定しやすくなります。
 
 `MediaQuerySqlTemplateModule`を使用して、SQLログのフォーマットをカスタマイズできます。
 

@@ -7,11 +7,11 @@ permalink: /manuals/1.0/ja/psr7.html
 
 # PSR-7
 
-[PSR-7 HTTP message interface](https://www.php-fig.org/psr/psr-7/)[^1]を使って、サーバーサイドリクエストの情報を取得したり、BEAR.SundayアプリケーションをPSR-7ミドルウェアとして実行したりすることができます。
+[PSR-7 HTTP message interface](https://www.php-fig.org/psr/psr-7/)[^1]を使って、サーバーサイドリクエストの情報を取得したり、BEAR.SundayアプリケーションをPSR-7ミドルウェアとして実行したりできます。
 
 ## HTTPリクエスト
 
-PHPには[`$_SERVER`](https://www.php.net/manual/ja/reserved.variables.server.php)や[`$_COOKIE`](https://www.php.net/manual/ja/reserved.variables.cookies.php)などの[スーパーグローバル](https://www.php.net/manual/ja/language.variables.superglobals.php)がありますが、それらの代わりに[PSR-7 HTTP message interface](https://www.php-fig.org/psr/psr-7/)を使ってサーバーサイドリクエストの情報（`$_COOKIE`、`$_GET`、`$_POST`、`$_FILES`、`$_SERVER`）を受け取ることができます。
+PHPには[`$_SERVER`](https://www.php.net/manual/ja/reserved.variables.server.php)や[`$_COOKIE`](https://www.php.net/manual/ja/reserved.variables.cookies.php)などの[スーパーグローバル](https://www.php.net/manual/ja/language.variables.superglobals.php)がありますが、それらの代わりに[PSR-7 HTTP message interface](https://www.php-fig.org/psr/psr-7/)を使ってサーバーサイドリクエストの情報（`$_COOKIE`、`$_GET`、`$_POST`、`$_FILES`、`$_SERVER`）を受け取れます。
 
 ### ServerRequest（サーバーリクエスト全般）
 

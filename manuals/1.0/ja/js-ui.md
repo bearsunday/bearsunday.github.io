@@ -82,7 +82,7 @@ return [$app, $state, $metas];
 cp ui/dev/config/index.php ui/dev/config/myapp.php
 ```
 
-ブラウザをリロードして新しい設定を試します。このように、JavaScriptや本体のPHPアプリケーションを変更せずに、UIのデータを変更して動作を確認することができます。
+ブラウザをリロードして新しい設定を試します。このように、JavaScriptや本体のPHPアプリケーションを変更せずに、UIのデータを変更して動作を確認できます。
 
 このセクションで編集したPHPの設定ファイルは、`npm run ui`で実行する時のみに使用されます。PHP側が必要とするのは、バンドルされて出力されたJavaScriptファイルのみです。
 
@@ -138,7 +138,7 @@ import render from './render';
 global.render = render;
 ```
 
-ここまでPHP側の作業はありません。SSRのアプリケーション開発は、PHP開発と独立して行うことができます。
+ここまでPHP側の作業はありません。SSRのアプリケーション開発は、PHP開発と独立して行えます。
 
 ## PHP
 

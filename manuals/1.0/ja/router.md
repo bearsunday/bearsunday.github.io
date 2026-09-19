@@ -67,7 +67,7 @@ PHPマニュアルの[PUT メソッドのサポート](https://www.php.net/manua
 
 ## メソッドオーバーライド
 
-HTTP PUT トラフィックやHTTP DELETE トラフィックを許可しないファイアウォールがあります。この制約に対応するため、次の2つの方法でこれらの要求を送ることができます：
+HTTP PUT トラフィックやHTTP DELETE トラフィックを許可しないファイアウォールがあります。この制約に対応するため、次の2つの方法でこれらの要求を送れます：
 
 * `X-HTTP-Method-Override` - POSTリクエストのヘッダーフィールドを使用してPUTリクエストやDELETEリクエストを送る。
 * `_method` - URI パラメーターを使用する。例）POST /users?...&_method=PUT
@@ -166,7 +166,7 @@ $map->route('archive', '/archive{/year,month,day}')
 - `/archive/1979/11    : ['year' => '1979', 'month' => '11', 'day' => null]`
 - `/archive/1979/11/07 : ['year' => '1979', 'month' => '11', 'day' => '07']`
 
-オプションパラメーターは**並ぶ順に**オプションです。つまり"month"なしで"day"を指定することはできません。
+オプションパラメーターは**並ぶ順に**オプションです。つまり"month"なしで"day"を指定できません。
 
 ### ワイルドカード
 
@@ -188,7 +188,7 @@ $map->route('wild', '/wild')
 
 ### リバースルーティング
 
-ルートの名前とパラメーターの値からURIを生成することができます。
+ルートの名前とパラメーターの値からURIを生成できます。
 
 ```php
 use BEAR\Sunday\Extension\Router\RouterInterface;

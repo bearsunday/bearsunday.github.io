@@ -13,7 +13,7 @@ permalink: /manuals/1.0/ja/database.html
 * クエリービルダー ([Aura.SqlQuery](https://github.com/auraphp/Aura.SqlQuery))
 * PHPのインターフェイスとSQL実行を束縛 ([Ray.MediaQuery](database_media.html))
 
-静的なSQLはファイルにすると[^locator]、管理や他のSQLツールでの検証などの使い勝手もよくなります。Aura.SqlQueryは動的にクエリーを組み立てることができますが、その他は基本的に静的なSQLの実行のためのライブラリです。また、Ray.MediaQueryではSQLの一部をビルダーで組み立てたものに入れ替えることもできます。
+静的なSQLはファイルにすると[^locator]、管理や他のSQLツールでの検証などの使い勝手もよくなります。Aura.SqlQueryは動的にクエリーを組み立てられますが、その他は基本的に静的なSQLの実行のためのライブラリです。また、Ray.MediaQueryではSQLの一部をビルダーで組み立てたものに入れ替えることもできます。
 
 [^locator]: [query-locator](https://github.com/koriym/Koriym.QueryLocator)はSQLをファイルとして扱うライブラリです。Aura.Sqlと組み合わせると便利です。
 
