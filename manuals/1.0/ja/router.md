@@ -67,7 +67,7 @@ PHPマニュアルの[PUT メソッドのサポート](http://php.net/manual/ja/
 
 ## メソッドオーバーライド
 
-HTTP PUT トラフィックやHTTP DELETE トラフィックを許可しないファイアウォールがあります。この制約に対応するため、次の2つの方法でこれらの要求を送ることができます：
+HTTP PUT トラフィックやHTTP DELETE トラフィックを許可しないファイアウォールがあります。この制約に対応するため、次の2つの方法でこれらの要求を送れます：
 
 * `X-HTTP-Method-Override` - POSTリクエストのヘッダーフィールドを使用してPUTリクエストやDELETEリクエストを送る。
 * `_method` - URI パラメーターを使用する。例）POST /users?...&_method=PUT
@@ -188,7 +188,7 @@ $map->route('wild', '/wild')
 
 ### リバースルーティング
 
-ルートの名前とパラメーターの値からURIを生成することができます。
+ルートの名前とパラメーターの値からURIを生成できます。
 
 ```php
 use BEAR\Sunday\Extension\Router\RouterInterface;

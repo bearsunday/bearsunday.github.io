@@ -6,7 +6,7 @@ permalink: /manuals/1.0/ja/aop.html
 ---
 # AOP
 
-アスペクト指向プログラミングは、**横断的関心事**の問題を解決します。対象メソッドの前後に、任意の処理をインターセプターで織り込むことができます。
+アスペクト指向プログラミングは、**横断的関心事**の問題を解決します。対象メソッドの前後に、任意の処理をインターセプターで織り込めます。
 対象となるメソッドはビジネスロジックなどの本質的関心事のみに関心を払い、インターセプターはログや検証などの横断的関心事に関心を払います。
 
 BEAR.Sundayは[AOP Alliance](http://aopalliance.sourceforge.net/)に準拠したアスペクト指向プログラミングをサポートします。
@@ -65,14 +65,14 @@ $this->bindInterceptor(
 * [Matcher::logicalAnd](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/MatcherInterface.php#L51) - AND条件
 * [Matcher::logicalNot](https://github.com/ray-di/Ray.Aop/blob/develop-2/src/MatcherInterface.php#L58) - NOT条件
 
-インターセプターに渡される`MethodInvocation`では、対象のメソッド実行に関連するオブジェクトやメソッド、引数にアクセスすることができます。
+インターセプターに渡される`MethodInvocation`では、対象のメソッド実行に関連するオブジェクトやメソッド、引数にアクセスできます。
 
 * [MethodInvocation::proceed](https://github.com/ray-di/Ray.Aop/blob/2.x/src/Joinpoint.php) - 対象メソッド実行
 * [MethodInvocation::getMethod](https://github.com/ray-di/Ray.Aop/blob/2.x/src/MethodInvocation.php) - 対象メソッドリフレクションの取得
 * [MethodInvocation::getThis](https://github.com/ray-di/Ray.Aop/blob/2.x/src/Joinpoint.php) - 対象オブジェクトの取得
 * [MethodInvocation::getArguments](https://github.com/ray-di/Ray.Aop/blob/2.x/src/Invocation.php) - 呼び出し引数配列の取得
 
-リフレクションのメソッドでアノテーションを取得することができます。
+リフレクションのメソッドでアノテーションを取得できます。
 
 ```php
 $method = $invocation->getMethod();

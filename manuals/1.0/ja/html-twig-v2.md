@@ -144,7 +144,7 @@ class Todos extends ResourceObject
 
 ## ビューの階層構造
 
-リソースクラス単位でビューを持つことができます。構造を良く表し、キャッシュもリソース単位で行われるので効率的です。
+リソースクラス単位でビューを持てます。構造を良く表し、キャッシュもリソース単位で行われるので効率的です。
 
 例）`app://self/todos`を読み込む`page://self/index`：
 
@@ -249,7 +249,7 @@ class HtmlModule extends AbstractModule
 }
 ```
 
-`index.html.twig`の代わりに`Index.mobile.twig`が**存在すれば**優先して使用されます。変更の必要なテンプレートだけを用意することができます。
+`index.html.twig`の代わりに`Index.mobile.twig`が**存在すれば**優先して使用されます。変更の必要なテンプレートだけを用意できます。
 
 ## カスタム設定
 

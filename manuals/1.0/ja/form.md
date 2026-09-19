@@ -184,7 +184,7 @@ public function onPost()
 
 ## Vnd Error
 
-`Ray\WebFormModule\FormVndErrorModule`をインストールすると、`@FormValidation`でアノテートしたメソッドも`@InputValidation`とアノテートしたメソッドと同じように例外を投げるようになります。作成したPageリソースをAPIとして使用することができます：
+`Ray\WebFormModule\FormVndErrorModule`をインストールすると、`@FormValidation`でアノテートしたメソッドも`@InputValidation`とアノテートしたメソッドと同じように例外を投げるようになります。作成したPageリソースをAPIとして使用できます：
 
 ```php
 use BEAR\Package\AbstractAppModule;
@@ -202,4 +202,4 @@ class FooModule extends AbstractModule
 
 ## デモ
 
-[MyVendor.ContactForm](https://github.com/bearsunday/MyVendor.ContactForm)アプリケーションでフォームのデモを実行して試すことができます。確認付きのフォームページや、複数のフォームを1ページに設置したときの例などが用意されています。
+[MyVendor.ContactForm](https://github.com/bearsunday/MyVendor.ContactForm)アプリケーションでフォームのデモを実行して試せます。確認付きのフォームページや、複数のフォームを1ページに設置したときの例などが用意されています。

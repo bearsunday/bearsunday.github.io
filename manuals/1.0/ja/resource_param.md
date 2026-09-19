@@ -29,7 +29,7 @@ HTTPで渡されるパラメーターは全て文字列ですが、`int`など�
 
 ### 配列パラメーター
 
-パラメーターはネストされたデータ [^2] でも構いません。JSONやネストされたクエリ文字列で送信されたデータは配列で受け取ることができます。
+パラメーターはネストされたデータ [^2] でも構いません。JSONやネストされたクエリ文字列で送信されたデータは配列で受け取れます。
 
 [^2]: [parse_str](https://www.php.net/manual/ja/function.parse-str.php)参照
 
@@ -84,7 +84,7 @@ final class User
 }
 ```
 
-ネームスペースは任意です。Inputクラスでは入力データをまとめたり検証したりするメソッドを実装することができます。
+ネームスペースは任意です。Inputクラスでは入力データをまとめたり検証したりするメソッドを実装できます。
 
 ### Ray.InputQueryとの統合
 
@@ -130,7 +130,7 @@ final class AuthorInput
 
 この場合、`title=Hello&authorName=John&authorEmail=john@example.com`のようなフラットなデータからネストしたオブジェクト構造が自動生成されます。
 
-配列データも扱うことができます。
+配列データも扱えます。
 
 #### シンプルな配列
 
@@ -407,7 +407,7 @@ class FileUploadTest extends TestCase
 
 ### 列挙型パラメーター
 
-PHP8.1の[列挙型](https://www.php.net/manual/ja/language.types.enumerations.php)を指定して取り得る値を制限することができます。
+PHP8.1の[列挙型](https://www.php.net/manual/ja/language.types.enumerations.php)を指定して取り得る値を制限できます。
 
 ```php
 enum IceCreamId: int
@@ -429,7 +429,7 @@ class Index extends ResourceObject
 
 ## Webコンテキスト束縛
 
-`$_GET`や`$_COOKIE`などのPHPのスーパーグローバルの値をメソッド内で取得するのではなく、メソッドの引数に束縛することができます。
+`$_GET`や`$_COOKIE`などのPHPのスーパーグローバルの値をメソッド内で取得するのではなく、メソッドの引数に束縛できます。
 
 ```php
 use Ray\WebContextParam\Annotation\QueryParam;
@@ -442,7 +442,7 @@ class News extends ResourceObject
         // $id = $_GET['id'];
 ```
 
-その他`$_ENV`、`$_POST`、`$_SERVER`の値を束縛することができます。
+その他`$_ENV`、`$_POST`、`$_SERVER`の値を束縛できます。
 
 ```php
 use Ray\WebContextParam\Annotation\QueryParam;

@@ -89,7 +89,7 @@ class Index
 
 ### perform() メソッド
 
-`perform()`メソッドは、1つのプレイスホルダーしかないSQLに配列の値をバインドすることができます。
+`perform()`メソッドは、1つのプレイスホルダーしかないSQLに配列の値をバインドできます。
 
 ```php
 $stm = 'SELECT * FROM test WHERE foo IN (:foo)';
@@ -113,7 +113,7 @@ $values = ['foo' => ['foo', 'bar', 'baz']];
 $sth = $pdo->perform($stm, $values);
 ```
 
-`:foo`に`['foo', 'bar', 'baz']`がバインドされます。`queryString`で実際のクエリーを調べることができます。
+`:foo`に`['foo', 'bar', 'baz']`がバインドされます。`queryString`で実際のクエリーを調べられます。
 
 ```php
 echo $sth->queryString;
@@ -123,7 +123,7 @@ echo $sth->queryString;
 
 ### fetch*() メソッド
 
-`prepare()`、`bindValue()`、`execute()`を繰り返してデータベースから値を取得する代わりに`fetch*()`メソッドを使うとボイラープレートコードを減らすことができます。（内部では`perform()`メソッドを実行しているので配列のプレイスホルダーもサポートしています）
+`prepare()`、`bindValue()`、`execute()`を繰り返してデータベースから値を取得する代わりに`fetch*()`メソッドを使うとボイラープレートコードを減らせます。（内部では`perform()`メソッドを実行しているので配列のプレイスホルダーもサポートしています）
 
 ```php
 $stm = 'SELECT * FROM test WHERE foo = :foo AND bar = :bar';
@@ -163,7 +163,7 @@ $stm = "UPDATE test SET incr = incr + 1 WHERE foo = :foo AND bar = :bar";
 $row_count = $pdo->fetchAffected($stm, $bind);
 ```
 
-`fetchAll()`、`fetchAssoc()`、`fetchCol()`、および`fetchPairs()`のメソッドは、三番目のオプションの引数にそれぞれの列に適用されるコールバックを指定することができます。
+`fetchAll()`、`fetchAssoc()`、`fetchCol()`、および`fetchPairs()`のメソッドは、三番目のオプションの引数にそれぞれの列に適用されるコールバックを指定できます。
 
 ```php
 $result = $pdo->fetchAssoc($stm, $bind, function (&$row) {
@@ -174,7 +174,7 @@ $result = $pdo->fetchAssoc($stm, $bind, function (&$row) {
 
 ### yield*() メソッド
 
-メモリを節約するために`yield*()`メソッドを使うことができます。`fetch*()`メソッドは全ての行を一度に取得しますが、`yield*()`メソッドはイテレーターを返します。
+メモリを節約するために`yield*()`メソッドを使えます。`fetch*()`メソッドは全ての行を一度に取得しますが、`yield*()`メソッドはイテレーターを返します。
 
 ```php
 $stm = 'SELECT * FROM test WHERE foo = :foo AND bar = :bar';
