@@ -6,8 +6,8 @@ set -euo pipefail
 # 'jekyll serve' starts a Jekyll development server.
 # '--watch' option automatically rebuilds the site when files are modified.
 #
-# Note: `llms-full.txt` is a CI-only build artifact (generated in
-# .github/workflows/pages.yml before deploy) and is not generated locally.
+# `llms-full.txt` is regenerated from `llms.txt` here and in CI; it is a
+# gitignored build artifact.
 
 echo "Starting Jekyll server (watch mode)..."
 php bin/gen_llms.php
