@@ -40,19 +40,24 @@
                 <li class="nav-item">
                     <a class="nav-link" href="/llms-full.txt">LLMs</a>
                 </li>
+                {% if page.category == 'Manual' %}
+                <!-- Mobile: keep the search trigger on the nav row so it lines up
+                     with the links instead of occupying a row of its own. -->
+                <li class="nav-item d-md-none ml-auto">
+                    <pagefind-modal-trigger></pagefind-modal-trigger>
+                </li>
+                {% endif %}
             </ul>
         </div>
         {% if page.category == 'Manual' %}
-        <ul class="navbar-nav ml-md-auto align-self-end align-self-md-auto d-flex flex-row language-list">
+        <ul class="navbar-nav ml-md-auto d-none d-md-flex language-list">
             <li class="nav-item">
                 <pagefind-modal-trigger></pagefind-modal-trigger>
             </li>
-            <!-- Language switcher: desktop only. Small screens use the one in the
-                 sidebar navigation (_includes/manuals/1.0/*/contents.html). -->
-            <li class="d-none d-md-block">
+            <li>
                 <a class="{% if page.layout == 'docs-en' %}active{% endif %}" href="{{ page.permalink | replace: '/ja/', '/en/' }}">En</a>
             </li>
-            <li class="d-none d-md-block">
+            <li>
                 <a class="{% if page.layout == 'docs-ja' %}active{% endif %}" href="{{ page.permalink | replace: '/en/', '/ja/' }}">Ja</a>
             </li>
         </ul>
