@@ -254,4 +254,4 @@ brew install your-vendor/greet && greet -n "World" -l ja
 
 BEAR.Sundayのリソースは、現代的なパッケージシステムとも自然に統合できます。HomebrewのようなパッケージマネージャーやComposerを使えば、ユーザーは実行環境を意識することなく、統一されたインターフェースでツールを利用できます。
 
-BEAR.Sundayの「Because Everything is a Resource」は、境界を越えた一貫性と保守性を実現する設計哲学です。このチュートリアルで体験したように、リソース指向アーキテクチャは境界のないソフトウェアを実現し、開発体験だけでなく利用体験にも新しい地平をもたらします
+BEAR.Sundayの「Because Everything is a Resource」は、境界を越えて一貫性と保守性を保つための設計方針です。このチュートリアルで見たように、リソース指向アーキテクチャではWebとCLIの境界がなくなり、作る側だけでなく使う側の体験も変わります。
