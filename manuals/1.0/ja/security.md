@@ -214,7 +214,7 @@ cp vendor/bear/security/workflows/security-sast.yml .github/workflows/
 
 ## アーキテクチャとセキュリティ
 
-BEAR.Sundayのアーキテクチャがセキュリティスキャンをより効果的にします：
+BEAR.Sundayのコードはスキャナーが解析しやすい構造です：
 
 - **明確なエントリーポイント**: すべてのエンドポイントは`onGet`、`onPost`メソッドを持つResourceObjectです。スキャナーはすべての入力を特定してデータフローを追跡できます。
 
