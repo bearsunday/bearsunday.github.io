@@ -43,14 +43,16 @@
             </ul>
         </div>
         {% if page.category == 'Manual' %}
-        <ul class="navbar-nav ml-md-auto d-none d-md-flex language-list">
+        <ul class="navbar-nav ml-md-auto align-self-end align-self-md-auto d-flex flex-row language-list">
             <li class="nav-item">
                 <pagefind-modal-trigger></pagefind-modal-trigger>
             </li>
-            <li>
+            <!-- Language switcher: desktop only. Small screens use the one in the
+                 sidebar navigation (_includes/manuals/1.0/*/contents.html). -->
+            <li class="d-none d-md-block">
                 <a class="{% if page.layout == 'docs-en' %}active{% endif %}" href="{{ page.permalink | replace: '/ja/', '/en/' }}">En</a>
             </li>
-            <li>
+            <li class="d-none d-md-block">
                 <a class="{% if page.layout == 'docs-ja' %}active{% endif %}" href="{{ page.permalink | replace: '/en/', '/ja/' }}">Ja</a>
             </li>
         </ul>
