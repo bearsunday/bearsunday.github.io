@@ -204,8 +204,7 @@ brew uninstall greet
 `Greeting`リソースはWeb APIとCLIで動き、CLIはHomebrewパッケージで配布できます。
 ビジネスロジックの重複はなく、修正も一箇所で済みます。
 
-Web APIとCLIのどちらからも同じリソースを使えます。HomebrewはCLIの配布方法であり、
-第三のアクセス境界ではありません。配布方法が変わっても、必要な実行環境は別途必要です。
+同じ`Greeting`クラスが、呼び出し方によって振る舞いを変えます。
 
 ```php
 // 1つのリソース
@@ -226,7 +225,7 @@ curl "http://localhost/greeting?name=World&lang=ja"
 # CLI として  
 ./bin/cli/greet -n "World" -l ja
 
-# Homebrewパッケージとして
+# CLI として（Homebrewでインストールした場合）
 brew install your-vendor/greet && greet -n "World" -l ja
 ```
 
