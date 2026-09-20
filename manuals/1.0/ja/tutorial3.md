@@ -204,7 +204,7 @@ brew uninstall greet
 `Greeting`リソースはWeb APIとCLIで動き、CLIはHomebrewパッケージで配布できます。
 ビジネスロジックの重複はなく、修正も一箇所で済みます。
 
-同じ`Greeting`クラスが、呼び出し方によって振る舞いを変えます。
+同じ`Greeting`クラスに、Web APIからもCLIからもアクセスします。
 
 ```php
 // 1つのリソース
@@ -238,6 +238,6 @@ brew install your-vendor/greet && greet -n "World" -l ja
 
 ### 現代的な配布システムとの統合
 
-HomebrewやComposerで配布すると、利用者はPHPやBEAR.Sundayの詳細を意識せずにCLIを使えます。ただし、必要な実行環境は別途必要です。
+HomebrewやComposerで配布すると、利用者はPHPやBEAR.Sundayの詳細を意識せずにCLIを使えます。ただし、実行環境の用意は別途必要です。
 
 「Because Everything is a Resource」は、この一貫性を指しています。
