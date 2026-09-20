@@ -40,13 +40,6 @@
                 <li class="nav-item">
                     <a class="nav-link" href="/llms-full.txt">LLMs</a>
                 </li>
-                {% if page.category == 'Manual' %}
-                <!-- Mobile: keep the search trigger on the nav row so it lines up
-                     with the links instead of occupying a row of its own. -->
-                <li class="nav-item d-md-none ml-auto">
-                    <pagefind-modal-trigger></pagefind-modal-trigger>
-                </li>
-                {% endif %}
             </ul>
         </div>
         {% if page.category == 'Manual' %}
