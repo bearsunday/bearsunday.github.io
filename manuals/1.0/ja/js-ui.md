@@ -11,7 +11,7 @@ permalink: /manuals/1.0/ja/js-ui.html
 
 ## 背景と適用場面
 
-このモジュールは、PHPアプリケーション内でJavaScriptによるサーバーサイドレンダリング（SSR）を実現するために開発されました。
+PHPアプリケーションの中でJavaScriptによるサーバーサイドレンダリング（SSR）を行うために作られたモジュールです。
 
 現在では、Next.js、Nuxt、Remixなど、JavaScript側でSSRを完結させるフレームワークが成熟しています。新規プロジェクトでJavaScript中心のUIを構築する場合、これらのフレームワークが第一選択となるでしょう。
 
