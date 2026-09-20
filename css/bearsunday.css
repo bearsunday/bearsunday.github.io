@@ -386,6 +386,14 @@ pagefind-modal-trigger .pf-trigger-btn:hover {
     margin-right: .5rem;
 }
 
+/* Optical adjustment: the magnifier glyph reads slightly high next to the
+   language links because its handle extends to the lower right.
+   Pagefind ships its rules at id-level specificity via :is(*, ##), so an
+   !important is required to override it. */
+.navigation-header pagefind-modal-trigger .pf-trigger-icon {
+    transform: translateY(2px) !important;
+}
+
 /* Mobile: hamburger on the left, search + language switcher on the right.
    The toggler otherwise inherits margin-left:auto from the .side-bar rule
    (same specificity, so this must come later and match the real DOM: the
