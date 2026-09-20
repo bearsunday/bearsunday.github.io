@@ -15,7 +15,7 @@ AIは質問に答えるだけの存在ではなくなりました。エージェ
 
 > Stop coding blind. Just ask your AI.
 
-[BEAR.Skills](https://github.com/bearsunday/BEAR.Skills)はClaude Code向けのスキル集です。英語・日本語の自然な指示から該当スキルを自動選択し、コード生成・品質レビュー・規約強制を行います。
+[BEAR.Skills](https://github.com/bearsunday/BEAR.Skills)はClaude Code向けのスキル集です。英語と日本語の自然な指示から該当スキルを自動選択し、コード生成や品質レビュー、規約の強制を行います。
 
 Claude Codeのマーケットプレイス経由でインストールします。
 
