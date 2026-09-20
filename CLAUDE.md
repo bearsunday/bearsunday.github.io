@@ -33,16 +33,16 @@ bundle install
 # Build site
 bundle exec jekyll build
 
-# Build with custom scripts (production)
-ruby bin/merge_md_files.rb
+# Build with custom scripts (production / CI)
+php bin/gen_llms.php
 bundle exec jekyll build
+npx pagefind --site _site   # client-side search index
 ```
 
 ## Key Scripts
 
 - `bin/serve_local.sh`: Local development server with Jekyll watch mode
 - `bin/serve_docker.sh`: Docker-based development
-- `bin/merge_md_files.rb`: Generates combined documentation files (`1page.md`) from individual markdown files
 - `bin/copy_markdown_files.sh`: Copies markdown files to `_site` for llms.txt compliance (removes Jekyll frontmatter)
 
 ## File Structure
@@ -71,7 +71,7 @@ The site uses a sophisticated system for managing documentation:
 
 1. Individual markdown files in `manuals/1.0/{en,ja}/`
 2. Navigation order determined by `_includes/manuals/1.0/{language}/contents.html`
-3. Combined documentation generated via `merge_md_files.rb`
+3. Client-side search via Pagefind (index generated in CI from `_site/`)
 4. LLMs.txt compliance through frontmatter-stripped copies in `_site/manuals/`
 
 ## Jekyll Configuration
@@ -85,7 +85,7 @@ The site uses a sophisticated system for managing documentation:
 
 - **GitHub Actions**: `.github/workflows/pages.yml` handles automatic deployment (single Pages workflow; do not add a second Pages-deploy workflow — both would race on the `pages` concurrency group)
 - **Ruby Version**: 3.2.2 in CI, 3.2.3 locally (Jekyll compatibility requirement)
-- **Custom Build Steps**: Runs `merge_md_files.rb` + `gen_llms.php` before Jekyll build in CI
+- **Custom Build Steps**: Runs `gen_llms.php` before Jekyll build, and `pagefind --site _site` after, in CI
 - **Production source**: the live site deploys from `bearsunday/bearsunday.github.io` (`upstream`) `master`. A personal fork (e.g. `koriym/…`, often the local `origin`) does NOT drive the production deploy — push there and nothing redeploys.
 
 ## Learn Site (`/learn/`)

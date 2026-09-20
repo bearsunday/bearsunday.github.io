@@ -56,7 +56,6 @@ jobs:
 
       - name: Run custom scripts
         run: |
-          ruby bin/merge_md_files.rb
           php bin/gen_llms.php
 
       # Re-enabled (previously commented out): build Jekyll into ./_site.
@@ -64,6 +63,17 @@ jobs:
         run: bundle exec jekyll build --baseurl "${{ steps.pages.outputs.base_path }}"
         env:
           JEKYLL_ENV: production
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      # Generate client-side search index (Pagefind) from the built site.
+      # Indexes <article data-pagefind-body> content, split per language via
+      # the <html lang> attribute (en / ja).
+      - name: Build search index
+        run: npx --yes pagefind@latest --site _site
 
       # --- Learn site (bearsunday/site-bear-sunday) -> /learn/ ---
       - name: Checkout Learn site
@@ -73,11 +83,6 @@ jobs:
           ref: master # the Learn site's default branch
           path: learn-src
           persist-credentials: false
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22'
 
       - name: Build Learn site (static snapshot)
         working-directory: learn-src
