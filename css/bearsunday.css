@@ -355,3 +355,28 @@ footer li {
     text-decoration: underline;
     text-underline-offset: .1rem;
 }
+
+/* Pagefind search trigger: show magnifier icon only */
+pagefind-modal-trigger .pf-trigger-text,
+pagefind-modal-trigger .pf-trigger-shortcut {
+    display: none !important;
+}
+
+pagefind-modal-trigger {
+    --pf-input-height: 1.5rem;  /* match language-list link height (16px font * 1.5 line-height) */
+}
+
+pagefind-modal-trigger .pf-trigger-btn {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border: none !important;
+    background: transparent !important;
+    padding: 0 0.5rem !important;
+    box-shadow: none !important;
+}
+
+pagefind-modal-trigger .pf-trigger-btn:hover {
+    background: rgba(0, 0, 0, 0.05) !important;
+    border-radius: 0.25rem;
+}
