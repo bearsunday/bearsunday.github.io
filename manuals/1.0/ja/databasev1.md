@@ -80,7 +80,7 @@ class Index
 
 ### perform() メソッド
 
-`perform()`メソッドは、1つのプレイスホルダーしかないSQLに配列の値をバインドすることができます。
+`perform()`メソッドは、1つのプレイスホルダーしかないSQLに配列の値をバインドできます。
 
 ```php?start_inline
 $stm = 'SELECT * FROM test WHERE foo IN (:foo)'
@@ -104,7 +104,7 @@ $values = ['foo' => ['foo', 'bar', 'baz']];
 $sth = $pdo->perform($stm, $values);
 ```
 
-`:foo`に`['foo', 'bar', 'baz']`がバインドされます。`queryString`で実際のクエリーを調べることができます。
+`:foo`に`['foo', 'bar', 'baz']`がバインドされます。`queryString`で実際のクエリーを調べられます。
 
 ```php?start_inline
 echo $sth->queryString;
@@ -114,7 +114,7 @@ echo $sth->queryString;
 
 ### fetch*() メソッド
 
-`prepare()`、`bindValue()`、 `execute()`を繰り返してデータベースから値を取得する代わりに`fetch*()`メソッドを使うとボイラープレートコードを減らすことができます。
+`prepare()`、`bindValue()`、 `execute()`を繰り返してデータベースから値を取得する代わりに`fetch*()`メソッドを使うとボイラープレートコードを減らせます。
 （内部では`perform()`メソッドを実行しているので配列のプレースフォルもサポートしています）
 
 ```php?start_inline
@@ -155,7 +155,7 @@ $row_count = $pdo->fetchAffected($stm, $bind);
 ?>
 ```
 
-`fetchAll()`, `fetchAssoc()`, `fetchCol()`, 及び `fetchPairs()`のメソッドは三番目のオプションの引数に、それぞれの列に適用されるコールバックを指定することができます。
+`fetchAll()`, `fetchAssoc()`, `fetchCol()`, 及び `fetchPairs()`のメソッドは三番目のオプションの引数に、それぞれの列に適用されるコールバックを指定できます。
 
 ```php?start_inline
 $result = $pdo->fetchAssoc($stm, $bind, function (&$row) {
@@ -166,7 +166,7 @@ $result = $pdo->fetchAssoc($stm, $bind, function (&$row) {
 ```
 ### yield*() メソッド
 
-メモリを節約するために`yield*()`メソッドを使うことができます。 `fetch*()`メソッドは全ての行を一度に取得しますが、
+メモリを節約するために`yield*()`メソッドを使えます。 `fetch*()`メソッドは全ての行を一度に取得しますが、
 `yield*()`メソッドはイテレーターが返ります。
 
 ```php

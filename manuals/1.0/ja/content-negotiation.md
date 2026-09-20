@@ -8,7 +8,7 @@ permalink: /manuals/1.0/ja/content-negotiation.html
 # コンテントネゴシエーション
 
 HTTPにおいてコンテントネゴシエーション ([content negotiation](https://en.wikipedia.org/wiki/Content_negotiation)) は、同じ URL に対してさまざまなバージョンのリソースを提供するために使用する仕組みです。
-BEAR.Sundayではその内のメディアタイプの`Accept`と言語の`Accept-Language`のサーバーサイドのコンテントネゴシエーションをサポートします。アプリケーション単位またはリソース単位で指定することができます。
+BEAR.Sundayではその内のメディアタイプの`Accept`と言語の`Accept-Language`のサーバーサイドのコンテントネゴシエーションをサポートします。アプリケーション単位またはリソース単位で指定できます。
 
 ## インストール
 

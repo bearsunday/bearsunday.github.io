@@ -94,7 +94,7 @@ Or
 * <span class="glyphicon glyphicon-font" rel="tooltip" title="View"></span> リソース表現
 * <span class="glyphicon glyphicon-info-sign" rel="tooltip" title="Info"></span> プロファイル
 
-[demo](/docs/demo/halo/)でハローのモックを試すことができます。
+[demo](/docs/demo/halo/)でハローのモックを試せます。
 
 ### パフォーマンスモニタリング
 
