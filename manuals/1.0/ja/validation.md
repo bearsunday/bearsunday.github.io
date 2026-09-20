@@ -14,7 +14,7 @@ permalink: /manuals/1.0/ja/validation.html
 
 ### 概要
 
-[JSON Schema](http://json-schema.org/)を使用して、リソースAPIの入出力仕様を定義し検証することができます。
+[JSON Schema](http://json-schema.org/)を使用して、リソースAPIの入出力仕様を定義し検証できます。
 これにより、APIの仕様を人間とマシンの両方が理解できる形式で管理できます。またApiDocとしてAPIドキュメントを出力することもできます。
 
 ### セットアップ

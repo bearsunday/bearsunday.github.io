@@ -15,7 +15,7 @@ APCu アダプターとは異なり、そして Memcached アダプターと同�
 > 注意:
 > 要件: このアダプターを使用するには、少なくとも1つの Redis サーバーがインストールされ、実行されている必要があります。さらに、このアダプターには `\Redis`、`\RedisArray`、`RedisCluster`、`\Relay\Relay`、`\Relay\Cluster`、または `\Predis` を実装する互換性のある拡張機能またはライブラリが必要です。
 
-このアダプターは、最初のパラメータとして `Redis`、`RedisArray`、`RedisCluster`、`Relay`、`Relay\Cluster`、または `Predis` インスタンスを渡すことを期待します。名前空間とデフォルトのキャッシュ有効期間は、オプションで2番目と3番目のパラメータとして渡すことができます:
+このアダプターは、最初のパラメータとして `Redis`、`RedisArray`、`RedisCluster`、`Relay`、`Relay\Cluster`、または `Predis` インスタンスを渡すことを期待します。名前空間とデフォルトのキャッシュ有効期間は、オプションで2番目と3番目のパラメータとして渡せます:
 
 ## 接続の設定
 
@@ -76,7 +76,7 @@ RedisAdapter::createConnection('redis:default:verysecurepassword@?host[redis1:26
 ```
 
 > 注意:
-> DSN パラメータとして渡すことができる他のオプションについては、`Symfony\Component\Cache\Traits\RedisTrait` を参照してください。
+> DSN パラメータとして渡せる他のオプションについては、`Symfony\Component\Cache\Traits\RedisTrait` を参照してください。
 
 
 ### 利用可能なオプション
