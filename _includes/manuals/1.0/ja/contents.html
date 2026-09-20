@@ -1,17 +1,22 @@
 <nav class="navbar navbar-expand-md navbar-light">
     <div class="navigation-header">
-        <div class="ml-auto d-sm-block d-md-none">
-            <ul class="navbar-nav language-list">
-                <li>
-                    <a class="{% if page.layout == 'docs-en' %}active{% endif %}" href="{{ page.permalink | replace: '/ja/', '/en/' }}">En</a>
-                </li>
-                <li>
-                    <a class="{% if page.layout == 'docs-ja' %}active{% endif %}" href="{{ page.permalink | replace: '/en/', '/ja/' }}">Ja</a>
-                </li>
-            </ul>
+        <div class="ml-auto d-flex align-items-center justify-content-between d-md-none">
             <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#Navber" aria-controls="Navber" aria-expanded="false" aria-label="ナビゲーションの切替">
                 <span class="navbar-toggler-icon"></span>
             </button>
+            <div class="d-flex align-items-center">
+                {% if page.category == 'Manual' %}
+                <pagefind-modal-trigger></pagefind-modal-trigger>
+                {% endif %}
+                <ul class="navbar-nav language-list">
+                    <li>
+                        <a class="{% if page.layout == 'docs-en' %}active{% endif %}" href="{{ page.permalink | replace: '/ja/', '/en/' }}">En</a>
+                    </li>
+                    <li>
+                        <a class="{% if page.layout == 'docs-ja' %}active{% endif %}" href="{{ page.permalink | replace: '/en/', '/ja/' }}">Ja</a>
+                    </li>
+                </ul>
+            </div>
         </div>
     </div>
     <div class="collapse navbar-collapse" id="Navber">
