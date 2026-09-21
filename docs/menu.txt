@@ -22,7 +22,6 @@ form
 content-negotiation
 hypermedia-api
 psr7
-js-ui
 stream
 cache
 async
