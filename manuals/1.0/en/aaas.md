@@ -5,6 +5,132 @@ category: Manual
 permalink: /manuals/1.0/en/aaas.html
 ---
 
+## AaaS (Application as a Service)
+
+The API application you create can be accessed not only from the Web or the console (batch) but can also be used as a library from other PHP projects.
+The repository created in this tutorial has been pushed to [https://github.com/bearsunday/Tutorial2.git](https://github.com/bearsunday/Tutorial2.git).
+
+Let's try using this project as a library. First, create a new project folder and prepare a `composer.json`.
+
+```bash
+mkdir app
+cd app
+mkdir -p ticket/log
+mkdir ticket/tmp
+```
+
+composer.json
+
+```json
+{
+    "name": "my-vendor/app",
+    "description": "A BEAR.Sunday application",
+    "type": "project",
+    "license": "proprietary",
+    "require": {
+        "my-vendor/ticket": "dev-master"
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/bearsunday/Tutorial2.git"
+        }
+    ]
+}
+```
+
+Running `composer install` will install the project as a library.
+
+```bash
+composer install
+```
+
+The `Ticket API` was set up to read the `.env` file in the project folder. While you could store one at `vendor/my-vendor/app/.env`, here we'll set up the environment variables in a different way.
+
+Prepare an `app/.env` file like this:
+
+```bash
+export TKT_DB_HOST=localhost
+export TKT_DB_NAME=ticket
+export TKT_DB_USER=root
+export TKT_DB_PASS=''
+export TKT_DB_SLAVE=''
+export TKT_DB_DSN=mysql:host=${TKT_DB_HOST}\;dbname=${TKT_DB_NAME}
+```
+
+You can export these to the environment variables with the `source` command.
+
+```bash
+source .env
+```
+
+The simplest script for using the `Ticket API` from another project looks like this.
+Specify the application name and context to retrieve the application object `$ticket` and access its resources.
+
+```php
+<?php
+use BEAR\Package\Bootstrap;
+
+require __DIR__ . '/vendor/autoload.php';
+
+$ticket = (new Bootstrap)->getApp('MyVendor\Ticket', 'app');
+$response = $ticket->resource->post('app://self/ticket',
+    ['title' => 'run']
+);
+
+echo $response->code . PHP_EOL;
+
+
+```
+
+Save it as `index.php` and run it.
+
+```bash
+php index.php
+```
+```text
+201
+```
+
+To pass the API to other methods or store it in a container of another framework, make it a `callable` object.
+`$createTicket` can be treated like an ordinary function.
+
+```php
+<?php
+use BEAR\Package\Bootstrap;
+
+require __DIR__ . '/vendor/autoload.php';
+
+$ticket = (new Bootstrap)->getApp('MyVendor\Ticket', 'app');
+$createTicket = $ticket->resource->post->uri('app://self/ticket');
+// invoke callable object
+$response = $createTicket(['title' => 'run']);
+echo $response->code . PHP_EOL;
+```
+
+Did it work? However, with this setup the `tmp` and `log` directories of the application under `vendor` will be used.
+You can change the directory locations by modifying the application's meta information like this:
+
+```php
+<?php
+
+use BEAR\AppMeta\Meta;
+use BEAR\Package\Bootstrap;
+
+require __DIR__ . '/vendor/autoload.php';
+
+$meta = new Meta('MyVendor\Ticket', 'app');
+$meta->tmpDir = __DIR__ . '/ticket/tmp';
+$meta->logDir = __DIR__ . '/ticket/log';
+$ticket = (new Bootstrap)->newApp($meta, 'app');
+```
+
+The `Ticket API` is not only accessible as a REST API from HTTP or the console, it can now also be used as a library from other non-BEAR.Sunday projects!
+
+----
+
+# from tutorial1
+
 ## Application Import
 
 Resources created with BEAR.Sunday have unrivaled re-usability.
@@ -131,7 +257,7 @@ Let's try it..
 php bin/import.php
 ```
 
-```
+```text
 string(17) "Hello BEAR.Sunday"
 ```
 
