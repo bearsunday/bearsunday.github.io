@@ -162,6 +162,8 @@ class MyController
 
 独自の`AntiCsrf`クラスを提供することもできます。詳しくはAura.Inputの[Applying CSRF Protections](https://github.com/auraphp/Aura.Input#applying-csrf-protections)を参照してください。
 
+フォームの経路によらず`ResourceObject`のメソッド自体を守るには、[CSRF](csrf.html)の`bear/csrf`を使います。
+
 ## 0.xからのマイグレーション
 
 1.0ではDoctrine Annotationsを廃止し、PHP 8のネイティブ属性に移行しました。型宣言も強化されています。主な書き換えは次の通りです。
