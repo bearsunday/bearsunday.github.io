@@ -303,6 +303,8 @@ $this->install(
 
 Use `deflate` if you want to reduce Redis memory usage. This is a trade-off with CPU usage.
 
+For the `dsn` format (authentication, TLS, Sentinel, Cluster, etc.) and connection options, see [Redis DSN](redis-dsn.html).
+
 ## CDN
 
 If you install a module that supports a specific CDN, vendor-specific headers will be output.

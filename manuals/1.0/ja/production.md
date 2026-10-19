@@ -84,6 +84,12 @@ $redisServer = 'localhost:6379'; // {host}:{port}
 $this->install(new StorageRedisModule($redisServer));
 ```
 
+認証、TLS、Sentinel、Cluster などを使う場合は、接続を DSN で指定する`StorageRedisDsnModule`を使います。書式は[Redis DSN](redis-dsn.html)を参照してください。
+
+```php
+$this->install(new StorageRedisDsnModule('redis://localhost:6379'));
+```
+
 リソースの状態保存は単にTTLによる時間更新のキャッシュとの他に、TTL時間では消えない永続的なストレージとして（CQRS）の運用も可能です。その場合には`Redis`で永続処理を行うか、Cassandraなどの他KVSのストレージアダプターを独自で用意する必要があります。
 
 ### キャッシュ時間の指定
