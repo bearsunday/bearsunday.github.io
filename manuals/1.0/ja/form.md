@@ -139,6 +139,8 @@ CSRF(クロスサイトリクエストフォージェリ)保護は**opt-in**で�
 
 どちらの経路でも、トークン不一致時には`AbstractForm::apply()`が`CsrfViolationException`をthrowします。どちらも使わない場合はCSRF検証は行われません。
 
+リクエストがどう組み立てられたかによらず`ResourceObject`のメソッド自体を守るには[CSRF](csrf.html)を参照してください。
+
 ```php
 use Ray\WebFormModule\AbstractForm;
 use Ray\WebFormModule\Annotation\CsrfProtection;
