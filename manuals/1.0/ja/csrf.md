@@ -7,11 +7,11 @@ permalink: /manuals/1.0/ja/csrf.html
 
 # CSRF
 
-[bear/csrf](https://github.com/bearsunday/BEAR.Csrf)は、`ResourceObject`のブラウザに面した安全でないメソッドをクロスサイトリクエストフォージェリから守ります。属性を付けたメソッドにAOPで2つの門を束縛し、拒否は`BEAR\Resource`の4xx例外として投げられるので、レスポンスはフレームワーク自身のエラー処理が返します。
+[bear/csrf](https://github.com/bearsunday/BEAR.Csrf)は`ResourceObject`のメソッドをクロスサイトリクエストフォージェリ（CSRF）から守ります。守る対象は、ブラウザから呼ばれる状態変更メソッド（POST / PUT / PATCH / DELETE）です。属性を付けたメソッドに、同一オリジン検査（`#[SameOrigin]`）とトークン検査（`#[CsrfToken]`）の2つのインターセプターをAOPで束縛します。検査に失敗すると`BEAR\Resource`の4xx例外が投げられ、エラーレスポンスはフレームワークのエラー処理が返します。
 
-トークンはリソースのセマンティクスの外に置かれます。リソースメソッドの引数にCSRFトークンは現れず、リクエストスキーマやAPIドキュメントにも露出しません。CSRFはトランスポートの関心事であって、リソースの引数ではありません。
+CSRFトークンはリソースメソッドの引数には現れません。リクエストスキーマやAPIドキュメントにも出てきません。CSRFはトランスポート層の関心事であり、リソースの引数ではないからです。
 
-[Ray.WebFormModule](form.html#csrf-protections)はフォームを適用する時にトークンを検証します。`bear/csrf`はリクエストがどう組み立てられたかによらずリソースメソッドで検証します。両者は併用できます。
+[Ray.WebFormModule](form.html#csrf-protections)は`AbstractForm::apply()`の実行時にフォームのトークンを検証します。`bear/csrf`はリクエストの経路によらず、`ResourceObject`のメソッド呼び出し時に検証します。
 
 ## インストール
 
@@ -21,7 +21,7 @@ composer require bear/csrf
 
 ## モジュール
 
-アプリケーションモジュールで`CsrfModule`をインストールします。どの門を動かすかはコンストラクタ名で選ぶので、引数を省いたために無防備な配備になることはありません。
+アプリケーションモジュールで`CsrfModule`をインストールします。どの検査を有効にするかは名前付きコンストラクタで選びます。引数を省略したために無防備な設定になることはありません。
 
 ```php
 use BEAR\Csrf\CsrfModule;
@@ -29,13 +29,15 @@ use BEAR\Csrf\CsrfModule;
 $this->install(CsrfModule::withSameOriginCheck('https://example.com'));
 ```
 
-CLIやマシン間APIのように比較するブラウザオリジンが無いホストでは、オリジンの門はすべてのリクエストを拒否してしまいます。その場合は明示的にそう宣言します。トークンの門はどちらでも有効です。
+`allowedOrigin`は`https://example.com`や`http://localhost:8080`のように、スキームとホスト（必要ならポート）だけで指定します。パスを含めると、保護されたメソッドを呼ぶたびに`LogicException`になります。
+
+CLIやサーバー間APIのように、比較するブラウザオリジンが無い環境では、同一オリジン検査はすべてのリクエストを拒否します。そのような環境では、同一オリジン検査を行わないことを明示します。トークン検査はどちらでも有効です。
 
 ```php
 $this->install(CsrfModule::withoutSameOriginCheck());
 ```
 
-`tokenField`の既定値は`_csrf_token`、`sessionKey`の既定値は`bear_csrf_token`です。既存のフィールド名やセッション構成に合わせる必要がある時だけ上書きします。
+`tokenField`の既定値は`_csrf_token`、`sessionKey`の既定値は`bear_csrf_token`です。既存のフィールド名やセッション構成に合わせる必要があるときだけ変更します。
 
 ```php
 $this->install(CsrfModule::withSameOriginCheck(
@@ -45,13 +47,14 @@ $this->install(CsrfModule::withSameOriginCheck(
 ));
 ```
 
-フィールド名はブラウザの送信とPHPの`$_POST`解析の両方を無傷で通る必要があります。使えるのは英数字と`_`、`-`だけです。`_charset_`は、ブラウザがそのhiddenフィールドの値をフォームの文字コードで上書きするため拒否されます。
+フィールド名は、ブラウザの送信と`$_POST`の解析を経てもそのまま届く名前にします。使えるのはASCIIの英数字、`_`、`-`だけです。空文字や`_charset_`（大文字小文字を問わず）など条件を満たさない名前は、インジェクターの構築時に`InvalidArgumentException`になります。`_charset_`を除外するのは、ブラウザがそのhiddenフィールドの値をフォームの文字コードで上書きするためです。
 
 ## リソース属性
 
 ```php
 use BEAR\Csrf\Attribute\CsrfToken;
 use BEAR\Csrf\Attribute\SameOrigin;
+use BEAR\Resource\ResourceObject;
 
 class Article extends ResourceObject
 {
@@ -64,36 +67,59 @@ class Article extends ResourceObject
 }
 ```
 
-リソースを`final`にしてはいけません。Ray.Aopはサブクラス化で門を適用し、Ray.Diは`final`クラスを黙って飛ばすので、そのメソッドは無防備のまま動きます。
+属性はメソッドにだけ付けられます。保護するリソースを`final`にしてはいけません。Ray.Aopはサブクラスを生成してインターセプターを適用し、Ray.Diは`final`クラスを黙って飛ばすので、そのメソッドは無防備のまま動きます。
 
-`#[SameOrigin]`はブラウザのオリジン信号（`Sec-Fetch-Site`、`Origin`、`Referer`）を検証し、`withSameOriginCheck()`の下でだけ動きます。現行のブラウザがすべて送る`Sec-Fetch-Site`があれば、ブラウザが計算したその信号だけで判定します。許可オリジンは、古いクライアントや非ブラウザが使う`Origin` / `Referer`のフォールバックでだけ参照されます。3つのどれも送らないリクエストは拒否されます。
+`#[SameOrigin]`は`withSameOriginCheck()`のときだけ動き、ブラウザが送るオリジン情報を検査します。現行のブラウザがすべて送る`Sec-Fetch-Site`がある場合は、値が`same-origin`のときだけ通します。`same-site`、`cross-site`、`none`、未知の値は403です。このとき許可オリジンとは比較しません。`Sec-Fetch-Site`を送らない古いクライアントや非ブラウザでは、`Origin`、無ければ`Referer`を許可オリジンと比較します。3つのどれも無いリクエストは拒否します。
 
-`#[CsrfToken]`はシンクロナイザートークンを検証します。2つの門は独立していて、`withoutSameOriginCheck()`はこちらに影響しません。属性は引数を取りません。フィールド名の出所はモジュールだけなので、テンプレートが描画する名前とインターセプターが読む名前が食い違うことはありません。
+`#[CsrfToken]`はシンクロナイザートークンを検査します。2つの検査は独立しており、`withoutSameOriginCheck()`はトークン検査に影響しません。属性は引数を取りません。フィールド名を決めるのはモジュールだけなので、テンプレートが描画する名前とインターセプターが読む名前が食い違うことはありません。
 
-トークンが無い場合、インターセプターが拒否するのではなく`''`として`CsrfTokenInterface::verify()`に渡されます。何を受け入れるかを決めるのは束縛された実装だけです。CSRFが主題でないテストは、インターセプターを差し替えるのではなく寛容な実装を束縛します。
+トークンが無いリクエストは、インターセプターがその場で拒否するのではなく、`''`として`CsrfTokenInterface::verify()`に渡されます。何を受け入れるかは束縛された実装が決めます。CSRFが主題でないテストでは、インターセプターを差し替えるのではなく、`verify()`が常に`true`を返す実装を`CsrfTokenInterface`に束縛します。
+
+拒否は`BEAR\Csrf\Exception\ForbiddenException`のサブクラス（403）です。トークンが無ければ`MissingCsrfTokenForbiddenException`、一致しなければ`InvalidCsrfTokenForbiddenException`、オリジンが異なれば`CrossOriginForbiddenException`が投げられます。`Origin`や`Referer`の形式が不正な場合は`BEAR\Resource\Exception\BadRequestException`（400）です。
 
 ## トークンの取得元
 
-送信されたトークンは次の順で読まれます。
+送信されたトークンは次の順で探し、最初に見つかった空でない値を使います。
 
 1. `X-CSRF-Token`ヘッダー
 2. `ResourceObject->uri->query[$field]`
 3. `$_POST[$field]`
 
-ヘッダー名は固定で、`HeaderRequestToken::HEADER_NAME`として公開されています。`tokenField`が変えるのはクエリと`$_POST`の名前だけです。
+複数の取得元を組み合わせることはありません。ヘッダーのトークンが間違っていれば、`$_POST`に正しいトークンがあっても拒否されます。
 
-ブラウザに面したリクエストでクエリ文字列を使うのは避けてください。URLに置いたトークンはアクセスログ、`Referer`ヘッダー、ブラウザ履歴、共有されたリンクから漏れます。ブラウザからはヘッダーか`$_POST`を使い、`uri->query`はURIがブラウザに見えないサーバー側のBEAR.Resourceリクエストのために取っておきます。
+ヘッダー名は固定で、`HeaderRequestToken::HEADER_NAME`として公開されています。`tokenField`が変えるのは`uri->query`と`$_POST`で探すキーだけです。
+
+BEAR.SundayのWebルーターは、POSTでは`$_POST`を、PUT / PATCH / DELETEではフォームエンコードまたはJSONのリクエストボディを`uri->query`に入れます。ブラウザのフォーム送信やJSONボディのトークンは、2番目の取得元で読まれます。URLのクエリ文字列にトークンを載せないでください。アクセスログ、`Referer`ヘッダー、ブラウザ履歴、共有されたリンクから漏れます。
 
 ## テンプレート
 
-`CsrfHiddenInput`は、束縛されたフィールド名でhiddenフィールドをエスケープ済みの1つの文字列として描画します。テンプレートヘルパーに注入し、保護されたメソッドに送信するすべてのフォームの中で呼びます。
+`CsrfHiddenInput`は、束縛されたフィールド名のhiddenフィールドをエスケープ済みのHTML文字列として返す呼び出し可能オブジェクトです。テンプレートヘルパーに注入し、保護されたメソッドに送信するすべてのフォームの中で呼びます。
+
+Qiqでは`HtmlHelpers`のサブクラスにヘルパーメソッドを追加し、`Helpers`の束縛を差し替えます。
 
 ```php
-// Qiq: HtmlHelpersの代わりに束縛したHelpersのサブクラス
-public function csrfField(): string
+use BEAR\Csrf\Html\CsrfHiddenInput;
+use Qiq\Helper\Html\HtmlHelpers;
+
+class AppHelpers extends HtmlHelpers
 {
-    return ($this->csrfHiddenInput)();
+    public function __construct(private readonly CsrfHiddenInput $csrfHiddenInput)
+    {
+        parent::__construct();
+    }
+
+    public function csrfField(): string
+    {
+        return ($this->csrfHiddenInput)();
+    }
 }
+```
+
+```php
+use Qiq\Helpers;
+
+$this->install(new QiqModule($templateDir));
+$this->bind(Helpers::class)->to(AppHelpers::class);
 ```
 
 ```html
@@ -101,50 +127,65 @@ public function csrfField(): string
   {{= csrfField() }}{% endraw %}
 ```
 
+Twigでは`csrf_field`関数として登録します。戻り値はHTMLなので、Twigがエスケープしないよう`is_safe`を宣言します。登録する場所は[Twigの拡張](html-twig-v2.html)と同じく、`Twig_Environment`のProviderです。
+
 ```php
-// Twig: 関数はマークアップを返すので安全と宣言する
-new TwigFunction('csrf_field', $csrfHiddenInput, ['is_safe' => ['html']]);
+use Twig\TwigFunction;
+
+$twig->addFunction(new TwigFunction('csrf_field', $csrfHiddenInput, ['is_safe' => ['html']]));
 ```
 
-出力は`<input type="hidden" name="_csrf_token" value="…">`で、両方の属性はエスケープ済みです。そのまま出力してください。もう一度エスケープするとマークアップが壊れます。リソースはこのフィールドの存在を知る必要がありません。
+```twig
+{% raw %}<form method="post" action="/admin/article">
+  {{ csrf_field() }}{% endraw %}
+```
 
-ヘルパーを解決しただけでは何も発行されません。トークンの発行とセッションの開始はフィールドが描画された時です。描画されたページはトークンを含み、パッケージ自身はキャッシュヘッダーを設定しません。本文にトークンを含むリソースを`#[Cacheable]`やCDNの後ろに置かず、そのページは`Cache-Control: private, no-store`で送ってください。
+出力は`<input type="hidden" name="_csrf_token" value="…">`で、属性値はエスケープ済みです。そのまま出力してください。重ねてエスケープするとマークアップが壊れます。リソース側はこのフィールドの存在を知る必要がありません。
 
-JavaScriptには同じトークンを`<meta>`タグで1度だけ公開し、`X-CSRF-Token`ヘッダーで送り返します。付けるのは同一オリジンへのリクエストだけです。`$csrf`は注入された`CsrfTokenInterface`です。
+ヘルパーを取得しただけでは何も起きません。トークンの発行とセッションの開始は、フィールドを描画したときに行われます。描画されたページにはトークンが含まれるので、`#[CacheableResponse]`や`#[DonutCache]`のキャッシュ対象やCDNに載せず、`Cache-Control: private, no-store`で返してください（[キャッシュ](cache.html)の「レスポンスヘッダー」を参照）。`bear/csrf`自身はキャッシュヘッダーを設定しません。
+
+JavaScriptから送る場合は、同じトークンを`<meta>`タグで1度だけ公開し、`X-CSRF-Token`ヘッダーに載せて送り返します。ヘッダーを付けるのは同一オリジンへのリクエストだけにします。`$csrf`は注入された`CsrfTokenInterface`です。
 
 ```php
 <meta name="csrf-token" content="<?= htmlspecialchars($csrf->issue(), ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5, 'UTF-8') ?>">
 ```
 
-Qiqは上の`<?= ?>`をそのまま受け付けます。Twigは受け付けないので、`$csrf->issue()`を関数として公開し、属性の中でTwigにエスケープさせます。
+```js
+const token = document.querySelector('meta[name="csrf-token"]').content;
+fetch('/admin/article', {method: 'POST', headers: {'X-CSRF-Token': token}, body});
+```
+
+Qiqは上の`<?= ?>`をそのまま受け付けます。Twigでは`$csrf->issue()`を返す関数を登録し、属性値のエスケープはTwigに任せます。
 
 ## トークンのライフサイクル
 
-トークンはセッションごとに保存され、リクエストをまたいで安定しているので、フォームごとに再発行はされません。
+トークンはセッション単位で保存され、リクエストをまたいで同じ値が使われます。フォームごとに発行し直すことはありません。
 
-ログインCSRFとセッション固定を緩和するため、認証状態が変わるたびに回してください。ログインとログアウトでセッションIDを再生成しトークンを消すと、次の`issue()`が新しいセッションに束縛された新しいトークンを発行します。
+ログインCSRFとセッション固定を緩和するため、認証状態が変わるたびにトークンを更新します。ログインとログアウトで古いトークンを捨ててセッションIDを再生成すると、次の`issue()`が新しいセッションに紐づいたトークンを発行します。`clear()`はセッションが未開始なら開始するので、この順で呼べば`session_regenerate_id()`は必ず開始済みのセッションに対して動きます。
 
 ```php
 // $csrfは注入されたCsrfTokenInterface
+$csrf->clear();                 // 古いトークンを捨てる
 session_regenerate_id(true);
-$csrf->clear();   // 古いトークンを捨てる
-$csrf->issue();   // 新しいセッション用のトークンを発行する
+$csrf->issue();                 // 新しいセッション用のトークンを発行する
 ```
 
-## セッションストアとホスト
+## セッションストアと動作環境
 
-同梱の`SessionCsrfStore`はトークンをPHPの`$_SESSION`に保存します。セッションの設定はアプリケーションが持ちます。最初にストアが呼ばれる前にクッキー（`HttpOnly`、`SameSite`、`Secure`）を設定してください。
+同梱の`SessionCsrfStore`はトークンをPHPの`$_SESSION`に保存します。セッションの設定はアプリケーションの責任です。ストアが最初に呼ばれる前に、クッキーの`HttpOnly`、`SameSite`、`Secure`を設定しておきます。
 
-`session_start()`が失敗した時、つまりヘッダー送信済み、保存先に書けない、セッションバックエンドが落ちている時、ストアは描画でも検証でも`SessionStartFailedException`を投げます。黙って続けると何も保存されず、以降の送信がすべてトークンのせいにされた403になります。
+ヘッダー送信済み、保存先に書けない、セッションバックエンドの停止などで`session_start()`が失敗すると、ストアは`SessionStartFailedException`を投げます。フィールドの描画時でも検証時でも同じです。失敗を無視して続けると何も保存されず、以降の送信がすべてトークン不備を理由とする403になるためです。
 
-`$_SESSION`はプロセスのものなので、同梱のストアが正しく動くのはリクエストがプロセスを占有するホストだけです。PHP-FPM、mod_php、ビルトインサーバー、CLIがそれにあたります。**1つの常駐ワーカーが複数のリクエストを処理するホストでは使わないでください。**そこでは`$_SESSION`がリクエストより長生きし、そのワーカーの訪問者全員が1つのトークンを共有して、偽造リクエストのトークンをサーバーが受け入れます。すべてのリクエストが成功し続けるので、外からは何も見えません。
+`$_SESSION`はプロセス単位なので、同梱のストアが正しく動くのは、1つのリクエストが1つのプロセスを占有する環境だけです。PHP-FPM、mod_php、ビルトインサーバー、CLIがこれにあたります。**1つの常駐ワーカーが複数のリクエストを処理する環境では使わないでください。**`$_SESSION`がリクエストより長く生き残り、そのワーカーを通る訪問者全員が1つのトークンを共有します。偽造リクエストが持つトークンをサーバーが受け入れてしまいますが、すべてのリクエストが成功し続けるので、外からは気づけません。
 
-ストアはコルーチンの中にいることを検出すると`CoroutineUnsafeStoreException`を投げます。`enable_coroutine`を切ったSwooleワーカーのような非コルーチンの場合は検出できないので、このガードは間違いの一形態を捕まえるものであって、常駐ワーカーのホストに配備してよい許可ではありません。
+ストアはコルーチンの中で呼ばれたことを検出すると`CoroutineUnsafeStoreException`を投げます。`enable_coroutine`を切ったSwooleワーカーのように、コルーチンを使わない常駐ワーカーは検出できません。このガードは誤用の一部を捕まえるものであり、常駐ワーカー環境で使ってよいという保証ではありません。
 
-そのようなホストでは、リクエストに閉じたもの（コルーチンコンテキスト、またはセッションIDをキーにした共有バックエンド）に対して`CsrfStoreInterface`を実装し、束縛します。
+常駐ワーカー環境では、コルーチンコンテキストやセッションIDをキーにした共有バックエンドのように、リクエストに閉じた保存先で`CsrfStoreInterface`を実装して束縛します。
 
 ```php
+use BEAR\Csrf\CsrfStoreInterface;
+
 $this->bind(CsrfStoreInterface::class)->to(MyRequestScopedStore::class);
 ```
 
-ストレージは`CsrfTokenInterface`とは別のインターフェイスです。`random_bytes()`による発行と`hash_equals()`による比較は`StoredCsrfToken`に残るので、トークンの置き場所を変えても正しくなければならない部分を書き直すことにはなりません。
+保存先は`CsrfTokenInterface`とは別のインターフェイスです。`random_bytes()`による発行と`hash_equals()`による比較は`StoredCsrfToken`に残るので、保存先を変えても、正しさが求められるトークンの生成と比較を書き直す必要はありません。
