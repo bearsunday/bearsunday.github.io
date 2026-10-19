@@ -132,8 +132,8 @@ public function testBindMock(): void
         }
     };
     $injector = Injector::getOverrideInstance('hal-app', $module);
-    $foo = $injector->getInstance(FooInterface::class);
-    $foo->update('something');
+    // The SUT (FooService) calls FooInterface::update('something') from execute()
+    $injector->getInstance(FooService::class)->execute();
 }
 ```
 ### Spy

@@ -136,7 +136,7 @@ $result = $pdo->fetchAssoc($stm, $bind);
 // fetchGroup()はfetchAssoc()のような動作ですが、値は配列にラップされません。
 // 代わりに、単一カラムの値は1次元配列として、
 // 複数カラムは配列の配列として返されます。
-// 値が配列の場合（つまり、SELECTに2つ以上のカラムがある場合）は、
+// 値が配列の場合（つまり、SELECTに3つ以上のカラムがある場合）は、
 // スタイルをPDO::FETCH_NAMEDに設定します。
 $result = $pdo->fetchGroup($stm, $bind, $style = PDO::FETCH_COLUMN);
 
