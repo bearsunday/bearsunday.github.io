@@ -162,6 +162,8 @@ class MyController
 
 You can provide a custom `AntiCsrf` class. See [Applying CSRF Protections](https://github.com/auraphp/Aura.Input#applying-csrf-protections) in Aura.Input for details.
 
+To protect the `ResourceObject` method itself, whichever path the request took to reach it, use `bear/csrf` — see [CSRF](csrf.html).
+
 ## Migration From 0.x
 
 Version 1.0 drops Doctrine Annotations in favor of native PHP 8 attributes and tightens type declarations. The most common rewrites are:
