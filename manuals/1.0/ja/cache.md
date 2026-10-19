@@ -278,7 +278,7 @@ $this->install(
 
 Redisのメモリ使用量を削減したい場合は`deflate`を使用してください。CPU使用率とのトレードオフになります。
 
-`dsn`に指定できる書式（認証、TLS、Sentinel、Cluster など）と接続オプションは[Redis DSN](redis-dsn.html)を参照してください。
+`dsn`に指定できる書式（認証、TLS、Sentinel、Clusterなど）と接続オプションは[Redis DSN](redis-dsn.html)を参照してください。
 
 ## CDN特定
 

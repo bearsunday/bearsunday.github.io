@@ -84,7 +84,7 @@ $redisServer = 'localhost:6379'; // {host}:{port}
 $this->install(new StorageRedisModule($redisServer));
 ```
 
-認証、TLS、Sentinel、Cluster などを使う場合は、接続を DSN で指定する`StorageRedisDsnModule`を使います。書式は[Redis DSN](redis-dsn.html)を参照してください。
+認証、TLS、Sentinel、Clusterなどを使う場合は、接続をDSNで指定する`StorageRedisDsnModule`を使います。書式は[Redis DSN](redis-dsn.html)を参照してください。
 
 ```php
 $this->install(new StorageRedisDsnModule('redis://localhost:6379'));

@@ -45,6 +45,7 @@
 - [Hypermedia API](/manuals/1.0/en/hypermedia-api.md): HAL and hypermedia controls
 - [Import](/manuals/1.0/en/import.md): Using resources from other applications
 - [Cache](/manuals/1.0/en/cache.md): Caching strategies
+- [Redis DSN](/manuals/1.0/en/redis-dsn.md): DSN format and connection options for `StorageRedisDsnModule`
 - [Stream](/manuals/1.0/en/stream.md): Streaming responses
 - [Parallel Execution](/manuals/1.0/en/async.md): BEAR.Async parallel `#[Embed]` execution with ext-parallel and Swoole
 - [Swoole](/manuals/1.0/en/server.md): Async server with Swoole

@@ -26,12 +26,10 @@ Note: The rest of this page extracts and adapts only the DSN configuration part 
 
 ## Configure the Connection
 
-Create and configure the Redis client class instance using a Data Source Name (DSN):
-
 A DSN can specify either an IP/host (and an optional port) or a socket path, as well as a password and a database index. To enable TLS for connections, the scheme `redis` must be replaced by `rediss` (the second `s` means "secure").
 
 > Note:
-> A Data Source Name (DSN) for this adapter must use one of the following formats.
+> A DSN must use one of the following formats.
 >
 > ```
 > redis[s]://[pass@][ip|host|socket[:port]][/db-index]
