@@ -20,17 +20,19 @@ Follow [PSR-1](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR
 <?php
 namespace Koriym\Blog\Resource\App;
 
-use BEAR\RepositoryModule\Annotation\Cacheable;
+use Aura\Sql\ExtendedPdoInterface;
+use BEAR\RepositoryModule\Annotation\CacheableResponse;
 use BEAR\Resource\Annotation\Embed;
 use BEAR\Resource\Annotation\Link;
 use BEAR\Resource\Code;
+use BEAR\Resource\ResourceInterface;
 use BEAR\Resource\ResourceObject;
 
 #[CacheableResponse]
 class Entry extends ResourceObject
 {
     public function __construct(
-        private readonly ExtendPdoInterface $pdo,
+        private readonly ExtendedPdoInterface $pdo,
         private readonly ResourceInterface $resource
     ) {}
 
@@ -85,7 +87,7 @@ Return the appropriate status code. This makes testing easier and conveys the co
 * `304` Not Modified Not updated
 * `400` Bad Request Malformed request
 * `401` Unauthorized Authentication required
-* `403` Forbidden Forbidden
+* `403` Forbidden
 * `404` Not Found
 * `405` Method Not Allowed
 * `503` Service Unavailable Temporary server-side error

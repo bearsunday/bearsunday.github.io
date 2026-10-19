@@ -71,7 +71,7 @@ $this->bindInterceptor(
 // Example 2: binding by class and annotation
 $this->bindInterceptor(
     $this->matcher->SubclassesOf(AdminPage::class),  // in classes that extend or implement AdminPage
-    $this->matcher->annotatedWith(Auth::class),      // for methods annotated with @Auth
+    $this->matcher->annotatedWith(Auth::class),      // for methods annotated with #[Auth]
     [AdminAuthentication::class]                     // bind the AdminAuthentication interceptor
 );
 ```

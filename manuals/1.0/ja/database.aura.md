@@ -139,7 +139,7 @@ $result = $sth->fetchAll(PDO::FETCH_ASSOC);
 $pdo = new ExtendedPdo(...);
 $result = $pdo->fetchAll($stm, $bind);
 
-// fetchAssoc()は全ての行がコラム名のキーを持つ連想配列が返ります。
+// fetchAssoc()は全ての行を返す連想配列で、キーは最初の列の値、行はコラム名をキーにした連想配列です。
 $result = $pdo->fetchAssoc($stm, $bind);
 
 // fetchGroup()はfetchAssoc()のような動作ですが、値は配列にラップされません。
@@ -185,7 +185,7 @@ foreach ($pdo->yieldAll($stm, $bind) as $row) {
     // ...
 }
 
-// fetchAssoc()のようにキーが最初の列名で行が連想配列です。
+// fetchAssoc()と同様に、キーは最初の列の値で、行は連想配列です。
 foreach ($pdo->yieldAssoc($stm, $bind) as $key => $row) {
     // ...
 }

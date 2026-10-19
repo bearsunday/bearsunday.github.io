@@ -132,6 +132,8 @@ public function testBindMock(): void
         }
     };
     $injector = Injector::getOverrideInstance('hal-app', $module);
+    $foo = $injector->getInstance(FooInterface::class);
+    $foo->update('something');
 }
 ```
 ### Spy

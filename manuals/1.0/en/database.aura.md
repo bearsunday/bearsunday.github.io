@@ -139,7 +139,8 @@ $result = $sth->fetchAll(PDO::FETCH_ASSOC);
 $pdo = new ExtendedPdo(...);
 $result = $pdo->fetchAll($stm, $bind);
 
-// fetchAssoc() returns an associative array of all rows keyed by column name.
+// fetchAssoc() returns an associative array of all rows where the key is the
+// first column value, and each row is keyed by column name.
 $result = $pdo->fetchAssoc($stm, $bind);
 
 // fetchGroup() works like fetchAssoc(), except that values are not wrapped in
@@ -186,7 +187,7 @@ foreach ($pdo->yieldAll($stm, $bind) as $row) {
     // ...
 }
 
-// The key is the first column name and each row is an associative array, like fetchAssoc()
+// The key is the first column value and each row is an associative array, like fetchAssoc()
 foreach ($pdo->yieldAssoc($stm, $bind) as $key => $row) {
     // ...
 }

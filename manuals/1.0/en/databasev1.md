@@ -132,7 +132,8 @@ $result = $sth->fetchAll(PDO::FETCH_ASSOC);
 $pdo = new ExtendedPdo(...);
 $result = $pdo->fetchAll($stm, $bind);
 
-// fetchAssoc() returns an associative array of all rows keyed by column name.
+// fetchAssoc() returns an associative array of all rows where the key is the
+// first column value, and each row is keyed by column name.
 $result = $pdo->fetchAssoc($stm, $bind);
 
 // fetchGroup() is like fetchAssoc() except that the values aren't wrapped in
@@ -179,7 +180,7 @@ foreach ($pdo->yieldAll($stm, $bind) as $row) {
     // ...
 }
 
-// The key is the first column name and each row is an associative array, like fetchAssoc()
+// The key is the first column value and each row is an associative array, like fetchAssoc()
 foreach ($pdo->yieldAssoc($stm, $bind) as $key => $row) {
     // ...
 }
@@ -281,13 +282,6 @@ public function setLoggerDb(ExtendedPdoInterface $pdo)
 {
     // ...
 }
-```
-
-Specify an identifier with `NamedPdoModule` and bind it.
-
-```php?start_inline
-$this->install(new NamedPdoModule('log_db', 'mysql:host=localhost;dbname=log', 'username',
-$this->install(new NamedPdoModule('job_db', 'mysql:host=localhost;dbname=job', 'username',
 ```
 
 In the module, you specify an identifier in `NamedPdoModule` and bind it.

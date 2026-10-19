@@ -71,7 +71,7 @@ $this->bindInterceptor(
 // 例2：クラスとアノテーションによる束縛
 $this->bindInterceptor(
     $this->matcher->SubclassesOf(AdminPage::class),  // AdminPageの継承または実装クラスの
-    $this->matcher->annotatedWith(Auth::class),      // @Authアノテーションがアノテートされているメソッドには
+    $this->matcher->annotatedWith(Auth::class),      // #[Auth]属性が付与されているメソッドには
     [AdminAuthentication::class]                     // AdminAuthenticationインターセプターを束縛
 );
 ```

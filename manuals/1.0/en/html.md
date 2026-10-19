@@ -23,8 +23,6 @@ BEAR.Sunday can render HTML with a choice of template engines.
 |---------|-----|------|
 | Escaping | Explicit | Implicit |
 | Syntax | PHP-based | Custom syntax |
-| Codebase | Lightweight | Feature-rich |
-| IDE support | Excellent | Typical |
 
 ### Syntax Comparison
 

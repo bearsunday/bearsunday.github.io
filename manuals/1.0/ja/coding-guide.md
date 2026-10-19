@@ -20,17 +20,19 @@ permalink: /manuals/1.0/ja/coding-guide.html
 <?php
 namespace Koriym\Blog\Resource\App;
 
-use BEAR\RepositoryModule\Annotation\Cacheable;
+use Aura\Sql\ExtendedPdoInterface;
+use BEAR\RepositoryModule\Annotation\CacheableResponse;
 use BEAR\Resource\Annotation\Embed;
 use BEAR\Resource\Annotation\Link;
 use BEAR\Resource\Code;
+use BEAR\Resource\ResourceInterface;
 use BEAR\Resource\ResourceObject;
 
 #[CacheableResponse]
 class Entry extends ResourceObject
 {
     public function __construct(
-        private readonly ExtendPdoInterface $pdo,
+        private readonly ExtendedPdoInterface $pdo,
         private readonly ResourceInterface $resource
     ) {}
 
