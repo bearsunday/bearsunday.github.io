@@ -1,21 +1,28 @@
 ---
 layout: docs-ja
-title: Redis キャッシュアダプター
+title: Redis DSN
 category: Manual
 permalink: /manuals/1.0/ja/redis-dsn.html
 ---
-# Redis キャッシュアダプター
+# Redis DSN
 
-Note: このドキュメントは[symfony/cacheのドキュメント](https://symfony.com/doc/current/components/cache/adapters/redis_adapter.html#configure-the-connection)をRedisのDSN設定の部分だけを抽出して加工したものです。
+リソースのキャッシュを Redis に保存する `StorageRedisDsnModule` は、Redis への接続を DSN 文字列で指定します。このページはその DSN の書式と接続オプションのリファレンスです。
 
-Redisアダプターは、1つ（または複数）の Redis サーバーインスタンスを使用してメモリ内に値を格納します。
+```php
+use BEAR\QueryRepository\StorageRedisDsnModule;
 
-APCu アダプターとは異なり、そして Memcached アダプターと同様に、現在のサーバーの共有メモリに制限されません。PHP 環境に依存せずにコンテンツを保存できます。冗長性やフェイルオーバーを提供するサーバークラスターを利用する機能も利用可能です。
+$this->install(new StorageRedisDsnModule(
+    dsn: 'redis://localhost:6379',
+    options: ['timeout' => 5],
+));
+```
+
+`dsn` と `options` は Symfony の `RedisAdapter::createConnection()` にそのまま渡されます。そのため、Symfony の DSN 書式とオプションがすべて使えます。キャッシュ全体の設定は[キャッシュ](cache.html)を参照してください。
+
+Note: 以下は[symfony/cacheのドキュメント](https://symfony.com/doc/current/components/cache/adapters/redis_adapter.html#configure-the-connection)から DSN 設定の部分だけを抽出して加工したものです。
 
 > 注意:
-> 要件: このアダプターを使用するには、少なくとも1つの Redis サーバーがインストールされ、実行されている必要があります。さらに、このアダプターには `\Redis`、`\RedisArray`、`RedisCluster`、`\Relay\Relay`、`\Relay\Cluster`、または `\Predis` を実装する互換性のある拡張機能またはライブラリが必要です。
-
-このアダプターは、最初のパラメータとして `Redis`、`RedisArray`、`RedisCluster`、`Relay`、`Relay\Cluster`、または `Predis` インスタンスを渡すことを期待します。名前空間とデフォルトのキャッシュ有効期間は、オプションで2番目と3番目のパラメータとして渡せます:
+> 要件: Redis サーバーに加え、`\Redis`、`\RedisArray`、`RedisCluster`、`\Relay\Relay`、`\Relay\Cluster`、または `\Predis` を実装する拡張機能かライブラリが必要です。
 
 ## 接続の設定
 

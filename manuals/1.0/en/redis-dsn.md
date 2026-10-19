@@ -1,21 +1,28 @@
 ---
 layout: docs-en
-title: Redis Cache Adapter
+title: Redis DSN
 category: Manual
 permalink: /manuals/1.0/en/redis-dsn.html
 ---
-# Redis Cache Adapter
+# Redis DSN
 
-Note: This document extracts and adapts only the Redis DSN configuration part of the [symfony/cache documentation](https://symfony.com/doc/current/components/cache/adapters/redis_adapter.html#configure-the-connection).
+`StorageRedisDsnModule`, which stores resource caches in Redis, takes the Redis connection as a DSN string. This page is the reference for that DSN format and its connection options.
 
-The Redis adapter stores values in memory using one (or more) Redis server instances.
+```php
+use BEAR\QueryRepository\StorageRedisDsnModule;
 
-Unlike the APCu adapter, and similarly to the Memcached adapter, it is not limited to the current server's shared memory; you can store contents independent of your PHP environment. The ability to use a cluster of servers to provide redundancy and/or fail-over is also available.
+$this->install(new StorageRedisDsnModule(
+    dsn: 'redis://localhost:6379',
+    options: ['timeout' => 5],
+));
+```
+
+`dsn` and `options` are passed as-is to Symfony's `RedisAdapter::createConnection()`, so every DSN format and option Symfony supports is available. For the overall cache setup, see [Cache](cache.html).
+
+Note: The rest of this page extracts and adapts only the DSN configuration part of the [symfony/cache documentation](https://symfony.com/doc/current/components/cache/adapters/redis_adapter.html#configure-the-connection).
 
 > Note:
-> Requirements: At least one Redis server must be installed and running to use this adapter. Additionally, this adapter requires a compatible extension or library that implements `\Redis`, `\RedisArray`, `RedisCluster`, `\Relay\Relay`, `\Relay\Cluster`, or `\Predis`.
-
-This adapter expects a `Redis`, `RedisArray`, `RedisCluster`, `Relay`, `Relay\Cluster`, or `Predis` instance to be passed as the first parameter. A namespace and default cache lifetime can optionally be passed as the second and third parameters:
+> Requirements: Besides a Redis server, you need an extension or library that implements `\Redis`, `\RedisArray`, `RedisCluster`, `\Relay\Relay`, `\Relay\Cluster`, or `\Predis`.
 
 ## Configure the Connection
 

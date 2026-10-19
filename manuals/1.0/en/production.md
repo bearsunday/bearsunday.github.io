@@ -83,6 +83,12 @@ $redisServer = 'localhost:6379'; // {host}:{port}
 $this->install(new StorageRedisModule($redisServer));
 ```
 
+To use authentication, TLS, Sentinel, Cluster, and so on, use `StorageRedisDsnModule`, which takes the connection as a DSN. See [Redis DSN](redis-dsn.html) for the format.
+
+```php
+$this->install(new StorageRedisDsnModule('redis://localhost:6379'));
+```
+
 In addition to simply updating the cache by TTL for storing resource states, it is also possible to operate (CQRS) as a persistent storage that does not disappear after the TTL time. In that case, you need to perform persistent processing with `Redis` or prepare your own storage adapter for other KVS such as Cassandra.
 
 ### Specifying Cache Time
