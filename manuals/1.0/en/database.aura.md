@@ -5,11 +5,11 @@ category: Manual
 permalink: /manuals/1.0/en/database_aura.html
 ---
 
-# Aura.Sql
+# Ray.AuraSqlModule
 
-[Aura.Sql](https://github.com/auraphp/Aura.Sql) is an Aura database library that extends from `PDO` .
+`Ray.AuraSqlModule` provides the PDO extension Aura.Sql, the query builder Aura.SqlQuery, and a library for paginating database query results.
 
-### Installation
+## Installation
 
 Install `Ray.AuraSqlModule` via composer.
 
@@ -17,50 +17,61 @@ Install `Ray.AuraSqlModule` via composer.
 composer require ray/aura-sql-module
 ```
 
-Installing `AuraSqlModule` in your application module`src/Module/AppModule.php`.
+Install `AuraSqlModule` in your application module `src/Module/AppModule.php`.
 
-```php?start_inline
+```php
 use BEAR\Package\AbstractAppModule;
 use BEAR\AppMeta\AppMeta;
 use BEAR\Package\PackageModule;
-use Ray\AuraSqlModule\AuraSqlModule; // add this line
+use Ray\AuraSqlModule\AuraSqlModule;
 
 class AppModule extends AbstractAppModule
 {
     protected function configure()
     {
-        // ...
-        // Add the below install method call and contents
         $this->install(
             new AuraSqlModule(
-                'mysql:host=localhost;dbname=test',
+                'mysql:host=localhost;dbname=test',  // or getenv('PDO_DSN')
                 'username',
-                'password',
-                // $options,
-                // $attributes
+                'password'
             )
         );
-        $this->install(new PackageModule));
+        $this->install(new PackageModule);
     }
 }
 ```
 
-Now the `DI` bindings are ready. The db object will be injected via a constructor or the `AuraSqlInject` setter trait.
+To read the connection values from environment variables at runtime instead of specifying them directly, use `AuraSqlEnvModule`. Pass the names of the environment variable keys instead of the connection and credential values.
 
-```php?start_inline
+```php
+$this->install(
+    new AuraSqlEnvModule(
+        'PDO_DSN',      // getenv('PDO_DSN')
+        'PDO_USER',     // getenv('PDO_USER')
+        'PDO_PASSWORD', // getenv('PDO_PASSWORD')
+        'PDO_SLAVE',    // getenv('PDO_SLAVE')
+        $options,       // optional key=>value array of driver-specific connection options
+        $queries        // Queries to execute after the connection.
+    )
+);
+```
+
+## Aura.Sql
+
+[Aura.Sql](https://github.com/auraphp/Aura.Sql) is a database library that extends PHP's PDO. Receive a DB object `ExtendedPDO`, which extends `PDO`, through constructor injection or the `AuraSqlInject` trait.
+
+```php
 use Aura\Sql\ExtendedPdoInterface;
 
 class Index
 {
-    public function __construct(ExtendedPdoInterface $pdo)
-    {
-        return $this->pdo; // \Aura\Sql\ExtendedPdo
-    }
+    public function __construct(
+        private readonly ExtendedPdoInterface $pdo
+    ) {}
 }
 ```
 
-
-```php?start_inline
+```php
 use Ray\AuraSqlModule\AuraSqlInject;
 
 class Index
@@ -74,8 +85,122 @@ class Index
 }
 ```
 
-`Ray.AuraSqlModule` contains [Aura.SqlQuery](https://github.com/auraphp/Aura.SqlQuery) to help you build sql queries.
-[Aura.SqlQuery](https://github.com/auraphp/Aura.SqlQuery) also have other useful methods like [Array Quoting](https://github.com/auraphp/Aura.Sql/tree/2.x#array-quoting), [fetch*()](https://github.com/auraphp/Aura.Sql/tree/2.x#new-fetch-methods), [perform()](https://github.com/auraphp/Aura.Sql/tree/2.x#the-perform-method) and [yield*()](https://github.com/auraphp/Aura.Sql/tree/2.x#new-yield-methods) that you can use for your needs, please check their documentation.
+`Ray.AuraSqlModule` includes [Aura.SqlQuery](https://github.com/auraphp/Aura.SqlQuery), which you can use to build SQL for MySQL, Postgres, and other databases.
+
+### perform() method
+
+The `perform()` method binds an array of values to a SQL statement that has a single placeholder.
+
+```php
+$stm = 'SELECT * FROM test WHERE foo IN (:foo)';
+$array = ['foo', 'bar', 'baz'];
+```
+
+With native PDO:
+
+```php
+// the native PDO way does not work (PHP Notice: Array to string conversion)
+// Native PDO cannot bind an array to :foo
+$sth = $pdo->prepare($stm);
+$sth->bindValue('foo', $array);
+```
+
+With Aura.Sql's ExtendedPDO:
+
+```php
+$stm = 'SELECT * FROM test WHERE foo IN (:foo)';
+$values = ['foo' => ['foo', 'bar', 'baz']];
+$sth = $pdo->perform($stm, $values);
+```
+
+`['foo', 'bar', 'baz']` is bound to `:foo`. You can inspect the actual query with `queryString`.
+
+```php
+echo $sth->queryString;
+// the query string has been modified by ExtendedPdo to become
+// "SELECT * FROM test WHERE foo IN ('foo', 'bar', 'baz')"
+```
+
+### fetch*() methods
+
+Instead of repeating `prepare()`, `bindValue()`, and `execute()` to retrieve values from the database, the `fetch*()` methods reduce boilerplate code. (They run `perform()` internally, so array placeholders are also supported.)
+
+```php
+$stm = 'SELECT * FROM test WHERE foo = :foo AND bar = :bar';
+$bind = ['foo' => 'baz', 'bar' => 'dib'];
+
+// "fetch all" with native PDO
+$pdo = new PDO(...);
+$sth = $pdo->prepare($stm);
+$sth->execute($bind);
+$result = $sth->fetchAll(PDO::FETCH_ASSOC);
+
+// "fetch all" with ExtendedPdo
+$pdo = new ExtendedPdo(...);
+$result = $pdo->fetchAll($stm, $bind);
+
+// fetchAssoc() returns an associative array of all rows keyed by column name.
+$result = $pdo->fetchAssoc($stm, $bind);
+
+// fetchGroup() works like fetchAssoc(), except that values are not wrapped in
+// arrays. Single column values are returned as a one-dimensional array,
+// while multiple columns are returned as an array of arrays.
+// Set the style to PDO::FETCH_NAMED when values are an array
+// (i.e. there are more than two columns in the SELECT).
+$result = $pdo->fetchGroup($stm, $bind, $style = PDO::FETCH_COLUMN);
+
+// fetchOne() returns the first row as an associative array keyed by column name.
+$result = $pdo->fetchOne($stm, $bind);
+
+// fetchPairs() returns an associative array mapping values from the first column
+// to values from the second column.
+$result = $pdo->fetchPairs($stm, $bind);
+
+// fetchValue() returns the value of the first column.
+$result = $pdo->fetchValue($stm, $bind);
+
+// fetchAffected() returns the number of affected rows.
+$stm = "UPDATE test SET incr = incr + 1 WHERE foo = :foo AND bar = :bar";
+$row_count = $pdo->fetchAffected($stm, $bind);
+```
+
+`fetchAll()`, `fetchAssoc()`, `fetchCol()`, and `fetchPairs()` accept an optional third argument: a callback applied to each row.
+
+```php
+$result = $pdo->fetchAssoc($stm, $bind, function (&$row) {
+    // add a column to the row
+    $row['my_new_col'] = 'Added this column from the callable.';
+});
+```
+
+### yield*() methods
+
+Use the `yield*()` methods to save memory. The `fetch*()` methods retrieve all rows at once, while the `yield*()` methods return an iterator.
+
+```php
+$stm = 'SELECT * FROM test WHERE foo = :foo AND bar = :bar';
+$bind = ['foo' => 'baz', 'bar' => 'dib'];
+
+// Rows are associative arrays, like fetchAll()
+foreach ($pdo->yieldAll($stm, $bind) as $row) {
+    // ...
+}
+
+// The key is the first column name and each row is an associative array, like fetchAssoc()
+foreach ($pdo->yieldAssoc($stm, $bind) as $key => $row) {
+    // ...
+}
+
+// Returns the values of the first column, like fetchCol()
+foreach ($pdo->yieldCol($stm, $bind) as $val) {
+    // ...
+}
+
+// Returns key/value pairs from the first and second columns, like fetchPairs()
+foreach ($pdo->yieldPairs($stm, $bind) as $key => $val) {
+    // ...
+}
+```
 
 ## Replication
 
@@ -311,7 +436,7 @@ The created queries are queried as strings with the `getStatement()`.
 
 ### INSERT
 
-### Single row INSERT
+#### Single row INSERT
 
 
 ```php?start_inline
@@ -360,7 +485,7 @@ The `cols()` method allows you to pass an array of key-value pairs where the key
             ]);
 ```
 
-### Multi-line INSERT
+#### Multi-line INSERT
 
 To do a multiple row INSERT, use the `addRow ()` method at the end of the first line. Then build the following query.
 
@@ -494,7 +619,7 @@ Use the following methods to construct a DELETE query. You can also call the met
 [ray/aura-sql-module](https://packagist.org/packages/ray/aura-sql-module) supports pagination (page splitting) in both Aura.Sql raw SQL and Ray.AuraSqlQuery query builder.
 We create a pager using the `newInstance()` with a uri_template, binding values and the number of items per page. You can access the page by $page[$number].
 
-### Aura.Sql
+#### Aura.Sql
 AuraSqlPagerFactoryInterface
 
 ```php?start_inline
@@ -512,7 +637,7 @@ $page = $pager[2]; // page 2
 // (string) $page // pager html (string)
 ```
 
-## Aura.SqlQuery
+#### Aura.SqlQuery
 AuraSqlQueryPagerFactoryInterface
 
 ```php?start_inline

@@ -142,7 +142,7 @@ $twig->addFunction(new TwigFunction('csrf_field', $csrfHiddenInput, ['is_safe' =
 
 The output is `<input type="hidden" name="_csrf_token" value="…">` with the attribute value already escaped. Print it as is; escaping it again breaks the markup. The resource does not need to know the field exists.
 
-Obtaining the helper does nothing by itself. The token is issued, and the session started, when the field is rendered. A rendered page then contains the token, so keep it out of `#[CacheableResponse]`, `#[DonutCache]` and CDN caches, and serve it with `Cache-Control: private, no-store` (see [private](cache.html#private) under Cache). `bear/csrf` sets no cache headers of its own.
+Obtaining the helper does nothing by itself. The token is issued, and the session started, when the field is rendered. A rendered page then contains the token, so keep it out of `#[CacheableResponse]`, `#[DonutCache]` and CDN caches, and serve it with `Cache-Control: private, no-store` (see [Private cache](cache.html#private-cache) under Cache). `bear/csrf` sets no cache headers of its own.
 
 To submit from JavaScript, expose the same token once in a `<meta>` tag and send it back in the `X-CSRF-Token` header. Attach the header only to same-origin requests. `$csrf` is the injected `CsrfTokenInterface`.
 

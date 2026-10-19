@@ -106,32 +106,7 @@ class BlogPosting extends ResourceObject
 }
 ```
 
-### recursive donut
-
-<img width="191" alt="recursive donut 2021-10-19 21 27 06" src="https://user-images.githubusercontent.com/529021/137909083-2c5176f7-edb7-422b-bccc-1db90460fc15.png">
-
-The donut structure will be recursively applied.
-For example, if A contains B and B contains C and C is modified, A's cache and B's cache will be reused except for the modified C. A's and B's caches and ETags will be regenerated, but DB access to retrieve A's and B's content and rendering of views will not be done.
-
-The optimized structure of the partial cache performs content regeneration with minimal cost. The client does not need to know about the content cache structure.
-
-## Event-driven content
-
-Traditionally, CDNs have believed that content that requires application logic is "dynamic" and therefore cannot be cached by a CDN. However, some CDNs, such as Fastly and Akamai, allow immediate or tag-based cache invalidation within seconds, [this idea is a thing of the past](https://www.fastly.com/blog/leveraging-your-cdn-cache- uncacheable-content).
-
-Sunday dependency resolution is done not only on the server side, but also on the shared cache; when AOP detects a change and makes a PURGE request to the shared cache, the related cache on the shared cache will be invalidated, just like on the server side.
-
-## Conditional request
-
-<img width="468" alt="conditional request" src="https://user-images.githubusercontent.com/529021/137151061-8d7a5605-3aa3-494c-91c5-c1 deddd987dd.png">
-
-Content changes are managed by AOP, and the entity tag (ETag) of the content is automatically updated. conditional requests for HTTP using ETag not only minimize the use of computational resources, but responses that only return `304 Not Modified` also minimize the use of network resources. Conditional HTTP requests using ETag not only minimize the use of computational resources, but also minimize the use of network resources by simply returning `304 Not Modified`.
-
-
-# Usage
-
-Give the class to be cached the attribute `#[DonutCache]` if it is a donut cache (embedded content is not cacheable) and `#[CacheableResponse]` otherwise.
-
+To cache only selected methods, leave the class unannotated and annotate the methods instead. In that case, mark the methods that change the cache with `#[RefreshCache]`:
 
 ```php
 class Todo extends ResourceObject
@@ -144,14 +119,11 @@ class Todo extends ResourceObject
     #[RefreshCache]
     public function onDelete(int $id = 0): static
     {
-    }	
+    }
 }
 ```
 
-If you give attributes in either way, all the features introduced in the overview will apply.
-Caching is not disabled by time (TTL) by default, assuming event-driven content
-
-Note that with `#[DonutCache]` the whole content will not be cached, but with `#[CacheableResponse]` it will be.
+Either approach applies all the features described in the overview. Because event-driven content is assumed, the cache is not invalidated by time (TTL) by default. Note that `#[DonutCache]` does not cache the whole content, while `#[CacheableResponse]` does.
 
 ## TTL
 
@@ -171,15 +143,16 @@ class BlogPosting extends ResourceObject
     public function onGet(): static
     {
         // process ...
-        $this->repository->put($this, ttl:10, sMaxAge:100);　
+        $this->repository->put($this, ttl: 10, sMaxAge: 100);
 
         return $this;
     }
 }
 ```
+
 ### Default TTL value
 
-For event-driven content, changes to the content must be reflected immediately in the cache, so the default TTL varies depending on the CDN module installed. Therefore, the default TTL will vary depending on the CDN module installed: indefinitely (1 year) if the CDN supports tag-based disabling of caching, or 10 seconds if it does not.
+For event-driven content, changes to the content must be reflected in the cache immediately. The default TTL therefore depends on which CDN module is installed: it is indefinite (one year) if the CDN supports tag-based cache invalidation, and 10 seconds if it does not.
 
 The expected cache reflection time is immediate for Fastly, a few seconds for Akamai, and 10 seconds for others.
 
@@ -205,7 +178,7 @@ interface DonutRepositoryInterface
 $this->repository->purge(new Uri('app://self/blog/comment'));
 ```
 
-### Disable by tag
+### Invalidate by tag
 
 ```php
 $this->repository->invalidateTags(['template_a', 'campaign_b']);
@@ -223,7 +196,7 @@ interface PurgerInterface
 }
 ```
 
-### Specify dependent tags.
+### Specify dependent tags
 
 Use the `SURROGATE_KEY` header to specify the key for PURGE. Use a space as a separator for multiple strings.
 
@@ -239,7 +212,7 @@ class Foo
 
 If the cache is invalidated by `template_a` or `campaign_b` tags, Foo's cache and Foo's ETag will be invalidated both server-side and CDN.
 
-### Resource Dependencies.
+### Resource Dependencies
 
 Use `UriTagInterface` to convert a URI into a dependency tag string.
 
@@ -253,7 +226,7 @@ $this->headers[Header::SURROGATE_KEY] = ($this->uriTag)(new Uri('app://self/foo'
 
 This cache will be invalidated both server-side and CDN when `app://self/foo` is modified.
 
-### Make associative array a resource dependency.
+### Make an associative array a resource dependency
 
 ```php
 // bodyの内容
@@ -305,7 +278,7 @@ Use `deflate` if you want to reduce Redis memory usage. This is a trade-off with
 
 For the `dsn` format (authentication, TLS, Sentinel, Cluster, etc.) and connection options, see [Redis DSN](redis-dsn.html).
 
-## CDN
+## CDN-specific Modules
 
 If you install a module that supports a specific CDN, vendor-specific headers will be output.
 
@@ -323,12 +296,12 @@ You can also configure a multi-tier CDN and set the TTL according to the role. F
 
 # Response headers
 
-Sunday will automatically do the cache control for the CDN and output the header for the CDN. Client cache control is described in `$header` of ResourceObject depending on the content.
+BEAR.Sunday handles CDN cache control automatically and outputs the CDN headers. Client cache control is described in `$headers` of the ResourceObject depending on the content.
 
 This section is important for security and maintenance purposes.
 Make sure to specify the `Cache-Control` in all ResourceObjects.
 
-### Cannot cache
+### Do not cache
 
 Always specify content that cannot be cached.
 
@@ -344,7 +317,7 @@ Check the server for content changes before using the cache. Server-side content
 ResponseHeader::CACHE_CONTROL => CacheControl::NO_CACHE
 ```
 
-### Specify client cache time.
+### Specify client cache time
 
 The client is cached on the client. This is the most efficient cache, but server-side content changes will not be reflected at the specified time.
 
@@ -374,7 +347,7 @@ To use the client cache with APIs, use an RFC7234 compliant API client.
 * Ruby [faraday-http-cache](https://github.com/plataformatec/faraday-http-cache)
 * Python [requests-cache](https://pypi.org/project/requests-cache/)
 
-### private
+### Private cache
 
 Specify `private` if you do not want to share the cache with other clients. The cache will be saved only on the client side. In this case, do not specify the cache on the server side.
 
@@ -405,33 +378,31 @@ Adaptive TTL is the ability to predict the lifetime of content and correctly tel
 
 The client does not need to request a resource that it knows will not be updated.
 
-## #[Cacheable].
+## #[Cacheable]
 
-The traditional ##[Cacheable] TTL caching is also supported.
+Traditional TTL caching with `#[Cacheable]` is also supported.
 
-Example: 30 seconds cache on the server side, 30 seconds cache on the client.
+Example: cache on the server for 30 seconds, and on the client for 30 seconds. The client cache duration follows the server-side setting:
 
-The same number of seconds will be cached on the client side since it is specified on the server side.
-
-The same number of seconds will be cached on the client side.
+```php
 use BEAR\RepositoryModule\Annotation\Cacheable;
 
-#[Cacheable(expirySecond: 30)]]
+#[Cacheable(expirySecond: 30)]
 class CachedResource extends ResourceObject
 {
-````
+```
 
-Example: Cache the resource on the server and client until the specified expiration date (the date in `$body['expiry_at']`)
+Example: cache on both the server and the client until the specified expiry date (the date in `$body['expiry_at']`):
 
-```php?start_inline
+```php
 use BEAR\RepositoryModule\Annotation\Cacheable;
 
-#[Cacheable(expiryAt: 'expiry_at')]]
+#[Cacheable(expiryAt: 'expiry_at')]
 class CachedResource extends ResourceObject
 {
-```.
+```
 
-See the [HTTP Cache](https://bearsunday.github.io/manuals/1.0/ja/http-cache.html) page for more information.
+See the [HTTP Cache](http-cache.html) page for more information.
 
 ## Observability
 
@@ -510,7 +481,7 @@ for the full event vocabulary and its declared boundaries.
 
 ## Conclusion
 
-Web content can be of the information (data) type or the computation (process) type. Although the former is essentially static, it is difficult to treat it as completely static content due to the problems of managing content changes and dependencies, so the cache was invalidated by TTL even though no content changes occurred. Sunday's caching framework treats information type content as static as possible, maximizing the power of the cache.
+Web content can be of the information (data) type or the computation (process) type. Although the former is essentially static, it is difficult to treat it as completely static content due to the problems of managing content changes and dependencies, so the cache was invalidated by TTL even though no content changes occurred. BEAR.Sunday's caching framework treats information-type content as static as possible, maximizing the power of the cache.
 
 
 ## Terminology

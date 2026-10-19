@@ -147,20 +147,6 @@ Swoole http server is started at http://127.0.0.1:8080
 | `SWOOLE_IP` | 0.0.0.0 | Server bind address |
 | `SWOOLE_PORT` | 8080 | Server port |
 
-### Architecture
-
-```text
-Master Process
-    |
-    +-- Manager Process
-           |
-           +-- Worker 1 (coroutines)
-           +-- Worker 2 (coroutines)
-           +-- Worker N (coroutines)
-```
-
-Each worker can handle multiple concurrent requests using coroutines.
-
 ### Development Notes
 
 Xdebug is not fully compatible with Swoole's coroutines. For debugging:
@@ -239,108 +225,6 @@ status:
   address: "0.0.0.0:2112"
 ```
 
-### Worker Script
-
-Create `bin/worker.php`:
-
-```php
-<?php
-
-declare(strict_types=1);
-
-use BEAR\Resource\ResourceObject;
-use BEAR\Sunday\Extension\Application\AppInterface;
-use MyVendor\MyProject\Injector;
-use MyVendor\MyProject\Module\App;
-use Nyholm\Psr7\Factory\Psr17Factory;
-use Psr\Http\Message\ServerRequestInterface;
-use Spiral\RoadRunner\Http\PSR7Worker;
-use Spiral\RoadRunner\Worker;
-
-require dirname(__DIR__) . '/autoload.php';
-
-// Get configuration from environment
-$context = getenv('BEAR_CONTEXT') ?: 'prod-hal-app';
-$maxRequests = (int) (getenv('MAX_REQUESTS') ?: 1000);
-
-// Boot application once (outside the request loop)
-$app = Injector::getInstance($context)->getInstance(AppInterface::class);
-assert($app instanceof App);
-
-// Create RoadRunner worker
-$worker = Worker::create();
-$factory = new Psr17Factory();
-$psr7Worker = new PSR7Worker($worker, $factory, $factory, $factory);
-
-$requestCount = 0;
-
-while ($psrRequest = $psr7Worker->waitRequest()) {
-    try {
-        if (! $psrRequest instanceof ServerRequestInterface) {
-            break;
-        }
-
-        // Convert PSR-7 request to $_SERVER format
-        $server = createServerVars($psrRequest);
-        $globals = createGlobals($psrRequest);
-
-        // Route and execute request
-        $request = $app->router->match($globals, $server);
-        $response = $app->resource->{$request->method}->uri($request->path)($request->query);
-        assert($response instanceof ResourceObject);
-
-        // Convert ResourceObject to PSR-7 Response
-        $psrResponse = $factory->createResponse($response->code);
-        foreach ($response->headers as $name => $value) {
-            $psrResponse = $psrResponse->withHeader($name, $value);
-        }
-        $psrResponse = $psrResponse->withBody($factory->createStream((string) $response));
-
-        $psr7Worker->respond($psrResponse);
-    } catch (Throwable $e) {
-        $psr7Worker->respond($factory->createResponse(500)->withBody(
-            $factory->createStream($e->getMessage())
-        ));
-    }
-
-    gc_collect_cycles();
-    $requestCount++;
-
-    if ($maxRequests > 0 && $requestCount >= $maxRequests) {
-        break;
-    }
-}
-
-function createServerVars(ServerRequestInterface $request): array
-{
-    $uri = $request->getUri();
-    $server = $request->getServerParams();
-
-    $server['REQUEST_METHOD'] = $request->getMethod();
-    $server['REQUEST_URI'] = $uri->getPath() . ($uri->getQuery() ? '?' . $uri->getQuery() : '');
-    $server['QUERY_STRING'] = $uri->getQuery();
-    $server['HTTP_HOST'] = $uri->getHost();
-
-    foreach ($request->getHeaders() as $name => $values) {
-        $key = 'HTTP_' . strtoupper(str_replace('-', '_', $name));
-        $server[$key] = implode(', ', $values);
-    }
-
-    return $server;
-}
-
-function createGlobals(ServerRequestInterface $request): array
-{
-    return [
-        '_GET' => $request->getQueryParams(),
-        '_POST' => (array) $request->getParsedBody(),
-        '_COOKIE' => $request->getCookieParams(),
-        '_FILES' => $request->getUploadedFiles(),
-        '_SERVER' => createServerVars($request),
-    ];
-}
-```
-
 ### Run
 
 ```bash
@@ -353,18 +237,6 @@ function createGlobals(ServerRequestInterface $request): array
 |----------|---------|-------------|
 | `BEAR_CONTEXT` | prod-hal-app | BEAR.Sunday context |
 | `MAX_REQUESTS` | 1000 | Requests before worker restart |
-
-### Architecture
-
-```text
-RoadRunner (Go)
-    |
-    +-- PHP Worker 1 (persistent)
-    +-- PHP Worker 2 (persistent)
-    +-- PHP Worker N (persistent)
-```
-
-Each worker boots BEAR.Sunday once and handles requests via pipes.
 
 ### Metrics
 
@@ -386,92 +258,6 @@ Prometheus metrics available at `http://localhost:2112/metrics`.
 ### Install
 
 FrankenPHP is typically used via Docker. For standalone installation, see [FrankenPHP documentation](https://frankenphp.dev/docs/).
-
-### Worker Script
-
-Create `bin/worker.php`:
-
-```php
-<?php
-
-declare(strict_types=1);
-
-use BEAR\Resource\ResourceObject;
-use BEAR\Sunday\Extension\Application\AppInterface;
-use MyVendor\MyProject\Injector;
-use MyVendor\MyProject\Module\App;
-
-require dirname(__DIR__) . '/autoload.php';
-
-// Get configuration from environment
-$context = getenv('BEAR_CONTEXT') ?: 'prod-hal-app';
-$maxRequests = (int) (getenv('MAX_REQUESTS') ?: 1000);
-
-// Boot application once (outside the request loop)
-$app = Injector::getInstance($context)->getInstance(AppInterface::class);
-assert($app instanceof App);
-
-$requestCount = 0;
-
-// FrankenPHP worker loop
-// Superglobals ($_GET, $_POST, $_SERVER) are automatically reset
-do {
-    $running = frankenphp_handle_request(static function () use ($app): void {
-        try {
-            // Check HTTP cache
-            if ($app->httpCache->isNotModified($_SERVER)) {
-                $app->httpCache->transfer();
-                return;
-            }
-
-            // Route and execute request
-            $request = $app->router->match($GLOBALS, $_SERVER);
-            $response = $app->resource->{$request->method}->uri($request->path)($request->query);
-            assert($response instanceof ResourceObject);
-            $response->transfer($app->responder, $_SERVER);
-        } catch (Throwable $e) {
-            $app->throwableHandler->handle($e, $request ?? null)->transfer();
-        }
-
-        gc_collect_cycles();
-    });
-
-    $requestCount++;
-
-    if ($maxRequests > 0 && $requestCount >= $maxRequests) {
-        break;
-    }
-} while ($running);
-```
-
-### Caddyfile Configuration
-
-```caddyfile
-{
-    admin off
-
-    frankenphp {
-        worker /app/bin/worker.php {
-            num {$FRANKENPHP_NUM_WORKERS:4}
-        }
-    }
-}
-
-{$SERVER_NAME::8080} {
-    root * /app/public
-
-    encode zstd br gzip
-
-    respond /health 200
-
-    php_server
-
-    log {
-        output stdout
-        format console
-    }
-}
-```
 
 ### Run with Docker
 
@@ -511,10 +297,6 @@ Example production deployment:
 cd swoole  # or roadrunner, frankenphp
 docker compose -f docker-compose.prod.yml up -d
 ```
-
-## Benchmarking
-
-See [BEAR.HelloworldBenchmark](https://github.com/bearsunday/BEAR.HelloworldBenchmark) for benchmark comparisons.
 
 ## Related
 

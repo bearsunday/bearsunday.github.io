@@ -7,26 +7,34 @@ permalink: /manuals/1.0/en/html.html
 
 # HTML
 
-The following template engines are available for HTML representation.
+BEAR.Sunday can render HTML with a choice of template engines.
 
-* [Twig v1](html-twig-v1.html)
-* [Twig v2](html-twig-v2.html)
-* [Qiq](html-qiq.html)
+## Choosing a Template Engine
 
-## Twig vs Qiq
+### Supported Template Engines
 
-[Twig](https://twig.symfony.com) was first released in 2009 and has a large user base. [Qiq](https://qiqphp.github.io) is a new template engine released in 2021.
+- [Qiq](html-qiq.html) (v1.0 and later)
+- [Twig v1](html-twig-v1.html)
+- [Twig v2](html-twig-v2.html)
 
-Twig uses implicit escaping by default and has custom syntax for control structures. In contrast, Qiq requires explicit escaping and uses PHP syntax as the base template language. Twig has a large codebase and rich features, while Qiq is compact and simple. (Using pure PHP syntax in Qiq makes it IDE and static analysis-friendly, although it may be redundant.)
+### Feature Comparison
+
+| Feature | Qiq | Twig |
+|---------|-----|------|
+| Escaping | Explicit | Implicit |
+| Syntax | PHP-based | Custom syntax |
+| Codebase | Lightweight | Feature-rich |
+| IDE support | Excellent | Typical |
 
 ### Syntax Comparison
 
-PHP
+PHP:
 ```php
+<?= $var ?>
 <?= htmlspecialchars($var, ENT_QUOTES|ENT_DISALLOWED, 'utf-8') ?>
 <?= htmlspecialchars(helper($var, ENT_QUOTES|ENT_DISALLOWED, 'utf-8')) ?>
-<?php foreach ($users => $user): ?>
- * <?= $user->name; ?>
+<?php foreach ($users as $user): ?>
+    * <?= $user->name; ?>
 <?php endforeach; ?>
 ```
 
@@ -53,6 +61,9 @@ Qiq
 
 {{ var }} // Not displayed {% endraw %}
 ```
+
+Or
+
 ```php
 <?php /** @var Template $this */ ?>
 <?= $this->h($var) ?>

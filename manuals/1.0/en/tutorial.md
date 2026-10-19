@@ -819,26 +819,24 @@ Start the PHP server and check by accessing [http://127.0.0.1:8080/?year=2001&mo
 php -S 127.0.0.1:8080 public/index.php
 ```
 
-[Context](/manuals/1.0/ja/application.html#context) is something like the application's execution mode, and multiple can be specified. Let's try it.
+## About Context
 
-```php?start_inline
+[Context](/manuals/1.0/en/application.html#context) represents the application's execution environment (development, test, production, etc.) and representation format (HTML, JSON). Multiple contexts can be specified.
+
+For example:
+
+```php
 <?php
-
-use MyVendor\Weekday\Bootstrap;
-
-// JSON Application
+// Minimal JSON application
 require dirname(__DIR__) . '/autoload.php';
-exit((new Bootstrap())('prod-app', $GLOBALS, $_SERVER));
+exit((require dirname(__DIR__) . '/bootstrap.php')('app'));
 ```
 
-```php?start_inline
+```php
 <?php
-
-use MyVendor\Weekday\Bootstrap;
-
-// Production HAL Application
+// Production HAL application
 require dirname(__DIR__) . '/autoload.php';
-exit((new Bootstrap())('prod-hal-app', $GLOBALS, $_SERVER));
+exit((require dirname(__DIR__) . '/bootstrap.php')('prod-hal-app'));
 ```
 
 PHP code that generates instances according to the context is created. Check the `var/build/{context}/di` folder of the application.
@@ -959,11 +957,9 @@ The class attribute `#[Cacheable]` indicates that the GET method of this resourc
 
 `#[ReturnCreatedResource]` on `onPost` creates and includes a resource indicated by the `Location` URL in the body. At this time, `onGet` is actually called using the `Location` header URI, ensuring the content of the `Location` header is correct while also creating a cache.
 
-### POST Request
+### API Verification
 
-Let's try a `POST`.
-
-First, to perform a cache-enabled test, create a test context boot file `bin/test.php`.
+First, create a cache-enabled test bootstrap file `bin/test.php`.
 
 ```php
 <?php
@@ -976,7 +972,9 @@ require dirname(__DIR__) . '/autoload.php';
 exit((new Bootstrap())('prod-cli-hal-api-app', $GLOBALS, $_SERVER));
 ```
 
-Make a request with a console command. It's a `POST`, but in BEAR.Sunday, parameters are passed in the form of a query.
+#### POST Request
+
+Create a new todo. In BEAR.Sunday, POST parameters are also passed as query parameters.
 
 ```bash
 php bin/test.php post '/todos?todo=shopping'
@@ -1001,7 +999,9 @@ Location: /todos?id=1
 The status code is `201 Created`. The `Location` header indicates that a new resource has been created at `/todos/?id=1`.
 [RFC7231 Section-6.3.2](https://tools.ietf.org/html/rfc7231#section-6.3.2)
 
-Next, get this resource.
+#### GET Request
+
+Now retrieve the created resource.
 
 ```bash
 php bin/test.php get '/todos?id=1'
@@ -1025,13 +1025,13 @@ content-type: application/hal+json
 }
 ```
 
-The Hypermedia API is complete! Let's start the API server.
+The hypermedia API is complete. Start the API server and send an actual HTTP request.
 
 ```bash
 php -S 127.0.0.1:8081 bin/app.php
 ```
 
-Use the `curl` command to GET.
+Send a GET request with `curl`:
 
 ```bash
 curl -i 'http://127.0.0.1:8081/todos?id=1'
@@ -1050,14 +1050,24 @@ Cache-Control: max-age=31536000
 
 {
     "id": "1",
+    "todo": "shopping",
+    "created": "2024-11-07 15:58:03",
+    "_links": {
+        "self": {
+            "href": "/todos?id=1"
+        }
+    }
+}
 ```
 
-Make multiple requests and confirm that the `Last-Modified` date does not change. (Try adding `echo` or similar in the method to check.)
+Send the request multiple times and confirm that the `Last-Modified` date does not change. (Try adding `echo` or similar in the method to check.)
 
 The `Cacheable` attribute, if not set with `expiry`, does not invalidate the cache over time.
 The cache is regenerated when resources are changed with `onPut($id, $todo)` or `onDelete($id)`.
 
-Next, change this resource with the `PUT` method.
+#### PUT Request
+
+Now update the existing resource.
 
 ```bash
 curl -i http://127.0.0.1:8081/todos -X PUT -d "id=1&todo=think"
@@ -1086,7 +1096,7 @@ There is no need for the application to manage this or provide a database column
 
 Using `#[Cacheable]`, the resource content is managed in a "query repository" dedicated to resource storage, separate from the write database, and headers such as `Etag` and `Last-Modified` are automatically added.
 
-## Because Everything is A Resource.
+## Because Everything is A Resource
 
 In BEAR, everything is a resource.
 
@@ -1099,4 +1109,3 @@ BEAR.Sunday is a connecting layer framework that ties dependencies with **DI**, 
 
 [^1]:The source code for this project is committed to [bearsunday/Tutorial](https://github.com/bearsunday/tutorial1/commits/v3) section by section. Please refer to it as needed.
 [^2]:Normally, the **vendor** name is the name of an individual or team (organization). A GitHub account name or team name would be suitable. Enter the application name for **project**.
-```
