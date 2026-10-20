@@ -114,7 +114,7 @@ http://127.0.0.1:8080/greeting?name=World&lang=fr
 ## ステップ5: CLIコマンドの生成
 
 ```bash
-vendor/bin/bear-cli-gen MyVendor.Greet
+vendor/bin/bear-cli-gen 'MyVendor\Greet'
 ```
 
 これにより以下のファイルが生成されます：
@@ -160,7 +160,7 @@ git commit -m "Initial commit"
 フォーミュラを生成します：
 
 ```bash
-vendor/bin/bear-cli-gen MyVendor.Greet
+vendor/bin/bear-cli-gen 'MyVendor\Greet'
 ```
 
 これにより以下のファイルが生成されます：

@@ -100,22 +100,22 @@ Halo also displays performance information about the resource, including executi
 
 To enable profiling, you need to install [xhprof](https://www.php.net/manual/en/intro.xhprof.php), which helps identify performance bottlenecks.
 
-```
+```bash
 pecl install xhprof
-// Also add 'extension=xhprof.so' to your php.ini file
+# Also add 'extension=xhprof.so' to your php.ini file
 ```
 
 To visualize and graphically display call graphs, you need to install [graphviz](https://graphviz.org/download/).
 Example: [Call Graph Demo](/docs/demo/halo/callgraph.svg)
 
-```
-// macOS
+```bash
+# macOS
 brew install graphviz
 
-// Windows
-// Download and install the installer from the graphviz website
+# Windows
+# Download and install the installer from the graphviz website
 
-// Linux (Ubuntu)
+# Linux (Ubuntu)
 sudo apt-get install graphviz
 ```
 

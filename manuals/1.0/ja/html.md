@@ -13,7 +13,8 @@ BEAR.Sundayでは、複数のテンプレートエンジンを活用してHTML�
 ### 対応テンプレートエンジン
 
 - [Qiq](html-qiq.html)（v1.0以降）
-- [Twig](html-twig.html)（v1およびv2）
+- [Twig v1](html-twig-v1.html)
+- [Twig v2](html-twig-v2.html)
 
 ### 特徴比較
 

@@ -386,6 +386,8 @@ use BEAR\RepositoryModule\Annotation\Cacheable;
 #[Cacheable(expirySecond: 30)]
 class CachedResource extends ResourceObject
 {
+    // ...
+}
 ```
 
 例）指定した有効期限（`$body['expiry_at']`の日付）まで、サーバー、クライアント共にキャッシュ：
@@ -396,6 +398,8 @@ use BEAR\RepositoryModule\Annotation\Cacheable;
 #[Cacheable(expiryAt: 'expiry_at')]
 class CachedResource extends ResourceObject
 {
+    // ...
+}
 ```
 
 その他は[HTTPキャッシュ](https://bearsunday.github.io/manuals/1.0/ja/http-cache.html)ページをご覧ください。

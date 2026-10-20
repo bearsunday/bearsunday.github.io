@@ -229,7 +229,7 @@ This cache will be invalidated both server-side and CDN when `app://self/foo` is
 ### Make an associative array a resource dependency
 
 ```php
-// bodyの内容
+// body contents
 [
     ['id' => '1', 'name' => 'a'],
     ['id' => '2', 'name' => 'b'],
@@ -351,9 +351,9 @@ To use the client cache with APIs, use an RFC7234 compliant API client.
 
 Specify `private` if you do not want to share the cache with other clients. The cache will be saved only on the client side. In this case, do not specify the cache on the server side.
 
-````php
+```php
 ResponseHeader::CACHE_CONTROL => 'private, max-age=30'
-````
+```
 
 > Even if you use shared cache, you don't need to specify `public` in most cases.
 
@@ -390,6 +390,8 @@ use BEAR\RepositoryModule\Annotation\Cacheable;
 #[Cacheable(expirySecond: 30)]
 class CachedResource extends ResourceObject
 {
+    // ...
+}
 ```
 
 Example: cache on both the server and the client until the specified expiry date (the date in `$body['expiry_at']`):
@@ -400,6 +402,8 @@ use BEAR\RepositoryModule\Annotation\Cacheable;
 #[Cacheable(expiryAt: 'expiry_at')]
 class CachedResource extends ResourceObject
 {
+    // ...
+}
 ```
 
 See the [HTTP Cache](http-cache.html) page for more information.
@@ -486,13 +490,13 @@ Web content can be of the information (data) type or the computation (process) t
 
 ## Terminology
 
-* [条件付きリクエスト](https://developer.mozilla.org/ja/docs/Web/HTTP/Conditional_requests)
-* [ETag (バージョン識別子)](https://developer.mozilla.org/ja/docs/Web/HTTP/Headers/ETag)
-* [イベントドリブン型コンテンツ](https://www.fastly.com/blog/rise-event-driven-content-or-how-cache-more-edge)
-* [ドーナッツキャッシュ / 部分キャッシュ](https://www.infoq.com/jp/news/2011/12/MvcDonutCaching/)
-* [サロゲートキー / タグベースの無効化](https://docs.fastly.com/ja/guides/getting-started-with-surrogate-keys)
-* ヘッダー
-  * [Cache-Control](https://developer.mozilla.org/ja/docs/Web/HTTP/Headers/Cache-Control)
+* [Conditional requests](https://developer.mozilla.org/en-US/docs/Web/HTTP/Conditional_requests)
+* [ETag (entity tag)](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/ETag)
+* [Event-driven content](https://www.fastly.com/blog/rise-event-driven-content-or-how-cache-more-edge)
+* [Donut caching / partial caching](https://www.infoq.com/news/2011/11/MvcDonutCaching/)
+* [Surrogate keys / tag-based invalidation](https://docs.fastly.com/en/guides/getting-started-with-surrogate-keys)
+* Headers
+  * [Cache-Control](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control)
   * [CDN-Cache-Control](https://blog.cloudflare.com/cdn-cache-control/)
-  * [Vary](https://developer.mozilla.org/ja/docs/Web/HTTP/Headers/Vary)
-  * [Stale-While-Revalidate (SWR)](https://www.infoq.com/jp/news/2020/12/ux-stale-while-revalidate/)
+  * [Vary](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Vary)
+  * [Stale-While-Revalidate (SWR)](https://web.dev/articles/stale-while-revalidate)

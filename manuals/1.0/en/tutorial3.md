@@ -114,7 +114,7 @@ You should see a JSON response like this:
 ## Step 5: Generate the CLI Command
 
 ```bash
-vendor/bin/bear-cli-gen MyVendor.Greet
+vendor/bin/bear-cli-gen 'MyVendor\Greet'
 ```
 
 This generates the following file:
@@ -160,7 +160,7 @@ git commit -m "Initial commit"
 Generate the formula:
 
 ```bash
-vendor/bin/bear-cli-gen MyVendor.Greet
+vendor/bin/bear-cli-gen 'MyVendor\Greet'
 ```
 
 This generates the following files:

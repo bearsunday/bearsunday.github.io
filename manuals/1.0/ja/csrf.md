@@ -142,7 +142,7 @@ $twig->addFunction(new TwigFunction('csrf_field', $csrfHiddenInput, ['is_safe' =
 
 出力は`<input type="hidden" name="_csrf_token" value="…">`で、属性値はエスケープ済みです。そのまま出力してください。重ねてエスケープするとマークアップが壊れます。リソース側はこのフィールドの存在を知る必要がありません。
 
-ヘルパーを取得しただけでは何も起きません。トークンの発行とセッションの開始は、フィールドを描画したときに行われます。描画されたページにはトークンが含まれるので、`#[CacheableResponse]`や`#[DonutCache]`のキャッシュ対象やCDNに載せず、`Cache-Control: private, no-store`で返してください（[キャッシュ](cache.html)の「レスポンスヘッダー」を参照）。`bear/csrf`自身はキャッシュヘッダーを設定しません。
+ヘルパーを取得しただけでは何も起きません。トークンの発行とセッションの開始は、フィールドを描画したときに行われます。描画されたページにはトークンが含まれるので、`#[CacheableResponse]`や`#[DonutCache]`のキャッシュ対象やCDNに載せず、`Cache-Control: private, no-store`で返してください（[キャッシュ](cache.html#プライベートキャッシュ)の「プライベートキャッシュ」を参照）。`bear/csrf`自身はキャッシュヘッダーを設定しません。
 
 JavaScriptから送る場合は、同じトークンを`<meta>`タグで1度だけ公開し、`X-CSRF-Token`ヘッダーに載せて送り返します。ヘッダーを付けるのは同一オリジンへのリクエストだけにします。`$csrf`は注入された`CsrfTokenInterface`です。
 
