@@ -285,8 +285,8 @@ To inject PDO instances with different connection destinations, attach a qualifi
 
 ```php?start_inline
 public function __construct(
-    private readonly #[Log] ExtendedPdoInterface $logDb,
-    private readonly #[Mail] ExtendedPdoInterface $mailDb,
+    #[Log] private readonly ExtendedPdoInterface $logDb,
+    #[Mail] private readonly ExtendedPdoInterface $mailDb,
 ) {}
 ```
 
