@@ -47,7 +47,6 @@ class Todo extends ResourceObject
 ```
 
 PHPのリソースクラスはWebのURIと同じような`app://self/blog/posts/?id=3`, `page://self/index`などのURIを持ち、HTTPのメソッドに準じた`onGet`, `onPost`, `onPut`, `onPatch`, `onDelete`インターフェイスを持ちます。
-`OPTIONS`は`OptionsMethodModule`によって自動処理されます。
 
 メソッドでは自身のリソース状態`code`,`headers`,`body`を変更し`$this`を返します。
 
@@ -57,7 +56,7 @@ PHPのクラスはURIにマップされていて、アプリケーションで�
 アプリケーション名が`koriym\todo`というアプリケーションの場合、URIとクラスはこのように対応します。
 
 | URI | Class |
-|---|---|
+|-----+-------|
 | `page://self/index` | `Koriym\Todo\Resource\Page\Index` |
 | `app://self/blog/posts` | `Koriym\Todo\Resource\App\Blog\Posts` |
 
@@ -222,7 +221,8 @@ class News extends ResourceObject
     ): static {
 ```
 
-クライアントが値を指定した時は指定した値が優先され、束縛した値は無効になります。
+この機能を使うためには引数のデフォルトに`null`が必要です。
+またクライアントが値を指定した時は指定した値が優先され、束縛した値は無効になります。
 
 #### リソースパラメーター
 
@@ -234,7 +234,7 @@ use BEAR\Resource\Annotation\ResourceParam;
 class News extends ResourceObject
 {
     /**
-     * @ResourceParam(param="name", uri="app://self/login#nickname")
+     * @ResourceParam(param=“name”, uri="app://self//login#nickname")
      */
     public function onGet(string $name): static
     {
@@ -350,8 +350,6 @@ class Index extends ResourceObject
         $this->body = [
             'posts' => $this->resource->get('app://self/blog/posts', ['id' => 1])
         ];
-
-        return $this;
     }
 }
 ```
@@ -489,7 +487,7 @@ class News extends ResourceObject
         $this->body['website']->addQuery(['title' => $title]); // 引数追加
 ```
 
-[HAL](https://github.com/blongden/hal)レンダラーでは`_embedded`として扱われます。
+[HAL](https://github.com/blongden/hal)レンダラーでは`_embedded `として扱われます。
 
 
 ## リソースキャッシュ
@@ -565,8 +563,7 @@ class News extends ResourceObject
    * @Purge(uri="app://self/user/friend?user_id={id}")
    * @Refresh(uri="app://self/user/profile?user_id={id}")
    */
-   public function onPut(string $id, string $name, int $age): static
-   {
+   public function onPut(string $id, string $name, int $age)): static
 ```
 
 別のクラスのリソースや関連する複数のリソースの`QueryRepository`の内容を更新することができます。
@@ -585,7 +582,6 @@ class News extends ResourceObject
    * @Refresh(uri="app://self/user/profile?user_id={id}")
    */
    public function onPut($id, $name, $age): static
-   {
 ```
 
 ## クエリーリポジトリの直接操作
@@ -694,9 +690,9 @@ class Todo extends ResourceObject
 }
 ```
 
-### @ResourceParam
+### ＠ResourceParam
 
-他のリソースをリクエストするために他のリソース結果が必要な場合は`@ResourceParam`を使います。
+他のリソースをリクエストするために他のリソース結果が必要な場合は`＠ResourceParam`を使います。
 
 ```php?start_inline
 // OK but not the best
@@ -721,7 +717,7 @@ class User extends ResourceObject
     use ResourceInject;
 
     /**
-     * @ResourceParam(param="name", uri="app://self/login-user#nickname")
+     * @ResourceParam(param=“name”, uri="app://self//login-user#nickname")
      */
     public function onGet(string $id, string $name): static
     {
@@ -737,7 +733,7 @@ class User extends ResourceObject
 class User extends ResourceObject
 {
     /**
-     * @ResourceParam(param="name", uri="app://self/login-user#nickname")
+     * @ResourceParam(param=“name”, uri="app://self//login-user#nickname")
      * @Embed(rel="profile", src="app://self/profile")
      */
     public function onGet(string $id, string $name): static

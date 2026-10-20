@@ -20,7 +20,7 @@ REST標準のキャッシュ制約に従う事で**RFC7234**をサポートし�
 ### ディレクティブ
 
 | ディレクティブ | 説明 |
-|---|---|
+|--------------+-----|
 | public | クライアント間の共有キャッシュの利用 |
 | private | クライアントでキャッシュを共有しない |
 | no-store | キャッシュしません |
@@ -41,9 +41,10 @@ REST標準のキャッシュ制約に従う事で**RFC7234**をサポートし�
 
 `no-store`は単純にレスポンスのすべてのキャッシュを禁止します。
 
+###
 ### 最適なCache-Control ポリシーの定義[^5]
 
-<img src="https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/images/http-cache-decision-tree.png?hl=ja" alt="Cache-Controlヘッダーを保存・再検証・共有のどれにするか決めるフローチャート">
+<img src="https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/images/http-cache-decision-tree.png?hl=ja">
 
 ## @Cacheable
 
@@ -59,7 +60,6 @@ use BEAR\RepositoryModule\Annotation\Cacheable;
  */
 class CachedResource extends ResourceObject
 {
-}
 ```
 
 例）指定した有効期限(`$body['expiry_at']`の日付)までサーバー、クライアント供にキャッシュ
@@ -72,7 +72,6 @@ use BEAR\RepositoryModule\Annotation\Cacheable;
  */
 class CachedResource extends ResourceObject
 {
-}
 ```
 
 ## @HttpCache
@@ -86,37 +85,34 @@ class CachedResource extends ResourceObject
 use BEAR\RepositoryModule\Annotation\HttpCache;
 
 /**
- * @HttpCache(isPrivate=true, maxAge=30)
+ * @HttpCache(isPrivate=true, max-age=60)
  */
 class CachedResource extends ResourceObject
 {
-}
 ```
 
 例）更新されていないか都度確認します[^2]。
 
 ```php?start_inline
-use BEAR\RepositoryModule\Annotation\HttpCache;
+use BEAR\RepositoryModule\Annotation\NoHttpCache;
 
 /**
  * @HttpCache(noCache=true)
  */
 class CachedResource extends ResourceObject
 {
-}
 ```
 
 例）上記と同じですが、更新されていないならプライベートキャッシュのみを利用します。
 
 ```php?start_inline
-use BEAR\RepositoryModule\Annotation\HttpCache;
+use BEAR\RepositoryModule\Annotation\NoHttpCache;
 
 /**
- * @HttpCache(isPrivate=true, noCache=true)
+ * @HttpCache(is_private=true, noCache=true)
  */
 class CachedResource extends ResourceObject
 {
-}
 ```
 
 ### @NoHttpCache
@@ -131,7 +127,6 @@ use BEAR\RepositoryModule\Annotation\NoHttpCache;
  */
 class UncacheableResource extends ResourceObject
 {
-}
 ```
 
 この時に`@Cacheable`でサーバーサイドでキャッシュすることは可能です。
@@ -175,7 +170,7 @@ class UncacheableResource extends ResourceObject
 ----
 
 [^1]: キャッシュテストに便利です。
-[^2]: `ETag`レスポンスヘッダーは`If-None-Match`と、`Last-Modified`は`If-Modified-Since`と組み合わせて使われます。
+[^2]: `ETag`と`If-not-modified`リクエストヘッダーが使われます。
 [^3]: `no-cache`という名前ですが、キャッシュは行います。
 [^4]: https://tech.mercari.com/entry/2017/06/22/204500
 [^5]: https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/http-caching?hl=ja より引用
