@@ -122,7 +122,7 @@ class Todo extends ResourceObject
 }
 ```
 
-どちらかの方法でアトリビュートを付与すると、概要で紹介した全ての機能が適用されます。イベントドリブン型コンテンツを想定してデフォルトでは時間（TTL）によるキャッシュの無効化は行われません。`#[DonutCache]`の場合はコンテンツ全体はキャッシュされず、`#[CacheableResponse]`の場合はされることに注意してください。
+どちらかの方法でアトリビュートを付与すると、概要で紹介した全ての機能が適用されます。イベントドリブン型コンテンツを想定しているため、デフォルトではキャッシュの無効化はイベント駆動で行われます。デフォルトのTTLはインストールするCDNモジュールによって異なります（詳細は後述）。`#[DonutCache]`の場合はコンテンツ全体はキャッシュされず、`#[CacheableResponse]`の場合はされることに注意してください。
 
 ## TTL
 
@@ -386,6 +386,8 @@ use BEAR\RepositoryModule\Annotation\Cacheable;
 #[Cacheable(expirySecond: 30)]
 class CachedResource extends ResourceObject
 {
+    // ...
+}
 ```
 
 例）指定した有効期限（`$body['expiry_at']`の日付）まで、サーバー、クライアント共にキャッシュ：
@@ -396,6 +398,8 @@ use BEAR\RepositoryModule\Annotation\Cacheable;
 #[Cacheable(expiryAt: 'expiry_at')]
 class CachedResource extends ResourceObject
 {
+    // ...
+}
 ```
 
 その他は[HTTPキャッシュ](https://bearsunday.github.io/manuals/1.0/ja/http-cache.html)ページをご覧ください。

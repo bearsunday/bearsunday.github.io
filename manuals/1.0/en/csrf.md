@@ -67,7 +67,7 @@ class Article extends ResourceObject
 }
 ```
 
-The attributes go on methods only. A protected resource must not be `final`: Ray.Aop applies interceptors by generating a subclass, and Ray.Di skips a `final` class without any error, so the method runs unprotected.
+The attributes go on methods only.
 
 `#[SameOrigin]` runs only under `withSameOriginCheck()` and inspects the origin signals a browser sends. When `Sec-Fetch-Site` is present — every current browser sends it — the request passes only if the value is `same-origin`; `same-site`, `cross-site`, `none` and unknown values are a 403, and the allowed origin is not consulted. Older clients and non-browsers that send no `Sec-Fetch-Site` are judged by `Origin`, or `Referer` when `Origin` is absent, compared against the allowed origin. A request carrying none of the three is rejected.
 
@@ -75,7 +75,7 @@ The attributes go on methods only. A protected resource must not be `final`: Ray
 
 A request with no token is not rejected by the interceptor on the spot. It is submitted to `CsrfTokenInterface::verify()` as `''`, and the bound implementation decides what is acceptable. For tests whose subject is not CSRF, bind an implementation whose `verify()` always returns `true` to `CsrfTokenInterface` rather than replacing the interceptor.
 
-A rejection is a subclass of `BEAR\Csrf\Exception\ForbiddenException` (403): `MissingCsrfTokenForbiddenException` when no token was sent, `InvalidCsrfTokenForbiddenException` when it does not match, `CrossOriginForbiddenException` when the origin differs. A malformed `Origin` or `Referer` is `BEAR\Resource\Exception\BadRequestException` (400).
+Verification failures throw a subclass of `BEAR\Csrf\Exception\ForbiddenException` (403). A malformed `Origin` or `Referer` throws `BEAR\Resource\Exception\BadRequestException` (400).
 
 ## Token sources
 
@@ -142,7 +142,7 @@ $twig->addFunction(new TwigFunction('csrf_field', $csrfHiddenInput, ['is_safe' =
 
 The output is `<input type="hidden" name="_csrf_token" value="…">` with the attribute value already escaped. Print it as is; escaping it again breaks the markup. The resource does not need to know the field exists.
 
-Obtaining the helper does nothing by itself. The token is issued, and the session started, when the field is rendered. A rendered page then contains the token, so keep it out of `#[CacheableResponse]`, `#[DonutCache]` and CDN caches, and serve it with `Cache-Control: private, no-store` (see [private](cache.html#private) under Cache). `bear/csrf` sets no cache headers of its own.
+Obtaining the helper does nothing by itself. The token is issued, and the session started, when the field is rendered. A rendered page then contains the token, so keep it out of `#[CacheableResponse]`, `#[DonutCache]` and CDN caches, and serve it with `Cache-Control: private, no-store` (see [Private cache](cache.html#private-cache) under Cache). `bear/csrf` sets no cache headers of its own.
 
 To submit from JavaScript, expose the same token once in a `<meta>` tag and send it back in the `X-CSRF-Token` header. Attach the header only to same-origin requests. `$csrf` is the injected `CsrfTokenInterface`.
 
@@ -172,22 +172,14 @@ $csrf->issue();                 // mint a token for the new session
 
 ## Session store and supported hosts
 
-The bundled `SessionCsrfStore` keeps the token in PHP's `$_SESSION`. Configuring the session is the application's responsibility: set the cookie's `HttpOnly`, `SameSite` and `Secure` flags before the store is first called.
+The bundled `SessionCsrfStore` keeps the token in PHP's `$_SESSION`. Configuring the session is the application's responsibility: set the cookie's `HttpOnly`, `SameSite` and `Secure` flags before the store is first called. The store throws `SessionStartFailedException` when `session_start()` fails, for example after output has started. BEAR.Sunday renders templates to a string before sending, so calling `issue()` inside a template is fine.
 
-When `session_start()` fails — headers already sent, an unwritable save path, a session backend that is down — the store throws `SessionStartFailedException`, on render and on verify alike. Ignoring the failure would store nothing, and every later submission would be a 403 for a missing token.
+`$_SESSION` belongs to the process, so the bundled store is correct only where one request owns one process: PHP-FPM, mod_php, the built-in server, CLI. **The bundled store does not support Swoole or other persistent workers in the current version.** When one worker serves several requests, `$_SESSION` outlives the request and every visitor through that worker shares one token, so the token check no longer distinguishes visitors. The store throws `CoroutineUnsafeStoreException` inside a coroutine, but a Swoole worker with `enable_coroutine` off cannot be detected.
 
-The session cookie travels in a header, so nothing may reach the output before the first `issue()` or `verify()`. BEAR.Sunday renders a template to a string before transfer, so calling `issue()` inside a template is fine. A CLI script that writes output first has to start the session before doing so.
-
-`$_SESSION` belongs to the process, so the bundled store is correct only where one request owns one process: PHP-FPM, mod_php, the built-in server, CLI. **Do not use it where one persistent worker serves several requests.** There `$_SESSION` outlives the request and every visitor passing through that worker shares a single token. The server accepts the token a forged request carries, and nothing is visible from the outside because every request keeps succeeding.
-
-The store throws `CoroutineUnsafeStoreException` when it detects that it is being called inside a coroutine. A persistent worker that does not use coroutines — a Swoole worker with `enable_coroutine` off, for instance — cannot be detected. The guard catches some misuse; it is not permission to use the store on a persistent-worker host.
-
-On such a host, implement `CsrfStoreInterface` against something scoped to the request — coroutine context, or a shared backend keyed by the session id — and bind it.
+On a persistent worker, implement `CsrfStoreInterface` against something scoped to the request — coroutine context, or a shared backend keyed by the session id — and bind it.
 
 ```php
 use BEAR\Csrf\CsrfStoreInterface;
 
 $this->bind(CsrfStoreInterface::class)->to(MyRequestScopedStore::class);
 ```
-
-Storage is a separate interface from `CsrfTokenInterface`. Minting with `random_bytes()` and comparing with `hash_equals()` stay in `StoredCsrfToken`, so changing where the token is kept does not mean rewriting the generation and comparison that have to be right.

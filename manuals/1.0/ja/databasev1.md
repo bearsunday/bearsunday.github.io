@@ -130,15 +130,15 @@ $result = $sth->fetchAll(PDO::FETCH_ASSOC);
 $pdo = new ExtendedPdo(...);
 $result = $pdo->fetchAll($stm, $bind);
 
-// fetchAssoc()は全ての行がコラム名のキーを持つ連想配列が返ります。
+// fetchAssoc()は全ての行を返す連想配列で、キーは最初の列の値、行はコラム名をキーにした連想配列です。
 $result = $pdo->fetchAssoc($stm, $bind);
 
-// fetchGroup() is like fetchAssoc() except that the values aren't wrapped in
-// arrays. Instead, single column values are returned as a single dimensional
-// array and multiple columns are returned as an array of arrays
-// Set style to PDO::FETCH_NAMED when values are an array
-// (i.e. there are more than two columns in the select)
-$result = $pdo->fetchGroup($stm, $bind, $style = PDO::FETCH_COLUMN)
+// fetchGroup()はfetchAssoc()のような動作ですが、値は配列にラップされません。
+// 代わりに、単一カラムの値は1次元配列として、
+// 複数カラムは配列の配列として返されます。
+// 値が配列の場合（つまり、SELECTに3つ以上のカラムがある場合）は、
+// スタイルをPDO::FETCH_NAMEDに設定します。
+$result = $pdo->fetchGroup($stm, $bind, $style = PDO::FETCH_COLUMN);
 
 // fetchOne()は最初の行をキーをコラム名にした連想配列で返します。
 $result = $pdo->fetchOne($stm, $bind);
@@ -178,7 +178,7 @@ foreach ($pdo->yieldAll($stm, $bind) as $row) {
     // ...
 }
 
-// fetchAssoc()のようにキーが最初の列名で行が連想配列です。
+// fetchAssoc()と同様に、キーは最初の列の値で、行は連想配列です。
 foreach ($pdo->yieldAssoc($stm, $bind) as $key => $row) {
     // ...
 }

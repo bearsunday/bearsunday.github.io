@@ -114,7 +114,7 @@ http://127.0.0.1:8080/greeting?name=World&lang=fr
 ## ステップ5: CLIコマンドの生成
 
 ```bash
-vendor/bin/bear-cli-gen MyVendor.Greet
+vendor/bin/bear-cli-gen 'MyVendor\Greet'
 ```
 
 これにより以下のファイルが生成されます：
@@ -148,24 +148,26 @@ chmod +x bin/cli/greet
 
 ### 7.1 フォーミュラの生成
 
-フォーミュラを生成するには、Gitリポジトリが初期化されている必要があります：
+フォーミュラを生成するには、設定済みで公開されているGitHubリポジトリが必要です（生成器は`origin`リモートに対して`git ls-remote`を実行し、デフォルトブランチを検出します）：
 
 ```bash
-# Gitリポジトリの初期化（まだの場合）
 git init
 git add .
 git commit -m "Initial commit"
+git remote add origin https://github.com/<you>/<repo>.git
+git branch -M main
+git push -u origin main
 ```
 
 フォーミュラを生成します：
 
 ```bash
-vendor/bin/bear-cli-gen MyVendor.Greet
+vendor/bin/bear-cli-gen 'MyVendor\Greet'
 ```
 
 これにより以下のファイルが生成されます：
 - `bin/cli/greet`：実行可能なCLIコマンド
-- `var/homebrew/greet.rb`：Homebrewフォーミュラ（Gitリポジトリが設定されている場合）
+- `var/homebrew/greet.rb`：Homebrewフォーミュラ（GitHubリポジトリが設定されている場合）
 
 ### 7.2 ローカルでのHomebrewインストールテスト
 
@@ -195,7 +197,7 @@ brew uninstall greet
 
 **注意**: フォーミュラの生成には以下の条件が必要です：
 - アプリケーションのGitリポジトリが初期化されている
-- ローカルテストの場合はGitHubリモートリポジトリは不要
+- 公開されているGitHubリポジトリを指す`origin`リモートが設定されている（生成器はこれに対して`git ls-remote`を実行します）
 
 これらの条件が満たされていない場合、フォーミュラ生成はスキップされ、その理由が表示されます。
 

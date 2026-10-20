@@ -22,7 +22,7 @@ class AppModule extends AbstractAppModule
     protected function configure()
     {
         // 追加モジュール
-        $this->install(new AuraSqlModule('mysql:host=localhost;dbname=test', getenv('db_username'), getenv('db_password')));
+        $this->install(new AuraSqlEnvModule('PDO_DSN', 'PDO_USER', 'PDO_PASSWORD')); // 実行時に環境変数から接続情報を取得
         $this->install(new TwigModule());
         // package標準のモジュール
         $this->install(new PackageModule());
@@ -71,7 +71,7 @@ $this->bindInterceptor(
 // 例2：クラスとアノテーションによる束縛
 $this->bindInterceptor(
     $this->matcher->SubclassesOf(AdminPage::class),  // AdminPageの継承または実装クラスの
-    $this->matcher->annotatedWith(Auth::class),      // @Authアノテーションがアノテートされているメソッドには
+    $this->matcher->annotatedWith(Auth::class),      // #[Auth]属性が付与されているメソッドには
     [AdminAuthentication::class]                     // AdminAuthenticationインターセプターを束縛
 );
 ```

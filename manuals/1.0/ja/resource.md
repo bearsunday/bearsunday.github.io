@@ -84,11 +84,12 @@ URIはPHPのクラスにマップされています。アプリケーション�
 | PUT | ペイロードによるリソースの置き換え、なければ作成 | なし | あり | 不可 |
 | PATCH | リソースの部分的な変更 [^patch] | なし | なし | 不可 |
 | DELETE | リソースの削除 | なし | あり | 不可 |
-| OPTIONS | リクエストに必要なパラメーターとレスポンスに関する情報の取得 [^json-schema] | あり | あり | 不可 |
+| OPTIONS | リクエストに必要なパラメーターとレスポンスに関する情報の取得 [^json-schema] [^options] | あり | あり | 不可 |
 
 [^patch]: [https://www.rfc-editor.org/rfc/rfc5789](https://www.rfc-editor.org/rfc/rfc5789)
 
 [^json-schema]: レスポンスの情報取得にはJsonSchemaの指定が必要です。
+[^options]: `OPTIONS`は`prod`コンテキストでは無効です。有効にするには`OptionsMethodModule`をoverrideしてください。[本番環境](production.html)を参照。
 
 ## パラメーター
 

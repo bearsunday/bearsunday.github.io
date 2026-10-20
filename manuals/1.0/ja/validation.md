@@ -145,13 +145,15 @@ class Todo extends ResourceObject
 {
     "$schema": "http://json-schema.org/draft-04/schema#",
     "title": "/todo POST request validation",
+    "type": "object",
     "properties": {
         "title": {
             "type": "string",
             "minLength": 1,
             "maxLength": 40
         }
-    }
+    },
+    "required": ["title"]
 }
 ```
 

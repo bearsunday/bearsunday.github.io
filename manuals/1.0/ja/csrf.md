@@ -67,7 +67,7 @@ class Article extends ResourceObject
 }
 ```
 
-属性はメソッドにだけ付けられます。保護するリソースを`final`にしてはいけません。Ray.Aopはサブクラスを生成してインターセプターを適用し、Ray.Diは`final`クラスを黙って飛ばすので、そのメソッドは無防備のまま動きます。
+属性はメソッドにだけ付けられます。
 
 `#[SameOrigin]`は`withSameOriginCheck()`のときだけ動き、ブラウザが送るオリジン情報を検査します。現行のブラウザがすべて送る`Sec-Fetch-Site`がある場合は、値が`same-origin`のときだけ通します。`same-site`、`cross-site`、`none`、未知の値は403です。このとき許可オリジンとは比較しません。`Sec-Fetch-Site`を送らない古いクライアントや非ブラウザでは、`Origin`、無ければ`Referer`を許可オリジンと比較します。3つのどれも無いリクエストは拒否します。
 
@@ -75,7 +75,7 @@ class Article extends ResourceObject
 
 トークンが無いリクエストは、インターセプターがその場で拒否するのではなく、`''`として`CsrfTokenInterface::verify()`に渡されます。何を受け入れるかは束縛された実装が決めます。CSRFが主題でないテストでは、インターセプターを差し替えるのではなく、`verify()`が常に`true`を返す実装を`CsrfTokenInterface`に束縛します。
 
-拒否は`BEAR\Csrf\Exception\ForbiddenException`のサブクラス（403）です。トークンが無ければ`MissingCsrfTokenForbiddenException`、一致しなければ`InvalidCsrfTokenForbiddenException`、オリジンが異なれば`CrossOriginForbiddenException`が投げられます。`Origin`や`Referer`の形式が不正な場合は`BEAR\Resource\Exception\BadRequestException`（400）です。
+検査に失敗すると`BEAR\Csrf\Exception\ForbiddenException`のサブクラス（403）が投げられます。`Origin`や`Referer`の形式が不正な場合は`BEAR\Resource\Exception\BadRequestException`（400）です。
 
 ## トークンの取得元
 
@@ -142,7 +142,7 @@ $twig->addFunction(new TwigFunction('csrf_field', $csrfHiddenInput, ['is_safe' =
 
 出力は`<input type="hidden" name="_csrf_token" value="…">`で、属性値はエスケープ済みです。そのまま出力してください。重ねてエスケープするとマークアップが壊れます。リソース側はこのフィールドの存在を知る必要がありません。
 
-ヘルパーを取得しただけでは何も起きません。トークンの発行とセッションの開始は、フィールドを描画したときに行われます。描画されたページにはトークンが含まれるので、`#[CacheableResponse]`や`#[DonutCache]`のキャッシュ対象やCDNに載せず、`Cache-Control: private, no-store`で返してください（[キャッシュ](cache.html)の「レスポンスヘッダー」を参照）。`bear/csrf`自身はキャッシュヘッダーを設定しません。
+ヘルパーを取得しただけでは何も起きません。トークンの発行とセッションの開始は、フィールドを描画したときに行われます。描画されたページにはトークンが含まれるので、`#[CacheableResponse]`や`#[DonutCache]`のキャッシュ対象やCDNに載せず、`Cache-Control: private, no-store`で返してください（[キャッシュ](cache.html#プライベートキャッシュ)の「プライベートキャッシュ」を参照）。`bear/csrf`自身はキャッシュヘッダーを設定しません。
 
 JavaScriptから送る場合は、同じトークンを`<meta>`タグで1度だけ公開し、`X-CSRF-Token`ヘッダーに載せて送り返します。ヘッダーを付けるのは同一オリジンへのリクエストだけにします。`$csrf`は注入された`CsrfTokenInterface`です。
 
@@ -172,22 +172,14 @@ $csrf->issue();                 // 新しいセッション用のトークンを
 
 ## セッションストアと動作環境
 
-同梱の`SessionCsrfStore`はトークンをPHPの`$_SESSION`に保存します。セッションの設定はアプリケーションの責任です。ストアが最初に呼ばれる前に、クッキーの`HttpOnly`、`SameSite`、`Secure`を設定しておきます。
+同梱の`SessionCsrfStore`はトークンをPHPの`$_SESSION`に保存します。セッションの設定はアプリケーションの責任です。ストアが最初に呼ばれる前に、クッキーの`HttpOnly`、`SameSite`、`Secure`を設定しておきます。`session_start()`に失敗した場合（出力開始後など）は、`SessionStartFailedException`を投げます。BEAR.Sundayはテンプレートを文字列に描画してから送信するため、テンプレート内で`issue()`を呼ぶ分には問題ありません。
 
-ヘッダー送信済み、保存先に書けない、セッションバックエンドの停止などで`session_start()`が失敗すると、ストアは`SessionStartFailedException`を投げます。フィールドの描画時でも検証時でも同じです。失敗を無視して続けると何も保存されず、以降の送信がすべてトークン不備を理由とする403になるためです。
+`$_SESSION`はプロセス単位なので、同梱のストアは1つのリクエストが1つのプロセスを占有する環境（PHP-FPM、mod_php、ビルトインサーバー、CLI）でのみ正しく動きます。**同梱のストアは、現在のバージョンではSwooleなどの常駐ワーカーをサポートしていません。**1つのワーカーが複数のリクエストを処理すると`$_SESSION`がリクエストを超えて残り、訪問者全員が同じトークンを共有するため、トークン検査が機能しません。コルーチン内では`CoroutineUnsafeStoreException`を投げますが、`enable_coroutine`を切ったSwooleワーカーは検出できません。
 
-セッションクッキーはヘッダーで送られるので、最初の`issue()`や`verify()`より前に出力を始めてはいけません。BEAR.Sundayはテンプレートを文字列に描画してから送信するので、テンプレート内で`issue()`を呼ぶ分には問題ありません。CLIスクリプトのように先に出力する場合は、出力前にセッションを開始しておきます。
-
-`$_SESSION`はプロセス単位なので、同梱のストアが正しく動くのは、1つのリクエストが1つのプロセスを占有する環境だけです。PHP-FPM、mod_php、ビルトインサーバー、CLIがこれにあたります。**1つの常駐ワーカーが複数のリクエストを処理する環境では使わないでください。**`$_SESSION`がリクエストより長く生き残り、そのワーカーを通る訪問者全員が1つのトークンを共有します。偽造リクエストが持つトークンをサーバーが受け入れてしまいますが、すべてのリクエストが成功し続けるので、外からは気づけません。
-
-ストアはコルーチンの中で呼ばれたことを検出すると`CoroutineUnsafeStoreException`を投げます。`enable_coroutine`を切ったSwooleワーカーのように、コルーチンを使わない常駐ワーカーは検出できません。このガードは誤用の一部を捕まえるものであり、常駐ワーカー環境で使ってよいという保証ではありません。
-
-常駐ワーカー環境では、コルーチンコンテキストやセッションIDをキーにした共有バックエンドのように、リクエストに閉じた保存先で`CsrfStoreInterface`を実装して束縛します。
+常駐ワーカーで使う場合は、コルーチンコンテキストやセッションIDをキーにした共有バックエンドなど、リクエストに閉じた保存先で`CsrfStoreInterface`を実装して束縛します。
 
 ```php
 use BEAR\Csrf\CsrfStoreInterface;
 
 $this->bind(CsrfStoreInterface::class)->to(MyRequestScopedStore::class);
 ```
-
-保存先は`CsrfTokenInterface`とは別のインターフェイスです。`random_bytes()`による発行と`hash_equals()`による比較は`StoredCsrfToken`に残るので、保存先を変えても、正しさが求められるトークンの生成と比較を書き直す必要はありません。

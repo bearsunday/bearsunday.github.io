@@ -62,9 +62,13 @@ A Test Double is a substitute that replaces a component on which the software te
 * Fake (simpler implementation that works closer to the actual object)
 * _Dummy_ (necessary to generate the test target but no call is made)
 
+A stub is a test double whose output the system under test ([SUT](https://en.wikipedia.org/wiki/System_under_test)) uses. For example, a test double with a method that always returns `true` is a stub.
+
+A mock verifies the indirect output from the SUT to the test double inside the test double itself, rather than in the test code. A spy also verifies the SUT's indirect output, but records it so the test code can read and assert on it.
+
 ### Test Double Binding
 
-There are two ways to change the bundling for a test. One is to change the bundling across all tests in the context module, and the other is to temporarily change the bundling only for a specific purpose within one test only.
+There are two ways to change bindings for a test. One is to change bindings across all tests in a context module, and the other is to change a binding temporarily for one specific purpose within a single test.
 
 #### Context Module
 
@@ -87,31 +91,35 @@ Injector with test context.
 $injector = Injector::getInstance('test-hal-app', $module);
 ```
 
-#### Temporary binding change
+## Temporary Binding Changes
 
-Temporary bundle changes for a single test specify the bundle to override with `Injector::getOverrideInstance`.
+To change a binding temporarily for a single test, specify the binding to override with `Injector::getOverrideInstance`.
+
+### Stub and Fake
 
 ```php
-public function testBindFake(): void
+public function testBindStub(): void
 {
     $module = new class extends AbstractModule {
         protected function configure(): void
         {
             $this->bind(FooInterface::class)->to(FakeFoo::class);
         }
-    }
+    };
     $injector = Injector::getOverrideInstance('hal-app', $module);
 }
 ```
 
 ### Mock
 
+Assertions are performed inside the test double.
+
 ```php
 public function testBindMock(): void
-{ 
+{
     $mock = $this->createMock(FooInterface::class);
     // expect that update() will be called once and the parameter will be the string 'something'.
-    mock->expects($this->once())
+    $mock->expects($this->once())
              ->method('update')
              ->with($this->equalTo('something'));
     $module = new class($mock) extends AbstractModule {
@@ -124,11 +132,13 @@ public function testBindMock(): void
         }
     };
     $injector = Injector::getOverrideInstance('hal-app', $module);
+    // The SUT (FooService) calls FooInterface::update('something') from execute()
+    $injector->getInstance(FooService::class)->execute();
 }
 ```
-### spy
+### Spy
 
-Installs a `SpyModule` by specifying the interface or class name of the spy target. [^spy-module] After running the SUT containing the spy target, verify the number of calls and the value of the calls in the spy log.
+Install a `SpyModule` by specifying the interface or class name of the spy target. [^spy-module] After running the SUT containing the spy target, verify the number of calls and the value of the calls in the spy log.
 
 [^spy-module]: [ray/test-double](https://github.com/ray-di/Ray.TestDouble) must be installed to use SpyModule.
 
@@ -145,10 +155,10 @@ public function testBindSpy(): void
     $resource = $injector->getInstance(ResourceInterface::class);
     // Spy logs of FooInterface objects are logged, whether directly or indirectly.
     $resource->get('/');
-    // Spyログの取り出し
+    // Retrieve the spy log
     $spyLog = $injector->getInstance(\Ray\TestDouble\LoggerInterface::class);
     // @var array<int, Log> $addLog
-    $addLog = $spyLog->getLogs(FooInterface, 'add');   
+    $addLog = $spyLog->getLogs(FooInterface::class, 'add');
     $this->assertSame(1, count($addLog), 'Should have received once');
     // Argument validation from SUT
     $this->assertSame([1, 2], $addLog[0]->arguments);
@@ -166,11 +176,11 @@ Resource testing is an input/output test for each endpoint. Hypermedia tests, on
 
 Workflow tests are inherited from HTTP tests and are tested at both the PHP and HTTP levels in a single code. HTTP testing is done with `curl` and the request/response is logged in a log file.
 
-## Best Practice
+## For Better Tests
 
- * Test the interface, not the implementation.
- * Create a actual fake class rather than using a mock library.
- * Testing is a specification. Ease of reading rather than ease of coding.
+* Test the interface, not the implementation.
+* Create a fake class rather than using a mocking library.
+* Tests are a specification. Prioritize readability over ease of writing.
 
 Reference
 
