@@ -75,7 +75,7 @@ URIはPHPのクラスにマップされています。アプリケーション�
 
 ## メソッド
 
-リソースはHTTPのメソッドに対応した6つのメソッドでアクセスできます。メソッドはCRUDとのマッピングではなく、リソース状態を変えない**安全**なものか、同じリクエストを繰り返しても結果が変わらない**冪等**なものかという特性で区別されます。
+リソースは`OptionsMethodModule`が有効な場合、HTTPのメソッドに対応した6つのメソッドでアクセスできます。本番環境では`OptionsMethodModule`をoverrideしない限り`OPTIONS`は無効です。メソッドはCRUDとのマッピングではなく、リソース状態を変えない**安全**なものか、同じリクエストを繰り返しても結果が変わらない**冪等**なものかという特性で区別されます。
 
 | メソッド | 意味 | [安全性](https://developer.mozilla.org/ja/docs/Glossary/safe) | [冪等性](https://developer.mozilla.org/ja/docs/Glossary/Idempotent) | [キャッシュ](https://developer.mozilla.org/ja/docs/Glossary/cacheable) |
 |-|-|-|-|-|

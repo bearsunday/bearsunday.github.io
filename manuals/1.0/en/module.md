@@ -22,7 +22,7 @@ class AppModule extends AbstractAppModule
     protected function configure()
     {
         // Additional modules
-        $this->install(new AuraSqlModule('mysql:host=localhost;dbname=test', getenv('db_username'), getenv('db_password')));
+        $this->install(new AuraSqlEnvModule('PDO_DSN', 'PDO_USER', 'PDO_PASSWORD')); // reads connection values from environment variables at runtime
         $this->install(new TwigModule());
         // Package standard modules
         $this->install(new PackageModule());

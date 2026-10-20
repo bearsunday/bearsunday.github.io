@@ -123,7 +123,7 @@ class Todo extends ResourceObject
 }
 ```
 
-Either approach applies all the features described in the overview. Because event-driven content is assumed, the cache is not invalidated by time (TTL) by default. Note that `#[DonutCache]` does not cache the whole content, while `#[CacheableResponse]` does.
+Either approach applies all the features described in the overview. Because event-driven content is assumed, cache invalidation is event-driven by default. The default TTL depends on the CDN module, as described below. Note that `#[DonutCache]` does not cache the whole content, while `#[CacheableResponse]` does.
 
 ## TTL
 
@@ -283,8 +283,8 @@ For the `dsn` format (authentication, TLS, Sentinel, Cluster, etc.) and connecti
 If you install a module that supports a specific CDN, vendor-specific headers will be output.
 
 ```php
-$this->install(new FastlyModule())
-$this->install(new AkamaiModule())
+$this->install(new FastlyModule());
+$this->install(new AkamaiModule());
 ```
 
 ## Multi-CDN

@@ -75,7 +75,7 @@ URIs are mapped to PHP classes. Applications use the URI instead of the class na
 
 ## Method
 
-Resources can be accessed through six methods corresponding to HTTP methods. These methods are not a mapping to CRUD; they are distinguished by whether they are **safe** (do not change the resource state) and whether they are **idempotent** (repeating the same request produces the same result).
+Resources can be accessed through six methods corresponding to HTTP methods when `OptionsMethodModule` is enabled. In production, `OPTIONS` is disabled unless `OptionsMethodModule` is overridden. These methods are not a mapping to CRUD; they are distinguished by whether they are **safe** (do not change the resource state) and whether they are **idempotent** (repeating the same request produces the same result).
 
 | Method | Meaning | [Safe](https://developer.mozilla.org/en-US/docs/Glossary/safe) | [Idempotent](https://developer.mozilla.org/en-US/docs/Glossary/Idempotent) | [Cacheable](https://developer.mozilla.org/en-US/docs/Glossary/cacheable) |
 |-|-|-|-|-|

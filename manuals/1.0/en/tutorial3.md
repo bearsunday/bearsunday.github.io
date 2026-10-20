@@ -148,13 +148,14 @@ chmod +x bin/cli/greet
 
 ### 7.1 Generate the Formula
 
-Generating a formula requires an initialized Git repository:
+Generating a formula requires a configured, published GitHub repository (the generator runs `git ls-remote` against the `origin` remote to detect the default branch):
 
 ```bash
-# Initialize the Git repository (if not already done)
 git init
 git add .
 git commit -m "Initial commit"
+git remote add origin https://github.com/<you>/<repo>.git
+git push -u origin main
 ```
 
 Generate the formula:
@@ -165,7 +166,7 @@ vendor/bin/bear-cli-gen 'MyVendor\Greet'
 
 This generates the following files:
 - `bin/cli/greet`: an executable CLI command
-- `var/homebrew/greet.rb`: a Homebrew formula (when a Git repository is configured)
+- `var/homebrew/greet.rb`: a Homebrew formula (when a GitHub repository is configured)
 
 ### 7.2 Test the Homebrew Installation Locally
 
@@ -195,7 +196,7 @@ For detailed publishing steps, see the [Homebrew documentation](https://docs.bre
 
 **Note**: Formula generation requires the following conditions:
 - The application's Git repository is initialized
-- A GitHub remote repository is not required for local testing
+- An `origin` remote pointing at a published GitHub repository is configured (the generator runs `git ls-remote` against it)
 
 If these conditions are not met, formula generation is skipped and the reason is displayed.
 

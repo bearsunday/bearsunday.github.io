@@ -24,6 +24,7 @@ use BEAR\Package\AbstractAppModule;
 use BEAR\AppMeta\AppMeta;
 use BEAR\Package\PackageModule;
 use Ray\AuraSqlModule\AuraSqlModule;
+use Ray\AuraSqlModule\AuraSqlEnvModule;
 
 class AppModule extends AbstractAppModule
 {
@@ -126,6 +127,8 @@ echo $sth->queryString;
 `prepare()`、`bindValue()`、`execute()`を繰り返してデータベースから値を取得する代わりに`fetch*()`メソッドを使うとボイラープレートコードを減らせます。（内部では`perform()`メソッドを実行しているので配列のプレイスホルダーもサポートしています）
 
 ```php
+use Aura\Sql\ExtendedPdo;
+
 $stm = 'SELECT * FROM test WHERE foo = :foo AND bar = :bar';
 $bind = ['foo' => 'baz', 'bar' => 'dib'];
 

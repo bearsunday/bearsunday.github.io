@@ -199,7 +199,7 @@ composer require spiral/roadrunner-http nyholm/psr7
 
 ### Configuration
 
-Create `.rr.yaml`:
+Create `.rr.yaml` (see the [bin/worker.php](https://github.com/bearsunday/bear-sunday-servers/blob/main/roadrunner/bin/worker.php) example implementation):
 
 ```yaml
 version: "3"

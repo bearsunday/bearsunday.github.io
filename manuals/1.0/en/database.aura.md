@@ -24,6 +24,7 @@ use BEAR\Package\AbstractAppModule;
 use BEAR\AppMeta\AppMeta;
 use BEAR\Package\PackageModule;
 use Ray\AuraSqlModule\AuraSqlModule;
+use Ray\AuraSqlModule\AuraSqlEnvModule;
 
 class AppModule extends AbstractAppModule
 {
@@ -126,6 +127,8 @@ echo $sth->queryString;
 Instead of repeating `prepare()`, `bindValue()`, and `execute()` to retrieve values from the database, the `fetch*()` methods reduce boilerplate code. (They run `perform()` internally, so array placeholders are also supported.)
 
 ```php
+use Aura\Sql\ExtendedPdo;
+
 $stm = 'SELECT * FROM test WHERE foo = :foo AND bar = :bar';
 $bind = ['foo' => 'baz', 'bar' => 'dib'];
 
@@ -292,13 +295,6 @@ public function setLoggerDb(ExtendedPdoInterface $pdo)
 {
     // ...
 }
-```
-
-Specify an identifier with `NamedPdoModule` and bind it.
-
-```php?start_inline
-$this->install(new NamedPdoModule('log_db', 'mysql:host=localhost;dbname=log', 'username',
-$this->install(new NamedPdoModule('job_db', 'mysql:host=localhost;dbname=job', 'username',
 ```
 
 In the module, you specify an identifier in `NamedPdoModule` and bind it.
