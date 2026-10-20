@@ -375,7 +375,7 @@ You can also call the method multiple times in any order.
 use Ray\AuraSqlModule\AuraSqlInject;
 use Ray\AuraSqlModule\AuraSqlSelectInject;
 
-class User extend ResourceObject
+class User extends ResourceObject
 {
     use AuraSqlInject;
     use AuraSqlSelectInject;
@@ -445,7 +445,7 @@ The created queries are queried as strings with the `getStatement()`.
 use Ray\AuraSqlModule\AuraSqlInject;
 use Ray\AuraSqlModule\AuraSqlInsertInject;
 
-class User extend ResourceObject
+class User extends ResourceObject
 {
     use AuraSqlInject;
     use AuraSqlInsertInject;
