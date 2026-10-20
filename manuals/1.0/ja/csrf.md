@@ -69,9 +69,18 @@ class Article extends ResourceObject
 
 属性はメソッドにだけ付けられます。保護するリソースを`final`にしてはいけません。Ray.Aopはサブクラスを生成してインターセプターを適用し、Ray.Diは`final`クラスを黙って飛ばすので、そのメソッドは無防備のまま動きます。
 
-`#[SameOrigin]`は`withSameOriginCheck()`のときだけ動き、ブラウザが送るオリジン情報を検査します。現行のブラウザがすべて送る`Sec-Fetch-Site`がある場合は、値が`same-origin`のときだけ通します。`same-site`、`cross-site`、`none`、未知の値は403です。このとき許可オリジンとは比較しません。`Sec-Fetch-Site`を送らない古いクライアントや非ブラウザでは、`Origin`、無ければ`Referer`を許可オリジンと比較します。3つのどれも無いリクエストは拒否します。
+`#[SameOrigin]`はブラウザが送るオリジン情報を検査します。有効かどうかは`AllowedOrigin`の束縛で決まります。`withSameOriginCheck()`は渡されたオリジンを、`withoutSameOriginCheck()`は`null`を束縛し、オリジンが`null`ならインターセプターは検査せずに通します。現行のブラウザがすべて送る`Sec-Fetch-Site`がある場合は、値が`same-origin`のときだけ通します。`same-site`、`cross-site`、`none`、未知の値は403です。このとき許可オリジンとは比較しません。`Sec-Fetch-Site`を送らない古いクライアントや非ブラウザでは、`Origin`、無ければ`Referer`を許可オリジンと比較します。3つのどれも無いリクエストは拒否します。
 
 `#[CsrfToken]`はシンクロナイザートークンを検査します。2つの検査は独立しており、`withoutSameOriginCheck()`はトークン検査に影響しません。属性は引数を取りません。フィールド名を決めるのはモジュールだけなので、テンプレートが描画する名前とインターセプターが読む名前が食い違うことはありません。
+
+`AllowedOrigin`の束縛は拡張点です。BEAR.Sundayのアプリケーションは中立な`AppModule`の上にコンテキストを合成するので、正規のオリジンを知っているモジュールは`CsrfModule`をインストールするモジュールと別であることが多いです。共有モジュールでは`withoutSameOriginCheck()`をインストールし、オリジンを持つコンテキスト — 環境変数から読む本番モジュール、これから送るオリジンを名指しするテストハーネス — が`AllowedOrigin`を束縛し直します。インターセプターはどちらでも束縛されたままで、値だけが検査の有無を決めます。
+
+```php
+// ProdModule
+use BEAR\Csrf\Http\AllowedOrigin;
+
+$this->bind(AllowedOrigin::class)->toInstance(new AllowedOrigin($origin));
+```
 
 トークンが無いリクエストは、インターセプターがその場で拒否するのではなく、`''`として`CsrfTokenInterface::verify()`に渡されます。何を受け入れるかは束縛された実装が決めます。CSRFが主題でないテストでは、インターセプターを差し替えるのではなく、`verify()`が常に`true`を返す実装を`CsrfTokenInterface`に束縛します。
 

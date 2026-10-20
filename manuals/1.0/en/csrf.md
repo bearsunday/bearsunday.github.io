@@ -69,9 +69,18 @@ class Article extends ResourceObject
 
 The attributes go on methods only. A protected resource must not be `final`: Ray.Aop applies interceptors by generating a subclass, and Ray.Di skips a `final` class without any error, so the method runs unprotected.
 
-`#[SameOrigin]` runs only under `withSameOriginCheck()` and inspects the origin signals a browser sends. When `Sec-Fetch-Site` is present — every current browser sends it — the request passes only if the value is `same-origin`; `same-site`, `cross-site`, `none` and unknown values are a 403, and the allowed origin is not consulted. Older clients and non-browsers that send no `Sec-Fetch-Site` are judged by `Origin`, or `Referer` when `Origin` is absent, compared against the allowed origin. A request carrying none of the three is rejected.
+`#[SameOrigin]` inspects the origin signals a browser sends. It is armed by the `AllowedOrigin` binding: `withSameOriginCheck()` binds the origin you pass, `withoutSameOriginCheck()` binds `null`, and a null origin makes the interceptor proceed without checking. When `Sec-Fetch-Site` is present — every current browser sends it — the request passes only if the value is `same-origin`; `same-site`, `cross-site`, `none` and unknown values are a 403, and the allowed origin is not consulted. Older clients and non-browsers that send no `Sec-Fetch-Site` are judged by `Origin`, or `Referer` when `Origin` is absent, compared against the allowed origin. A request carrying none of the three is rejected.
 
 `#[CsrfToken]` verifies a synchroniser token. The two checks are independent: `withoutSameOriginCheck()` does not affect the token check. The attribute takes no arguments. The module alone decides the field name, so the name a template renders and the name the interceptor reads cannot differ.
+
+The `AllowedOrigin` binding is an extension point. A BEAR.Sunday application composes contexts over a neutral `AppModule`, so the module that knows the canonical origin is often not the one installing `CsrfModule`. Install `withoutSameOriginCheck()` in the shared module, then have the context that owns the origin rebind `AllowedOrigin` — a production module reading it from the environment, a test harness naming the origin it is about to send. The interceptor stays bound either way; only the value decides.
+
+```php
+// ProdModule
+use BEAR\Csrf\Http\AllowedOrigin;
+
+$this->bind(AllowedOrigin::class)->toInstance(new AllowedOrigin($origin));
+```
 
 A request with no token is not rejected by the interceptor on the spot. It is submitted to `CsrfTokenInterface::verify()` as `''`, and the bound implementation decides what is acceptable. For tests whose subject is not CSRF, bind an implementation whose `verify()` always returns `true` to `CsrfTokenInterface` rather than replacing the interceptor.
 
