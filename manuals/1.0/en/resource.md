@@ -166,7 +166,7 @@ The `#[Embed]` attribute provides a declarative way to express the same lazy emb
 
 ## Cache
 
-In addition to regular TTL caching, BEAR.Sunday supports REST client caching and advanced partial caching (donut caching), including CDN. See [Cache](cache.html) for details. For the traditional `@Cacheable` annotation, see the previous [Resource (v1)](resourcev1.html#resource-cache) document.
+In addition to regular TTL caching, BEAR.Sunday supports REST client caching and advanced partial caching (donut caching), including CDN. See [Cache](cache.html) for details. For the traditional `@Cacheable` annotation, see the previous [Resource (v1)](https://bearsunday.github.io/manuals/1.0/ja/resourcev1.html#リソースキャッシュ) document (Japanese).
 
 ## Link
 

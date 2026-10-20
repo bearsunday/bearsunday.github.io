@@ -406,7 +406,7 @@ class CachedResource extends ResourceObject
 }
 ```
 
-See the [HTTP Cache](http-cache.html) page for more information.
+See the [HTTP Cache](https://bearsunday.github.io/manuals/1.0/ja/http-cache.html) page (Japanese) for more information.
 
 ## Observability
 
