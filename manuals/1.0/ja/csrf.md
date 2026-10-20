@@ -69,7 +69,7 @@ class Article extends ResourceObject
 
 属性はメソッドにだけ付けられます。保護するリソースを`final`にしてはいけません。Ray.Aopはサブクラスを生成してインターセプターを適用し、Ray.Diは`final`クラスを黙って飛ばすので、そのメソッドは無防備のまま動きます。
 
-`#[SameOrigin]`はブラウザが送るオリジン情報を検査します。有効かどうかは`AllowedOrigin`の束縛で決まります。`withSameOriginCheck()`は渡されたオリジンを、`withoutSameOriginCheck()`は`null`を束縛し、オリジンが`null`ならインターセプターは検査せずに通します。現行のブラウザがすべて送る`Sec-Fetch-Site`がある場合は、値が`same-origin`のときだけ通します。`same-site`、`cross-site`、`none`、未知の値は403です。このとき許可オリジンとは比較しません。`Sec-Fetch-Site`を送らない古いクライアントや非ブラウザでは、`Origin`、無ければ`Referer`を許可オリジンと比較します。3つのどれも無いリクエストは拒否します。
+`#[SameOrigin]`はブラウザが送るオリジン情報を検査します。有効かどうかは`AllowedOrigin`の束縛で決まります。`withSameOriginCheck()`は渡されたオリジンを、`withoutSameOriginCheck()`は`null`を束縛し、オリジンが`null`ならインターセプターは検査せずに通します。オリジンが束縛されている場合、`Sec-Fetch-Site`があれば値が`same-origin`のときだけ通します（現行のブラウザはHTTPSのオリジンに対してこのヘッダーを送ります）。`same-site`、`cross-site`、`none`、未知の値は403です。このとき許可オリジンとは比較しません。`Sec-Fetch-Site`が無いリクエスト（古いクライアント、非ブラウザ、HTTP）では、`Origin`、無ければ`Referer`を許可オリジンと比較します。3つのどれも無いリクエストは拒否します。
 
 `#[CsrfToken]`は、リクエストから取り出したトークンを`CsrfTokenInterface::verify()`に渡し、セッションに保存された値との照合結果に応じて拒否します（この方式をシンクロナイザートークンパターンと呼びます）。2つの検査は独立しており、`withoutSameOriginCheck()`はトークン検査に影響しません。属性は引数を取りません。フィールド名を決めるのはモジュールだけなので、テンプレートが描画する名前とインターセプターが読む名前が食い違うことはありません。
 
