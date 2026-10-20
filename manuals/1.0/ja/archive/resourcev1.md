@@ -56,7 +56,7 @@ PHPのクラスはURIにマップされていて、アプリケーションで�
 アプリケーション名が`koriym\todo`というアプリケーションの場合、URIとクラスはこのように対応します。
 
 | URI | Class |
-|-----+-------|
+|---|---|
 | `page://self/index` | `Koriym\Todo\Resource\Page\Index` |
 | `app://self/blog/posts` | `Koriym\Todo\Resource\App\Blog\Posts` |
 
@@ -234,7 +234,7 @@ use BEAR\Resource\Annotation\ResourceParam;
 class News extends ResourceObject
 {
     /**
-     * @ResourceParam(param=“name”, uri="app://self//login#nickname")
+     * @ResourceParam(param="name", uri="app://self/login#nickname")
      */
     public function onGet(string $name): static
     {
@@ -487,7 +487,7 @@ class News extends ResourceObject
         $this->body['website']->addQuery(['title' => $title]); // 引数追加
 ```
 
-[HAL](https://github.com/blongden/hal)レンダラーでは`_embedded `として扱われます。
+[HAL](https://github.com/blongden/hal)レンダラーでは`_embedded`として扱われます。
 
 
 ## リソースキャッシュ
@@ -563,7 +563,7 @@ class News extends ResourceObject
    * @Purge(uri="app://self/user/friend?user_id={id}")
    * @Refresh(uri="app://self/user/profile?user_id={id}")
    */
-   public function onPut(string $id, string $name, int $age)): static
+   public function onPut(string $id, string $name, int $age): static
 ```
 
 別のクラスのリソースや関連する複数のリソースの`QueryRepository`の内容を更新することができます。
@@ -690,9 +690,9 @@ class Todo extends ResourceObject
 }
 ```
 
-### ＠ResourceParam
+### @ResourceParam
 
-他のリソースをリクエストするために他のリソース結果が必要な場合は`＠ResourceParam`を使います。
+他のリソースをリクエストするために他のリソース結果が必要な場合は`@ResourceParam`を使います。
 
 ```php?start_inline
 // OK but not the best
@@ -717,7 +717,7 @@ class User extends ResourceObject
     use ResourceInject;
 
     /**
-     * @ResourceParam(param=“name”, uri="app://self//login-user#nickname")
+     * @ResourceParam(param="name", uri="app://self/login-user#nickname")
      */
     public function onGet(string $id, string $name): static
     {
@@ -733,7 +733,7 @@ class User extends ResourceObject
 class User extends ResourceObject
 {
     /**
-     * @ResourceParam(param=“name”, uri="app://self//login-user#nickname")
+     * @ResourceParam(param="name", uri="app://self/login-user#nickname")
      * @Embed(rel="profile", src="app://self/profile")
      */
     public function onGet(string $id, string $name): static

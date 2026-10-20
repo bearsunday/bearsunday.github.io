@@ -20,7 +20,7 @@ REST標準のキャッシュ制約に従う事で**RFC7234**をサポートし�
 ### ディレクティブ
 
 | ディレクティブ | 説明 |
-|--------------+-----|
+|---|---|
 | public | クライアント間の共有キャッシュの利用 |
 | private | クライアントでキャッシュを共有しない |
 | no-store | キャッシュしません |
@@ -41,7 +41,6 @@ REST標準のキャッシュ制約に従う事で**RFC7234**をサポートし�
 
 `no-store`は単純にレスポンスのすべてのキャッシュを禁止します。
 
-###
 ### 最適なCache-Control ポリシーの定義[^5]
 
 <img src="https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/images/http-cache-decision-tree.png?hl=ja">
@@ -60,6 +59,7 @@ use BEAR\RepositoryModule\Annotation\Cacheable;
  */
 class CachedResource extends ResourceObject
 {
+}
 ```
 
 例）指定した有効期限(`$body['expiry_at']`の日付)までサーバー、クライアント供にキャッシュ
@@ -72,6 +72,7 @@ use BEAR\RepositoryModule\Annotation\Cacheable;
  */
 class CachedResource extends ResourceObject
 {
+}
 ```
 
 ## @HttpCache
@@ -85,34 +86,37 @@ class CachedResource extends ResourceObject
 use BEAR\RepositoryModule\Annotation\HttpCache;
 
 /**
- * @HttpCache(isPrivate=true, max-age=60)
+ * @HttpCache(isPrivate=true, maxAge=30)
  */
 class CachedResource extends ResourceObject
 {
+}
 ```
 
 例）更新されていないか都度確認します[^2]。
 
 ```php?start_inline
-use BEAR\RepositoryModule\Annotation\NoHttpCache;
+use BEAR\RepositoryModule\Annotation\HttpCache;
 
 /**
  * @HttpCache(noCache=true)
  */
 class CachedResource extends ResourceObject
 {
+}
 ```
 
 例）上記と同じですが、更新されていないならプライベートキャッシュのみを利用します。
 
 ```php?start_inline
-use BEAR\RepositoryModule\Annotation\NoHttpCache;
+use BEAR\RepositoryModule\Annotation\HttpCache;
 
 /**
- * @HttpCache(is_private=true, noCache=true)
+ * @HttpCache(isPrivate=true, noCache=true)
  */
 class CachedResource extends ResourceObject
 {
+}
 ```
 
 ### @NoHttpCache
@@ -127,6 +131,7 @@ use BEAR\RepositoryModule\Annotation\NoHttpCache;
  */
 class UncacheableResource extends ResourceObject
 {
+}
 ```
 
 この時に`@Cacheable`でサーバーサイドでキャッシュすることは可能です。
