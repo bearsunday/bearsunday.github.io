@@ -47,6 +47,7 @@ class Todo extends ResourceObject
 ```
 
 PHPのリソースクラスはWebのURIと同じような`app://self/blog/posts/?id=3`, `page://self/index`などのURIを持ち、HTTPのメソッドに準じた`onGet`, `onPost`, `onPut`, `onPatch`, `onDelete`インターフェイスを持ちます。
+`OPTIONS`は`OptionsMethodModule`によって自動処理されます。
 
 メソッドでは自身のリソース状態`code`,`headers`,`body`を変更し`$this`を返します。
 
@@ -221,8 +222,7 @@ class News extends ResourceObject
     ): static {
 ```
 
-この機能を使うためには引数のデフォルトに`null`が必要です。
-またクライアントが値を指定した時は指定した値が優先され、束縛した値は無効になります。
+クライアントが値を指定した時は指定した値が優先され、束縛した値は無効になります。
 
 #### リソースパラメーター
 
@@ -350,6 +350,8 @@ class Index extends ResourceObject
         $this->body = [
             'posts' => $this->resource->get('app://self/blog/posts', ['id' => 1])
         ];
+
+        return $this;
     }
 }
 ```
@@ -564,6 +566,7 @@ class News extends ResourceObject
    * @Refresh(uri="app://self/user/profile?user_id={id}")
    */
    public function onPut(string $id, string $name, int $age): static
+   {
 ```
 
 別のクラスのリソースや関連する複数のリソースの`QueryRepository`の内容を更新することができます。
@@ -582,6 +585,7 @@ class News extends ResourceObject
    * @Refresh(uri="app://self/user/profile?user_id={id}")
    */
    public function onPut($id, $name, $age): static
+   {
 ```
 
 ## クエリーリポジトリの直接操作

@@ -92,7 +92,7 @@ Return the appropriate status code. This makes testing easier and conveys the co
 * `405` Method Not Allowed
 * `503` Service Unavailable Temporary server-side error
 
-`304` is set automatically when the `#[CacheableResponse]` attribute is used. `404` is set automatically when the resource class does not exist, and `405` when the resource method does not exist. Always return `503` for database connection errors and similar failures so crawlers are informed.
+`#[CacheableResponse]` enables ETag-based conditional requests; the server returns `304` when the client's ETag matches the current representation. `404` is set automatically when the resource class does not exist, and `405` when the resource method does not exist. Always return `503` for database connection errors and similar failures so crawlers are informed.
 
 ### HTML Form Method
 

@@ -43,7 +43,7 @@ REST標準のキャッシュ制約に従う事で**RFC7234**をサポートし�
 
 ### 最適なCache-Control ポリシーの定義[^5]
 
-<img src="https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/images/http-cache-decision-tree.png?hl=ja">
+<img src="https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/images/http-cache-decision-tree.png?hl=ja" alt="Cache-Controlヘッダーを保存・再検証・共有のどれにするか決めるフローチャート">
 
 ## @Cacheable
 
@@ -175,7 +175,7 @@ class UncacheableResource extends ResourceObject
 ----
 
 [^1]: キャッシュテストに便利です。
-[^2]: `ETag`と`If-not-modified`リクエストヘッダーが使われます。
+[^2]: `ETag`レスポンスヘッダーは`If-None-Match`と、`Last-Modified`は`If-Modified-Since`と組み合わせて使われます。
 [^3]: `no-cache`という名前ですが、キャッシュは行います。
 [^4]: https://tech.mercari.com/entry/2017/06/22/204500
 [^5]: https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/http-caching?hl=ja より引用

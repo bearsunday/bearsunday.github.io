@@ -47,6 +47,7 @@ class Todo extends ResourceObject
 ```
 
 A PHP resource class has a URI such as `app://self/blog/posts/?id=3` or `page://self/index`, just like a web URI, and has `onGet`, `onPost`, `onPut`, `onPatch`, and `onDelete` interfaces corresponding to HTTP methods.
+`OPTIONS` is handled automatically by `OptionsMethodModule`.
 
 The method changes its own resource state `code`, `headers`, and `body`, and returns `$this`.
 
@@ -221,8 +222,7 @@ class News extends ResourceObject
     ): static {
 ```
 
-This feature requires `null` as the argument default.
-Also, when the client specifies a value, that value takes precedence and the bound value is ignored.
+When the client specifies a value, that value takes precedence and the bound value is ignored.
 
 #### Resource Parameters
 
@@ -350,6 +350,8 @@ class Index extends ResourceObject
         $this->body = [
             'posts' => $this->resource->get('app://self/blog/posts', ['id' => 1])
         ];
+
+        return $this;
     }
 }
 ```
@@ -564,6 +566,7 @@ class News extends ResourceObject
    * @Refresh(uri="app://self/user/profile?user_id={id}")
    */
    public function onPut(string $id, string $name, int $age): static
+   {
 ```
 
 You can update the contents of the `QueryRepository` of resources in another class or of multiple related resources.
@@ -582,6 +585,7 @@ class News extends ResourceObject
    * @Refresh(uri="app://self/user/profile?user_id={id}")
    */
    public function onPut($id, $name, $age): static
+   {
 ```
 
 ## Direct Query Repository Access

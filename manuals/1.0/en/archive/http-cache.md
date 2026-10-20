@@ -43,7 +43,7 @@ A `private` response can be stored in a browser cache, but since the target user
 
 ### Defining an Optimal Cache-Control Policy[^5]
 
-<img src="https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/images/http-cache-decision-tree.png?hl=en">
+<img src="https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/images/http-cache-decision-tree.png?hl=en" alt="Cache-Control flowchart for deciding whether to store, revalidate, or share a response">
 
 ## @Cacheable
 
@@ -175,7 +175,7 @@ The `Vary` header specifies that the response varies according to the given requ
 ----
 
 [^1]: Useful for cache testing.
-[^2]: The `ETag` and `If-not-modified` request headers are used.
+[^2]: The `ETag` response header is used with `If-None-Match`, and `Last-Modified` with `If-Modified-Since`.
 [^3]: Despite its name, `no-cache` still caches the response.
 [^4]: https://tech.mercari.com/entry/2017/06/22/204500
 [^5]: Quoted from https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/http-caching?hl=en
