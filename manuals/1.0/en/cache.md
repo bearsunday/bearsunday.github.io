@@ -123,7 +123,7 @@ class Todo extends ResourceObject
 }
 ```
 
-Either approach applies all the features described in the overview. Because event-driven content is assumed, cache invalidation is event-driven by default. The default TTL depends on the CDN module, as described below. Note that `#[DonutCache]` does not cache the whole content, while `#[CacheableResponse]` does.
+Either approach applies all the features described in the overview. Because event-driven content is assumed, the cache is invalidated by events rather than by time; the default TTL depends on the CDN module, as described below. Note that `#[DonutCache]` does not cache the whole content, while `#[CacheableResponse]` does.
 
 ## TTL
 

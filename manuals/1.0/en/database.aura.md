@@ -24,7 +24,6 @@ use BEAR\Package\AbstractAppModule;
 use BEAR\AppMeta\AppMeta;
 use BEAR\Package\PackageModule;
 use Ray\AuraSqlModule\AuraSqlModule;
-use Ray\AuraSqlModule\AuraSqlEnvModule;
 
 class AppModule extends AbstractAppModule
 {
@@ -32,7 +31,7 @@ class AppModule extends AbstractAppModule
     {
         $this->install(
             new AuraSqlModule(
-                'mysql:host=localhost;dbname=test',  // or getenv('PDO_DSN')
+                'mysql:host=localhost;dbname=test',
                 'username',
                 'password'
             )
@@ -44,7 +43,9 @@ class AppModule extends AbstractAppModule
 
 To read the connection values from environment variables at runtime instead of specifying them directly, use `AuraSqlEnvModule`. Pass the names of the environment variable keys instead of the connection and credential values.
 
-```php
+```php?start_inline
+use Ray\AuraSqlModule\AuraSqlEnvModule;
+
 $this->install(
     new AuraSqlEnvModule(
         'PDO_DSN',      // getenv('PDO_DSN')
@@ -249,7 +250,7 @@ class User extends ResourceObject
 }
 ```
 
-`$this->pdo` is overwritten if the method is annotated with`@ReadOnlyConnection` or`@WriteConnection`. The master / slave db connection corresponds to the annotation.
+`$this->pdo` is overwritten if the method is annotated with `#[ReadOnlyConnection]` or `#[WriteConnection]`. The master / slave db connection corresponds to the attribute.
 
 ```php?start_inline
 use Ray\AuraSqlModule\Annotation\ReadOnlyConnection;  // important
@@ -257,24 +258,20 @@ use Ray\AuraSqlModule\Annotation\WriteConnection;     // important
 
 class User
 {
-    public $pdo; // override when @ReadOnlyConnection or @WriteConnection annotated method called
+    public $pdo; // overridden when a #[ReadOnlyConnection] or #[WriteConnection] method is called
 
     public function onPost($todo)
     {
          $this->read();
     }
 
-    /**
-     * @ReadOnlyConnection
-     */
+    #[ReadOnlyConnection]
     public function read()
     {
          $this->pdo; // slave db
     }
 
-    /**
-     * @WriteConnection
-     */
+    #[WriteConnection]
     public function write()
     {
          $this->pdo; // master db
@@ -284,68 +281,76 @@ class User
 
 ## Connect to multiple databases
 
-To receive multiple `PdoExtendedInterface` objects with different connection destinations, use `@Named` annotation.
+To inject PDO instances with different connection destinations, attach a qualifier[^qualifier].
 
 ```php?start_inline
-/**
- * @Inject
- * @Named("log_db")
- */
-public function setLoggerDb(ExtendedPdoInterface $pdo)
+public function __construct(
+    private readonly #[Log] ExtendedPdoInterface $logDb,
+    private readonly #[Mail] ExtendedPdoInterface $mailDb,
+) {}
+```
+
+[^qualifier]: See [Binding Attributes](https://ray-di.github.io/manuals/1.0/en/binding_attributes.html) in the Ray.Di manual for qualifiers.
+
+Specify the qualifier and connection information with `NamedPdoModule` and install it.
+
+```php?start_inline
+class AppModule extends AbstractAppModule
+{
+    protected function configure()
+    {
+        // ...
+        $this->install(new NamedPdoModule(Log::class, 'mysql:host=localhost;dbname=log', 'username'));
+        $this->install(new NamedPdoModule(Mail::class, 'mysql:host=localhost;dbname=mail', 'username'));
+    }
+}
+```
+
+To read the connection values from environment variables each time, use `NamedPdoEnvModule`.
+
+```php?start_inline
+class AppModule extends AbstractAppModule
+{
+    protected function configure()
+    {
+        // ...
+        $this->install(new NamedPdoEnvModule(Log::class, 'LOG_DSN', 'LOG_USERNAME'));
+        $this->install(new NamedPdoEnvModule(Mail::class, 'MAIL_DSN', 'MAIL_USERNAME'));
+    }
+}
+```
+
+## Transactions
+
+Adding the `#[Transactional]` attribute to a method wraps it with transaction management.
+
+```php?start_inline
+use Ray\AuraSqlModule\Annotation\Transactional;
+
+#[Transactional]
+public function write()
+{
+    // \Ray\AuraSqlModule\Exception\RollbackException is thrown if it fails.
+}
+```
+
+To run transactions on multiple connected databases, specify properties in the `#[Transactional]` attribute.
+If not specified, it becomes `['pdo']`.
+
+```php?start_inline
+#[Transactional(['pdo', 'userDb'])]
+public function write()
 {
     // ...
 }
 ```
 
-In the module, you specify an identifier in `NamedPdoModule` and bind it.
-
-```php?start_inline
-$this->install(
-  new NamedPdoModule(
-    'log_db', // Type of database specified by @Named
-    'mysql:host=localhost;dbname=log',
-    'username',
-    'pass',
-    'slave1,slave2' // specify slave IP as a comma separated value
-  )
-);
-```
-
-## Transactions
-
-Using the `@Transactional` annotation wraps methods with a transaction.
-
-```php?start_inline
-use Ray\AuraSqlModule\Annotation\Transactional;
-
-// ....
-    /**
-     * @Transactional
-     */
-    public function write()
-    {
-         // \Ray\AuraSqlModule\Exception\RollbackException thrown if it failed.
-    }
-```
-
-To do transactions on multiple connected databases, specify properties in the `@Transactional` annotation.
-If not specified, it becomes `{"pdo"}`.
-
-```php?start_inline
-/**
- * @Transactional({"pdo", "userDb"})
- */
-public function write()
-```
-
 It is run as follows.
 
 ```php?start_inline
-$this->pdo->beginTransaction()
-$this->userDb->beginTransaction()
-
+$this->pdo->beginTransaction();
+$this->userDb->beginTransaction();
 // ...
-
 $this->pdo->commit();
 $this->userDb->commit();
 ```

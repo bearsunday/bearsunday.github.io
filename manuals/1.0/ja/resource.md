@@ -75,7 +75,7 @@ URIはPHPのクラスにマップされています。アプリケーション�
 
 ## メソッド
 
-リソースは`OptionsMethodModule`が有効な場合、HTTPのメソッドに対応した6つのメソッドでアクセスできます。本番環境では`OptionsMethodModule`をoverrideしない限り`OPTIONS`は無効です。メソッドはCRUDとのマッピングではなく、リソース状態を変えない**安全**なものか、同じリクエストを繰り返しても結果が変わらない**冪等**なものかという特性で区別されます。
+リソースはHTTPのメソッドに対応した6つのメソッドでアクセスできます。メソッドはCRUDとのマッピングではなく、リソース状態を変えない**安全**なものか、同じリクエストを繰り返しても結果が変わらない**冪等**なものかという特性で区別されます。
 
 | メソッド | 意味 | [安全性](https://developer.mozilla.org/ja/docs/Glossary/safe) | [冪等性](https://developer.mozilla.org/ja/docs/Glossary/Idempotent) | [キャッシュ](https://developer.mozilla.org/ja/docs/Glossary/cacheable) |
 |-|-|-|-|-|
@@ -84,11 +84,12 @@ URIはPHPのクラスにマップされています。アプリケーション�
 | PUT | ペイロードによるリソースの置き換え、なければ作成 | なし | あり | 不可 |
 | PATCH | リソースの部分的な変更 [^patch] | なし | なし | 不可 |
 | DELETE | リソースの削除 | なし | あり | 不可 |
-| OPTIONS | リクエストに必要なパラメーターとレスポンスに関する情報の取得 [^json-schema] | あり | あり | 不可 |
+| OPTIONS | リクエストに必要なパラメーターとレスポンスに関する情報の取得 [^json-schema] [^options] | あり | あり | 不可 |
 
 [^patch]: [https://www.rfc-editor.org/rfc/rfc5789](https://www.rfc-editor.org/rfc/rfc5789)
 
 [^json-schema]: レスポンスの情報取得にはJsonSchemaの指定が必要です。
+[^options]: `OPTIONS`は`prod`コンテキストでは無効です。有効にするには`OptionsMethodModule`をoverrideしてください。[本番環境](production.html)を参照。
 
 ## パラメーター
 

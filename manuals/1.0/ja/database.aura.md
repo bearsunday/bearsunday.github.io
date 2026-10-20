@@ -24,7 +24,6 @@ use BEAR\Package\AbstractAppModule;
 use BEAR\AppMeta\AppMeta;
 use BEAR\Package\PackageModule;
 use Ray\AuraSqlModule\AuraSqlModule;
-use Ray\AuraSqlModule\AuraSqlEnvModule;
 
 class AppModule extends AbstractAppModule
 {
@@ -32,7 +31,7 @@ class AppModule extends AbstractAppModule
     {
         $this->install(
             new AuraSqlModule(
-                'mysql:host=localhost;dbname=test',  // または getenv('PDO_DSN')
+                'mysql:host=localhost;dbname=test',
                 'username',
                 'password'
             )
@@ -44,7 +43,9 @@ class AppModule extends AbstractAppModule
 
 設定時に直接値を指定するのではなく、実行時に毎回環境変数から取得するためには`AuraSqlEnvModule`を使います。接続先と認証情報の値を直接指定する代わりに、該当する環境変数のキーを渡します。
 
-```php
+```php?start_inline
+use Ray\AuraSqlModule\AuraSqlEnvModule;
+
 $this->install(
     new AuraSqlEnvModule(
         'PDO_DSN',      // getenv('PDO_DSN')
@@ -331,10 +332,10 @@ public function write()
 }
 ```
 
-複数接続したデータベースのトランザクションを行うためには`#[Transactional]`アトリビュートにプロパティを指定します。指定しない場合は`{"pdo"}`になります。
+複数接続したデータベースのトランザクションを行うためには`#[Transactional]`アトリビュートにプロパティを指定します。指定しない場合は`['pdo']`になります。
 
 ```php
-#[Transactional({"pdo", "userDb"})]
+#[Transactional(['pdo', 'userDb'])]
 public function write()
 {
     // ...
