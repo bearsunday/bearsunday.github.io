@@ -7,9 +7,9 @@ permalink: /manuals/1.0/ja/csrf.html
 
 # CSRF
 
-[bear/csrf](https://github.com/bearsunday/BEAR.Csrf)は`ResourceObject`のメソッドをクロスサイトリクエストフォージェリ（CSRF）から守ります。守る対象は、ブラウザから呼ばれる状態変更メソッド（POST / PUT / PATCH / DELETE）です。属性を付けたメソッドに、同一オリジン検査（`#[SameOrigin]`）とトークン検査（`#[CsrfToken]`）の2つのインターセプターをAOPで束縛します。検査に失敗すると`BEAR\Resource`の4xx例外が投げられ、エラーレスポンスはフレームワークのエラー処理が返します。
+[bear/csrf](https://github.com/bearsunday/BEAR.Csrf)は`ResourceObject`のメソッドをクロスサイトリクエストフォージェリ（CSRF）から守ります。守る対象は、ブラウザから呼ばれる状態変更メソッド（POST / PUT / PATCH / DELETE）です。属性を付けたメソッドに、同一オリジン検査（`#[SameOrigin]`）とトークン検査（`#[CsrfToken]`）の2つのインターセプターをAOPで束縛します。検査に失敗すると`BEAR\Resource`の4xx例外が投げられ、フレームワークのエラー処理がエラーレスポンスを返します。
 
-CSRFトークンはリソースメソッドの引数には現れません。リクエストスキーマやAPIドキュメントにも出てきません。CSRFはトランスポート層の関心事であり、リソースの引数ではないからです。
+CSRFトークンは、リソースメソッドの引数にもリクエストスキーマにもAPIドキュメントにも現れません。CSRFはトランスポート層の関心事であり、リソースの引数ではないからです。
 
 [Ray.WebFormModule](form.html#csrf-protections)は`AbstractForm::apply()`の実行時にフォームのトークンを検証します。`bear/csrf`はリクエストの経路によらず、`ResourceObject`のメソッド呼び出し時に検証します。
 
@@ -21,7 +21,7 @@ composer require bear/csrf
 
 ## モジュール
 
-アプリケーションモジュールで`CsrfModule`をインストールします。どの検査を有効にするかは名前付きコンストラクタで選びます。引数を省略したために無防備な設定になることはありません。
+アプリケーションモジュールで`CsrfModule`をインストールします。どの検査を有効にするかは名前付きコンストラクタで選ぶため、引数を省略しても無防備な設定にはなりません。
 
 ```php
 use BEAR\Csrf\CsrfModule;
@@ -29,9 +29,9 @@ use BEAR\Csrf\CsrfModule;
 $this->install(CsrfModule::withSameOriginCheck('https://example.com'));
 ```
 
-`allowedOrigin`は`https://example.com`や`http://localhost:8080`のように、スキームとホスト（必要ならポート）だけで指定します。パスを含めると、保護されたメソッドを呼ぶたびに`LogicException`になります。
+`allowedOrigin`は`https://example.com`や`http://localhost:8080`のように、スキームとホスト（必要ならポート）だけで指定します。パスを含めると、保護されたメソッドを呼ぶたびに`LogicException`が投げられます。
 
-CLIやサーバー間APIのように、比較するブラウザオリジンが無い環境では、同一オリジン検査はすべてのリクエストを拒否します。そのような環境では、同一オリジン検査を行わないことを明示します。トークン検査はどちらでも有効です。
+CLIやサーバー間APIのように比較するブラウザオリジンが無い環境では、同一オリジン検査がすべてのリクエストを拒否してしまうため、検査を行わないことを明示します。トークン検査はどちらでも有効です。
 
 ```php
 $this->install(CsrfModule::withoutSameOriginCheck());
@@ -47,7 +47,7 @@ $this->install(CsrfModule::withSameOriginCheck(
 ));
 ```
 
-フィールド名は、ブラウザの送信と`$_POST`の解析を経てもそのまま届く名前にします。使えるのはASCIIの英数字、`_`、`-`だけです。空文字や`_charset_`（大文字小文字を問わず）など条件を満たさない名前は、インジェクターの構築時に`InvalidArgumentException`になります。`_charset_`を除外するのは、ブラウザがそのhiddenフィールドの値をフォームの文字コードで上書きするためです。
+フィールド名は、ブラウザの送信と`$_POST`の解析を経てもそのまま届く名前にします。使えるのはASCIIの英数字、`_`、`-`だけです。空文字や`_charset_`（大文字小文字を問わず）など条件を満たさない名前は、インジェクターの構築時に`InvalidArgumentException`が投げられます。`_charset_`を除外するのは、ブラウザがそのhiddenフィールドの値をフォームの文字コードで上書きするためです。
 
 ## リソース属性
 
@@ -69,11 +69,20 @@ class Article extends ResourceObject
 
 属性はメソッドにだけ付けられます。
 
-`#[SameOrigin]`は`withSameOriginCheck()`のときだけ動き、ブラウザが送るオリジン情報を検査します。現行のブラウザがすべて送る`Sec-Fetch-Site`がある場合は、値が`same-origin`のときだけ通します。`same-site`、`cross-site`、`none`、未知の値は403です。このとき許可オリジンとは比較しません。`Sec-Fetch-Site`を送らない古いクライアントや非ブラウザでは、`Origin`、無ければ`Referer`を許可オリジンと比較します。3つのどれも無いリクエストは拒否します。
+`#[SameOrigin]`はブラウザが送るオリジン情報を検査します。有効かどうかは`AllowedOrigin`の束縛で決まります。`withSameOriginCheck()`は渡されたオリジンを、`withoutSameOriginCheck()`は`null`を束縛し、オリジンが`null`ならインターセプターは検査せずに通します。オリジンが束縛されている場合、`Sec-Fetch-Site`があれば値が`same-origin`のときだけ通します（現行のブラウザはHTTPSのオリジンに対してこのヘッダーを送ります）。`same-site`、`cross-site`、`none`、未知の値は403です。このとき許可オリジンとは比較しません。`Sec-Fetch-Site`が無いリクエスト（古いクライアント、非ブラウザ、HTTP）では、`Origin`、無ければ`Referer`を許可オリジンと比較します。3つのどれも無いリクエストは拒否します。
 
-`#[CsrfToken]`はシンクロナイザートークンを検査します。2つの検査は独立しており、`withoutSameOriginCheck()`はトークン検査に影響しません。属性は引数を取りません。フィールド名を決めるのはモジュールだけなので、テンプレートが描画する名前とインターセプターが読む名前が食い違うことはありません。
+`#[CsrfToken]`は、リクエストから取り出したトークンを`CsrfTokenInterface::verify()`に渡し、セッションに保存された値と照合します（この方式をシンクロナイザートークンパターンと呼びます）。検証が通らなければ拒否します。2つの検査は独立しており、`withoutSameOriginCheck()`はトークン検査に影響しません。属性は引数を取りません。フィールド名を決めるのはモジュールだけなので、テンプレートが描画する名前とインターセプターが読む名前が食い違うことはありません。
 
-トークンが無いリクエストは、インターセプターがその場で拒否するのではなく、`''`として`CsrfTokenInterface::verify()`に渡されます。何を受け入れるかは束縛された実装が決めます。CSRFが主題でないテストでは、インターセプターを差し替えるのではなく、`verify()`が常に`true`を返す実装を`CsrfTokenInterface`に束縛します。
+`AllowedOrigin`の束縛は拡張点です。BEAR.Sundayのアプリケーションは中立な`AppModule`の上にコンテキストを合成するので、正規のオリジンを知っているモジュールは`CsrfModule`をインストールするモジュールと別であることが多いです。共有モジュールでは`withoutSameOriginCheck()`をインストールし、オリジンを持つコンテキスト（環境変数から読む本番モジュール、これから送るオリジンを名指しするテストハーネスなど）が`AllowedOrigin`を束縛し直します。インターセプターはどちらでも束縛されたままで、値だけが検査の有無を決めます。
+
+```php
+// ProdModule
+use BEAR\Csrf\Http\AllowedOrigin;
+
+$this->bind(AllowedOrigin::class)->toInstance(new AllowedOrigin($origin));
+```
+
+トークンが無いリクエストを、インターセプターはその場で拒否せず、`''`として`CsrfTokenInterface::verify()`に渡します。何を受け入れるかは束縛された実装が決めます。CSRFが主題でないテストでは、インターセプターを差し替えるのではなく、`verify()`が常に`true`を返す実装を`CsrfTokenInterface`に束縛します。
 
 検査に失敗すると`BEAR\Csrf\Exception\ForbiddenException`のサブクラス（403）が投げられます。`Origin`や`Referer`の形式が不正な場合は`BEAR\Resource\Exception\BadRequestException`（400）です。
 
