@@ -35,14 +35,14 @@ Content caching has dependency issues. If content A depends on content B, and B 
 
 BEAR.Sunday solves this problem by having each resource hold the URI of dependent resources as tags. When a resource embedded with `#[Embed]` is modified, the cache and ETag of all related resources are invalidated, and cache regeneration occurs for the next request.
 
-This dependency is registered only when the resource embedded with `#[Embed]` is itself made cacheable, for example with `#[Cacheable]`. Reading a non-cacheable resource in `onGet()` creates no dependency, and purging its URI leaves the page as stored; give such a resource a cache attribute. A value fetched eagerly with `$this->resource->get()` is not tracked either.
+This dependency is registered only when the resource embedded with `#[Embed]` is itself made cacheable, for example with `#[Cacheable]`. Reading a non-cacheable resource in `onGet()` is not a dependency that drops the whole template. If that resource is also rendered as a hole, the first request after its URI is purged recomposes the page from the stored template. Give such a resource a cache attribute. A value fetched eagerly with `$this->resource->get()` is not tracked either.
 
 How an embedded resource is used determines the behavior (see [Donut Cache](#donut-cache) below for holes):
 
 | Need | Use | Effect of a resource purge |
 |---|---|---|
 | Per-user content (no shared cache) | a non-cacheable resource rendered as a hole on a `#[DonutCache]` page | that hole alone re-runs on every HIT |
-| Shared content that changes on an event | a cacheable resource drawn as a hole (never read in `onGet()`) | the shell is recomposed from the stored template |
+| Shared content that changes on an event | a cacheable resource rendered as a hole (never read in `onGet()`) | the shell is recomposed from the stored template |
 | A value the page's own `onGet()` reads | a cacheable resource becomes a dependency | the whole stored entry is dropped and the next GET is a fresh miss |
 
 ## Donut Cache
