@@ -519,6 +519,8 @@ class News extends ResourceObject
 
 この例ではメソッドが呼ばれると`login`リソースに`get`リクエストを行い、`$body['nickname']`を`$name`で受け取ります。
 
+> キャッシュされるリソース（`#[Cacheable]`・`#[CacheableResponse]`・`#[DonutCache]`）で、`#[ResourceParam]`を使ってユーザー固有の値（例：`app://self/login#nickname`）を受け取らないでください。QueryRepositoryが検査するのはレスポンス自身の`Cache-Control`だけなので、このように紛れ込んだ値はキャッシュに保存され、以降の全訪問者に配信されてしまいます。ユーザー固有の値は、非キャッシュの`#[DonutCache]`の穴に置いてください。
+
 ## コンテントネゴシエーション
 
 HTTPリクエストの`content-type`ヘッダーがサポートされています。`application/json`と`x-www-form-urlencoded`メディアタイプを判別してパラメーターに値が渡されます。[^json]
