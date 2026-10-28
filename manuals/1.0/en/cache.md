@@ -35,7 +35,7 @@ Content caching has dependency issues. If content A depends on content B, and B 
 
 BEAR.Sunday solves this problem by having each resource hold the URI of dependent resources as tags. When a resource embedded with `#[Embed]` is modified, the cache and ETag of all related resources are invalidated, and cache regeneration occurs for the next request.
 
-This automatic dependency registration only happens when the embedded child is itself cacheable (it carries an ETag or a `Surrogate-Key`). Reading a non-cached child in `onGet()` creates no dependency, and purging that child's URI leaves the page as stored; give such a child a cache attribute such as `#[Cacheable]`. A value fetched eagerly with `$this->resource->get()` is likewise not tracked.
+This dependency is registered only when the embedded child is itself cached. Reading a non-cached child in `onGet()` creates no dependency, and purging that child's URI leaves the page as stored; give such a child a cache attribute such as `#[Cacheable]`. A value fetched eagerly with `$this->resource->get()` is not tracked either.
 
 How a child is used determines the behavior:
 
@@ -44,8 +44,6 @@ How a child is used determines the behavior:
 | Per-user content (no shared cache) | `#[DonutCache]` hole (non-cacheable child) | that hole alone re-runs on every HIT |
 | Shared content that changes on an event | `#[CacheableResponse]` hole (cacheable child, never read in `onGet()`) | the shell is recomposed from the stored template |
 | A value the page's own `onGet()` reads | a cached child becomes a dependency | the whole template is dropped and the next GET is a fresh miss |
-
-(See [issue #241](https://github.com/bearsunday/BEAR.QueryRepository/issues/241) for background.)
 
 ## Donut Cache
 
@@ -328,6 +326,7 @@ If a `#[Cacheable]`/`#[CacheableResponse]`/`#[DonutCache]` response sets its own
 To keep the server-side cache while telling the client `no-store`, add `#[HttpCache(noStore: true)]`:
 
 ```php
+use BEAR\RepositoryModule\Annotation\Cacheable;
 use BEAR\RepositoryModule\Annotation\HttpCache;
 
 #[Cacheable]
