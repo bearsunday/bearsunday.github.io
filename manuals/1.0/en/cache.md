@@ -41,7 +41,7 @@ How a child is used determines the behavior:
 
 | Need | Use | Effect of a child purge |
 |---|---|---|
-| Per-user content (no shared cache) | `#[DonutCache]` hole (non-cacheable child) | that hole alone re-runs on every HIT |
+| Per-user content (no shared cache) | a non-cached child rendered as a hole on a `#[DonutCache]` page | that hole alone re-runs on every HIT |
 | Shared content that changes on an event | `#[CacheableResponse]` hole (cacheable child, never read in `onGet()`) | the shell is recomposed from the stored template |
 | A value the page's own `onGet()` reads | a cached child becomes a dependency | the whole template is dropped and the next GET is a fresh miss |
 
@@ -135,7 +135,11 @@ class Todo extends ResourceObject
 
 Either approach applies all the features described in the overview. Because event-driven content is assumed, the cache is invalidated by events rather than by time; the default TTL depends on the CDN module, as described below. Note that `#[DonutCache]` does not cache the whole content, while `#[CacheableResponse]` does.
 
-A cache attribute declares the response shared with every visitor, so put per-user values in a non-cacheable `#[DonutCache]` hole. QR inspects only the response's own `Cache-Control`, so a per-user value that reaches the cached output any other way - a child's value read in `onGet()`, a value received through `#[ResourceParam]`, or a value generated in the template (e.g. a Twig function) - is stored and served to every later visitor.
+What a cache attribute stores is shared with every visitor, so put per-user values in a non-cached child rendered as a hole on a `#[DonutCache]` page. QR inspects only the response's own `Cache-Control`. A per-user value that reaches the cached output by any other route is stored and served to every later visitor:
+
+* a child's value read in `onGet()`
+* a value received through `#[ResourceParam]`
+* a value generated in the template (for example a Twig function)
 
 ## TTL
 
