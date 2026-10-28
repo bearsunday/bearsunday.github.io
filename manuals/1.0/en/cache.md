@@ -35,15 +35,15 @@ Content caching has dependency issues. If content A depends on content B, and B 
 
 BEAR.Sunday solves this problem by having each resource hold the URI of dependent resources as tags. When a resource embedded with `#[Embed]` is modified, the cache and ETag of all related resources are invalidated, and cache regeneration occurs for the next request.
 
-This dependency is registered only when the embedded child is itself cached. Reading a non-cached child in `onGet()` creates no dependency, and purging that child's URI leaves the page as stored; give such a child a cache attribute such as `#[Cacheable]`. A value fetched eagerly with `$this->resource->get()` is not tracked either.
+This dependency is registered only when the resource embedded with `#[Embed]` is itself made cacheable, for example with `#[Cacheable]`. Reading a non-cacheable resource in `onGet()` creates no dependency, and purging its URI leaves the page as stored; give such a resource a cache attribute. A value fetched eagerly with `$this->resource->get()` is not tracked either.
 
-How a child is used determines the behavior:
+How an embedded resource is used determines the behavior (see [Donut Cache](#donut-cache) below for holes):
 
-| Need | Use | Effect of a child purge |
+| Need | Use | Effect of a resource purge |
 |---|---|---|
-| Per-user content (no shared cache) | a non-cached child rendered as a hole on a `#[DonutCache]` page | that hole alone re-runs on every HIT |
-| Shared content that changes on an event | `#[CacheableResponse]` hole (cacheable child, never read in `onGet()`) | the shell is recomposed from the stored template |
-| A value the page's own `onGet()` reads | a cached child becomes a dependency | the whole template is dropped and the next GET is a fresh miss |
+| Per-user content (no shared cache) | a non-cacheable resource rendered as a hole on a `#[DonutCache]` page | that hole alone re-runs on every HIT |
+| Shared content that changes on an event | a cacheable resource drawn as a hole (never read in `onGet()`) | the shell is recomposed from the stored template |
+| A value the page's own `onGet()` reads | a cacheable resource becomes a dependency | the whole stored entry is dropped and the next GET is a fresh miss |
 
 ## Donut Cache
 
@@ -135,9 +135,9 @@ class Todo extends ResourceObject
 
 Either approach applies all the features described in the overview. Because event-driven content is assumed, the cache is invalidated by events rather than by time; the default TTL depends on the CDN module, as described below. Note that `#[DonutCache]` does not cache the whole content, while `#[CacheableResponse]` does.
 
-What a cache attribute stores is shared with every visitor, so put per-user values in a non-cached child rendered as a hole on a `#[DonutCache]` page. QR inspects only the response's own `Cache-Control`. A per-user value that reaches the cached output by any other route is stored and served to every later visitor:
+What a cache attribute stores is shared with every visitor, so put per-user values in a non-cacheable resource rendered as a hole on a `#[DonutCache]` page. QueryRepository inspects only the response's own `Cache-Control`. A per-user value that reaches the cached output by any other route is stored and served to every later visitor:
 
-* a child's value read in `onGet()`
+* a value of an embedded resource read in `onGet()`
 * a value received through `#[ResourceParam]`
 * a value generated in the template (for example a Twig function)
 
