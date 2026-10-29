@@ -144,6 +144,10 @@ When using an ALPS profile as the SSOT (Single Source of Truth), you define the 
 
 Utilizing the technical feature of resources rendering themselves, during development, the scope of resources can be indicated on HTML, resource states can be monitored, and PHP code and HTML templates can be edited in an online editor and reflected in real-time.
 
+### Semantic Log
+
+What one request did can be recorded as a single typed, schema-validated tree. The nested resource requests and the cache decision at each of them (hit or miss, save, invalidation) appear in causal order, so the behavior can be confirmed by reading the log. AI agents read the same tree and check it against what the code declares. The same observation also yields state changes as immutable events. See the Observability section of [Cache](cache.html) and [Event Sourcing](event-sourcing.html).
+
 ### Working with AI Agents
 
 AI agents generate and review code along BEAR.Sunday's conventions. [BEAR.Skills](https://github.com/bearsunday/BEAR.Skills) provides tasks such as resource generation, hypermedia links and quality review as Claude Code skills, and [BEAR.Kata](https://github.com/bearsunday/BEAR.Kata) is a collection of implementation patterns for finding which files to look at for a given task. See [AI Assistant](ai-assistant.html) for details.
