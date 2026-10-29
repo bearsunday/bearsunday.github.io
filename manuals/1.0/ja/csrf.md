@@ -73,14 +73,16 @@ class Article extends ResourceObject
 
 `#[CsrfToken]`は、リクエストから取り出したトークンを`CsrfTokenInterface::verify()`に渡し、セッションに保存された値と照合します（この方式をシンクロナイザートークンパターンと呼びます）。検証が通らなければ拒否します。2つの検査は独立しており、`withoutSameOriginCheck()`はトークン検査に影響しません。属性は引数を取りません。フィールド名を決めるのはモジュールだけなので、テンプレートが描画する名前とインターセプターが読む名前が食い違うことはありません。
 
-`AllowedOrigin`の束縛は拡張点です。BEAR.Sundayのアプリケーションは中立な`AppModule`の上にコンテキストを合成するので、正規のオリジンを知っているモジュールは`CsrfModule`をインストールするモジュールと別であることが多いです。共有モジュールでは`withoutSameOriginCheck()`をインストールし、オリジンを持つコンテキスト（環境変数から読む本番モジュール、これから送るオリジンを名指しするテストハーネスなど）が`AllowedOrigin`を束縛し直します。インターセプターはどちらでも束縛されたままで、値だけが検査の有無を決めます。
+`AllowedOrigin`の束縛は拡張点です。BEAR.Sundayのアプリケーションは中立な`AppModule`の上にコンテキストを合成するので、正規のオリジンを知っているモジュールは`CsrfModule`をインストールするモジュールと別であることが多いです。共有モジュールでは`withoutSameOriginCheck()`をインストールし、オリジンを持つコンテキスト（環境変数から読む本番モジュール、これから送るオリジンを名指しするテストハーネスなど）が`SameOriginModule`（0.2.0以降）をインストールします。`SameOriginModule`は`AllowedOrigin`を束縛し直します。インターセプターはどちらでも束縛されたままで、値だけが検査の有無を決めます。
 
 ```php
-// ProdModule
-use BEAR\Csrf\Http\AllowedOrigin;
+use BEAR\Csrf\SameOriginModule;
 
-$this->bind(AllowedOrigin::class)->toInstance(new AllowedOrigin($origin));
+// ProdModule::configure()
+$this->install(new SameOriginModule($_ENV['APP_ORIGIN']));
 ```
+
+`scheme://host[:port]`の形でないオリジン（パス、クエリ、認証情報を含むもの、空文字）は、`SameOriginModule`の生成時に`InvalidArgumentException`が投げられます。設定を誤った環境は、最初の`#[SameOrigin]`リクエストではなく、インジェクターの構築時に失敗します。
 
 トークンが無いリクエストを、インターセプターはその場で拒否せず、`''`として`CsrfTokenInterface::verify()`に渡します。何を受け入れるかは束縛された実装が決めます。CSRFが主題でないテストでは、インターセプターを差し替えるのではなく、`verify()`が常に`true`を返す実装を`CsrfTokenInterface`に束縛します。
 
