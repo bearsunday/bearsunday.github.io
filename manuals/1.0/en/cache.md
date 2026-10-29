@@ -33,9 +33,9 @@ A distributed caching system that follows REST constraints saves not only comput
 
 Content caching has dependency issues. If content A depends on content B, and B depends on C, then when C is updated, not only must C's cache and ETag be updated, but also B's cache and ETag (which depends on C), and A's cache and ETag (which depends on B).
 
-BEAR.Sunday solves this problem by having each resource hold the URI of dependent resources as tags. When a resource embedded with `#[Embed]` is modified, the cache and ETag of all related resources are invalidated, and cache regeneration occurs for the next request.
+BEAR.Sunday solves this problem by having each resource hold the URI of dependent resources as tags. When a resource embedded with `#[Embed]` is modified, the cache and ETag of the resources that hold it as a dependency are invalidated, and cache regeneration occurs for the next request.
 
-This dependency is registered only when the resource embedded with `#[Embed]` is itself made cacheable, for example with `#[Cacheable]`. Reading a non-cacheable resource in `onGet()` is not a dependency that drops the whole template. If that resource is also rendered as a hole, the first request after its URI is purged recomposes the page from the stored template. Give such a resource a cache attribute. A value fetched eagerly with `$this->resource->get()` is not tracked either.
+This dependency is registered only when the resource embedded with `#[Embed]` is itself made cacheable, for example with `#[Cacheable]`. Reading a non-cacheable resource in `onGet()` is not a dependency: its tag does not reach the page's entries. If that resource is also rendered as a hole, purging its URI drops the stored view, and the next request recomposes the page from the template. Give such a resource a cache attribute. A value fetched eagerly with `$this->resource->get()` is not tracked either.
 
 How an embedded resource is used determines the behavior (see [Donut Cache](#donut-cache) below for holes):
 
