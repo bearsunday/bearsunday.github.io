@@ -523,6 +523,8 @@ class News extends ResourceObject
 
 In this example, when the method is called, it makes a `get` request to the `login` resource and receives `$body['nickname']` as `$name`.
 
+> Do not receive a per-user value (e.g. `app://self/login#nickname`) with `#[ResourceParam]` in a cached resource (`#[Cacheable]`/`#[CacheableResponse]`/`#[DonutCache]`). QueryRepository inspects only the response's own `Cache-Control`, so a value that arrives this way is stored and served to every later visitor. Put it in a non-cacheable resource rendered as a hole on a `#[DonutCache]` page instead.
+
 ## Content Negotiation
 
 HTTP request `content-type` headers are supported. `application/json` and `x-www-form-urlencoded` media types are distinguished and values are passed to parameters. [^json]

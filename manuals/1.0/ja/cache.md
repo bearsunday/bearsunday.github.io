@@ -33,7 +33,17 @@ REST制約に従った分散キャッシュシステムは、計算資源だけ�
 
 コンテンツキャッシュには依存性の問題があります。コンテンツAがコンテンツBに依存し、BがCに依存している場合、Cが更新されるとCのキャッシュとETagだけでなく、Cに依存するBのキャッシュとETag、Bに依存するAのキャッシュとETagも更新されなければなりません。
 
-BEAR.Sundayはそれぞれのリソースが依存リソースのURIをタグとして保持することで、この問題を解決します。`#[Embed]`で埋め込まれたリソースに変更があると、関係する全てのリソースのキャッシュとETagが無効化され、次のリクエストのためにキャッシュの再生成が行われます。
+BEAR.Sundayはそれぞれのリソースが依存リソースのURIをタグとして保持することで、この問題を解決します。`#[Embed]`で埋め込まれたリソースに変更があると、そのリソースを依存として登録しているリソースのキャッシュとETagが無効化され、次のリクエストのためにキャッシュの再生成が行われます。
+
+この依存関係が登録されるのは、`#[Embed]`で埋め込まれたリソース自身を`#[Cacheable]`などでキャッシュ対象にした場合だけです。キャッシュ対象にしていないリソースを`onGet()`で読み取っても依存にはならず、そのタグはページのエントリには届きません。そのリソースを穴としても描画している場合は、URIをパージすると保存済みのビューが落ち、次のリクエストでページが保存済みのテンプレートから再構成されます。そのようなリソースには`#[Cacheable]`などのキャッシュアトリビュートを付けてください。`$this->resource->get()`で先に取得した値も依存にはなりません。
+
+`#[Embed]`で埋め込まれたリソースの使われ方によって、挙動は次の3通りに分かれます（`#[DonutCache]`と穴については後述します）：
+
+| 埋め込まれたリソースの用途 | 使うもの | リソースをパージした時の挙動 |
+|---|---|---|
+| ユーザー固有のコンテンツ（共有不可） | `#[DonutCache]`のページで穴として描画する非キャッシュのリソース | その穴だけがHITのたびに再実行される |
+| イベントで変化する共有コンテンツ | キャッシュ対象のリソースを穴として描画する（`onGet()`では読まない） | 外殻（シェル）が保存済みのテンプレートから再構成される |
+| ページの`onGet()`が読み取る値 | キャッシュ対象のリソース（依存として扱われる） | 保存済みのキャッシュ全体が破棄され、次のGETはキャッシュミスになる |
 
 ## ドーナッツキャッシュ
 
@@ -124,9 +134,15 @@ class Todo extends ResourceObject
 
 どちらかの方法でアトリビュートを付与すると、概要で紹介した全ての機能が適用されます。イベントドリブン型コンテンツを想定しているため、デフォルトではキャッシュの無効化はイベント駆動で行われます。デフォルトのTTLはインストールするCDNモジュールによって異なります（詳細は後述）。`#[DonutCache]`の場合はコンテンツ全体はキャッシュされず、`#[CacheableResponse]`の場合はされることに注意してください。
 
+キャッシュアトリビュートによって保存される部分は、全ての訪問者で共有されます。ユーザー固有の値は、`#[DonutCache]`のページで穴として描画する非キャッシュのリソースに入れてください。QueryRepositoryが検査するのはレスポンス自身の`Cache-Control`だけです。次のような経路でユーザー固有の値が保存対象の出力に含まれると、以後、そのキャッシュを利用するすべての訪問者に配信されます。
+
+* `onGet()`で読み取った、埋め込まれたリソースの値
+* `#[ResourceParam]`で受け取った値
+* テンプレートで生成した値（Twigの関数など）
+
 ## TTL
 
-TTLの指定は`DonutRepositoryInterface::put()`で行います。`ttl`はドーナツの穴以外のキャッシュ時間、`sMaxAge`はCDNのキャッシュ時間です：
+TTLの指定は`DonutRepositoryInterface::putStatic()`で行います。`ttl`はドーナツの穴以外のキャッシュ時間、`sMaxAge`はCDNのキャッシュ時間です：
 
 ```php
 use BEAR\RepositoryModule\Annotation\CacheableResponse;
@@ -142,7 +158,7 @@ class BlogPosting extends ResourceObject
     public function onGet(): static
     {
         // process ...
-        $this->repository->put($this, ttl: 10, sMaxAge: 100);
+        $this->repository->putStatic($this, ttl: 10, sMaxAge: 100);
         return $this;
     }
 }
@@ -307,6 +323,22 @@ CDNのキャッシュコントロールについてはBEAR.Sundayが自動で行
 
 ```php
 ResponseHeader::CACHE_CONTROL => CacheControl::NO_STORE
+```
+
+`#[Cacheable]`、`#[CacheableResponse]`、`#[DonutCache]`のリソースが自身で`Cache-Control`を`private`または`no-store`にした場合（`$headers`プロパティの既定値に`CacheControl::NO_STORE`を指定した場合も同様です）、そのレスポンスはサーバーサイドに保存されません。指定したヘッダーはそのまま残り、CDN向けのヘッダーだけが取り除かれます。`no-store`のレスポンスに`max-age`が付与されることもありません。
+
+サーバーサイドのキャッシュは維持したまま、クライアントにだけ`no-store`を伝えたい場合は`#[HttpCache(noStore: true)]`を付与します：
+
+```php
+use BEAR\RepositoryModule\Annotation\Cacheable;
+use BEAR\RepositoryModule\Annotation\HttpCache;
+
+#[Cacheable]
+#[HttpCache(noStore: true)]
+class News extends ResourceObject
+{
+    // ...
+}
 ```
 
 ### 条件付きリクエスト
