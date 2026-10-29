@@ -440,6 +440,8 @@ class CachedResource extends ResourceObject
 
 BEAR.QueryRepositoryは実際の挙動を記録できます。記録されるのは、hit/miss、保存した内容とその期間、無効化した内容、そしてCDNのpurgerがpurge要求を成功と報告したかどうかです。purge要求の成功は、CDNのエッジへの実際の伝播を意味しません。ログは自由記述のメッセージではなく、型付きでスキーマ検証可能なツリーです。記録は既定でオフです。`DevQueryRepositoryLogModule`をインストールすると有効になります。インストールだけではキャッシュの挙動自体は変わりません。
 
+このログはリソースリクエストの記録と1本の木にできます。[Event Sourcing](https://bearsunday.github.io/manuals/1.0/ja/event-sourcing.html)の「BEAR.QueryRepository と 1 本の木」の構成にすると、キャッシュの判断（hit/miss、保存、無効化）が、それを起こした`resource_request`の中にネストします。1リクエストで何が起きたかを、リソースの入れ子とキャッシュの判断を合わせて因果の順に読めます。下の`bear-observe`はこの構成を設置します。
+
 どちらのログモジュールも、1プロセスが1リクエストを処理するホスト（PHP-FPM、CLIスクリプト）を前提とします。RoadRunnerのワーカーやSwooleのコルーチン内など、それが成り立たないと判定できる場合はarmを拒否します。`error_log()`にその旨を出力したうえで、記録オフのまま動作します（[issue #179](https://github.com/bearsunday/BEAR.QueryRepository/issues/179)）。
 
 ### 開発時

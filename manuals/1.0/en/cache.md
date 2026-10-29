@@ -448,6 +448,12 @@ invalidated, and whether the CDN purger reported the purge request as successful
 CDN's edge actually propagated it). Recording is off by default. Installing
 `DevQueryRepositoryLogModule` turns it on; installing it alone does not change cache behavior.
 
+The log can share one tree with the record of resource requests. With the wiring in
+[Event Sourcing](https://bearsunday.github.io/manuals/1.0/en/event-sourcing.html)'s "One tree with
+BEAR.QueryRepository", each cache decision (hit or miss, save, invalidation) nests inside the
+`resource_request` that caused it, so one request reads in causal order: the resources it called
+and what the cache decided for each. The `bear-observe` skill below sets this wiring up.
+
 Both log modules require a host where one process serves one request (PHP-FPM, a CLI script).
 Where it can prove otherwise — a RoadRunner worker, or inside a Swoole coroutine — a module
 refuses to arm, says so through `error_log()`, and recording stays off with nothing else changed
