@@ -452,6 +452,14 @@ use BEAR\QueryRepository\DevQueryRepositoryLogModule;
 $this->override(new DevQueryRepositoryLogModule($this->appMeta->logDir . '/query-repository'));
 ```
 
+キャッシュプールが`QueryRepositoryModule`既定の`NullAdapter`のままだと、すべてのGETがmissになり、ログにhitは現れません。開発でも`StorageRedisDsnModule`などをインストールするか、`ResourceObjectPool`と`EtagPool`に永続するアダプター（`FilesystemAdapter`など）を束縛します。
+
+リクエストを1本実行すると、そのセッションが`latest.json`に書かれます。ツリーで表示します：
+
+```bash
+vendor/bin/stree var/log/{context}/query-repository/latest.json
+```
+
 `QueryRepositoryModule`をどこでもインストールしていないスタンドアロンの`Injector`では、コアのキャッシュ配線も一緒に渡します：
 
 ```php
@@ -479,7 +487,16 @@ mutation（書き込み）と失敗は常に保持されます。poolが書き�
 
 ### AIエージェント向け
 
-[BEAR.Skills](https://github.com/bearsunday/BEAR.Skills)をインストールします：
+上の設置と読解は、エージェントに任せられます。[BEAR.EventSourcing](https://github.com/bearsunday/BEAR.EventSourcing)に含まれる`bear-observe`スキルをプロジェクトに入れます：
+
+```bash
+composer require --dev bear/event-sourcing
+mkdir -p .claude/skills && cp -r vendor/bear/event-sourcing/skills/bear-observe .claude/skills/
+```
+
+「キャッシュログを見て」と頼むと、エージェントが観測用の`dev-`文脈（`DevModule`、永続プール、`bin/dev.php`）をアプリに書き、配線を確かめ、リクエストを1本流してツリーを読みます。宣言した意図とログが食い違えば、アプリとライブラリのどちらの問題かを切り分けて報告します。
+
+[BEAR.Skills](https://github.com/bearsunday/BEAR.Skills)もインストールできます：
 
 ```
 /plugin marketplace add bearsunday/BEAR.Skills

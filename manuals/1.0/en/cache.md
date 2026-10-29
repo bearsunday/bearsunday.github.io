@@ -464,6 +464,16 @@ use BEAR\QueryRepository\DevQueryRepositoryLogModule;
 $this->override(new DevQueryRepositoryLogModule($this->appMeta->logDir . '/query-repository'));
 ```
 
+With the pools left at `QueryRepositoryModule`'s default `NullAdapter`, every GET is a miss and
+the log never shows a hit. Install `StorageRedisDsnModule` or similar in development too, or bind
+a persistent adapter (such as `FilesystemAdapter`) to `ResourceObjectPool` and `EtagPool`.
+
+Run one request and its session is written to `latest.json`. Render it as a tree:
+
+```bash
+vendor/bin/stree var/log/{context}/query-repository/latest.json
+```
+
 For a standalone `Injector` with no `QueryRepositoryModule` installed elsewhere, pass one in so
 the core cache bindings come with it:
 
@@ -500,7 +510,20 @@ links its own JSON Schema, so a session can be validated instead of grepped.
 
 ### For AI agents
 
-Install [BEAR.Skills](https://github.com/bearsunday/BEAR.Skills):
+An agent can do the setup and the reading above. Add the `bear-observe` skill that ships with
+[BEAR.EventSourcing](https://github.com/bearsunday/BEAR.EventSourcing) to the project:
+
+```bash
+composer require --dev bear/event-sourcing
+mkdir -p .claude/skills && cp -r vendor/bear/event-sourcing/skills/bear-observe .claude/skills/
+```
+
+Then ask it to read the cache log. The agent writes an observation `dev-` context (`DevModule`,
+persistent pools, `bin/dev.php`) into the app, proves the wiring, runs one request and reads the
+tree. When the log disagrees with what the code declares, it reports whether the app or the
+library is at fault.
+
+[BEAR.Skills](https://github.com/bearsunday/BEAR.Skills) is also available:
 
 ```
 /plugin marketplace add bearsunday/BEAR.Skills
