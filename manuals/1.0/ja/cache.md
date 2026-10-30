@@ -440,9 +440,9 @@ class CachedResource extends ResourceObject
 
 BEAR.QueryRepositoryは実際の挙動を記録できます。記録されるのは、hit/miss、保存した内容とその期間、無効化した内容、そしてCDNのpurgerがpurge要求を成功と報告したかどうかです。purge要求の成功は、CDNのエッジへの実際の伝播を意味しません。ログは自由記述のメッセージではなく、型付きでスキーマ検証可能なツリーです。記録は既定でオフです。`DevQueryRepositoryLogModule`をインストールすると有効になります。インストールだけではキャッシュの挙動自体は変わりません。
 
-このログは、リソースリクエストの記録とまとめて1本の木にできます。[Event Sourcing](https://bearsunday.github.io/manuals/1.0/ja/event-sourcing.html)の「BEAR.QueryRepository と 1 本の木」の構成にすると、キャッシュの判断（hit/miss、保存、無効化）が、それを起こした`resource_request`の中にネストします。1リクエストで何が起きたかを、リソースのネストとキャッシュの判断を合わせて因果の順に読めます。下の`bear-observe`はこの構成を設置します。
+このログはリソースリクエストの記録と1本の木にできます。[Event Sourcing](https://bearsunday.github.io/manuals/1.0/ja/event-sourcing.html)の「BEAR.QueryRepository と 1 本の木」の構成にすると、キャッシュの判断（hit/miss、保存、無効化）が、それを起こした`resource_request`の中にネストします。1リクエストで何が起きたかを、リソースの入れ子とキャッシュの判断を合わせて因果の順に読めます。下の`bear-observe`はこの構成を設置します。
 
-どちらのログモジュールも、1プロセスが1リクエストを処理するホスト（PHP-FPM、CLIスクリプト）を前提とします。RoadRunnerのワーカーやSwooleのコルーチン内など、それが成り立たないと判定できる場合は記録を始めません。`error_log()`にその旨を出力し、記録オフのまま動作します（[issue #179](https://github.com/bearsunday/BEAR.QueryRepository/issues/179)）。
+どちらのログモジュールも、1プロセスが1リクエストを処理するホスト（PHP-FPM、CLIスクリプト）を前提とします。RoadRunnerのワーカーやSwooleのコルーチン内など、それが成り立たないと判定できる場合はarmを拒否します。`error_log()`にその旨を出力したうえで、記録オフのまま動作します（[issue #179](https://github.com/bearsunday/BEAR.QueryRepository/issues/179)）。
 
 ### 開発時
 
@@ -456,7 +456,7 @@ $this->override(new DevQueryRepositoryLogModule($this->appMeta->logDir . '/query
 
 キャッシュプールが`QueryRepositoryModule`既定の`NullAdapter`のままだと、すべてのGETがmissになり、ログにhitは現れません。開発でも`StorageRedisDsnModule`などをインストールするか、`ResourceObjectPool`と`EtagPool`に永続するアダプター（`FilesystemAdapter`など）を束縛します。
 
-リクエストを1本実行すると、そのセッションが`latest.json`に書かれます。ツリーで表示するには：
+リクエストを1本実行すると、そのセッションが`latest.json`に書かれます。ツリーで表示します：
 
 ```bash
 vendor/bin/stree var/log/{context}/query-repository/latest.json
@@ -483,9 +483,9 @@ use BEAR\QueryRepository\ProdQueryRepositoryLogModule;
 $this->override(new ProdQueryRepositoryLogModule(stream: 'php://stdout', sampleRate: 100));
 ```
 
-mutation（書き込み）と失敗は常に保持されます。poolが書き込みを拒否したり、purgeが失敗したりしても、ほかに記録は残りません。確認できるのはこのログだけです。`sampleRate`は、問題が無かった健全セッションをN件に1件だけ残す割合です。`0`を指定するとサンプリングを無効化し、健全セッションは一切残しません。これと異なる保持ルールにしたい場合は`RetentionPolicyInterface`を自前で実装し、`override()`の後にbindしてください。writerはDI経由でこれを解決するため、アプリ側のbindingが優先されます。
+mutation（書き込み）と失敗は常に保持されます。poolが書き込みを拒否したり、purgeが失敗したりしても、ほかに記録は残りません。確認できるのはこのログだけです。`sampleRate`は、問題が無かった健全セッションをN件に1件だけ残す割合です。`0`を指定するとサンプリングを無効化し、健全セッションは一切残しません。これと異なる保持ルールにしたい場合は`RetentionPolicyInterface`を自前で実装し、`override()`の後にbindしてください。writerはDI経由でこれを解決するため、アプリ側のbindingが勝ちます。
 
-`cache_hit`、`cache_miss`、`save_value`、`invalidate`、`cdn_headers`など、各エントリは自身のJSON Schemaへのリンクを持ちます。セッションはgrepで探すのではなく、スキーマで検証できます。
+`cache_hit`、`cache_miss`、`save_value`、`invalidate`、`cdn_headers`など、各エントリは自身のJSON Schemaへのリンクを持ちます。セッションはgrepではなく検証できます。
 
 ### AIエージェント向け
 
@@ -496,7 +496,7 @@ composer require --dev bear/event-sourcing
 mkdir -p .claude/skills && cp -r vendor/bear/event-sourcing/skills/bear-observe .claude/skills/
 ```
 
-「キャッシュログを見て」と頼むと、エージェントが観測用の`dev-`文脈（`DevModule`、永続プール、`bin/dev.php`）をアプリに書き、配線を確かめ、リクエストを1本流してツリーを読みます。コードが宣言した意図とログが食い違えば、アプリとライブラリのどちらの問題かを切り分けて報告します。
+「キャッシュログを見て」と頼むと、エージェントが観測用の`dev-`文脈（`DevModule`、永続プール、`bin/dev.php`）をアプリに書き、配線を確かめ、リクエストを1本流してツリーを読みます。宣言した意図とログが食い違えば、アプリとライブラリのどちらの問題かを切り分けて報告します。
 
 [BEAR.Skills](https://github.com/bearsunday/BEAR.Skills)もインストールできます：
 
