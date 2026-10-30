@@ -440,9 +440,9 @@ class CachedResource extends ResourceObject
 
 BEAR.QueryRepositoryは実際の挙動を記録できます。記録されるのは、hit/miss、保存した内容とその期間、無効化した内容、そしてCDNのpurgerがpurge要求を成功と報告したかどうかです。purge要求の成功は、CDNのエッジへの実際の伝播を意味しません。ログは自由記述のメッセージではなく、型付きでスキーマ検証可能なツリーです。記録は既定でオフです。`DevQueryRepositoryLogModule`をインストールすると有効になります。インストールだけではキャッシュの挙動自体は変わりません。
 
-このログはリソースリクエストの記録と1本の木にできます。[Event Sourcing](https://bearsunday.github.io/manuals/1.0/ja/event-sourcing.html)の「BEAR.QueryRepository と 1 本の木」の構成にすると、キャッシュの判断（hit/miss、保存、無効化）が、それを起こした`resource_request`の中にネストします。1リクエストで何が起きたかを、リソースの入れ子とキャッシュの判断を合わせて因果の順に読めます。下の`bear-observe`はこの構成を設置します。
+このログはリソースリクエストの記録と1本の木にできます。[Event Sourcing](https://bearsunday.github.io/manuals/1.0/ja/event-sourcing.html)の「BEAR.QueryRepository と 1 本の木」の構成にすると、キャッシュの判断（hit/miss、保存、無効化）が、それを起こした`resource_request`の中にネストします。1リクエストで何が起きたかを、リソースのネストとキャッシュの判断を合わせて因果の順に読めます。下の`bear-observe`はこの構成を設置します。
 
-どちらのログモジュールも、1プロセスが1リクエストを処理するホスト（PHP-FPM、CLIスクリプト）を前提とします。RoadRunnerのワーカーやSwooleのコルーチン内など、それが成り立たないと判定できる場合はarmを拒否します。`error_log()`にその旨を出力したうえで、記録オフのまま動作します（[issue #179](https://github.com/bearsunday/BEAR.QueryRepository/issues/179)）。
+どちらのログモジュールも、1プロセスが1リクエストを処理するホスト（PHP-FPM、CLIスクリプト）を前提とします。RoadRunnerのワーカーやSwooleのコルーチン内など、それが成り立たないと判定できる場合は記録を開始しません。`error_log()`にその旨を出力し、ほかは何も変えずに記録オフのまま動作します（[issue #179](https://github.com/bearsunday/BEAR.QueryRepository/issues/179)）。
 
 ### 開発時
 
@@ -483,7 +483,7 @@ use BEAR\QueryRepository\ProdQueryRepositoryLogModule;
 $this->override(new ProdQueryRepositoryLogModule(stream: 'php://stdout', sampleRate: 100));
 ```
 
-mutation（書き込み）と失敗は常に保持されます。poolが書き込みを拒否したり、purgeが失敗したりしても、ほかに記録は残りません。確認できるのはこのログだけです。`sampleRate`は、問題が無かった健全セッションをN件に1件だけ残す割合です。`0`を指定するとサンプリングを無効化し、健全セッションは一切残しません。これと異なる保持ルールにしたい場合は`RetentionPolicyInterface`を自前で実装し、`override()`の後にbindしてください。writerはDI経由でこれを解決するため、アプリ側のbindingが勝ちます。
+mutation（書き込み）と、起きなかった効果（保存の拒否、無効化やpurgeの失敗）は常に保持されます。これらはほかに記録が残らず、確認できるのはこのログだけだからです。`sampleRate`は、問題が無かった健全セッションをN件に1件だけ残す割合です。`0`を指定するとサンプリングを無効化し、健全セッションは一切残しません。これと異なる保持ルールにしたい場合は`RetentionPolicyInterface`を自前で実装し、`override()`の後にbindしてください。writerはDI経由でこれを解決するため、アプリ側のbindingが勝ちます。
 
 `cache_hit`、`cache_miss`、`save_value`、`invalidate`、`cdn_headers`など、各エントリは自身のJSON Schemaへのリンクを持ちます。セッションはgrepではなく検証できます。
 
@@ -505,7 +505,7 @@ mkdir -p .claude/skills && cp -r vendor/bear/event-sourcing/skills/bear-observe 
 /plugin install bear-skills
 ```
 
-`bear-cache-log`（セッションのインストール・読解・検証）と`bear-cache-gate`（フローごとにキャッシュの正しさを証明する常設オラクルの設置）が使えるようになります。
+`bear-cache-gate`（フローごとにキャッシュの正しさを証明する常設オラクルの設置）が使えるようになります。ログの読解は上の`bear-observe`が引き継いでいます。
 
 ログの全語彙と宣言された境界は、[Why the QueryRepository Log Records Everything](https://github.com/bearsunday/BEAR.QueryRepository/blob/1.x/docs/why-the-log-records-everything.ja.md)、[Reading the Log](https://github.com/bearsunday/BEAR.QueryRepository/blob/1.x/docs/reading-the-log.ja.md)、[What the Cache Log Proves — and What It Does Not](https://github.com/bearsunday/BEAR.QueryRepository/blob/1.x/docs/what-the-log-proves.ja.md)を参照してください。
 
