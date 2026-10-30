@@ -536,8 +536,8 @@ library is at fault.
 /plugin install bear-skills
 ```
 
-It provides `bear-cache-gate` (install a persistent oracle that proves cache correctness per
-flow). Reading the log is handled by `bear-observe` above.
+It provides `bear-cache-gate` (installs a gate in `var/loop/` that reads the cache log and checks, per
+flow, that the save, the hit and the invalidation actually happened). Reading the log is handled by `bear-observe` above.
 
 See [Why the QueryRepository Log Records Everything](https://github.com/bearsunday/BEAR.QueryRepository/blob/1.x/docs/why-the-log-records-everything.md),
 [Reading the Log](https://github.com/bearsunday/BEAR.QueryRepository/blob/1.x/docs/reading-the-log.md),

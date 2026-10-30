@@ -505,7 +505,7 @@ mkdir -p .claude/skills && cp -r vendor/bear/event-sourcing/skills/bear-observe 
 /plugin install bear-skills
 ```
 
-`bear-cache-gate`（フローごとにキャッシュの正しさを証明する常設オラクルの設置）が使えるようになります。ログの読解は上の`bear-observe`が引き継いでいます。
+`bear-cache-gate`（キャッシュログを読み、フローごとに保存・hit・無効化が実際に起きたかを判定するゲートを`var/loop/`に設置）が使えるようになります。ログの読解は上の`bear-observe`が引き継いでいます。
 
 ログの全語彙と宣言された境界は、[Why the QueryRepository Log Records Everything](https://github.com/bearsunday/BEAR.QueryRepository/blob/1.x/docs/why-the-log-records-everything.ja.md)、[Reading the Log](https://github.com/bearsunday/BEAR.QueryRepository/blob/1.x/docs/reading-the-log.ja.md)、[What the Cache Log Proves — and What It Does Not](https://github.com/bearsunday/BEAR.QueryRepository/blob/1.x/docs/what-the-log-proves.ja.md)を参照してください。
 
