@@ -505,8 +505,8 @@ use BEAR\QueryRepository\ProdQueryRepositoryLogModule;
 $this->override(new ProdQueryRepositoryLogModule(stream: 'php://stdout', sampleRate: 100));
 ```
 
-Mutations and failures are always kept, because a write the pool silently refused, or a purge
-that failed, has no other witness. `sampleRate` keeps 1 healthy (nothing went wrong) session in N
+Mutations and failed effects (a refused save, a failed invalidation or purge) are always kept,
+because they have no other witness. `sampleRate` keeps 1 healthy (nothing went wrong) session in N
 as a baseline; `0` disables sampling and keeps no healthy sessions at all. To keep a different
 set, implement `RetentionPolicyInterface` and bind it after overriding the module — the writer
 resolves it through DI, so the app's binding wins.
@@ -536,8 +536,8 @@ library is at fault.
 /plugin install bear-skills
 ```
 
-It provides `bear-cache-log` (install, read and verify one session) and `bear-cache-gate`
-(install a persistent oracle that proves cache correctness per flow).
+It provides `bear-cache-gate` (installs a gate in `var/loop/` that reads the cache log and checks, per
+flow, that the save, the hit and the invalidation actually happened). Reading the log is handled by `bear-observe` above.
 
 See [Why the QueryRepository Log Records Everything](https://github.com/bearsunday/BEAR.QueryRepository/blob/1.x/docs/why-the-log-records-everything.md),
 [Reading the Log](https://github.com/bearsunday/BEAR.QueryRepository/blob/1.x/docs/reading-the-log.md),
