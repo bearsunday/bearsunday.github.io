@@ -139,6 +139,30 @@ footer li {
     font-weight: 600;
 }
 
+.jumbotron #learn {
+    background-color: #B44A30;
+    border: 2px solid #B44A30;
+    color: #fff;
+}
+
+.jumbotron #learn:hover,
+.jumbotron #learn:focus {
+    background-color: #963B25;
+    border-color: #963B25;
+}
+
+.jumbotron #manual {
+    background-color: transparent;
+    border: 2px solid #B44A30;
+    color: #B44A30;
+}
+
+.jumbotron #manual:hover,
+.jumbotron #manual:focus {
+    background-color: #B44A30;
+    color: #fff;
+}
+
 .side-bar {
     margin-right: -15px;
     margin-left: -15px;
