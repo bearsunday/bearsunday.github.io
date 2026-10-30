@@ -146,7 +146,8 @@ footer li {
 }
 
 .jumbotron #learn:hover,
-.jumbotron #learn:focus {
+.jumbotron #learn:focus-visible,
+.jumbotron #learn:not(:disabled):not(.disabled):active {
     background-color: #963B25;
     border-color: #963B25;
 }
@@ -158,9 +159,23 @@ footer li {
 }
 
 .jumbotron #manual:hover,
-.jumbotron #manual:focus {
+.jumbotron #manual:focus-visible,
+.jumbotron #manual:not(:disabled):not(.disabled):active {
     background-color: #B44A30;
+    border-color: #B44A30;
     color: #fff;
+}
+
+.jumbotron #learn:focus,
+.jumbotron #manual:focus,
+.jumbotron #learn:not(:disabled):not(.disabled):active:focus,
+.jumbotron #manual:not(:disabled):not(.disabled):active:focus {
+    box-shadow: none;
+}
+
+.jumbotron #learn:focus-visible,
+.jumbotron #manual:focus-visible {
+    box-shadow: 0 0 0 .2rem rgba(180, 74, 48, .35);
 }
 
 .side-bar {
