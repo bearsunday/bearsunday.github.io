@@ -146,7 +146,7 @@ Utilizing the technical feature of resources rendering themselves, during develo
 
 ### Semantic Log
 
-What one request did can be recorded as a single typed, schema-validated tree. The nested resource requests and the cache decision at each of them (hit or miss, save, invalidation) appear in causal order, so the behavior can be confirmed by reading the log. From this tree an AI agent learns not only the code and its output, but how that output came about, and can check it against what the code declares. The same observation also yields state changes as immutable events. See the Observability section of [Cache](cache.html) and [Event Sourcing](event-sourcing.html).
+What one request did can be recorded as a single typed, schema-validated tree. The nested resource requests and the cache decision at each of them (hit or miss, save, invalidation) appear in causal order, so the behavior can be confirmed by reading the log. Beyond the code and its output, an AI agent learns from this tree how that output came about, and can check it against what the code declares. The same observation also yields state changes as immutable events. See the Observability section of [Cache](cache.html) and [Event Sourcing](event-sourcing.html).
 
 ### Working with AI Agents
 
