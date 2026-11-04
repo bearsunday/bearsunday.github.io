@@ -35,9 +35,9 @@ Content caching has dependency issues. If content A depends on content B, and B 
 
 BEAR.Sunday solves this problem by having each resource hold the URI of dependent resources as tags. When a resource embedded with `#[Embed]` is modified, the cache and ETag of the resources that hold it as a dependency are invalidated, and cache regeneration occurs for the next request.
 
-This dependency is registered when the resource embedded with `#[Embed]` carries an ETag or a `Surrogate-Key`, which a resource made cacheable, for example with `#[Cacheable]`, does. Reading a resource that carries neither in `onGet()` is not a dependency: its tag does not reach the page's entries. Caching the page still stores the value the page read from it, so when that resource's data changes, the page keeps returning the old value until the page's own TTL expires. If that resource is also rendered as a hole, purging its URI drops the stored view, and the next request recomposes the page from the template. Give such a resource a cache attribute. A value fetched eagerly with `$this->resource->get()` is not tracked either.
+This dependency is registered when the resource embedded with `#[Embed]` carries an ETag or a `Surrogate-Key`, which a resource made cacheable, for example with `#[Cacheable]`, does. Reading a resource that carries neither in `onGet()` is not a dependency: its tag does not reach the page's entries. Caching the page still stores the value the page read from it, so when that resource's data changes, the page keeps returning the old value until the page's own TTL expires. If that resource is also rendered as a hole, purging its URI drops the stored view, and the next request recomposes the page from the template. Give such a resource a cache attribute when it may be shared with every visitor; a per-user resource stays unread in `onGet()` and becomes a hole on a `#[DonutCache]` page. A value fetched eagerly with `$this->resource->get()` is not tracked either.
 
-A dependency travels one level at a time. When A embeds B and B embeds C, C's tags reach A only if B is cacheable too; a non-cacheable B in between stops them.
+A dependency travels one level at a time. When A embeds B and B embeds C, QueryRepository gathers C's tags into B and passes them to A only if B is cacheable too; a non-cacheable B in between stops them.
 
 How an embedded resource is used determines the behavior (see [Donut Cache](#donut-cache) below for holes):
 
@@ -49,9 +49,9 @@ How an embedded resource is used determines the behavior (see [Donut Cache](#don
 
 ### Where an Embedded Request Must Stay
 
-Dependencies and holes are found where `#[Embed]` puts a resource: at the top level of the body. A request that `onGet()` moves into a nested array, replaces or `unset()`s is not seen by QueryRepository.
+Dependencies and holes (donut holes: parts rendered apart from the stored template and inserted into it; see [Donut Cache](#donut-cache)) are found where `#[Embed]` puts a resource: at the top level of the body. A request that `onGet()` moves into a nested array, replaces or `unset()`s is not seen by QueryRepository.
 
-On a `#[CacheableResponse]` or `#[DonutCache]` page a request in a nested array does not become a hole either. It runs while the template renders, and its output is written into the stored template. As a result:
+On a `#[CacheableResponse]` or `#[DonutCache]` page a request in a nested array does not become a hole either. When the template prints it, it runs on the spot, and its output is written into the stored template. As a result:
 
 * its tags reach no one, so when its data changes the page returns the old content until the page's TTL expires
 * if it returns per-user content, that content is served to every visitor
@@ -60,9 +60,18 @@ A list whose count, order or queries come from data (blocks an editor arranges, 
 
 ```php
 // Page: embeds the composed list and prints it whole in the template
-#[Embed(rel: 'contents', src: 'app://self/channel/blocks{?slug}')]
-public function onGet(string $slug): static
+#[CacheableResponse]
+class Channel extends ResourceObject
+{
+    #[Embed(rel: 'contents', src: 'app://self/channel/blocks{?slug}')]
+    public function onGet(string $slug): static
+    {
+        return $this;
+    }
+}
+```
 
+```php
 // app://self/channel/blocks
 #[Cacheable]
 class Blocks extends ResourceObject
@@ -83,9 +92,9 @@ class Blocks extends ResourceObject
 }
 ```
 
-Make the child `#[Cacheable]`, and make the block resources cacheable too. Clones of one embedded request share a single resource object; a `#[Cacheable]` child runs each top-level request right before reading its tags, so it registers each clone's dependency correctly.
+Make the child `#[Cacheable]`, and make the block resources cacheable too. All of them are shared by every visitor, so a block that returns per-user content stays out of this list and becomes a hole on a `#[DonutCache]` page. Clones of one embedded request share a single resource object; a `#[Cacheable]` child runs each top-level request right before reading its tags, so it registers each clone's dependency correctly.
 
-On a donut page a top-level embedded request is replaced by a hole that can only be printed, not iterated. Print the child whole in the page's template, and arrange the blocks in the child's own template with `layout`.
+On a donut page a top-level embedded request is replaced, when the page is stored, by a marker for where it goes. The page's template can therefore print it as a string but cannot loop over its contents with `foreach`. Print the child whole in the page's template, and arrange the blocks in the child's own template with `layout`.
 
 ## Donut Cache
 
@@ -180,7 +189,7 @@ Either approach applies all the features described in the overview. Because even
 What a cache attribute stores is shared with every visitor, so put per-user values in a non-cacheable resource rendered as a hole on a `#[DonutCache]` page. QueryRepository inspects only the response's own `Cache-Control`. A per-user value that reaches the cached output by any other route is stored and served to every later visitor:
 
 * a value of an embedded resource read in `onGet()`
-* an embedded request placed inside an array in the body (it is written into the template instead of becoming a hole)
+* an embedded request placed inside an array in the body that the template prints (it is written into the template instead of becoming a hole)
 * a value received through `#[ResourceParam]`
 * a value generated in the template (for example a Twig function)
 
