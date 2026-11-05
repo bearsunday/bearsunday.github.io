@@ -28,7 +28,7 @@ class Index extends ResourceObject
 }
 ```
 
-`Index`は`UserRepositoryInterface`の実装が何であるか、それがどう作られるかを知りません。実装を決めるのは利用するクラスではなく、[モジュール](module.html)に記述する束縛です。
+`Index`は`UserRepositoryInterface`の実装が何か、それがどう作られるかを知りません。決めるのは利用側ではなく、[モジュール](module.html)の束縛です。
 
 ```php
 $this->bind(UserRepositoryInterface::class)->to(UserRepository::class);
