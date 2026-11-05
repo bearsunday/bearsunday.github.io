@@ -191,6 +191,15 @@ interface DonutRepositoryInterface
 $this->repository->purge(new Uri('app://self/blog/comment'));
 ```
 
+URIを無効化すると、そのURIのクエリ違いのキャッシュも無効化されます。キャッシュの各エントリは、自身のURIのタグに加えてグループタグを持ちます。グループタグは、エントリのURIから`onGet()`のデフォルト値を持つ引数と、`onGet()`が宣言していないクエリを除いたURIのタグです。`purge()`、`#[Purge]`、`#[Refresh]`はこの両方を無効化するので、`app://self/articles`を無効化すると`app://self/articles?page=2`も無効化されます。クエリ違いのリソースを埋め込んだページもそのグループタグを持つので、一緒に無効化されます。
+
+`#[Cacheable]`、`#[CacheableResponse]`、`#[DonutCache]`のリソースの書き込みメソッドも、自身のURIを同じ規則で無効化します。そのため`app://self/articles`への書き込みは、一覧のすべてのページを無効化します。
+
+無効化がどのエントリに届くかは、URIの書き方で決まります。
+
+* デフォルト値を書いたURI（`app://self/articles?page=1`）はグループタグに丸められず、そのURIのエントリにだけ届きます。
+* 必須の引数は、リクエストが使ったキーのままグループタグに入ります。`onGet(int $userId, int $page = 1)`を`?user_id=1&page=2`で取得したエントリには、`?user_id=1`の無効化は届き、`?userId=1`の無効化は届きません。書き込み後の無効化は引数名（`userId`）を使います。
+
 ### タグによる無効化
 
 ```php

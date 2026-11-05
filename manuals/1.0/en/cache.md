@@ -194,6 +194,15 @@ interface DonutRepositoryInterface
 $this->repository->purge(new Uri('app://self/blog/comment'));
 ```
 
+A purge of a URI also reaches its query variants. Besides its own URI tag, each cached entry carries a group tag: the tag of its URI with the default-valued parameters of `onGet()`, and any query `onGet()` does not declare, dropped. `purge()`, `#[Purge]` and `#[Refresh]` invalidate both, so purging `app://self/articles` also invalidates `app://self/articles?page=2`. A page that embeds such a variant carries its group tag as well and is invalidated with it.
+
+A write method of a `#[Cacheable]`, `#[CacheableResponse]` or `#[DonutCache]` resource purges its own URI by the same rule, so a write to `app://self/articles` invalidates every page of the list.
+
+What a purge reaches depends on how its URI is written:
+
+* A URI that spells out a default value (`app://self/articles?page=1`) is not coarsened and reaches only the entries of that URI.
+* A required parameter keeps the key the request used. An entry of `onGet(int $userId, int $page = 1)` requested as `?user_id=1&page=2` is reached by a purge of `?user_id=1`, not of `?userId=1`. The purge after a write uses the parameter name (`userId`).
+
 ### Invalidate by tag
 
 ```php
