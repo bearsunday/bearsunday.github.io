@@ -190,18 +190,16 @@ interface DonutRepositoryInterface
 ### Invalidate by URI
 
 ```php
-// example
-$this->repository->purge(new Uri('app://self/blog/comment'));
+// app://self/articles has onGet(int $page = 1)
+$this->repository->purge(new Uri('app://self/articles'));        // every page: ?page=1, ?page=2, ...
+$this->repository->purge(new Uri('app://self/articles?page=2')); // ?page=2 only
 ```
 
-A purge of a URI also reaches its query variants. Besides its own URI tag, each cached entry carries a group tag: the tag of its URI with the default-valued parameters of `onGet()`, and any query `onGet()` does not declare, dropped. `purge()`, `#[Purge]` and `#[Refresh]` invalidate both, so purging `app://self/articles` also invalidates `app://self/articles?page=2`. A page that embeds such a variant carries its group tag as well and is invalidated with it.
+Besides its own URI tag, each cached entry carries a group tag: the tag of its URI after removing the `onGet()` parameters that have a default value and any query `onGet()` does not declare. A purge of a URI drops the entries of that URI and the entries whose group tag is the tag of that URI. The group tag of `app://self/articles?page=2` is the tag of `app://self/articles`, so purging `app://self/articles` drops it. No group tag keeps a default-valued parameter, so purging `app://self/articles?page=1` drops only the entries of that URI. The `#[Purge]` and `#[Refresh]` method attributes, which purge the URI they name after the method runs, work the same way. A page that embeds such a variant as a cached dependency (see [Tag-based Cache Invalidation](#tag-based-cache-invalidation)) carries its group tag as well and is dropped with it.
 
-A write method of a `#[Cacheable]`, `#[CacheableResponse]` or `#[DonutCache]` resource purges its own URI by the same rule, so a write to `app://self/articles` invalidates every page of the list.
+A write method of a `#[Cacheable]` or `#[CacheableResponse]` resource, and a method marked `#[RefreshCache]`, purges its own URI with the default-valued parameters removed, so a write to `app://self/articles` drops every page of the list. A write method of a `#[DonutCache]` resource purges its own URI only when it is marked `#[RefreshCache]`.
 
-What a purge reaches depends on how its URI is written:
-
-* A URI that spells out a default value (`app://self/articles?page=1`) is not coarsened and reaches only the entries of that URI.
-* A required parameter keeps the key the request used. An entry of `onGet(int $userId, int $page = 1)` requested as `?user_id=1&page=2` is reached by a purge of `?user_id=1`, not of `?userId=1`. The purge after a write uses the parameter name (`userId`).
+A required parameter stays in the group tag under the key the request used. For `onGet(int $userId, int $page = 1)`, an entry requested as `?user_id=1&page=2` is dropped by a purge of `?user_id=1`, not by one of `?userId=1`. The automatic purge after a write uses the parameter name (`?userId=1`), so it does not reach an entry requested as `?user_id=1`.
 
 ### Invalidate by tag
 

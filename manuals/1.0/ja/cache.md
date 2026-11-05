@@ -187,18 +187,16 @@ interface DonutRepositoryInterface
 ### URIによる無効化
 
 ```php
-// example
-$this->repository->purge(new Uri('app://self/blog/comment'));
+// app://self/articles の onGet(int $page = 1)
+$this->repository->purge(new Uri('app://self/articles'));        // 一覧の全ページ（?page=1, ?page=2, …）を無効化
+$this->repository->purge(new Uri('app://self/articles?page=2')); // ?page=2 だけを無効化
 ```
 
-URIを無効化すると、そのURIのクエリ違いのキャッシュも無効化されます。キャッシュの各エントリは、自身のURIのタグに加えてグループタグを持ちます。グループタグは、エントリのURIから`onGet()`のデフォルト値を持つ引数と、`onGet()`が宣言していないクエリを除いたURIのタグです。`purge()`、`#[Purge]`、`#[Refresh]`はこの両方を無効化するので、`app://self/articles`を無効化すると`app://self/articles?page=2`も無効化されます。クエリ違いのリソースを埋め込んだページもそのグループタグを持つので、一緒に無効化されます。
+キャッシュの各エントリは、自身のURIのタグに加えてグループタグを持ちます。グループタグは、エントリのURIから`onGet()`で既定値を持つ引数と、`onGet()`が宣言していないクエリを除いたURIのタグです。URIを指定して無効化すると、そのURIのエントリと、グループタグがそのURIのタグであるエントリが無効化されます。`app://self/articles?page=2`のグループタグは`app://self/articles`のタグなので、`app://self/articles`を指定すると無効化されます。グループタグは既定値を持つ引数を含まないので、`app://self/articles?page=1`を指定した場合は、そのURIのエントリだけが無効化されます。メソッドの実行後に指定したURIを無効化する`#[Purge]`、`#[Refresh]`アトリビュートも同じです。クエリだけが異なるURIをキャッシュ対象の依存として埋め込んだページ（[タグベースでのキャッシュ無効化](#タグベースでのキャッシュ無効化)）もそのグループタグを持つので、一緒に無効化されます。
 
-`#[Cacheable]`、`#[CacheableResponse]`、`#[DonutCache]`のリソースの書き込みメソッドも、自身のURIを同じ規則で無効化します。そのため`app://self/articles`への書き込みは、一覧のすべてのページを無効化します。
+`#[Cacheable]`、`#[CacheableResponse]`のリソースの書き込みメソッドと、`#[RefreshCache]`を付けたメソッドは、自身のURIから既定値を持つ引数を除いて無効化します。そのため`app://self/articles`への書き込みは、一覧のすべてのページを無効化します。`#[DonutCache]`のリソースの書き込みメソッドが自身のURIを無効化するのは、`#[RefreshCache]`を付けた場合だけです。
 
-無効化がどのエントリに届くかは、URIの書き方で決まります。
-
-* デフォルト値を書いたURI（`app://self/articles?page=1`）はグループタグに丸められず、そのURIのエントリにだけ届きます。
-* 必須の引数は、リクエストが使ったキーのままグループタグに入ります。`onGet(int $userId, int $page = 1)`を`?user_id=1&page=2`で取得したエントリには、`?user_id=1`の無効化は届き、`?userId=1`の無効化は届きません。書き込み後の無効化は引数名（`userId`）を使います。
+必須の引数は、リクエストが使ったキーのままグループタグに入ります。`onGet(int $userId, int $page = 1)`を`?user_id=1&page=2`で取得したエントリは、`?user_id=1`を指定すると無効化され、`?userId=1`を指定しても無効化されません。書き込み後の自動の無効化は引数名のキー（`?userId=1`）を使うので、`?user_id=1`で取得したエントリには届きません。
 
 ### タグによる無効化
 
