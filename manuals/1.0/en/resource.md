@@ -13,7 +13,7 @@ Every resource is accessed through a **uniform interface** shared with HTTP, suc
 
 ## Object as a service
 
-A resource expressed in PHP is a `ResourceObject`. It is an **object for a service** (Object-as-a-service) in which HTTP methods are mapped to PHP methods.
+A resource expressed in PHP is a `ResourceObject`. It is an **object as a service** in which HTTP methods are mapped to PHP methods.
 
 ```php
 class Index extends ResourceObject
@@ -93,7 +93,7 @@ Resources can be accessed through six methods corresponding to HTTP methods. The
 
 ## Parameters
 
-The request value corresponding to the variable name is passed to the argument of the response method.
+The request value corresponding to the variable name is passed to the argument of the request method.
 
 ```php
 class Index extends ResourceObject
