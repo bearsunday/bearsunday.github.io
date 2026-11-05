@@ -36,7 +36,7 @@ class MyInterceptor implements MethodInterceptor
 }
 ```
 
-The key point is that you have full control over the original method's invocation. You can skip the method entirely by returning a value without calling `proceed()` (on a cache hit, for instance), handle exceptions across the board by wrapping the call in `try/catch`, or transform the return value. Because the injector builds the interceptor itself, it can also receive its own dependencies through its constructor.
+You have full control over the original method's invocation. You can skip the method entirely by returning a value without calling `proceed()` (on a cache hit, for instance), handle exceptions across the board by wrapping the call in `try/catch`, or transform the return value. Because the injector builds the interceptor itself, it can also receive its own dependencies through its constructor.
 
 ## Bindings
 
@@ -58,7 +58,7 @@ $this->bindInterceptor(
 
 In the second example, all that remains on the target method's side is the `#[Auth]` declaration. The intent—"this needs authentication"—lives on the method; its implementation and scope live in the module (see [Attribute](attribute.html) for more on attributes).
 
-Centralizing bindings in the module has its own benefits. First, where cross-cutting processing applies is visible as a list of binding declarations, so there's no need to hunt through code to find it. Second, bindings can be switched per context: weaving in caching only in production, or execution-time logging only in development, without changing any application code. Weaving happens through code generation rather than reflection on every call, so the runtime overhead is minimal.
+Centralizing bindings in the module brings two benefits. First, where cross-cutting processing applies is visible as a list of binding declarations, so there's no need to hunt through code to find it. Second, bindings can be switched per context: weaving in caching only in production, or execution-time logging only in development, without changing any application code. Weaving happens through code generation rather than reflection on every call, so the runtime overhead is minimal.
 
 `Matcher` supports the following:
 
