@@ -434,15 +434,17 @@ class CachedResource extends ResourceObject
 }
 ```
 
-その他は[HTTPキャッシュ](https://bearsunday.github.io/manuals/1.0/ja/http-cache.html)ページをご覧ください。
+その他は[HTTPキャッシュ](http-cache.html)ページをご覧ください。
 
 ## 可観測性（オブザーバビリティ）
 
 BEAR.QueryRepositoryは実際の挙動を記録できます。記録されるのは、hit/miss、保存した内容とその期間、無効化した内容、そしてCDNのpurgerがpurge要求を成功と報告したかどうかです。purge要求の成功は、CDNのエッジへの実際の伝播を意味しません。ログは自由記述のメッセージではなく、型付きでスキーマ検証可能なツリーです。記録は既定でオフです。`DevQueryRepositoryLogModule`をインストールすると有効になります。インストールだけではキャッシュの挙動自体は変わりません。
 
-このログはリソースリクエストの記録と1本の木にできます。[Event Sourcing](https://bearsunday.github.io/manuals/1.0/ja/event-sourcing.html)の「BEAR.QueryRepository と 1 本の木」の構成にすると、キャッシュの判断（hit/miss、保存、無効化）が、それを起こした`resource_request`の中にネストします。1リクエストで何が起きたかを、リソースのネストとキャッシュの判断を合わせて起きた順に読めます。下の`bear-observe`はこの構成を設置します。
+このログはリソースリクエストの記録と1本の木にできます。[Event Sourcing](event-sourcing.html)の「BEAR.QueryRepository と 1 本の木」の構成にすると、キャッシュの判断（hit/miss、保存、無効化）が、それを起こした`resource_request`の中にネストします。1リクエストで何が起きたかを、リソースのネストとキャッシュの判断を合わせて起きた順に読めます。下の`bear-observe`はこの構成を設置します。
 
 どちらのログモジュールも、1プロセスが1リクエストを処理するホスト（PHP-FPM、CLIスクリプト）を前提とします。RoadRunnerのワーカーやSwooleのコルーチン内など、それが成り立たないと判定できる場合は記録を開始しません。`error_log()`にその旨を出力し、ほかは何も変えずに記録オフのまま動作します（[issue #179](https://github.com/bearsunday/BEAR.QueryRepository/issues/179)）。
+
+この判定は網羅的ではありません。FrankenPHPのworkerモード、ReactPHP、Amp、常駐するCLIコンシューマー、起動時にロガーを生成するSwooleのworkerも1プロセスで多数のリクエストを処理しますが、検出されません。その場合モジュールは記録を開始し、それらのリクエストを1つのロガーに記録して、workerの終了時にまとめて書き出します。こうしたホストではログモジュールを入れないか、`BEAR\QueryRepository\Log\ConcurrentRuntimeInterface`の実装を自前で束縛してください。
 
 ### 開発時
 
@@ -456,7 +458,7 @@ $this->override(new DevQueryRepositoryLogModule($this->appMeta->logDir . '/query
 
 キャッシュプールが`QueryRepositoryModule`既定の`NullAdapter`のままだと、すべてのGETがmissになり、ログにhitは現れません。開発でも`StorageRedisDsnModule`などをインストールするか、`ResourceObjectPool`と`EtagPool`に永続するアダプター（`FilesystemAdapter`など）を束縛します。
 
-リクエストを1本実行すると、そのセッションが`latest.json`に書かれます。ツリーで表示します：
+リクエストを1本実行すると、そのセッションが`latest.json`に書かれます。それ以前のセッションもタイムスタンプ付きのファイルとして隣に残るので、書き込みとそれを反映すべき読み込みのような、複数リクエストにまたがる流れを後から読めます。保持されるのは最新100件で、件数は`keep:`で変えられます。セッションをツリーで表示します：
 
 ```bash
 vendor/bin/stree var/log/{context}/query-repository/latest.json
@@ -483,7 +485,7 @@ use BEAR\QueryRepository\ProdQueryRepositoryLogModule;
 $this->override(new ProdQueryRepositoryLogModule(stream: 'php://stdout', sampleRate: 100));
 ```
 
-mutation（書き込み）と、起きなかった効果（保存の拒否、無効化やpurgeの失敗）は常に保持されます。これらはほかに記録が残らず、確認できるのはこのログだけだからです。`sampleRate`は、問題が無かった健全セッションをN件に1件だけ残す割合です。`0`を指定するとサンプリングを無効化し、健全セッションは一切残しません。これと異なる保持ルールにしたい場合は`RetentionPolicyInterface`を自前で実装し、`override()`の後にbindしてください。writerはDI経由でこれを解決するため、アプリ側のbindingが勝ちます。
+mutation（書き込み）と、起きなかった効果（保存の拒否、無効化やpurgeの失敗）は常に保持されます。これらはほかに記録が残らず、確認できるのはこのログだけだからです。一方、キャッシュの読み込み失敗は保持しません。`trigger_error()`でアプリの警告チャンネルに既に届いているためです。`sampleRate`は、問題が無かった健全セッションをN件に1件だけ残す割合です。`0`を指定するとサンプリングを無効化し、健全セッションは一切残しません。これと異なる保持ルールにしたい場合は`RetentionPolicyInterface`を自前で実装し、`override()`の後にbindしてください。writerはDI経由でこれを解決するため、アプリ側のbindingが勝ちます。
 
 `cache_hit`、`cache_miss`、`save_value`、`invalidate`、`cdn_headers`など、各エントリは自身のJSON Schemaへのリンクを持ちます。セッションはgrepではなく検証できます。
 
@@ -507,7 +509,7 @@ mkdir -p .claude/skills && cp -r vendor/bear/event-sourcing/skills/bear-observe 
 
 `bear-cache-gate`（キャッシュログを読み、フローごとに保存・hit・無効化が実際に起きたかを判定するゲートを`var/loop/`に設置）が使えるようになります。ログの読解は上の`bear-observe`が引き継いでいます。
 
-ログの全語彙と宣言された境界は、[Why the QueryRepository Log Records Everything](https://github.com/bearsunday/BEAR.QueryRepository/blob/1.x/docs/why-the-log-records-everything.ja.md)、[Reading the Log](https://github.com/bearsunday/BEAR.QueryRepository/blob/1.x/docs/reading-the-log.ja.md)、[What the Cache Log Proves — and What It Does Not](https://github.com/bearsunday/BEAR.QueryRepository/blob/1.x/docs/what-the-log-proves.ja.md)を参照してください。
+ログの全語彙と宣言された境界は、[QueryRepository ログはなぜ全てを記録するのか](https://github.com/bearsunday/BEAR.QueryRepository/blob/1.x/docs/why-the-log-records-everything.ja.md)、[ログの読み方](https://github.com/bearsunday/BEAR.QueryRepository/blob/1.x/docs/reading-the-log.ja.md)、[このログは何を証明し、何を証明しないか](https://github.com/bearsunday/BEAR.QueryRepository/blob/1.x/docs/what-the-log-proves.ja.md)を参照してください。
 
 ## 結論
 
