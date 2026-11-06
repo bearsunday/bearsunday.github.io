@@ -485,7 +485,7 @@ use BEAR\QueryRepository\ProdQueryRepositoryLogModule;
 $this->override(new ProdQueryRepositoryLogModule(stream: 'php://stdout', sampleRate: 100));
 ```
 
-mutation（書き込み）と、起きなかった効果（保存の拒否、無効化やpurgeの失敗）は常に保持されます。これらはほかに記録が残らず、確認できるのはこのログだけだからです。一方、キャッシュの読み込み失敗は保持しません。`trigger_error()`でアプリの警告チャンネルに既に届いているためです。`sampleRate`は、問題が無かった健全セッションをN件に1件だけ残す割合です。`0`を指定するとサンプリングを無効化し、健全セッションは一切残しません。これと異なる保持ルールにしたい場合は`RetentionPolicyInterface`を自前で実装し、`override()`の後にbindしてください。writerはDI経由でこれを解決するため、アプリ側のbindingが勝ちます。
+mutation（書き込み）と、起きなかった効果（保存の拒否、無効化やpurgeの失敗）は常に保持されます。これらはほかに記録が残らず、確認できるのはこのログだけだからです。一方、キャッシュの読み込み失敗は保持しません。`trigger_error()`で`E_USER_WARNING`として既に通知されているためです。PHPのエラーログで確認してください（`log_errors`が有効で、`error_reporting`に`E_USER_WARNING`が含まれている必要があります）。`sampleRate`は、問題が無かった健全セッションをN件に1件だけ残す割合です。`0`を指定するとサンプリングを無効化し、健全セッションは一切残しません。これと異なる保持ルールにしたい場合は`RetentionPolicyInterface`を自前で実装し、`override()`の後にbindしてください。writerはDI経由でこれを解決するため、アプリ側のbindingが勝ちます。
 
 `cache_hit`、`cache_miss`、`save_value`、`invalidate`、`cdn_headers`など、各エントリは自身のJSON Schemaへのリンクを持ちます。セッションはgrepではなく検証できます。
 
