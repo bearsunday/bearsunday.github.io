@@ -449,7 +449,7 @@ CDN's edge actually propagated it). Recording is off by default. Installing
 `DevQueryRepositoryLogModule` turns it on; installing it alone does not change cache behavior.
 
 The log can share one tree with the record of resource requests. With the wiring in
-[Event Sourcing](https://bearsunday.github.io/manuals/1.0/en/event-sourcing.html)'s "One tree with
+[Event Sourcing](event-sourcing.html)'s "One tree with
 BEAR.QueryRepository", each cache decision (hit or miss, save, invalidation) nests inside the
 `resource_request` that caused it, so one request reads in causal order: the resources it called
 and what the cache decided for each. The `bear-observe` skill below sets this wiring up.
@@ -458,6 +458,12 @@ Both log modules require a host where one process serves one request (PHP-FPM, a
 Where it can prove otherwise — a RoadRunner worker, or inside a Swoole coroutine — a module
 refuses to arm, says so through `error_log()`, and recording stays off with nothing else changed
 ([issue #179](https://github.com/bearsunday/BEAR.QueryRepository/issues/179)).
+
+That check is not exhaustive. FrankenPHP worker mode, ReactPHP, Amp, a long-lived CLI consumer,
+and a Swoole worker whose logger is built at boot also serve many requests from one process, but
+are not detected: there the module arms, records those requests into one shared logger, and writes
+them only when the worker exits. On such a host, leave the log module out, or bind your own
+`BEAR\QueryRepository\Log\ConcurrentRuntimeInterface`.
 
 ### Development
 
@@ -474,7 +480,9 @@ With the pools left at `QueryRepositoryModule`'s default `NullAdapter`, every GE
 the log never shows a hit. Install `StorageRedisDsnModule` or similar in development too, or bind
 a persistent adapter (such as `FilesystemAdapter`) to `ResourceObjectPool` and `EtagPool`.
 
-Run one request and its session is written to `latest.json`. Render it as a tree:
+Run one request and its session is written to `latest.json`. Earlier sessions stay beside it as
+timestamped files, so a multi-request flow (a write, then the read that should see it) can be read
+back; the newest 100 are kept, and `keep:` changes the count. Render a session as a tree:
 
 ```bash
 vendor/bin/stree var/log/{context}/query-repository/latest.json
@@ -506,7 +514,10 @@ $this->override(new ProdQueryRepositoryLogModule(stream: 'php://stdout', sampleR
 ```
 
 Mutations and failed effects (a refused save, a failed invalidation or purge) are always kept,
-because they have no other witness. `sampleRate` keeps 1 healthy (nothing went wrong) session in N
+because they have no other witness. A failed cache read is not kept: it is already reported as an
+`E_USER_WARNING` through `trigger_error()`, so look for it wherever the app's warnings go: the
+app's error handler if one is set, otherwise the PHP error log (which needs `log_errors` on and
+`E_USER_WARNING` in `error_reporting`). `sampleRate` keeps 1 healthy (nothing went wrong) session in N
 as a baseline; `0` disables sampling and keeps no healthy sessions at all. To keep a different
 set, implement `RetentionPolicyInterface` and bind it after overriding the module — the writer
 resolves it through DI, so the app's binding wins.
