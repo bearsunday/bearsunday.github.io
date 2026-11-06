@@ -177,7 +177,7 @@ To customize it, bind it by implementing `CdnCacheControlHeaderSetterInterface` 
 ## Cache invalidation
 
 Use the methods of `DonutRepositoryInterface` to manually invalidate the cache.
-This will invalidate not only the specified cache, but also the cache of the ETag, any other resources it depends on, and the cache of the ETag on the server side and, if possible, on the CDN.
+This will invalidate not only the specified cache, but also the cache of the ETag, any other resource that depends on it, and the cache of the ETag on the server side and, if possible, on the CDN.
 
 ```php
 interface DonutRepositoryInterface
@@ -190,9 +190,16 @@ interface DonutRepositoryInterface
 ### Invalidate by URI
 
 ```php
-// example
-$this->repository->purge(new Uri('app://self/blog/comment'));
+// app://self/articles has onGet(int $page = 1)
+$this->repository->purge(new Uri('app://self/articles'));        // every page: ?page=1, ?page=2, ...
+$this->repository->purge(new Uri('app://self/articles?page=2')); // ?page=2 only
 ```
+
+Besides its own URI tag, each cached entry carries a group tag: the tag of its URI after removing the `onGet()` parameters that have a default value and any query `onGet()` does not declare. A purge of a URI drops the entries of that URI and the entries whose group tag is the tag of that URI. The group tag of `app://self/articles?page=2` is the tag of `app://self/articles`, so purging `app://self/articles` drops it. No group tag keeps a default-valued parameter, so purging `app://self/articles?page=1` drops only the entries of that URI. The `#[Purge]` and `#[Refresh]` method attributes, which purge the URI they name after the method runs (`#[Refresh]` then fetches it again), work the same way. A page that embeds such a variant (`app://self/articles?page=2`) as a cached dependency (see [Tag-based Cache Invalidation](#tag-based-cache-invalidation)) carries its group tag as well and is dropped with it.
+
+A write method of a `#[Cacheable]` or `#[CacheableResponse]` resource, and a method marked `#[RefreshCache]`, purges its own URI with the default-valued parameters removed, so a write to `app://self/articles` drops every page of the list. A write method of a `#[DonutCache]` resource automatically purges its own URI only when it is marked `#[RefreshCache]`.
+
+A required parameter stays in the group tag under the key the request used. For `onGet(int $userId, int $page = 1)`, an entry requested as `?user_id=1&page=2` is dropped by a purge of `?user_id=1`, not by one of `?userId=1`. The automatic purge after a write uses the parameter name (`?userId=1`), so it does not reach an entry requested as `?user_id=1`.
 
 ### Invalidate by tag
 
