@@ -515,8 +515,9 @@ $this->override(new ProdQueryRepositoryLogModule(stream: 'php://stdout', sampleR
 
 Mutations and failed effects (a refused save, a failed invalidation or purge) are always kept,
 because they have no other witness. A failed cache read is not kept: it is already reported as an
-`E_USER_WARNING` through `trigger_error()`, so look for it in the PHP error log (with `log_errors`
-on and `E_USER_WARNING` in `error_reporting`). `sampleRate` keeps 1 healthy (nothing went wrong) session in N
+`E_USER_WARNING` through `trigger_error()`, so look for it wherever the app's warnings go: the
+app's error handler if one is set, otherwise the PHP error log (which needs `log_errors` on and
+`E_USER_WARNING` in `error_reporting`). `sampleRate` keeps 1 healthy (nothing went wrong) session in N
 as a baseline; `0` disables sampling and keeps no healthy sessions at all. To keep a different
 set, implement `RetentionPolicyInterface` and bind it after overriding the module — the writer
 resolves it through DI, so the app's binding wins.
