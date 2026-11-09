@@ -133,7 +133,7 @@ class Todo extends ResourceObject
 }
 ```
 
-Either approach applies all the features described in the overview. Because event-driven content is assumed, the cache is invalidated by events rather than by time; the default TTL depends on the CDN module, as described below. Note that `#[DonutCache]` does not cache the whole content, while `#[CacheableResponse]` does.
+Either approach applies all the features described in the overview. Because event-driven content is assumed, the cache is invalidated by events rather than by time; the default TTL depends on the CDN module, as described below. Note that `#[DonutCache]` does not cache the whole content, while `#[CacheableResponse]` does. A `#[CacheableResponse]` page carries `Cache-Control: max-age=0` unless it declares its own `max-age` or `no-store`, so a browser revalidates it with its `ETag` each time.
 
 What a cache attribute stores is shared with every visitor, so put per-user values in a non-cacheable resource rendered as a hole on a `#[DonutCache]` page. QueryRepository inspects only the response's own `Cache-Control`. A per-user value that reaches the cached output by any other route is stored and served to every later visitor:
 
