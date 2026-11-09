@@ -1046,7 +1046,7 @@ X-Powered-By: PHP/8.0.3
 Content-Type: application/hal+json
 ETag: 197839553
 Last-Modified: Sun, 02 May 2021 17:10:55 GMT
-Cache-Control: max-age=31536000
+Cache-Control: max-age=0
 
 {
     "id": "1",
@@ -1064,6 +1064,7 @@ Send the request multiple times and confirm that the `Last-Modified` date does n
 
 The `Cacheable` attribute, if not set with `expiry`, does not invalidate the cache over time.
 The cache is regenerated when resources are changed with `onPut($id, $todo)` or `onDelete($id)`.
+Because a write can change it at any time, the response carries `Cache-Control: max-age=0`, and a browser revalidates it with its `ETag` instead of reusing it unchecked.
 
 #### PUT Request
 
