@@ -133,7 +133,7 @@ class Todo extends ResourceObject
 }
 ```
 
-Either approach applies all the features described in the overview. Because event-driven content is assumed, the cache is invalidated by events rather than by time; the default TTL depends on the CDN module, as described below. Note that `#[DonutCache]` does not cache the whole content, while `#[CacheableResponse]` does. A `#[CacheableResponse]` page carries `Cache-Control: max-age=0` unless it declares its own `max-age` or `no-store`, so a browser revalidates it with its `ETag` each time.
+Either approach applies all the features described in the overview. Because event-driven content is assumed, the cache is invalidated by events rather than by time; the default TTL depends on the CDN module, as described below. Note that `#[DonutCache]` does not cache the whole content, while `#[CacheableResponse]` does. A page with `#[CacheableResponse]` on its class carries `Cache-Control: max-age=0` unless it declares its own `max-age` or `no-store`, so a browser normally revalidates it with its `ETag` instead of reusing it unchecked.
 
 What a cache attribute stores is shared with every visitor, so put per-user values in a non-cacheable resource rendered as a hole on a `#[DonutCache]` page. QueryRepository inspects only the response's own `Cache-Control`. A per-user value that reaches the cached output by any other route is stored and served to every later visitor:
 
@@ -450,7 +450,7 @@ class CachedResource extends ResourceObject
 }
 ```
 
-Since a write can come at any time, the response carries `Cache-Control: max-age=0`: a browser revalidates it with its `ETag` each time, while an `s-maxage` declared with `#[HttpCache]` still lets a shared cache keep it. Declare `#[HttpCache(maxAge: …)]` to let browsers keep it for a while.
+Since a write can come at any time, the response carries `Cache-Control: max-age=0`: a browser normally revalidates it with its `ETag`, while an `s-maxage` declared with `#[HttpCache]` still lets a shared cache keep it. Declare `#[HttpCache(maxAge: …)]` to let browsers keep it for a while.
 
 The body of a `#[Cacheable]` resource must be data that serializes. A body holding a closure, a PDO connection or an object whose `__serialize()` throws fails the request, and a write fails the same way, after it has run, when the GET that refreshes its entry builds such a body. A PHP resource such as a stream is not refused, but the stored copy loses it.
 
