@@ -438,6 +438,20 @@ class CachedResource extends ResourceObject
 }
 ```
 
+Example: without `expirySecond` or `expiryAt` (the default `expiry: 'never'`), the entry stays on the server until a write invalidates it. Since a write can come at any time, the response carries `Cache-Control: max-age=0`: a browser revalidates it with its `ETag` each time, while an `s-maxage` declared with `#[HttpCache]` still lets a shared cache keep it. Declare `#[HttpCache(maxAge: …)]` to let browsers keep it for a while:
+
+```php
+use BEAR\RepositoryModule\Annotation\Cacheable;
+
+#[Cacheable]
+class CachedResource extends ResourceObject
+{
+    // ...
+}
+```
+
+The body of a `#[Cacheable]` resource must be data that serializes. A body holding a closure, a PDO connection or an object whose `__serialize()` throws fails the request, and a write fails the same way, after it has run, when the GET that refreshes its entry builds such a body. A PHP resource such as a stream is not refused, but the stored copy loses it.
+
 See the [HTTP Cache](https://bearsunday.github.io/manuals/1.0/ja/http-cache.html) page (Japanese) for more information.
 
 ## Observability
