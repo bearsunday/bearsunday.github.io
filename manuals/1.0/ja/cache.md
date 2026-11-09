@@ -434,7 +434,7 @@ class CachedResource extends ResourceObject
 }
 ```
 
-例）`expirySecond`も`expiryAt`も指定しない場合（既定の`expiry: 'never'`）、エントリは書き込みで無効化されるまでサーバーに残ります。書き込みはいつ起きるか分からないので、レスポンスには`Cache-Control: max-age=0`が付き、ブラウザは`ETag`で毎回確かめます。`#[HttpCache]`で`s-maxage`を宣言していれば、共有キャッシュはその間保持します。ブラウザにもしばらく持たせたい場合は`#[HttpCache(maxAge: …)]`を宣言します：
+例）`expirySecond`も`expiryAt`も指定しない場合（既定の`expiry: 'never'`）、エントリは書き込みで無効化されるまでサーバーに残ります：
 
 ```php
 use BEAR\RepositoryModule\Annotation\Cacheable;
@@ -445,6 +445,8 @@ class CachedResource extends ResourceObject
     // ...
 }
 ```
+
+書き込みはいつ起きるか分からないので、レスポンスには`Cache-Control: max-age=0`が付き、ブラウザは`ETag`で毎回確かめます。`#[HttpCache]`で`s-maxage`を宣言していれば、共有キャッシュはその間保持します。ブラウザにもしばらく持たせたい場合は`#[HttpCache(maxAge: …)]`を宣言します。
 
 `#[Cacheable]`のリソースの本文は、シリアライズできるデータでなければなりません。クロージャやPDO接続、`__serialize()`が例外を投げるオブジェクトを含む本文は、リクエストを失敗させます。書き込みのあとにエントリを作り直すGETがそうした本文を作った場合も、書き込みが済んだあとで同じように失敗します。ストリームなどのPHPリソースは拒否されませんが、保存されたコピーでは失われます。
 
