@@ -1012,9 +1012,11 @@ php bin/test.php get '/todos?id=1'
 
 ```
 200 OK
-ETag: 2527085682
+ETag: "2527085682"
 Last-Modified: Sun, 04 Jun 2017 15:23:39 GMT
-content-type: application/hal+json
+Cache-Control: max-age=0
+Age: 0
+Content-Type: application/hal+json
 
 {
     "id": "1",
