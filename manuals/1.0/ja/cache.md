@@ -35,7 +35,7 @@ REST制約に従った分散キャッシュシステムは、計算資源だけ�
 
 BEAR.Sundayはそれぞれのリソースが依存リソースのURIをタグとして保持することで、この問題を解決します。`#[Embed]`で埋め込まれたリソースに変更があると、そのリソースを依存として登録しているリソースのキャッシュとETagが無効化され、次のリクエストのためにキャッシュの再生成が行われます。
 
-この依存関係が登録されるのは、`#[Embed]`で埋め込まれたリソース自身を`#[Cacheable]`などでキャッシュ対象にした場合だけです。キャッシュ対象にしていないリソースを`onGet()`で読み取っても依存にはならず、そのタグはページのエントリには届きません。そのリソースを穴としても描画している場合は、URIをパージすると保存済みのビューが落ち、次のリクエストでページが保存済みのテンプレートから再構成されます。そのようなリソースには`#[Cacheable]`などのキャッシュアトリビュートを付けてください。`$this->resource->get()`で先に取得した値も依存にはなりません。
+この依存関係が登録されるのは、`#[Embed]`で埋め込まれたリソース自身を`#[Cacheable]`などでキャッシュ対象にした場合だけです。キャッシュ対象にしていないリソースを`onGet()`で読み取っても依存にはならず、そのタグはページのエントリには届きません。そのリソースを穴としても描画している場合は、URIをパージすると保存済みのビューが落ち、次のリクエストでページが保存済みのテンプレートから再構成されます。そのようなリソースには`#[Cacheable]`などのキャッシュアトリビュートを付けてください。`$this->resource->get()`で先に取得した値も依存にはなりません。`#[CacheableResponse]`や`#[DonutCache]`のページの描画中にテンプレートのヘルパーが取得したリソースも、そのままでは依存になりません。ヘルパーが注入した`CacheDependencyInterface`で`$cacheDependency->depends($page, $child)`と宣言すると、ページの保存済みのテンプレートがそのリソースのタグを持つので、そのリソースをパージするとテンプレートが落ち、次のGETでページが作り直されます。
 
 `#[Embed]`で埋め込まれたリソースの使われ方によって、挙動は次の3通りに分かれます（`#[DonutCache]`と穴については後述します）：
 
@@ -132,7 +132,7 @@ class Todo extends ResourceObject
 }
 ```
 
-どちらかの方法でアトリビュートを付与すると、概要で紹介した全ての機能が適用されます。イベントドリブン型コンテンツを想定しているため、デフォルトではキャッシュの無効化はイベント駆動で行われます。デフォルトのTTLはインストールするCDNモジュールによって異なります（詳細は後述）。`#[DonutCache]`の場合はコンテンツ全体はキャッシュされず、`#[CacheableResponse]`の場合はされることに注意してください。
+どちらかの方法でアトリビュートを付与すると、概要で紹介した全ての機能が適用されます。イベントドリブン型コンテンツを想定しているため、デフォルトではキャッシュの無効化はイベント駆動で行われます。デフォルトのTTLはインストールするCDNモジュールによって異なります（詳細は後述）。`#[DonutCache]`の場合はコンテンツ全体はキャッシュされず、`#[CacheableResponse]`の場合はされることに注意してください。クラスに`#[CacheableResponse]`を付けたページには、自身で`max-age`か`no-store`を宣言しておらず、`putStatic()`に正の`sMaxAge`も渡していなければ（後述）、`Cache-Control: max-age=0`が付き、ブラウザは通常、手元のコピーを`ETag`で確かめてから使います。
 
 キャッシュアトリビュートによって保存される部分は、全ての訪問者で共有されます。ユーザー固有の値は、`#[DonutCache]`のページで穴として描画する非キャッシュのリソースに入れてください。QueryRepositoryが検査するのはレスポンス自身の`Cache-Control`だけです。次のような経路でユーザー固有の値が保存対象の出力に含まれると、以後、そのキャッシュを利用するすべての訪問者に配信されます。
 
@@ -163,6 +163,8 @@ class BlogPosting extends ResourceObject
     }
 }
 ```
+
+正の`sMaxAge`を渡すと、QueryRepositoryは`max-age=0`を付けません。ブラウザは確かめずにコピーを使うことがあります。ブラウザに確かめさせるには、`putStatic()`を呼ぶ前にページに`Cache-Control: max-age=0`を付けます。
 
 ### TTLの既定値
 
@@ -441,15 +443,33 @@ class CachedResource extends ResourceObject
 }
 ```
 
-その他は[HTTPキャッシュ](https://bearsunday.github.io/manuals/1.0/ja/http-cache.html)ページをご覧ください。
+例）`expirySecond`も`expiryAt`も指定しない場合（既定の`expiry: 'never'`）、エントリは書き込みで無効化されるまでサーバーに残ります：
+
+```php
+use BEAR\RepositoryModule\Annotation\Cacheable;
+
+#[Cacheable]
+class CachedResource extends ResourceObject
+{
+    // ...
+}
+```
+
+書き込みはいつ起きるか分からないので、レスポンスには`Cache-Control: max-age=0`が付き、ブラウザは通常、手元のコピーを`ETag`で確かめてから使います。`#[HttpCache]`で`s-maxage`を宣言していれば、共有キャッシュはその間保持します。ブラウザにもしばらく持たせたい場合は`#[HttpCache(maxAge: …)]`を宣言します。
+
+`#[Cacheable]`のリソースの本文は、シリアライズできるデータでなければなりません。クロージャやPDO接続、`__serialize()`が例外を投げるオブジェクトを含む本文は、リクエストを失敗させます。書き込みのあとにエントリを作り直すGETがそうした本文を作った場合も、書き込みが済んだあとで同じように失敗します。ストリームなどのPHPリソースは拒否されませんが、保存されたコピーでは失われます。
+
+その他は[HTTPキャッシュ](http-cache.html)ページをご覧ください。
 
 ## 可観測性（オブザーバビリティ）
 
 BEAR.QueryRepositoryは実際の挙動を記録できます。記録されるのは、hit/miss、保存した内容とその期間、無効化した内容、そしてCDNのpurgerがpurge要求を成功と報告したかどうかです。purge要求の成功は、CDNのエッジへの実際の伝播を意味しません。ログは自由記述のメッセージではなく、型付きでスキーマ検証可能なツリーです。記録は既定でオフです。`DevQueryRepositoryLogModule`をインストールすると有効になります。インストールだけではキャッシュの挙動自体は変わりません。
 
-このログはリソースリクエストの記録と1本の木にできます。[Event Sourcing](https://bearsunday.github.io/manuals/1.0/ja/event-sourcing.html)の「BEAR.QueryRepository と 1 本の木」の構成にすると、キャッシュの判断（hit/miss、保存、無効化）が、それを起こした`resource_request`の中にネストします。1リクエストで何が起きたかを、リソースのネストとキャッシュの判断を合わせて起きた順に読めます。下の`bear-observe`はこの構成を設置します。
+このログはリソースリクエストの記録と1本の木にできます。[Event Sourcing](event-sourcing.html)の「BEAR.QueryRepository と 1 本の木」の構成にすると、キャッシュの判断（hit/miss、保存、無効化）が、それを起こした`resource_request`の中にネストします。1リクエストで何が起きたかを、リソースのネストとキャッシュの判断を合わせて起きた順に読めます。下の`bear-observe`はこの構成を設置します。
 
 どちらのログモジュールも、1プロセスが1リクエストを処理するホスト（PHP-FPM、CLIスクリプト）を前提とします。RoadRunnerのワーカーやSwooleのコルーチン内など、それが成り立たないと判定できる場合は記録を開始しません。`error_log()`にその旨を出力し、ほかは何も変えずに記録オフのまま動作します（[issue #179](https://github.com/bearsunday/BEAR.QueryRepository/issues/179)）。
+
+この判定は網羅的ではありません。FrankenPHPのworkerモード、ReactPHP、Amp、常駐するCLIコンシューマー、起動時にロガーを生成するSwooleのworkerも1プロセスで多数のリクエストを処理しますが、検出されません。その場合モジュールは記録を開始し、それらのリクエストを1つのロガーに記録して、workerの終了時にまとめて書き出します。こうしたホストではログモジュールを入れないか、`BEAR\QueryRepository\Log\ConcurrentRuntimeInterface`の実装を自前で束縛してください。
 
 ### 開発時
 
@@ -463,7 +483,7 @@ $this->override(new DevQueryRepositoryLogModule($this->appMeta->logDir . '/query
 
 キャッシュプールが`QueryRepositoryModule`既定の`NullAdapter`のままだと、すべてのGETがmissになり、ログにhitは現れません。開発でも`StorageRedisDsnModule`などをインストールするか、`ResourceObjectPool`と`EtagPool`に永続するアダプター（`FilesystemAdapter`など）を束縛します。
 
-リクエストを1本実行すると、そのセッションが`latest.json`に書かれます。ツリーで表示します：
+リクエストを1本実行すると、そのセッションが`latest.json`に書かれます。それ以前のセッションもタイムスタンプ付きのファイルとして隣に残るので、書き込みとそれを反映すべき読み込みのような、複数リクエストにまたがる流れを後から読めます。保持されるのは最新100件で、件数は`keep:`で変えられます。セッションをツリーで表示します：
 
 ```bash
 vendor/bin/stree var/log/{context}/query-repository/latest.json
@@ -490,7 +510,7 @@ use BEAR\QueryRepository\ProdQueryRepositoryLogModule;
 $this->override(new ProdQueryRepositoryLogModule(stream: 'php://stdout', sampleRate: 100));
 ```
 
-mutation（書き込み）と、起きなかった効果（保存の拒否、無効化やpurgeの失敗）は常に保持されます。これらはほかに記録が残らず、確認できるのはこのログだけだからです。`sampleRate`は、問題が無かった健全セッションをN件に1件だけ残す割合です。`0`を指定するとサンプリングを無効化し、健全セッションは一切残しません。これと異なる保持ルールにしたい場合は`RetentionPolicyInterface`を自前で実装し、`override()`の後にbindしてください。writerはDI経由でこれを解決するため、アプリ側のbindingが勝ちます。
+mutation（書き込み）と、起きなかった効果（保存の拒否、無効化やpurgeの失敗）は常に保持されます。これらはほかに記録が残らず、確認できるのはこのログだけだからです。一方、キャッシュの読み込み失敗は保持しません。`trigger_error()`で`E_USER_WARNING`として既に通知されているためです。アプリの警告の出力先で確認してください。エラーハンドラーがこの警告を受け取ればその出力先です。ハンドラーが無い、ハンドラーの対象レベルに`E_USER_WARNING`が含まれていない、またはハンドラーが`false`を返す場合は、PHPのエラーログに出ます（エラーログには`log_errors`が有効で、`error_reporting`に`E_USER_WARNING`が含まれている必要があります）。`sampleRate`は、問題が無かった健全セッションをN件に1件だけ残す割合です。`0`を指定するとサンプリングを無効化し、健全セッションは一切残しません。これと異なる保持ルールにしたい場合は`RetentionPolicyInterface`を自前で実装し、`override()`の後にbindしてください。writerはDI経由でこれを解決するため、アプリ側のbindingが勝ちます。
 
 `cache_hit`、`cache_miss`、`save_value`、`invalidate`、`cdn_headers`など、各エントリは自身のJSON Schemaへのリンクを持ちます。セッションはgrepではなく検証できます。
 
@@ -514,7 +534,7 @@ mkdir -p .claude/skills && cp -r vendor/bear/event-sourcing/skills/bear-observe 
 
 `bear-cache-gate`（キャッシュログを読み、フローごとに保存・hit・無効化が実際に起きたかを判定するゲートを`var/loop/`に設置）が使えるようになります。ログの読解は上の`bear-observe`が引き継いでいます。
 
-ログの全語彙と宣言された境界は、[Why the QueryRepository Log Records Everything](https://github.com/bearsunday/BEAR.QueryRepository/blob/1.x/docs/why-the-log-records-everything.ja.md)、[Reading the Log](https://github.com/bearsunday/BEAR.QueryRepository/blob/1.x/docs/reading-the-log.ja.md)、[What the Cache Log Proves — and What It Does Not](https://github.com/bearsunday/BEAR.QueryRepository/blob/1.x/docs/what-the-log-proves.ja.md)を参照してください。
+ログの全語彙と宣言された境界は、[QueryRepository ログはなぜ全てを記録するのか](https://github.com/bearsunday/BEAR.QueryRepository/blob/1.x/docs/why-the-log-records-everything.ja.md)、[ログの読み方](https://github.com/bearsunday/BEAR.QueryRepository/blob/1.x/docs/reading-the-log.ja.md)、[このログは何を証明し、何を証明しないか](https://github.com/bearsunday/BEAR.QueryRepository/blob/1.x/docs/what-the-log-proves.ja.md)を参照してください。
 
 ## 結論
 

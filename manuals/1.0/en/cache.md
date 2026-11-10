@@ -35,7 +35,7 @@ Content caching has dependency issues. If content A depends on content B, and B 
 
 BEAR.Sunday solves this problem by having each resource hold the URI of dependent resources as tags. When a resource embedded with `#[Embed]` is modified, the cache and ETag of the resources that hold it as a dependency are invalidated, and cache regeneration occurs for the next request.
 
-This dependency is registered only when the resource embedded with `#[Embed]` is itself made cacheable, for example with `#[Cacheable]`. Reading a non-cacheable resource in `onGet()` is not a dependency: its tag does not reach the page's entries. If that resource is also rendered as a hole, purging its URI drops the stored view, and the next request recomposes the page from the template. Give such a resource a cache attribute. A value fetched eagerly with `$this->resource->get()` is not tracked either.
+This dependency is registered only when the resource embedded with `#[Embed]` is itself made cacheable, for example with `#[Cacheable]`. Reading a non-cacheable resource in `onGet()` is not a dependency: its tag does not reach the page's entries. If that resource is also rendered as a hole, purging its URI drops the stored view, and the next request recomposes the page from the template. Give such a resource a cache attribute. A value fetched eagerly with `$this->resource->get()` is not tracked either. Nor is a resource a template helper fetches while a `#[CacheableResponse]` or `#[DonutCache]` page renders, unless the helper declares it with `$cacheDependency->depends($page, $child)` on an injected `CacheDependencyInterface`: the page's stored template then carries the resource's tags, so purging the resource drops the template and the next GET rebuilds the page.
 
 How an embedded resource is used determines the behavior (see [Donut Cache](#donut-cache) below for holes):
 
@@ -133,7 +133,7 @@ class Todo extends ResourceObject
 }
 ```
 
-Either approach applies all the features described in the overview. Because event-driven content is assumed, the cache is invalidated by events rather than by time; the default TTL depends on the CDN module, as described below. Note that `#[DonutCache]` does not cache the whole content, while `#[CacheableResponse]` does.
+Either approach applies all the features described in the overview. Because event-driven content is assumed, the cache is invalidated by events rather than by time; the default TTL depends on the CDN module, as described below. Note that `#[DonutCache]` does not cache the whole content, while `#[CacheableResponse]` does. A page with `#[CacheableResponse]` on its class carries `Cache-Control: max-age=0` unless it declares its own `max-age` or `no-store` or passes a positive `sMaxAge` to `putStatic()` (see [TTL](#ttl)), so a browser normally revalidates it with its `ETag` instead of reusing it unchecked.
 
 What a cache attribute stores is shared with every visitor, so put per-user values in a non-cacheable resource rendered as a hole on a `#[DonutCache]` page. QueryRepository inspects only the response's own `Cache-Control`. A per-user value that reaches the cached output by any other route is stored and served to every later visitor:
 
@@ -165,6 +165,8 @@ class BlogPosting extends ResourceObject
     }
 }
 ```
+
+With a positive `sMaxAge`, QueryRepository does not add `max-age=0`, so browsers may reuse the page without revalidating it. To have browsers revalidate it, set `Cache-Control: max-age=0` on the page before calling `putStatic()`.
 
 ### Default TTL value
 
@@ -445,6 +447,22 @@ class CachedResource extends ResourceObject
 }
 ```
 
+Example: without `expirySecond` or `expiryAt` (the default `expiry: 'never'`), the entry stays on the server until a write invalidates it:
+
+```php
+use BEAR\RepositoryModule\Annotation\Cacheable;
+
+#[Cacheable]
+class CachedResource extends ResourceObject
+{
+    // ...
+}
+```
+
+Since a write can come at any time, the response carries `Cache-Control: max-age=0`: a browser normally revalidates it with its `ETag`, while an `s-maxage` declared with `#[HttpCache]` still lets a shared cache keep it. Declare `#[HttpCache(maxAge: …)]` to let browsers keep it for a while.
+
+The body of a `#[Cacheable]` resource must be data that serializes. A body holding a closure, a PDO connection or an object whose `__serialize()` throws fails the request, and a write fails the same way, after it has run, when the GET that refreshes its entry builds such a body. A PHP resource such as a stream is not refused, but the stored copy loses it.
+
 See the [HTTP Cache](https://bearsunday.github.io/manuals/1.0/ja/http-cache.html) page (Japanese) for more information.
 
 ## Observability
@@ -456,7 +474,7 @@ CDN's edge actually propagated it). Recording is off by default. Installing
 `DevQueryRepositoryLogModule` turns it on; installing it alone does not change cache behavior.
 
 The log can share one tree with the record of resource requests. With the wiring in
-[Event Sourcing](https://bearsunday.github.io/manuals/1.0/en/event-sourcing.html)'s "One tree with
+[Event Sourcing](event-sourcing.html)'s "One tree with
 BEAR.QueryRepository", each cache decision (hit or miss, save, invalidation) nests inside the
 `resource_request` that caused it, so one request reads in causal order: the resources it called
 and what the cache decided for each. The `bear-observe` skill below sets this wiring up.
@@ -465,6 +483,12 @@ Both log modules require a host where one process serves one request (PHP-FPM, a
 Where it can prove otherwise — a RoadRunner worker, or inside a Swoole coroutine — a module
 refuses to arm, says so through `error_log()`, and recording stays off with nothing else changed
 ([issue #179](https://github.com/bearsunday/BEAR.QueryRepository/issues/179)).
+
+That check is not exhaustive. FrankenPHP worker mode, ReactPHP, Amp, a long-lived CLI consumer,
+and a Swoole worker whose logger is built at boot also serve many requests from one process, but
+are not detected: there the module arms, records those requests into one shared logger, and writes
+them only when the worker exits. On such a host, leave the log module out, or bind your own
+`BEAR\QueryRepository\Log\ConcurrentRuntimeInterface`.
 
 ### Development
 
@@ -481,7 +505,9 @@ With the pools left at `QueryRepositoryModule`'s default `NullAdapter`, every GE
 the log never shows a hit. Install `StorageRedisDsnModule` or similar in development too, or bind
 a persistent adapter (such as `FilesystemAdapter`) to `ResourceObjectPool` and `EtagPool`.
 
-Run one request and its session is written to `latest.json`. Render it as a tree:
+Run one request and its session is written to `latest.json`. Earlier sessions stay beside it as
+timestamped files, so a multi-request flow (a write, then the read that should see it) can be read
+back; the newest 100 are kept, and `keep:` changes the count. Render a session as a tree:
 
 ```bash
 vendor/bin/stree var/log/{context}/query-repository/latest.json
@@ -513,7 +539,11 @@ $this->override(new ProdQueryRepositoryLogModule(stream: 'php://stdout', sampleR
 ```
 
 Mutations and failed effects (a refused save, a failed invalidation or purge) are always kept,
-because they have no other witness. `sampleRate` keeps 1 healthy (nothing went wrong) session in N
+because they have no other witness. A failed cache read is not kept: it is already reported as an
+`E_USER_WARNING` through `trigger_error()`, so look for it wherever the app's warnings go: the
+output of the app's error handler if the handler takes it, and the PHP error log when there is no
+handler, the handler's mask leaves out `E_USER_WARNING`, or the handler returns `false` (the log
+needs `log_errors` on and `E_USER_WARNING` in `error_reporting`). `sampleRate` keeps 1 healthy (nothing went wrong) session in N
 as a baseline; `0` disables sampling and keeps no healthy sessions at all. To keep a different
 set, implement `RetentionPolicyInterface` and bind it after overriding the module — the writer
 resolves it through DI, so the app's binding wins.
