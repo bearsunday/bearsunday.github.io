@@ -133,7 +133,7 @@ class Todo extends ResourceObject
 }
 ```
 
-Either approach applies all the features described in the overview. Because event-driven content is assumed, the cache is invalidated by events rather than by time; the default TTL depends on the CDN module, as described below. Note that `#[DonutCache]` does not cache the whole content, while `#[CacheableResponse]` does. A page with `#[CacheableResponse]` on its class carries `Cache-Control: max-age=0` unless it declares its own `max-age` or `no-store`, so a browser normally revalidates it with its `ETag` instead of reusing it unchecked.
+Either approach applies all the features described in the overview. Because event-driven content is assumed, the cache is invalidated by events rather than by time; the default TTL depends on the CDN module, as described below. Note that `#[DonutCache]` does not cache the whole content, while `#[CacheableResponse]` does. A page with `#[CacheableResponse]` on its class carries `Cache-Control: max-age=0` unless it declares its own `max-age` or `no-store` or passes a positive `sMaxAge` to `putStatic()` (see [TTL](#ttl)), so a browser normally revalidates it with its `ETag` instead of reusing it unchecked.
 
 What a cache attribute stores is shared with every visitor, so put per-user values in a non-cacheable resource rendered as a hole on a `#[DonutCache]` page. QueryRepository inspects only the response's own `Cache-Control`. A per-user value that reaches the cached output by any other route is stored and served to every later visitor:
 
@@ -165,6 +165,8 @@ class BlogPosting extends ResourceObject
     }
 }
 ```
+
+With a positive `sMaxAge`, QueryRepository adds no `Cache-Control`, so a browser may reuse the page for a heuristic lifetime derived from its `Last-Modified`. To have browsers revalidate it, set `Cache-Control: max-age=0` on the page before calling `putStatic()`.
 
 ### Default TTL value
 
