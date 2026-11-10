@@ -164,7 +164,7 @@ class BlogPosting extends ResourceObject
 }
 ```
 
-正の`sMaxAge`を渡すと、QueryRepositoryは`Cache-Control`を付けません。ブラウザは`Last-Modified`から推定した期間、確かめずにコピーを使うことがあります。ブラウザに確かめさせるには、`putStatic()`を呼ぶ前にページに`Cache-Control: max-age=0`を付けます。
+正の`sMaxAge`を渡すと、QueryRepositoryは`max-age=0`を付けません。ブラウザは確かめずにコピーを使うことがあります。ブラウザに確かめさせるには、`putStatic()`を呼ぶ前にページに`Cache-Control: max-age=0`を付けます。
 
 ### TTLの既定値
 

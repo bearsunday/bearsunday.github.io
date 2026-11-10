@@ -166,7 +166,7 @@ class BlogPosting extends ResourceObject
 }
 ```
 
-With a positive `sMaxAge`, QueryRepository adds no `Cache-Control`, so a browser may reuse the page for a heuristic lifetime derived from its `Last-Modified`. To have browsers revalidate it, set `Cache-Control: max-age=0` on the page before calling `putStatic()`.
+With a positive `sMaxAge`, QueryRepository does not add `max-age=0`, so browsers may reuse the page without revalidating it. To have browsers revalidate it, set `Cache-Control: max-age=0` on the page before calling `putStatic()`.
 
 ### Default TTL value
 
