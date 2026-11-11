@@ -1012,9 +1012,11 @@ php bin/test.php get '/todos?id=1'
 
 ```
 200 OK
-ETag: 2527085682
+ETag: "2527085682"
 Last-Modified: Sun, 04 Jun 2017 15:23:39 GMT
-content-type: application/hal+json
+Cache-Control: max-age=0
+Age: 0
+Content-Type: application/hal+json
 
 {
     "id": "1",
@@ -1048,9 +1050,9 @@ Date: Sun, 02 May 2021 17:10:55 GMT
 Connection: close
 X-Powered-By: PHP/8.0.3
 Content-Type: application/hal+json
-ETag: 197839553
+ETag: "197839553"
 Last-Modified: Sun, 02 May 2021 17:10:55 GMT
-Cache-Control: max-age=31536000
+Cache-Control: max-age=0
 
 {
     "id": "1",
@@ -1069,6 +1071,7 @@ Cache-Control: max-age=31536000
 
 `#[Cacheable]`アトリビュートを使用したキャッシュは、有効期限を明示的に設定しない限り時間経過では無効化されません。
 キャッシュの再生成は、`onPut($id, $todo)`や`onDelete($id)`などでリソースが変更された時に行われます。
+書き込みでいつ変わるか分からないので、レスポンスには`Cache-Control: max-age=0`が付き、ブラウザは通常、手元のコピーを`ETag`で確かめてから使います。
 
 #### PUTリクエスト
 

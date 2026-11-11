@@ -1009,9 +1009,11 @@ php bin/test.php get '/todos?id=1'
 
 ```
 200 OK
-ETag: 2527085682
+ETag: "2527085682"
 Last-Modified: Sun, 04 Jun 2017 15:23:39 GMT
-content-type: application/hal+json
+Cache-Control: max-age=0
+Age: 0
+Content-Type: application/hal+json
 
 {
     "id": "1",
@@ -1044,9 +1046,9 @@ Date: Sun, 02 May 2021 17:10:55 GMT
 Connection: close
 X-Powered-By: PHP/8.0.3
 Content-Type: application/hal+json
-ETag: 197839553
+ETag: "197839553"
 Last-Modified: Sun, 02 May 2021 17:10:55 GMT
-Cache-Control: max-age=31536000
+Cache-Control: max-age=0
 
 {
     "id": "1",
@@ -1064,6 +1066,7 @@ Send the request multiple times and confirm that the `Last-Modified` date does n
 
 The `Cacheable` attribute, if not set with `expiry`, does not invalidate the cache over time.
 The cache is regenerated when resources are changed with `onPut($id, $todo)` or `onDelete($id)`.
+Because a write can change it at any time, the response carries `Cache-Control: max-age=0`, and a browser normally revalidates it with its `ETag` instead of reusing it unchecked.
 
 #### PUT Request
 
