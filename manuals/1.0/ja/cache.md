@@ -45,6 +45,36 @@ BEAR.Sundayはそれぞれのリソースが依存リソースのURIをタグと
 | イベントで変化する共有コンテンツ | キャッシュ対象のリソースを穴として描画する（`onGet()`では読まない） | 外殻（シェル）が保存済みのテンプレートから再構成される |
 | ページの`onGet()`が読み取る値 | キャッシュ対象のリソース（依存として扱われる） | 保存済みのキャッシュ全体が破棄され、次のGETはキャッシュミスになる |
 
+### #[DependsOn]
+
+上の依存が自動で働くのは、`#[Embed]`で埋め込んだリソースだけです。クエリやサービスの呼び出しなど、埋め込まずに読んだデータは依存になりません。そうしたデータは、読み取り元のURIを`#[DependsOn]`で宣言してください。依存を作るためだけに`#[Embed]`を足さなくても、そのURIへの書き込みでこのリソースが無効化されます。
+
+```php
+use BEAR\RepositoryModule\Annotation\DependsOn;
+
+#[Cacheable]
+class ChannelEntries extends ResourceObject
+{
+    #[DependsOn(uri: 'app://self/taxonomy?ulid={channelId}')]
+    public function onGet(string $channelId): static
+    {
+        $this->body = ['entries' => $this->query->entries($channelId)];
+
+        return $this;
+    }
+}
+```
+
+`#[DependsOn]`が足すのはタグだけです。宣言したURIを無効化するのは、そのURIのリソース自身の書き込み（`#[Cacheable]`のとき）か、そのURIを指定した`#[Purge]`/`#[Refresh]`です。
+
+一覧の行のクラスにも付けられます。その場合は行のpublicプロパティがテンプレート変数になり、bodyの中で見つかった行ごとにURIが展開されます。bodyは配列とpublicプロパティだけをたどるので、コレクションや`Generator`のような`Traversable`の中の行は見つかりません。
+
+制限が2つあります。`#[ResourceParam]`で束縛した引数は、束縛した値ではなくリクエストのクエリから読み戻します。そのため、デフォルト値のない引数を使う宣言は失敗し、デフォルト値のある引数を使う宣言は黙ってデフォルト値で展開されます。また、展開できない宣言はGETを`DependsOnNotExpandable`で失敗させ、何も保存しません。
+
+間にキャッシュしないリソースを挟むと、上に伝わるのは`#[DependsOn]`で宣言されたURI（そのリソースと、その下で実行されたリクエストの宣言）だけになります。その下にあるキャッシュ対象の孫リソース自身のタグは伝わりません。孫のURIを間のリソースでも`#[DependsOn]`で宣言するか、間のリソースを`#[Cacheable]`にしてください。
+
+`bear/query-repository` 1.20以降が必要です。
+
 ## ドーナッツキャッシュ
 
 <img width="200" alt="donut caching" src="https://user-images.githubusercontent.com/529021/137097856-f9428918-5b76-4c0e-8cea-2472c15d82e9.png">

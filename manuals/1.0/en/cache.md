@@ -45,6 +45,34 @@ How an embedded resource is used determines the behavior (see [Donut Cache](#don
 | Shared content that changes on an event | a cacheable resource rendered as a hole (never read in `onGet()`) | the shell is recomposed from the stored template |
 | A value the page's own `onGet()` reads | a cacheable resource becomes a dependency | the whole stored entry is dropped and the next GET is a fresh miss |
 
+### #[DependsOn]
+
+The dependency above is automatic only for a resource embedded with `#[Embed]`. Data a resource reads without embedding it — through a query, a service call, or any other code — forms no dependency on its own. Declare the URI by hand with `#[DependsOn]`, and a write to it invalidates this resource the same way, without adding an `#[Embed]` just to create the dependency.
+
+```php
+use BEAR\RepositoryModule\Annotation\DependsOn;
+
+#[Cacheable]
+class ChannelEntries extends ResourceObject
+{
+    #[DependsOn(uri: 'app://self/taxonomy?ulid={channelId}')]
+    public function onGet(string $channelId): static
+    {
+        $this->body = ['entries' => $this->query->entries($channelId)];
+
+        return $this;
+    }
+}
+```
+
+`#[DependsOn]` only adds the tag; the named URI still needs its own write to invalidate it — either because it is itself `#[Cacheable]`, or through a `#[Purge]`/`#[Refresh]` that names it. The attribute can also be placed on a row class read from a list: each public property becomes a template variable, and every row in the body — arrays and public properties only, not a `Traversable` such as a collection or `Generator` — expands the URI once.
+
+Two more limits apply: an argument bound by `#[ResourceParam]` is read back from the request query rather than from the binding, so a declaration without a default fails and one with a default silently expands from the default instead of the bound value; and a declaration that cannot expand fails the GET with `DependsOnNotExpandable`, storing nothing.
+
+A non-cached resource in between passes on only URIs declared with `#[DependsOn]` (its own, and those of the requests below it that ran), not a cacheable grandchild's own tag further down. Declare the grandchild's URI on the resource in between as well, or make that resource `#[Cacheable]`, to have the invalidation reach the top.
+
+Requires `bear/query-repository` 1.20 or later.
+
 ## Donut Cache
 
 <img width="200" alt="donut caching" src="https://user-images.githubusercontent.com/529021/137097856-f9428918-5b76-4c0e-8cea-2472c15d82e9.png">
