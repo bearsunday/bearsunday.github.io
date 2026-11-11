@@ -35,7 +35,7 @@ Content caching has dependency issues. If content A depends on content B, and B 
 
 BEAR.Sunday solves this problem by having each resource hold the URI of dependent resources as tags. When a resource embedded with `#[Embed]` is modified, the cache and ETag of the resources that hold it as a dependency are invalidated, and cache regeneration occurs for the next request.
 
-This dependency is registered only when the resource embedded with `#[Embed]` is itself made cacheable, for example with `#[Cacheable]`, or declares `#[DependsOn]` (see below). Reading a resource that is neither in `onGet()` is not a dependency: its tag does not reach the page's entries. If that resource is also rendered as a hole, purging its URI drops the stored view, and the next request recomposes the page from the template. Give such a resource a cache attribute. A value fetched eagerly with `$this->resource->get()` is not tracked either.
+This dependency is registered only when the resource embedded with `#[Embed]` is itself made cacheable, for example with `#[Cacheable]`, or declares `#[DependsOn]` (see below). A resource with neither, read in `onGet()`, is not a dependency: its tag does not reach the page's entries. If that resource is also rendered as a hole, purging its URI drops the stored view, and the next request recomposes the page from the template. Give such a resource a cache attribute. A value fetched eagerly with `$this->resource->get()` is not tracked either.
 
 How an embedded resource is used determines the behavior (see [Donut Cache](#donut-cache) below for holes):
 
@@ -229,7 +229,7 @@ Besides its own URI tag, each cached entry carries a group tag: the tag of its U
 
 A write method of a `#[Cacheable]` or `#[CacheableResponse]` resource, and a method marked `#[RefreshCache]`, purges its own URI with the default-valued parameters removed, so a write to `app://self/articles` drops every page of the list. A write method of a `#[DonutCache]` resource automatically purges its own URI only when it is marked `#[RefreshCache]`.
 
-A required parameter stays in the group tag under the key the request used. For `onGet(int $userId, int $page = 1)`, an entry requested as `?user_id=1&page=2` is dropped by a purge of `?user_id=1`, not by one of `?userId=1`. The automatic purge after a write uses the parameter name (`?userId=1`), so it does not reach an entry requested as `?user_id=1`.
+A required parameter stays in the group tag under the key the request used. For `onGet(int $userId, int $page = 1)`, an entry requested as `?user_id=1&page=2` is dropped by a purge of `?user_id=1`, not by one of `?userId=1`. The automatic purge after a write purges both the parameter name (`?userId=1`) and its snake_case form (`?user_id=1`), so it reaches the entry whichever spelling the GET used; a GET that mixes the two across its required keys (`?userId=1&post_id=2`) is not reached. This needs bear/query-repository 1.20.1 or later.
 
 ### Invalidate by tag
 

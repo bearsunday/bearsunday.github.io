@@ -226,7 +226,7 @@ $this->repository->purge(new Uri('app://self/articles?page=2')); // ?page=2 だ�
 
 `#[Cacheable]`、`#[CacheableResponse]`のリソースの書き込みメソッドと、`#[RefreshCache]`を付けたメソッドは、自身のURIから既定値を持つ引数を除いたURIを無効化します。そのため`app://self/articles`への書き込みは、一覧のすべてのページを無効化します。`#[DonutCache]`のリソースの書き込みメソッドが自身のURIを自動で無効化するのは、`#[RefreshCache]`を付けた場合だけです。
 
-必須の引数は、リクエストが使ったキーのままグループタグに入ります。`onGet(int $userId, int $page = 1)`を`?user_id=1&page=2`で取得したエントリは、`?user_id=1`を指定すると無効化され、`?userId=1`を指定しても無効化されません。書き込み後の自動の無効化は引数名のキー（`?userId=1`）を使うので、`?user_id=1`で取得したエントリには届きません。
+必須の引数は、リクエストが使ったキーのままグループタグに入ります。`onGet(int $userId, int $page = 1)`を`?user_id=1&page=2`で取得したエントリは、`?user_id=1`を指定すると無効化され、`?userId=1`を指定しても無効化されません。書き込み後の自動の無効化は、引数名のキー（`?userId=1`）とそのsnake_case（`?user_id=1`）の両方を無効化するので、GETがどちらの綴りで取得したエントリにも届きます。ただし、必須の引数ごとに綴りが混ざったGET（`?userId=1&post_id=2`）には届きません。これにはbear/query-repository 1.20.1以降が必要です。
 
 ### タグによる無効化
 
