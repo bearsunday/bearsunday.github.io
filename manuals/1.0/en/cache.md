@@ -65,7 +65,9 @@ class ChannelEntries extends ResourceObject
 }
 ```
 
-`#[DependsOn]` only adds the tag; the named URI still needs its own write to invalidate it — either because it is itself `#[Cacheable]`, or through a `#[Purge]`/`#[Refresh]` that names it. The attribute can also be placed on a row class read from a list: each public property becomes a template variable, and every row in the body — arrays and public properties only, not a `Traversable` such as a collection or `Generator` — expands the URI once.
+`#[DependsOn]` only adds the tag; the named URI still needs its own write to invalidate it — either because it is itself `#[Cacheable]`, or through a `#[Purge]`/`#[Refresh]` that names it.
+
+The attribute can also be placed on a row class read from a list: each public property becomes a template variable, and every row found in the body expands the URI once. The body is walked through arrays and public properties only, so rows inside a `Traversable` such as a collection or a `Generator` are not found.
 
 Two more limits apply: an argument bound by `#[ResourceParam]` is read back from the request query rather than from the binding, so a declaration without a default fails and one with a default silently expands from the default instead of the bound value; and a declaration that cannot expand fails the GET with `DependsOnNotExpandable`, storing nothing.
 
