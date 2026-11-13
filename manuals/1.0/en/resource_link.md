@@ -140,6 +140,14 @@ Several links are joined with commas: `#link=self:blog,crawl:post-tree` is `->li
 
 The links are followed after the resource is retrieved, so they do not change which resource the URI names.
 
+The console takes the same URI; quote it so the shell keeps the `#`:
+
+```bash
+php bin/app.php get '/user?id=1#link=self:blog'
+```
+
+A web request carries no fragment, so links are given only from code, attributes and the console.
+
 An `#[Embed]` src takes the same fragment, so a resource can declare a linked embed instead of requesting it in its method:
 
 ```php?start_inline
