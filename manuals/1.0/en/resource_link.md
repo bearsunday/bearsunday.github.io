@@ -140,7 +140,7 @@ Several links are joined with commas: `#link=self:blog,crawl:post-tree` is `->li
 
 The links are followed after the resource is retrieved, so they do not change which resource the URI names.
 
-The console takes the same URI; quote it so the shell keeps the `#`:
+The console takes the same URI; quote it so the shell passes `?` and `#` through unchanged:
 
 ```bash
 php bin/app.php get '/user?id=1#link=self:blog'
