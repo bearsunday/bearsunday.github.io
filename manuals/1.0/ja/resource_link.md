@@ -136,6 +136,13 @@ $blog = $this->resource->get('app://self/user#link=self:blog', ['id' => 1]);
 
 リンクはリソースを取得したあとに辿るので、URIが指すリソースは変わりません。
 
+`#[Embed]`のsrcにも同じフラグメントを書けます。メソッドの中でリクエストせずに、リンクした埋め込みを宣言できます。
+
+```php
+#[Embed(rel: 'blog', src: 'app://self/user{?id}#link=self:blog')]
+public function onGet(int $id): static
+```
+
 `linkSelf()`・`linkNew()`・`linkCrawl()`は`#[Link]`のhrefが指すリソースまで辿ります。hrefのフラグメントは、`=`がなければ無視し、`=`を含む（リンクの）ときは`UriException`になります。
 
 ### クロール
