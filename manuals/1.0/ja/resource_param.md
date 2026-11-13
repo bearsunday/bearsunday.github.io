@@ -480,6 +480,8 @@ class News extends ResourceObject
 
 この例ではメソッドが呼ばれると`login`リソースに`get`リクエストを行い、`$body['nickname']`を`$name`で受け取ります。
 
+フラグメントはbodyのキーを指します。`#[ResourceParam]`のURIではリンクを辿れません。`#link=self:blog`のように`=`を含むフラグメントは`UriException`になります。
+
 ## コンテントネゴシエーション
 
 HTTPリクエストの`content-type`ヘッダーがサポートされています。`application/json`と`x-www-form-urlencoded`メディアタイプを判別してパラメーターに値が渡されます。[^json]

@@ -117,6 +117,25 @@ $blog = $this
 * `linkNew($rel)` - リンク先のリソースがリンク元のリソースに追加されます
 * `linkCrawl($rel)` - リンクをクロールしてリソースグラフを作成します。
 
+### URIのリンク
+
+リクエストはリンクをURIのフラグメントに書き出し、そのフラグメントを持つURIから同じリクエストを作れます。`#link=`には`type:rel`をリンクを辿る順に並べます。
+
+```php
+$uri = $this->resource
+    ->get
+    ->uri('app://self/user')
+    ->withQuery(['id' => 1])
+    ->linkSelf('blog')
+    ->toUri(); // app://self/user?id=1#link=self:blog
+
+$blog = $this->resource->get('app://self/user#link=self:blog', ['id' => 1]);
+```
+
+複数のリンクはカンマでつなぎます。`#link=self:blog,crawl:post-tree`は`->linkSelf('blog')->linkCrawl('post-tree')`と同じです。relに使える文字は`A-Z a-z 0-9 _ -`です。リクエストのURIにそれ以外のフラグメントがあれば`UriException`になります。
+
+リンクはリソースを取得したあとに辿るので、URIが指すリソースは変わりません。
+
 ### クロール
 
 クロールはリスト（配列）になっているリソースを順番にリンクを辿り、複雑なリソースグラフを構成することができます。クローラーがWebページをクロールするように、リソースクライアントはハイパーリンクをクロールしてリソースグラフを生成します。

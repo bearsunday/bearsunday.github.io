@@ -484,6 +484,8 @@ class News extends ResourceObject
 
 In this example, when the method is called, it makes a `get` request to the `login` resource and receives `$body['nickname']` as `$name`.
 
+The fragment names a key of the body. A `#[ResourceParam]` URI cannot follow links: a fragment with `=`, such as `#link=self:blog`, throws `UriException`.
+
 ## Content Negotiation
 
 HTTP request `content-type` headers are supported. `application/json` and `x-www-form-urlencoded` media types are distinguished and values are passed to parameters. [^json]
