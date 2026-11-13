@@ -140,6 +140,13 @@ Several links are joined with commas: `#link=self:blog,crawl:post-tree` is `->li
 
 The links are followed after the resource is retrieved, so they do not change which resource the URI names.
 
+An `#[Embed]` src takes the same fragment, so a resource can declare a linked embed instead of requesting it in its method:
+
+```php?start_inline
+#[Embed(rel: 'blog', src: 'app://self/user{?id}#link=self:blog')]
+public function onGet(int $id): static
+```
+
 `linkSelf()`, `linkNew()` and `linkCrawl()` follow a `#[Link]` href to the resource it names. A fragment in the href without `=` is ignored; one with `=` (a link) throws `UriException`.
 
 ## crawl
