@@ -121,6 +121,25 @@ There are three types of links. The `body` linked resource of the original resou
 * `linkNew($rel)` the linked resource is added to the original resource
 * `linkCrawl($rel)` crawl the link and create a resource graph.
 
+### Links in the URI
+
+A request writes its links in the fragment of its URI, and a URI with that fragment builds the same request. `#link=` lists `type:rel` in the order the links are followed.
+
+```php?start_inline
+$uri = $this->resource
+    ->get
+    ->uri('app://self/user')
+    ->withQuery(['id' => 1])
+    ->linkSelf('blog')
+    ->toUri(); // app://self/user?id=1#link=self:blog
+
+$blog = $this->resource->get('app://self/user#link=self:blog', ['id' => 1]);
+```
+
+Several links are joined with commas: `#link=self:blog,crawl:post-tree` is `->linkSelf('blog')->linkCrawl('post-tree')`. A rel is made of `A-Z a-z 0-9 _ -`. A request URI with any other fragment throws `UriException`.
+
+The links are followed after the resource is retrieved, so they do not change which resource the URI names.
+
 ## crawl
 
 Crawls are lists (arrays) of resources, and links can be traversed in sequence to compose complex resource graphs.
