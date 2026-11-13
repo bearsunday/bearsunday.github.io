@@ -136,7 +136,7 @@ $blog = $this->resource->get('app://self/user#link=self:blog', ['id' => 1]);
 
 リンクはリソースを取得したあとに辿るので、URIが指すリソースは変わりません。
 
-コンソールでも同じURIを使えます。シェルが`#`以降を捨てないように、URIを引用符で囲みます。
+コンソールでも同じURIを使えます。シェルが`?`や`#`を解釈しないように、URIを引用符で囲みます。
 
 ```bash
 php bin/app.php get '/user?id=1#link=self:blog'
