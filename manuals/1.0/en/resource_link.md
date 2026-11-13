@@ -140,6 +140,8 @@ Several links are joined with commas: `#link=self:blog,crawl:post-tree` is `->li
 
 The links are followed after the resource is retrieved, so they do not change which resource the URI names.
 
+`linkSelf()`, `linkNew()` and `linkCrawl()` follow a `#[Link]` href to the resource it names. A fragment in the href without `=` is ignored; one with `=` (a link) throws `UriException`.
+
 ## crawl
 
 Crawls are lists (arrays) of resources, and links can be traversed in sequence to compose complex resource graphs.
