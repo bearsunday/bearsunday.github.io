@@ -449,12 +449,12 @@ The client does not need to request a resource that it knows will not be updated
 
 ## #[Cacheable]
 
-`#[Cacheable]` caches the resource's value (its `body`). `#[CacheableResponse]` caches the response (the representation) and stores no `body`.
+`#[Cacheable]` caches the resource's value (its `body`). `#[CacheableResponse]` caches the response (the representation) and has no `body` when served from the cache.
 
 * `type: 'value'` (the default) stores only the `body` and renders the representation on each request, so the same value can be returned in another representation and used as a value when embedded.
 * `type: 'view'` stores both the `body` and the representation.
 
-Either way the response gets an ETag, and an embedded child that carries an ETag or a `Surrogate-Key` takes the entry with it when invalidated. `expiry` defaults to `never`, one year by default.
+Either way the response gets an ETag, and an embedded child that carries an ETag or a `Surrogate-Key` takes the entry with it when invalidated. `expiry` defaults to `never`: the server keeps the entry until it is invalidated, and the client gets `max-age=0` and revalidates with the ETag.
 
 Use `#[Cacheable]` for a resource that is embedded and used as a value. A `#[CacheableResponse]` resource served from the cache has no `body`, so a page embedding it renders that part as `null` in JSON.
 
