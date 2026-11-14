@@ -449,7 +449,14 @@ The client does not need to request a resource that it knows will not be updated
 
 ## #[Cacheable]
 
-Traditional TTL caching with `#[Cacheable]` is also supported.
+`#[Cacheable]` caches the resource's value (its `body`). `#[CacheableResponse]` caches the response (the representation) and stores no `body`.
+
+* `type: 'value'` (the default) stores only the `body` and renders the representation on each request, so the same value can be returned in another representation and used as a value when embedded.
+* `type: 'view'` stores both the `body` and the representation.
+
+Either way the response gets an ETag, and an embedded child that carries an ETag or a `Surrogate-Key` takes the entry with it when invalidated. `expiry` defaults to `never`, one year by default.
+
+Use `#[Cacheable]` for a resource that is embedded and used as a value. A `#[CacheableResponse]` resource served from the cache has no `body`, so a page embedding it renders that part as `null` in JSON.
 
 Example: cache on the server for 30 seconds, and on the client for 30 seconds. The client cache duration follows the server-side setting:
 
