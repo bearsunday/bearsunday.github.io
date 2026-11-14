@@ -445,12 +445,12 @@ API（またはコンテンツ）は**情報API**（Information API）と**計�
 
 ## #[Cacheable]
 
-`#[Cacheable]`はリソースの値（`body`）をキャッシュします。`#[CacheableResponse]`がレスポンス（表現）をキャッシュし、`body`を保存しないのとの違いです。
+`#[Cacheable]`はリソースの値（`body`）をキャッシュします。`#[CacheableResponse]`がレスポンス（表現）をキャッシュし、キャッシュから返るとき`body`を持たないのとの違いです。
 
 * `type: 'value'`（既定）は`body`だけを保存し、表現はリクエストのたびに作ります。同じ値を別の表現で返せ、埋め込まれたときは値として使えます。
 * `type: 'view'`は`body`と表現の両方を保存します。
 
-どちらもETagが付き、埋め込んだ子リソースがETagか`Surrogate-Key`を持てば、その子の無効化で一緒に消えます。`expiry`の既定は`never`で、既定では1年です。
+どちらもETagが付き、埋め込んだ子リソースがETagか`Surrogate-Key`を持てば、その子の無効化で一緒に消えます。`expiry`の既定は`never`で、サーバー側では無効化されるまで保存し、クライアントには`max-age=0`を返してETagで再検証させます。
 
 埋め込まれて値として使われるリソースには`#[Cacheable]`を使います。`#[CacheableResponse]`のリソースはキャッシュから返るとき`body`を持たないので、それを埋め込んだページをJSONで描画すると、その部分が`null`になります。
 
