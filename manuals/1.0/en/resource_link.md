@@ -136,9 +136,11 @@ $uri = $this->resource
 $blog = $this->resource->get('app://self/user#link=self:blog', ['id' => 1]);
 ```
 
-Several links are joined with commas: `#link=self:blog,crawl:post-tree` is `->linkSelf('blog')->linkCrawl('post-tree')`. A rel is made of `A-Z a-z 0-9 _ -`. A request URI with any other fragment throws `UriException`.
+Several links are joined with commas: `#link=self:blog,crawl:post-tree` is `->linkSelf('blog')->linkCrawl('post-tree')`. A rel is made of `A-Z a-z 0-9 _ -`. `uri()`, `get()` and `newRequest()` read the fragment and `toUri()` writes it; a request URI with any other fragment throws `UriException`.
 
-The links are followed after the resource is retrieved, so they do not change which resource the URI names.
+The resource client follows the links after it retrieves the resource, so they do not change which resource the URI names.
+
+> **Note**: What is the `#`? In [RFC 3986 §3.5](https://www.rfc-editor.org/rfc/rfc3986#section-3.5), a fragment identifies a secondary resource by reference to a primary resource: a portion or a view of it, or "some other resource defined or described by those representations". The fragment is resolved by the client alone and never reaches the server. `#link=self:blog` uses it in that sense: the URI before `#` is requested, then the resource client follows the `blog` link that the representation declares. This use has precedents: hash URIs such as `about#alice` in W3C [Cool URIs for the Semantic Web](https://www.w3.org/TR/cooluris/#hashuri) name a thing the document describes, and [RFC 5147](https://www.rfc-editor.org/rfc/rfc5147) defines a `name=value` fragment, `#line=10,20`, for plain text.
 
 The console takes the same URI; quote it so the shell passes `?` and `#` through unchanged:
 
@@ -155,7 +157,7 @@ An `#[Embed]` src takes the same fragment, so a resource can declare a linked em
 public function onGet(int $id): static
 ```
 
-`linkSelf()`, `linkNew()` and `linkCrawl()` follow a `#[Link]` href to the resource it names. A fragment in the href without `=` is ignored; one with `=` (a link) throws `UriException`.
+A `#[Link]` href declares no fragment; unlike an `#[Embed]` src, it cannot carry `#link=`. An href with `#...` or `{#var}` throws `LinkHrefException` where the link is read: HAL `_links`, OPTIONS, the `Link` header, and `linkSelf()`, `linkNew()`, `linkCrawl()` and `href()`. Remove the fragment from the href. A fragment that a variable expands to (`{+var}`) is dropped.
 
 ## crawl
 

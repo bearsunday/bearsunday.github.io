@@ -117,7 +117,7 @@ $blog = $this
 * `linkNew($rel)` - リンク先のリソースがリンク元のリソースに追加されます
 * `linkCrawl($rel)` - リンクをクロールしてリソースグラフを作成します。
 
-### URIのリンク
+### URIのリンク {#links-in-the-uri}
 
 リクエストはリンクをURIのフラグメントに書き出し、そのフラグメントを持つURIから同じリクエストを作れます。`#link=`には`type:rel`をリンクを辿る順に並べます。
 
@@ -132,9 +132,11 @@ $uri = $this->resource
 $blog = $this->resource->get('app://self/user#link=self:blog', ['id' => 1]);
 ```
 
-複数のリンクはカンマでつなぎます。`#link=self:blog,crawl:post-tree`は`->linkSelf('blog')->linkCrawl('post-tree')`と同じです。relに使える文字は`A-Z a-z 0-9 _ -`です。リクエストのURIにそれ以外のフラグメントがあれば`UriException`になります。
+複数のリンクはカンマでつなぎます。`#link=self:blog,crawl:post-tree`は`->linkSelf('blog')->linkCrawl('post-tree')`と同じです。relに使える文字は`A-Z a-z 0-9 _ -`です。`uri()`・`get()`・`newRequest()`はこのフラグメントを読み、`toUri()`は書き出します。リクエストのURIにそれ以外のフラグメントがあれば`UriException`になります。
 
-リンクはリソースを取得したあとに辿るので、URIが指すリソースは変わりません。
+リソースクライアントはリソースを取得したあとにリンクを辿るので、URIが指すリソースは変わりません。
+
+> **Note**: `#`とは何でしょうか。[RFC 3986 §3.5](https://www.rfc-editor.org/rfc/rfc3986#section-3.5)のフラグメントは、一次リソースを介して二次リソースを識別します。二次リソースは一次リソースの一部やビューのこともあれば、「その表現が定義または記述する別のリソース」のこともあります。フラグメントはクライアントだけが解決し、サーバーには届きません。`#link=self:blog`もこの意味でフラグメントを使います。`#`より前のURIをリクエストし、その表現が宣言する`blog`リンクをリソースクライアントが辿ります。この使い方には先例があります。W3Cの[Cool URIs for the Semantic Web](https://www.w3.org/TR/cooluris/#hashuri)にある`about#alice`のようなハッシュURIは文書が記述する対象を指し、[RFC 5147](https://www.rfc-editor.org/rfc/rfc5147)はプレーンテキストに`#line=10,20`という`name=value`形式のフラグメントを定めています。
 
 コンソールでも同じURIを使えます。シェルが`?`や`#`を解釈しないように、URIを引用符で囲みます。
 
@@ -151,7 +153,7 @@ Webのリクエストはフラグメントを送らないので、リンクを�
 public function onGet(int $id): static
 ```
 
-`linkSelf()`・`linkNew()`・`linkCrawl()`は`#[Link]`のhrefが指すリソースまで辿ります。hrefのフラグメントは、`=`がなければ無視し、`=`を含む（リンクの）ときは`UriException`になります。
+`#[Link]`のhrefにはフラグメントを書きません。`#[Embed]`のsrcと違い、`#link=`も書けません。hrefに`#...`や`{#var}`があると、リンクを読む箇所（HALの`_links`、OPTIONS、`Link`ヘッダー、`linkSelf()`・`linkNew()`・`linkCrawl()`・`href()`）で`LinkHrefException`になります。hrefからフラグメントを取り除いてください。変数の展開（`{+var}`）で生じたフラグメントは捨てられます。
 
 ### クロール
 
