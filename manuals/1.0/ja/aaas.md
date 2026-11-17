@@ -7,8 +7,8 @@ permalink: /manuals/1.0/ja/aaas.html
 
 ## AaaS (Application as a Service)
 
-作成したAPIアプリケーションはWebやコンソール（バッチ）からアクセスできますが、他のPHPプロジェクトからライブラリとしてアクセスする事もできます。
-このチュートリアルで作成したリポジトリは[https://github.com/bearsunday/Tutorial2.git](https://github.com/bearsunday/Tutorial2.git)にpushしてあります。
+作成したAPIアプリケーションはWebやコンソール（バッチ）からアクセスできますが、他のPHPプロジェクトからライブラリとしてアクセスすることもできます。
+このチュートリアルで作成したリポジトリは[https://github.com/bearsunday/Tutorial2.git](https://github.com/bearsunday/Tutorial2.git)で公開しています。
 
 このプロジェクトをライブラリとして利用してみましょう。まず最初に新しいプロジェクトフォルダを作って`composer.json`を用意します。
 
@@ -45,7 +45,7 @@ composer installでプロジェクトがライブラリとしてインストー�
 composer install
 ```
 
-`Ticket API`はプロジェクトフォルダにある`.env`を読むように設定されてました。`vendor/my-vendor/app/.env`に保存出来なくもないですが、ここでは別の方法で環境変数をセットアップしましょう。
+`Ticket API`はプロジェクトフォルダにある`.env`を読むように設定されていました。`vendor/my-vendor/app/.env`に保存することもできますが、ここでは別の方法で環境変数をセットアップします。
 
 このような`app/.env`ファイルを用意します。
 
@@ -58,7 +58,7 @@ export TKT_DB_SLAVE=''
 export TKT_DB_DSN=mysql:host=${TKT_DB_HOST}\;dbname=${TKT_DB_NAME}
 ```
 
-`source`コマンドで環境変数にexportすることができます。
+`source`コマンドで環境変数をエクスポートできます。
 
 ```
 source .env
@@ -83,7 +83,7 @@ echo $response->code . PHP_EOL;
 
 ```
 
-`index.php`と保存して実行してみましょう。
+`index.php`として保存して実行してみましょう。
 
 ```
 php index.php
@@ -92,8 +92,8 @@ php index.php
 201
 ```
 
-APIを他のメソッドに渡したり、他のフレームワークなどののコンテナに格納するためには`callable`オブジェクトにします。
-`$createTicket`は普通の関数のように扱うことができます。
+APIを他のメソッドに渡したり、他のフレームワークのコンテナに格納したりするには、`callable`オブジェクトとして扱います。
+`$createTicket`は普通の関数のように扱えます。
 
 ```php
 <?php
@@ -109,7 +109,7 @@ echo $response->code . PHP_EOL;
 ```
 
 うまく動きましたか？しかし、このままでは`tmp`/ `log`ディレクトリは`vendor`の下のアプリが使われてしまいますね。
-このようにアプリケーションのメタ情報を変更するとディレクトリの位置を変更することができます。
+このようにアプリケーションのメタ情報を変更するとディレクトリの位置を変更できます。
 
 ```php
 <?php
@@ -119,9 +119,13 @@ use BEAR\Package\Bootstrap;
 
 require __DIR__ . '/vendor/autoload.php';
 
-$meta = new Meta('MyVendor\Ticket', 'app');
-$meta->tmpDir = __DIR__ . '/ticket/tmp';
-$meta->logDir = __DIR__ . '/ticket/log';
+$meta = new Meta(
+    'MyVendor\Ticket',
+    'app',
+    '',
+    __DIR__ . '/ticket/tmp',
+    __DIR__ . '/ticket/log',
+);
 $ticket = (new Bootstrap)->newApp($meta, 'app');
 ```
 
@@ -133,7 +137,7 @@ $ticket = (new Bootstrap)->newApp($meta, 'app');
 
 ## アプリケーションのインポート
 
-BEAR.Sundayで作られたリソースは再利用性に優れています。複数のアプリケーションを同時に動作させ、他のアプリケーションのリソースを利用することができます。別々のWebサーバーを立てる必要はありません。
+BEAR.Sundayで作られたリソースは再利用性に優れています。複数のアプリケーションを同時に動作させ、他のアプリケーションのリソースを利用できます。別々のWebサーバーを立てる必要はありません。
 
 他のアプリケーションのリソースを利用して見ましょう。
 
@@ -186,7 +190,7 @@ class AppModule extends AbstractAppModule
 }
 ```
 
-これは`Acme\Blog`アプリケーションを`prod-hal-app`コンテキストで作成したリソースを`blog`というホストで使用することができます。
+これは`Acme\Blog`アプリケーションを`prod-hal-app`コンテキストで作成したリソースを`blog`というホストで使用できます。
 
 `src/Resource/App/Import.php`にImportリソースを作成して確かめてみましょう。
 
@@ -232,7 +236,7 @@ content-type: application/hal+json
 }
 ```
 
-他のアプリケーションのリソースを利用することができました！データ取得をHTTP越しにする必要もありません。
+他のアプリケーションのリソースを利用できました！データ取得をHTTP越しにする必要もありません。
 
 合成されたアプリケーションも他からみたら１つのアプリケーションの１つのレイヤーです。
 [レイヤードシステム](http://en.wikipedia.org/wiki/Representational_state_transfer#Layered_system)はRESTの特徴の１つです。
@@ -298,7 +302,6 @@ echo $index;
 //</html>
 ```
 
-ステートレスなリクエストでレスポンスが返ってくるRESTのリソースはPHPの関数のようなものです。`body`で値を取得したり`(string)`でJSONやHTMLなどの表現にすることができます。autoloadの部分を除けば二行、連結すればたった一行のスクリプトで  アプリケーションのどのリソースでも操作することができます。
+ステートレスなリクエストでレスポンスが返ってくるRESTのリソースはPHPの関数のようなものです。`body`で値を取得したり`(string)`でJSONやHTMLなどの表現にできます。autoloadの部分を除けば二行、連結すればたった一行のスクリプトで  アプリケーションのどのリソースでも操作できます。
 
-このようにBEAR.Sundayで作られたリソースは他のCMSやフレームワークからも簡単に利用することができます。複数のアプリケーションの値を一度に扱うことができます。
-
+このようにBEAR.Sundayで作られたリソースは他のCMSやフレームワークからも簡単に利用できます。複数のアプリケーションの値を一度に扱えます。

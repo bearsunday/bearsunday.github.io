@@ -31,7 +31,7 @@ class AppModule extends AbstractAppModule
     {
         $this->install(
             new AuraSqlModule(
-                'mysql:host=localhost;dbname=test',  // または getenv('PDO_DSN')
+                'mysql:host=localhost;dbname=test',
                 'username',
                 'password'
             )
@@ -43,7 +43,9 @@ class AppModule extends AbstractAppModule
 
 設定時に直接値を指定するのではなく、実行時に毎回環境変数から取得するためには`AuraSqlEnvModule`を使います。接続先と認証情報の値を直接指定する代わりに、該当する環境変数のキーを渡します。
 
-```php
+```php?start_inline
+use Ray\AuraSqlModule\AuraSqlEnvModule;
+
 $this->install(
     new AuraSqlEnvModule(
         'PDO_DSN',      // getenv('PDO_DSN')
@@ -89,7 +91,7 @@ class Index
 
 ### perform() メソッド
 
-`perform()`メソッドは、1つのプレイスホルダーしかないSQLに配列の値をバインドすることができます。
+`perform()`メソッドは、1つのプレイスホルダーしかないSQLに配列の値をバインドできます。
 
 ```php
 $stm = 'SELECT * FROM test WHERE foo IN (:foo)';
@@ -113,7 +115,7 @@ $values = ['foo' => ['foo', 'bar', 'baz']];
 $sth = $pdo->perform($stm, $values);
 ```
 
-`:foo`に`['foo', 'bar', 'baz']`がバインドされます。`queryString`で実際のクエリーを調べることができます。
+`:foo`に`['foo', 'bar', 'baz']`がバインドされます。`queryString`で実際のクエリーを調べられます。
 
 ```php
 echo $sth->queryString;
@@ -123,9 +125,11 @@ echo $sth->queryString;
 
 ### fetch*() メソッド
 
-`prepare()`、`bindValue()`、`execute()`を繰り返してデータベースから値を取得する代わりに`fetch*()`メソッドを使うとボイラープレートコードを減らすことができます。（内部では`perform()`メソッドを実行しているので配列のプレイスホルダーもサポートしています）
+`prepare()`、`bindValue()`、`execute()`を繰り返してデータベースから値を取得する代わりに`fetch*()`メソッドを使うとボイラープレートコードを減らせます。（内部では`perform()`メソッドを実行しているので配列のプレイスホルダーもサポートしています）
 
 ```php
+use Aura\Sql\ExtendedPdo;
+
 $stm = 'SELECT * FROM test WHERE foo = :foo AND bar = :bar';
 $bind = ['foo' => 'baz', 'bar' => 'dib'];
 
@@ -139,13 +143,13 @@ $result = $sth->fetchAll(PDO::FETCH_ASSOC);
 $pdo = new ExtendedPdo(...);
 $result = $pdo->fetchAll($stm, $bind);
 
-// fetchAssoc()は全ての行がコラム名のキーを持つ連想配列が返ります。
+// fetchAssoc()は全ての行を返す連想配列で、キーは最初の列の値、行はコラム名をキーにした連想配列です。
 $result = $pdo->fetchAssoc($stm, $bind);
 
 // fetchGroup()はfetchAssoc()のような動作ですが、値は配列にラップされません。
 // 代わりに、単一カラムの値は1次元配列として、
 // 複数カラムは配列の配列として返されます。
-// 値が配列の場合（つまり、SELECTに2つ以上のカラムがある場合）は、
+// 値が配列の場合（つまり、SELECTに3つ以上のカラムがある場合）は、
 // スタイルをPDO::FETCH_NAMEDに設定します。
 $result = $pdo->fetchGroup($stm, $bind, $style = PDO::FETCH_COLUMN);
 
@@ -163,7 +167,7 @@ $stm = "UPDATE test SET incr = incr + 1 WHERE foo = :foo AND bar = :bar";
 $row_count = $pdo->fetchAffected($stm, $bind);
 ```
 
-`fetchAll()`、`fetchAssoc()`、`fetchCol()`、および`fetchPairs()`のメソッドは、三番目のオプションの引数にそれぞれの列に適用されるコールバックを指定することができます。
+`fetchAll()`、`fetchAssoc()`、`fetchCol()`、および`fetchPairs()`のメソッドは、三番目のオプションの引数にそれぞれの列に適用されるコールバックを指定できます。
 
 ```php
 $result = $pdo->fetchAssoc($stm, $bind, function (&$row) {
@@ -174,7 +178,7 @@ $result = $pdo->fetchAssoc($stm, $bind, function (&$row) {
 
 ### yield*() メソッド
 
-メモリを節約するために`yield*()`メソッドを使うことができます。`fetch*()`メソッドは全ての行を一度に取得しますが、`yield*()`メソッドはイテレーターを返します。
+メモリを節約するために`yield*()`メソッドを使えます。`fetch*()`メソッドは全ての行を一度に取得しますが、`yield*()`メソッドはイテレーターを返します。
 
 ```php
 $stm = 'SELECT * FROM test WHERE foo = :foo AND bar = :bar';
@@ -185,7 +189,7 @@ foreach ($pdo->yieldAll($stm, $bind) as $row) {
     // ...
 }
 
-// fetchAssoc()のようにキーが最初の列名で行が連想配列です。
+// fetchAssoc()と同様に、キーは最初の列の値で、行は連想配列です。
 foreach ($pdo->yieldAssoc($stm, $bind) as $key => $row) {
     // ...
 }
@@ -279,8 +283,8 @@ class User
 
 ```php
 public function __construct(
-    private readonly #[Log] ExtendedPdoInterface $logDb,
-    private readonly #[Mail] ExtendedPdoInterface $mailDb,
+    #[Log] private readonly ExtendedPdoInterface $logDb,
+    #[Mail] private readonly ExtendedPdoInterface $mailDb,
 ) {}
 ```
 
@@ -328,10 +332,10 @@ public function write()
 }
 ```
 
-複数接続したデータベースのトランザクションを行うためには`#[Transactional]`アトリビュートにプロパティを指定します。指定しない場合は`{"pdo"}`になります。
+複数接続したデータベースのトランザクションを行うためには`#[Transactional]`アトリビュートにプロパティを指定します。指定しない場合は`['pdo']`になります。
 
 ```php
-#[Transactional({"pdo", "userDb"})]
+#[Transactional(['pdo', 'userDb'])]
 public function write()
 {
     // ...
@@ -361,7 +365,7 @@ $this->install(new AuraSqlQueryModule('mysql')); // pgsql, sqlite, or sqlsrv
 
 ### SELECT
 
-リソースではDBクエリービルダオブジェクトを受け取り、下記のメソッドを使ってSELECTクエリーを組み立てます。メソッドに特定の順番はなく複数回呼ぶこともできます。
+リソースではDBクエリービルダーオブジェクトを受け取り、下記のメソッドを使ってSELECTクエリーを組み立てます。メソッドに特定の順番はなく複数回呼ぶこともできます。
 
 ```php
 use Aura\Sql\ExtendedPdoInterface;
@@ -618,9 +622,9 @@ $sth = $this->pdo->prepare($this->delete->getStatement());
 $sth->execute($this->delete->getBindValues());
 ```
 
-### パジネーション
+### ページネーション
 
-[ray/aura-sql-module](https://packagist.org/packages/ray/aura-sql-module)はRay.Sqlの生SQL、Ray.AuraSqlQueryのクエリービルダー双方でパジネーション（ページ分割）をサポートしています。
+[ray/aura-sql-module](https://packagist.org/packages/ray/aura-sql-module)はAura.Sqlの生SQL、Ray.AuraSqlQueryのクエリービルダー双方でページネーション（ページ分割）をサポートしています。
 
 バインドする値と1ページあたりのアイテム数、それに`{page}`をページ番号にしたuri_templateでページャーファクトリーを`newInstance()`で生成して、ページ番号で配列アクセスします。
 
@@ -641,6 +645,7 @@ $page = $pager[2];                          // page 2
 // $page->data             // sliced data (array|\Traversable)
 // $page->current;         // (int)
 // $page->total           // (int)
+// $page->nbPages         // (int)
 // $page->hasNext         // (bool)
 // $page->hasPrevious     // (bool)
 // $page->maxPerPage;     // (int)

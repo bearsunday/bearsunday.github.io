@@ -4,177 +4,171 @@ title: API Doc
 category: Manual
 permalink: /manuals/1.0/en/apidoc.html
 ---
+
 # API Doc
 
-ApiDoc generates API documentation from your application.
+Your application is the documentation.
 
-The auto-generated documentation from your code and JSON schema will reduce your effort and keep your API documentation accurate.
+- **ApiDoc HTML**: Developer documentation
+- **OpenAPI 3.1**: Tool chain integration
+- **JSON Schema**: Information model
+- **ALPS**: Vocabulary semantics for AI understanding
+- **llms.txt**: AI-readable application overview
+
+## Demo
+
+- [HTML](https://bearsunday.github.io/BEAR.ApiDoc/)
+- [OpenAPI](https://bearsunday.github.io/BEAR.ApiDoc/openapi/)
+
+## Installation
+
+```bash
+composer require bear/api-doc --dev
+./vendor/bin/apidoc init
+```
+
+The `init` command generates `apidoc.xml` from your `composer.json`. Edit it to customize.
+
+```xml
+<apidoc>
+    <appName>MyVendor\MyProject</appName>  <!-- Application namespace -->
+    <scheme>app</scheme>                    <!-- app or page -->
+    <docDir>docs/api</docDir>
+    <format>html</format>                   <!-- html, openapi, etc. -->
+</apidoc>
+```
+
+The `format` accepts comma-separated values: `html`, `md`, `openapi`, `llms`.
 
 ## Usage
 
-Install BEAR.ApiDoc.
+Generate documentation from the command line.
 
-    composer require bear/api-doc --dev
-
-Copy the configuration file.
-
-    cp ./vendor/bear/api-doc/apidoc.xml.dist ./apidoc.xml
-
-## Source
-
-ApiDoc generates documentation by retrieving information from phpdoc, method signatures, and JSON schema.
-
-#### PHPDOC
-
-In phpdoc, the following parts are retrieved.
-For information that applies across resources, such as authentication, prepare a separate documentation page and link it with `@link`.
-
-```php
-/**
- * {title}
- *
- * {description}
- *
- * {@link htttp;//example.com/docs/auth 認証}
- */
- class Foo extends ResourceObject
- {
- }
+```bash
+./vendor/bin/apidoc
 ```
 
-```php
-/**
- * {title}
- *
- * {description}
- *
- * @param string $id ユーザーID
- */
- public function onGet(string $id ='kuma'): static
- {
- }
+### OpenAPI HTML Generation
+
+When `openapi` format is specified, `openapi.json` is generated. Use Redocly CLI to convert it to HTML.
+
+```bash
+npm install -g @redocly/cli
+redocly build-docs docs/api/openapi.json -o docs/api/openapi.html
 ```
 
-* If there is no `@param` description in the phpdoc of the method, get the information of the argument from the method signature.
-* The order of priority for information acquisition is phpdoc, JSON schema, and profile.
+### llms.txt
+
+The `llms` format generates `llms.txt` following the [llms.txt specification](https://llmstxt.org/). The output includes API endpoints, resource objects, infrastructure interfaces (Query/Command), SQL statements, and entity definitions.
+
+### Composer Scripts
+
+Add scripts to `composer.json` for convenience.
+
+```json
+{
+    "scripts": {
+        "docs": "./vendor/bin/apidoc"
+    },
+    "scripts-descriptions": {
+        "docs": "Generate API documentation"
+    }
+}
+```
+
+```bash
+composer docs
+```
+
+## GitHub Actions
+
+Push to main branch to automatically generate and publish API documentation to GitHub Pages. The reusable workflow handles HTML generation, OpenAPI conversion with Redocly, and ALPS state diagram creation.
+
+```yaml
+name: API Docs
+on:
+  push:
+    branches: [main]
+
+jobs:
+  docs:
+    uses: bearsunday/BEAR.ApiDoc/.github/workflows/apidoc.yml@v1
+    with:
+      format: 'html,openapi,llms'
+```
+
+Enable GitHub Pages: Settings → Pages → Source: "GitHub Actions"
+
+### Inputs
+
+| Input | Default | Description |
+|-------|---------|-------------|
+| `php-version` | `'8.2'` | PHP version |
+| `format` | `'html,openapi,llms'` | Comma-separated: html, md, openapi, llms |
+| `docs-path` | `'docs'` | Output directory |
+| `publish-to` | `'github-pages'` | `github-pages` or `artifact-only` |
+
+### Output Structure
+
+```text
+docs/
+├── index.html          # API documentation
+├── llms.txt            # AI-readable overview
+├── openapi.json        # OpenAPI spec
+└── schemas/
+    ├── index.html      # Schema list
+    └── *.json          # JSON Schema
+```
 
 ## Configuration
-
-The configuration is written in XML.
-The minimum specification is as follows.
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <apidoc
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:noNamespaceSchemaLocation="https://bearsunday.github.io/BEAR.ApiDoc/apidoc.xsd">
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="https://bearsunday.github.io/BEAR.ApiDoc/apidoc.xsd">
     <appName>MyVendor\MyProject</appName>
     <scheme>app</scheme>
     <docDir>docs</docDir>
     <format>html</format>
+    <alps>alps.json</alps>
 </apidoc>
 ```
 
-### Required Attributes
-
-#### appName
-
-Application namespaces
-
-#### scheme
-
-The name of the schema to use for API documentation. `page` or `app`.
-
-#### docDir
-
-Output directory name.
-
-#### format
-
-The output format, HTML or MD (Mark down).
-
-### Optional attributes
-
-#### title
-
-API title
-
-```xml
-<title>MyBlog API</title>
-```
-
-#### description
-
-API description
-
-```xml
-<description>MyBlog API description</description
-```
-
-#### links
-
-Links. The `href` is the URL of the link, and the `rel` is its content.
-
-```xml
-<links>
-    <link href="https://www.example.com/issue" rel="issue" />
-    <link href="https://www.example.com/help" rel="help" />
-</links>
-```
-
-#### alps
-
-Specifies an "ALPS profile" that defines the terms used by the API.
-
-```xml
-<alps>alps/profile.json</alps>.
-```
+| Option | Required | Description |
+|--------|----------|-------------|
+| `appName` | Yes | Application namespace |
+| `scheme` | Yes | `app` or `page` |
+| `docDir` | Yes | Output directory |
+| `format` | Yes | `html`, `md`, `openapi`, `llms` |
+| `title` | | API title |
+| `alps` | | ALPS profile path |
 
 ## Profile
 
-ApiDoc supports the [ALPS](http://alps.io/) format of the [RFC 6906 Profile](https://tools.ietf.org/html/rfc6906) which gives additional information to the application.
-
-Words used in API request and response keys are called semantic descriptors, and if you create a dictionary of profiles, you don't need to describe the words for each request.
-Centralized definitions of words and phrases prevent notational errors and aid in shared understanding.
-
-The words used in API request and response keys are called semantic descriptors, and creating a dictionary of profiles eliminates the need to explain the words for each request.
-Centralized definitions of words and phrases prevent shaky notation and aid in shared understanding.
-
-The following is an example of defining descriptors `firstName` and `familyName` with `title` and `def` respectively.
-While `title` describes a word and clarifies its meaning, `def` links standard words defined in vocabulary sites such as [Schema.org](https://schema.org/).
-
-ALPS profiles can be written in XML or JSON.
-
-profile.xml
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<alps
-     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-     xsi:noNamespaceSchemaLocation="https://alps-io.github.io/schemas/alps.xsd">
-    <!-- Ontology -->
-    <descriptor id="firstName" title="The person's first name."/>
-    <descriptor id="familyName" def="https://schema.org/familyName"/>
-</alps>
-```
-
-profile.json
+ALPS profile defines your API vocabulary. Centralized definitions prevent inconsistencies and aid shared understanding.
 
 ```json
 {
-  "$schema": "https://alps-io.github.io/schemas/alps.json",
-  "alps": {
-    "descriptor": [
-      {"id": "firstName", "title": "The person's first name."}
-      {"id": "familyName", "def": "https://schema.org/familyName"},
-    ]
-  }
+    "$schema": "https://alps-io.github.io/schemas/alps.json",
+    "alps": {
+        "descriptor": [
+            {"id": "firstName", "title": "The person's first name."},
+            {"id": "familyName", "def": "https://schema.org/familyName"}
+        ]
+    }
 }
 ```
 
-Descriptions of words appearing in ApiDoc take precedence over phpdoc > JsonSchema > ALPS in that order.
+## Application as Documentation
+
+Code is the single source of truth. Documentation generated from your application never diverges from the implementation.
+
+[llms.txt](https://llmstxt.org/) provides AI-readable application overviews. When an AI agent encounters your application, it can quickly grasp the entire structure through this single document—generated directly from your code. Unlike typical API references that list endpoints, llms.txt captures the full information architecture following Dan Klyn's [framework](https://understandinggroup.com/ia-theory/explaining-information-architecture)—Ontology, Taxonomy, and Choreography. Combined with ALPS vocabulary semantics and JSON Schema information models, AI agents can understand not just what operations exist, but the meaning and structure behind them.
 
 ## Reference
 
-* [Demo](https://bearsunday.github.io/BEAR.ApiDoc/)
-* [ALPS](http://alps.io/)
-* [ALPS-ASD](https://github.com/koriym/app-state-diagram)
+- [BEAR.ApiDoc](https://github.com/bearsunday/BEAR.ApiDoc) - API documentation generator
+- [ALPS](https://www.app-state-diagram.com/manuals/1.0/en/) - Application-Level Profile Semantics
+- [JSON Schema](https://json-schema.org/) - Data validation and documentation
+- [Redocly CLI](https://redocly.com/docs/cli/installation/) - OpenAPI to HTML conversion

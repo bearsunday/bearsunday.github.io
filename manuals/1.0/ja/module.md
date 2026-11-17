@@ -22,7 +22,7 @@ class AppModule extends AbstractAppModule
     protected function configure()
     {
         // 追加モジュール
-        $this->install(new AuraSqlModule('mysql:host=localhost;dbname=test', getenv('db_username'), getenv('db_password')));
+        $this->install(new AuraSqlEnvModule('PDO_DSN', 'PDO_USER', 'PDO_PASSWORD')); // 実行時に環境変数から接続情報を取得
         $this->install(new TwigModule());
         // package標準のモジュール
         $this->install(new PackageModule());
@@ -71,7 +71,7 @@ $this->bindInterceptor(
 // 例2：クラスとアノテーションによる束縛
 $this->bindInterceptor(
     $this->matcher->SubclassesOf(AdminPage::class),  // AdminPageの継承または実装クラスの
-    $this->matcher->annotatedWith(Auth::class),      // @Authアノテーションがアノテートされているメソッドには
+    $this->matcher->annotatedWith(Auth::class),      // #[Auth]属性が付与されているメソッドには
     [AdminAuthentication::class]                     // AdminAuthenticationインターセプターを束縛
 );
 ```
@@ -79,6 +79,8 @@ $this->bindInterceptor(
 詳細については[AOP](aop.html)をご参照ください。
 
 ## 束縛の優先順位
+
+参照: [Ray.Di 束縛](https://ray-di.github.io/manuals/1.0/ja/bindings.html)
 
 ### 同一モジュール内での優先順位
 
@@ -107,9 +109,20 @@ $this->override(new Foo2Module);
 
 ### コンテキスト文字列での優先順位
 
-コンテキスト文字列では、左のモジュールの束縛が優先されます。例えば、`prod-hal-app`の場合：
+コンテキストモジュールは**逆順**（右から左）で処理されます。例えば、`prod-hal-api-app`の場合：
 
-- AppModuleよりHalModule
-- HalModuleよりProdModule
+```text
+インストール順序: AppModule → ApiModule → HalModule → ProdModule
+```
 
-の順で優先してインストールされます。
+後からインストールされたモジュールが先のモジュールの束縛を上書きできます。つまり：
+
+- `HalModule`は`AppModule`より優先
+- `ProdModule`は`HalModule`より優先
+
+組み込みコンテキスト（`HalModule`など）の束縛を上書きするカスタムコンテキストモジュールを作成する場合、コンテキスト文字列でそのコンテキストの**左側**に配置します。例えば、`HalModule`の`RenderInterface`束縛を上書きするには：
+
+```php
+// コンテキスト: "prod-mycontext-hal-api-app"
+// インストール順序: AppModule → ApiModule → HalModule → MycontextModule → ProdModule
+```

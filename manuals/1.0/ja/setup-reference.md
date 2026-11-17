@@ -7,7 +7,7 @@ permalink: /manuals/1.0/ja/setup-reference.html
 
 # 環境構築詳細リファレンス
 
-この詳細リファレンスでは、BEAR.Sunday 開発環境の各設定ファイルとオプションについて包括的に解説します。
+この詳細リファレンスでは、BEAR.Sunday 開発環境の各設定ファイルとオプションを解説します。
 
 ---
 
@@ -717,5 +717,3 @@ for i in {1..100}; do
     curl -w "@curl-format.txt" -o /dev/null -s http://localhost:8080/
 done
 ```
-
-この詳細リファレンスは、開発チームが BEAR.Sunday 環境を深く理解し、適切にカスタマイズするための包括的なガイドです。

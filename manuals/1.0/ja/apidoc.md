@@ -7,58 +7,120 @@ permalink: /manuals/1.0/ja/apidoc.html
 
 # API Doc
 
-BEAR.ApiDocは、アプリケーションからAPIドキュメントを生成します。コードとJSONスキーマから自動生成されるドキュメントは、手間を減らし正確なAPIドキュメントを維持し続けることができます。
+アプリケーションがそのままドキュメントになります。
 
-## 利用方法
+- **ApiDoc HTML**: 開発者向けドキュメント
+- **OpenAPI 3.1**: ツールチェーン連携
+- **JSON Schema**: 情報モデル
+- **ALPS**: AIが理解できる語彙の意味論
+- **llms.txt**: AI向けアプリケーション概要
 
-BEAR.ApiDocをインストールします。
+## デモ
 
-```
+- [HTML](https://bearsunday.github.io/BEAR.ApiDoc/)
+- [OpenAPI](https://bearsunday.github.io/BEAR.ApiDoc/openapi/)
+
+## インストール
+
+```bash
 composer require bear/api-doc --dev
+./vendor/bin/apidoc init
 ```
 
-設定ファイルをコピーします。
+`init`コマンドは`composer.json`から`apidoc.xml`を生成します。必要に応じて編集してください。
 
-```
-cp ./vendor/bear/api-doc/apidoc.xml.dist ./apidoc.xml
-```
-
-## ソース
-
-BEAR.ApiDocはphpdoc、メソッドシグネチャ、JSONスキーマから情報を取得してドキュメントを生成します。
-
-#### PHPDOC
-
-phpdocでは以下の部分が取得されます。認証などリソースに横断的に適用される情報は別のドキュメントページを用意して`@link`でリンクします。
-
-```php
-/**
- * {title}
- *
- * {description}
- *
- * {@link https://example.com/docs/auth 認証}
- */
-class Foo extends ResourceObject { }
+```xml
+<apidoc>
+    <appName>MyVendor\MyProject</appName>  <!-- アプリケーションの名前空間 -->
+    <scheme>app</scheme>                    <!-- app または page -->
+    <docDir>docs/api</docDir>
+    <format>html</format>                   <!-- html, openapi など -->
+</apidoc>
 ```
 
-```php
-/**
- * {title}
- *
- * {description}
- *
- * @param string $id ユーザーID
- */
-public function onGet(string $id = 'kuma'): static { }
+`format`には`html`、`md`、`openapi`、`llms`をカンマ区切りで指定できます。
+
+## 使い方
+
+コマンドラインからドキュメントを生成します。
+
+```bash
+./vendor/bin/apidoc
 ```
 
-* メソッドのphpdocに`@param`記述が無い場合、メソッドシグネチャーから引数の情報を取得します。
-* 情報取得の優先順はphpdoc、JSONスキーマ、プロファイルの順です。
+### OpenAPI HTML生成
+
+`openapi`形式を指定すると`openapi.json`が生成されます。これをHTMLに変換するにはRedocly CLIを使用します。
+
+```bash
+npm install -g @redocly/cli
+redocly build-docs docs/api/openapi.json -o docs/api/openapi.html
+```
+
+### llms.txt
+
+`llms`フォーマットは[llms.txt仕様](https://llmstxt.org/)に従った`llms.txt`を生成します。出力にはAPIエンドポイント、リソースオブジェクト、インフラインターフェイス（Query/Command）、SQL文、エンティティ定義が含まれます。
+
+### Composerスクリプト
+
+`composer.json`にスクリプトを追加すると便利です。
+
+```json
+{
+    "scripts": {
+        "docs": "./vendor/bin/apidoc"
+    },
+    "scripts-descriptions": {
+        "docs": "Generate API documentation"
+    }
+}
+```
+
+```bash
+composer docs
+```
+
+## GitHub Actions
+
+mainブランチにプッシュすると、APIドキュメントが自動的に生成されGitHub Pagesに公開されます。再利用可能なワークフローがHTML生成、RedoclyによるOpenAPI変換、ALPS状態遷移図の作成を処理します。
+
+```yaml
+name: API Docs
+on:
+  push:
+    branches: [main]
+
+jobs:
+  docs:
+    uses: bearsunday/BEAR.ApiDoc/.github/workflows/apidoc.yml@v1
+    with:
+      format: 'html,openapi,llms'
+```
+
+GitHub Pagesを有効化: Settings → Pages → Source: "GitHub Actions"
+
+### 入力パラメータ
+
+| 入力 | デフォルト | 説明 |
+|------|-----------|------|
+| `php-version` | `'8.2'` | PHPバージョン |
+| `format` | `'html,openapi,llms'` | カンマ区切り: html, md, openapi, llms |
+| `docs-path` | `'docs'` | 出力ディレクトリ |
+| `publish-to` | `'github-pages'` | `github-pages`または`artifact-only` |
+
+### 出力構造
+
+```text
+docs/
+├── index.html          # APIドキュメント
+├── llms.txt            # AI向け概要
+├── openapi.json        # OpenAPI仕様
+└── schemas/
+    ├── index.html      # スキーマ一覧
+    └── *.json          # JSON Schema
+```
 
 ## 設定ファイル
-
-設定はXMLで記述されます。最低限の指定は以下の通りです。
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -69,75 +131,23 @@ public function onGet(string $id = 'kuma'): static { }
     <scheme>app</scheme>
     <docDir>docs</docDir>
     <format>html</format>
+    <alps>alps.json</alps>
 </apidoc>
 ```
 
-### 必須属性
-
-#### appName
-アプリケーションの名前空間
-
-#### scheme
-APIドキュメントにするスキーマ名。`page`または`app`
-
-#### docDir
-出力ディレクトリ名
-
-#### format
-出力フォーマット。HTMLまたはMD (Markdown)
-
-### オプション属性
-
-#### title
-APIタイトル
-```xml
-<title>MyBlog API</title>
-```
-
-#### description
-APIディスクリプション
-```xml
-<description>MyBlog API description</description>
-```
-
-#### links
-リンク。`href`でリンク先URL、`rel`でその内容を表します。
-```xml
-<links>
-    <link href="https://www.example.com/issue" rel="issue" />
-    <link href="https://www.example.com/help" rel="help" />
-</links>
-```
-
-#### alps
-APIで使われる語句を定義する"ALPSプロファイル"を指定します。
-```xml
-<alps>alps/profile.json</alps>
-```
+| オプション | 必須 | 説明 |
+|-----------|------|------|
+| `appName` | Yes | アプリケーションの名前空間 |
+| `scheme` | Yes | `app`または`page` |
+| `docDir` | Yes | 出力ディレクトリ |
+| `format` | Yes | `html`, `md`, `openapi`, `llms` |
+| `title` | | APIタイトル |
+| `alps` | | ALPSプロファイルのパス |
 
 ## プロファイル
 
-BEAR.ApiDocはアプリケーションに追加情報を与える[RFC 6906 プロファイル](https://tools.ietf.org/html/rfc6906)の[ALPS](http://alps.io/)フォーマットをサポートします。
+ALPSプロファイルはAPIの語彙を定義します。定義を集中させることで表記揺れを防ぎ、理解共有を助けます。
 
-APIのリクエストやレスポンスのキーで使う語句をセマンティックディスクリプタ（意味的記述子）と呼びますが、プロファイルでその辞書を作っておけばリクエスト毎に語句を説明する必要がなくなります。語句の定義が集中することで表記揺れを防ぎ、理解共有を助けます。
-
-以下は`firstName`,`familyName`というディスクリプタをそれぞれ`title`、`def`で定義した例です。`title`は言葉を記述して意味を明らかにしますが、`def`は[Schema.org](https://schema.org/)などのボキャブラリサイトで定義されたスタンダードな語句をリンクします。
-
-ALPSプロファイルはXMLまたはJSONで記述します。
-
-profile.xml
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<alps
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:noNamespaceSchemaLocation="https://alps-io.github.io/schemas/alps.xsd">
-    <!-- Ontology -->
-    <descriptor id="firstName" title="The person's first name."/>
-    <descriptor id="familyName" def="https://schema.org/familyName"/>
-</alps>
-```
-
-profile.json
 ```json
 {
     "$schema": "https://alps-io.github.io/schemas/alps.json",
@@ -150,11 +160,15 @@ profile.json
 }
 ```
 
-ApiDocに登場する語句の説明はphpdoc > JsonSchema > ALPSの順で優先します。
+## Application as Documentation
 
-## リンク
+コードこそが唯一の信頼できる情報源です。アプリケーションから生成されるドキュメントは実装と決して乖離しません。
 
-* [Demo](https://bearsunday.github.io/BEAR.ApiDoc/)
-* [ALPS](http://alps.io/)
-* [ALPS-ASD](https://github.com/koriym/app-state-diagram)
-* [メディアタイプとALPSプロファイル](https://qiita.com/koriym/items/2e928efb2167d559052e)
+[llms.txt](https://llmstxt.org/)はAIが読み取れるアプリケーション概要を提供します。AIエージェントがアプリケーションに触れると、コードから直接生成されたこの単一ドキュメントを通じて全体構造を素早く把握できます。エンドポイントを列挙する一般的なAPIリファレンスとは異なり、llms.txtはDan Klynの[情報アーキテクチャフレームワーク](https://understandinggroup.com/ia-theory/explaining-information-architecture)（Ontology、Taxonomy、Choreography）に従って完全な情報アーキテクチャを捉えます。ALPSの語彙意味論とJSON Schemaの情報モデルと組み合わせることで、AIエージェントはオペレーションだけでなく、その背後にある意味と構造を理解できます。
+
+## リファレンス
+
+- [BEAR.ApiDoc](https://github.com/bearsunday/BEAR.ApiDoc) - APIドキュメント生成ツール
+- [ALPS](https://www.app-state-diagram.com/manuals/1.0/ja/) - Application-Level Profile Semantics
+- [JSON Schema](https://json-schema.org/) - データ検証とドキュメンテーション
+- [Redocly CLI](https://redocly.com/docs/cli/installation/) - OpenAPIからHTMLへの変換

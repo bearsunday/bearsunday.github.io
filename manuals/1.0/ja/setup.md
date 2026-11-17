@@ -54,12 +54,14 @@ brew install malt
 
 ### 基本操作（最短導線）
 
+```bash
 malt init && malt install && malt create && malt start
 source <(malt env)
+```
 
 ### 設定ファイル
 
-```
+```text
 malt.json          # malt の設定
 malt/
   conf/
@@ -173,6 +175,10 @@ docker-compose stop
 docker-compose down -v
 ```
 
+### PhpStorm デバッグ
+
+BEAR.Skeleton の Docker 開発環境は PhpStorm と Xdebug でデバッグできるように構成されています。interpreter、server、パスマッピング、breakpoint の設定は [PhpStorm と Xdebug](/manuals/1.0/ja/phpstorm-xdebug.html) を参照してください。
+
 ### データベース接続
 
 ```bash
@@ -242,17 +248,20 @@ brew install shivammathur/extensions/apcu@8.4     # Homebrew
 sudo apt install php8.4-apcu                      # Ubuntu
 ```
 
-**重要**: Xdebug や XHProf はパフォーマンスに影響するため、php.ini で常時有効にせず、必要時のみ `-d` オプションで有効化することを推奨します。
+**重要**: Xdebug と XHProf はパフォーマンスに影響するため、常時有効化は避けてください。設定する場合は、Xdebug は `zend_extension=xdebug.so`、XHProf は `extension=xhprof.so` を使い、必要なときだけ CLI から有効化する運用を推奨します。
 
 ```bash
 # デバッグ時のみ Xdebug を有効化
 php -dzend_extension=xdebug.so -S 127.0.0.1:8080 -t public
 
-# プロファイリング時のみ XHProf を有効化  
-php -dzend_extension=xhprof.so script.php
+# プロファイリング時のみ XHProf を有効化
+php -dextension=xhprof.so script.php
 
-# Composer実行時は拡張を無効化（高速化）
-php -dzend_extension= /usr/local/bin/composer install
+# Composer 実行時に Xdebug を無効化（推奨）
+XDEBUG_MODE=off composer install
+
+# あるいは PHP の ini 上書きを利用
+php -dxdebug.mode=off /usr/local/bin/composer install
 ```
 
 ---
@@ -281,8 +290,8 @@ DB_USER=root
 DB_PASS=
 DB_DSN=mysql:host=127.0.0.1;port=3306;dbname=myapp
 
-# SQLite（切替用）
-DB_DSN=sqlite:var/db.sqlite3
+# SQLite（切り替え例）
+# DB_DSN=sqlite:var/db.sqlite3
 
 # Redis
 REDIS_HOST=127.0.0.1:6379
@@ -383,7 +392,7 @@ malt start
 
 ### チーム開発での .gitignore
 
-```
+```gitignore
 malt/logs/
 malt/data/
 malt/tmp/

@@ -7,7 +7,7 @@ permalink: /manuals/1.0/ja/database_cake.html
 
 # CakeDb
 
-**CakeDb**はアクティブレコードとデータマッパーパターンのアイデアを使ったORMで、素早くシンプルにORMを使うことができます。CakePHP3で提供されているORMと同じものです。
+**CakeDb**はアクティブレコードとデータマッパーパターンのアイデアを使ったORMで、素早くシンプルにORMを使えます。CakePHP3で提供されているORMと同じものです。
 
 composerで`Ray.CakeDbModule`をインストールします。
 

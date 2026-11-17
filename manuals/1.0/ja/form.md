@@ -7,35 +7,36 @@ permalink: /manuals/1.0/ja/form.html
 
 # フォーム
 
-[Aura.Input](https://github.com/auraphp/Aura.Input)と[Aura.Filter](https://github.com/auraphp/Aura.Filter)を使用したWebフォーム機能は、関連する機能が単一のクラスに集約され、テストや変更が容易です。1つのクラスでWebフォームとバリデーションの両方の用途に使用できます。
+Ray.WebFormModuleは、[Aura.Input](https://github.com/auraphp/Aura.Input)と[Ray.Di](https://github.com/ray-di/Ray.Di)を使ってアスペクト指向でWebフォームをバリデーションするモジュールです。フォームフィールド、バリデーションルール、送信値、レンダリングヘルパーを1つのフォームクラスに集約できるため、テストや変更が容易です。
 
 ## インストール
 
-Aura.Inputを使用したフォーム処理を追加するために、composerで`ray/web-form-module`をインストールします：
+Composerで`ray/web-form-module`をインストールします。
 
 ```bash
 composer require ray/web-form-module
 ```
 
-アプリケーションモジュール`src/Module/AppModule.php`で`AuraInputModule`をインストールします：
+アプリケーションモジュールに`WebFormModule`をインストールします。
 
 ```php
-use BEAR\Package\AbstractAppModule;
+use Ray\Di\AbstractModule;
 use Ray\WebFormModule\WebFormModule;
 
-class AppModule extends AbstractAppModule
+class AppModule extends AbstractModule
 {
     protected function configure()
     {
-        // ...
-        $this->install(new WebFormModule);
+        $this->install(new WebFormModule());
     }
 }
 ```
 
-## Webフォーム
+互換性のため`Ray\WebFormModule\AuraInputModule`クラスも`WebFormModule`の薄いサブクラスとして残されています。新規コードでは`WebFormModule`を使ってください。
 
-フォーム要素の登録やルールを定めた**フォームクラス**を作成して、`@FormValidation`アノテーションを使用して特定のメソッドと束縛します。メソッドは送信されたデータがバリデーションOKのときのみ実行されます。
+## フォームクラス
+
+自己初期化フォームクラスでは、`init()`メソッドでフィールドとバリデーションルールを定義します。フォームが`submit()`を実装している場合、その戻り値が送信データとして使われます。基礎となるフォームAPIについては[Aura.Input self-initializing forms](https://github.com/auraphp/Aura.Input/blob/1.x/README.md#self-initializing-forms)を参照してください。
 
 ```php
 use Ray\WebFormModule\AbstractForm;
@@ -43,35 +44,45 @@ use Ray\WebFormModule\SetAntiCsrfTrait;
 
 class MyForm extends AbstractForm
 {
-    /**
-     * {@inheritdoc}
-     */
+    use SetAntiCsrfTrait;
+
     public function init()
     {
-        // フォームフィールドの設定
         $this->setField('name', 'text')
              ->setAttribs([
                  'id' => 'name'
              ]);
 
-        // バリデーションルールとエラーメッセージの設定
         $this->filter->validate('name')->is('alnum');
-        $this->filter->useFieldMessage('name', '名前は英数字のみ使用できます。');
+        $this->filter->useFieldMessage('name', 'Name must be alphanumeric only.');
+    }
+
+    public function submit()
+    {
+        return $_POST;
+    }
+
+    public function __toString()
+    {
+        $form = $this->form();
+        $form .= $this->helper->tag('div', ['class' => 'form-group']);
+        $form .= $this->helper->tag('label', ['for' => 'name']);
+        $form .= 'Name:';
+        $form .= $this->helper->tag('/label') . PHP_EOL;
+        $form .= $this->input('name');
+        $form .= $this->error('name');
+        $form .= $this->helper->tag('/div') . PHP_EOL;
+        $form .= $this->input('submit');
+        $form .= $this->helper->tag('/form');
+
+        return $form;
     }
 }
 ```
 
-フォームクラスの`init()`メソッドでフォームのinput要素を登録し、バリデーションのフィルターやサニタイズのルールを適用します。
+## コントローラー
 
-バリデーションルールについては以下を参照してください：
-- [Rules To Validate Fields](https://github.com/auraphp/Aura.Filter/blob/2.x/docs/validate.md)
-- [Rules To Sanitize Fields](https://github.com/auraphp/Aura.Filter/blob/2.x/docs/sanitize.md)
-
-メソッドの引数を連想配列にしたものをバリデーションします。入力を変更したい場合は`SubmitInterface`インターフェイスの`submit()`メソッドを実装して入力する値を返します。
-
-## @FormValidationアノテーション
-
-フォームのバリデーションを行うメソッドを`@FormValidation`でアノテートすると、実行前に`form`プロパティのフォームオブジェクトでバリデーションが行われます。バリデーションに失敗するとメソッド名に`ValidationFailed`サフィックスをつけたメソッドが呼ばれます：
+フォームのバリデーションが必要なメソッドに`#[FormValidation]`を付けます。`form`にはコントローラー上のフォームプロパティ名を、`onFailure`にはバリデーション失敗時に呼び出すメソッド名を指定します。
 
 ```php
 use Ray\Di\Di\Inject;
@@ -81,125 +92,161 @@ use Ray\WebFormModule\FormInterface;
 
 class MyController
 {
-    /**
-     * @var FormInterface
-     */
-    protected $form;
+    /** @var FormInterface */
+    protected $contactForm;
 
-    /**
-     * @Inject
-     * @Named("contact_form")
-     */
-    public function setForm(FormInterface $form)
+    #[Inject]
+    public function setForm(#[Named("contact_form")] FormInterface $form)
     {
-        $this->form = $form;
+        $this->contactForm = $form;
     }
 
-    /**
-     * @FormValidation
-     * // または
-     * @FormValidation(form="form", onFailure="onPostValidationFailed")
-     */
-    public function onPost($name, $age)
+    #[FormValidation(form: "contactForm", onFailure: "badRequestAction")]
+    public function createAction()
     {
-        // バリデーション成功時の処理
+        // validation success
+        // vnd.error+json の詳細は #[VndError] で追加できます。
     }
 
-    public function onPostValidationFailed($name, $age)
+    public function badRequestAction()
     {
-        // バリデーション失敗時の処理
+        // validation failed
     }
 }
 ```
 
-`@FormValidation`アノテーションの`form`と`onValidationFailed`プロパティを変更して、`form`プロパティの名前やメソッドの名前を明示的に指定することもできます。`onPostValidationFailed`にはサブミットされた値が渡されます。
-
 ## ビュー
 
-フォームの`input`要素やエラーメッセージを取得するには要素名を指定します：
+フォームが文字列表現を提供している場合、フォームを`echo`するとフォームHTML全体がレンダリングされます。
 
 ```php
-$form->input('name');  // 出力例：<input id="name" type="text" name="name" size="20" maxlength="20" />
-$form->error('name');  // 出力例：名前は英数字のみ使用できます。
+echo $form;
 ```
 
-Twigテンプレートを使用する場合も同様です：
-
-```twig
-{% raw %}{{ form.input('name') }}
-{{ form.error('name') }}{% endraw %}
-```
-
-## CSRF
-
-CSRF(クロスサイトリクエストフォージェリ)対策を行うためには、フォームにCSRFオブジェクトをセットします：
+個別の入力要素やエラーメッセージもレンダリングできます。
 
 ```php
+echo $form->input('name'); // <input id="name" type="text" name="name" size="20" maxlength="20" />
+echo $form->error('name'); // "Name must be alphanumeric only." または空文字
+```
+
+## CSRF Protections
+
+CSRF(クロスサイトリクエストフォージェリ)保護は**opt-in**で、独立した2つの経路のいずれかで有効化できます。
+
+- **フォーム単位**: フォームに`use SetAntiCsrfTrait;`を追加します。DIで`AntiCsrfInterface`が注入され、`postConstruct()`でトークンフィールドが追加され、`apply()`の呼び出しごとにトークンが検証されます。
+- **アクション単位**: バリデーション対象のメソッドに`#[CsrfProtection]`を付与します。`AuraInputInterceptor`が`apply()`実行前に`AntiCsrfInterface`をフォームへ注入します。
+
+どちらの経路でも、トークン不一致時には`AbstractForm::apply()`が`CsrfViolationException`をthrowします。どちらも使わない場合はCSRF検証は行われません。
+
+```php
+use Ray\WebFormModule\AbstractForm;
+use Ray\WebFormModule\Annotation\CsrfProtection;
+use Ray\WebFormModule\Annotation\FormValidation;
 use Ray\WebFormModule\SetAntiCsrfTrait;
 
 class MyForm extends AbstractForm
 {
     use SetAntiCsrfTrait;
 }
+
+class MyController
+{
+    #[FormValidation(form: "contactForm")]
+    #[CsrfProtection]
+    public function createAction()
+    {
+    }
+}
 ```
 
-セキュリティレベルを高めるには、ユーザーの認証を含んだカスタムCsrfクラスを作成してフォームクラスにセットします。詳しくはAura.Inputの[Applying CSRF Protections](https://github.com/auraphp/Aura.Input#applying-csrf-protections)をご覧ください。
+独自の`AntiCsrf`クラスを提供することもできます。詳しくはAura.Inputの[Applying CSRF Protections](https://github.com/auraphp/Aura.Input#applying-csrf-protections)を参照してください。
 
-## @InputValidation
+フォームの経路によらず`ResourceObject`のメソッド自体を守るには、[CSRF](csrf.html)の`bear/csrf`を使います。
 
-`@FormValidation`の代わりに`@InputValidation`とアノテートすると、バリデーションが失敗したときに`Ray\WebFormModule\Exception\ValidationException`が投げられます。この場合はHTML表現は使用されません。Web APIに便利です。
+## 0.xからのマイグレーション
 
-キャッチした例外の`error`プロパティを`echo`すると[application/vnd.error+json](https://github.com/blongden/vnd.error)メディアタイプの表現が出力されます：
+1.0ではDoctrine Annotationsを廃止し、PHP 8のネイティブ属性に移行しました。型宣言も強化されています。主な書き換えは次の通りです。
+
+| Before (0.x)                                                       | After (1.0)                                             |
+|--------------------------------------------------------------------|---------------------------------------------------------|
+| `@FormValidation(form="f", onFailure="badRequest")`                | `#[FormValidation(form: 'f', onFailure: 'badRequest')]` |
+| `@FormValidation(form="f", antiCsrf=true)`                         | `#[FormValidation(form: 'f')]` + `#[CsrfProtection]`    |
+| `@InputValidation(form="f")`                                       | `#[InputValidation(form: 'f')]`                         |
+| `@VndError(message="...", logref="...")`                           | `#[VndError(message: '...', logref: '...')]`            |
+| `new AuraInputInterceptor($injector, $reader)`                     | `new AuraInputInterceptor($injector)`                   |
+| `public function input($input)` / `public function error($input)`  | `input(string $input): string` / `error(string $input): string` |
+
+破壊的変更の完全なリストは[CHANGELOG.md](https://github.com/ray-di/Ray.WebFormModule/blob/1.x/CHANGELOG.md)を参照してください。
+
+### Claude Codeによる自動マイグレーション
+
+Ray.WebFormModuleにはClaude Code skillの[`.claude/skills/migrate-to-1.0/SKILL.md`](https://github.com/ray-di/Ray.WebFormModule/blob/1.x/.claude/skills/migrate-to-1.0/SKILL.md)が同梱されています。このskillは、アノテーションから属性への変更、`antiCsrf=true`から`#[CsrfProtection]`への分離、`Reader`引数の削除、`FormInterface`署名更新をAIアシスタントに案内します。利用側プロジェクトの`.claude/skills/`にディレクトリをコピーし、`/migrate-to-1.0`で起動してください。
+
+## Validation Exception
+
+`#[InputValidation]`を使うと、バリデーション失敗時に`Ray\WebFormModule\Exception\ValidationException`が投げられます。HTML表現を使わないAPIアプリケーションに便利です。
 
 ```php
-http_response_code(400);
-echo $e->error;
+use Ray\WebFormModule\Annotation\InputValidation;
 
-// 出力例：
-// {
-//     "message": "Validation failed",
-//     "path": "/path/to/error",
-//     "validation_messages": {
-//         "name": [
-//             "名前は英数字のみ使用できます。"
-//         ]
-//     }
-// }
+class Foo
+{
+    #[InputValidation(form: "form1")]
+    public function createAction($name)
+    {
+        // ...
+    }
+}
 ```
 
-`@VndError`アノテーションで`vnd.error+json`に必要な情報を追加できます：
+`Ray\WebFormModule\FormVndErrorModule`をインストールすると、`#[FormValidation]`を付けたメソッドもバリデーション失敗時に同じ例外を投げます。
 
 ```php
-/**
- * @FormValidation(form="contactForm")
- * @VndError(
- *   message="foo validation failed",
- *   logref="a1000",
- *   path="/path/to/error",
- *   href={"_self"="/path/to/error", "help"="/path/to/help"}
- * )
- */
-public function onPost()
-```
-
-## Vnd Error
-
-`Ray\WebFormModule\FormVndErrorModule`をインストールすると、`@FormValidation`でアノテートしたメソッドも`@InputValidation`とアノテートしたメソッドと同じように例外を投げるようになります。作成したPageリソースをAPIとして使用することができます：
-
-```php
-use BEAR\Package\AbstractAppModule;
+use Ray\Di\AbstractModule;
 use Ray\WebFormModule\FormVndErrorModule;
+use Ray\WebFormModule\WebFormModule;
 
-class FooModule extends AbstractModule
+class FakeVndErrorModule extends AbstractModule
 {
     protected function configure()
     {
-        $this->install(new WebFormModule);
-        $this->override(new FormVndErrorModule);
+        $this->install(new WebFormModule());
+        $this->override(new FormVndErrorModule());
     }
+}
+```
+
+キャッチした例外の`error`プロパティを`echo`すると、[application/vnd.error+json](https://tools.ietf.org/html/rfc6906)メディアタイプの表現が出力されます。
+
+```php
+echo $e->error;
+
+//{
+//    "message": "Validation failed",
+//    "path": "/path/to/error",
+//    "validation_messages": {
+//        "name": [
+//            "Name must be alphanumeric only."
+//        ]
+//    }
+//}
+```
+
+`#[VndError]`属性で`vnd.error+json`に詳細情報を追加できます。
+
+```php
+#[FormValidation(form: "contactForm")]
+#[VndError(message: "foo validation failed", logref: "a1000", path: "/path/to/error", href: ["_self" => "/path/to/error", "help" => "/path/to/help"])]
+public function createAction()
+{
 }
 ```
 
 ## デモ
 
-[MyVendor.ContactForm](https://github.com/bearsunday/MyVendor.ContactForm)アプリケーションでフォームのデモを実行して試すことができます。確認付きのフォームページや、複数のフォームを1ページに設置したときの例などが用意されています。
+Ray.WebFormModuleリポジトリでデモアプリケーションを起動できます。
+
+```bash
+php -S docs/demo/1.csrf/web.php
+```

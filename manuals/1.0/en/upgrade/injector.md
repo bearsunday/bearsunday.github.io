@@ -69,6 +69,8 @@ final class Injector
 }
 ```
 
+Only if writable directories should not use the default `var/` layout, build a `Meta` with explicit paths ([Production](../production.html#writable-paths)). The snippet above is enough for ordinary apps.
+
 ### Step 2
 
 Change the `bootstrap.php`.

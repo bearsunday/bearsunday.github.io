@@ -5,11 +5,13 @@ category: Manual
 permalink: /manuals/1.0/en/security.html
 ---
 
-# Security
+# Security <sup style="font-size:0.5em; color:#666; font-weight:normal;">Beta</sup>
 
-BEAR.Sunday provides a framework-specific security tool [bear/security](https://github.com/bearsunday/BEAR.Security). By understanding the resource-oriented architecture, static analysis, dynamic testing, taint analysis, and AI auditing can detect vulnerabilities that generic tools miss.
+Security tools can scan your application for vulnerability assessment. With static analysis, dynamic testing, taint analysis, and AI auditing, architecture-aware tools analyze from multiple angles, detecting vulnerabilities that generic tools miss.
 
 ## Installation
+
+Install [bear/security](https://github.com/bearsunday/BEAR.Security).
 
 ```bash
 composer require --dev bear/security
@@ -19,14 +21,46 @@ composer require --dev bear/security
 
 | Tool | What it does | When to use |
 |------|--------------|-------------|
-| SAST | Finds dangerous patterns in your code | During development |
-| DAST | Sends attack requests to your app | Before deployment |
+| SAST[^sast] | Static analysis to find dangerous patterns in your code | During development |
+| DAST[^dast] | Dynamic analysis to send attack requests to your app | Before deployment |
 | AI Auditor | AI reviews your code for security issues | Code review |
 | Psalm Plugin | Traces user input to dangerous operations | During development |
 
+[^sast]: Static Application Security Testing
+[^dast]: Dynamic Application Security Testing
+
+## Design Philosophy: Recall-First
+
+Security scanners have traditionally had two approaches: precision-first (report only certain issues) and recall-first (report suspicious patterns), with a trade-off between them.
+
+BEAR.Security adopts a recall-first approach. Missing a vulnerability (False Negative) is critical, but false positives (False Positive) can be reviewed and excluded. With AI agents now able to handle false positive verification, this strategy is more effective than ever.
+
+### Recommended Workflow
+
+```bash
+# 1. Run SAST to detect pattern-based vulnerabilities
+./vendor/bin/bear.security-scan src
+
+# 2. Review results and fix vulnerabilities
+# Add @security-ignore comment to false positives (see example below)
+
+# 3. Run AI Auditor to detect business logic issues
+./vendor/bin/bear-security-audit src
+
+# 4. Review and fix detected issues
+```
+
+Example of suppressing a false positive:
+
+```php
+$path = $this->buildPath($id); // @security-ignore PATH_TRAVERSAL_FILE_OPS: $id is validated integer from router
+```
+
+Once `@security-ignore` is added, the issue is suppressed in subsequent scans.
+
 ## SAST
 
-Scans your source code for dangerous patterns:
+Scans your source code for dangerous patterns. We recommend running this from an AI agent (such as Claude Code) and having the AI verify whether detections are false positives.
 
 ```bash
 ./vendor/bin/bear.security-scan src
@@ -42,6 +76,8 @@ Detects 14 vulnerability types:
 | Data Protection | Insecure deserialization, XXE |
 | Session | Session fixation, CSRF |
 | Network | SSRF, Remote file inclusion |
+
+See the [Vulnerability Reference](https://bearsunday.github.io/BEAR.Security/issues/en/) for details on each vulnerability.
 
 ## DAST
 
@@ -66,7 +102,12 @@ Tests include:
 Uses Claude AI to find security issues that pattern matching cannot detect:
 
 ```bash
-# Requires ANTHROPIC_API_KEY or Claude CLI authentication
+# Option 1: API Key
+export ANTHROPIC_API_KEY=sk-ant-...
+./vendor/bin/bear-security-audit src
+
+# Option 2: Claude CLI (Max Plan - no API key required)
+claude auth login
 ./vendor/bin/bear-security-audit src
 ```
 
@@ -130,27 +171,31 @@ Run taint analysis:
 ./vendor/bin/psalm --taint-analysis
 ```
 
-Add a convenience script to `composer.json`:
+Add convenience scripts to `composer.json`:
 
 ```json
 {
     "scripts": {
+        "security": "./vendor/bin/bear.security-scan src",
         "taint": "./vendor/bin/psalm --taint-analysis 2>&1 | grep -E 'Tainted' || true"
+    },
+    "scripts-descriptions": {
+        "security": "Run SAST security scan",
+        "taint": "Run Psalm taint analysis"
     }
 }
 ```
 
-This filters output to show only taint errors.
-
 Then run with:
 
 ```bash
+composer security
 composer taint
 ```
 
 ## GitHub Actions
 
-Add security scanning to your CI pipeline:
+You can add security scanning to your CI pipeline:
 
 ```bash
 cp vendor/bear/security/workflows/security-sast.yml .github/workflows/
@@ -165,6 +210,8 @@ This workflow runs on every push and pull request:
 
 Results appear in your repository's **Security > Code scanning** section.
 
+**Recommended**: Run the scan from an AI agent first, add `@security-ignore` to false positives, then enable CI.
+
 ## Architecture and Security
 
 BEAR.Sunday's architecture makes security scanning more effective:
@@ -174,3 +221,12 @@ BEAR.Sunday's architecture makes security scanning more effective:
 - **No Hidden Magic**: Dependencies are explicit through constructor injection. Scanners can analyze the complete code path.
 
 - **Framework-Aware AI**: The AI Auditor understands BEAR.Sunday patterns and can detect business logic flaws, not just generic vulnerabilities.
+
+## Prompt for AI Agents
+
+To set up bear/security with an AI coding assistant, use this prompt:
+
+```
+Follow the setup instructions at:
+https://raw.githubusercontent.com/bearsunday/BEAR.Skills/1.x/.claude/skills/bear-security-setup/SKILL.md
+```

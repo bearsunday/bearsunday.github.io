@@ -151,6 +151,12 @@ You can access all the resources by following the link from the root like the we
  * [HAL Browser](https://github.com/mikekelly/hal-browser) - [example](http://haltalk.herokuapp.com/explorer/browser.html#/)
  * [hyperagent.js](https://weluse.github.io/hyperagent/)
 
+### HAL Layout <sup style="font-size:0.5em; color:#666; font-weight:normal;">Beta</sup>
+
+Libraries for rendering HAL resources as React/Vue components:
+
+* [hal-layout](https://github.com/koriym/hal-layout) - React
+* [hal-layout-vue](https://github.com/koriym/hal-layout-vue) - Vue 3
 
 ## Siren
 

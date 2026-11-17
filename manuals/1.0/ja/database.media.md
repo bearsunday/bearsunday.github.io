@@ -11,7 +11,7 @@ permalink: /manuals/1.0/ja/database_media.html
 
 * ドメイン層とインフラ層の境界を明確にします。
 * ボイラープレートコードを削減します。
-* 外部メディアの実体には無関係なので、後からストレージを変更することができます。並列開発やスタブ作成が容易です。
+* 外部メディアの実体には無関係なので、後からストレージを変更できます。並列開発やスタブ作成が容易です。
 
 ## インストール
 
@@ -19,7 +19,7 @@ permalink: /manuals/1.0/ja/database_media.html
 composer require ray/media-query
 ```
 
-> **Note**: Web API機能は別パッケージ [ray/web-query](https://github.com/ray-di/Ray.WebQuery) に移動しました。
+> **Note**: Web API も同様にインターフェイスから扱えます。HTTP リクエストを `#[WebQuery]` でインターフェイスのメソッドにマッピングする [ray/web-query](https://github.com/ray-di/Ray.WebQuery)（`composer require ray/web-query`）を利用してください。詳しくは[マニュアル](https://ray-di.github.io/Ray.MediaQuery/web-query/ja/)を参照してください。
 
 ## 利用方法
 
@@ -35,7 +35,7 @@ use Ray\MediaQuery\Annotation\DbQuery;
 interface TodoAddInterface
 {
     #[DbQuery('todo_add')]
-    public function add(string $id, string $title): void;
+    public function add(string $title): void;
 }
 ```
 
@@ -76,23 +76,25 @@ class Todo
         private TodoAddInterface $todoAdd
     ) {}
 
-    public function add(string $id, string $title): void
+    public function add(string $title): void
     {
-        $this->todoAdd->add($id, $title);
+        $this->todoAdd->add($title);
     }
 }
 ```
 
 ### DbQuery
 
-SQL実行がメソッドにマップされ、IDで指定されたSQLをメソッドの引数でバインドして実行します。例えばIDが`todo_item`の指定では`todo_item.sql`SQL文に`['id => $id]`をバインドして実行します。
+SQL実行がメソッドにマップされ、IDで指定されたSQLをメソッドの引数でバインドして実行します。例えばIDが`todo_item`の指定では`todo_item.sql`SQL文に`['id' => $id]`をバインドして実行します。
 
 * `$sqlDir`ディレクトリにSQLファイルを用意します。
 * SQLファイルには複数のSQL文が記述できます。最後の行のSELECTが返り値になります。
 
-#### Entity
+基本形は **Entity**（1行をhydrate済みエンティティで受け取る）と **Entity リスト**（複数行をエンティティの配列で受け取る）です。連想配列・独自コレクション・ページネーション・DML 系の戻り値型はこれらの応用として段階的に紹介します。
 
-メソッドの戻り値の型を指定すると、SQL実行結果が自動的にそのエンティティクラスに変換（hydrate）されます。
+#### Entity（1行）
+
+メソッドの戻り値の型としてエンティティクラスを指定すると、SQL実行結果が自動的にそのインスタンスに変換（_hydrate_）されます。
 
 ```php
 interface TodoItemInterface
@@ -102,7 +104,7 @@ interface TodoItemInterface
 }
 ```
 
-### Constructor Property Promotion（推奨）
+##### Constructor Property Promotion（推奨）
 
 コンストラクタプロパティプロモーションを使うと型安全でイミュータブルなエンティティを作成できます。
 
@@ -116,30 +118,33 @@ final class Todo
 }
 ```
 
-### snake_case → camelCase 自動変換
+値はSQLの**列の順序**でコンストラクタ引数に位置バインドされます。カラム名（例: `user_name`）とプロパティ名（例: `$userName`）は一致している必要はありません。SELECT句の列の順番とコンストラクタ引数の順番を合わせてください。
 
-データベースのカラム名（snake_case）とプロパティ名（camelCase）は自動的に変換されます。
+行が見つからない可能性があるときは戻り値型に `Entity|null` を指定します。該当行がなければ `null` が返ります。
+
+> **Note**: コンストラクタを定義しないエンティティを使う場合、Ray.MediaQuery は PDO の `FETCH_CLASS` にフォールバックし、**列名→プロパティ名**でマッピングします（snake_case 変換は行いません）。SELECT 句の列順に依存しないため、列数が多い読み取り専用 DTO や PHP 8.4 の `readonly class` で有用です。
+
+#### Entity リスト（複数行）
+
+戻り値の型を `array` に宣言すると複数行を受け取れます。各行をエンティティに hydrate するには、`@return list<Entity>` の docblock を付けるか、`#[DbQuery]` の `factory:` パラメーターでファクトリを指定します。
 
 ```php
-final class Invoice
+interface TodoListInterface
 {
-    public function __construct(
-        public readonly string $id,
-        public readonly string $title,
-        public readonly string $userName,      // user_name → userName
-        public readonly string $emailAddress,  // email_address → emailAddress
-    ) {}
+    /** @return list<Todo> */
+    #[DbQuery('todo_list')]
+    public function list(): array;
+
+    #[DbQuery('todo_list', factory: TodoFactory::class)]
+    public function listByFactory(): array;
 }
 ```
 
-```sql
--- invoice.sql
-SELECT id, title, user_name, email_address FROM invoices WHERE id = :id
-```
+`@return list<Entity>` も `factory:` も付けない場合、各行は連想配列のまま返ります（単行版は次の[type: 'row'](#type-row連想配列)を参照）。
 
-#### type: 'row'
+#### type: 'row'（連想配列）
 
-単一行の結果を連想配列で取得する場合は`type: 'row'`を指定します。
+戻り値の型が `array` のとき、デフォルトでは複数行の rowlist（`[['id' => '1', 'title' => 'run'], ...]`）として返ります。集計結果のような単一行（例: `['total' => 10, 'active' => 5]`）を**そのまま**連想配列で受け取りたい場合は `type: 'row'` を指定します。指定しないと、その1行は `$result[0]` に入ります。
 
 ```php
 interface TodoItemInterface
@@ -149,11 +154,128 @@ interface TodoItemInterface
 }
 ```
 
+#### AffectedRows（UPDATE / DELETE の影響行数）
+
+`UPDATE` / `DELETE`の影響行数を、ただの `int` ではなく型付きの値で受け取るには、戻り値型に`AffectedRows`を指定します。
+
+```php
+use Ray\MediaQuery\Result\AffectedRows;
+
+interface TodoRepositoryInterface
+{
+    #[DbQuery('todo_delete')]
+    public function delete(string $id): AffectedRows;
+}
+
+$affected = $todoRepo->delete($id);
+$affected->count;        // int: 影響を受けた行数
+$affected->isAffected(); // bool: count > 0 のときtrue
+```
+
+SQLファイルに複数のステートメントが含まれる場合、`AffectedRows`は**最後に実行されたステートメントの結果**を表します。
+
+実行可能な例: [`TodoAffectedInterface`](https://github.com/ray-di/Ray.MediaQuery/blob/1.1.0/tests/Fake/Queries/TodoAffectedInterface.php) と [`DbQueryAffectedRowsTest`](https://github.com/ray-di/Ray.MediaQuery/blob/1.1.0/tests/DbQueryAffectedRowsTest.php)
+
+#### InsertedRow（INSERT の解決済み値とID）
+
+`INSERT`でフレームワークが解決した値（UUID、タイムスタンプ、`DateTime` → SQL文字列、`ToScalarInterface` によるスカラー化など）と、ドライバーが採番した `lastInsertId` をまとめて受け取るには、戻り値型に `InsertedRow` を指定します。同じ SQL ID でも、戻り値型を変えるだけでフレームワークのふるまい（実行のみ／影響行数／採番ID 等）が切り替わります。
+
+```php
+use Ray\MediaQuery\Result\InsertedRow;
+
+interface TodoAddInterface
+{
+    #[DbQuery('todo_add')]
+    public function add(string $title): void;
+
+    #[DbQuery('todo_add')]
+    public function addReturning(string $title): InsertedRow;
+}
+
+$inserted = $todoAdd->addReturning('ドキュメント作成');
+$inserted->values;  // array<string, mixed>: ドライバーにバインドされた解決済み値
+$inserted->id;      // ?string: auto-increment ID（採番されない場合はnull）
+```
+
+`$inserted->id`はドライバーが`false` / `''` / `'0'`を返した場合、`null`に正規化されます。
+
+#### PostQueryInterface（独自の型付き結果）
+
+SELECTの結果を `array<Article>` ではなく、`published()` / `titles()` のようなドメインメソッドを持つ独自のコレクションでラップしたいことがあります。`PostQueryInterface`を実装したクラスを戻り値型に指定すると、フレームワークはクエリ実行後の状態を `PostQueryContext` にまとめて静的ファクトリ `fromContext()` に渡し、インスタンスの組み立てはクラス側で自由に決められます。
+
+```php
+interface PostQueryInterface
+{
+    public static function fromContext(PostQueryContext $context): static;
+}
+```
+
+`PostQueryContext`は次の4つの readonly プロパティを持ちます:
+
+| プロパティ   | 型                          | 用途                                                                |
+|------------|----------------------------|---------------------------------------------------------------------|
+| `$statement` | `PDOStatement`             | 実行済みステートメント。`rowCount()`やカラムメタデータ等を参照可能。       |
+| `$pdo`       | `ExtendedPdoInterface`     | 接続。`lastInsertId()` や追加読み取りに使う。                          |
+| `$values`    | `array<string, mixed>`     | `ParamConverter` / `ParamInjector` 解決後の値（UUID、タイムスタンプ、[バリューオブジェクト](#バリューオブジェクトvo)のスカラー化等）。 |
+| `$rows`      | `array<mixed>`             | SELECT時の取得行。`@return Wrapper<Entity>` または `factory:` でエンティティが解決されると hydrate 済みエンティティ、未指定時は連想配列。DML 時は常に `[]`。 |
+
+```php
+use Ray\MediaQuery\Result\PostQueryContext;
+use Ray\MediaQuery\Result\PostQueryInterface;
+
+/** @implements IteratorAggregate<int, Article> */
+final class Articles implements PostQueryInterface, IteratorAggregate, Countable
+{
+    /** @param list<Article> $rows */
+    public function __construct(public readonly array $rows) {}
+
+    public static function fromContext(PostQueryContext $context): static
+    {
+        /** @var list<Article> $rows */
+        $rows = $context->rows;
+        return new static($rows);
+    }
+
+    public function getIterator(): ArrayIterator { return new ArrayIterator($this->rows); }
+    public function count(): int { return count($this->rows); }
+}
+
+interface ArticleRepositoryInterface
+{
+    #[DbQuery('article_list', factory: ArticleFactory::class)]
+    public function list(): Articles;
+}
+```
+
+各行のhydrationは Entity リストと同じく、generic な `@return YourWrapper<Entity>` docblock または `factory:` で指示します。継承ではなく**コンポジション**で表現することで、Laravel `Collection`、Doctrine `ArrayCollection`、独自実装などを自由に内部に保持できます。
+
+Ray.MediaQuery の実行可能な例:
+
+- [`Articles`](https://github.com/ray-di/Ray.MediaQuery/blob/1.1.0/tests/Fake/Result/Articles.php): `PostQueryContext::$rows` をラップするコレクション
+- [`ArticlesInterface`](https://github.com/ray-di/Ray.MediaQuery/blob/1.1.0/tests/Fake/Queries/ArticlesInterface.php): 連想配列、docblock による hydrate、`factory:` による hydrate の宣言例
+
+> なお、`AffectedRows` / `InsertedRow` も同じ `PostQueryInterface` の実装です。DML 後に独自の集計や監査ログを伴う結果型が欲しい場合は、同じ仕組みで自作できます。
+
+#### 戻り値型 早見表
+
+|              | 1行                                  | 複数行（rowlist）                                    |
+|--------------|--------------------------------------|----------------------------------------------------|
+| エンティティ | `Entity` / <code>Entity&#124;null</code> | `array` + `@return list<Entity>` または `factory:`  |
+| 連想配列     | `array` + `#[DbQuery(type: 'row')]`  | `array`（docblock / `factory:` なし）              |
+
+応用的な戻り値型:
+
+- `MyColl`（`PostQueryInterface` 実装）: 独自の型付きコレクションラッパー
+- `PagesInterface` + `#[Pager]`: ページネーション
+- `AffectedRows`: DML の影響行数
+- `InsertedRow`: DML の採番ID + 解決済み値
+- `void`: DML の実行のみ
+
 ## パラメーター
 
 ### 日付時刻
 
-パラメーターにバリューオブジェクトを渡すことができます。例えば、`DateTimeInterface`オブジェクトをこのように指定できます。
+パラメーターにバリューオブジェクトを渡せます。例えば、`DateTimeInterface`オブジェクトをこのように指定できます。
 
 ```php
 interface TaskAddInterface
@@ -163,7 +285,7 @@ interface TaskAddInterface
 }
 ```
 
-値はSQL実行時やWeb APIリクエスト時に日付フォーマットされた文字列に変換されます。
+値はSQL実行時に日付フォーマットされた文字列に変換されます。
 
 ```sql
 INSERT INTO task (title, created_at) VALUES (:title, :createdAt); # 2021-2-14 00:00:00
@@ -186,6 +308,7 @@ $this->bind(DateTimeInterface::class)->to(UnixEpochTime::class);
 ```php
 interface MemoAddInterface
 {
+    #[DbQuery('memo_add')]
     public function __invoke(string $memo, UserId $userId = null): void;
 }
 ```
@@ -223,25 +346,27 @@ public function __invoke(Uuid $uuid = null): void; // UUIDが生成され渡さ�
 ```php
 use Ray\MediaQuery\Annotation\DbQuery;
 use Ray\MediaQuery\Annotation\Pager;
-use Ray\MediaQuery\Pages;
+use Ray\MediaQuery\PagesInterface;
 
 interface TodoList
 {
     #[DbQuery('todo_list'), Pager(perPage: 10, template: '/{?page}')]
-    public function __invoke(): Pages;
+    public function __invoke(): PagesInterface;
 }
 ```
 
-`count()`で件数が取得でき、ページ番号で配列アクセスをするとページオブジェクトが取得できます。`Pages`はSQL遅延実行オブジェクトです。
+`count()`で件数、`getNbPages()`で総ページ数が取得でき、ページ番号で配列アクセスをするとページオブジェクトが取得できます。`PagesInterface`はSQL遅延実行オブジェクトです。
 
 ```php
 $pages = ($todoList)();
-$cnt = count($pages);    // count()をした時にカウントSQLが生成されクエリーが行われます。
-$page = $pages[2];       // 配列アクセスをした時にそのページのDBクエリーが行われます。
+$cnt = count($pages);           // count()をした時にカウントSQLが生成されクエリーが行われます。
+$nbPages = $pages->getNbPages(); // 総ページ数（ceil(count / perPage)の計算が不要です）
+$page = $pages[2];              // 配列アクセスをした時にそのページのDBクエリーが行われます。
 
 // $page->data           // sliced data
 // $page->current;       // 現在のページ番号
 // $page->total          // 総件数
+// $page->nbPages        // 総ページ数
 // $page->hasNext        // 次ページの有無
 // $page->hasPrevious    // 前ページの有無
 // $page->maxPerPage;    // 1ページあたりの最大件数
@@ -292,7 +417,7 @@ $sqlQuery->exec('memo_add', [
 
 ### Ray.InputQueryとの連携
 
-BEAR.ResourceでRay.InputQueryを利用している場合、InputクラスをMediaQueryのパラメーターとして直接渡すことができます。
+BEAR.ResourceでRay.InputQueryを利用している場合、InputクラスをMediaQueryのパラメーターとして直接渡せます。
 
 ```php
 use Ray\InputQuery\Attribute\Input;
@@ -346,6 +471,7 @@ public function testAdd(): void
 `PerformSqlInterface`を実装することで、SQL実行部分を完全にカスタマイズできます。デフォルトの実行処理を独自の実装に入れ替えることで、より高度なログ機能、パフォーマンス監視、セキュリティ制御などを実現できます。
 
 ```php
+use Exception;
 use Ray\MediaQuery\PerformSqlInterface;
 
 final class CustomPerformSql implements PerformSqlInterface
@@ -401,7 +527,7 @@ protected function configure(): void
 
 ## SQLテンプレート
 
-SQLの実行時にクエリーIDを含むカスタムログを出力して、スローログ分析時にどのクエリーが実行されたかを特定しやすくすることができます。
+SQLの実行時にクエリーIDを含むカスタムログを出力して、スローログ分析時にどのクエリーが実行されたかを特定しやすくなります。
 
 `MediaQuerySqlTemplateModule`を使用して、SQLログのフォーマットをカスタマイズできます。
 
@@ -427,23 +553,3 @@ protected function configure(): void
 -- App: todo_item.sql
 SELECT * FROM todo WHERE id = :id
 ```
-
-## PHP 8 アトリビュート
-
-Ray.MediaQuery 1.0以降は、PHP 8の[アトリビュート](https://www.php.net/manual/ja/language.attributes.overview.php)を使用します。
-
-```php
-use Ray\MediaQuery\Annotation\DbQuery;
-use Ray\MediaQuery\Annotation\Pager;
-
-interface TodoRepository
-{
-    #[DbQuery('todo_add')]
-    public function add(string $id, string $title): void;
-
-    #[DbQuery('todo_list'), Pager(perPage: 20)]
-    public function list(): Pages;
-}
-```
-
-> **Note**: Doctrineアノテーション（`@DbQuery`）のサポートは終了しました。マイグレーション方法は[Ray.MediaQuery MIGRATION.md](https://github.com/ray-di/Ray.MediaQuery/blob/1.x/MIGRATION.md)を参照してください。

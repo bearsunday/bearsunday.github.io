@@ -33,7 +33,47 @@ A distributed caching system that follows REST constraints saves not only comput
 
 Content caching has dependency issues. If content A depends on content B, and B depends on C, then when C is updated, not only must C's cache and ETag be updated, but also B's cache and ETag (which depends on C), and A's cache and ETag (which depends on B).
 
-BEAR.Sunday solves this problem by having each resource hold the URI of dependent resources as tags. When a resource embedded with `#[Embed]` is modified, the cache and ETag of all related resources are invalidated, and cache regeneration occurs for the next request.
+BEAR.Sunday solves this problem by having each resource hold the URI of dependent resources as tags. When a resource embedded with `#[Embed]` is modified, the cache and ETag of the resources that hold it as a dependency are invalidated, and cache regeneration occurs for the next request.
+
+This dependency is registered only when the resource embedded with `#[Embed]` is itself made cacheable, for example with `#[Cacheable]`, or declares `#[DependsOn]` (see below). A resource with neither, read in `onGet()`, is not a dependency: its tag does not reach the page's entries. If that resource is also rendered as a hole, purging its URI drops the stored view, and the next request recomposes the page from the template. Give such a resource a cache attribute. A value fetched eagerly with `$this->resource->get()` is not tracked either.
+
+How an embedded resource is used determines the behavior (see [Donut Cache](#donut-cache) below for holes):
+
+| Need | Use | Effect of a resource purge |
+|---|---|---|
+| Per-user content (no shared cache) | a non-cacheable resource rendered as a hole on a `#[DonutCache]` page | that hole alone re-runs on every HIT |
+| Shared content that changes on an event | a cacheable resource rendered as a hole (never read in `onGet()`) | the shell is recomposed from the stored template |
+| A value the page's own `onGet()` reads | a cacheable resource becomes a dependency | the whole stored entry is dropped and the next GET is a fresh miss |
+
+### #[DependsOn]
+
+The dependency above is automatic only for a resource embedded with `#[Embed]`. Data a resource reads without embedding it — through a query, a service call, or any other code — forms no dependency on its own. Declare the URI by hand with `#[DependsOn]`, and a write to it invalidates this resource the same way, without adding an `#[Embed]` just to create the dependency.
+
+```php
+use BEAR\RepositoryModule\Annotation\DependsOn;
+
+#[Cacheable]
+class ChannelEntries extends ResourceObject
+{
+    #[DependsOn(uri: 'app://self/taxonomy?ulid={channelId}')]
+    public function onGet(string $channelId): static
+    {
+        $this->body = ['entries' => $this->query->entries($channelId)];
+
+        return $this;
+    }
+}
+```
+
+`#[DependsOn]` only adds the tag; the named URI still needs its own write to invalidate it — either because it is itself `#[Cacheable]`, or through a `#[Purge]`/`#[Refresh]` that names it.
+
+The attribute can also be placed on a row class read from a list: each public property becomes a template variable, and every row found in the body expands the URI once. The body is walked through arrays and public properties only, so rows inside a `Traversable` such as a collection or a `Generator` are not found.
+
+Two more limits apply: an argument bound by `#[ResourceParam]` is read back from the request query rather than from the binding, so a declaration without a default fails and one with a default silently expands from the default instead of the bound value; and a declaration that cannot expand fails the GET with `DependsOnNotExpandable`, storing nothing.
+
+A non-cached resource in between passes on only URIs declared with `#[DependsOn]` (its own, and those of the requests below it that ran), not a cacheable grandchild's own tag further down. Declare the grandchild's URI on the resource in between as well, or make that resource `#[Cacheable]`, to have the invalidation reach the top.
+
+Requires `bear/query-repository` 1.20 or later.
 
 ## Donut Cache
 
@@ -106,32 +146,7 @@ class BlogPosting extends ResourceObject
 }
 ```
 
-### recursive donut
-
-<img width="191" alt="recursive donut 2021-10-19 21 27 06" src="https://user-images.githubusercontent.com/529021/137909083-2c5176f7-edb7-422b-bccc-1db90460fc15.png">
-
-The donut structure will be recursively applied.
-For example, if A contains B and B contains C and C is modified, A's cache and B's cache will be reused except for the modified C. A's and B's caches and ETags will be regenerated, but DB access to retrieve A's and B's content and rendering of views will not be done.
-
-The optimized structure of the partial cache performs content regeneration with minimal cost. The client does not need to know about the content cache structure.
-
-## Event-driven content
-
-Traditionally, CDNs have believed that content that requires application logic is "dynamic" and therefore cannot be cached by a CDN. However, some CDNs, such as Fastly and Akamai, allow immediate or tag-based cache invalidation within seconds, [this idea is a thing of the past](https://www.fastly.com/blog/leveraging-your-cdn-cache- uncacheable-content).
-
-Sunday dependency resolution is done not only on the server side, but also on the shared cache; when AOP detects a change and makes a PURGE request to the shared cache, the related cache on the shared cache will be invalidated, just like on the server side.
-
-## Conditional request
-
-<img width="468" alt="conditional request" src="https://user-images.githubusercontent.com/529021/137151061-8d7a5605-3aa3-494c-91c5-c1 deddd987dd.png">
-
-Content changes are managed by AOP, and the entity tag (ETag) of the content is automatically updated. conditional requests for HTTP using ETag not only minimize the use of computational resources, but responses that only return `304 Not Modified` also minimize the use of network resources. Conditional HTTP requests using ETag not only minimize the use of computational resources, but also minimize the use of network resources by simply returning `304 Not Modified`.
-
-
-# Usage
-
-Give the class to be cached the attribute `#[DonutCache]` if it is a donut cache (embedded content is not cacheable) and `#[CacheableResponse]` otherwise.
-
+To cache only selected methods, leave the class unannotated and annotate the methods instead. In that case, mark the methods that change the cache with `#[RefreshCache]`:
 
 ```php
 class Todo extends ResourceObject
@@ -144,18 +159,21 @@ class Todo extends ResourceObject
     #[RefreshCache]
     public function onDelete(int $id = 0): static
     {
-    }	
+    }
 }
 ```
 
-If you give attributes in either way, all the features introduced in the overview will apply.
-Caching is not disabled by time (TTL) by default, assuming event-driven content
+Either approach applies all the features described in the overview. Because event-driven content is assumed, the cache is invalidated by events rather than by time; the default TTL depends on the CDN module, as described below. Note that `#[DonutCache]` does not cache the whole content, while `#[CacheableResponse]` does.
 
-Note that with `#[DonutCache]` the whole content will not be cached, but with `#[CacheableResponse]` it will be.
+What a cache attribute stores is shared with every visitor, so put per-user values in a non-cacheable resource rendered as a hole on a `#[DonutCache]` page. QueryRepository inspects only the response's own `Cache-Control`. A per-user value that reaches the cached output by any other route is stored and served to every later visitor:
+
+* a value of an embedded resource read in `onGet()`
+* a value received through `#[ResourceParam]`
+* a value generated in the template (for example a Twig function)
 
 ## TTL
 
-TTL is specified with `DonutRepositoryInterface::put()`.
+TTL is specified with `DonutRepositoryInterface::putStatic()`.
 `ttl` is the cache time for non-donut holes, `sMaxAge` is the cache time for CDNs.
 
 ```php
@@ -171,15 +189,16 @@ class BlogPosting extends ResourceObject
     public function onGet(): static
     {
         // process ...
-        $this->repository->put($this, ttl:10, sMaxAge:100);　
+        $this->repository->putStatic($this, ttl: 10, sMaxAge: 100);
 
         return $this;
     }
 }
 ```
+
 ### Default TTL value
 
-For event-driven content, changes to the content must be reflected immediately in the cache, so the default TTL varies depending on the CDN module installed. Therefore, the default TTL will vary depending on the CDN module installed: indefinitely (1 year) if the CDN supports tag-based disabling of caching, or 10 seconds if it does not.
+For event-driven content, changes to the content must be reflected in the cache immediately. The default TTL therefore depends on which CDN module is installed: it is indefinite (one year) if the CDN supports tag-based cache invalidation, and 10 seconds if it does not.
 
 The expected cache reflection time is immediate for Fastly, a few seconds for Akamai, and 10 seconds for others.
 
@@ -188,7 +207,7 @@ To customize it, bind it by implementing `CdnCacheControlHeaderSetterInterface` 
 ## Cache invalidation
 
 Use the methods of `DonutRepositoryInterface` to manually invalidate the cache.
-This will invalidate not only the specified cache, but also the cache of the ETag, any other resources it depends on, and the cache of the ETag on the server side and, if possible, on the CDN.
+This will invalidate not only the specified cache, but also the cache of the ETag, any other resource that depends on it, and the cache of the ETag on the server side and, if possible, on the CDN.
 
 ```php
 interface DonutRepositoryInterface
@@ -201,11 +220,18 @@ interface DonutRepositoryInterface
 ### Invalidate by URI
 
 ```php
-// example
-$this->repository->purge(new Uri('app://self/blog/comment'));
+// app://self/articles has onGet(int $page = 1)
+$this->repository->purge(new Uri('app://self/articles'));        // every page: ?page=1, ?page=2, ...
+$this->repository->purge(new Uri('app://self/articles?page=2')); // ?page=2 only
 ```
 
-### Disable by tag
+Besides its own URI tag, each cached entry carries a group tag: the tag of its URI after removing the `onGet()` parameters that have a default value and any query `onGet()` does not declare. A purge of a URI drops the entries of that URI and the entries whose group tag is the tag of that URI. The group tag of `app://self/articles?page=2` is the tag of `app://self/articles`, so purging `app://self/articles` drops it. No group tag keeps a default-valued parameter, so purging `app://self/articles?page=1` drops only the entries of that URI. The `#[Purge]` and `#[Refresh]` method attributes, which purge the URI they name after the method runs (`#[Refresh]` then fetches it again), work the same way. A page that embeds such a variant (`app://self/articles?page=2`) as a cached dependency (see [Tag-based Cache Invalidation](#tag-based-cache-invalidation)) carries its group tag as well and is dropped with it.
+
+A write method of a `#[Cacheable]` or `#[CacheableResponse]` resource, and a method marked `#[RefreshCache]`, purges its own URI with the default-valued parameters removed, so a write to `app://self/articles` drops every page of the list. A write method of a `#[DonutCache]` resource automatically purges its own URI only when it is marked `#[RefreshCache]`.
+
+A required parameter stays in the group tag under the key the request used. For `onGet(int $userId, int $page = 1)`, an entry requested as `?user_id=1&page=2` is dropped by a purge of `?user_id=1`, not by one of `?userId=1`. The automatic purge after a write purges both the parameter name (`?userId=1`) and its snake_case form (`?user_id=1`), so it reaches the entry whichever spelling the GET used; a GET that mixes the two across its required keys (`?userId=1&post_id=2`) is not reached. This needs bear/query-repository 1.20.1 or later.
+
+### Invalidate by tag
 
 ```php
 $this->repository->invalidateTags(['template_a', 'campaign_b']);
@@ -223,7 +249,7 @@ interface PurgerInterface
 }
 ```
 
-### Specify dependent tags.
+### Specify dependent tags
 
 Use the `SURROGATE_KEY` header to specify the key for PURGE. Use a space as a separator for multiple strings.
 
@@ -239,7 +265,7 @@ class Foo
 
 If the cache is invalidated by `template_a` or `campaign_b` tags, Foo's cache and Foo's ETag will be invalidated both server-side and CDN.
 
-### Resource Dependencies.
+### Resource Dependencies
 
 Use `UriTagInterface` to convert a URI into a dependency tag string.
 
@@ -253,10 +279,10 @@ $this->headers[Header::SURROGATE_KEY] = ($this->uriTag)(new Uri('app://self/foo'
 
 This cache will be invalidated both server-side and CDN when `app://self/foo` is modified.
 
-### Make associative array a resource dependency.
+### Make an associative array a resource dependency
 
 ```php
-// bodyの内容
+// body contents
 [
     ['id' => '1', 'name' => 'a'],
     ['id' => '2', 'name' => 'b'],
@@ -303,13 +329,15 @@ $this->install(
 
 Use `deflate` if you want to reduce Redis memory usage. This is a trade-off with CPU usage.
 
-## CDN
+For the `dsn` format (authentication, TLS, Sentinel, Cluster, etc.) and connection options, see [Redis DSN](redis-dsn.html).
+
+## CDN-specific Modules
 
 If you install a module that supports a specific CDN, vendor-specific headers will be output.
 
 ```php
-$this->install(new FastlyModule())
-$this->install(new AkamaiModule())
+$this->install(new FastlyModule());
+$this->install(new AkamaiModule());
 ```
 
 ## Multi-CDN
@@ -321,17 +349,33 @@ You can also configure a multi-tier CDN and set the TTL according to the role. F
 
 # Response headers
 
-Sunday will automatically do the cache control for the CDN and output the header for the CDN. Client cache control is described in `$header` of ResourceObject depending on the content.
+BEAR.Sunday handles CDN cache control automatically and outputs the CDN headers. Client cache control is described in `$headers` of the ResourceObject depending on the content.
 
 This section is important for security and maintenance purposes.
 Make sure to specify the `Cache-Control` in all ResourceObjects.
 
-### Cannot cache
+### Do not cache
 
 Always specify content that cannot be cached.
 
 ```php
 ResponseHeader::CACHE_CONTROL => CacheControl::NO_STORE
+```
+
+If a `#[Cacheable]`/`#[CacheableResponse]`/`#[DonutCache]` response sets its own `Cache-Control` to `private` or `no-store` - including a `$headers` property default such as `CacheControl::NO_STORE` - that response is not stored server-side. Its own header is kept, and the CDN-facing headers are removed. No `max-age` is appended to a `no-store` response.
+
+To keep the server-side cache while telling the client `no-store`, add `#[HttpCache(noStore: true)]`:
+
+```php
+use BEAR\RepositoryModule\Annotation\Cacheable;
+use BEAR\RepositoryModule\Annotation\HttpCache;
+
+#[Cacheable]
+#[HttpCache(noStore: true)]
+class News extends ResourceObject
+{
+    // ...
+}
 ```
 
 ### Conditional requests
@@ -342,7 +386,7 @@ Check the server for content changes before using the cache. Server-side content
 ResponseHeader::CACHE_CONTROL => CacheControl::NO_CACHE
 ```
 
-### Specify client cache time.
+### Specify client cache time
 
 The client is cached on the client. This is the most efficient cache, but server-side content changes will not be reflected at the specified time.
 
@@ -372,13 +416,13 @@ To use the client cache with APIs, use an RFC7234 compliant API client.
 * Ruby [faraday-http-cache](https://github.com/plataformatec/faraday-http-cache)
 * Python [requests-cache](https://pypi.org/project/requests-cache/)
 
-### private
+### Private cache
 
 Specify `private` if you do not want to share the cache with other clients. The cache will be saved only on the client side. In this case, do not specify the cache on the server side.
 
-````php
+```php
 ResponseHeader::CACHE_CONTROL => 'private, max-age=30'
-````
+```
 
 > Even if you use shared cache, you don't need to specify `public` in most cases.
 
@@ -403,48 +447,161 @@ Adaptive TTL is the ability to predict the lifetime of content and correctly tel
 
 The client does not need to request a resource that it knows will not be updated.
 
-## #[Cacheable].
+## #[Cacheable]
 
-The traditional ##[Cacheable] TTL caching is also supported.
+`#[Cacheable]` caches the resource's value (its `body`). `#[CacheableResponse]` caches the response (the representation) and has no `body` when served from the cache.
 
-Example: 30 seconds cache on the server side, 30 seconds cache on the client.
+* `type: 'value'` (the default) stores only the `body` and renders the representation on each request, so the same value can be returned in another representation and used as a value when embedded.
+* `type: 'view'` stores both the `body` and the representation.
 
-The same number of seconds will be cached on the client side since it is specified on the server side.
+Either way the response gets an ETag, and an embedded child that carries an ETag or a `Surrogate-Key` takes the entry with it when invalidated. `expiry` defaults to `never`: the server keeps the entry until it is invalidated, and the client gets `max-age=0` and revalidates with the ETag.
 
-The same number of seconds will be cached on the client side.
+Use `#[Cacheable]` for a resource that is embedded and used as a value. A `#[CacheableResponse]` resource served from the cache has no `body`, so a page embedding it renders that part as `null` in JSON.
+
+Example: cache on the server for 30 seconds, and on the client for 30 seconds. The client cache duration follows the server-side setting:
+
+```php
 use BEAR\RepositoryModule\Annotation\Cacheable;
 
-#[Cacheable(expirySecond: 30)]]
+#[Cacheable(expirySecond: 30)]
 class CachedResource extends ResourceObject
 {
-````
+    // ...
+}
+```
 
-Example: Cache the resource on the server and client until the specified expiration date (the date in `$body['expiry_at']`)
+Example: cache on both the server and the client until the specified expiry date (the date in `$body['expiry_at']`):
 
-```php?start_inline
+```php
 use BEAR\RepositoryModule\Annotation\Cacheable;
 
-#[Cacheable(expiryAt: 'expiry_at')]]
+#[Cacheable(expiryAt: 'expiry_at')]
 class CachedResource extends ResourceObject
 {
-```.
+    // ...
+}
+```
 
-See the [HTTP Cache](https://bearsunday.github.io/manuals/1.0/ja/http-cache.html) page for more information.
+See the [HTTP Cache](https://bearsunday.github.io/manuals/1.0/ja/http-cache.html) page (Japanese) for more information.
+
+## Observability
+
+BEAR.QueryRepository can record what it actually did as a typed, schema-validated log tree
+instead of free-text messages: a hit or a miss, what was saved and for how long, what was
+invalidated, and whether the CDN purger reported the purge request as successful (not whether the
+CDN's edge actually propagated it). Recording is off by default. Installing
+`DevQueryRepositoryLogModule` turns it on; installing it alone does not change cache behavior.
+
+The log can share one tree with the record of resource requests. With the wiring in
+[Event Sourcing](https://bearsunday.github.io/manuals/1.0/en/event-sourcing.html)'s "One tree with
+BEAR.QueryRepository", each cache decision (hit or miss, save, invalidation) nests inside the
+`resource_request` that caused it, so one request reads in causal order: the resources it called
+and what the cache decided for each. The `bear-observe` skill below sets this wiring up.
+
+Both log modules require a host where one process serves one request (PHP-FPM, a CLI script).
+Where it can prove otherwise — a RoadRunner worker, or inside a Swoole coroutine — a module
+refuses to arm, says so through `error_log()`, and recording stays off with nothing else changed
+([issue #179](https://github.com/bearsunday/BEAR.QueryRepository/issues/179)).
+
+### Development
+
+In an app that already installs `QueryRepositoryModule`, override it. `install()` leaves the
+existing `NullSemanticLogger` binding in place and recording stays off.
+
+```php
+use BEAR\QueryRepository\DevQueryRepositoryLogModule;
+
+$this->override(new DevQueryRepositoryLogModule($this->appMeta->logDir . '/query-repository'));
+```
+
+With the pools left at `QueryRepositoryModule`'s default `NullAdapter`, every GET is a miss and
+the log never shows a hit. Install `StorageRedisDsnModule` or similar in development too, or bind
+a persistent adapter (such as `FilesystemAdapter`) to `ResourceObjectPool` and `EtagPool`.
+
+Run one request and its session is written to `latest.json`. Render it as a tree:
+
+```bash
+vendor/bin/stree var/log/{context}/query-repository/latest.json
+```
+
+For a standalone `Injector` with no `QueryRepositoryModule` installed elsewhere, pass one in so
+the core cache bindings come with it:
+
+```php
+use BEAR\QueryRepository\QueryRepositoryModule;
+
+$this->install(new DevQueryRepositoryLogModule(
+    $logDir,
+    module: new QueryRepositoryModule(),
+));
+```
+
+### Production
+
+`ProdQueryRepositoryLogModule` is for forensics, not monitoring. Hit rates and capacity belong to
+metrics, which are cheaper and more accurate at that. Turn it on when a cache-correctness
+incident — stale content, a purge that did not land — needs an answer metrics cannot give.
+Override it the same way in an existing app:
+
+```php
+use BEAR\QueryRepository\ProdQueryRepositoryLogModule;
+
+$this->override(new ProdQueryRepositoryLogModule(stream: 'php://stdout', sampleRate: 100));
+```
+
+Mutations and failed effects (a refused save, a failed invalidation or purge) are always kept,
+because they have no other witness. `sampleRate` keeps 1 healthy (nothing went wrong) session in N
+as a baseline; `0` disables sampling and keeps no healthy sessions at all. To keep a different
+set, implement `RetentionPolicyInterface` and bind it after overriding the module — the writer
+resolves it through DI, so the app's binding wins.
+
+Each entry — `cache_hit`, `cache_miss`, `save_value`, `invalidate`, `cdn_headers`, and more —
+links its own JSON Schema, so a session can be validated instead of grepped.
+
+### For AI agents
+
+An agent can do the setup and the reading above. Add the `bear-observe` skill that ships with
+[BEAR.EventSourcing](https://github.com/bearsunday/BEAR.EventSourcing) to the project:
+
+```bash
+composer require --dev bear/event-sourcing
+mkdir -p .claude/skills && cp -r vendor/bear/event-sourcing/skills/bear-observe .claude/skills/
+```
+
+Then ask it to read the cache log. The agent writes an observation `dev-` context (`DevModule`,
+persistent pools, `bin/dev.php`) into the app, proves the wiring, runs one request and reads the
+tree. When the log disagrees with what the code declares, it reports whether the app or the
+library is at fault.
+
+[BEAR.Skills](https://github.com/bearsunday/BEAR.Skills) is also available:
+
+```
+/plugin marketplace add bearsunday/BEAR.Skills
+/plugin install bear-skills
+```
+
+It provides `bear-cache-gate` (installs a gate in `var/loop/` that reads the cache log and checks, per
+flow, that the save, the hit and the invalidation actually happened). Reading the log is handled by `bear-observe` above.
+
+See [Why the QueryRepository Log Records Everything](https://github.com/bearsunday/BEAR.QueryRepository/blob/1.x/docs/why-the-log-records-everything.md),
+[Reading the Log](https://github.com/bearsunday/BEAR.QueryRepository/blob/1.x/docs/reading-the-log.md),
+and [What the Cache Log Proves — and What It Does Not](https://github.com/bearsunday/BEAR.QueryRepository/blob/1.x/docs/what-the-log-proves.md)
+for the full event vocabulary and its declared boundaries.
 
 ## Conclusion
 
-Web content can be of the information (data) type or the computation (process) type. Although the former is essentially static, it is difficult to treat it as completely static content due to the problems of managing content changes and dependencies, so the cache was invalidated by TTL even though no content changes occurred. Sunday's caching framework treats information type content as static as possible, maximizing the power of the cache.
+Web content can be of the information (data) type or the computation (process) type. Although the former is essentially static, it is difficult to treat it as completely static content due to the problems of managing content changes and dependencies, so the cache was invalidated by TTL even though no content changes occurred. BEAR.Sunday's caching framework treats information-type content as static as possible, maximizing the power of the cache.
 
 
 ## Terminology
 
-* [条件付きリクエスト](https://developer.mozilla.org/ja/docs/Web/HTTP/Conditional_requests)
-* [ETag (バージョン識別子)](https://developer.mozilla.org/ja/docs/Web/HTTP/Headers/ETag)
-* [イベントドリブン型コンテンツ](https://www.fastly.com/blog/rise-event-driven-content-or-how-cache-more-edge)
-* [ドーナッツキャッシュ / 部分キャッシュ](https://www.infoq.com/jp/news/2011/12/MvcDonutCaching/)
-* [サロゲートキー / タグベースの無効化](https://docs.fastly.com/ja/guides/getting-started-with-surrogate-keys)
-* ヘッダー
-  * [Cache-Control](https://developer.mozilla.org/ja/docs/Web/HTTP/Headers/Cache-Control)
+* [Conditional requests](https://developer.mozilla.org/en-US/docs/Web/HTTP/Conditional_requests)
+* [ETag (entity tag)](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/ETag)
+* [Event-driven content](https://www.fastly.com/blog/rise-event-driven-content-or-how-cache-more-edge)
+* [Donut caching / partial caching](https://www.infoq.com/news/2011/11/MvcDonutCaching/)
+* [Surrogate keys / tag-based invalidation](https://docs.fastly.com/en/guides/getting-started-with-surrogate-keys)
+* Headers
+  * [Cache-Control](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control)
   * [CDN-Cache-Control](https://blog.cloudflare.com/cdn-cache-control/)
-  * [Vary](https://developer.mozilla.org/ja/docs/Web/HTTP/Headers/Vary)
-  * [Stale-While-Revalidate (SWR)](https://www.infoq.com/jp/news/2020/12/ux-stale-while-revalidate/)
+  * [Vary](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Vary)
+  * [Stale-While-Revalidate (SWR)](https://web.dev/articles/stale-while-revalidate)

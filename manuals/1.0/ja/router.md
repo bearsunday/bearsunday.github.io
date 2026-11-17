@@ -63,11 +63,11 @@ HTTPメソッドに対応して実行されるPHPメソッドの名前と渡さ�
 * `application/x-www-form-urlencoded` // param1=one&param2=two
 * `application/json` // {"param1": "one", "param2": "one"} (POSTの時は標準入力の値が使われます）
 
-PHPマニュアルの[PUT メソッドのサポート](http://php.net/manual/ja/features.file-upload.put-method.php)もご覧ください。
+PHPマニュアルの[PUT メソッドのサポート](https://www.php.net/manual/ja/features.file-upload.put-method.php)もご覧ください。
 
 ## メソッドオーバーライド
 
-HTTP PUT トラフィックやHTTP DELETE トラフィックを許可しないファイアウォールがあります。この制約に対応するため、次の2つの方法でこれらの要求を送ることができます：
+HTTP PUT トラフィックやHTTP DELETE トラフィックを許可しないファイアウォールがあります。この制約に対応するため、次の2つの方法でこれらの要求を送れます：
 
 * `X-HTTP-Method-Override` - POSTリクエストのヘッダーフィールドを使用してPUTリクエストやDELETEリクエストを送る。
 * `_method` - URI パラメーターを使用する。例）POST /users?...&_method=PUT
@@ -99,7 +99,7 @@ class AppModule extends AbstractAppModule
 キャッシュされているDIファイルを消去します。
 
 ```bash
-rm -rf var/tmp/*
+rm -rf var/build/*
 ```
 
 ### ルータースクリプト
@@ -166,7 +166,7 @@ $map->route('archive', '/archive{/year,month,day}')
 - `/archive/1979/11    : ['year' => '1979', 'month' => '11', 'day' => null]`
 - `/archive/1979/11/07 : ['year' => '1979', 'month' => '11', 'day' => '07']`
 
-オプションパラメーターは**並ぶ順に**オプションです。つまり"month"なしで"day"を指定することはできません。
+オプションパラメーターは**記載された順に**指定する必要があります。つまり"month"なしで"day"を指定できません。
 
 ### ワイルドカード
 
@@ -188,7 +188,7 @@ $map->route('wild', '/wild')
 
 ### リバースルーティング
 
-ルートの名前とパラメーターの値からURIを生成することができます。
+ルートの名前とパラメーターの値からURIを生成できます。
 
 ```php
 use BEAR\Sunday\Extension\Router\RouterInterface;

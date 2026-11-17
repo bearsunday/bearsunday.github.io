@@ -29,7 +29,7 @@ HTTPで渡されるパラメーターは全て文字列ですが、`int`など�
 
 ### 配列パラメーター
 
-パラメーターはネストされたデータ [^2] でも構いません。JSONやネストされたクエリ文字列で送信されたデータは配列で受け取ることができます。
+パラメーターはネストされたデータ [^2] でも構いません。JSONやネストされたクエリ文字列で送信されたデータは配列で受け取れます。
 
 [^2]: [parse_str](https://www.php.net/manual/ja/function.parse-str.php)参照
 
@@ -84,11 +84,50 @@ final class User
 }
 ```
 
-ネームスペースは任意です。Inputクラスでは入力データをまとめたり検証したりするメソッドを実装することができます。
+ネームスペースは任意です。Inputクラスでは入力データをまとめたり検証したりするメソッドを実装できます。
 
 ### Ray.InputQueryとの統合
 
 `#[Input]`属性を使って、`Ray.InputQuery`ライブラリによる型安全な入力オブジェクトの生成を利用できます。
+
+BEAR.ResourceのリクエストパラメーターをInput DTOにまとめると、ResourceメソッドはHTTP入力を受け取りレスポンスを組み立てる責務に集中できます。入力の型、デフォルト値、`trim()`などの正規化、形式チェックなどの検証は入力オブジェクト側に集約でき、同じDTOをQueryやMediaQueryなどへ渡しやすくなります。
+
+```php
+use InvalidArgumentException;
+use Ray\InputQuery\Attribute\Input;
+
+final class SearchInput
+{
+    public readonly string $keyword;
+
+    public function __construct(
+        #[Input] string $keyword,
+        #[Input] public readonly int $page = 1
+    ) {
+        $this->keyword = trim($keyword);
+
+        if ($this->keyword === '') {
+            throw new InvalidArgumentException('keyword is required');
+        }
+
+        if ($this->page < 1) {
+            throw new InvalidArgumentException('page must be greater than 0');
+        }
+    }
+}
+
+class Search extends ResourceObject
+{
+    public function onGet(#[Input] SearchInput $input): static
+    {
+        // Query / MediaQueryへ同じInput DTOを渡せます
+        $this->body = $this->searchQuery->get($input);
+        return $this;
+    }
+}
+```
+
+> Note: 入力値が1つだけの場合でも、`NameInput`のようなDTOにすることで、`trim()`や形式チェックをコンストラクタに閉じ込められます。DTO化は複数パラメーターをまとめるためだけのものではありません。
 
 ```php
 use Ray\InputQuery\Attribute\Input;
@@ -130,7 +169,7 @@ final class AuthorInput
 
 この場合、`title=Hello&authorName=John&authorEmail=john@example.com`のようなフラットなデータからネストしたオブジェクト構造が自動生成されます。
 
-配列データも扱うことができます。
+配列データも扱えます。
 
 #### シンプルな配列
 
@@ -407,7 +446,7 @@ class FileUploadTest extends TestCase
 
 ### 列挙型パラメーター
 
-PHP8.1の[列挙型](https://www.php.net/manual/ja/language.types.enumerations.php)を指定して取り得る値を制限することができます。
+PHP8.1の[列挙型](https://www.php.net/manual/ja/language.types.enumerations.php)を指定して取り得る値を制限できます。
 
 ```php
 enum IceCreamId: int
@@ -429,7 +468,7 @@ class Index extends ResourceObject
 
 ## Webコンテキスト束縛
 
-`$_GET`や`$_COOKIE`などのPHPのスーパーグローバルの値をメソッド内で取得するのではなく、メソッドの引数に束縛することができます。
+`$_GET`や`$_COOKIE`などのPHPのスーパーグローバルの値をメソッド内で取得するのではなく、メソッドの引数に束縛できます。
 
 ```php
 use Ray\WebContextParam\Annotation\QueryParam;
@@ -442,7 +481,7 @@ class News extends ResourceObject
         // $id = $_GET['id'];
 ```
 
-その他`$_ENV`、`$_POST`、`$_SERVER`の値を束縛することができます。
+その他`$_ENV`、`$_POST`、`$_SERVER`の値を束縛できます。
 
 ```php
 use Ray\WebContextParam\Annotation\QueryParam;
@@ -481,6 +520,8 @@ class News extends ResourceObject
 この例ではメソッドが呼ばれると`login`リソースに`get`リクエストを行い、`$body['nickname']`を`$name`で受け取ります。
 
 フラグメントはbodyのキーを指します。`#[ResourceParam]`のURIではリンクを辿れません。`#link=self:blog`のように`=`を含むフラグメントは`UriException`になります。
+
+> キャッシュされるリソース（`#[Cacheable]`、`#[CacheableResponse]`、`#[DonutCache]`）で、`#[ResourceParam]`を使ってユーザー固有の値（例：`app://self/login#nickname`）を受け取らないでください。QueryRepositoryが検査するのはレスポンス自身の`Cache-Control`だけなので、このように紛れ込んだ値はそのまま保存され、以後、そのキャッシュを利用するすべての訪問者に配信されます。ユーザー固有の値は、`#[DonutCache]`のページで穴として描画する非キャッシュのリソースに置いてください。
 
 ## コンテントネゴシエーション
 

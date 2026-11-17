@@ -9,13 +9,13 @@ permalink: /manuals/1.0/ja/database.html
 
 データベースの利用のために、問題解決方法の異なった以下のモジュールが用意されています。いずれも[PDO](https://www.php.net/manual/ja/intro.pdo.php)をベースにしたSQLのための独立ライブラリです。
 
-* PDOをextendしたExtendedPdo ([Aura.sql](https://github.com/auraphp/Aura.Sql))
+* PDOを拡張したExtendedPdo ([Aura.sql](https://github.com/auraphp/Aura.Sql))
 * クエリービルダー ([Aura.SqlQuery](https://github.com/auraphp/Aura.SqlQuery))
 * PHPのインターフェイスとSQL実行を束縛 ([Ray.MediaQuery](database_media.html))
 
-静的なSQLはファイルにすると[^locater]、管理や他のSQLツールでの検証などの使い勝手もよくなります。Aura.SqlQueryは動的にクエリーを組み立てることができますが、その他は基本静的なSQLの実行のためのライブラリです。また、Ray.MediaQueryではSQLの一部をビルダーで組み立てたものに入れ替えることもできます。
+静的なSQLはファイルにすると[^locator]、管理や他のSQLツールでの検証などの使い勝手もよくなります。Aura.SqlQueryは動的にクエリーを組み立てられますが、その他は基本的に静的なSQLの実行のためのライブラリです。また、Ray.MediaQueryではSQLの一部をビルダーで組み立てたものに入れ替えることもできます。
 
-[^locater]: [query-locater](https://github.com/koriym/Koriym.QueryLocator)はSQLをファイルとして扱うライブラリです。Aura.Sqlと共に使うと便利です。
+[^locator]: [query-locator](https://github.com/koriym/Koriym.QueryLocator)はSQLをファイルとして扱うライブラリです。Aura.Sqlと組み合わせると便利です。
 
 ## モジュール
 
@@ -37,3 +37,15 @@ permalink: /manuals/1.0/ja/database.html
 * [Ray.QueryModule](https://github.com/ray-di/Ray.QueryModule/blob/1.x/README.ja.md)
 
 `DBAL`はDoctrine、`CakeDB`はCakePHPのDBライブラリです。`Ray.QueryModule`はRay.MediaQueryの以前のライブラリでSQLを無名関数に変換します。
+
+## CQRSリードモデル
+
+* [BEAR.Projection](https://github.com/bearsunday/BEAR.Projection)
+
+`BEAR.Projection`はSQLベースのプロジェクションを型付きバリューオブジェクトにマップします。プロジェクションは`query://`スキームでリソースとして公開され、`#[Embed]`と組み合わせて[並列実行](async.html)できます。
+
+```php
+#[Embed(rel: 'profile', src: 'query://self/user_profile{?id}')]
+#[Embed(rel: 'orders', src: 'query://self/user_orders{?id}')]
+public function onGet(string $id): static
+```

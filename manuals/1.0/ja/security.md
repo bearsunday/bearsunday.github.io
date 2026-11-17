@@ -5,11 +5,13 @@ category: Manual
 permalink: /manuals/1.0/ja/security.html
 ---
 
-# セキュリティ
+# セキュリティ <sup style="font-size:0.5em; color:#666; font-weight:normal;">Beta</sup>
 
-BEAR.Sundayはフレームワーク専用のセキュリティツール[bear/security](https://github.com/bearsunday/BEAR.Security)を提供します。リソース指向アーキテクチャを理解した静的解析、動的テスト、テイント解析、AI監査により、汎用ツールでは検出困難な脆弱性を発見できます。
+セキュリティツールでアプリケーションをスキャンして脆弱性診断ができます。静的解析・動的テスト・テイント解析・AI監査など、アーキテクチャを理解した専用ツールが多方面から解析するため、汎用ツールでは難しい脆弱性も検知します。
 
 ## インストール
+
+[bear/security](https://github.com/bearsunday/BEAR.Security)をインストールします。
 
 ```bash
 composer require --dev bear/security
@@ -19,14 +21,46 @@ composer require --dev bear/security
 
 | ツール | 機能 | 使用タイミング |
 |--------|------|----------------|
-| SAST | コード内の危険なパターンを検出 | 開発中 |
-| DAST | アプリに攻撃リクエストを送信 | デプロイ前 |
+| SAST[^sast] | 静的解析でコード内の危険なパターンを検出 | 開発中 |
+| DAST[^dast] | 動的解析でアプリに攻撃リクエストを送信 | デプロイ前 |
 | AI Auditor | AIがコードをレビュー | コードレビュー時 |
 | Psalm Plugin | ユーザー入力の流れを追跡 | 開発中 |
 
+[^sast]: Static Application Security Testing
+[^dast]: Dynamic Application Security Testing
+
+## 設計方針: Recall優先
+
+セキュリティスキャナーには従来、Precision優先（確実なものだけ報告）とRecall優先（疑わしいものも報告）があり、トレードオフの関係にありました。
+
+BEAR.SecurityはRecall優先を採用しています。脆弱性の見逃し（False Negative）は致命的ですが、偽陽性（False Positive）は確認すれば除外できるからです。偽陽性の確認をAIエージェントが代行できる今、この戦略はより効果的です。
+
+### 推奨ワークフロー
+
+```bash
+# 1. SASTでパターンベースの脆弱性を検出
+./vendor/bin/bear.security-scan src
+
+# 2. 結果を確認し、脆弱性を修正
+# 偽陽性には @security-ignore コメントを付与（下記例参照）
+
+# 3. AI Auditorでビジネスロジックの問題を検出
+./vendor/bin/bear-security-audit src
+
+# 4. 検出された問題を確認・修正
+```
+
+偽陽性の抑制例：
+
+```php
+$path = $this->buildPath($id); // @security-ignore PATH_TRAVERSAL_FILE_OPS: $id is validated integer from router
+```
+
+`@security-ignore`を付与すると次回スキャンから抑制されます。
+
 ## SAST
 
-ソースコードをスキャンして危険なパターンを検出します：
+ソースコードをスキャンして危険なパターンを検出します。AIエージェント（Claude Code等）から実行し、検出結果の確認もAIに任せることを推奨します。
 
 ```bash
 ./vendor/bin/bear.security-scan src
@@ -42,6 +76,8 @@ composer require --dev bear/security
 | データ保護 | 安全でないデシリアライゼーション、XXE |
 | セッション | セッション固定、CSRF |
 | ネットワーク | SSRF、リモートファイルインクルージョン |
+
+各脆弱性の詳細は[脆弱性リファレンス](https://bearsunday.github.io/BEAR.Security/issues/ja/)を参照してください。
 
 ## DAST
 
@@ -66,7 +102,12 @@ composer require --dev bear/security
 パターンマッチングでは検出できないセキュリティ問題をClaude AIが検出します：
 
 ```bash
-# ANTHROPIC_API_KEY または Claude CLI認証が必要
+# 方法1: APIキー
+export ANTHROPIC_API_KEY=sk-ant-...
+./vendor/bin/bear-security-audit src
+
+# 方法2: Claude CLI（Maxプラン - APIキー不要）
+claude auth login
 ./vendor/bin/bear-security-audit src
 ```
 
@@ -135,22 +176,26 @@ composer require --dev bear/security
 ```json
 {
     "scripts": {
+        "security": "./vendor/bin/bear.security-scan src",
         "taint": "./vendor/bin/psalm --taint-analysis 2>&1 | grep -E 'Tainted' || true"
+    },
+    "scripts-descriptions": {
+        "security": "Run SAST security scan",
+        "taint": "Run Psalm taint analysis"
     }
 }
 ```
 
-これにより、テイントエラーのみが表示されます。
-
 以下で実行：
 
 ```bash
+composer security
 composer taint
 ```
 
 ## GitHub Actions
 
-CIパイプラインにセキュリティスキャンを追加：
+CIパイプラインにセキュリティスキャンを追加できます：
 
 ```bash
 cp vendor/bear/security/workflows/security-sast.yml .github/workflows/
@@ -165,12 +210,23 @@ cp vendor/bear/security/workflows/security-sast.yml .github/workflows/
 
 結果はリポジトリの **Security > Code scanning** セクションに表示されます。
 
+**推奨手順**: 初回はAIエージェントからスキャンを実行し、偽陽性に `@security-ignore` を付与してからCIを有効にしてください。
+
 ## アーキテクチャとセキュリティ
 
-BEAR.Sundayのアーキテクチャがセキュリティスキャンをより効果的にします：
+BEAR.Sundayのコードはスキャナーが解析しやすい構造です：
 
 - **明確なエントリーポイント**: すべてのエンドポイントは`onGet`、`onPost`メソッドを持つResourceObjectです。スキャナーはすべての入力を特定してデータフローを追跡できます。
 
 - **隠れたマジックがない**: 依存関係はコンストラクタインジェクションで明示的です。スキャナーは完全なコードパスを解析できます。
 
 - **フレームワークを理解するAI**: AI AuditorはBEAR.Sundayのパターンを理解し、一般的な脆弱性だけでなくビジネスロジックの欠陥も検出できます。
+
+## AIエージェント用プロンプト
+
+AIコーディングアシスタントでbear/securityをセットアップするには、このプロンプトを使用してください：
+
+```
+Follow the setup instructions at:
+https://raw.githubusercontent.com/bearsunday/BEAR.Skills/1.x/.claude/skills/bear-security-setup/SKILL.md
+```

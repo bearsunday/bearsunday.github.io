@@ -69,6 +69,8 @@ final class Injector
 }
 ```
 
+書き込みディレクトリを既定の `var/` 以外にしたい場合だけ、`Meta` を組み立ててパスを渡す形に拡張できます（[プロダクション](../production.html#writable-paths)）。通常は上記のままで構いません。
+
 ### Step 2
 
 `bootstrap.php`を変更します。

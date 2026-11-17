@@ -92,7 +92,7 @@ Content-Type: application/hal+json
 }
 ```
 
-[application/hal+json](https://tools.ietf.org/html/draft-kelly-json-hal-06)メディアタイプで結果が返ってきました。HAL+JSONは、`_links`セクションで関係のあるリソースをリンクするJSON形式です。HAL+JSONについて詳しくは[こちら](https://learn.microsoft.com/ja-jp/iis-administration/api/hal)をご覧ください。
+[application/hal+json](https://datatracker.ietf.org/doc/html/draft-kelly-json-hal)メディアタイプで結果が返ってきました。HAL+JSONは、`_links`セクションで関係のあるリソースをリンクするJSON形式です。HAL+JSONについて詳しくは[HAL specification](https://stateless.group/hal_specification.html)をご覧ください。
 
 これをWeb APIサービスとして公開してみましょう。
 まずBuilt-inサーバーを立ち上げます。
@@ -148,7 +148,7 @@ HTTP/1.1 405 Method Not Allowed
 ...
 ```
 
-また、HTTP `OPTIONS`メソッドを使用すると、利用可能なHTTPメソッドと必要なパラメーターを確認できます（[RFC7231](https://tools.ietf.org/html/rfc7231#section-4.3.7)）。
+また、HTTP `OPTIONS`メソッドを使用すると、利用可能なHTTPメソッドと必要なパラメーターを確認できます（[RFC7231](https://www.rfc-editor.org/rfc/rfc7231#section-4.3.7)）。
 
 ```bash
 curl -i -X OPTIONS http://127.0.0.1:8080/weekday
@@ -184,7 +184,7 @@ Allow: GET
 
 ## テスト
 
-[PHPUnit](https://phpunit.readthedocs.io/ja/latest/)を使用してリソースのテストを作成します。
+[PHPUnit](https://docs.phpunit.de/)を使用してリソースのテストを作成します。
 
 `tests/Resource/App/WeekdayTest.php`に以下のテストコードを記述します。
 
@@ -410,7 +410,7 @@ class AppModule extends AbstractAppModule
 ```php
 <?php
 /** 
- * @see http://bearsunday.github.io/manuals/1.0/ja/router.html
+ * @see https://bearsunday.github.io/manuals/1.0/ja/router.html
  * @var \Aura\Router\Map $map 
  */
 
@@ -540,7 +540,7 @@ class AppModule extends AbstractAppModule
 }
 ```
 
-これでどのクラスでもコンストラクタで`MyLoggerInterface`でロガーを受け取ることができるようになりました。
+これでどのクラスでもコンストラクタで`MyLoggerInterface`でロガーを受け取れるようになりました。
 
 実行して`var/log/cli-hal-api-app/weekday.log`に結果が出力されていることを確認しましょう。
 
@@ -564,7 +564,7 @@ $time = microtime(true) - $start;
 ```
 
 このようなコードを必要に応じて追加・削除するのは手間がかかり、ミスの原因にもなります。
-**アスペクト指向プログラミング（AOP）** を使用すると、このようなメソッドの前後に実行される処理をうまく合成することができます。
+**アスペクト指向プログラミング（AOP）** を使用すると、このようなメソッドの前後に実行される処理をうまく合成できます。
 
 まず、メソッドの実行を横取り（インターセプト）してベンチマークを行う**インターセプター**を`src/Interceptor/BenchMarker.php`に作成します。
 
@@ -707,7 +707,7 @@ class Index extends ResourceObject
 }
 ```
 
-`page`リソースクラスは`app`リソースと同じクラスですが、HTML表示に特化した役割を持たせたい時などに公開リソースとして`page`リソースを使い、内部のリソースとして`app`リソースを使ったりと役割を変えて使うことができます。
+`page`リソースクラスは`app`リソースと同じクラスですが、HTML表示に特化した役割を持たせたい時などに公開リソースとして`page`リソースを使い、内部のリソースとして`app`リソースを使ったりと役割を変えて使えます。
 
 動作を確認してみましょう。
 
@@ -823,7 +823,7 @@ php -S 127.0.0.1:8080 public/index.php
 
 ## コンテキストについて
 
-[コンテキスト](/manuals/1.0/ja/application.html#context)は、アプリケーションの実行環境（開発・テスト・本番など）や表現形式（html・JSON)を表し、複数指定することができます。
+[コンテキスト](/manuals/1.0/ja/application.html#context)は、アプリケーションの実行環境（開発・テスト・本番など）や表現形式（html・JSON)を表し、複数指定できます。
 
 例えば：
 
@@ -842,7 +842,7 @@ exit((require dirname(__DIR__) . '/bootstrap.php')('prod-hal-app'));
 ```
 
 コンテキストに応じたインスタンス生成用のPHPコードが自動的に生成されます。
-これらのコードは`var/tmp/{context}/di`フォルダに保存されます。通常は確認する必要はありませんが、
+これらのコードは`var/build/{context}/di`フォルダに保存されます。通常は確認する必要はありませんが、
 インスタンスがどのように生成されているか知りたい場合に参照できます。
 
 ## REST API
@@ -1000,7 +1000,7 @@ Location: /todos?id=1
 
 ステータスコード`201 Created`は、リソースが正常に作成されたことを示します。
 また、`Location`ヘッダーには、新しく作成されたリソースのURIが含まれています。
-([RFC7231 Section-6.3.2](https://tools.ietf.org/html/rfc7231#section-6.3.2) [日本語訳](https://triple-underscore.github.io/RFC7231-ja.html#section-6.3.2))
+([RFC7231 Section-6.3.2](https://www.rfc-editor.org/rfc/rfc7231#section-6.3.2) [日本語訳](https://triple-underscore.github.io/RFC7231-ja.html#section-6.3.2))
 
 #### GETリクエスト
 
@@ -1012,9 +1012,11 @@ php bin/test.php get '/todos?id=1'
 
 ```
 200 OK
-ETag: 2527085682
+ETag: "2527085682"
 Last-Modified: Sun, 04 Jun 2017 15:23:39 GMT
-content-type: application/hal+json
+Cache-Control: max-age=0
+Age: 0
+Content-Type: application/hal+json
 
 {
     "id": "1",
@@ -1048,9 +1050,9 @@ Date: Sun, 02 May 2021 17:10:55 GMT
 Connection: close
 X-Powered-By: PHP/8.0.3
 Content-Type: application/hal+json
-ETag: 197839553
+ETag: "197839553"
 Last-Modified: Sun, 02 May 2021 17:10:55 GMT
-Cache-Control: max-age=31536000
+Cache-Control: max-age=0
 
 {
     "id": "1",
@@ -1069,6 +1071,7 @@ Cache-Control: max-age=31536000
 
 `#[Cacheable]`アトリビュートを使用したキャッシュは、有効期限を明示的に設定しない限り時間経過では無効化されません。
 キャッシュの再生成は、`onPut($id, $todo)`や`onDelete($id)`などでリソースが変更された時に行われます。
+書き込みでいつ変わるか分からないので、レスポンスには`Cache-Control: max-age=0`が付き、ブラウザは通常、手元のコピーを`ETag`で確かめてから使います。
 
 #### PUTリクエスト
 

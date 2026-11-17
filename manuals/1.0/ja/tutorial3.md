@@ -114,7 +114,7 @@ http://127.0.0.1:8080/greeting?name=World&lang=fr
 ## ステップ5: CLIコマンドの生成
 
 ```bash
-vendor/bin/bear-cli-gen MyVendor.Greet
+vendor/bin/bear-cli-gen 'MyVendor\Greet'
 ```
 
 これにより以下のファイルが生成されます：
@@ -148,24 +148,26 @@ chmod +x bin/cli/greet
 
 ### 7.1 フォーミュラの生成
 
-フォーミュラを生成するには、Gitリポジトリが初期化されている必要があります：
+フォーミュラを生成するには、設定済みで公開されているGitHubリポジトリが必要です（生成器は`origin`リモートに対して`git ls-remote`を実行し、デフォルトブランチを検出します）：
 
 ```bash
-# Gitリポジトリの初期化（まだの場合）
 git init
 git add .
 git commit -m "Initial commit"
+git remote add origin https://github.com/<you>/<repo>.git
+git branch -M main
+git push -u origin main
 ```
 
 フォーミュラを生成します：
 
 ```bash
-vendor/bin/bear-cli-gen MyVendor.Greet
+vendor/bin/bear-cli-gen 'MyVendor\Greet'
 ```
 
 これにより以下のファイルが生成されます：
 - `bin/cli/greet`：実行可能なCLIコマンド
-- `var/homebrew/greet.rb`：Homebrewフォーミュラ（Gitリポジトリが設定されている場合）
+- `var/homebrew/greet.rb`：Homebrewフォーミュラ（GitHubリポジトリが設定されている場合）
 
 ### 7.2 ローカルでのHomebrewインストールテスト
 
@@ -195,29 +197,16 @@ brew uninstall greet
 
 **注意**: フォーミュラの生成には以下の条件が必要です：
 - アプリケーションのGitリポジトリが初期化されている
-- ローカルテストの場合はGitHubリモートリポジトリは不要
+- 公開されているGitHubリポジトリを指す`origin`リモートが設定されている（生成器はこれに対して`git ls-remote`を実行します）
 
 これらの条件が満たされていない場合、フォーミュラ生成はスキップされ、その理由が表示されます。
 
 ## まとめ
 
-このチュートリアルでは、単なるCLIツール作成を超えた、BEAR.Sundayの本質的な価値を体験しました：
+`Greeting`リソースはWeb APIとCLIで動き、CLIはHomebrewパッケージで配布できます。
+ビジネスロジックの重複はなく、修正も一箇所で済みます。
 
-### リソース指向アーキテクチャの真価
-
-**同じリソース、複数の境界**
-- `Greeting`リソースは一度書くだけで、Web API、CLI、Homebrewパッケージとして機能
-- ビジネスロジックの重複なし、保守も一箇所で完結
-
-### 境界横断フレームワーク
-
-BEAR.Sundayは**境界のフレームワーク**として機能し、以下の境界を透過的に扱います：
-
-- **プロトコル境界**: HTTP ↔ コマンドライン
-- **インターフェース境界**: Web ↔ CLI ↔ パッケージ配布  
-- **環境境界**: 開発環境 ↔ 本番環境 ↔ ユーザー環境
-
-### 設計思想の実現
+同じ`Greeting`クラスに、Web APIからもCLIからもアクセスします。
 
 ```php
 // 1つのリソース
@@ -238,20 +227,19 @@ curl "http://localhost/greeting?name=World&lang=ja"
 # CLI として  
 ./bin/cli/greet -n "World" -l ja
 
-# Homebrewパッケージとして
+# CLI として（Homebrewでインストールした場合）
 brew install your-vendor/greet && greet -n "World" -l ja
 ```
 
 ### 長期的な保守性と生産性
 
-- **DRY原則の徹底**: ドメインロジックがインターフェイスと結合していません
-- **統一されたテスト**: 1つのリソースをテストすれば全境界をカバーします
-- **一貫したAPI設計**: Web APIとCLIで同じパラメーター構造
-- **将来の拡張性**: 新しい境界（gRPC、GraphQLなど）も同じリソースで対応可能
-- **PHPバージョンの独立**: 使い続ける自由があります
+ドメインロジックはインターフェイスと結合していないため、リソースのテストでドメインロジックを
+検証できます。HTTP・CLIそれぞれのパラメーター変換やシリアライズは境界ごとに個別のテストが
+必要です。gRPCやGraphQLのような新しい境界を追加する場合も、リソース自体は再利用できますが、
+境界アダプターの実装とテストは別途必要です。
 
 ### 現代的な配布システムとの統合
 
-BEAR.Sundayのリソースは、現代的なパッケージシステムとも自然に統合できます。HomebrewのようなパッケージマネージャーやComposerのエコシステムを活用することで、ユーザーは実行環境を意識することなく、統一されたインターフェースでツールを利用できます。
+HomebrewやComposerで配布すると、利用者はPHPやBEAR.Sundayの詳細を意識せずにCLIを使えます。ただし、実行環境の用意は別途必要です。
 
-BEAR.Sundayの「Because Everything is a Resource」は、単なるスローガンではなく、境界を越えた一貫性と保守性を実現する設計哲学です。このチュートリアルで体験したように、リソース指向アーキテクチャは境界のないソフトウェアを実現し、開発体験だけでなく利用体験にも新しい地平をもたらします
+「Because Everything is a Resource」は、この一貫性を指しています。

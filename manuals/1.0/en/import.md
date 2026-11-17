@@ -7,11 +7,11 @@ permalink: /manuals/1.0/en/import.html
 
 # Import
 
-BEAR applications can cooperate with multiple BEAR applications into a single system without having to be microservices. It is also easy to use BEAR resources from other applications.
+Every BEAR application is a collection of resources, each with a URI. Because of this, you can install a whole application as a "part" of another BEAR application and use it through the same interface as your own resources. It splits a system into independent applications the way microservices do, while calls stay in-process—no network involved.
 
-## Composer Install
+## Composer install
 
-Install the BEAR application you want to use as a composer package.
+Install the BEAR application you want to use as a composer package. [^1]
 
 composer.json
 ```json
@@ -29,12 +29,11 @@ composer.json
 }
 ```
 
-Requires `bear/package ^1.13`.
+## Module install
 
-## Module Install
+Register the application to import with `ImportAppModule`. `ImportApp` takes three arguments: a hostname, the application name (namespace), and a context.
 
-Install other applications with `ImportAppModule`, specifying the hostname, application name (namespace) and context to import.
-
+AppModule.php
 ```diff
 +use BEAR\Package\Module\ImportAppModule;
 +use BEAR\Package\Module\Import\ImportApp;
@@ -52,9 +51,15 @@ class AppModule extends AbstractAppModule
 }
 ```
 
+* `foo` — the hostname that points to the import target, corresponding to `app://foo/` in a URI.
+* `MyVendor\Weekday` — the application name (namespace) to import.
+* `prod-app` — the context the imported application runs under.
+
+Notice that the context can be specified independently of the host application's own context. Even while your own application runs in a development context, the imported application can run under `prod-app` bindings. This kind of composition is possible precisely because each BEAR application has a self-contained DI and AOP configuration. [^2]
+
 ## Request
 
-The imported resource will be used with the specified host name.
+Request an imported resource by specifying the hostname you registered.
 
 ```php
 class Index extends ResourceObject
@@ -72,18 +77,15 @@ class Index extends ResourceObject
         return $this;
     }
 }
-````
+```
 
-You can also use `#[Embed]` and `#[Link]` in the same way.
+The only difference from your own resources (`app://self/`) is the hostname—`#[Embed]` and `#[Link]` work the same way. Calling code doesn't need to know whether a resource is its own or imported, and although this request looks like remote access, it carries none of the latency or connection-failure cost of a distributed system.
 
 ## Requests from other systems
 
-It is easy to use BEAR resources from other frameworks or CMS.
-
-Install it as a package in the same way, and use `Injector::getInstance` to get the resource client of the application you require and request it.
+It's just as easy to use BEAR resources from other frameworks or CMSs. Install the application as a package the same way, then get an injector by passing `Injector::getInstance` the application name, context, and application path, and get a resource client from it. No bootstrap script is needed—the BEAR application functions as a single library configured for the context you specify.
 
 ```php
-
 use BEAR\Package\Injector;
 use BEAR\Resource\ResourceInterface;
 
@@ -92,20 +94,24 @@ $resource = Injector::getInstance(
     'prod-api-app',
     dirname(__DIR__) . '/vendor/my-vendor/weekday'
 )->getInstance(ResourceInterface::class);
-$weekdday = $resource->get('/weekday', ['year' => '2022', 'month' => '1', 'day' => 1]);
 
-echo $weekdday->body['weekday'] . PHP_EOL;
+$weekday = $resource->get('/weekday', ['year' => '2022', 'month' => '1', 'day' => 1]);
+echo $weekday->body['weekday'] . PHP_EOL;
 ```
+
 ## Environment variables
 
-Environment variables are global. Care should be taken to prefix them to avoid conflicts between applications. Instead of using `.env` files, the application to be imported will get the shell environment variables just like in production.
+Environment variables are global and shared across applications, so prefix them to avoid conflicts. Rather than a `.env` file, the imported application picks up shell environment variables just as it would in production.
 
-## System Boundary
+## System boundary
 
-It is similar to microservices in that a large application can be built as a collection of multiple smaller applications, but without the disadvantages of microservices such as increased infrastructure overhead. It also has clearer component independence and boundaries than modular monoliths.
+Building a large application as a collection of smaller ones is similar to microservices, but without microservices' downsides, such as increased infrastructure overhead. And because the boundary is the application itself rather than a namespace convention, component independence and boundaries are clearer than with a modular monolith.
 
-The code for this page can be found at [bearsunday/example-app-import](https://github.com/bearsunday/example-import-app/commits/master).
+The code for this page can be found at [bearsunday/example-import-app](https://github.com/bearsunday/example-import-app/commits/master).
 
-## Multilingual Framework
+## Multilingual framework
 
-Using [BEAR.Thrift](https://github.com/bearsunday/BEAR.Thrift), you can access resources from other languages, different versions of PHP, or BEAR applications using Apache Thrift. [Apache Thrift](https://thrift.apache.org/) is a framework that enables efficient communication between different languages.
+Using [BEAR.Thrift](https://github.com/bearsunday/BEAR.Thrift), you can access resources from other languages, different PHP versions, or other BEAR applications via [Apache Thrift](https://thrift.apache.org/).
+
+[^1]: Import requires `bear/package ^1.13`.
+[^2]: `ImportAppModule` comes from `BEAR\Package`, not `BEAR\Resource`.

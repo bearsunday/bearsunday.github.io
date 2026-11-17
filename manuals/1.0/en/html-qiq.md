@@ -74,7 +74,7 @@ Specify the `Qiq\Helper` in the `autoload` of composer.json (e.g: [composer.json
 
 ## ProdModule
 
-Install a module in ProdModule to make the error page HTML for production and to enable compiler cache.
+Install a module in ProdModule to render the error page as HTML in production and to compile the templates at build time.
 
 ```php
 class ProdModule extends AbstractModule
@@ -82,8 +82,14 @@ class ProdModule extends AbstractModule
     protected function configure()
     {
         $this->install(new QiqErrorModule);
-        $this->install(new QiqProdModule($this->appMeta->appDir . '/var/tmp'));
+        $this->install(new QiqProdModule);
     }
 }
 ```
+
+The [compile](production.html#compile-steps) writes the templates into `var/build/{context}/qiq`, and production serves them from there, read-only. Booting before compiling stops with `TemplateNotCompiledException`.
+
+The previous form, `new QiqProdModule($cachePath)`, keeps working and compiles at serve time into the path — deprecated.
+
+The argument-less form requires BEAR.QiqModule 2.1+ and BEAR.Package 1.24+.
 

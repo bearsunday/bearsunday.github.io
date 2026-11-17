@@ -15,7 +15,7 @@ BEAR.Sundayは[HAL](https://en.wikipedia.org/wiki/Hypertext_Application_Language
 * 埋め込みリソース
 * 状態
 
-HALは、従来のリソースの状態のみを表すJSONに、リンクの`_links`と他リソースを埋め込む`_embedded`を加えたものです。HALはAPIを探索可能にし、そのAPIドキュメントをAPI自体から発見することができます。
+HALは、従来のリソースの状態のみを表すJSONに、リンクの`_links`と他リソースを埋め込む`_embedded`を加えたものです。HALはAPIを探索可能にし、そのAPIドキュメントをAPI自体から発見できます。
 
 ### Links
 
@@ -45,7 +45,7 @@ HALについてさらに詳しくは[http://stateless.co/hal_specification.html]
 
 ## リソースクラス
 
-アノテーションを使用してリンクを貼ったり、他のリソースを埋め込んだりすることができます。
+アノテーションを使用してリンクを貼ったり、他のリソースを埋め込んだりできます。
 
 ### #[Link]
 
@@ -143,6 +143,13 @@ HALで記述されたAPIセットは**ヘッドレスのRESTアプリケーシ�
 
 * [HAL Browser](https://github.com/mikekelly/hal-browser) - [example](http://haltalk.herokuapp.com/explorer/browser.html#/)
 * [hyperagent.js](https://weluse.github.io/hyperagent/)
+
+### HAL Layout <sup style="font-size:0.5em; color:#666; font-weight:normal;">Beta</sup>
+
+HALリソースをReact/Vueコンポーネントとしてレンダリングするライブラリ：
+
+* [hal-layout](https://github.com/koriym/hal-layout) - React版
+* [hal-layout-vue](https://github.com/koriym/hal-layout-vue) - Vue 3版
 
 ## Siren
 

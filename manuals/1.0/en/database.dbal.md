@@ -56,10 +56,11 @@ $this->install(new DbalModule($jobDsn, 'job_db');
 ```
 
 ```php?start_inline
-/**
- * @Inject
- * @Named("log_db")
- */
+use Ray\Di\Di\Inject;
+use Ray\Di\Di\Named;
+
+#[Inject]
+#[Named('log_db')]
 public function setLogDb(Connection $logDb)
 ```
 

@@ -1,17 +1,22 @@
 <nav class="navbar navbar-expand-md navbar-light">
     <div class="navigation-header">
-        <div class="ml-auto d-sm-block d-md-none">
-            <ul class="navbar-nav language-list">
-                <li>
-                    <a class="{% if page.layout == 'docs-en' %}active{% endif %}" href="{{ page.permalink | replace: '/ja/', '/en/' }}">En</a>
-                </li>
-                <li>
-                    <a class="{% if page.layout == 'docs-ja' %}active{% endif %}" href="{{ page.permalink | replace: '/en/', '/ja/' }}">Ja</a>
-                </li>
-            </ul>
+        <div class="ml-auto d-flex align-items-center justify-content-between d-md-none">
             <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#Navber" aria-controls="Navber" aria-expanded="false" aria-label="ナビゲーションの切替">
                 <span class="navbar-toggler-icon"></span>
             </button>
+            <div class="d-flex align-items-center">
+                {% if page.category == 'Manual' %}
+                <pagefind-modal-trigger></pagefind-modal-trigger>
+                {% endif %}
+                <ul class="navbar-nav language-list">
+                    <li>
+                        <a class="{% if page.layout == 'docs-en' %}active{% endif %}" href="{{ page.permalink | replace: '/ja/', '/en/' }}">En</a>
+                    </li>
+                    <li>
+                        <a class="{% if page.layout == 'docs-ja' %}active{% endif %}" href="{{ page.permalink | replace: '/en/', '/ja/' }}">Ja</a>
+                    </li>
+                </ul>
+            </div>
         </div>
     </div>
     <div class="collapse navbar-collapse" id="Navber">
@@ -30,9 +35,6 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link {% if page.permalink == '/manuals/1.0/en/setup.html' %}active{% endif %}" href="/manuals/1.0/en/setup.html">Environment Setup</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link {% if page.permalink == '/manuals/1.0/en/setup-reference.html' %}active{% endif %}" href="/manuals/1.0/en/setup-reference.html">・Detailed Reference</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link {% if page.permalink == '/manuals/1.0/en/tutorial.html' %}active{% endif %}" href="/manuals/1.0/en/tutorial.html">Tutorial</a>
@@ -77,10 +79,19 @@
                 <a class="nav-link {% if page.permalink == '/manuals/1.0/en/production.html' %}active{% endif %}" href="/manuals/1.0/en/production.html">Production</a>
             </li>
             <li class="nav-item">
+                <a class="nav-link {% if page.permalink == '/manuals/1.0/en/phar.html' %}active{% endif %}" href="/manuals/1.0/en/phar.html">・Phar</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if page.permalink == '/manuals/1.0/en/wasm.html' %}active{% endif %}" href="/manuals/1.0/en/wasm.html">・Wasm</a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link {% if page.permalink == '/manuals/1.0/en/import.html' %}active{% endif %}" href="/manuals/1.0/en/import.html">Import</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link {% if page.permalink == '/manuals/1.0/en/database.html' %}active{% endif %}" href="/manuals/1.0/en/database.html">Database</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if page.permalink == '/manuals/1.0/en/database_media.html' %}active{% endif %}" href="/manuals/1.0/en/database_media.html">・MediaQuery</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link {% if page.permalink == '/manuals/1.0/en/validation.html' %}active{% endif %}" href="/manuals/1.0/en/validation.html">Validation</a>
@@ -96,6 +107,9 @@
                 <a class="nav-link {% if page.permalink == '/manuals/1.0/en/form.html' %}active{% endif %}" href="/manuals/1.0/en/form.html">Form</a>
             </li>
             <li class="nav-item">
+                <a class="nav-link {% if page.permalink == '/manuals/1.0/en/csrf.html' %}active{% endif %}" href="/manuals/1.0/en/csrf.html">CSRF</a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link {% if page.permalink == '/manuals/1.0/en/content-negotiation.html' %}active{% endif %}" href="/manuals/1.0/en/content-negotiation.html">Content Negotiation</a>
             </li>
             <li class="nav-item">
@@ -105,16 +119,25 @@
                 <a class="nav-link {% if page.permalink == '/manuals/1.0/en/psr7.html' %}active{% endif %}" href="/manuals/1.0/en/psr7.html">Request / PSR-7</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link {% if page.permalink == '/manuals/1.0/en/js-ui.html' %}active{% endif %}" href="/manuals/1.0/en/js-ui.html">JavaScript UI</a>
-            </li>
-            <li class="nav-item">
                 <a class="nav-link {% if page.permalink == '/manuals/1.0/en/stream.html' %}active{% endif %}" href="/manuals/1.0/en/stream.html">Stream Response</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link {% if page.permalink == '/manuals/1.0/en/cache.html' %}active{% endif %}" href="/manuals/1.0/en/cache.html">Cache</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link {% if page.permalink == '/manuals/1.0/en/swoole.html' %}active{% endif %}" href="/manuals/1.0/en/swoole.html">Swoole</a>
+                <a class="nav-link {% if page.permalink == '/manuals/1.0/en/redis-dsn.html' %}active{% endif %}" href="/manuals/1.0/en/redis-dsn.html">・Redis DSN</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if page.permalink == '/manuals/1.0/en/event-sourcing.html' %}active{% endif %}" href="/manuals/1.0/en/event-sourcing.html">Event Sourcing <sup style="font-size:0.7em; color:#888;">Alpha</sup></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if page.permalink == '/manuals/1.0/en/swoole.html' %}active{% endif %}" href="/manuals/1.0/en/swoole.html">Servers <sup style="font-size:0.7em; color:#888;">Beta</sup></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if page.permalink == '/manuals/1.0/en/async.html' %}active{% endif %}" href="/manuals/1.0/en/async.html">Parallel Execution <sup style="font-size:0.7em; color:#888;">Alpha</sup></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if page.permalink == '/manuals/1.0/en/defer.html' %}active{% endif %}" href="/manuals/1.0/en/defer.html">Deferred Execution <sup style="font-size:0.7em; color:#888;">Alpha</sup></a>
             </li>
             <li class="nav-item">
                 <a class="nav-link {% if page.permalink == '/manuals/1.0/en/coding-guide.html' %}active{% endif %}" href="/manuals/1.0/en/coding-guide.html">Coding Guide</a>
@@ -129,10 +152,13 @@
                 <a class="nav-link {% if page.permalink == '/manuals/1.0/en/test.html' %}active{% endif %}" href="/manuals/1.0/en/test.html">Test</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link {% if page.permalink == '/manuals/1.0/en/security.html' %}active{% endif %}" href="/manuals/1.0/en/security.html">Security</a>
+                <a class="nav-link {% if page.permalink == '/manuals/1.0/en/security.html' %}active{% endif %}" href="/manuals/1.0/en/security.html">Security <sup style="font-size:0.7em; color:#888;">Beta</sup></a>
             </li>
             <li class="nav-item">
                 <a class="nav-link {% if page.permalink == '/manuals/1.0/en/examples.html' %}active{% endif %}" href="/manuals/1.0/en/examples.html">Examples</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if page.permalink == '/manuals/1.0/en/upgrade/injector.html' %}active{% endif %}" href="/manuals/1.0/en/upgrade/injector.html">Upgrade</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link {% if page.permalink == '/manuals/1.0/en/attribute.html' %}active{% endif %}" href="/manuals/1.0/en/attribute.html">Attribute</a>
@@ -145,9 +171,6 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link {% if page.permalink == '/manuals/1.0/en/ai-assistant.html' %}active{% endif %}" href="/manuals/1.0/en/ai-assistant.html">AI Assistant</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link {% if page.permalink == '/manuals/1.0/en/1page.html' %}active{% endif %}" href="/manuals/1.0/en/1page.html">1 Page</a>
             </li>
         </ul>
     </div>

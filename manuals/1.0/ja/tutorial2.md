@@ -10,7 +10,7 @@ permalink: /manuals/1.0/ja/tutorial2.html
 
 * JSONのスキーマを定義し、バリデーションやドキュメンテーションに利用する [JSON Schema](https://json-schema.org/)
 * ハイパーメディアタイプ [HAL (Hypertext Application Language)](https://stateless.group/hal_specification.html)  
-* CakePHPが開発しているDBマイグレーションツール [Phinx](https://book.cakephp.org/phinx/0/en/index.html) 
+* CakePHPが開発しているDBマイグレーションツール [Phinx](https://book.cakephp.org/phinx/0/en/)
 * PHPのインターフェイスとSQL文実行を束縛する [Ray.MediaQuery](https://github.com/ray-di/Ray.MediaQuery)
 
 [tutorial2](https://github.com/bearsunday/tutorial2/commits/v2-php8.2)のコミットを参考にして進めましょう。
@@ -94,7 +94,7 @@ require_once dirname(__DIR__) . '/vendor/autoload.php';
 (new Dotenv())->load(dirname(__DIR__));
 
 chdir(dirname(__DIR__));
-passthru('rm -rf var/tmp/*');
+passthru('rm -rf var/tmp/* var/build/*');
 passthru('chmod 775 var/tmp');
 passthru('chmod 775 var/log');
 // db
@@ -160,7 +160,7 @@ All Done. Took 0.0248s
 
 テーブルが作成されました。次回からこのプロジェクトのデータベース環境を整えるには`composer setup`を実行するだけで行えます。
 
-マイグレーションクラスの記述について詳しくは[Phinxのマニュアル：マイグレーションを書く](https://book.cakephp.org/3.0/ja/phinx/migrations.html)をご覧ください。
+マイグレーションクラスの記述について詳しくは[Phinxのマニュアル: Writing Migrations](https://book.cakephp.org/phinx/0/en/migrations.html)をご覧ください。
 
 ## モジュール
 
@@ -483,7 +483,7 @@ Content-Type: application/hal+json
 
 Ray.MediaQueryを使えば、ボイラープレートとなりやすい実装クラスをコーディングすることなく、インターフェイスから自動生成されたSQL実行オブジェクトがインジェクトされます。[^5]
 
-SQL文には`;`で区切った複数のSQL文を記述することができ、複数のSQLに同じパラメータが名前でバインドされます。SELECT以外のクエリではトランザクションも実行されます。
+SQL文には`;`で区切った複数のSQL文を記述でき、複数のSQLに同じパラメータが名前でバインドされます。SELECT以外のクエリではトランザクションも実行されます。
 
 利用クラスはインターフェイスにしか依存していないので、動的にSQLを生成したい場合にはRay.MediaQueryの代わりにクエリービルダーをインジェクトしたSQL実行クラスで組み立てたSQLを実行すれば良いでしょう。
 詳しくはマニュアルの[データベース](database.html)をご覧ください。
@@ -491,7 +491,7 @@ SQL文には`;`で区切った複数のSQL文を記述することができ、�
 ## 埋め込みリンク
 
 通常Webサイトのページは複数のリソースを内包します。例えばブログの記事ページであれば、記事以外にもおすすめや広告、カテゴリーリンクなどが含まれるかもしれません。
-それらをクライアントがバラバラに取得する代わりに、独立したリソースとして埋め込みリンクで1つのリソースに束ねることができます。
+それらをクライアントがバラバラに取得する代わりに、独立したリソースとして埋め込みリンクで1つのリソースに束ねられます。
 
 HTMLとそこに記述される`<img>`タグをイメージしてください。どちらも独立したURLを持ちますが、画像リソースがHTMLリソースに埋め込まれていてHTMLを取得するとHTML内に画像が表示されます。
 これらはハイパーメディアタイプの[Embedding links (LE)](http://amundsen.com/hypermedia/hfactor/#le)と呼ばれるもので、埋め込まれるリソースがリンクされています。
@@ -557,7 +557,7 @@ Ticketリソースにアトリビュート`#[Embed]`を追加します。
 ```
 
 埋め込みリソースはREST APIの重要な機能です。コンテンツにツリー構造を与えHTTPリクエストコストを削減します。
-情報が他の何の情報を含んでいるかはドメインの関心事です。クライアントで都度取得するのではなく、その関心事はサーバーサイドのLE（埋め込みリンク）でうまく表すことができます。[^6]
+情報が他の何の情報を含んでいるかはドメインの関心事です。クライアントで都度取得するのではなく、その関心事はサーバーサイドのLE（埋め込みリンク）でうまく表せます。[^6]
 
 ## ticketsリソース
 
@@ -758,7 +758,7 @@ class Index extends ResourceObject
 ./vendor/bin/phpunit --testsuite hypermedia
 ```
 
-ハイパーメディアAPIテスト（RESTアプリケーションテスト）はRESTアプリケーションがステートマシンであるということをよく表し、ワークフローをユースケースとして記述することができます。
+ハイパーメディアAPIテスト（RESTアプリケーションテスト）はRESTアプリケーションがステートマシンであるということをよく表し、ワークフローをユースケースとして記述できます。
 REST APIテストを見ればそのアプリケーションがどのように使われるか網羅されているのが理想です。
 
 ### HTTPテスト
@@ -831,12 +831,12 @@ Location: /ticket?id=421d997c-9a0e-4018-a6c2-9b8758cac6d6
 ```
 
 実際に記録されたJSONは、特に複雑な構造を持つ場合に確認するのに役に立ちます。APIドキュメントと併せて確認するのにもいいでしょう。
-HTTPクライアントはE2Eテストにも利用することができます。
+HTTPクライアントはE2Eテストにも利用できます。
 
 ## APIドキュメント
 
 ResourceObjectではメソッドシグネチャがAPIの入力パラメータになっていて、レスポンスがスキーマ定義されています。
-その自己記述性の高さからAPIドキュメントが自動生成することができます。
+その自己記述性の高さからAPIドキュメントが自動生成できます。
 
 作成してみましょう。[docs](https://bearsunday.github.io/tutorial2/)フォルダにドキュメントが出力されます。
 
@@ -893,4 +893,3 @@ BEAR.Sundayは標準に基づいたクリーンなコードであることを重
 コメントは説明になるだけでなく、スロークエリーログ等からもSQLを特定しやすくなります。
 
 ※ 以前のPHP 7対応のチュートリアルは[tutorial2_v1](tutorial2_v1.html)にあります。
-

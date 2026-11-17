@@ -51,6 +51,9 @@ class MdLinkExpander {
 
             // Read the lines from llms.txt
             $lines = file($this->llmsTxt, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+            if ($lines === false) {
+                throw new Exception("Unable to read source file {$this->llmsTxt}.");
+            }
 
             $output = fopen($this->llmsFullTxt, 'w');
             if (!$output) {
@@ -59,7 +62,7 @@ class MdLinkExpander {
 
             foreach ($lines as $line) {
                 $processedLine = $this->processLinks($line);
-                fwrite($output, $processedLine . "\n");
+                $this->write($output, $processedLine . "\n");
             }
 
             fclose($output);
@@ -88,9 +91,9 @@ class MdLinkExpander {
                 $content = $this->readLocalFile($localPath);
                 $processedContent = $this->processLinks($content);
 
-                fwrite($output, "# Source: $url\n\n");
-                fwrite($output, $processedContent . "\n\n");
-                fwrite($output, "--------------------\n\n");
+                $this->write($output, "# Source: $url\n\n");
+                $this->write($output, $processedContent . "\n\n");
+                $this->write($output, "--------------------\n\n");
 
             } catch (Exception $e) {
                 echo "  Error processing $url: " . $e->getMessage() . "\n";
@@ -139,7 +142,12 @@ class MdLinkExpander {
             throw new Exception("File not found: $path");
         }
 
-        return file_get_contents($path);
+        $content = file_get_contents($path);
+        if ($content === false) {
+            throw new Exception("Unable to read file: $path");
+        }
+
+        return $content;
     }
 
    private function processLinks(string $line): string
@@ -159,6 +167,10 @@ class MdLinkExpander {
 
                     // Remove front matter
                     $content = preg_replace('/^---.*?---/s', '', $content, 1);
+                    if ($content === null) {
+                        throw new Exception("Unable to strip front matter from file: $localPath");
+                    }
+
                     return $content;
 
                 } catch (Exception $e) {
@@ -169,6 +181,17 @@ class MdLinkExpander {
         }
 
         return $line; // Return original line if not a matching link
+    }
+
+    /**
+     * @param resource $output
+     */
+    private function write($output, string $content): void
+    {
+        $bytes = fwrite($output, $content);
+        if ($bytes === false || $bytes !== strlen($content)) {
+            throw new Exception("Unable to write complete content to {$this->llmsFullTxt}.");
+        }
     }
 }
 

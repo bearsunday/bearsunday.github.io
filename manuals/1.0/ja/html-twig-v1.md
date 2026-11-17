@@ -83,7 +83,7 @@ class AppModule extends AbstractModule
         $this->bind()->annotatedWith(TwigPaths::class)->toInstance($paths);
 
         // 環境のオプションを設定することも可能
-        // @see http://twig.sensiolabs.org/doc/api.html#environment-options
+        // @see https://twig.symfony.com/doc/1.x/api.html#environment-options
         $options = [
             'debug' => false,
             'cache' => $appDir . '/tmp'

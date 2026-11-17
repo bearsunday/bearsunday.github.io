@@ -33,7 +33,47 @@ REST制約に従った分散キャッシュシステムは、計算資源だけ�
 
 コンテンツキャッシュには依存性の問題があります。コンテンツAがコンテンツBに依存し、BがCに依存している場合、Cが更新されるとCのキャッシュとETagだけでなく、Cに依存するBのキャッシュとETag、Bに依存するAのキャッシュとETagも更新されなければなりません。
 
-BEAR.Sundayはそれぞれのリソースが依存リソースのURIをタグとして保持することで、この問題を解決します。`#[Embed]`で埋め込まれたリソースに変更があると、関係する全てのリソースのキャッシュとETagが無効化され、次のリクエストのためにキャッシュの再生成が行われます。
+BEAR.Sundayはそれぞれのリソースが依存リソースのURIをタグとして保持することで、この問題を解決します。`#[Embed]`で埋め込まれたリソースに変更があると、そのリソースを依存として登録しているリソースのキャッシュとETagが無効化され、次のリクエストのためにキャッシュの再生成が行われます。
+
+この依存関係が登録されるのは、`#[Embed]`で埋め込まれたリソース自身を`#[Cacheable]`などでキャッシュ対象にした場合か、そのリソースが`#[DependsOn]`を宣言している場合（後述）だけです。どちらでもないリソースを`onGet()`で読み取っても依存にはならず、そのタグはページのエントリには届きません。そのリソースを穴としても描画している場合は、URIをパージすると保存済みのビューが落ち、次のリクエストでページが保存済みのテンプレートから再構成されます。そのようなリソースには`#[Cacheable]`などのキャッシュアトリビュートを付けてください。`$this->resource->get()`で先に取得した値も依存にはなりません。
+
+`#[Embed]`で埋め込まれたリソースの使われ方によって、挙動は次の3通りに分かれます（`#[DonutCache]`と穴については後述します）：
+
+| 埋め込まれたリソースの用途 | 使うもの | リソースをパージした時の挙動 |
+|---|---|---|
+| ユーザー固有のコンテンツ（共有不可） | `#[DonutCache]`のページで穴として描画する非キャッシュのリソース | その穴だけがHITのたびに再実行される |
+| イベントで変化する共有コンテンツ | キャッシュ対象のリソースを穴として描画する（`onGet()`では読まない） | 外殻（シェル）が保存済みのテンプレートから再構成される |
+| ページの`onGet()`が読み取る値 | キャッシュ対象のリソース（依存として扱われる） | 保存済みのキャッシュ全体が破棄され、次のGETはキャッシュミスになる |
+
+### #[DependsOn]
+
+上の依存が自動で働くのは、`#[Embed]`で埋め込んだリソースだけです。クエリやサービスの呼び出しなど、埋め込まずに読んだデータは依存になりません。そうしたデータは、そのデータを持つリソースのURIを`#[DependsOn]`で宣言してください。依存を作るためだけに`#[Embed]`を足さなくても、そのURIへの書き込みでこのリソースが無効化されます。
+
+```php
+use BEAR\RepositoryModule\Annotation\DependsOn;
+
+#[Cacheable]
+class ChannelEntries extends ResourceObject
+{
+    #[DependsOn(uri: 'app://self/taxonomy?ulid={channelId}')]
+    public function onGet(string $channelId): static
+    {
+        $this->body = ['entries' => $this->query->entries($channelId)];
+
+        return $this;
+    }
+}
+```
+
+`#[DependsOn]`が足すのはタグだけです。宣言したURIを無効化するのは、そのURIのリソース自身の書き込み（`#[Cacheable]`のとき）か、そのURIを指定した`#[Purge]`/`#[Refresh]`です。
+
+一覧の行のクラスにも付けられます。その場合は行のpublicプロパティがテンプレート変数になり、bodyの中で見つかった行ごとにURIが展開されます。bodyは配列とpublicプロパティだけをたどるので、コレクションや`Generator`のような`Traversable`の中の行は見つかりません。
+
+制限が2つあります。`#[ResourceParam]`で束縛した引数は、束縛した値ではなくリクエストのクエリから読み戻します。そのため、デフォルト値のない引数を使う宣言は失敗し、デフォルト値のある引数を使う宣言は警告なくデフォルト値で展開されます。また、展開できない宣言があると、GETは`DependsOnNotExpandable`で失敗し、何も保存されません。
+
+間にキャッシュしないリソースを挟むと、上に伝わるのは`#[DependsOn]`で宣言されたURI（そのリソースと、その下で実行されたリクエストの宣言）だけになります。その下にあるキャッシュ対象の孫リソース自身のタグは伝わりません。孫のURIを間のリソースでも`#[DependsOn]`で宣言するか、間のリソースを`#[Cacheable]`にしてください。
+
+`bear/query-repository` 1.20以降が必要です。
 
 ## ドーナッツキャッシュ
 
@@ -122,11 +162,17 @@ class Todo extends ResourceObject
 }
 ```
 
-どちらかの方法でアトリビュートを付与すると、概要で紹介した全ての機能が適用されます。イベントドリブン型コンテンツを想定してデフォルトでは時間（TTL）によるキャッシュの無効化は行われません。`#[DonutCache]`の場合はコンテンツ全体はキャッシュされず、`#[CacheableResponse]`の場合はされることに注意してください。
+どちらかの方法でアトリビュートを付与すると、概要で紹介した全ての機能が適用されます。イベントドリブン型コンテンツを想定しているため、デフォルトではキャッシュの無効化はイベント駆動で行われます。デフォルトのTTLはインストールするCDNモジュールによって異なります（詳細は後述）。`#[DonutCache]`の場合はコンテンツ全体はキャッシュされず、`#[CacheableResponse]`の場合はされることに注意してください。
+
+キャッシュアトリビュートによって保存される部分は、全ての訪問者で共有されます。ユーザー固有の値は、`#[DonutCache]`のページで穴として描画する非キャッシュのリソースに入れてください。QueryRepositoryが検査するのはレスポンス自身の`Cache-Control`だけです。次のような経路でユーザー固有の値が保存対象の出力に含まれると、以後、そのキャッシュを利用するすべての訪問者に配信されます。
+
+* `onGet()`で読み取った、埋め込まれたリソースの値
+* `#[ResourceParam]`で受け取った値
+* テンプレートで生成した値（Twigの関数など）
 
 ## TTL
 
-TTLの指定は`DonutRepositoryInterface::put()`で行います。`ttl`はドーナツの穴以外のキャッシュ時間、`sMaxAge`はCDNのキャッシュ時間です：
+TTLの指定は`DonutRepositoryInterface::putStatic()`で行います。`ttl`はドーナツの穴以外のキャッシュ時間、`sMaxAge`はCDNのキャッシュ時間です：
 
 ```php
 use BEAR\RepositoryModule\Annotation\CacheableResponse;
@@ -142,7 +188,7 @@ class BlogPosting extends ResourceObject
     public function onGet(): static
     {
         // process ...
-        $this->repository->put($this, ttl: 10, sMaxAge: 100);
+        $this->repository->putStatic($this, ttl: 10, sMaxAge: 100);
         return $this;
     }
 }
@@ -158,7 +204,7 @@ CDNがタグベースでのキャッシュ無効化をサポートしていれ�
 
 ## キャッシュ無効化
 
-手動でキャッシュを無効化するには`DonutRepositoryInterface`のメソッドを用います。指定されたキャッシュだけでなく、そのETag、依存にしている他のリソースのキャッシュとそのETagが、サーバーサイドおよび可能な場合はCDN上のキャッシュも共に無効化されます：
+手動でキャッシュを無効化するには`DonutRepositoryInterface`のメソッドを用います。指定されたキャッシュだけでなく、そのETag、それを依存にしている他のリソースのキャッシュとそのETagが、サーバーサイドおよび可能な場合はCDN上のキャッシュも共に無効化されます：
 
 ```php
 interface DonutRepositoryInterface
@@ -171,9 +217,16 @@ interface DonutRepositoryInterface
 ### URIによる無効化
 
 ```php
-// example
-$this->repository->purge(new Uri('app://self/blog/comment'));
+// app://self/articles の onGet(int $page = 1)
+$this->repository->purge(new Uri('app://self/articles'));        // 一覧の全ページ（?page=1, ?page=2, …）を無効化
+$this->repository->purge(new Uri('app://self/articles?page=2')); // ?page=2 だけを無効化
 ```
+
+キャッシュの各エントリは、自身のURIのタグに加えてグループタグを持ちます。グループタグは、エントリのURIから`onGet()`で既定値を持つ引数と、`onGet()`が宣言していないクエリを除いたURIのタグです。URIを指定して無効化すると、そのURIのエントリと、グループタグがそのURIのタグであるエントリが無効化されます。`app://self/articles?page=2`のグループタグは`app://self/articles`のタグなので、`app://self/articles`を指定すると無効化されます。グループタグは既定値を持つ引数を含まないので、`app://self/articles?page=1`を指定した場合は、そのURIのエントリだけが無効化されます。メソッドの実行後に指定したURIを無効化する`#[Purge]`、無効化して取得し直す`#[Refresh]`アトリビュートも同じです。無効化したURIとクエリだけが異なるURI（`app://self/articles?page=2`など）をキャッシュ対象の依存として埋め込んだページ（[タグベースでのキャッシュ無効化](#タグベースでのキャッシュ無効化)）もそのグループタグを持つので、一緒に無効化されます。
+
+`#[Cacheable]`、`#[CacheableResponse]`のリソースの書き込みメソッドと、`#[RefreshCache]`を付けたメソッドは、自身のURIから既定値を持つ引数を除いたURIを無効化します。そのため`app://self/articles`への書き込みは、一覧のすべてのページを無効化します。`#[DonutCache]`のリソースの書き込みメソッドが自身のURIを自動で無効化するのは、`#[RefreshCache]`を付けた場合だけです。
+
+必須の引数は、リクエストが使ったキーのままグループタグに入ります。`onGet(int $userId, int $page = 1)`を`?user_id=1&page=2`で取得したエントリは、`?user_id=1`を指定すると無効化され、`?userId=1`を指定しても無効化されません。書き込み後の自動の無効化は、引数名のキー（`?userId=1`）とそのsnake_case（`?user_id=1`）の両方を無効化するので、GETがどちらの綴りで取得したエントリにも届きます。ただし、必須の引数ごとに綴りが混ざったGET（`?userId=1&post_id=2`）には届きません。これにはbear/query-repository 1.20.1以降が必要です。
 
 ### タグによる無効化
 
@@ -278,6 +331,8 @@ $this->install(
 
 Redisのメモリ使用量を削減したい場合は`deflate`を使用してください。CPU使用率とのトレードオフになります。
 
+`dsn`に指定できる書式（認証、TLS、Sentinel、Cluster など）と接続オプションは[Redis DSN](redis-dsn.html)を参照してください。
+
 ## CDN特定
 
 特定CDN対応のモジュールをインストールすると、ベンダー固有のヘッダーが出力されます：
@@ -305,6 +360,22 @@ CDNのキャッシュコントロールについてはBEAR.Sundayが自動で行
 
 ```php
 ResponseHeader::CACHE_CONTROL => CacheControl::NO_STORE
+```
+
+`#[Cacheable]`、`#[CacheableResponse]`、`#[DonutCache]`のリソースが自身で`Cache-Control`を`private`または`no-store`にした場合（`$headers`プロパティの既定値に`CacheControl::NO_STORE`を指定した場合も同様です）、そのレスポンスはサーバーサイドに保存されません。指定したヘッダーはそのまま残り、CDN向けのヘッダーだけが取り除かれます。`no-store`のレスポンスに`max-age`が付与されることもありません。
+
+サーバーサイドのキャッシュは維持したまま、クライアントにだけ`no-store`を伝えたい場合は`#[HttpCache(noStore: true)]`を付与します：
+
+```php
+use BEAR\RepositoryModule\Annotation\Cacheable;
+use BEAR\RepositoryModule\Annotation\HttpCache;
+
+#[Cacheable]
+#[HttpCache(noStore: true)]
+class News extends ResourceObject
+{
+    // ...
+}
 ```
 
 ### 条件付きリクエスト
@@ -374,7 +445,14 @@ API（またはコンテンツ）は**情報API**（Information API）と**計�
 
 ## #[Cacheable]
 
-従来の#[Cacheable]によるTTLキャッシュもサポートされます。
+`#[Cacheable]`はリソースの値（`body`）をキャッシュします。`#[CacheableResponse]`がレスポンス（表現）をキャッシュし、キャッシュから返るとき`body`を持たないのとの違いです。
+
+* `type: 'value'`（既定）は`body`だけを保存し、表現はリクエストのたびに作ります。同じ値を別の表現で返せ、埋め込まれたときは値として使えます。
+* `type: 'view'`は`body`と表現の両方を保存します。
+
+どちらもETagが付き、埋め込んだ子リソースがETagか`Surrogate-Key`を持てば、その子の無効化で一緒に消えます。`expiry`の既定は`never`で、サーバー側では無効化されるまで保存し、クライアントには`max-age=0`を返してETagで再検証させます。
+
+埋め込まれて値として使われるリソースには`#[Cacheable]`を使います。`#[CacheableResponse]`のリソースはキャッシュから返るとき`body`を持たないので、それを埋め込んだページをJSONで描画すると、その部分が`null`になります。
 
 例）サーバーサイドで30秒キャッシュ、クライアントでも30秒キャッシュ。サーバーサイドで指定しているので、クライアントサイドでも同じ秒数でキャッシュされます：
 
@@ -384,6 +462,8 @@ use BEAR\RepositoryModule\Annotation\Cacheable;
 #[Cacheable(expirySecond: 30)]
 class CachedResource extends ResourceObject
 {
+    // ...
+}
 ```
 
 例）指定した有効期限（`$body['expiry_at']`の日付）まで、サーバー、クライアント共にキャッシュ：
@@ -394,9 +474,84 @@ use BEAR\RepositoryModule\Annotation\Cacheable;
 #[Cacheable(expiryAt: 'expiry_at')]
 class CachedResource extends ResourceObject
 {
+    // ...
+}
 ```
 
 その他は[HTTPキャッシュ](https://bearsunday.github.io/manuals/1.0/ja/http-cache.html)ページをご覧ください。
+
+## 可観測性（オブザーバビリティ）
+
+BEAR.QueryRepositoryは実際の挙動を記録できます。記録されるのは、hit/miss、保存した内容とその期間、無効化した内容、そしてCDNのpurgerがpurge要求を成功と報告したかどうかです。purge要求の成功は、CDNのエッジへの実際の伝播を意味しません。ログは自由記述のメッセージではなく、型付きでスキーマ検証可能なツリーです。記録は既定でオフです。`DevQueryRepositoryLogModule`をインストールすると有効になります。インストールだけではキャッシュの挙動自体は変わりません。
+
+このログはリソースリクエストの記録と1本の木にできます。[Event Sourcing](https://bearsunday.github.io/manuals/1.0/ja/event-sourcing.html)の「BEAR.QueryRepository と 1 本の木」の構成にすると、キャッシュの判断（hit/miss、保存、無効化）が、それを起こした`resource_request`の中にネストします。1リクエストで何が起きたかを、リソースのネストとキャッシュの判断を合わせて起きた順に読めます。下の`bear-observe`はこの構成を設置します。
+
+どちらのログモジュールも、1プロセスが1リクエストを処理するホスト（PHP-FPM、CLIスクリプト）を前提とします。RoadRunnerのワーカーやSwooleのコルーチン内など、それが成り立たないと判定できる場合は記録を開始しません。`error_log()`にその旨を出力し、ほかは何も変えずに記録オフのまま動作します（[issue #179](https://github.com/bearsunday/BEAR.QueryRepository/issues/179)）。
+
+### 開発時
+
+既に`QueryRepositoryModule`をインストール済みのアプリでは、`override()`で差し替えます。`install()`では既存の`NullSemanticLogger`のbindingが残り、記録はオフのままです。
+
+```php
+use BEAR\QueryRepository\DevQueryRepositoryLogModule;
+
+$this->override(new DevQueryRepositoryLogModule($this->appMeta->logDir . '/query-repository'));
+```
+
+キャッシュプールが`QueryRepositoryModule`既定の`NullAdapter`のままだと、すべてのGETがmissになり、ログにhitは現れません。開発でも`StorageRedisDsnModule`などをインストールするか、`ResourceObjectPool`と`EtagPool`に永続するアダプター（`FilesystemAdapter`など）を束縛します。
+
+リクエストを1本実行すると、そのセッションが`latest.json`に書かれます。ツリーで表示します：
+
+```bash
+vendor/bin/stree var/log/{context}/query-repository/latest.json
+```
+
+`QueryRepositoryModule`をどこでもインストールしていないスタンドアロンの`Injector`では、コアのキャッシュ配線も一緒に渡します：
+
+```php
+use BEAR\QueryRepository\QueryRepositoryModule;
+
+$this->install(new DevQueryRepositoryLogModule(
+    $logDir,
+    module: new QueryRepositoryModule(),
+));
+```
+
+### 本番時
+
+`ProdQueryRepositoryLogModule`は監視用ではなく、事後の原因調査用です。ヒット率やキャパシティはメトリクスの方が安価で正確に扱えます。古いコンテンツが見える、purgeが効かないといった問題で、メトリクスから原因が特定できないときに有効化します。既存アプリでは同じく`override()`を使います：
+
+```php
+use BEAR\QueryRepository\ProdQueryRepositoryLogModule;
+
+$this->override(new ProdQueryRepositoryLogModule(stream: 'php://stdout', sampleRate: 100));
+```
+
+mutation（書き込み）と、起きなかった効果（保存の拒否、無効化やpurgeの失敗）は常に保持されます。これらはほかに記録が残らず、確認できるのはこのログだけだからです。`sampleRate`は、問題が無かった健全セッションをN件に1件だけ残す割合です。`0`を指定するとサンプリングを無効化し、健全セッションは一切残しません。これと異なる保持ルールにしたい場合は`RetentionPolicyInterface`を自前で実装し、`override()`の後にbindしてください。writerはDI経由でこれを解決するため、アプリ側のbindingが勝ちます。
+
+`cache_hit`、`cache_miss`、`save_value`、`invalidate`、`cdn_headers`など、各エントリは自身のJSON Schemaへのリンクを持ちます。セッションはgrepではなく検証できます。
+
+### AIエージェント向け
+
+上の設置と読解は、エージェントに任せられます。[BEAR.EventSourcing](https://github.com/bearsunday/BEAR.EventSourcing)に含まれる`bear-observe`スキルをプロジェクトに入れます：
+
+```bash
+composer require --dev bear/event-sourcing
+mkdir -p .claude/skills && cp -r vendor/bear/event-sourcing/skills/bear-observe .claude/skills/
+```
+
+「キャッシュログを見て」と頼むと、エージェントが観測用の`dev-`文脈（`DevModule`、永続プール、`bin/dev.php`）をアプリに書き、配線を確かめ、リクエストを1本流してツリーを読みます。宣言した意図とログが食い違えば、アプリとライブラリのどちらの問題かを切り分けて報告します。
+
+[BEAR.Skills](https://github.com/bearsunday/BEAR.Skills)もインストールできます：
+
+```
+/plugin marketplace add bearsunday/BEAR.Skills
+/plugin install bear-skills
+```
+
+`bear-cache-gate`（キャッシュログを読み、フローごとに保存・hit・無効化が実際に起きたかを判定するゲートを`var/loop/`に設置）が使えるようになります。ログの読解は上の`bear-observe`が引き継いでいます。
+
+ログの全語彙と宣言された境界は、[Why the QueryRepository Log Records Everything](https://github.com/bearsunday/BEAR.QueryRepository/blob/1.x/docs/why-the-log-records-everything.ja.md)、[Reading the Log](https://github.com/bearsunday/BEAR.QueryRepository/blob/1.x/docs/reading-the-log.ja.md)、[What the Cache Log Proves — and What It Does Not](https://github.com/bearsunday/BEAR.QueryRepository/blob/1.x/docs/what-the-log-proves.ja.md)を参照してください。
 
 ## 結論
 

@@ -9,7 +9,7 @@ permalink: /manuals/1.0/ja/package.html
 
 アプリケーションは独立したcomposerパッケージです。
 
-フレームワークは依存として`composer install`でインストールしますが、他のアプリケーションも依存パッケージとして使うことができます。
+フレームワークは依存として`composer install`でインストールしますが、他のアプリケーションも依存パッケージとして使えます。
 
 ## アプリケーション・パッケージ
 
@@ -33,11 +33,11 @@ php bin/page.php get '/todos?id=1' # Webアクセス（pageリソース）
 ```
 
 ```bash
-php -S 127.0.0.1 bin/app.php # PHPサーバー
+php -S 127.0.0.1:8080 bin/app.php # PHPサーバー
 ```
 
 コンテキストが変わるとアプリケーションの振る舞いが変わります。
-ユーザーは独自のコンテキストを作成することができます。
+ユーザーは独自のコンテキストを作成できます。
 
 ### src/
 
@@ -49,8 +49,10 @@ Web公開フォルダです。
 
 ### var/
 
-`log`、`tmp`フォルダは書き込み可能にします。`var/www`はWebドキュメントの公開エリアです。
+`log`、`tmp`フォルダは書き込み可能にします。既定ではコンテキストごとに `var/tmp/{context}` と `var/log/{context}` が使われます。`var/www`はWebドキュメントの公開エリアです。
 `conf`など可変のファイルを設置します。
+
+書き込み先をプロジェクト外にしたい場合だけ、`ReadOnlyAppModule` で宣言します（[プロダクション](production.html#writable-paths)）。
 
 ## 実行シーケンス
 
@@ -118,8 +120,8 @@ Javaの [AOPアライアンス](http://aopalliance.sourceforge.net/) に準拠�
 ||[bear/query-repository](https://github.com/bearsunday/BEAR.QueryRepository) | 読み書きリポジトリの分離（デフォルト）
 ||[bear/query-module](https://github.com/ray-di/Ray.QueryModule) | DBやWeb APIなどの外部アクセスの分離
 | Web |
-| |[madapaja/twig-module](http://bearsunday.github.io/manuals/1.0/ja/html.html) | [Twigテンプレートエンジン](http://twig.sensiolabs.org/)
-| |[ray/web-form-module](http://bearsunday.github.io/manuals/1.0/ja/form.html) | Webフォーム & バリデーション
+| |[madapaja/twig-module](html.html) | [Twigテンプレートエンジン](https://twig.symfony.com/doc/3.x/api.html)
+| |[ray/web-form-module](form.html) | Webフォーム & バリデーション
 | |[ray/aura-web-module](https://github.com/Ray-Di/Ray.AuraWebModule) | [Aura.Web](https://github.com/auraphp/Aura.Web)
 | |[ray/aura-session-module](https://github.com/ray-di/Ray.AuraSessionModule) | [Aura.Session](https://github.com/auraphp/Aura.Session)
 | |[ray/symfony-session-module](https://github.com/kawanamiyuu/Ray.SymfonySessionModule) | [Symfony Session](https://github.com/symfony/http-foundation/tree/master/Session)
@@ -140,7 +142,7 @@ Javaの [AOPアライアンス](http://aopalliance.sourceforge.net/) に準拠�
 
 ## ベンダー・パッケージ
 
-特定のパッケージやツールの組み合わせをモジュールだけのパッケージにして再利用し、同様のプロジェクトのモジュールを共通化することができます。[^1]
+特定のパッケージやツールの組み合わせをモジュールだけのパッケージにして再利用し、同様のプロジェクトのモジュールを共通化できます。[^1]
 
 ## Semver
 

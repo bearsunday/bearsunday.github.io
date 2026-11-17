@@ -27,15 +27,15 @@ The file layout of the BEAR.Sunday application conforms to [php-pds/skeleton](ht
 You can access same resource through console input or web access with same boot file.
 
 ```bash
-php bin/app.php options /todos // console API access　(app resource)
+php bin/app.php options /todos # console API access (app resource)
 ```
 
 ```bash
-php bin/page.php get '/todos?id=1' // console Web access (page resource)
+php bin/page.php get '/todos?id=1' # console Web access (page resource)
 ```
 
 ```bash
-php -S 127.0.0.1bin/app.php // PHP server
+php -S 127.0.0.1:8080 bin/app.php # PHP server
 ```
 
 You can create your own boot file for different context.
@@ -54,7 +54,9 @@ Web public folder.
 
 ### var/
 
-`log` and `tmp` folder need write permission.
+`log` and `tmp` need write permission. By default they are `var/tmp/{context}` and `var/log/{context}`.
+
+To place them outside the project tree, declare them with `ReadOnlyAppModule` ([Production](production.html#writable-paths)).
 
 ## Framework Package
 
