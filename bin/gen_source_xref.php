@@ -32,7 +32,7 @@ function loadXref(): array
 }
 
 /**
- * Reads the top-level src* directories of the checkout (src/, src-annotation/, ...), skipping any named *deprecated*
+ * Reads the top-level src* directories of the checkout (src/, src-annotation/, ...); a path with a *deprecated* segment or a class marked @deprecated is skipped
  *
  * @return array<string, list<string>>
  */
@@ -52,12 +52,21 @@ function scan(string $repo, string $branch, string $checkout): array
                 continue;
             }
 
-            preg_match_all(MANUAL_URL, (string) file_get_contents($file->getPathname()), $matches);
+            $path = substr($file->getPathname(), strlen($root) + 1);
+            if (str_contains(strtolower($path), 'deprecated')) {
+                continue;
+            }
+
+            $code = (string) file_get_contents($file->getPathname());
+            if (preg_match('~/\*\*(?:(?!\*/).)*@deprecated(?:(?!\*/).)*\*/\s*(?:#\[[^\n]*\]\s*)*(?:(?:final|abstract|readonly)\s+)*(?:class|interface|trait|enum)\s~s', $code)) {
+                continue;
+            }
+
+            preg_match_all(MANUAL_URL, $code, $matches);
             if ($matches[1] === []) {
                 continue;
             }
 
-            $path = substr($file->getPathname(), strlen($root) + 1);
             $xref["https://github.com/{$repo}/blob/{$branch}/{$path}"] = array_values(array_unique($matches[1]));
         }
     }
