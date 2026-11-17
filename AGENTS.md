@@ -30,6 +30,8 @@ Each manual page requires Jekyll frontmatter with `layout`, `title`, `category`,
 | `./bin/serve_docker.sh` | Serve via Docker Compose on port 4001 |
 | `bundle exec jekyll build` | Build the static site into `_site/` |
 | `php bin/gen_llms.php` | Expand the hand-maintained `llms.txt` index into `llms-full.txt` (build artifact, gitignored) |
+| `php bin/gen_source_xref.php bearsunday/BEAR.Resource@1.x=../BEAR.Resource` | Regenerate that repository's entries in `_data/source-xref.json` (source file on GitHub → manual sections, schema in `schemas/source-xref.schema.json`) from the `@see` manual URLs in its `src/` docblocks. Commit the result |
+| `php bin/gen_source_xref.php --check` | After `jekyll build`, fail when a manual URL in `_data/source-xref.json` has no matching anchor in `_site/` |
 | `./bin/copy_markdown_files.sh` | Strip frontmatter and copy raw markdown into `_site/` |
 | `node scripts/validate-frontmatter.js` | Validate frontmatter on all manual pages |
 
