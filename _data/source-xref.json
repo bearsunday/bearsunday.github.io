@@ -1,0 +1,12 @@
+{
+    "$schema": "https://bearsunday.github.io/schemas/source-xref.schema.json",
+    "https://github.com/bearsunday/BEAR.Resource/blob/1.x/src/Annotation/Embed.php": [
+        "https://bearsunday.github.io/manuals/1.0/en/resource_link.html#internal-links"
+    ],
+    "https://github.com/bearsunday/BEAR.Resource/blob/1.x/src/Annotation/Link.php": [
+        "https://bearsunday.github.io/manuals/1.0/en/resource_link.html#out-bound-links"
+    ],
+    "https://github.com/bearsunday/BEAR.Resource/blob/1.x/src/Annotation/ResourceParam.php": [
+        "https://bearsunday.github.io/manuals/1.0/en/resource_param.html#resource-binding"
+    ]
+}
