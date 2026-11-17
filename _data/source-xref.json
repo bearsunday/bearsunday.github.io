@@ -1,5 +1,98 @@
 {
     "$schema": "https://bearsunday.github.io/schemas/source-xref.schema.json",
+    "https://github.com/bearsunday/BEAR.Accept/blob/1.x/src/Annotation/Produces.php": [
+        "https://bearsunday.github.io/manuals/1.0/en/content-negotiation.html#produces-attribute"
+    ],
+    "https://github.com/bearsunday/BEAR.Cli/blob/1.x/src/Attribute/Cli.php": [
+        "https://bearsunday.github.io/manuals/1.0/en/cli.html#adding-cli-attributes-to-resources"
+    ],
+    "https://github.com/bearsunday/BEAR.Cli/blob/1.x/src/Attribute/Option.php": [
+        "https://bearsunday.github.io/manuals/1.0/en/cli.html#adding-cli-attributes-to-resources"
+    ],
+    "https://github.com/bearsunday/BEAR.Csrf/blob/1.x/src/Attribute/CsrfToken.php": [
+        "https://bearsunday.github.io/manuals/1.0/en/csrf.html#resource-attributes"
+    ],
+    "https://github.com/bearsunday/BEAR.Csrf/blob/1.x/src/Attribute/SameOrigin.php": [
+        "https://bearsunday.github.io/manuals/1.0/en/csrf.html#resource-attributes"
+    ],
+    "https://github.com/bearsunday/BEAR.Defer/blob/1.x/src/Attribute/Defer.php": [
+        "https://bearsunday.github.io/manuals/1.0/en/defer.html#declare-what-to-defer"
+    ],
+    "https://github.com/bearsunday/BEAR.Package/blob/1.x/src/Annotation/ReturnCreatedResource.php": [
+        "https://bearsunday.github.io/manuals/1.0/en/tutorial.html#returncreatedresource"
+    ],
+    "https://github.com/bearsunday/BEAR.Package/blob/1.x/src/Exception/NotCompiledException.php": [
+        "https://bearsunday.github.io/manuals/1.0/en/production.html#compilation-recommended"
+    ],
+    "https://github.com/bearsunday/BEAR.Package/blob/1.x/src/Exception/PharEntryNotFoundException.php": [
+        "https://bearsunday.github.io/manuals/1.0/en/phar.html#when-the-build-stops"
+    ],
+    "https://github.com/bearsunday/BEAR.Package/blob/1.x/src/Exception/PharEntryNotPackedException.php": [
+        "https://bearsunday.github.io/manuals/1.0/en/phar.html#when-the-build-stops"
+    ],
+    "https://github.com/bearsunday/BEAR.Package/blob/1.x/src/Exception/PharImportOutsideTreeException.php": [
+        "https://bearsunday.github.io/manuals/1.0/en/phar.html#when-the-build-stops"
+    ],
+    "https://github.com/bearsunday/BEAR.Package/blob/1.x/src/Exception/PharImportsUnreadableException.php": [
+        "https://bearsunday.github.io/manuals/1.0/en/phar.html#when-the-build-stops"
+    ],
+    "https://github.com/bearsunday/BEAR.Package/blob/1.x/src/Exception/PharNotCompiledException.php": [
+        "https://bearsunday.github.io/manuals/1.0/en/phar.html#when-the-build-stops"
+    ],
+    "https://github.com/bearsunday/BEAR.Package/blob/1.x/src/Exception/PharPreloadForAnotherBuildException.php": [
+        "https://bearsunday.github.io/manuals/1.0/en/phar.html#when-the-build-stops"
+    ],
+    "https://github.com/bearsunday/BEAR.Package/blob/1.x/src/Exception/PharStaleOutputException.php": [
+        "https://bearsunday.github.io/manuals/1.0/en/phar.html#when-the-build-stops"
+    ],
+    "https://github.com/bearsunday/BEAR.Package/blob/1.x/src/Exception/PharSymlinkedDirectoryException.php": [
+        "https://bearsunday.github.io/manuals/1.0/en/phar.html#when-the-build-stops"
+    ],
+    "https://github.com/bearsunday/BEAR.Package/blob/1.x/src/Exception/PharWritesInsideArchiveException.php": [
+        "https://bearsunday.github.io/manuals/1.0/en/phar.html#when-the-build-stops"
+    ],
+    "https://github.com/bearsunday/BEAR.QueryRepository/blob/1.x/src-annotation/CacheLog.php": [
+        "https://bearsunday.github.io/manuals/1.0/en/event-sourcing.html#one-tree-with-bearqueryrepository"
+    ],
+    "https://github.com/bearsunday/BEAR.QueryRepository/blob/1.x/src-annotation/Cacheable.php": [
+        "https://bearsunday.github.io/manuals/1.0/en/cache.html#cacheable"
+    ],
+    "https://github.com/bearsunday/BEAR.QueryRepository/blob/1.x/src-annotation/CacheableResponse.php": [
+        "https://bearsunday.github.io/manuals/1.0/en/cache.html#usage"
+    ],
+    "https://github.com/bearsunday/BEAR.QueryRepository/blob/1.x/src-annotation/DependsOn.php": [
+        "https://bearsunday.github.io/manuals/1.0/en/cache.html#dependson"
+    ],
+    "https://github.com/bearsunday/BEAR.QueryRepository/blob/1.x/src-annotation/DonutCache.php": [
+        "https://bearsunday.github.io/manuals/1.0/en/cache.html#usage"
+    ],
+    "https://github.com/bearsunday/BEAR.QueryRepository/blob/1.x/src-annotation/Purge.php": [
+        "https://bearsunday.github.io/manuals/1.0/en/cache.html#invalidate-by-uri"
+    ],
+    "https://github.com/bearsunday/BEAR.QueryRepository/blob/1.x/src-annotation/Refresh.php": [
+        "https://bearsunday.github.io/manuals/1.0/en/cache.html#invalidate-by-uri"
+    ],
+    "https://github.com/bearsunday/BEAR.QueryRepository/blob/1.x/src-annotation/RefreshCache.php": [
+        "https://bearsunday.github.io/manuals/1.0/en/cache.html#usage"
+    ],
+    "https://github.com/bearsunday/BEAR.QueryRepository/blob/1.x/src/CacheInterceptor.php": [
+        "https://bearsunday.github.io/manuals/1.0/en/cache.html#cacheable"
+    ],
+    "https://github.com/bearsunday/BEAR.QueryRepository/blob/1.x/src/CommandInterceptor.php": [
+        "https://bearsunday.github.io/manuals/1.0/en/cache.html#tag-based-cache-invalidation"
+    ],
+    "https://github.com/bearsunday/BEAR.QueryRepository/blob/1.x/src/DonutCacheInterceptor.php": [
+        "https://bearsunday.github.io/manuals/1.0/en/cache.html#donut-cache"
+    ],
+    "https://github.com/bearsunday/BEAR.QueryRepository/blob/1.x/src/DonutCacheableResponseInterceptor.php": [
+        "https://bearsunday.github.io/manuals/1.0/en/cache.html#event-driven-content"
+    ],
+    "https://github.com/bearsunday/BEAR.QueryRepository/blob/1.x/src/DonutCommandInterceptor.php": [
+        "https://bearsunday.github.io/manuals/1.0/en/cache.html#event-driven-content"
+    ],
+    "https://github.com/bearsunday/BEAR.QueryRepository/blob/1.x/src/RefreshInterceptor.php": [
+        "https://bearsunday.github.io/manuals/1.0/en/cache.html#event-driven-content"
+    ],
     "https://github.com/bearsunday/BEAR.Resource/blob/1.x/src/Annotation/Embed.php": [
         "https://bearsunday.github.io/manuals/1.0/en/resource_link.html#internal-links"
     ],
@@ -8,5 +101,50 @@
     ],
     "https://github.com/bearsunday/BEAR.Resource/blob/1.x/src/Annotation/ResourceParam.php": [
         "https://bearsunday.github.io/manuals/1.0/en/resource_param.html#resource-binding"
+    ],
+    "https://github.com/bearsunday/BEAR.SsrModule/blob/2.x/src/Annotation/Ssr.php": [
+        "https://bearsunday.github.io/manuals/1.0/en/reference.html#attributes"
+    ],
+    "https://github.com/bearsunday/BEAR.ToolUse/blob/1.x/src/Attribute/Tool.php": [
+        "https://bearsunday.github.io/manuals/1.0/en/ai-assistant.html#beartooluse"
+    ],
+    "https://github.com/ray-di/Ray.AuraSqlModule/blob/1.x/src/Annotation/PagerViewOption.php": [
+        "https://bearsunday.github.io/manuals/1.0/en/database_aura.html#pagination"
+    ],
+    "https://github.com/ray-di/Ray.AuraSqlModule/blob/1.x/src/Annotation/ReadOnlyConnection.php": [
+        "https://bearsunday.github.io/manuals/1.0/en/database_aura.html#replication"
+    ],
+    "https://github.com/ray-di/Ray.AuraSqlModule/blob/1.x/src/Annotation/Transactional.php": [
+        "https://bearsunday.github.io/manuals/1.0/en/database_aura.html#transactions"
+    ],
+    "https://github.com/ray-di/Ray.AuraSqlModule/blob/1.x/src/Annotation/WriteConnection.php": [
+        "https://bearsunday.github.io/manuals/1.0/en/database_aura.html#replication"
+    ],
+    "https://github.com/ray-di/Ray.InputQuery/blob/1.x/src/Attribute/Input.php": [
+        "https://bearsunday.github.io/manuals/1.0/en/resource_param.html#rayinputquery-integration"
+    ],
+    "https://github.com/ray-di/Ray.InputQuery/blob/1.x/src/Attribute/InputFile.php": [
+        "https://bearsunday.github.io/manuals/1.0/en/resource_param.html#file-upload"
+    ],
+    "https://github.com/ray-di/Ray.MediaQuery/blob/1.x/src/Annotation/DbQuery.php": [
+        "https://bearsunday.github.io/manuals/1.0/en/database_media.html#dbquery"
+    ],
+    "https://github.com/ray-di/Ray.MediaQuery/blob/1.x/src/Annotation/Pager.php": [
+        "https://bearsunday.github.io/manuals/1.0/en/database_media.html#pagination"
+    ],
+    "https://github.com/ray-di/Ray.Psr7Module/blob/1.x/src/Annotation/UploadFiles.php": [
+        "https://bearsunday.github.io/manuals/1.0/en/psr7.html#upload-files"
+    ],
+    "https://github.com/ray-di/Ray.WebFormModule/blob/1.x/src/Annotation/CsrfProtection.php": [
+        "https://bearsunday.github.io/manuals/1.0/en/form.html#csrf-protections"
+    ],
+    "https://github.com/ray-di/Ray.WebFormModule/blob/1.x/src/Annotation/FormValidation.php": [
+        "https://bearsunday.github.io/manuals/1.0/en/form.html#controller"
+    ],
+    "https://github.com/ray-di/Ray.WebFormModule/blob/1.x/src/Annotation/InputValidation.php": [
+        "https://bearsunday.github.io/manuals/1.0/en/form.html#validation-exception"
+    ],
+    "https://github.com/ray-di/Ray.WebFormModule/blob/1.x/src/Annotation/VndError.php": [
+        "https://bearsunday.github.io/manuals/1.0/en/form.html#validation-exception"
     ]
 }

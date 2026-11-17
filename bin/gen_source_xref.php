@@ -31,28 +31,35 @@ function loadXref(): array
     return $json;
 }
 
-/** @return array<string, list<string>> */
+/**
+ * Reads the top-level src* directories of the checkout (src/, src-annotation/, ...), skipping any named *deprecated*
+ *
+ * @return array<string, list<string>>
+ */
 function scan(string $repo, string $branch, string $checkout): array
 {
-    $src = rtrim($checkout, '/') . '/src';
-    if (! is_dir($src)) {
-        throw new RuntimeException("{$src}: no src directory");
+    $root = rtrim($checkout, '/');
+    $dirs = array_filter(glob($root . '/src*', GLOB_ONLYDIR) ?: [], static fn (string $dir): bool => ! str_contains(basename($dir), 'deprecated'));
+    if ($dirs === []) {
+        throw new RuntimeException("{$root}: no src directory");
     }
 
     $xref = [];
-    $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($src, FilesystemIterator::SKIP_DOTS));
-    foreach ($files as $file) {
-        if (! $file instanceof SplFileInfo || $file->getExtension() !== 'php') {
-            continue;
-        }
+    foreach ($dirs as $dir) {
+        $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir, FilesystemIterator::SKIP_DOTS));
+        foreach ($files as $file) {
+            if (! $file instanceof SplFileInfo || $file->getExtension() !== 'php') {
+                continue;
+            }
 
-        preg_match_all(MANUAL_URL, (string) file_get_contents($file->getPathname()), $matches);
-        if ($matches[1] === []) {
-            continue;
-        }
+            preg_match_all(MANUAL_URL, (string) file_get_contents($file->getPathname()), $matches);
+            if ($matches[1] === []) {
+                continue;
+            }
 
-        $path = substr($file->getPathname(), strlen(rtrim($checkout, '/')) + 1);
-        $xref["https://github.com/{$repo}/blob/{$branch}/{$path}"] = array_values(array_unique($matches[1]));
+            $path = substr($file->getPathname(), strlen($root) + 1);
+            $xref["https://github.com/{$repo}/blob/{$branch}/{$path}"] = array_values(array_unique($matches[1]));
+        }
     }
 
     return $xref;
