@@ -134,14 +134,31 @@ $blog = $this->resource->get('app://self/user#link=self:blog', ['id' => 1]);
 
 複数のリンクはカンマでつなぎます。`#link=self:blog,crawl:post-tree`は`->linkSelf('blog')->linkCrawl('post-tree')`と同じです。relに使える文字は`A-Z a-z 0-9 _ -`です。`uri()`・`get()`・`newRequest()`はこのフラグメントを読み、`toUri()`は書き出します。リクエストのURIにそれ以外のフラグメントがあれば`UriException`になります。
 
+リンクにはクエリを付けられます（`type:rel?query`、bear/resource 1.37以降）。リンク先のURIは`#[Link]`のhrefをbodyの値で埋めたものです。リンクのクエリはbodyに重ねてhrefを埋め、リンク先のリクエストのクエリにも加わります。
+
+```php
+class Order extends ResourceObject
+{
+    #[Link(rel: 'payment', href: 'app://self/payment{?id}')]
+    public function onGet(int $id): static
+    {
+        $this->body = ['id' => $id];
+
+        return $this;
+    }
+}
+```
+
+`app://self/order?id=1#link=self:payment`は`app://self/payment?id=1`を、`app://self/order?id=1#link=self:payment?card=1234`は`app://self/payment?id=1&card=1234`をGETします。hrefを埋めるのはbodyの最上位の値だけです。crawlのリンクにはクエリを付けられません。
+
 リソースクライアントはリソースを取得したあとにリンクを辿るので、URIが指すリソースは変わりません。
 
 > **Note**: `#`とは何でしょうか。[RFC 3986 §3.5](https://www.rfc-editor.org/rfc/rfc3986#section-3.5)のフラグメントは、一次リソースを介して二次リソースを識別します。二次リソースは一次リソースの一部やビューのこともあれば、「その表現が定義または記述する別のリソース」のこともあります。フラグメントはクライアントだけが解決し、サーバーには届きません。`#link=self:blog`もこの意味でフラグメントを使います。`#`より前のURIをリクエストし、その表現が宣言する`blog`リンクをリソースクライアントが辿ります。この使い方には先例があります。W3Cの[Cool URIs for the Semantic Web](https://www.w3.org/TR/cooluris/#hashuri)にある`about#alice`のようなハッシュURIは文書が記述する対象を指し、[RFC 5147](https://www.rfc-editor.org/rfc/rfc5147)はプレーンテキストに`#line=10,20`という`name=value`形式のフラグメントを定めています。
 
-コンソールでも同じURIを使えます。シェルが`?`や`#`を解釈しないように、URIを引用符で囲みます。
+コンソールでも同じURIを使えます（BEAR.Package 1.27以降）。シェルが`?`や`#`を解釈しないように、URIを引用符で囲みます。
 
 ```bash
-php bin/app.php get '/user?id=1#link=self:blog'
+php bin/app.php get '/order?id=1#link=self:payment?card=1234'
 ```
 
 Webのリクエストはフラグメントを送らないので、リンクを指定できるのはコード、アトリビュート、コンソールです。

@@ -138,14 +138,31 @@ $blog = $this->resource->get('app://self/user#link=self:blog', ['id' => 1]);
 
 Several links are joined with commas: `#link=self:blog,crawl:post-tree` is `->linkSelf('blog')->linkCrawl('post-tree')`. A rel is made of `A-Z a-z 0-9 _ -`. `uri()`, `get()` and `newRequest()` read the fragment and `toUri()` writes it; a request URI with any other fragment throws `UriException`.
 
+A link can carry a query, `type:rel?query` (bear/resource 1.37+). The linked URI is the `#[Link]` href filled with values from the body; a link query is overlaid on the body to fill the href and is added to the query of the linked request.
+
+```php?start_inline
+class Order extends ResourceObject
+{
+    #[Link(rel: 'payment', href: 'app://self/payment{?id}')]
+    public function onGet(int $id): static
+    {
+        $this->body = ['id' => $id];
+
+        return $this;
+    }
+}
+```
+
+`app://self/order?id=1#link=self:payment` GETs `app://self/payment?id=1`, and `app://self/order?id=1#link=self:payment?card=1234` GETs `app://self/payment?id=1&card=1234`. Only top-level body values fill the href. A crawl link takes no query.
+
 The resource client follows the links after it retrieves the resource, so they do not change which resource the URI names.
 
 > **Note**: What is the `#`? In [RFC 3986 §3.5](https://www.rfc-editor.org/rfc/rfc3986#section-3.5), a fragment identifies a secondary resource by reference to a primary resource: a portion or a view of it, or "some other resource defined or described by those representations". The fragment is resolved by the client alone and never reaches the server. `#link=self:blog` uses it in that sense: the URI before `#` is requested, then the resource client follows the `blog` link that the representation declares. This use has precedents: hash URIs such as `about#alice` in W3C [Cool URIs for the Semantic Web](https://www.w3.org/TR/cooluris/#hashuri) name a thing the document describes, and [RFC 5147](https://www.rfc-editor.org/rfc/rfc5147) defines a `name=value` fragment, `#line=10,20`, for plain text.
 
-The console takes the same URI; quote it so the shell passes `?` and `#` through unchanged:
+The console takes the same URI (BEAR.Package 1.27+); quote it so the shell passes `?` and `#` through unchanged:
 
 ```bash
-php bin/app.php get '/user?id=1#link=self:blog'
+php bin/app.php get '/order?id=1#link=self:payment?card=1234'
 ```
 
 A web request carries no fragment, so links are given only from code, attributes and the console.
