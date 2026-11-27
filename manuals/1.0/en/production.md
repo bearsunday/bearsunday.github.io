@@ -154,7 +154,7 @@ The artifact has two representative shapes. With a container pipeline, a [Docker
 
 * Gate CI with the compiler's exit code
 * Values that change at runtime (hosts, tokens) are not baked in; resolve them at runtime
-* Stub the services the build environment cannot reach with [`.compile.php`](#compile-php)
+* The object graph built at boot must build without the build environment's services: see [`.compile.php`](#compile-php)
 * On a read-only runtime, combine with [declared write locations](#writable-paths)
 
 ### On-demand compilation at health check {#health-check-compile}
@@ -182,7 +182,7 @@ $context = $argv[1] ?? 'prod-app';
 exit((new Compiler('MyVendor\MyProject', $context, dirname(__DIR__)))());
 ```
 
-The script names the application, the context and the application directory, and it does not boot the application. `.compile.php` build stubs are loaded by the Compiler itself. `Compiler::phar()` packs the compiled result into one archive (BEAR.Package 1.24+): [Phar](phar.html).
+The script names the application, the context and the application directory, and it does not boot the application. `Compiler::phar()` packs the compiled result into one archive (BEAR.Package 1.24+): [Phar](phar.html).
 
 ```json
 "scripts": {
@@ -241,48 +241,17 @@ Requires bear/sunday 1.9+. Background: [BEAR.Package#501](https://github.com/bea
 
 #### .compile.php {#compile-php}
 
-When there are classes that cannot be generated in a non-production environment (for example, a ResourceObject that requires successful authentication to complete injection), you can compile them by describing dummy class loading in the root `.compile.php` file, which is only loaded during compilation. **Its purpose is to let construction succeed at compile time, so its contents should be null objects (do-nothing implementations).** This applies not only to ahead-of-time builds (real services unreachable) but also to resources that need per-request state such as authentication, which is absent during compilation even when you compile on the deploy target. Keep value fakes (`$_SERVER['X'] = 'fake'`, etc.) to the minimum needed to pass construction, and never use them for values the runtime needs for real (they bake in).
+BEAR.Package 1.27 and later do not load `.compile.php`. A leftover one raises `E_USER_DEPRECATED` and is ignored: delete it, together with the stub classes it loads.
 
-**Note:** the compiler loads `.compile.php` itself, before it builds the container. The removed `vendor/bin/bear.compile` did too; nothing else has to.
+The stubs in `.compile.php` replaced the real classes for the whole compile process, so the compiled DI scripts took the stubs' constructors and interceptor bindings. Since 1.22 production boots from those scripts when the compile marker matches, so a stub with another constructor compiled cleanly and failed in production with `ArgumentCountError`, and a stub without a method attribute ran without its interceptor, a transaction for example. Background: [BEAR.Package#530](https://github.com/bearsunday/BEAR.Package/pull/530).
 
-Example) If there is an AuthProvider that throws an exception when authentication cannot be obtained in the constructor, you can create an empty class as follows and load it in .compile.php:
+What the compile needs instead:
 
-/tests/Null/AuthProvider.php
-```php
-<?php
-class AuthProvider 
-{  // Only for instantiation, so implementation is not required
-}
-```
+* **The object graph built at boot must build without stubs.** The compile builds `AppInterface` and its dependencies, as every boot does. A constructor or provider in that graph must not connect to a database, a cache or an external service, nor read request state such as authentication: connect on first use instead. For `StorageRedisDsnModule`, either compile where Redis is reachable, or pass `['lazy' => true]`; with `lazy` a wrong Redis host is no longer noticed at compile.
+* **Request-time code needs no stubs.** To record `preload.php` and `autoload.php` the compile runs `GET /` twice against the real services, so whatever that page writes or sends happens at compile, twice. A failure while the request runs does not stop the compile; it is reported on STDERR as `get <uri> failed while recording preload.php: <exception>: <first line of its message>`, and `preload.php` lacks what the rest of that request loads. A missing page at `/` is not reported. Compile where the page can run to get a full `preload.php`.
+* **Values a module reads in `configure()` are baked in** with the compile machine's values. They can no longer be faked in `.compile.php`: compile with the real values, or read them at runtime through a provider binding.
 
-.compile.php
-```php
-<?php
-require __DIR__ . '/tests/Null/AuthProvider.php'; // Always-generatable Null object
-$_SERVER['YOUR_REQUIRED_ENV'] = 'fake'; // For cases where errors occur without specific environment variables
-```
-
-This allows you to avoid exceptions and perform compilation. Additionally, since Symfony's cache component connects to the cache engine in the constructor, it's good to load a dummy adapter during compilation like this:
-
-tests/Null/RedisAdapter.php
-```php
-namespace Ray\PsrCacheModule;
-
-use Ray\Di\ProviderInterface;
-use Serializable;
-use Symfony\Component\Cache\Adapter\RedisAdapter as OriginAdapter;
-use Symfony\Component\Cache\Marshaller\MarshallerInterface;
-
-class RedisAdapter extends OriginAdapter implements Serializable
-{
-    use SerializableTrait;
-
-    public function __construct(ProviderInterface $redisProvider, string $namespace = '', int $defaultLifetime = 0, ?MarshallerInterface $marshaller = null)
-    {
-        // do nothing
-    }
-}
-```
+Up to 1.26 the compiler loads `.compile.php`. A stub there must carry the real class's constructor, and the methods and attributes an interceptor matches; from 1.22 a mismatch breaks production when the compiled scripts ship with their compile marker.
 
 #### autoload.php {#autoloadphp}
 

@@ -155,7 +155,7 @@ final class MyProdLoggerModule extends AbstractModule
 
 * CIではコンパイルの終了コードを合否判定に使います
 * ランタイムで変わる値（接続先・トークン等）は焼き込まず、ランタイム解決にします
-* ビルド環境から触れないサービスは[`.compile.php`](#compile-php)でスタブします
+* 起動時に組み立てるオブジェクトグラフは、ビルド環境にないサービスなしで組み立てられる必要があります → [`.compile.php`](#compile-php)
 * 読み取り専用の実行環境では[書き込み先の宣言](#writable-paths)を併用します
 
 ### ヘルスチェック時のオンデマンドコンパイル {#health-check-compile}
@@ -183,7 +183,7 @@ $context = $argv[1] ?? 'prod-app';
 exit((new Compiler('MyVendor\MyProject', $context, dirname(__DIR__)))());
 ```
 
-スクリプトが名乗るのはアプリケーション名、context、アプリケーションのディレクトリで、アプリケーションは起動しません。`.compile.php`のビルド用スタブはCompiler自身が読み込みます。`Compiler::phar()`はコンパイル結果を1つのアーカイブにします（BEAR.Package 1.24以降）→ [Phar](phar.html)
+スクリプトが名乗るのはアプリケーション名、context、アプリケーションのディレクトリで、アプリケーションは起動しません。`Compiler::phar()`はコンパイル結果を1つのアーカイブにします（BEAR.Package 1.24以降）→ [Phar](phar.html)
 
 ```json
 "scripts": {
@@ -242,48 +242,17 @@ bear/sunday 1.9以降が必要です。背景: [BEAR.Package#501](https://github
 
 #### .compile.php {#compile-php}
 
-実環境ではないと生成ができないクラス（例えば認証が成功しないとインジェクトが完了しないResourceObject）がある場合には、コンパイル時にのみ読み込まれるダミークラス読み込みをルートの`.compile.php`に記述すればコンパイルできます。**目的は「コンパイル時に構築を通す」ことなので、中身は Null オブジェクト（何もしない実装）が基本**です。これは事前コンパイル（実サービスに触れない）だけでなく、**認証などリクエスト時の状態が要るために、デプロイ先でコンパイルしても構築できない**リソースにも当てはまります。値の偽装（`$_SERVER['X'] = 'fake'` など）は最小限にとどめ、ランタイムで本物が要る値には使わないでください（焼き込まれます）。
+BEAR.Package 1.27以降は`.compile.php`を読み込みません。残っていると`E_USER_DEPRECATED`が出て、ファイルは無視されます。`.compile.php`と、そこで読み込んでいたダミーのクラスを削除してください。
 
-**注意**: `.compile.php` はCompiler自身が、コンテナを組む前に読み込みます。削除された `vendor/bin/bear.compile` も読み込んでいました。アプリ側で何かする必要はありません。
+`.compile.php`のダミーは、コンパイルのプロセス全体で本物のクラスを置き換えていました。そのため、生成されるDIスクリプトにダミーのコンストラクタやインターセプタの束縛が入っていました。1.22以降は、コンパイルマーカーが合えば本番がそのDIスクリプトでそのまま起動します。その結果、コンストラクタが本物と違うダミーはコンパイルが通ったまま本番で`ArgumentCountError`になり、メソッドの属性がないダミーは本番でインターセプタ（トランザクションなど）が効かなくなっていました。背景: [BEAR.Package#530](https://github.com/bearsunday/BEAR.Package/pull/530)
 
-例) 例えばコンストラクタで認証が得られない場合に例外を出してしまうAuthProviderがあったとしたら以下のように空のクラスを作っておいて、.compile.phpに読み込ませます。
+代わりにコンパイルが必要とするのは次のことです。
 
-/tests/Null/AuthProvider.php
-```php
-<?php
-class AuthProvider 
-{  // newをするだけのdummyなので実装は不要
-}
-```
+* **起動時に組み立てるオブジェクトグラフは、ダミーなしで組み立てられること。** コンパイルは、起動のたびと同じく`AppInterface`とその依存を組み立てます。そのグラフの中のコンストラクタやプロバイダでは、DB・キャッシュ・外部サービスに接続したり、認証などリクエストごとの状態を読んだりしないでください。接続は最初に使うときに行います。`StorageRedisDsnModule`は、Redisに届く場所でコンパイルするか、`['lazy' => true]`を渡します。`lazy`にすると、Redisの接続先の誤りにコンパイルで気づけなくなります。
+* **リクエスト時に動くコードには、ダミーは要りません。** `preload.php`と`autoload.php`を記録するために、コンパイルは本物のサービスで`GET /`を2回実行します。そのページが書き込みや送信をするなら、それもコンパイル時に2回起きます。リクエストの実行中に失敗してもコンパイルは止まらず、STDERRに`get <uri> failed while recording preload.php: <例外>: <メッセージの1行目>`と出て、そのリクエストの残りで読み込まれるクラスが`preload.php`から抜けます。`/`にページがないときは何も出ません。`preload.php`を欠けなく作るには、ページが動く場所でコンパイルします。
+* **モジュールが`configure()`で読む値は、コンパイルしたマシンの値で焼き込まれます。** `.compile.php`で偽の値を置くことはできなくなりました。本物の値でコンパイルするか、プロバイダ束縛で実行時に読みます。
 
-.compile.php
-```php
-<?php
-require __DIR__ . '/tests/Null/AuthProvider.php'; // 常に生成可能なNullオブジェクト
-$_SERVER['YOUR_REQUIRED_ENV'] = 'fake'; // 特定の環境変数がないとエラーになる場合
-```
-
-こうする事で例外を避けてコンパイルを行えます。他にもSymfonyのキャッシュコンポーネントはコンストラクタでキャッシュエンジンに接続を行うので、コンパイル時にはこのようにダミーのアダプターを読み込むようにしておくと良いでしょう。
-
-tests/Null/RedisAdapter.php
-```php
-namespace Ray\PsrCacheModule;
-
-use Ray\Di\ProviderInterface;
-use Serializable;
-use Symfony\Component\Cache\Adapter\RedisAdapter as OriginAdapter;
-use Symfony\Component\Cache\Marshaller\MarshallerInterface;
-
-class RedisAdapter extends OriginAdapter implements Serializable
-{
-    use SerializableTrait;
-
-    public function __construct(ProviderInterface $redisProvider, string $namespace = '', int $defaultLifetime = 0, ?MarshallerInterface $marshaller = null)
-    {
-        // do nothing
-    }
-}
-```
+1.26までは、Compilerが`.compile.php`を読み込みます。ダミーには、本物のクラスのコンストラクタと、インターセプタが対象にするメソッドとその属性を写してください。1.22以降は、コンパイル済みのスクリプトをコンパイルマーカーごと配ると、食い違いがそのまま本番を壊します。
 
 #### autoload.php {#autoloadphp}
 
